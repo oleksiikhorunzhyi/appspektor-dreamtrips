@@ -1,11 +1,10 @@
-package com.messenger.util;
+package com.messenger.storage.helper;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-
 import java.util.Collections;
 import java.util.List;
 

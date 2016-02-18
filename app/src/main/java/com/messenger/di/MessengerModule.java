@@ -10,7 +10,6 @@ import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
@@ -35,7 +34,6 @@ import dagger.Module;
                 ChatLeavingDelegate.class,
 
 //                presenters
-                ChatScreenPresenterImpl.class,
                 ChatMembersScreenPresenterImpl.class,
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,

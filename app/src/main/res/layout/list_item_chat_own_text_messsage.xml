@@ -24,7 +24,6 @@
             android:fontFamily="sans-serif-light"
             android:textColor="@color/chat_color_message_own"
             android:textColorLink="@color/chat_color_message_own"
-            android:textIsSelectable="true"
             tools:text="MESSAGES"
             tools:textColor="@color/black"
             />

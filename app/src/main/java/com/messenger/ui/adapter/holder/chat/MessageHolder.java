@@ -128,5 +128,9 @@ public abstract class MessageHolder extends ViewHolder {
 
     public abstract void setBubbleBackground();
     public abstract void updateMessageStatusUi(boolean needMarkUnreadMessage);
-    public abstract View getViewForClickableTimestamp();
+    /**
+     * @return view with message content (view surrounded my message bubble), e.g. view
+     * containing text or image
+     */
+    public abstract View getMessageView();
 }

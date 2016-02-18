@@ -24,6 +24,7 @@
             android:layout_centerVertical="true"
             app:placeholderImage="@drawable/noavatar_big"
             app:roundAsCircle="true"
+            app:av_online_indicator_size="9dp"
             />
 
         <include

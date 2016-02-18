@@ -79,6 +79,7 @@ public class ConversationsDAO extends BaseDAO {
     }
 
     public void save(DataConversation conversation) {
+        // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
         save(Collections.singletonList(conversation));
     }
 

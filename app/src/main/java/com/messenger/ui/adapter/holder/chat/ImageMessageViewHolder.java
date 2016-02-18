@@ -84,8 +84,12 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
         imagePostView.setController(controller);
     }
 
+    public void setOnImageClickListener (View.OnClickListener clickListener) {
+        imagePostView.setOnClickListener(clickListener);
+    }
+
     @Override
-    public View getViewForClickableTimestamp() {
+    public View getMessageView() {
         return imagePostView;
     }
 

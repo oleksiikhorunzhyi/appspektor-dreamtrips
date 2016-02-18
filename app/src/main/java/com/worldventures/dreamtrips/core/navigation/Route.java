@@ -4,6 +4,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
@@ -190,6 +191,7 @@ public enum Route {
     YSBH_FULLSCREEN(YSBHPhotoFullscreenFragment.class),
     TRIP_PHOTO_FULLSCREEN(TripPhotoFullscreenFragment.class),
     BUCKET_PHOTO_FULLSCREEN(BucketPhotoFullscreenFragment.class),
+    MESSAGE_IMAGE_FULLSCREEN(MessageImageFullscreenFragment.class),
 
     THREE_SIXTY_VIDEOS(ThreeSixtyVideosFragment.class),
     PRESENTATION_VIDEOS(PresentationVideosFragment.class),

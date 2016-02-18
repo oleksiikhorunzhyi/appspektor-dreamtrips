@@ -78,6 +78,7 @@ public class UsersDAO extends BaseDAO {
     }
 
     public void save(DataUser user) {
+        // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
         save(Collections.singletonList(user));
     }
 }

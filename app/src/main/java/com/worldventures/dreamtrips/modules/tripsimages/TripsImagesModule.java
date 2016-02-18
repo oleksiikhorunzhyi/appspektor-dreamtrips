@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.tripsimages;
 
 import android.content.Context;
 
+import com.messenger.ui.fragment.MessageImageFullscreenFragment;
+import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -92,6 +94,9 @@ import dagger.Provides;
 
                 InspirationFullscreenPresenter.class,
                 TripImageFullscreenPresenter.class,
+
+                MessageImageFullscreenFragment.class,
+                MessageImageFullscreenPresenter.class,
 
                 TaggableImageHolderPresenter.class,
                 CreationPhotoTaggableHolderPresenter.class,

@@ -26,7 +26,7 @@ public class ConversationHelper {
             case ConversationType.GROUP:
             default:
                 initialTitle = conversation.getSubject();
-                if (isEmptyString(initialTitle)) {
+                if (TextUtils.isEmpty(initialTitle)) {
                     initialTitle = Queryable.from(members).map(u -> u.getUserName().split("\\s")[0]).joinStrings(", ");
                 }
                 break;
@@ -80,12 +80,11 @@ public class ConversationHelper {
         return conversation.getType() != null && !conversation.getType().equals(ConversationType.CHAT);
     }
 
-    public static boolean isOwner(DataConversation conversation, DataUser user) {
-        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
+    public static boolean isSingleChat(DataConversation conversation) {
+        return ConversationType.CHAT.equals(conversation.getType());
     }
 
-    private boolean isEmptyString(CharSequence charSequence) {
-        // use "null" check because server sends us null as "null" string sometimes
-        return TextUtils.isEmpty(charSequence) || charSequence.equals("null");
+    public static boolean isOwner(DataConversation conversation, DataUser user) {
+        return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 }

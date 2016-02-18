@@ -116,14 +116,14 @@ public class ParticipantsDAO extends BaseDAO {
                         DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
     }
 
-    public void save(List<DataParticipant> participants) {
-        bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
-    }
-
     public void save(DataParticipant participant) {
+        // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
         save(Collections.singletonList(participant));
     }
 
+    public void save(List<DataParticipant> participants) {
+        bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
+    }
 
     public void deleteBySyncTime(long time) {
         getContentResolver().delete(DataParticipant.CONTENT_URI,

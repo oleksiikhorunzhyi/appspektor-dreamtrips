@@ -22,6 +22,8 @@ import rx.Observable;
 
 public class MessageDAO extends BaseDAO {
 
+    public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
+
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
     }
@@ -48,6 +50,7 @@ public class MessageDAO extends BaseDAO {
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
+                        "a." +  DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
                         "a." +  DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
                         "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + " " +
 
@@ -150,6 +153,7 @@ public class MessageDAO extends BaseDAO {
     }
 
     public void save(DataMessage message) {
+        // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
         save(Collections.singletonList(message));
     }
 

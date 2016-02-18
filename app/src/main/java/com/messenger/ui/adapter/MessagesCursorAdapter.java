@@ -7,11 +7,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -23,6 +20,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
+import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
 import com.messenger.ui.adapter.holder.chat.MessageHolder;
 import com.messenger.ui.adapter.holder.chat.OwnImageMessageViewHolder;
@@ -33,6 +31,7 @@ import com.messenger.ui.adapter.holder.chat.UserTextMessageViewHolder;
 import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.ChatTimestampFormatter;
+import com.messenger.util.LinkHandlerMovementMethod;
 import com.messenger.util.MessageVersionHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.worldventures.dreamtrips.R;
@@ -44,13 +43,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private static final int VIEW_TYPE_USER_IMAGE_MESSAGE = 4;
 
     private final DataUser user;
-    private final Context context;
     private final ChatTimestampFormatter timestampFormatter;
     private DataConversation conversation;
 
     private OnAvatarClickListener avatarClickListener;
     private OnRepeatMessageSend onRepeatMessageSend;
     private OnMessageClickListener messageClickListener;
+    private OnMessageLongClickListener messageLongClickListener;
+    private OnImageClickListener onImageClickListener;
 
     private int manualTimestampPositionToAdd = -1;
     private int manualTimestampPosition = -1;
@@ -58,23 +58,9 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private boolean needMarkUnreadMessages;
 
-    public interface OnAvatarClickListener {
-        void onAvatarClick(DataUser user);
-    }
-
-    public interface OnRepeatMessageSend {
-        void onRepeatMessageSend(String messageId);
-    }
-
-    public interface OnMessageClickListener {
-        void onMessageClick(DataMessage message);
-    }
-
     public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user, @Nullable Cursor cursor) {
         super(cursor);
-        this.context = context;
         this.user = user;
-
         this.timestampFormatter = new ChatTimestampFormatter(context);
     }
 
@@ -124,6 +110,12 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.setSelected(position == manualTimestampPosition);
         holder.setBubbleBackground();
         holder.updateMessageStatusUi(needMarkUnreadMessages);
+        holder.getMessageView().setOnLongClickListener(view -> {
+            if (messageLongClickListener != null) {
+                messageLongClickListener.onMessageLongClick(message);
+            }
+            return true;
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -149,6 +141,8 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         if (MessageVersionHelper.isUnsupported(version, attachmentType))
             holder.showUnsupportMessage();
         else holder.showMessage();
+
+        holder.getMessageTextView().setMovementMethod(LinkHandlerMovementMethod.getInstance());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -168,8 +162,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     public void bindImageMessageHolder(ImageMessageViewHolder holder, Cursor cursor) {
+        String attachmentImageId = cursor.getString(cursor.getColumnIndex(MessageDAO.ATTACHMENT_ID));
         String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
+
         holder.showImageMessage(TextUtils.isEmpty(imageUrl) ? null : Uri.parse(imageUrl));
+        holder.setOnImageClickListener(v -> {
+            if (onImageClickListener != null)
+                onImageClickListener.onImageClickListener(attachmentImageId);
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -224,6 +224,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         this.messageClickListener = messageClickListener;
     }
 
+    public void setMessageLongClickListener(OnMessageLongClickListener messageLongClickListener) {
+        this.messageLongClickListener = messageLongClickListener;
+    }
+
+    public void setOnImageClickListener(OnImageClickListener onImageClickListener) {
+        this.onImageClickListener = onImageClickListener;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Util and helpers
     ///////////////////////////////////////////////////////////////////////////
@@ -247,63 +255,6 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     ///////////////////////////////////////////////////////////////////////////
     // Message timestamps
     ///////////////////////////////////////////////////////////////////////////
-
-    private class TextSelectableClickListener
-            implements View.OnTouchListener, GestureDetector.OnGestureListener {
-
-        DataMessage message;
-        int position;
-        GestureDetectorCompat gestureDetector;
-        boolean clickableTimestamp;
-
-        public TextSelectableClickListener(Context context, int position, DataMessage message,
-                                           boolean clickableTimestamp) {
-            this.gestureDetector = new GestureDetectorCompat(context, this);
-            this.position = position;
-            this.message = message;
-            this.clickableTimestamp = clickableTimestamp;
-        }
-
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return gestureDetector.onTouchEvent(motionEvent);
-        }
-
-        @Override
-        public boolean onDown(MotionEvent motionEvent) {
-            return false;
-        }
-
-        @Override
-        public void onShowPress(MotionEvent motionEvent) {
-
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent motionEvent) {
-            if (clickableTimestamp) {
-                showManualTimestampForPosition(position);
-            }
-            if (messageClickListener != null) {
-                messageClickListener.onMessageClick(message);
-            }
-            return false;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-            return false;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent motionEvent) {
-        }
-
-        @Override
-        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-            return false;
-        }
-    }
 
     private void showManualTimestampForPosition(int position) {
         if (position == manualTimestampPosition) {
@@ -330,14 +281,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
         }
         boolean clickableTimestamp = manualTimestamp || TextUtils.isEmpty(dateDivider);
-        if (holder instanceof TextMessageViewHolder) {
-            holder.getViewForClickableTimestamp()
-                    .setOnTouchListener(new TextSelectableClickListener(context, cursor.getPosition(),
-                            message, clickableTimestamp));
-        } else {
-            holder.getViewForClickableTimestamp()
-                    .setOnClickListener(view -> showManualTimestampForPosition(position));
-        }
+        holder.getMessageView().setOnClickListener(view -> {
+            if (messageClickListener != null) {
+                messageClickListener.onMessageClick(message);
+            }
+            if (clickableTimestamp) {
+                showManualTimestampForPosition(position);
+            }
+        });
 
         TextView dateTextView = holder.dateTextView;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();
@@ -408,6 +359,30 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             return timestampFormatter.getMessageDateDividerTimestamp(currentDate);
         }
         return null;
+    }
+
+    ///////////////////////////////////////////
+    ////// Listeners
+    ///////////////////////////////////////////
+
+    public interface OnAvatarClickListener {
+        void onAvatarClick(DataUser user);
+    }
+
+    public interface OnRepeatMessageSend {
+        void onRepeatMessageSend(String messageId);
+    }
+
+    public interface OnMessageClickListener {
+        void onMessageClick(DataMessage message);
+    }
+
+    public interface OnMessageLongClickListener {
+        void onMessageLongClick(DataMessage message);
+    }
+
+    public interface OnImageClickListener {
+        void onImageClickListener(String attachmentImageId);
     }
 
 }

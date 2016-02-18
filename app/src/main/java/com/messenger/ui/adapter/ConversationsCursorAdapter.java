@@ -6,7 +6,6 @@ import android.database.CursorWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.daimajia.swipe.implments.SwipeItemRecyclerMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
 import com.daimajia.swipe.util.Attributes;
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
@@ -25,7 +23,6 @@ import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.adapter.holder.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
@@ -34,7 +31,6 @@ import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.MessageVersionHelper;
-import com.messenger.util.ParticipantsDaoHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -44,7 +40,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -62,7 +57,6 @@ public class ConversationsCursorAdapter
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
     private static final int VIEW_TYPE_TRIP_CONVERSATION = 3;
     private static final int VIEW_TYPE_GROUP_CLOSE_CONVERSATION = 4;
-    private static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
 
     private final SwipeItemRecyclerMangerImpl swipeButtonsManger = new SwipeItemRecyclerMangerImpl(this);
     private final Context context;
@@ -73,7 +67,6 @@ public class ConversationsCursorAdapter
     private ConversationClickListener conversationClickListener;
 
     private ConversationHelper conversationHelper;
-    private ParticipantsDaoHelper participantsDaoHelper;
     private SimpleDateFormat todayDateFormat;
     private SimpleDateFormat moreThanTwoDaysAgoFormat;
 
@@ -93,14 +86,13 @@ public class ConversationsCursorAdapter
         void onMoreOptionsButtonPressed(DataConversation conversation);
     }
 
-    public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, DataUser currentUser, ParticipantsDAO participantsDAO) {
+    public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, DataUser currentUser) {
         super(null);
         this.context = context;
         this.recyclerView = recyclerView;
         this.currentUser = currentUser;
 
         conversationHelper = new ConversationHelper();
-        participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
         todayDateFormat = new SimpleDateFormat(context
                 .getString(R.string.conversation_list_last_message_date_format_today));
         moreThanTwoDaysAgoFormat = new SimpleDateFormat(context
@@ -262,17 +254,11 @@ public class ConversationsCursorAdapter
             closeCursorIfNeed(swapCursor(newCursor));
             return;
         }
-        mainSubscription = Observable.from(SqlUtils.convertToList(DataConversation.class, newCursor))
-                .flatMap(conversation -> participantsDaoHelper.obtainParticipantsStream(conversation, currentUser)
-                                .first()
-                                .map(users -> new Pair<>(conversation, users))
-                )
-                .toMap(p -> p.first, p -> p.second)
+
+        mainSubscription = Observable.defer(() -> Observable.just(new FilterCursorWrapper(newCursor, filter)))
                 .compose(new IoToMainComposer<>())
                 .compose(RxLifecycle.bindView(recyclerView))
-                .subscribe(map -> {
-                    swapCursor(new FilterCursorWrapper(conversationHelper, newCursor, filter, map));
-                });
+                .subscribe(this::swapCursor);
     }
 
     private void closeCursorIfNeed(Cursor oldCursor) {
@@ -354,12 +340,13 @@ public class ConversationsCursorAdapter
     // Search related
     ///////////////////////////////////////////////////////////////////////////
 
+    // TODO: 2/18/16 implement via SQL query
     public static class FilterCursorWrapper extends CursorWrapper {
         private int[] index;
         private int count;
         private int pos;
 
-        public FilterCursorWrapper(ConversationHelper helper, Cursor cursor, String filter, Map<DataConversation, List<DataUser>> map) {
+        public FilterCursorWrapper(Cursor cursor, String filter) {
             super(cursor);
             filter = filter.toLowerCase();
 
@@ -371,10 +358,12 @@ public class ConversationsCursorAdapter
                     DataConversation conversation
                             = SqlUtils.convertToModel(true, DataConversation.class, cursor);
                     String conversationName;
-                    if (helper.isGroup(conversation)) {
-                        conversationName = getGroupConversationName(conversation, map.get(conversation));
+                    if (ConversationHelper.isGroup(conversation)) {
+                        if (TextUtils.isEmpty(conversationName = cursor.getString(cursor.getColumnIndex(DataConversation$Table.SUBJECT)))) {
+                            conversationName = cursor.getString(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_NAME_COLUMN));
+                        }
                     } else {
-                        conversationName = getOneToOneConversationName(conversation, map.get(conversation));
+                        conversationName = cursor.getString(cursor.getColumnIndex(ConversationsDAO.SINGLE_CONVERSATION_NAME_COLUMN));
                     }
                     if (conversationName.toLowerCase().contains(filter)) {
                         this.index[this.pos++] = i;
@@ -390,19 +379,6 @@ public class ConversationsCursorAdapter
                     this.index[i] = i;
                 }
             }
-        }
-
-        private String getGroupConversationName(DataConversation conversation, List<DataUser> participants) {
-            if (TextUtils.isEmpty(conversation.getSubject())) {
-                return TextUtils.join(", ", Queryable.from(participants).map(DataUser::getName).toList());
-            } else {
-                return conversation.getSubject();
-            }
-        }
-
-        private String getOneToOneConversationName(DataConversation conversation, List<DataUser> participants) {
-            if (participants.isEmpty()) return "";
-            else return participants.get(0).getName();
         }
 
         @Override

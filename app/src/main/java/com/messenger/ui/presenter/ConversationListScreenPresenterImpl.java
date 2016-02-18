@@ -103,11 +103,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         return user;
     }
 
-    @Override
-    public ParticipantsDAO getParticipantsDao() {
-        return participantsDAO;
-    }
-
     private void connectData() {
         connectFilterStream();
         connectTypeStream();

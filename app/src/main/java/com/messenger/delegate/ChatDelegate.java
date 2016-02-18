@@ -84,12 +84,12 @@ public class ChatDelegate {
                                                               List<DataUser> newParticipants, @Nullable String subject) {
         return messengerServerFacade.getChatManager()
                 .createMultiUserChatObservable(conversation.getId(), currentUserId)
-                .doOnNext(multiUserChat -> multiUserChat.invite(getIdFromUsers(newParticipants)))
+                .doOnNext(multiUserChat -> multiUserChat.invite(getUserIds(newParticipants)))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .map(chat -> conversation);
     }
 
-    private List<String> getIdFromUsers(List<DataUser> dataUsers) {
+    private List<String> getUserIds(List<DataUser> dataUsers) {
         return Queryable.from(dataUsers).map(DataUser::getId).toList();
     }
 }

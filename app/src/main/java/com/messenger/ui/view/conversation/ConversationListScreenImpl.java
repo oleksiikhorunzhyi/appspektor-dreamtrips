@@ -145,7 +145,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
-        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser(), getPresenter().getParticipantsDao());
+        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser());
         adapter.setSwipeButtonsListener(this);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));

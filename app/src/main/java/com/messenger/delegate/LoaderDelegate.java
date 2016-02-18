@@ -75,7 +75,7 @@ public class LoaderDelegate {
                             .map(c -> new DataMessage(c.getLastMessage())).notNulls().toList();
                     from(messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
-                    List<DataParticipant> relationships = new ArrayList<DataParticipant>();
+                    List<DataParticipant> relationships = new ArrayList<>();
                     if (!data.isEmpty()) {
                         from(data)
                                 .filter(conversation -> conversation.getParticipants() != null)
@@ -105,10 +105,8 @@ public class LoaderDelegate {
             });
             conversationLoader.load();
         });
-        return userProcessor.connectToUserProvider(loader).map(users -> {
-            Timber.d("ConversationLoader %s", users);
-            return (Void) null;
-        });
+        return userProcessor.connectToUserProvider(loader)
+                .map(var -> (Void) null);
     }
 
     private List<DataAttachment> getDataAttachments(List<Conversation> conversations) {

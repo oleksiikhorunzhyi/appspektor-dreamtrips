@@ -16,6 +16,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 
@@ -44,8 +45,8 @@ public class MessengerStorageModule {
 
     @Provides
     @Singleton
-    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new ConversationsDAO(context, rxContentResolver);
+    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, Lazy<DataUser> currentUser) {
+        return new ConversationsDAO(context, rxContentResolver, currentUser);
     }
 
     @Provides

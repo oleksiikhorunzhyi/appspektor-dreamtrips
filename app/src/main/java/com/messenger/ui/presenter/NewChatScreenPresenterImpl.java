@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
@@ -86,9 +85,9 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 };
 
                 if (selectedUsers.size() == 1) {
-                    startChatDelegate.startSingleChat(convertToIds(selectedUsers).get(0), action1);
+                    startChatDelegate.startSingleChat(selectedUsers.get(0), action1);
                 } else {
-                    startChatDelegate.startNewGroupChat(user.getId(), convertToIds(selectedUsers), getView().getConversationName(), action1);
+                    startChatDelegate.startNewGroupChat(user.getId(), selectedUsers, getView().getConversationName(), action1);
                 }
 
                 return true;
@@ -96,7 +95,4 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
         return false;
     }
 
-    private List<String> convertToIds(List<DataUser> users) {
-        return Queryable.from(users).map(DataUser::getId).toList();
-    }
 }

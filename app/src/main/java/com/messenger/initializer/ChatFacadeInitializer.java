@@ -67,10 +67,10 @@ public class ChatFacadeInitializer implements AppInitializer {
     private UserProcessor userProcessor;
     private final ConversationIdHelper conversationIdHelper = new ConversationIdHelper();
     private LoaderDelegate loaderDelegate;
+
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-
         userProcessor = new UserProcessor(usersDAO, spiceManager);
         loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
                 conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);

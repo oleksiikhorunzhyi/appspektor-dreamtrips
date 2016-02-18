@@ -56,4 +56,8 @@ class BaseDAO {
         }
         contentResolver.notifyChange(uri, null);
     }
+
+    protected SQLiteDatabase getWritableDatabase() {
+        return FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase();
+    }
 }

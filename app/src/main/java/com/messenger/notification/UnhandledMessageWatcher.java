@@ -3,10 +3,12 @@ package com.messenger.notification;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
@@ -114,7 +116,8 @@ public class UnhandledMessageWatcher {
                 .filter(conversation -> TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
                 .first()
                 .flatMap(conversation -> {
-                    String attachmentType = attachmentDAO.getAttachmentByMessageId(message.getId()).toBlocking().first().getType();
+                    DataAttachment attachment = attachmentDAO.getAttachmentByMessageId(message.getId()).toBlocking().first();
+                    String attachmentType = attachment != null ? attachment.getType() : null;
 
                     if (isSingleChat(conversation))
                         return composeSingleChatNotification(conversation, message, attachmentType);
@@ -157,7 +160,7 @@ public class UnhandledMessageWatcher {
     }
 
     //single ava + sender name + sender text
-    private Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message, String attachmentType) {
+    private Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message, @Nullable String attachmentType) {
         return usersDAO.getUserById(message.getFromId())
                 .compose(new NonNullFilter<>()).first()
                 .map(user -> {
@@ -169,7 +172,7 @@ public class UnhandledMessageWatcher {
     }
 
     //group 4 avas + group name/user names + last name : last message
-    private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message, String attachmentType) {
+    private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message, @Nullable String attachmentType) {
         return Observable.zip(
                 participantsDAO.getParticipantsEntities(conversation.getId()).first(),
                 usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()).first(),

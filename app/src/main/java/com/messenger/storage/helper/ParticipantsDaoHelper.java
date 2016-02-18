@@ -22,12 +22,9 @@ public class ParticipantsDaoHelper {
         String conversationId = dataConversation.getId();
 
         if (ConversationHelper.isGroup(dataConversation)) {
-            return participantsDAO.getParticipants(conversationId)
-                    .onBackpressureLatest()
-                    .map(cursor -> SqlUtils.convertToList(DataUser.class, cursor));
+            return participantsDAO.getParticipantsEntities(conversationId);
         } else {
             return participantsDAO.getParticipant(conversationId, currentUser.getId())
-                    .onBackpressureLatest()
                     .map(dataUser -> dataUser != null ? Collections.singletonList(dataUser) : Collections.<DataUser>emptyList());
         }
     }

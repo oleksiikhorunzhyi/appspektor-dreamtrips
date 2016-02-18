@@ -73,11 +73,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
             ivFullscreen.setVisibility(View.GONE);
         }
         super.afterCreateView(rootView);
-        if (story.isLiked()) {
-            ivLike.setImageResource(R.drawable.ic_success_heart_selected);
-        } else {
-            ivLike.setImageResource(R.drawable.ic_success_heart_normal);
-        }
+        updateStoryLike(story.isLiked());
 
         webView.getSettings().setUseWideViewPort(true);
         TrackingHelper.viewSuccessStory(story.getUrl());
@@ -126,7 +122,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
             informUser(getString(R.string.ss_has_been_removed_from_favorites));
         }
 
-        eventBus.postSticky(new StoryLikedEvent(story.getUrl(), story.isLiked()));
+        eventBus.post(new StoryLikedEvent(story.getUrl(), story.isLiked()));
     }
 
     @Override
@@ -137,5 +133,14 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
                 .data(data)
                 .build());
+    }
+
+    @Override
+    public void updateStoryLike(boolean isLiked) {
+        if (isLiked) {
+            ivLike.setImageResource(R.drawable.ic_success_heart_selected);
+        } else {
+            ivLike.setImageResource(R.drawable.ic_success_heart_normal);
+        }
     }
 }

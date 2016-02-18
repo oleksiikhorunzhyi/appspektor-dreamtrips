@@ -79,6 +79,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         entityManager.setRequestingPresenter(this);
     }
 
+    @Override
+    public void onResume() {
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        //
+        super.onResume();
+    }
+
     /**
      * Request comments and likes only once per view loading if suitable count > 0
      */
@@ -185,13 +192,15 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     public void onEvent(DeleteBucketEvent event) {
         if (view.isVisibleOnScreen())
             bucketItemManager.deleteBucketItem(event.getEntity(), bucketItemManager.getType(event.getEntity().getType()),
-                    jsonObject -> itemDeleted(event.getEntity()), this::handleError);
-
+                    jsonObject -> {
+                        itemDeleted(event.getEntity());
+                        eventBus.post(new BucketItemUpdatedEvent(event.getEntity()));
+                    }, this::handleError);
     }
 
     private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
-        eventBus.post(new BucketItemUpdatedEvent((BucketItem) model));
+        //
         view.back();
     }
 

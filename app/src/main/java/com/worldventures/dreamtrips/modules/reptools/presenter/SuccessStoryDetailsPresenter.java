@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.UnlikeSuccessStoryCommand;
+import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View> {
@@ -46,12 +47,19 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
         view.openShare(successStory.getSharingUrl(), type);
     }
 
+    public void onEvent(StoryLikedEvent event) {
+        view.updateStoryLike(event.isLiked);
+    }
+
     public interface View extends WebViewFragmentPresenter.View {
+
         void showShareDialog();
 
         void likeRequestSuccess();
 
         void openShare(String url, @ShareType String type);
+
+        void updateStoryLike(boolean isLiked);
     }
 
 }

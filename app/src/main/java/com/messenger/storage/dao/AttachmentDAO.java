@@ -41,7 +41,6 @@ public class AttachmentDAO extends BaseDAO {
                     cursor.close();
                     return dataAttachment;
                 });
-
     }
 
     public Observable<DataAttachment> getAttachmentByMessageId(String messageId) {

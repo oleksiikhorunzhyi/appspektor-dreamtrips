@@ -17,20 +17,13 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
     }
 
     @Override
-    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
-        return new TripImagesRoboSpiceController() {
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-                GetUserPhotosQuery getMembersPhotosQuery = new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, 1);
-                return getMembersPhotosQuery;
-            }
+    public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
+        return new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, 1);
+    }
 
-            @Override
-            public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-                GetUserPhotosQuery getMembersPhotosQuery = new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, currentCount / PER_PAGE + 1);
-                return getMembersPhotosQuery;
-            }
-        };
+    @Override
+    public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+        return new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, currentCount / PER_PAGE + 1);
     }
 
     @Override

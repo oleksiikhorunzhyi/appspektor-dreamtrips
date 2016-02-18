@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.app.Activity;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
@@ -16,7 +14,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,28 +29,6 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
 
     SweetDialogHelper sweetDialogHelper;
 
-    protected DreamSpiceAdapterController<PopularBucketItem> adapterController = new DreamSpiceAdapterController<PopularBucketItem>() {
-        @Override
-        public SpiceRequest<ArrayList<PopularBucketItem>> getReloadRequest() {
-            return new GetPopularLocation(type);
-        }
-
-        @Override
-        public void onStart(LoadType loadType) {
-            view.startLoading();
-        }
-
-        @Override
-        public void onFinish(LoadType type, List<PopularBucketItem> items, SpiceException spiceException) {
-            if (adapterController != null) {
-                view.finishLoading();
-                if (spiceException != null) {
-                    handleError(spiceException);
-                }
-            }
-        }
-    };
-
     public BucketPopularPresenter(BucketItem.BucketType type) {
         super();
         this.type = type;
@@ -65,17 +40,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         super.onResume();
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
 
-        if (view.getAdapter().getCount() == 0) {
-            adapterController.setSpiceManager(dreamSpiceManager);
-            adapterController.setAdapter(view.getAdapter());
-            adapterController.reload();
-        }
-    }
-
-    @Override
-    public void dropView() {
-        adapterController.setAdapter(null);
-        super.dropView();
+        if (view.getAdapter().getCount() == 0) reload();
     }
 
     public void onSearch(String constraint) {
@@ -129,10 +94,24 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     }
 
     public void reload() {
-        adapterController.reload();
+        view.startLoading();
+        doRequest(new GetPopularLocation(type), items -> {
+            view.finishLoading();
+            //
+            view.getAdapter().clear();
+            view.getAdapter().addItems(items);
+            view.getAdapter().notifyDataSetChanged();
+        });
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        view.finishLoading();
+        super.handleError(error);
     }
 
     public interface View extends Presenter.View {
+
         FilterableArrayListAdapter<PopularBucketItem> getAdapter();
 
         void startLoading();

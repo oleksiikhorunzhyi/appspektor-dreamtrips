@@ -28,7 +28,7 @@ public class GroupAvatarColorHelper {
     };
 
     public int obtainColor(Context context, String groupConversationId) {
-        int sum = Queryable.from(groupConversationId.toCharArray()).map(c -> Character.getNumericValue(c)).sum();
+        int sum = Queryable.from(groupConversationId.toCharArray()).map(c -> (int)c).sum();
         return ContextCompat.getColor(context, COLORS_IDS[sum % COLORS_IDS.length]);
     }
 }

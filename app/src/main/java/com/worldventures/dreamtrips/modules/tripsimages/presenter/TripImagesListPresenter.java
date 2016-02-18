@@ -5,14 +5,13 @@ import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.techery.spares.adapter.RoboSpiceAdapterController;
 import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
@@ -52,7 +51,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     private boolean loading = true;
     private int currentPhotoPosition = 0;
 
-    private TripImagesRoboSpiceController roboSpiceAdapterController;
     protected List<IFullScreenObject> photos = new ArrayList<>();
     private List<PhotoTag> photoTags;
 
@@ -122,13 +120,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 });
     }
 
-    @Override
-    public void dropView() {
-        if (roboSpiceAdapterController != null)
-            roboSpiceAdapterController.setAdapter(null);
-        super.dropView();
-    }
-
     protected void syncPhotosAndUpdatePosition() {
         photos.addAll(db.readPhotoEntityList(type, userId));
 
@@ -152,10 +143,53 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
         if (!loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + VISIBLE_TRESHOLD)
                 && totalItemCount % PER_PAGE == 0) {
-            getAdapterController().loadNext();
+            loadNext();
             loading = true;
         }
     }
+
+    private void loadNext() {
+        doRequest(getNextPageRequest(view.getAdapter().getCount()), list -> {
+            photos.addAll(list);
+            db.savePhotoEntityList(type, userId, Queryable.from(photos)
+                    .filter(item -> !(item instanceof UploadTask)).toList());
+            //
+            view.getAdapter().addItems((ArrayList) list);
+            view.getAdapter().notifyDataSetChanged();
+        });
+    }
+
+    public void reload() {
+        view.startLoading();
+        doRequest(getReloadRequest(), items -> {
+            view.finishLoading();
+            //
+            UploadTask uploadTask = null;
+            if (photos.size() > 0 && photos.get(0) instanceof UploadTask)
+                uploadTask = (UploadTask) photos.get(0);
+            //
+            photos.clear();
+            if (uploadTask != null) photos.add(uploadTask);
+            photos.addAll(items);
+            resetLazyLoadFields();
+            db.savePhotoEntityList(type, userId, Queryable.from(photos)
+                    .filter(item -> !(item instanceof UploadTask)).toList());
+            //
+            view.getAdapter().clear();
+            view.getAdapter().addItems((ArrayList) photos);
+            view.getAdapter().notifyDataSetChanged();
+        });
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        view.finishLoading();
+        super.handleError(error);
+    }
+
+    protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount);
+
+    protected abstract SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest();
 
     public IFullScreenObject getPhoto(int position) {
         return photos.get(position);
@@ -256,72 +290,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
                 item instanceof UploadTask
                         && id == (((UploadTask) item).getId()));
 
-    }
-
-    private TripImagesRoboSpiceController getAdapterController() {
-        if (roboSpiceAdapterController == null) {
-            roboSpiceAdapterController = getTripImagesRoboSpiceController();
-            roboSpiceAdapterController.setSpiceManager(dreamSpiceManager);
-        }
-
-        if (!roboSpiceAdapterController.hasAdapter()) {
-            roboSpiceAdapterController.setAdapter(view.getAdapter());
-        }
-
-        return roboSpiceAdapterController;
-    }
-
-    public void reload() {
-        getAdapterController().reload();
-    }
-
-    //////////////////////////////////
-    /// abstract Robospice controller
-    //////////////////////////////////
-
-    public abstract TripImagesRoboSpiceController getTripImagesRoboSpiceController();
-
-    public abstract class TripImagesRoboSpiceController extends DreamSpiceAdapterController<IFullScreenObject> {
-
-        @Override
-        public void onStart(LoadType loadType) {
-            if (loadType.equals(LoadType.RELOAD)) {
-                view.startLoading();
-            }
-        }
-
-        @Override
-        protected void onRefresh(ArrayList<IFullScreenObject> iFullScreenObjects) {
-            onPreFinish(LoadType.RELOAD, iFullScreenObjects, null);
-            onFinish(LoadType.RELOAD, iFullScreenObjects, null);
-        }
-
-        @Override
-        public void onPreFinish(RoboSpiceAdapterController.LoadType loadType,
-                                List<IFullScreenObject> items, SpiceException spiceException) {
-            if (getAdapterController() != null) {
-                view.finishLoading();
-                if (spiceException == null) {
-                    if (loadType.equals(RoboSpiceAdapterController.LoadType.RELOAD)) {
-                        UploadTask uploadTask = null;
-                        if (photos.size() > 0 && photos.get(0) instanceof UploadTask)
-                            uploadTask = (UploadTask) photos.get(0);
-                        //
-                        photos.clear();
-                        if (uploadTask != null) photos.add(uploadTask);
-                        photos.addAll(items);
-                        resetLazyLoadFields();
-                    } else {
-                        photos.addAll(items);
-                    }
-
-                    db.savePhotoEntityList(type, userId, Queryable.from(photos)
-                            .filter(item -> !(item instanceof UploadTask)).toList());
-                } else {
-                    handleError(spiceException);
-                }
-            }
-        }
     }
 
     private void resetLazyLoadFields() {

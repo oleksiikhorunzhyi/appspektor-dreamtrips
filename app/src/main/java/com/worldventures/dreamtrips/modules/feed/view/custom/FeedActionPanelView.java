@@ -146,8 +146,8 @@ public class FeedActionPanelView extends LinearLayout implements Flaggable {
         FeedItemMenuBuilder.create(getContext(), more, menuRes)
                 .onDelete(() -> showDeleteDialog(headerDelete, textDelete))
                 .onEdit(this::onEdit)
+                .dismissListener(menu -> handler.postDelayed(() -> more.setEnabled(true), 500))
                 .show();
-        handler.postDelayed(() -> more.setEnabled(true), 500);
     }
 
     private void showDeleteDialog(@StringRes int headerDelete, @StringRes int textDelete) {

@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
@@ -41,7 +42,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
     @InjectView(R.id.user_cover)
     SimpleDraweeView userCover;
     @InjectView(R.id.user_photo)
-    SimpleDraweeView userPhoto;
+    SmartAvatarView userPhoto;
     @InjectView(R.id.user_name)
     TextView userName;
     @InjectView(R.id.company_name)

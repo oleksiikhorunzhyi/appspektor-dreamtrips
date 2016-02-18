@@ -21,7 +21,7 @@
             app:placeholderImage="@drawable/ic_cover_place_holder"
             app:placeholderImageScaleType="centerCrop"/>
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
             android:id="@+id/user_photo"
             android:layout_width="64dp"
             android:layout_height="64dp"
@@ -44,8 +44,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_large"
-                tools:text="Nicole Bishop"
-                />
+                tools:text="Nicole Bishop" />
 
             <TextView
                 android:id="@+id/company_name"
@@ -132,8 +131,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            />
+            android:background="@android:color/darker_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"

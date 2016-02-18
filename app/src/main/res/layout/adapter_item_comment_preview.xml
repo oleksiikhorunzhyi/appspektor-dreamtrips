@@ -7,7 +7,7 @@
                 android:background="@color/white"
                 android:orientation="vertical">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
         android:id="@+id/user_photo"
         android:layout_width="48dp"
         android:layout_height="48dp"

@@ -6,10 +6,11 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import butterknife.ButterKnife;
@@ -22,7 +23,7 @@ public class CommentCellHelper {
     @InjectView(R.id.comment_container)
     View commentContainer;
     @InjectView(R.id.user_photo)
-    SimpleDraweeView userPhoto;
+    SmartAvatarView userPhoto;
     @InjectView(R.id.user_name)
     TextView userName;
     @InjectView(R.id.date)
@@ -41,11 +42,12 @@ public class CommentCellHelper {
         ButterKnife.inject(this, view);
     }
 
-    public void set(@NonNull Comment comment) {
+    public void set(@NonNull Comment comment, Injector injector) {
         this.comment = comment;
         //
         User owner = comment.getOwner();
         userPhoto.setImageURI(Uri.parse(owner.getAvatar().getThumb()));
+        userPhoto.setup(comment.getOwner(), injector);
         userName.setText(owner.getUsernameWithCompany(context));
         text.setText(comment.getMessage());
         CharSequence relativeTimeSpanString = DateTimeUtils.getRelativeTimeSpanString(context.getResources(),

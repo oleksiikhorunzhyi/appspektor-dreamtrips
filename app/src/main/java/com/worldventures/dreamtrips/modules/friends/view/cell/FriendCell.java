@@ -4,11 +4,15 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.OnClick;
 
@@ -19,6 +23,10 @@ public class FriendCell extends BaseUserCell {
 
     @Inject
     protected DrawableUtil drawableUtil;
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     public FriendCell(View view) {
         super(view);
@@ -31,6 +39,7 @@ public class FriendCell extends BaseUserCell {
         String circleName = getModelObject().getCirclesString();
         tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
         tvGroup.setText(circleName);
+        ((SmartAvatarView)sdvAvatar).setup(getModelObject(), injectorProvider.get());
     }
 
     @Override

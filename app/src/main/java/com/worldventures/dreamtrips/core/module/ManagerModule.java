@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
+import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
@@ -150,5 +151,11 @@ public class ManagerModule {
     @Singleton
     PhotoPickerDelegate providePhotoPickerDelegate() {
         return new PhotoPickerDelegate();
+    }
+
+    @Provides
+    @Singleton
+    DTCookieManager provideCookieManager(@ForApplication Context context) {
+        return new DTCookieManager(context);
     }
 }

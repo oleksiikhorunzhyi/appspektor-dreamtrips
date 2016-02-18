@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
+import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.core.utils.DeleteTokenGcmTask;
 import com.worldventures.dreamtrips.modules.common.api.LogoutCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UnsubscribeDeviceCommand;
@@ -32,6 +33,8 @@ public class LogoutDelegate {
     protected NotificationDelegate notificationDelegate;
     @Inject
     protected BadgeUpdater badgeUpdater;
+    @Inject
+    protected DTCookieManager cookieManager;
     //
     protected DreamSpiceManager dreamSpiceManager;
 
@@ -77,6 +80,7 @@ public class LogoutDelegate {
         if (onLogoutSuccessListener != null) {
             onLogoutSuccessListener.onLogoutSuccess();
         }
+        cookieManager.clearCookies();
         snappyRepository.clearAll();
         appSessionHolder.destroy();
         notificationDelegate.cancelAll();

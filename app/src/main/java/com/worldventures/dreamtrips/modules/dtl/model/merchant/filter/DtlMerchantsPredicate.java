@@ -1,106 +1,44 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.functions.Predicate;
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
-import org.immutables.value.Value;
+import org.immutables.builder.Builder;
 
-import java.util.Collections;
-import java.util.List;
+public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
 
-@Value.Immutable
-public abstract class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
+    private final DtlMerchantDistancePredicate distancePredicate;
 
-    public abstract DtlFilterData getFilterData();
+    private final DtlMerchantAmenitiesPredicate amenitiesPredicate;
 
-    public abstract LatLng getCurrentLatLng();
+    private final DtlMerchantPricePredicate pricePredicate;
 
-    public abstract DtlMerchantType getMerchantType();
+    private final DtlMerchantQueryPredicate queryPredicate;
+
+    private final DtlMerchantTypePredicate typePredicate;
+
+    private DtlMerchantsPredicate(DtlMerchantType merchantType,
+                                    DtlFilterData filterData) {
+        this.distancePredicate = ImmutableDtlMerchantDistancePredicate.of(filterData);
+        this.amenitiesPredicate = ImmutableDtlMerchantAmenitiesPredicate.of(filterData);
+        this.pricePredicate = ImmutableDtlMerchantPricePredicate.of(filterData);
+        this.queryPredicate = ImmutableDtlMerchantQueryPredicate.of(filterData);
+        this.typePredicate = ImmutableDtlMerchantTypePredicate.of(merchantType);
+    }
+
+    @Builder.Factory
+    public static DtlMerchantsPredicate dtlMerchantsPredicate(DtlMerchantType merchantType,
+                                                              DtlFilterData filterData) {
+        return new DtlMerchantsPredicate(merchantType, filterData);
+    }
 
     @Override
-    @Value.Derived
-    public boolean apply(DtlMerchant dtlMerchant) {
-        return checkType(dtlMerchant)
-                && applyFilter(dtlMerchant)
-                && checkQuery(dtlMerchant);
-    }
-
-    /**
-     * Filter-out merchants of different type
-     * @param dtlMerchant merchant to filter
-     * @return true if merchant of correct type
-     */
-    @Value.Derived
-    public boolean checkType(DtlMerchant dtlMerchant) {
-        return getMerchantType() == null || dtlMerchant.getMerchantType() == getMerchantType();
-    }
-
-    /**
-     * Filter-out merchants that don't match search query
-     * @param dtlMerchant merchant to filter
-     * @return true if merchant passes search
-     */
-    @Value.Derived
-    public boolean checkQuery(DtlMerchant dtlMerchant) {
-        if (getFilterData().getSearchQuery() == null) return false;
-        //
-        String queryLowerCase = getFilterData().getSearchQuery().toLowerCase();
-        //
-        List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
-        //
-        return dtlMerchant.getDisplayName().toLowerCase()
-                .contains(queryLowerCase) || (categories != null &&
-                Queryable.from(categories).firstOrDefault(element ->
-                        element.getName().toLowerCase().contains(queryLowerCase)) != null);
-    }
-
-    /**
-     * Apply filter on merchant
-     * @param dtlMerchant merchant to filter
-     * @return true if merchant passes filter
-     */
-    @Value.Derived
-    private boolean applyFilter(DtlMerchant dtlMerchant) {
-        return checkPrice(dtlMerchant)
-                && checkDistance(dtlMerchant)
-                && checkAmenities(dtlMerchant);
-    }
-
-    /**
-     * Filtering criteria for merchant that checks price criteria
-     * @param dtlMerchant merchant to filter
-     * @return true if merchant passes filter
-     */
-    @Value.Derived
-    private boolean checkPrice(DtlMerchant dtlMerchant) {
-        return dtlMerchant.getBudget() >= getFilterData().getMinPrice() &&
-                dtlMerchant.getBudget() <= getFilterData().getMaxPrice();
-    }
-
-    /**
-     * Filtering criteria for merchant that checks distance criteria
-     * @param dtlMerchant merchant to filter
-     * @return true if merchant passes filter
-     */
-    // TODO check getCurrentLatLng() == null && getFilterData().getMaxDistance() == DtlFilterParameters.MAX_DISTANCE
-    @Value.Derived
-    private boolean checkDistance(DtlMerchant dtlMerchant) {
-        return getFilterData().getMaxDistance() == DtlFilterParameters.MAX_DISTANCE
-                || dtlMerchant.getDistance() < getFilterData().getMaxDistance();
-    }
-
-    /**
-     * Filtering criteria for merchant that checks amenities criteria
-     * @param dtlMerchant merchant to filter
-     * @return true if merchant passes filter
-     */
-    @Value.Derived
-    private boolean checkAmenities(DtlMerchant dtlMerchant) {
-        return dtlMerchant.getAmenities() == null || dtlMerchant.getAmenities().isEmpty() ||
-                !Collections.disjoint(getFilterData().getSelectedAmenities(), dtlMerchant.getAmenities());
+    public boolean apply(DtlMerchant merchant) {
+        return typePredicate.apply(merchant)
+                && pricePredicate.apply(merchant)
+                && distancePredicate.apply(merchant)
+                && amenitiesPredicate.apply(merchant)
+                && queryPredicate.apply(merchant);
     }
 }

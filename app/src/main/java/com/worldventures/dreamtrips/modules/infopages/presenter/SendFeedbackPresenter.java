@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
-import android.os.Bundle;
-
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.api.GetFeedbackTypesQuery;

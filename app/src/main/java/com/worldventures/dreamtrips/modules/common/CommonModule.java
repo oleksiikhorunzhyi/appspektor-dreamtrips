@@ -129,13 +129,14 @@ public class CommonModule {
 
         featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(ReptoolsModule.REP_TOOLS));
 
-        activeComponents.add(InfoModule.FAQ);
-        activeComponents.add(InfoModule.TERMS);
         activeComponents.add(InfoModule.SEND_FEEDBACK);
 
-        activeComponents.add(TripsModule.MAP_TRIPS);
-
         activeComponents.add(SettingsModule.SETTINGS);
+
+        activeComponents.add(InfoModule.FAQ);
+        activeComponents.add(InfoModule.TERMS);
+
+        activeComponents.add(TripsModule.MAP_TRIPS);
 
         activeComponents.add(LOGOUT);
 

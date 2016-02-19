@@ -19,16 +19,16 @@ public class DtlLocationHelper {
      * @param dtlLocation    selected dtl location object
      * @return LatLng object preferable for filtering purposes
      */
-    public LatLng getAcceptedLocation(Location deviceLocation, DtlLocation dtlLocation) {
+    public static LatLng selectAcceptableLocation(Location deviceLocation, DtlLocation dtlLocation) {
         LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         LatLng cityLatLng = dtlLocation.getCoordinates().asLatLng();
-
+        //
         return checkLocation(DtlFilterParameters.MAX_DISTANCE, deviceLatLng, cityLatLng, DistanceType.MILES)
                 ? deviceLatLng
                 : cityLatLng;
     }
 
-    public boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLatLng,
+    public static boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLatLng,
                                  DistanceType distanceType) {
         double distance = distanceType == DistanceType.KMS
                 ? distanceInKms(currentLocation, targetLatLng)
@@ -36,8 +36,7 @@ public class DtlLocationHelper {
         return distance < maxDistance;
     }
 
-    public double calculateDistance(LatLng currentLatLng,
-                                    LatLng targetLatLng) {
+    public static double calculateDistance(LatLng currentLatLng, LatLng targetLatLng) {
         return distance(currentLatLng, targetLatLng);
     }
 
@@ -63,5 +62,4 @@ public class DtlLocationHelper {
                 currentLocation.latitude, currentLocation.longitude, distance);
         return distance[0];
     }
-
 }

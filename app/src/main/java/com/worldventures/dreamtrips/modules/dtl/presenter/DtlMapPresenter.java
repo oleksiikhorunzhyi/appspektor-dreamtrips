@@ -40,7 +40,7 @@ public class DtlMapPresenter extends DtlMerchantsPresenter<DtlMapPresenter.View>
     }
 
     public void applySearch(String query) {
-        dtlSearchDelegate.applySearch(query);
+        dtlFilterDelegate.applySearch(query);
     }
 
     private void showPins(List<DtlMerchant> filtered) {

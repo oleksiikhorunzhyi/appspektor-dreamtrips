@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
+import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -27,7 +27,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     @Inject
     DtlLocationManager locationRepository;
     @Inject
-    DtlSearchDelegate dtlSearchDelegate;
+    DtlFilterDelegate dtlFilterDelegate;
     //
     @State
     boolean initialized;
@@ -47,7 +47,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     }
 
     public void applySearch(String query) {
-        dtlSearchDelegate.applySearch(query);
+        dtlFilterDelegate.applySearch(query);
     }
 
     private void loadMerchants() {

@@ -2,13 +2,18 @@ package com.worldventures.dreamtrips.modules.dtl.delegate;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class DtlFilterDelegate {
 
@@ -16,63 +21,58 @@ public class DtlFilterDelegate {
     SnappyRepository db;
     //
     private DtlFilterData filterData;
+    //
+    private final BehaviorSubject<DtlFilterData> filterStream;
+
 
     public DtlFilterDelegate(Injector injector) {
         injector.inject(this);
+        this.filterStream = BehaviorSubject.create();
     }
+
 
     public void init() {
         if (filterData == null) {
-            filterData = DtlFilterData.createDefault();
-            filterData.setAmenities(db.getAmenities());
-            filterData.selectAllAmenities();
+            filterData = ImmutableDtlFilterData.builder().build();
         }
-        filterData.setDistanceType(db.getMerchantsDistanceType());
+        filterData = ImmutableDtlFilterData.copyOf(filterData).withDistanceType(db.getMerchantsDistanceType());
     }
+
+    public Observable<DtlFilterData> getFilterStream() {
+        return filterStream;
+    }
+
+
+    public void applySearch(String query) {
+        filterData = ImmutableDtlFilterData.copyOf(filterData).withSearchQuery(query);
+        filterStream.onNext(filterData);
+    }
+
+
+    public void applyFilter(DtlFilterParameters filterParameters) {
+        filterData = DtlFilterData.merge(filterParameters, filterData);
+        filterStream.onNext(filterData);
+    }
+
 
     public DtlFilterData getFilterData() {
         return filterData;
     }
 
-    public void applyNewFilter(DtlFilterParameters filterParameters) {
-        filterData.from(filterParameters);
-        performFiltering();
-    }
 
     public void obtainAmenities() {
-        filterData.setAmenities(db.getAmenities());
-    }
-
-    public void selectAll() {
-        filterData.selectAllAmenities();
+        final List<DtlMerchantAttribute> amenities = db.getAmenities();
+        filterData = ImmutableDtlFilterData
+                .copyOf(filterData)
+                .withAmenities(amenities)
+                .withSelectedAmenities(amenities);
+        filterStream.onNext(filterData);
     }
 
     public void reset() {
-        filterData.reset();
-        performFiltering();
+        final DtlFilterParameters defaultParameters = ImmutableDtlFilterParameters.builder().selectedAmenities(db.getAmenities()).build();
+        filterData = DtlFilterData.merge(defaultParameters, filterData);
+        filterStream.onNext(filterData);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Listener part
-    ///////////////////////////////////////////////////////////////////////////
-
-    private List<FilterListener> filterListeners = new ArrayList<>();
-
-    public void addListener(FilterListener filterListener) {
-        filterListeners.add(filterListener);
-    }
-
-    public void removeListener(FilterListener filterListener) {
-        filterListeners.remove(filterListener);
-    }
-
-    public void performFiltering() {
-        for (FilterListener filterListener : filterListeners) {
-            filterListener.onFilter(filterData);
-        }
-    }
-
-    public interface FilterListener {
-        void onFilter(DtlFilterData filterData);
-    }
 }

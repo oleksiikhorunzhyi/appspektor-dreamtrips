@@ -534,5 +534,6 @@
 
     <string name="save_changes_before_proceed">繼續前您想保存更改嗎？</string>
     <string name="discard">放棄</string>
+    <string name="error_fail_to_load_success_stories">Failed to load success stories</string>
 
 </resources>

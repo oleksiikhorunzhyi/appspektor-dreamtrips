@@ -16,4 +16,5 @@ public class AddBucketItemCommand extends Command<BucketItem> {
     public BucketItem loadDataFromNetwork() {
         return getService().createItem(bucketPostItem);
     }
+
 }

@@ -16,6 +16,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -28,6 +29,7 @@ import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,8 +69,11 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     LogoutDelegate logoutDelegate;
 
+    Injector injector;
+
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
+        this.injector = injector;
         injector.inject(this);
         Ln.getConfig().setLoggingLevel(Log.ERROR);
         logoutDelegate.setDreamSpiceManager(this);
@@ -80,10 +85,11 @@ public class DreamSpiceManager extends SpiceManager {
 
     public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
+        injector.inject(request);
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
-                processError(error, failureListener, (loginResponse, exception) -> {
+                processError(request, error, failureListener, (loginResponse, exception) -> {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
@@ -106,7 +112,7 @@ public class DreamSpiceManager extends SpiceManager {
         super.execute(request, cacheKey, cacheExpiryDuration, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {
-                processError(error, failureListener, (loginResponse, exception) -> {
+                processError(request, error, failureListener, (loginResponse, exception) -> {
                     if (loginResponse != null) {
                         execute(request, successListener, failureListener);
                     } else {
@@ -123,7 +129,7 @@ public class DreamSpiceManager extends SpiceManager {
         });
     }
 
-    private void processError(SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
+    private void processError(SpiceRequest request, SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
         if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
             final UserSession userSession = appSessionHolder.get().get();
             final String username = userSession.getUsername();
@@ -131,7 +137,7 @@ public class DreamSpiceManager extends SpiceManager {
 
             loginUser(userPassword, username, onLoginSuccess);
         } else {
-            failureListener.handleError(new SpiceException(getErrorMessage(error), dtErrorHandler.handleSpiceError(error)));
+            failureListener.handleError(new SpiceException(getErrorMessage(request, error), dtErrorHandler.handleSpiceError(error)));
         }
     }
 
@@ -156,7 +162,8 @@ public class DreamSpiceManager extends SpiceManager {
 
     public void loginUser(String userPassword, String username,
                           OnLoginSuccess onLoginSuccess) {
-        execute(new LoginCommand(username, userPassword), session -> {
+        LoginCommand request = new LoginCommand(username, userPassword);
+        execute(request, session -> {
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setSession(session);
             handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
@@ -164,7 +171,7 @@ public class DreamSpiceManager extends SpiceManager {
             authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
         }, spiceError -> {
-            onLoginSuccess.result(null, new SpiceException(getErrorMessage(spiceError), dtErrorHandler.handleSpiceError(spiceError)));
+            onLoginSuccess.result(null, new SpiceException(getErrorMessage(request, spiceError), dtErrorHandler.handleSpiceError(spiceError)));
         });
     }
 
@@ -224,7 +231,7 @@ public class DreamSpiceManager extends SpiceManager {
         return false;
     }
 
-    private String getErrorMessage(SpiceException error) {
+    private String getErrorMessage(SpiceRequest request, SpiceException error) {
         String errorMessage = "";
         if (error != null && error.getCause() instanceof RetrofitError) {
             RetrofitError retrofitError = (RetrofitError) error.getCause();
@@ -237,6 +244,8 @@ public class DreamSpiceManager extends SpiceManager {
                     errorMessage = context
                             .getResources().getString(R.string.no_connection);
                 }
+            } else if (isShouldToBeProcessedLocaly(request, retrofitError)) {
+                errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
             } else {
                 errorMessage = message;
             }
@@ -244,6 +253,11 @@ public class DreamSpiceManager extends SpiceManager {
             errorMessage = error.getMessage();
         }
         return errorMessage;
+    }
+
+    private boolean isShouldToBeProcessedLocaly(SpiceRequest request, RetrofitError retrofitError) {
+        return retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY
+                && request instanceof DreamTripsRequest && ((DreamTripsRequest) request).getErrorMessage() != 0;
     }
 
     private String getBody(Response response) {

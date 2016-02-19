@@ -180,11 +180,13 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         if (apiErrorPresenter.hasView()) {
             apiErrorPresenter.handleError(error);
         } else if (error != null && !TextUtils.isEmpty(error.getMessage())) {
-            if (!error.getMessage().contains("cancelled")) //hotfix, as robospice doesn't mark spice exception
+            if (!error.getMessage().contains("cancelled")) { //hotfix, as robospice doesn't mark spice exception
                 view.informUser(error.getMessage());
+            }
         } else {
             view.informUser(R.string.smth_went_wrong);
         }
+
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -199,9 +201,9 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         return getAccount().getUsername();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // View binding
-    ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+// View binding
+///////////////////////////////////////////////////////////////////////////
 
     public interface View extends TabletAnalytic {
         void informUser(int stringId);

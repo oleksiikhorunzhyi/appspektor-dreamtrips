@@ -1,12 +1,12 @@
 package com.worldventures.dreamtrips.modules.common;
 
 import com.messenger.di.MessengerActivityModule;
-import com.messenger.di.MessengerModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -91,6 +91,7 @@ import dagger.Provides;
                 BaseDialogFragmentWithPresenter.class,
                 //
                 ToolbarPresenter.class,
+                DreamTripsRequest.class
         },
         complete = false,
         library = true

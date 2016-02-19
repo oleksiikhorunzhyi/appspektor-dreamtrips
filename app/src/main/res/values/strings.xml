@@ -535,4 +535,14 @@
     <string name="save_changes_before_proceed">Do you want to save changes before you proceed?</string>
     <string name="discard">Discard</string>
 
+    <string name="error_fail_to_load_success_stories">Failed to load success stories</string>
+    <string name="error_fail_to_like_success_story">Failed to like success story</string>
+    <string name="error_fail_to_unlike_success_story">Failed to unlike success story</string>
+
+    <!--1-->
+
+    <!--2-->
+
+    <!--3-->
+
 </resources>

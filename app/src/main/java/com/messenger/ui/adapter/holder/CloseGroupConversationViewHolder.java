@@ -2,12 +2,21 @@ package com.messenger.ui.adapter.holder;
 
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.TextView;
 
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataUser;
 import com.worldventures.dreamtrips.R;
+
+import butterknife.InjectView;
 
 public class CloseGroupConversationViewHolder extends GroupConversationViewHolder {
 
     private static final float CLOSED_CONVERSATION_ALPHA = 0.3f;
+
+    @InjectView(R.id.conversation_last_message_date_textview)
+    TextView lastMessageDateTextView;
 
     public CloseGroupConversationViewHolder(View itemView) {
         super(itemView);
@@ -25,6 +34,12 @@ public class CloseGroupConversationViewHolder extends GroupConversationViewHolde
     }
 
     @Override
-    public void setLastMessage(String message) {
+    public void bindLastMessage(DataMessage message, String messageAuthor, String attachmentType) {
+
+    }
+
+    @Override
+    protected void updateUnreadCountTextView() {
+
     }
 }

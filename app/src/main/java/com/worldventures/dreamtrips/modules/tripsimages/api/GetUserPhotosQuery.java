@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.api.request.Query;
@@ -35,5 +36,10 @@ public class GetUserPhotosQuery extends Query<ArrayList<IFullScreenObject>> {
 
     private List<UploadTask> getUploadTasks() {
         return Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).sortReverse().toList();
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_failed_to_load_my_images;
     }
 }

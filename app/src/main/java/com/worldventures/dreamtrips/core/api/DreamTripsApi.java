@@ -383,7 +383,6 @@ public interface DreamTripsApi {
     @PATCH("/api/user/settings")
     Void updateSettings(@Body SettingsHolder settingsHolder);
 
-
     @GET("/api/feedbacks/reasons")
     ArrayList<FeedbackType> getFeedbackReasons();
 

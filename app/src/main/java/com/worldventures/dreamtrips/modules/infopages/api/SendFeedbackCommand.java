@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Command;
 
 public class SendFeedbackCommand extends Command<Void> {
@@ -27,5 +28,10 @@ public class SendFeedbackCommand extends Command<Void> {
             this.reasonId = typeId;
             this.text = text;
         }
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_send_feedback;
     }
 }

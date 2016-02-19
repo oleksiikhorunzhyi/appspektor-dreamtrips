@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.infopages.presenter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.infopages.api.GetFeedbackTypesQuery;
+import com.worldventures.dreamtrips.modules.infopages.api.GetFeedbackReasonsQuery;
 import com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 
@@ -19,7 +19,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        doRequest(new GetFeedbackTypesQuery(), feedbackTypes -> {
+        doRequest(new GetFeedbackReasonsQuery(), feedbackTypes -> {
             db.setFeedbackTypes(feedbackTypes);
             view.setFeedbackTypes(feedbackTypes);
             view.hideProgressBar();

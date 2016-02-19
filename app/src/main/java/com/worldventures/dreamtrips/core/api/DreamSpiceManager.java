@@ -69,11 +69,8 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     LogoutDelegate logoutDelegate;
 
-    Injector injector;
-
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
-        this.injector = injector;
         injector.inject(this);
         Ln.getConfig().setLoggingLevel(Log.ERROR);
         logoutDelegate.setDreamSpiceManager(this);
@@ -85,7 +82,6 @@ public class DreamSpiceManager extends SpiceManager {
 
     public <T> void execute(final SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
-        injector.inject(request);
         super.execute(request, new RequestListener<T>() {
             @Override
             public void onRequestFailure(SpiceException error) {

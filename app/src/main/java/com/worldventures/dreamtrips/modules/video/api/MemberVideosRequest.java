@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.video.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 
@@ -26,5 +27,11 @@ public class MemberVideosRequest extends Query<ArrayList<Category>> {
     public ArrayList<Category> loadDataFromNetwork() throws Exception {
         if (locale != null) return getService().getVideos(type, locale);
         return getService().getVideos(type);
+    }
+
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_load_videos;
     }
 }

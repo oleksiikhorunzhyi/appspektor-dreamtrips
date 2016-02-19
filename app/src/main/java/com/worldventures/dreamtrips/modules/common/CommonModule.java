@@ -90,8 +90,7 @@ import dagger.Provides;
                 BaseImagePresenter.class,
                 BaseDialogFragmentWithPresenter.class,
                 //
-                ToolbarPresenter.class,
-                DreamTripsRequest.class
+                ToolbarPresenter.class
         },
         complete = false,
         library = true

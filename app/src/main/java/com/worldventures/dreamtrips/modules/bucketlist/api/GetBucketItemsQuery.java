@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
@@ -24,5 +25,10 @@ public class GetBucketItemsQuery extends Query<ArrayList<BucketItem>> {
             return getService().getBucketListFull(userId);
         }
         return getService().getBucketListFull();
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_load_bl;
     }
 }

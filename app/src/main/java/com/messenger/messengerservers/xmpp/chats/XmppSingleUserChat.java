@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.SingleUserChat;
+import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
@@ -19,22 +20,34 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class XmppSingleUserChat extends SingleUserChat implements ConnectionClient {
+public class XmppSingleUserChat extends SingleUserChat {
     private final String companionId;
     private String roomId;
 
     @Nullable
     private Chat chat;
     private AbstractXMPPConnection connection;
-    private XmppServerFacade facade;
+    private final XmppServerFacade facade;
+
+    private AuthorizeListener authorizeListener = new AuthorizeListener() {
+        @Override
+        public void onSuccess() {
+            super.onSuccess();
+            setConnection(facade.getConnection());
+        }
+    };
 
     public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String roomId) {
         this.facade = facade;
         this.companionId = companionId;
         this.roomId = roomId;
-        facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
-        if (facade.isAuthorized()) {
-            setConnection(facade.getConnection());
+
+
+        synchronized (this.facade) {
+            if (facade.isAuthorized()) {
+                setConnection(facade.getConnection());
+            }
+            facade.addAuthorizationListener(authorizeListener);
         }
     }
 
@@ -70,7 +83,7 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
     @Override
     public Observable<String> sendReadStatus(String messageId) {
         return Observable.just(messageId)
-                .compose(new StatusMessageTranformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
+                .compose(new StatusMessageTransformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
                         JidCreatorHelper.obtainUserJid(companionId), org.jivesoftware.smack.packet.Message.Type.chat),
                         stanza -> {
                             if (connection != null) {
@@ -81,7 +94,6 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
                         }));
     }
 
-    @Override
     public void setConnection(@NonNull AbstractXMPPConnection connection) {
         this.connection = connection;
 
@@ -107,5 +119,11 @@ public class XmppSingleUserChat extends SingleUserChat implements ConnectionClie
         } else {
             chat = existingChat;
         }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        facade.removeAuthorizationListener(authorizeListener);
     }
 }

@@ -101,15 +101,18 @@ public class XmppServerFacade implements MessengerServerFacade {
         Timber.i("Logging in with %s->%s", username, password);
         connectionExecutor.execute(() -> {
                     try {
-                        connection = createConnection();
+                        AbstractXMPPConnection connection = createConnection();
                         connection.connect();
                         connection.login(username, password);
                         //
                         rosterManager.init(connection);
                         if (!requester.isStarted()) requester.start(context);
                         Timber.i("Login success");
-                        for (AuthorizeListener listener : authListeners) {
-                            listener.onSuccess();
+                        synchronized (XmppServerFacade.this) {
+                            this.connection = connection;
+                            for (AuthorizeListener listener : authListeners) {
+                                listener.onSuccess();
+                            }
                         }
                     } catch (SmackException | IOException | XMPPException e) {
                         Timber.w(e, "Login failed");
@@ -144,7 +147,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     };
 
     @Override
-    public boolean isAuthorized() {
+    public synchronized boolean isAuthorized() {
         return connection != null && connection.isConnected() && connection.isAuthenticated();
     }
 

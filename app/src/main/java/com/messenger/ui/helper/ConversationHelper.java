@@ -27,7 +27,7 @@ public class ConversationHelper {
             default:
                 initialTitle = conversation.getSubject();
                 if (TextUtils.isEmpty(initialTitle)) {
-                    initialTitle = Queryable.from(members).map(u -> u.getUserName().split("\\s")[0]).joinStrings(", ");
+                    initialTitle = Queryable.from(members).map(u -> u.getFirstName()).joinStrings(", ");
                 }
                 break;
         }

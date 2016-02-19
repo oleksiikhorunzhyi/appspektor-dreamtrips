@@ -9,6 +9,7 @@ import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.util.ContactsHeaderCreator;
@@ -144,7 +145,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         getViewState().setSearchFilter(searchQuery);
 
         cursorObservable.subscribe(cursor ->
-                getView().setContacts(cursor, searchQuery, DataUser.COLUMN_NAME));
+                getView().setContacts(cursor, searchQuery, UsersDAO.USER_DISPLAY_NAME));
     }
 
     protected void showContacts(Cursor cursor) {

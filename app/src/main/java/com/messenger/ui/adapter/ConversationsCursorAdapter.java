@@ -35,7 +35,6 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -118,7 +117,9 @@ public class ConversationsCursorAdapter
         holder.setDeleteButtonVisibility(deleteButtonEnable(conversation));
 
         holder.setDate(formatLastConversationMessage(new Date(conversation.getLastActiveDate())));
-        String userName = cursor.getString(cursor.getColumnIndex(DataUser$Table.USERNAME));
+        String userName = String.format("%s %s",
+                cursor.getString(cursor.getColumnIndex(DataUser$Table   .FIRSTNAME)),
+                cursor.getString(cursor.getColumnIndex(DataUser$Table.LASTNAME)));
 
         setLastMessage(holder, message, userName, ConversationHelper.isGroup(conversation), attachmentType);
 

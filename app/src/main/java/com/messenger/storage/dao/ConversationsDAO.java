@@ -101,13 +101,15 @@ public class ConversationsDAO extends BaseDAO {
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
                 "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
-                "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
+                "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
+                "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
                 "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                 "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", " +
-                "uu." + DataUser$Table.USERNAME + " as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
+                "uu." + DataUser$Table.FIRSTNAME  + " || ' ' || uu." + DataUser$Table.LASTNAME +
+                                                " as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
 
-                "GROUP_CONCAT(uuu." + DataUser$Table.USERNAME + ") as " + GROUP_CONVERSATION_NAME_COLUMN + " " +
+                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ") as " + GROUP_CONVERSATION_NAME_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +

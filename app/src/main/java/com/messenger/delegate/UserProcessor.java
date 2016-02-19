@@ -80,7 +80,8 @@ public class UserProcessor {
                                 DataUser u = new DataUser();
                                 u.setId(loadedUser.getName());
                                 u.setSocialId(z.getId());
-                                u.setName(TextUtils.join(" ", z.getFirstName(), z.getLastName()));
+                                u.setFirstName(z.getFirstName());
+                                u.setLastName(z.getLastName());
                                 u.setOnline(loadedUser.isOnline());
                                 u.setFriend(loadedUser.getType() != null ? true : null);
 

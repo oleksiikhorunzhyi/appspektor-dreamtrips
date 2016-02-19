@@ -13,8 +13,8 @@ import android.widget.SectionIndexer;
 
 import com.messenger.entities.DataParticipant$Table;
 import com.messenger.entities.DataUser;
-import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.model.Participant;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.adapter.MessagesCursorAdapter.OnAvatarClickListener;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.holder.ContactViewHolder;
@@ -100,7 +100,7 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
             return true;
         }
         indexer = new AlphabetIndexer(getCursor(), getCursor()
-                .getColumnIndexOrThrow(DataUser$Table.USERNAME),
+                .getColumnIndexOrThrow(UsersDAO.USER_DISPLAY_NAME),
                 " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         sectionToPosition = new TreeMap<>();
         sectionToOffset = new HashMap<>();

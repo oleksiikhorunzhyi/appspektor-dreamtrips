@@ -102,6 +102,8 @@
     <color name="chat_typing_dot_1">#EFEFEF</color>
     <color name="chat_typing_dot_2">#DEDEDE</color>
     <color name="chat_typing_dot_3">#CECECE</color>
+    <color name="chat_send_button_text_color">@color/accent</color>
+    <color name="chat_send_button_text_color_disabled">#E9E9E9</color>
     <color name="chat_list_item_read_unread_background">#EBF7FF</color>
     <color name="chat_list_item_read_read_background">@color/white</color>
     <color name="chat_list_item_image_post_blue_loading_background">#DCF0FE</color>
@@ -110,6 +112,7 @@
     <!-- Conversation list screen -->
     <color name="conversation_list_action_bar_spinner_item_normal">@color/white</color>
     <color name="conversation_list_action_bar_spinner_item_pressed">#EEEEEE</color>
+    <color name="conversation_list_action_bar_spinner_item_selected">#EEEEEE</color>
     <color name="conversation_list_unread_conversation_bg">#EBF5FF</color>
     <color name="conversation_list_selected_conversation_bg">#F0F0F0</color>
     <color name="conversation_list_read_conversation_bg">@android:color/white</color>

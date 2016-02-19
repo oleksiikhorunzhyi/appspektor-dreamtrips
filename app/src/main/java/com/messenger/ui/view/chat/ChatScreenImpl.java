@@ -77,6 +77,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
+    @InjectView(R.id.chat_message_send_button)
+    View sendMessageButton;
     @InjectView(R.id.input_holder)
     ViewGroup inputHolder;
 
@@ -169,6 +171,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         adapter.setNeedMarkUnreadMessages(true);
         //adapter.setMessageClickListener(message -> //do something);
         return adapter;
+    }
+
+    @Override
+    public void enableSendMessageButton(boolean enable) {
+        sendMessageButton.setEnabled(enable);
     }
 
     @OnEditorAction(R.id.chat_message_edit_text)

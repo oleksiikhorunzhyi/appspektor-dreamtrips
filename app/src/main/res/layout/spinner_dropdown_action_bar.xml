@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:background="@drawable/selector_spinner_item_action_bar_bg"
-    android:textSize="@dimen/action_bar_title_size"
+    android:textSize="@dimen/conversation_list_spinner_dropdown_item_action_bar_text_size"
     android:textColor="@color/action_bar_spinner_dropdown_text_color"
     android:paddingLeft="@dimen/action_bar_spinner_dropdown_item_horizontal_padding"
     android:paddingRight="@dimen/action_bar_spinner_dropdown_item_horizontal_padding"

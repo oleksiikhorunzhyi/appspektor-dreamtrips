@@ -12,6 +12,7 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -190,7 +191,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
                     EditChatMembersScreen view = getView();
                     view.showContent();
-                    view.setMembers(cursor, getViewState().getSearchFilter(), DataUser.COLUMN_NAME);
+                    view.setMembers(cursor, getViewState().getSearchFilter(), UsersDAO.USER_DISPLAY_NAME);
                     view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), cursor.getCount()));
                 });
     }

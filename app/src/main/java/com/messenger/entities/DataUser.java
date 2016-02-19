@@ -19,7 +19,6 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 @Table(tableName = DataUser.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
 public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     public static final String TABLE_NAME = "Users";
-    public static final String COLUMN_NAME = "userName";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -28,7 +27,8 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @Column(name = BaseColumns._ID) String id;
     @Column int socialId;
-    @Column String userName;
+    @Column String firstName;
+    @Column String lastName;
     @Column boolean online;
     @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
     @Column Boolean friend;
@@ -43,11 +43,22 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
 
     public DataUser(String userId) {
         this.id = userId;
-        this.userName = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public void setId(String id) {
@@ -69,11 +80,11 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
 
     @Override
     public String getName() {
-        return userName;
+        return getDisplayedName();
     }
 
-    public void setName(String name) {
-        this.userName = name;
+    public String getDisplayedName() {
+        return String.format("%s %s", firstName, lastName);
     }
 
     public String getAvatarUrl() {
@@ -107,11 +118,6 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     @Override
     public boolean isCloseFriend() {
         return false;
-    }
-
-    @Override
-    public void setCloseFriend(boolean isCloseFriend) {
-
     }
 
     @Override
@@ -165,7 +171,8 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
         dest.writeInt(this.socialId);
-        dest.writeString(this.userName);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
         dest.writeByte(online ? (byte) 1 : (byte) 0);
         dest.writeString(this.userAvatarUrl);
         dest.writeValue(this.friend);
@@ -174,7 +181,8 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     protected DataUser(Parcel in) {
         this.id = in.readString();
         this.socialId = in.readInt();
-        this.userName = in.readString();
+        this.firstName = in.readString();
+        this.lastName = in.readString();
         this.online = in.readByte() != 0;
         this.userAvatarUrl = in.readString();
         this.friend = (Boolean) in.readValue(Boolean.class.getClassLoader());

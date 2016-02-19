@@ -46,7 +46,8 @@ public class MessageDAO extends BaseDAO {
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, " +
-                        "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
+                        "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
+                        "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 

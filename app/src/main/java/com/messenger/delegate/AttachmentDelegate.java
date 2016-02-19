@@ -11,6 +11,7 @@ import com.messenger.storage.dao.MessageDAO;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -67,7 +68,7 @@ public class AttachmentDelegate {
     public Observable<DataAttachment> bindToPendingAttachment(DataAttachment dataAttachment) {
         return RxTransferObserver
                 .bind(photoUploadingManager.getTransferById(dataAttachment.getUploadTaskId()))
-                .doOnError(e -> messageDAO.updateStatus(dataAttachment.getMessageId(), MessageStatus.ERROR, System.currentTimeMillis()))
+                .doOnNext(transferObserver -> newUploadingAttachmentState(dataAttachment, transferObserver.getState()))
                 .filter(observer -> observer.getState().equals(TransferState.COMPLETED))
                 .map(observer -> photoUploadingManager.getResultUrl(observer.getAbsoluteFilePath()))
                 .map(originUrl -> {
@@ -76,8 +77,30 @@ public class AttachmentDelegate {
                     attachmentDAO.save(dataAttachment);
                     //
                     return dataAttachment;
-                })
-              ;
+                });
+    }
+
+    private void newUploadingAttachmentState(DataAttachment dataAttachment, TransferState transferState){
+        switch (transferState){
+            case WAITING_FOR_NETWORK:
+                UploadTask uploadTask = new UploadTask();
+                uploadTask.setAmazonTaskId(Integer.toString(dataAttachment.getUploadTaskId()));
+                photoUploadingManager.cancelUploading(uploadTask);
+                break;
+
+            case FAILED:
+            case CANCELED:
+                dataAttachment.setUploadTaskId(0);
+                attachmentDAO.save(dataAttachment);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.YEAR, calendar.getMaximum(Calendar.YEAR));
+                long time = calendar.getTimeInMillis();
+                messageDAO.updateStatus(dataAttachment.getMessageId(), MessageStatus.ERROR, time);
+
+                break;
+
+        }
     }
 
 }

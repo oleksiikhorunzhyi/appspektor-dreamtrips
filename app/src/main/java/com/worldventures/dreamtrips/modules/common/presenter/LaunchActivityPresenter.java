@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
-import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
@@ -31,16 +30,14 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +45,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import timber.log.Timber;
 
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
@@ -74,12 +70,15 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     Router router;
 
+    @Inject
+    ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
+
     private boolean requestInProgress = false;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        clearTempDirectory();
+        clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
         busWrapper = getGreenRobotBusWrapper(eventBus);
         networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
         networkEvents.register();
@@ -217,17 +216,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Override
     protected boolean canShowTermsDialog() {
         return false;
-    }
-
-    private void clearTempDirectory() {
-        snappyRepository.removeAllUploadTasks();
-        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
-        if (!directory.exists()) return;
-        try {
-            FileUtils.cleanDirectory(context, directory);
-        } catch (IOException e) {
-            Timber.e(e, "Problem with remove temp image directory");
-        }
     }
 
     @NonNull

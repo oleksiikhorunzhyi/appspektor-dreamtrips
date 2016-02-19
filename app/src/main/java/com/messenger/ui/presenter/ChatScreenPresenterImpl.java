@@ -590,7 +590,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .messageBody(body)
                 .fromId(user.getId())
                 .conversationId(conversationId)
-                .date(System.currentTimeMillis())
                 .build();
     }
 

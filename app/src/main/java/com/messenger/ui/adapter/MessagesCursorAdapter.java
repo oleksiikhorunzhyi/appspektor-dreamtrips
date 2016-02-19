@@ -20,6 +20,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
 import com.messenger.ui.adapter.holder.chat.MessageHolder;
@@ -280,7 +281,14 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         } else {
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
         }
-        boolean clickableTimestamp = manualTimestamp || TextUtils.isEmpty(dateDivider);
+        int messageStatus = cursor.getInt(cursor.getColumnIndex(DataMessage$Table.STATUS));
+
+        boolean clickableTimestamp = messageStatus != MessageStatus.ERROR && (manualTimestamp || TextUtils.isEmpty(dateDivider));
+
+        if (messageStatus == MessageStatus.ERROR) {
+            holder.dateTextView.setVisibility(View.GONE);
+            return;
+        }
         holder.getMessageView().setOnClickListener(view -> {
             if (messageClickListener != null) {
                 messageClickListener.onMessageClick(message);

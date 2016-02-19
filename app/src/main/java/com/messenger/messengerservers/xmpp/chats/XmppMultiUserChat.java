@@ -8,6 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.LeavePresence;
@@ -15,13 +16,10 @@ import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
-import org.jivesoftware.smackx.muc.SubjectUpdatedListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -29,17 +27,24 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient {
+public class XmppMultiUserChat extends MultiUserChat {
     @Nullable
     private org.jivesoftware.smackx.muc.MultiUserChat chat;
 
-    private XmppServerFacade facade;
+    private final XmppServerFacade facade;
     private final String userId;
     private boolean isOwner;
     private final String roomId;
-    private PresenceListener presenceListener;
-    private SubjectUpdatedListener subjectUpdatedListener;
     private AbstractXMPPConnection connection;
+
+
+    private AuthorizeListener authorizeListener = new AuthorizeListener() {
+        @Override
+        public void onSuccess() {
+            super.onSuccess();
+            setConnection(facade.getConnection());
+        }
+    };
 
     public XmppMultiUserChat(XmppServerFacade facade, String roomId, String userId, boolean isOwner) {
         this.facade = facade;
@@ -47,21 +52,12 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         this.roomId = roomId;
         this.isOwner = isOwner;
 
-        facade.addAuthorizationListener(new ClientConnectionListener(facade, this));
-        if (facade.isAuthorized()) {
-            setConnection(facade.getConnection());
+        synchronized (this.facade) {
+            if (facade.isAuthorized()) {
+                setConnection(facade.getConnection());
+            }
+            facade.addAuthorizationListener(authorizeListener);
         }
-    }
-
-    @SuppressWarnings("all")
-    private void setListeners() {
-        // TODO: 12/11/15 add future implementation
-        presenceListener = presence -> notifyParticipantsChanged(new ArrayList<>());
-        chat.addParticipantListener(presenceListener);
-
-        subjectUpdatedListener = (subject, from) -> notifySubjectUpdateListeners(subject);
-        chat.addSubjectUpdatedListener(subjectUpdatedListener);
-        org.jivesoftware.smack.packet.Message packet;
     }
 
     @Override
@@ -83,7 +79,7 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
     @Override
     public Observable<String> sendReadStatus(String messageId) {
         return Observable.just(messageId)
-                .compose(new StatusMessageTranformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
+                .compose(new StatusMessageTransformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
                         JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat),
                         stanza -> {
                             if (connection != null) {
@@ -152,7 +148,6 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
 
         if (!initializedAndConnected()) return;
         try {
-//            chat.leave();
             LeavePresence leavePresence = new LeavePresence();
             leavePresence.setTo(chat.getRoom() + "/" + chat.getNickname());
             connection.sendStanza(leavePresence);
@@ -208,15 +203,6 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
         return chat != null && connection != null && connection.isConnected() && connection.isAuthenticated();
     }
 
-    @Override
-    public void close() {
-        super.close();
-        if (chat == null) return;
-        chat.removeParticipantListener(presenceListener);
-        chat.removeSubjectUpdatedListener(subjectUpdatedListener);
-    }
-
-    @Override
     public void setConnection(@NonNull AbstractXMPPConnection connection) {
         this.connection = connection;
         String jid = JidCreatorHelper.obtainGroupJid(roomId);
@@ -229,11 +215,15 @@ public class XmppMultiUserChat extends MultiUserChat implements ConnectionClient
                 } catch (IllegalStateException e) {
                     Timber.e(e, "SetConnection");
                 } // cause the method is synchronized var in library not volatile
-
-                setListeners();
             } catch (XMPPException.XMPPErrorException | SmackException e) {
                 Timber.e(e, "Error");
             }
         }
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        facade.removeAuthorizationListener(authorizeListener);
     }
 }

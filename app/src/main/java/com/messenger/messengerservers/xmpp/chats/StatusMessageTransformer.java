@@ -8,11 +8,11 @@ import org.jivesoftware.smack.packet.Stanza;
 
 import rx.Observable;
 
-class StatusMessageTranformer implements Observable.Transformer<String, String> {
+class StatusMessageTransformer implements Observable.Transformer<String, String> {
     private final StatusMessagePacket statusMessagePacket;
     private final SendAction<Stanza> sendAction;
 
-    StatusMessageTranformer(StatusMessagePacket statusMessagePacket, SendAction<Stanza> sendAction) {
+    StatusMessageTransformer(StatusMessagePacket statusMessagePacket, SendAction<Stanza> sendAction) {
         this.statusMessagePacket = statusMessagePacket;
         this.sendAction = sendAction;
     }

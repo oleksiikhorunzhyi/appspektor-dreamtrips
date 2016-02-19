@@ -217,12 +217,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onDetachedFromWindow() {
+        closeChat();
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
         backStackDelegate.setListener(null);
         disconnectFromPhotoPicker();
+
     }
 
+    private void closeChat() {
+        chatObservable.first().subscribeOn(Schedulers.io()).subscribe(Chat::close);
+    }
     ///////////////////////////////////////////////////
     ////// Streams
     //////////////////////////////////////////////////
@@ -269,8 +274,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void connectToChatStream() {
         chatObservable = conversationObservable
-                .flatMap(c -> createChat(messengerServerFacade.getChatManager(), c).subscribeOn(Schedulers.io()))
-                .replay(1).autoConnect();
+                .first()
+                .flatMap(c -> createChat(messengerServerFacade.getChatManager(), c)
+                        .subscribeOn(Schedulers.io()))
+                .replay(1)
+                .autoConnect();
     }
 
     protected void connectMembersStream() {
@@ -873,7 +881,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         switch (conversation.getType()) {
             case ConversationType.CHAT:
                 return participantsDAO
-                        .getParticipant(conversation.getId(), user.getId()).compose(new NonNullFilter<>()).first()
+                        .getParticipant(conversation.getId(), user.getId())
+                        .first()
+                        .compose(new NonNullFilter<>())
                         .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));
             case ConversationType.GROUP:
             default:

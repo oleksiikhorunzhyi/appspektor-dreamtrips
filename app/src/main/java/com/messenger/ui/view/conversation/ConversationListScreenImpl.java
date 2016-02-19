@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CheckedTextView;
 import android.widget.Spinner;
 
 import com.messenger.entities.DataConversation;
@@ -139,7 +140,16 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
                 new ChatTypeItem(ChatTypeItem.ALL_CHATS, res.getString(R.string.conversation_list_spinner_item_all_chats)),
                 new ChatTypeItem(ChatTypeItem.GROUP_CHATS, res.getString(R.string.conversation_list_spinner_item_group_chats))
         );
-        ArrayAdapter<ChatTypeItem> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item_action_bar, listItems);
+        ArrayAdapter<ChatTypeItem> adapter = new ArrayAdapter<ChatTypeItem>(getContext(),
+                R.layout.spinner_item_action_bar, listItems) {
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                CheckedTextView textView = (CheckedTextView) super.getDropDownView(position, convertView, parent);
+                textView.setChecked(conversationsDropDownSpinner.getSelectedItemPosition() == position);
+                return textView;
+            }
+        };
+
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_action_bar);
         return adapter;
     }

@@ -173,6 +173,8 @@
 
     <!-- Conversation list screen -->
     <dimen name="new_chat_conversation_list_last_message_textview_textsize">10sp</dimen>
+    <dimen name="conversation_list_spinner_dropdown_item_action_bar_text_size">18sp</dimen>
+    <dimen name="conversation_list_spinner_item_action_bar_text_size">20sp</dimen>
     <dimen name="conversation_list_search_text_size">12sp</dimen>
     <dimen name="conversation_list_search_edit_text_padding">5dp</dimen>
     <dimen name="conversation_list_search_edit_text_vertical_margin">10dp</dimen>
@@ -203,6 +205,8 @@
     <dimen name="new_chat_list_item_section_horizontal_padding">@dimen/new_chat_list_item_horizontal_padding</dimen>
 
     <!-- Chat screen -->
+    <dimen name="chat_action_bar_subtitle_text_size">12sp</dimen>
+    <dimen name="chat_action_bar_subtitle_bottom_margin">5dp</dimen>
     <dimen name="chat_avatar_size">@dimen/list_item_small_avatar_image_size</dimen>
     <dimen name="chat_list_row_margin">4dp</dimen>
     <dimen name="chat_list_avatar_margin">@dimen/list_item_small_avatar_image_spacing</dimen>
@@ -233,7 +237,7 @@
     <dimen name="chat_settings_chat_info_horizontal_margin">40dp</dimen>
     <dimen name="chat_settings_chat_name_textview_text_size">24sp</dimen>
     <dimen name="chat_settings_chat_name_textview_left_margin">24dp</dimen>
-    <dimen name="chat_settings_chat_description_textview_text_size">10sp</dimen>
+    <dimen name="chat_settings_chat_description_textview_text_size">12sp</dimen>
     <dimen name="chat_settings_row_text_size">16sp</dimen>
     <dimen name="chat_settings_row_vertical_margin">15dp</dimen>
     <dimen name="chat_settings_row_horizontal_margin">15dp</dimen>

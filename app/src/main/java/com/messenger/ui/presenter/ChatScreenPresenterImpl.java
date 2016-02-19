@@ -213,6 +213,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         connectTypingStartAction();
         connectTypingStopAction();
+        connectShowSendMessageAction();
     }
 
     @Override
@@ -565,13 +566,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Message process
     ///////////////////////////////////////////////////////////////////////////
 
+    private void connectShowSendMessageAction() {
+        getView().getEditMessageObservable()
+                .compose(bindVisibility())
+                .subscribe(event -> {
+                    getView().enableSendMessageButton(TextUtils.getTrimmedLength(event.text()) > 0);
+                });
+    }
+
     @Override
     public boolean sendMessage(String message) {
-        if (TextUtils.getTrimmedLength(message) == 0) {
-            Toast.makeText(getContext(), R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         MessageBody body = new MessageBody(message);
 
         submitOneChatAction(chat -> {

@@ -63,7 +63,7 @@
     <string name="chat_list_date_entry_today">Today</string>
     <string name="chat_list_date_entry_yesterday">Yesterday</string>
     <string name="chat_contextual_copy_message">Copy</string>
-    <string name="chat_contextual_start_chat">Chat</string>
+    <string name="chat_contextual_start_chat_format">Message %s</string>
 
     <!---->
     <!--Chat Settings -->

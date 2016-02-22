@@ -163,7 +163,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private PublishSubject<ChatChangeStateEvent> chatStateStream;
     private PublishSubject<Pair<Cursor, Integer>> lastVisibleItemStream = PublishSubject.create();
 
-    private ChatContextualMenuProvider contextualMenuInflater;
+    private ChatContextualMenuProvider contextualMenuProvider;
 
     public ChatScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
@@ -178,7 +178,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         conversationHelper = new ConversationHelper();
         participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
         attachmentHelper = new AttachmentHelper(attachmentDAO, messageDAO, usersDAO);
-        contextualMenuInflater = new ChatContextualMenuProvider(context);
+        contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
         openScreenTime = System.currentTimeMillis();
@@ -721,10 +721,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onShowContextualMenu(DataMessage message) {
-        contextualMenuInflater
+        contextualMenuProvider
                 .provideMenu(message, user, conversationObservable,
                         attachmentDAO.getAttachmentByMessageId(message.getId()))
                 .filter(menu -> menu.size() > 0)
+                .compose(bindViewIoToMainComposer())
                 .subscribe(menu -> getView().showContextualAction(menu, message));
     }
 

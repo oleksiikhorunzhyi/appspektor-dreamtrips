@@ -3,6 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
+@SuppressWarnings("unused")
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlDisclaimer implements Parcelable {
 
     private Type type;
@@ -62,4 +67,9 @@ public class DtlDisclaimer implements Parcelable {
             return new DtlDisclaimer[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return text;
+    }
 }

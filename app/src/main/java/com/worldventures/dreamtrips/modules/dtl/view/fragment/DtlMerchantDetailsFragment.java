@@ -101,12 +101,8 @@ public class DtlMerchantDetailsFragment
     View share;
     @InjectView(R.id.scrollView)
     ScrollView scrollViewRoot;
-    @InjectView(R.id.points_legal_text)
-    ShowMoreTextView pointsLegalText;
-    @InjectView(R.id.perks_legal_text)
-    ShowMoreTextView perksLegalText;
-    @InjectView(R.id.additional_legal_text)
-    ShowMoreTextView additionalLegalText;
+    @InjectView(R.id.legal_text)
+    ShowMoreTextView legalTextView;
     //
     SupportMapFragment destinationMap;
 
@@ -149,7 +145,7 @@ public class DtlMerchantDetailsFragment
         commonDataInflater.setView(rootView);
         merchantInfoInflater.setView(rootView);
         //
-        pointsLegalText.setSimpleListener((view, collapsed) -> {
+        legalTextView.setSimpleListener((view, collapsed) -> {
             if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));}
         );
         //
@@ -184,24 +180,10 @@ public class DtlMerchantDetailsFragment
         this.perksDescriptionHeader.setVisibility(TextUtils.isEmpty(perksDescription) ? View.GONE : View.VISIBLE);
         //
         if (!merchant.getDisclaimers().isEmpty()) {
-            ((View) this.perksLegalText.getParent()).setVisibility(View.VISIBLE);
+            this.legalTextView.setVisibility(View.VISIBLE);
             //
-            Queryable.from(merchant.getDisclaimers()).forEachR(disclaimer -> {
-                switch (disclaimer.getType()) {
-                    case POINTS:
-                        pointsLegalText.setVisibility(View.VISIBLE);
-                        pointsLegalText.setFullText(disclaimer.getText());
-                        break;
-                    case PERKS:
-                        perksLegalText.setVisibility(View.VISIBLE);
-                        perksLegalText.setFullText(disclaimer.getText());
-                        break;
-                    case ADDITIONAL:
-                        additionalLegalText.setVisibility(View.VISIBLE);
-                        additionalLegalText.setFullText(disclaimer.getText());
-                        break;
-                }
-            });
+            String legalText = TextUtils.join("\n\n", merchant.getDisclaimers());
+            this.legalTextView.setFullText(legalText);
         }
     }
 

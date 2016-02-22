@@ -58,11 +58,12 @@ public class ChatDelegate {
 
     public Observable<DataConversation> modifyConversation(DataConversation conversation, List<DataUser> existParticipants,
                                                            List<DataUser> newChatUserIds, @Nullable String subject) {
-        if (conversation.getType().equals(ConversationType.CHAT)) {
+        if (TextUtils.equals(conversation.getType(), ConversationType.CHAT)) {
             conversation = new DataConversation.Builder()
                     .ownerId(currentUserId)
                     .type(ConversationType.GROUP)
                     .status(ConversationStatus.PRESENT)
+                    .subject(TextUtils.isEmpty(subject)? null : subject)
                     .lastActiveDate(System.currentTimeMillis())
                     .id(UUID.randomUUID().toString())
                     .build();

@@ -2,6 +2,7 @@ package com.messenger.ui.presenter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Menu;
@@ -579,7 +580,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .subscribe(attachment -> {
                     if (attachment != null) {
-                        if (attachment.getUploadTaskId() != 0) retryUploadAttachment(messageId);
+                        if (Utils.isFileUri(Uri.parse(attachment.getUrl()))) retryUploadAttachment(messageId);
                         else retrySendAttachment(attachment);
                     } else retrySendTextMessage(messageId);
                 });

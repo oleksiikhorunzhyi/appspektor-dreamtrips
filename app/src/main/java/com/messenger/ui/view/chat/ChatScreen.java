@@ -23,10 +23,6 @@ public interface ChatScreen extends MessengerScreen {
 
     void setTitle(DataConversation conversation, List<DataUser> users);
 
-    void showUnreadMessageCount(int unreadMessage);
-
-    void hideUnreadMessageCount();
-
     void addTypingUser(DataUser user);
 
     void setShowMarkUnreadMessage(boolean needShow);
@@ -35,11 +31,7 @@ public interface ChatScreen extends MessengerScreen {
 
     void showMessages(Cursor cursor, DataConversation conversation);
 
-    void smoothScrollToPosition(int position);
-
     boolean onBackPressed();
-
-    int getTotalShowingMessageCount();
 
     Observable<TextViewTextChangeEvent> getEditMessageObservable();
 

@@ -23,8 +23,6 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void openUserProfile(DataUser user);
 
-    void onUnreadMessagesHeaderClicked();
-
     void onImageClicked(String attachmentImageId);
 
     void onImagesPicked(List<ChosenImage>images);

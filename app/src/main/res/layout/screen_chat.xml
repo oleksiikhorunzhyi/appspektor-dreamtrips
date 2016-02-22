@@ -66,12 +66,6 @@
                         android:layout_height="match_parent"
                         />
 
-                    <com.messenger.ui.widget.UnreadMessagesView
-                        android:id="@+id/chat_users_unread_messages_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"/>
-
                 </FrameLayout>
 
                 <com.messenger.ui.widget.ChatUsersTypingView

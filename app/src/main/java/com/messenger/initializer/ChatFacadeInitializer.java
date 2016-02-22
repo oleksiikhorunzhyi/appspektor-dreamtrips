@@ -26,7 +26,6 @@ import com.messenger.storage.dao.UsersDAO;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Calendar;
@@ -88,7 +87,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                 message.setStatus(MessageStatus.SENT);
 
                 DataMessage dataMessage = new DataMessage(message);
-                dataMessage.setSyncTime(System.currentTimeMillis());
+                dataMessage.setSyncTime(time);
                 List<DataAttachment> attachments = DataAttachment.fromMessage(message);
                 if (!attachments.isEmpty()) attachmentDAO.save(attachments);
                 messageDAO.save(dataMessage);
@@ -99,7 +98,14 @@ public class ChatFacadeInitializer implements AppInitializer {
             @Override
             public void onPreSendMessage(Message message) {
                 long time = System.currentTimeMillis();
-                messageDAO.updateStatus(message.getId(), message.getStatus(), time);
+                message.setDate(time);
+                DataMessage dataMessage = new DataMessage(message);
+                dataMessage.setSyncTime(time);
+
+                List<DataAttachment> attachments = DataAttachment.fromMessage(message);
+                if (!attachments.isEmpty()) attachmentDAO.save(attachments);
+
+                messageDAO.save(dataMessage);
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
 
@@ -107,24 +113,23 @@ public class ChatFacadeInitializer implements AppInitializer {
             public void onSendMessage(Message message) {
                 // for error messages we set max date with purpose to show these on bottom of
                 // the messages list is selected and sorted by syncTime
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, maximumYear);
-                long time = message.getStatus() == MessageStatus.ERROR ? calendar.getTimeInMillis() : System.currentTimeMillis();
-                message.setDate(time);
-
-                DataMessage dataMessage = new DataMessage(message);
-                dataMessage.setSyncTime(time);
-                List<DataAttachment> attachments = DataAttachment.fromMessage(message);
-                if (!attachments.isEmpty()) attachmentDAO.save(attachments);
-                messageDAO.save(dataMessage);
+                long time;
+                if (message.getStatus() == MessageStatus.ERROR) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.YEAR, maximumYear);
+                    time = calendar.getTimeInMillis();
+                } else {
+                    time = System.currentTimeMillis();
+                }
+                messageDAO.updateStatus(message.getId(), message.getStatus(), time);
                 conversationsDAO.updateDate(message.getConversationId(), time);
             }
         });
 
         emitter.addOnSubjectChangesListener((conversationId, subject) -> {
             conversationsDAO.getConversation(conversationId).first()
+                    .subscribeOn(Schedulers.io())
                     .filter(c -> c != null && !TextUtils.equals(c.getSubject(), subject))
-                    .compose(new IoToMainComposer<>())
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(conversation -> {
                         conversation.setSubject(subject);

@@ -317,7 +317,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .doOnUnsubscribe(() -> messengerGlobalEmitter.removeOnChatStateChangedListener(listener))
                 .subscribe(stateEvent -> usersDAO.getUserById(stateEvent.userId)
                                 .first().compose(new NonNullFilter<>())
-                                .compose(bindVisibilityIoToMainComposer())
+                                .compose(bindViewIoToMainComposer())
                                 .subscribe(user -> {
                                     switch (stateEvent.state) {
                                         case ChatState.COMPOSING:

@@ -151,7 +151,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private boolean haveMoreElements = true;
 
     private boolean needShowUnreadMessages;
-    private boolean unreadCounterShown;
     private boolean firstLoadedMessageMarked;
     private boolean typing;
 
@@ -295,16 +294,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectToUnreadCounterStream() {
         conversationObservable.map(c -> c.getUnreadMessageCount())
                 .subscribe(count -> {
-                    ChatScreen screen = getView();
-                    // we should show unread message counter one time per one connection
-                    if (count == 0 && (unreadCounterShown || needShowUnreadMessages)) {
+                    if (count == 0 && needShowUnreadMessages) {
                         needShowUnreadMessages = false;
-                        screen.setShowMarkUnreadMessage(false);
-                        screen.hideUnreadMessageCount();
-                    }
-                    if (count != 0 && needShowUnreadMessages) {
-                        unreadCounterShown = true;
-                        screen.showUnreadMessageCount(count);
+                        getView().setShowMarkUnreadMessage(false);
                     }
                 }, e -> Timber.w("Unable to connect to unread counter"));
     }
@@ -349,11 +341,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private Subscription connectMessagesStream(long syncTime) {
         firstLoadedMessageMarked = false;
-        // we must show new unread messages for new connection
-        if (syncTime != 0) {
-            needShowUnreadMessages = true;
-            unreadCounterShown = false;
-        }
+
+        if (syncTime != 0) needShowUnreadMessages = true;
+
         getView().setShowMarkUnreadMessage(true);
 
         return messageDAO.getMessagesBySyncTime(conversationId, syncTime)
@@ -558,19 +548,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .getMessage(sinceMessageId)
                 .flatMap(dataMessage -> messageDAO.markMessagesAsRead(conversationId, user.getId(), dataMessage.getDate().getTime()))
                 .first();
-    }
-
-    @Override
-    public void onUnreadMessagesHeaderClicked() {
-        messageDAO.countFromFirstUnreadMessage(conversationId, user.getId())
-                .first()
-                .filter(result -> result > 0)
-                .compose(new IoToMainComposer<>())
-                .subscribe(result -> {
-                    int total = getView().getTotalShowingMessageCount();
-                    int firstUnreadMessagePosition = total - result;
-                    getView().smoothScrollToPosition(firstUnreadMessagePosition < 0 ? 0 : firstUnreadMessagePosition);
-                });
     }
 
     ///////////////////////////////////////////////////////////////////////////

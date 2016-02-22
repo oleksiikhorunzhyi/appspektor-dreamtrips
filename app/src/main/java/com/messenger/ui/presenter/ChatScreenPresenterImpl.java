@@ -52,7 +52,6 @@ import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.Utils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -362,6 +361,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .filter(cursor -> cursor.getCount() > 0)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(cursor -> {
+                    Timber.i("Retrived message count " + cursor.getCount());
                     if (!unreadMessagesLoading) {
                         markUnreadMessageFromDB(syncTime);
                     }
@@ -502,7 +502,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectTypingStartAction() {
         getView().getEditMessageObservable()
                 .skip(1)
-                .filter(textViewTextChangeEvent -> textViewTextChangeEvent.count() > 0)
+                .filter(textViewTextChangeEvent -> textViewTextChangeEvent.count() > 0
+                        && currentConnectivityStatus == ConnectionStatus.CONNECTED)
                 .compose(bindVisibility())
                 .throttleFirst(START_TYPING_DELAY, TimeUnit.MILLISECONDS)
                 .filter(textViewTextChangeEvent -> !typing)
@@ -801,7 +802,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void retryUploadAttachment(String messageId) {
         attachmentDAO.getAttachmentByMessageId(messageId)
                 .first()
-                .doOnNext(BaseProviderModel::delete)
+                .doOnNext(dataAttachment -> {
+                    attachmentDAO.deleteAttachment(dataAttachment);
+                    messageDAO.deleteMessageById(dataAttachment.getMessageId());
+                })
                 .subscribe(dataAttachment -> uploadAttachment(dataAttachment.getUrl()));
     }
 
@@ -814,8 +818,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     return Observable.from(attachments);
                 })
                 .flatMap(attachmentDelegate::bindToPendingAttachment)
-                .compose(new IoToMainComposer<>())
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(this::onAttachmentUploaded, e -> Timber.e("Image uploading failed"));
     }
 

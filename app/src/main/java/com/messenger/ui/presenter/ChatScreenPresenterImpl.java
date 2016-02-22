@@ -156,6 +156,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private boolean needShowUnreadMessages;
     private boolean firstLoadedMessageMarked;
     private boolean typing;
+    private boolean imageAttachmentClicked = false;
 
     private Subscription messageStreamSubscription;
     private Subscription participantsStreamSubcription;
@@ -712,6 +713,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onImageClicked(String attachmentImageId) {
+        if (imageAttachmentClicked) return;
+        else imageAttachmentClicked = true;
+
         attachmentHelper.obtainPhotoAttachment(attachmentImageId)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photoAttachment -> {
@@ -728,6 +732,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                             .data(data)
                             .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                             .build());
+
+                    imageAttachmentClicked = false;
                 });
     }
 

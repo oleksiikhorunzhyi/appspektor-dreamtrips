@@ -28,7 +28,7 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
     @InjectView(R.id.chat_image_error)
     View errorView;
 
-    private Uri imagePostUri;
+    protected Uri imagePostUri;
 
     public ImageMessageViewHolder(View itemView) {
         super(itemView);

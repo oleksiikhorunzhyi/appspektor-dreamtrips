@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.AttachmentDelegate;
+import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.StartChatDelegate;
@@ -29,7 +30,6 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -103,6 +103,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Inject
     DataUser user;
+    @Inject
+    MessageBodyCreator messageBodyCreator;
     @Inject
     Router router;
     @Inject
@@ -561,22 +563,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             return false;
         }
 
-        MessageBody body = new MessageBody(message);
-
-        submitOneChatAction(chat -> {
-            chat.send(createMessage(body))
-                    .subscribeOn(Schedulers.io())
-                    .subscribe();
-        });
-        return true;
-    }
-
-    public Message createMessage(MessageBody body) {
-        return new Message.Builder()
-                .messageBody(body)
+        submitOneChatAction(chat -> chat.send(new Message.Builder()
+                .messageBody(messageBodyCreator.provideForText(message))
                 .fromId(user.getId())
                 .conversationId(conversationId)
-                .build();
+                .build())
+                .subscribeOn(Schedulers.io())
+                .subscribe());
+        return true;
     }
 
     @Override
@@ -594,7 +588,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void retrySendTextMessage(String messageId) {
         submitOneChatAction(chat -> messageDAO.getMessage(messageId)
                 .first()
-                .map(DataMessage::toChatMessage)
+                .map(dataMessage -> {
+                    Message message = dataMessage.toChatMessage();
+                    message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
+                    return message;
+                })
                 .flatMap(chat::send)
                 .subscribeOn(Schedulers.io())
                 .subscribe());
@@ -802,12 +800,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void onAttachmentUploaded(DataAttachment dataAttachment) {
         messageDAO.getMessage(dataAttachment.getMessageId())
                 .first()
-                .subscribe(message -> sendMessageWithAttachment(message.toChatMessage(),
-                        AttachmentHolder.newImageAttachment(dataAttachment.getUrl())));
+                .subscribe(dataMessage -> sendMessageWithAttachment(dataMessage, dataAttachment));
     }
 
-    private void sendMessageWithAttachment(Message message, AttachmentHolder attachmentHolder) {
-        message.setMessageBody(new MessageBody(Collections.singletonList(attachmentHolder)));
+    private void sendMessageWithAttachment(DataMessage dataMessage, DataAttachment dataAttachment) {
+        Message message = dataMessage.toChatMessage();
+        message.setMessageBody(messageBodyCreator.provideForAttachment(AttachmentHolder
+                .newImageAttachment(dataAttachment.getUrl())));
+        //
         submitOneChatAction(chat -> chat.send(message).subscribe());
     }
 

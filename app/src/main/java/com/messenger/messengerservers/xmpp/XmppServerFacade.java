@@ -17,7 +17,7 @@ import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
-import com.messenger.messengerservers.xmpp.util.StringGanarator;
+import com.messenger.messengerservers.xmpp.util.StringGenerator;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
@@ -85,7 +85,7 @@ public class XmppServerFacade implements MessengerServerFacade {
                 .setServiceName(JidCreatorHelper.SERVICE_NAME)
                 .setHost(serverParams.host)
                 .setPort(serverParams.port)
-                .setResource(StringGanarator.getRandomString(5))
+                .setResource(StringGenerator.getRandomString(5))
                 .setSendPresence(false)
                 .setDebuggerEnabled(BuildConfig.DEBUG)
                 .build());

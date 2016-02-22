@@ -3,7 +3,7 @@ package com.messenger.messengerservers.xmpp.util;
 
 import java.util.Random;
 
-public final class StringGanarator {
+public final class StringGenerator {
 
     private static final String ALLOWED_CHARACTERS = "0123456789qwertyuiopasdfghjklzxcvbnm";
 

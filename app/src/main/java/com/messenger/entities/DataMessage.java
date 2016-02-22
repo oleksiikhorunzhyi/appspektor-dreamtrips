@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -32,6 +33,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @Column String fromId;
     @Column String toId;
     @Column String text;
+    @Column String locale;
     @Column Date date;
     @Column String conversationId;
     @MessageStatus.Status @Column int status;
@@ -41,14 +43,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     public DataMessage() {
     }
 
-    public DataMessage(String from, String to, String text, String id) {
-        this.fromId = from;
-        this.toId = to;
-        this.text = text;
-        this.id = id;
-    }
-
-    public DataMessage(com.messenger.messengerservers.model.Message message) {
+    public DataMessage(Message message) {
         setId(message.getId());
         setConversationId(message.getConversationId());
         setFromId(message.getFromId());
@@ -60,6 +55,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         if (body != null) {
             setText(body.getText());
             setVersion(body.getVersion());
+            setLocale(body.getLocale());
         }
     }
 
@@ -72,6 +68,10 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setDate(builder.date);
         setSyncTime(builder.syncTime);
         setStatus(builder.status);
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     public int getVersion() {
@@ -235,13 +235,11 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         }
     }
 
-    public com.messenger.messengerservers.model.Message toChatMessage() {
-        MessageBody body = new MessageBody(text, null);
-        return new com.messenger.messengerservers.model.Message.Builder()
+    public Message toChatMessage() {
+        return new Message.Builder()
                 .fromId(fromId)
                 .toId(toId)
                 .id(id)
-                .messageBody(body)
                 .status(status)
                 .build();
     }

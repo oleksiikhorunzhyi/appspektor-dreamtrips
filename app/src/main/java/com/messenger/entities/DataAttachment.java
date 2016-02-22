@@ -156,6 +156,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         }
 
         return Queryable.from(attachmentHolders)
+                .filter(attachmentHolder -> attachmentHolder != null)
                 .map((elem, idx) -> new DataAttachment(elem, message, idx))
                 .toList();
     }

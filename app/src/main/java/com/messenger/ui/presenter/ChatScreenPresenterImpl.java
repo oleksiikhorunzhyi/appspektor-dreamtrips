@@ -312,6 +312,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         messengerGlobalEmitter.addOnChatStateChangedListener(listener);
 
         chatStateStream.asObservable()
+                .onBackpressureBuffer()
                 .filter(chatChangeStateEvent -> TextUtils.equals(chatChangeStateEvent.conversationId, conversationId))
                 .compose(bindViewIoToMainComposer())
                 .doOnUnsubscribe(() -> messengerGlobalEmitter.removeOnChatStateChangedListener(listener))
@@ -792,8 +793,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void connectToPendingAttachments() {
-        attachmentDAO
-                .getPendingAttachments(conversationId)
+        attachmentDAO.getPendingAttachments(conversationId)
+                .onBackpressureLatest()
                 .flatMap(cursor -> {
                     List<DataAttachment> attachments = SqlUtils.convertToList(DataAttachment.class, cursor);
                     cursor.close();

@@ -1,5 +1,7 @@
 package com.messenger.delegate;
 
+import android.text.TextUtils;
+
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.MessageBody;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -27,9 +29,14 @@ public class MessageBodyCreator {
     }
 
     public MessageBody provideForTextAndAttachment(String text, AttachmentHolder attachmentHolder) {
-        return new MessageBody.Builder()
-                .text(text)
-                .attachments(Collections.singletonList(attachmentHolder))
+        MessageBody.Builder builder = new MessageBody.Builder();
+
+        if (attachmentHolder != null)
+            builder.attachments(Collections.singletonList(attachmentHolder));
+
+        if (!TextUtils.isEmpty(text)) builder.text(text);
+
+        return builder
                 .locale(generateMessageLocale(localeHelper.getAccountLocale(currentUser)))
                 .build();
     }

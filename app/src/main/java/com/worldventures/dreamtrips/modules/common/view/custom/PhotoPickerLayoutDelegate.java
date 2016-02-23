@@ -47,7 +47,8 @@ public class PhotoPickerLayoutDelegate {
     }
 
     public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
-        photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
+        if (photoPickerLayout != null)  photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
+        else Timber.d("Photo picker was not initialized");
     }
 
     public void showPicker() {

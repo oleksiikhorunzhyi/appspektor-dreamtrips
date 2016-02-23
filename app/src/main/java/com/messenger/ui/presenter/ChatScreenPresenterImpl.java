@@ -316,19 +316,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .filter(chatChangeStateEvent -> TextUtils.equals(chatChangeStateEvent.conversationId, conversationId))
                 .compose(bindViewIoToMainComposer())
                 .doOnUnsubscribe(() -> messengerGlobalEmitter.removeOnChatStateChangedListener(listener))
-                .subscribe(stateEvent -> usersDAO.getUserById(stateEvent.userId)
-                                .first().compose(new NonNullFilter<>())
-                                .compose(bindViewIoToMainComposer())
-                                .subscribe(user -> {
-                                    switch (stateEvent.state) {
-                                        case ChatState.COMPOSING:
-                                            getView().addTypingUser(user);
-                                            break;
-                                        case ChatState.PAUSE:
-                                            getView().removeTypingUser(user);
-                                            break;
-                                    }
-                                }, e -> Timber.w("Unable to get user")),
+                .map(stateEvent -> new Pair<>(stateEvent, usersDAO.getUserById(stateEvent.userId).toBlocking().first()))
+                .filter(chatChangeStateEventDataUserPair -> chatChangeStateEventDataUserPair.second != null)
+                .subscribe(pair -> {
+                            switch (pair.first.state) {
+                                case ChatState.COMPOSING:
+                                    getView().addTypingUser(pair.second);
+                                    break;
+                                case ChatState.PAUSE:
+                                    getView().removeTypingUser(pair.second);
+                                    break;
+                            }
+                        },
                         e -> Timber.w("Unable to connect chat stream"));
     }
 

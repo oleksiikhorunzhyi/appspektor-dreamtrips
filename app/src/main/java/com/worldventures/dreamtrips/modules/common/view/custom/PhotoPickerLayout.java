@@ -254,6 +254,10 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         return isShown;
     }
 
+    public View getDraggableView() {
+        return draggableView;
+    }
+
     public void setOnDoneClickListener(OnDoneClickListener onDoneClickListener) {
         photoPickerDelegate.setOnDoneClickListener(onDoneClickListener);
     }

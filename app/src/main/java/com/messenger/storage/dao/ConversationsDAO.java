@@ -112,7 +112,8 @@ public class ConversationsDAO extends BaseDAO {
                                                 "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
 
-                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ") as " + GROUP_CONVERSATION_NAME_COLUMN + " " +
+                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') || ' ('||COUNT(uuu." + DataUser$Table._ID + ")||')'" +
+                "as " + GROUP_CONVERSATION_NAME_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +

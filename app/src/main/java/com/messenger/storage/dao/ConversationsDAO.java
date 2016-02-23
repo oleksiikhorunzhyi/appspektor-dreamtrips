@@ -36,6 +36,7 @@ public class ConversationsDAO extends BaseDAO {
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
     public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
     public static final String GROUP_CONVERSATION_NAME_COLUMN = "groupName";
+    public static final String LAST_MESSAGE_AUTHOR_COLUMN = "authorName";
 
     private Lazy<DataUser> currentUser;
 
@@ -101,12 +102,14 @@ public class ConversationsDAO extends BaseDAO {
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
                 "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
-                "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
-                "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
+
+                "IFNULL(u." + DataUser$Table.FIRSTNAME  + ",'') || ' ' || IFNULL(u." + DataUser$Table.LASTNAME + ",'') "+
+                                                            "as " + LAST_MESSAGE_AUTHOR_COLUMN + ", " +
+
                 "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                 "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", " +
-                "uu." + DataUser$Table.FIRSTNAME  + " || ' ' || uu." + DataUser$Table.LASTNAME +
-                                                " as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
+                "IFNULL(uu." + DataUser$Table.FIRSTNAME  + ",'') || ' ' || IFNULL(uu." + DataUser$Table.LASTNAME + ",'') "+
+                                                "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
 
                 "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ") as " + GROUP_CONVERSATION_NAME_COLUMN + " " +

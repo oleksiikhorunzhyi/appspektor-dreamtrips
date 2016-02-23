@@ -94,7 +94,7 @@ import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFIL
 public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
 
-    private static final int MAX_MESSAGE_PER_PAGE = 20;
+    private static final int MAX_MESSAGE_PER_PAGE = 50;
     //
     private static final int MARK_AS_READ_DELAY = 2000;
     private static final int START_TYPING_DELAY = 1000;

@@ -139,6 +139,10 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
         initPhotoPicker();
+
+        messageEditText.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) photoPickerLayoutDelegate.hidePicker();
+        });
     }
 
     @Override

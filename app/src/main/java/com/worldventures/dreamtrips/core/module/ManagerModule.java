@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.messenger.storage.dao.AttachmentDAO;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
@@ -13,7 +14,9 @@ import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
+import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
@@ -150,5 +153,17 @@ public class ManagerModule {
     @Singleton
     PhotoPickerDelegate providePhotoPickerDelegate() {
         return new PhotoPickerDelegate();
+    }
+
+    @Provides
+    @Singleton
+    DTCookieManager provideCookieManager(@ForApplication Context context) {
+        return new DTCookieManager(context);
+    }
+
+    @Provides
+    @Singleton
+    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, AttachmentDAO attachmentDAO, SnappyRepository snappyRepository) {
+        return new ClearDirectoryDelegate(context, attachmentDAO, snappyRepository);
     }
 }

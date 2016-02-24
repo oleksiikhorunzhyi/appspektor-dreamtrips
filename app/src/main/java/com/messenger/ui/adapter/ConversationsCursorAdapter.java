@@ -35,7 +35,6 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -118,7 +117,7 @@ public class ConversationsCursorAdapter
         holder.setDeleteButtonVisibility(deleteButtonEnable(conversation));
 
         holder.setDate(formatLastConversationMessage(new Date(conversation.getLastActiveDate())));
-        String userName = cursor.getString(cursor.getColumnIndex(DataUser$Table.USERNAME));
+        String userName = cursor.getString(cursor.getColumnIndex(ConversationsDAO.LAST_MESSAGE_AUTHOR_COLUMN));
 
         setLastMessage(holder, message, userName, ConversationHelper.isGroup(conversation), attachmentType);
 
@@ -159,7 +158,7 @@ public class ConversationsCursorAdapter
                 messageText = String.format(context.getString(R.string.conversation_list_item_last_message_text_format_you),
                         messageText);
             } else if (isGroupConversation && !TextUtils.isEmpty(userName)) {
-                messageText = userName + ": " + messageText;
+                messageText = TextUtils.getTrimmedLength(userName) > 0 ? userName + ": " + messageText : messageText;
             }
         }
         return messageText;
@@ -169,7 +168,7 @@ public class ConversationsCursorAdapter
         if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
             return context.getString(R.string.conversation_list_item_last_message_image_format_you);
         } else {
-            return userName + " " + context.getString(R.string.conversation_list_item_last_message_image);
+            return userName.trim() + " " + context.getString(R.string.conversation_list_item_last_message_image);
         }
     }
 

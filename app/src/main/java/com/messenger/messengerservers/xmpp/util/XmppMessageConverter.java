@@ -1,17 +1,13 @@
 package com.messenger.messengerservers.xmpp.util;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.messenger.messengerservers.model.AttachmentHolder;
+import com.messenger.delegate.MessageBodyParser;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.model.MessageBody;
-import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 
 public final class XmppMessageConverter {
 
     private Gson gson;
+    private MessageBodyParser messageBodyParser;
 
     public XmppMessageConverter() {
         gson = new Gson();
@@ -19,6 +15,7 @@ public final class XmppMessageConverter {
 
     public XmppMessageConverter(Gson gson) {
         this.gson = gson;
+        messageBodyParser = new MessageBodyParser(gson);
     }
 
     public org.jivesoftware.smack.packet.Message convert(Message message) {
@@ -34,10 +31,8 @@ public final class XmppMessageConverter {
     }
 
     public Message convert(org.jivesoftware.smack.packet.Message message) {
-        String body = StringEscapeUtils.unescapeXml(message.getBody());
-        MessageBody stanzaMessageBody = gson.fromJson(body, MessageBody.class);
         Message.Builder builder = new Message.Builder()
-                .messageBody(stanzaMessageBody)
+                .messageBody(messageBodyParser.parseMessageBody(message.getBody()))
                 .conversationId(message.getThread())
                 .id(message.getStanzaId());
 

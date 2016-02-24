@@ -2,6 +2,7 @@ package com.messenger.di;
 
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -18,6 +19,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import javax.inject.Singleton;
 
@@ -74,5 +76,10 @@ public class MessengerDelegateModule {
     @Provides
     AttachmentDelegate provideAttachmentDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
         return new AttachmentDelegate(photoUploadingManager, messageDAO, attachmentDAO);
+    }
+
+    @Provides
+    MessageBodyCreator provideMessageBodyCreator(LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
+        return new MessageBodyCreator(localeHelper, userSessionHolder.get().get().getUser());
     }
 }

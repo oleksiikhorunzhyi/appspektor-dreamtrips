@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.support.v4.app.FragmentManager;
+import android.view.View;
+
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import timber.log.Timber;
 
@@ -44,16 +47,36 @@ public class PhotoPickerLayoutDelegate {
     }
 
     public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
-        photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
+        if (photoPickerLayout != null)  photoPickerLayout.setOnDoneClickListener(onDoneClickListener);
+        else Timber.d("Photo picker was not initialized");
     }
 
     public void showPicker() {
-        if (photoPickerLayout != null) photoPickerLayout.showPanel();
+        if (photoPickerLayout != null) {
+            photoPickerLayout.showPanel();
+            applyWhiteScreenWorkaround();
+        }
         else Timber.d("Photo picker was not initialized");
     }
 
     public void hidePicker() {
         if (photoPickerLayout != null) photoPickerLayout.hidePanel();
         else Timber.d("Photo picker was not initialized");
+    }
+
+    /**
+     * Sometimes a bug happens in parent view (SlidingUpPanelLayout) that leads
+     * to photo picker shown with white screen. The reason for this is that SlidingUpPanelLayout
+     * for some reason randomly sets visibility of draggable view to INVISIBLE (cause white screen)
+     * and its panel state to HIDDEN (ignores all touch events). To avoid this we need
+     * to revert those and requestLayout so that SlidingUpPanelLayout can update it's state in onMeasure
+     */
+    private void applyWhiteScreenWorkaround() {
+        View draggableView = photoPickerLayout.getDraggableView();
+        if (draggableView.getVisibility() == View.INVISIBLE) {
+            draggableView.setVisibility(View.VISIBLE);
+            photoPickerLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            photoPickerLayout.requestLayout();
+        }
     }
 }

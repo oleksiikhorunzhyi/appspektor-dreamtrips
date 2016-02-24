@@ -5,6 +5,7 @@ import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatScreenImpl;
 import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
+import com.messenger.ui.widget.MessengerPhotoPickerLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 
@@ -18,7 +19,8 @@ import dagger.Provides;
                 EditChatMembersScreenImpl.class,
                 ChatScreenImpl.class,
                 ChatScreenPresenterImpl.class,
-                MessengerActivityPresenter.class
+                MessengerActivityPresenter.class,
+                MessengerPhotoPickerLayout.class,
 },
         complete = false, library = true
 )public class MessengerActivityModule {

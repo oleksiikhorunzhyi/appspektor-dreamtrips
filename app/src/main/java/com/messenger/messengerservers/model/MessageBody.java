@@ -1,27 +1,23 @@
 package com.messenger.messengerservers.model;
 
-import com.google.gson.annotations.SerializedName;
 import com.messenger.entities.DataMessage;
 
 import java.util.List;
-import java.util.Locale;
 
 public class MessageBody {
     private String text;
-    @SerializedName("locale")
-    private String localeName = Locale.getDefault().getDisplayName(); // we should send locale to support release/1.6.0
+    private String locale; // we should send locale to support release/1.6.0
     private int version;
     private List<AttachmentHolder> attachments;
 
     public MessageBody() {
     }
 
-    public MessageBody(List<AttachmentHolder> attachments) {
-        this(null, attachments);
-    }
-
-    public MessageBody(String text) {
-        this(text, null);
+    private MessageBody(Builder builder) {
+        setVersion();
+        this.text = builder.text;
+        this.locale = builder.locale;
+        this.attachments = builder.attachments;
     }
 
     public MessageBody(String text, List<AttachmentHolder> attachments) {
@@ -34,16 +30,24 @@ public class MessageBody {
         version = DataMessage.MESSAGE_FORMAT_VERSION;
     }
 
-    public String getText() {
-        return text;
+    public int getVersion() {
+        return version;
     }
 
     public void setText(String text) {
         this.text = text;
     }
 
-    public int getVersion() {
-        return version;
+    public String getText() {
+        return text;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    public String getLocale() {
+        return locale;
     }
 
     public List<AttachmentHolder> getAttachments() {
@@ -52,5 +56,33 @@ public class MessageBody {
 
     public void setAttachments(List<AttachmentHolder> attachments) {
         this.attachments = attachments;
+    }
+
+    public static final class Builder {
+        private String text;
+        private String locale; // we should send locale to support release/1.6.0
+        private int version;
+        private List<AttachmentHolder> attachments;
+
+        public Builder() {
+        }
+
+        public Builder text(String text) {
+            this.text = text;
+            return this;
+        }
+
+        public Builder locale(String locale) {
+            this.locale = locale;
+            return this;
+        }
+        public Builder attachments(List<AttachmentHolder> attachments) {
+            this.attachments = attachments;
+            return this;
+        }
+
+        public MessageBody build() {
+            return new MessageBody(this);
+        }
     }
 }

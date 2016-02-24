@@ -9,17 +9,13 @@ import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
-import com.messenger.ui.adapter.holder.chat.ImageMessageViewHolder;
-import com.messenger.ui.adapter.holder.chat.MessageHolder;
+import com.messenger.util.Utils;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements MessageHolder.OwnMessageHolder {
-
-    @InjectView(R.id.iv_message_error)
-    View messageError;
 
     @InjectView(R.id.view_switcher)
     ViewSwitcher viewSwitcher;
@@ -100,6 +96,13 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
             public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
                 if (message.getStatus() != MessageStatus.SENDING) {
                     progressBar.setVisibility(View.GONE);
+                }
+
+                //TODO should be refactored
+                if (message.getStatus() == MessageStatus.ERROR &&
+                        Utils.isFileUri(imagePostUri)) {
+                    errorView.setVisibility(View.VISIBLE);
+                    viewSwitcher.setVisibility(View.GONE);
                 }
             }
 

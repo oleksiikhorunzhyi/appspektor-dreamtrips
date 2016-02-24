@@ -22,6 +22,7 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class UsersDAO extends BaseDAO {
+    public static final String USER_DISPLAY_NAME = "displayName";
 
     public UsersDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -47,9 +48,10 @@ public class UsersDAO extends BaseDAO {
 
     public Observable<Cursor> getFriends() {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table.FRIEND + "=?")
+                .withSelection("SELECT *, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " " +
+                        "FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table.FRIEND + "=?")
                 .withSelectionArgs(new String[]{String.valueOf(1)})
-                .withSortOrder("ORDER BY " + DataUser$Table.USERNAME + " COLLATE NOCASE ASC")
+                .withSortOrder("ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, DataUser.CONTENT_URI)
                 .onBackpressureLatest()

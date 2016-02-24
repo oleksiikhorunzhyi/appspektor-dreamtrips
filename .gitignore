@@ -60,3 +60,6 @@ signing/signing.properties
 
 # localeName generated
 dagger-proguard-keepnames.cfg
+
+#smartling translations
+translations/

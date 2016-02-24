@@ -13,6 +13,7 @@ import android.widget.Spinner;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -96,6 +97,8 @@ public class SendFeedbackFragment extends BaseFragment<SendFeedbackPresenter> im
         int id = ((FeedbackType) spinner.getSelectedItem()).getId();
         switch (item.getItemId()) {
             case R.id.send:
+                SoftInputUtil.hideSoftInputMethod(getActivity());
+                //
                 if (isMessageEmpty()) {
                     informUser(R.string.message_can_not_be_empty);
                 } else {

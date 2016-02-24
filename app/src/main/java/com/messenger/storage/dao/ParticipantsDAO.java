@@ -20,6 +20,8 @@ import java.util.List;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import static com.messenger.storage.dao.UsersDAO.USER_DISPLAY_NAME;
+
 public class ParticipantsDAO extends BaseDAO {
 
     public ParticipantsDAO(RxContentResolver rxContentResolver, Context context) {
@@ -47,7 +49,7 @@ public class ParticipantsDAO extends BaseDAO {
 
     public Observable<Cursor> getParticipants(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection(participantsSelection("*"))
+                .withSelection(participantsSelection("*, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " "))
                 .withSelectionArgs(new String[]{conversationId})
                 .withSortOrder(userOrder())
                 .build();
@@ -72,7 +74,8 @@ public class ParticipantsDAO extends BaseDAO {
 
     public Observable<Cursor> getNewParticipantsCandidates(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users " +
+                .withSelection("SELECT *, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " " +
+                        "FROM Users " +
                         "where (" + DataUser$Table._ID + " not in (" + participantsSelection(DataUser$Table._ID) + "))" +
                         "and (" + DataUser$Table.FRIEND + " = 1)"
                 )
@@ -95,7 +98,7 @@ public class ParticipantsDAO extends BaseDAO {
 
     @NonNull
     private static String userOrder() {
-        return "ORDER BY " + DataUser$Table.USERNAME + " COLLATE NOCASE ASC";
+        return "ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC";
     }
 
     public void delete(String conversationId, String userId) {

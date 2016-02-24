@@ -6,6 +6,9 @@ import android.database.Cursor;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Adapter;
 import com.messenger.entities.DataAttachment$Table;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataMessage$Table;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
@@ -58,16 +61,38 @@ public class AttachmentDAO extends BaseDAO {
 
     }
 
+    public Observable<List<DataAttachment>> getErrorAtachments(){
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * " +
+                        "FROM " + DataAttachment.TABLE_NAME + " as a " +
+                        "LEFT JOIN " + DataMessage$Table.TABLE_NAME + " m " +
+                        "ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID + " " +
+
+                        "WHERE m." + DataMessage$Table.STATUS + "= ? " )
+                .withSelectionArgs(new String[]{Integer.toString(MessageStatus.ERROR)}).build();
+
+        return query(q, DataAttachment.CONTENT_URI, DataMessage.CONTENT_URI).first()
+                .map(cursor -> {
+                    List<DataAttachment> attachments = SqlUtils.convertToList(DataAttachment.class, cursor);
+                    cursor.close();
+                    return attachments;
+                });
+    }
+
     public Observable<Cursor> getPendingAttachments(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT a.* " +
-                        "FROM " + DataAttachment.TABLE_NAME + " a " +
+                .withSelection("SELECT * " +
+                        "FROM " + DataAttachment.TABLE_NAME + " "+
 
-                        "WHERE " + DataAttachment$Table.CONVERSATIONID + "=? " +
-                        "AND " + DataAttachment$Table.UPLOADTASKID + "<>0")
+                        "WHERE " + DataAttachment$Table.CONVERSATIONID + " = ? " +
+                        "AND " + DataAttachment$Table.UPLOADTASKID + " <> 0")
                 .withSelectionArgs(new String[]{conversationId}).build();
 
         return query(q, DataAttachment.CONTENT_URI);
+    }
+
+    public void deleteAttachment(DataAttachment dataAttachment) {
+        dataAttachment.delete();
     }
 
 }

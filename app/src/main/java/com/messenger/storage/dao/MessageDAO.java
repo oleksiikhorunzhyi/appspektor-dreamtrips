@@ -14,6 +14,7 @@ import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,8 @@ public class MessageDAO extends BaseDAO {
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, " +
-                        "u." + DataUser$Table.USERNAME + " as " + DataUser$Table.USERNAME + ", " +
+                        "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
+                        "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
@@ -157,10 +159,15 @@ public class MessageDAO extends BaseDAO {
         save(Collections.singletonList(message));
     }
 
+    public void deleteMessageById(String messageId){
+        new Delete().from(DataMessage.class).byIds(messageId).query();
+    }
+
     public void updateStatus(String msgId, int messageStatus, long time) {
-        ContentValues contentValues = new ContentValues(2);
+        ContentValues contentValues = new ContentValues(3);
         contentValues.put(DataMessage$Table.STATUS, messageStatus);
         contentValues.put(DataMessage$Table.DATE, time);
+        contentValues.put(DataMessage$Table.SYNCTIME, time);
         getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID +"=?", new String[] {msgId});
     }
 }

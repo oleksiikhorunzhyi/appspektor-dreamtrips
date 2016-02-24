@@ -61,6 +61,8 @@
     <string name="chat_more_typing_users_hint_format">和%d 更多</string>
     <string name="chat_list_date_entry_today">今天</string>
     <string name="chat_list_date_entry_yesterday">昨天</string>
+    <string name="chat_contextual_copy_message">Copy</string>
+    <string name="chat_contextual_start_chat_format">Message %s</string>
 
     <!---->
     <!--Chat Settings -->

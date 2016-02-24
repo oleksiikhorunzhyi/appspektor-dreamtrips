@@ -38,7 +38,6 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q)
-                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> {
                     DataUser res = SqlUtils.convertToModel(false, DataUser.class, cursor);

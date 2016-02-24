@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
@@ -18,7 +17,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
@@ -157,7 +155,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
-                .data(new PostBundle(null, PostBundle.PHOTO))
+                .data(new PostBundle(null, PostBundle.ANY, true))
                 .build());
     }
 

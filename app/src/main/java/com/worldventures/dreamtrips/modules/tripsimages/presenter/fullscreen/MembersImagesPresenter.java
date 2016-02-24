@@ -70,8 +70,6 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
 
         eventBus.post(new MyImagesSelectionEvent());
 
-        view.hidePhotoPicker();
-
         String fileThumbnail = photos.get(0).getFileThumbnail();
         imageSelected(Uri.parse(fileThumbnail), type);
     }
@@ -97,6 +95,5 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
 
     public interface View extends TripImagesListPresenter.View {
 
-        void hidePhotoPicker();
     }
 }

@@ -11,26 +11,31 @@ import java.lang.annotation.RetentionPolicy;
 
 public class PostBundle implements Parcelable {
 
-    public static final int POST = 1;
+    public static final int ANY = 1;
     public static final int PHOTO = 2;
 
     private TextualPost textualPost;
-
     private int postType;
+    private boolean showPickerImmediately;
 
     public PostBundle(TextualPost textualPost) {
-        this(textualPost, POST);
+        this(textualPost, ANY);
     }
 
     public PostBundle(TextualPost textualPost, @PostType int postType) {
+        this(textualPost, postType, false);
+    }
+
+    public PostBundle(TextualPost textualPost, @PostType int postType, boolean showPickerImmediately) {
         this.textualPost = textualPost;
         this.postType = postType;
-
+        this.showPickerImmediately = showPickerImmediately;
     }
 
     protected PostBundle(Parcel in) {
         textualPost = (TextualPost) in.readSerializable();
         postType = in.readInt();
+        showPickerImmediately = in.readByte() == 1;
     }
 
     public static final Creator<PostBundle> CREATOR = new Creator<PostBundle>() {
@@ -54,6 +59,7 @@ public class PostBundle implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeSerializable(textualPost);
         dest.writeInt(postType);
+        dest.writeByte((byte) (showPickerImmediately ? 1 : 0));
     }
 
     public TextualPost getTextualPost() {
@@ -65,7 +71,11 @@ public class PostBundle implements Parcelable {
         return postType;
     }
 
-    @IntDef({POST, PHOTO})
+    public boolean isShowPickerImmediately() {
+        return showPickerImmediately;
+    }
+
+    @IntDef({ANY, PHOTO})
     @Retention(RetentionPolicy.SOURCE)
     @interface PostType {
     }

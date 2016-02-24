@@ -110,6 +110,29 @@ public class PostFragment extends RxBaseFragmentWithArgs<PostPresenter, PostBund
     @Override
     public void onResume() {
         super.onResume();
+        if (getType() == PostBundle.PHOTO) {
+            post.setVisibility(View.GONE);
+            photoPickerLayout.setOnCancelClickListener(() -> getPresenter().cancelClicked());
+        } else {
+            setupTextField();
+        }
+        //
+        backStackDelegate.setListener(this::onBackPressed);
+        if (isShowPickerImmediately()) {
+            photoPickerLayout.showPanel();
+        }
+        updatePickerState();
+    }
+
+    private int getType() {
+        return getArgs() == null ? PostBundle.ANY : getArgs().getType();
+    }
+
+    private boolean isShowPickerImmediately() {
+        return getArgs() != null && getArgs().isShowPickerImmediately();
+    }
+
+    private void setupTextField() {
         post.addTextChangedListener(textWatcher);
         post.setOnKeyPreImeListener((keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -122,11 +145,6 @@ public class PostFragment extends RxBaseFragmentWithArgs<PostPresenter, PostBund
             else if (!hasFocus)
                 name.requestFocus();
         });
-        backStackDelegate.setListener(this::onBackPressed);
-        if (getArgs() != null && getArgs().getType() == PostBundle.PHOTO) {
-            photoPickerLayout.showPanel();
-        }
-        updatePickerState();
     }
 
     @Override
@@ -304,7 +322,7 @@ public class PostFragment extends RxBaseFragmentWithArgs<PostPresenter, PostBund
     }
 
     private boolean onBackPressed() {
-        if (photoPickerLayout.isPanelVisible()) {
+        if (photoPickerLayout.isPanelVisible() && getType() != PostBundle.PHOTO) {
             photoPickerLayout.hidePanel();
             return true;
         } else {

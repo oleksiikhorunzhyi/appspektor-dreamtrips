@@ -178,7 +178,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
-                .data(new PostBundle(null, PostBundle.PHOTO))
+                .data(new PostBundle(null, PostBundle.ANY, true))
                 .build());
 
     }

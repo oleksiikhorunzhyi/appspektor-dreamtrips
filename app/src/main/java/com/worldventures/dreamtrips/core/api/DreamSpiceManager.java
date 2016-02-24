@@ -240,7 +240,7 @@ public class DreamSpiceManager extends SpiceManager {
                     errorMessage = context
                             .getResources().getString(R.string.no_connection);
                 }
-            } else if (isShouldToBeProcessedLocaly(request, retrofitError)) {
+            } else if (isShouldToBeProcessedLocally(request, retrofitError)) {
                 errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
             } else {
                 errorMessage = message;
@@ -251,7 +251,7 @@ public class DreamSpiceManager extends SpiceManager {
         return errorMessage;
     }
 
-    private boolean isShouldToBeProcessedLocaly(SpiceRequest request, RetrofitError retrofitError) {
+    private boolean isShouldToBeProcessedLocally(SpiceRequest request, RetrofitError retrofitError) {
         return retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY
                 && request instanceof DreamTripsRequest && ((DreamTripsRequest) request).getErrorMessage() != 0;
     }

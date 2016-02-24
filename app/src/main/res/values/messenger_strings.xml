@@ -56,7 +56,6 @@
     <string name="chat_subtitle_format_group_chat_offline">No users online</string>
     <string name="chat_message_edittext_hint">Your message</string>
     <string name="chat_message_send_button_text">Send</string>
-    <string name="chat_message_toast_empty_message_error">Please provide some message</string>
     <string name="chat_error_loading">Could not load chat history</string>
     <string name="chat_unread_messages_textview_format">You have %d unread messages</string>
     <string name="chat_more_typing_users_hint_format">and %d more</string>

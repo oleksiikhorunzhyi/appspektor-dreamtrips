@@ -36,4 +36,6 @@ public interface ChatScreen extends MessengerScreen {
     Observable<TextViewTextChangeEvent> getEditMessageObservable();
 
     void showContextualAction(Menu menu, DataMessage message);
+
+    void enableSendMessageButton(boolean enable);
 }

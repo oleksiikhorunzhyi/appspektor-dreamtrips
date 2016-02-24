@@ -56,7 +56,6 @@
     <string name="chat_subtitle_format_group_chat_offline">目前无人在线上</string>
     <string name="chat_message_edittext_hint">您的讯息</string>
     <string name="chat_message_send_button_text">寄送</string>
-    <string name="chat_message_toast_empty_message_error">请提供讯息</string>
     <string name="chat_error_loading">无法载入历史聊天讯息</string>
     <string name="chat_unread_messages_textview_format">你有%d 未读讯息</string>
     <string name="chat_more_typing_users_hint_format">和%d 更多</string>

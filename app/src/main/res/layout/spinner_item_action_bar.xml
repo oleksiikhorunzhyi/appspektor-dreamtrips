@@ -6,4 +6,5 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:textAppearance="@style/ActionBarTitle"
+    android:textSize="@dimen/conversation_list_spinner_item_action_bar_text_size"
     android:textAlignment="inherit"/>

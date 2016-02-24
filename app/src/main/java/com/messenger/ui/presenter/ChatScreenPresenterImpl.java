@@ -8,7 +8,6 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.AttachmentDelegate;
@@ -215,6 +214,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         connectTypingStartAction();
         connectTypingStopAction();
+        connectShowSendMessageAction();
     }
 
     @Override
@@ -558,13 +558,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Message process
     ///////////////////////////////////////////////////////////////////////////
 
+    private void connectShowSendMessageAction() {
+        getView().getEditMessageObservable()
+                .compose(bindVisibility())
+                .subscribe(event -> {
+                    getView().enableSendMessageButton(TextUtils.getTrimmedLength(event.text()) > 0);
+                });
+    }
+
     @Override
     public boolean sendMessage(String message) {
-        if (TextUtils.getTrimmedLength(message) == 0) {
-            Toast.makeText(getContext(), R.string.chat_message_toast_empty_message_error, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
         submitOneChatAction(chat -> chat.send(new Message.Builder()
                 .messageBody(messageBodyCreator.provideForText(message))
                 .fromId(user.getId())

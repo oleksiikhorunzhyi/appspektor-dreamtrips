@@ -1,9 +1,15 @@
 
+buildscript {
+    repositories { flatDir dirs: "libs" }
+    dependencies { classpath 'pl.itako:icon-version:1.1.2' }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
+apply plugin: 'icon-version'
 //
 apply from: 'helper-methods.gradle'
 apply from: 'variant-filter.gradle'
@@ -20,6 +26,12 @@ repositories {
     maven { url "http://dl.bintray.com/populov/maven" }
     maven { url "https://github.com/shaubert/maven-repo/raw/master/snapshots" }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
+}
+
+iconVersionConfig {
+    fontSize = 16
+    verticalLinePadding = 2
+    backgroundOverlayColor = [222, 46, 36, 255]
 }
 
 android {

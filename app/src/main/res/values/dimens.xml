@@ -154,18 +154,15 @@
     <!--messenger-->
 
     <!-- Action bar -->
-    <dimen name="action_bar_title_size">24sp</dimen>
     <dimen name="action_bar_subtitle_size">10sp</dimen>
-    <dimen name="action_bar_spinner_dropdown_item_horizontal_padding">10dp</dimen>
-    <dimen name="action_bar_spinner_dropdown_item_vertical_padding">8dp</dimen>
+    <dimen name="action_bar_spinner_dropdown_item_horizontal_padding">12dp</dimen>
+    <dimen name="action_bar_spinner_dropdown_item_vertical_padding">10dp</dimen>
 
     <!-- Misc -->
     <dimen name="online_indicator_size_inner_ring">7dp</dimen>
     <dimen name="online_indicator_size">8dp</dimen>
 
     <dimen name="list_item_avatar_image_view_size">60dp</dimen>
-    <dimen name="list_item_small_avatar_image_spacing">2dp</dimen>
-    <!--list_item_avatar_image_view_size - list_item_small_avatar_image_spacing / 2 -->
     <dimen name="list_item_small_avatar_image_size">29dp</dimen>
     <dimen name="list_item_description_text_size">14sp</dimen>
     <dimen name="list_item_horizontal_padding">13dp</dimen>
@@ -173,7 +170,7 @@
 
     <!-- Conversation list screen -->
     <dimen name="new_chat_conversation_list_last_message_textview_textsize">10sp</dimen>
-    <dimen name="conversation_list_spinner_dropdown_item_action_bar_text_size">18sp</dimen>
+    <dimen name="conversation_list_spinner_dropdown_item_action_bar_text_size">16sp</dimen>
     <dimen name="conversation_list_spinner_item_action_bar_text_size">20sp</dimen>
     <dimen name="conversation_list_search_text_size">12sp</dimen>
     <dimen name="conversation_list_search_edit_text_padding">5dp</dimen>
@@ -209,7 +206,6 @@
     <dimen name="chat_action_bar_subtitle_bottom_margin">5dp</dimen>
     <dimen name="chat_avatar_size">@dimen/list_item_small_avatar_image_size</dimen>
     <dimen name="chat_list_row_margin">4dp</dimen>
-    <dimen name="chat_list_avatar_margin">@dimen/list_item_small_avatar_image_spacing</dimen>
     <dimen name="chat_list_date_entry_text_size">10sp</dimen>
     <dimen name="chat_list_username_text_size">10sp</dimen>
     <dimen name="chat_list_username_bottom_margin">4dp</dimen>

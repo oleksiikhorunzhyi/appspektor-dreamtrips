@@ -38,6 +38,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFra
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
@@ -45,7 +47,6 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditiona
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.PostFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendSearchFragment;
@@ -141,7 +142,8 @@ public enum Route {
     PREVIEW_TEMPLATE(PreviewTemplateFragment.class),
     COMMENTS(CommentableFragment.class, R.string.comments_title),
     EDIT_COMMENT(EditCommentFragment.class, R.string.empty),
-    POST_CREATE(PostFragment.class),
+    POST_CREATE(CreateFeedPostFragment.class),
+    PHOTO_CREATE(CreateTripImageFragment.class),
     PHOTO_EDIT(PhotoEditFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),

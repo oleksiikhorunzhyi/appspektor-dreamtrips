@@ -205,10 +205,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    protected void photoUploaded(UploadTask task) {
-
-    }
-
     private void resetLazyLoadFields() {
         previousTotal = 0;
         loading = false;

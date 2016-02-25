@@ -1,8 +1,5 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import android.net.Uri;
-import android.support.v4.app.Fragment;
-
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.SpiceRequest;
@@ -10,11 +7,9 @@ import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMemberPhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.events.MyImagesSelectionEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,41 +54,12 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
 
-            attachImages(Queryable.from(event.getImages()).toList(), event.getRequestType());
-        }
-    }
-
-    public void attachImages(List<ChosenImage> photos, int type) {
-        if (photos.size() == 0) {
-            return;
-        }
-
-        eventBus.post(new MyImagesSelectionEvent());
-
-        String fileThumbnail = photos.get(0).getFileThumbnail();
-        imageSelected(Uri.parse(fileThumbnail), type);
-    }
-
-    public void imageSelected(Uri uri, int requestType) {
-        if (activityRouter != null) {
-            String type = "";
-            switch (requestType) {
-                case PickImageDelegate.CAPTURE_PICTURE:
-                    type = "camera";
-                    break;
-                case PickImageDelegate.PICK_PICTURE:
-                    type = "album";
-                    break;
-                case PickImageDelegate.FACEBOOK:
-                    type = "facebook";
-                    break;
-            }
-
-            activityRouter.openCreatePhoto((Fragment) view, uri, type);
+            view.attachImages(Queryable.from(event.getImages()).toList(), event.getRequestType());
         }
     }
 
     public interface View extends TripImagesListPresenter.View {
 
+        void attachImages(List<ChosenImage> photos, int requestType);
     }
 }

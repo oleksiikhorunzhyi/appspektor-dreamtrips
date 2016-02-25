@@ -62,7 +62,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     private int pickLimit;
 
     private PhotoPickerListener photoPickerListener;
-    private OnCancelClickListener onCancelClickListener;
 
     public PhotoPickerLayout(Context context) {
         this(context, null);
@@ -212,8 +211,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         }
 
         hidePanel();
-
-        if (onCancelClickListener != null) onCancelClickListener.onCancel();
     }
 
     private void updateCancelButtonState() {
@@ -268,18 +265,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         photoPickerDelegate.setOnDoneClickListener(onDoneClickListener);
     }
 
-    public void setOnCancelClickListener(OnCancelClickListener onCancelClickListener) {
-        this.onCancelClickListener = onCancelClickListener;
-    }
-
     public interface OnDoneClickListener {
 
         void onDone(List<ChosenImage> chosenImages, int type);
-    }
-
-    public interface OnCancelClickListener {
-
-        void onCancel();
     }
 
     private void clearAllBackStack() {

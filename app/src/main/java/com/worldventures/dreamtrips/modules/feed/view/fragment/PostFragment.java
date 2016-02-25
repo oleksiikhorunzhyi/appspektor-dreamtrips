@@ -112,7 +112,6 @@ public class PostFragment extends RxBaseFragmentWithArgs<PostPresenter, PostBund
         super.onResume();
         if (getType() == PostBundle.PHOTO) {
             post.setVisibility(View.GONE);
-            photoPickerLayout.setOnCancelClickListener(() -> getPresenter().cancelClicked());
         } else {
             setupTextField();
         }

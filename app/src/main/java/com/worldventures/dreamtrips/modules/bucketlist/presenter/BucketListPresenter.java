@@ -89,6 +89,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
 
     private void fillWithItems() {
         if (bucketItems.isEmpty()) {
+            filteredItems.clear();
             currentItem = null;
         } else {
             filteredItems.clear();

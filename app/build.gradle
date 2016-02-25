@@ -12,7 +12,6 @@ apply plugin: 'io.fabric'
 apply plugin: 'icon-version'
 //
 apply from: 'helper-methods.gradle'
-apply from: 'variant-filter.gradle'
 
 repositories {
     jcenter()
@@ -145,11 +144,6 @@ android {
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
         }
     }
-
-    // TODO : does not work so far. Move to external method later
-//    variantFilter { variant ->
-//        variant.ignore = ignoreVariant(variant)
-//    }
 
     variantFilter { variant ->
         variant.ignore = true

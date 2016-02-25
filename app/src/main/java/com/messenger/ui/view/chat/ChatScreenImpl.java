@@ -145,6 +145,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         messageEditText.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus) photoPickerLayoutDelegate.hidePicker();
         });
+        photoPickerLayoutDelegate.disableEditTextUntilPickerIsShown(messageEditText);
     }
 
     @Override

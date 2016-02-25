@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.widget.EditText;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -78,5 +79,34 @@ public class PhotoPickerLayoutDelegate {
             photoPickerLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             photoPickerLayout.requestLayout();
         }
+    }
+
+    public void disableEditTextUntilPickerIsShown(EditText editText) {
+        photoPickerLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                if (!editText.hasFocus()) editText.setEnabled(false);
+            }
+
+            @Override
+            public void onPanelCollapsed(View panel) {
+                editText.setEnabled(true);
+            }
+
+            @Override
+            public void onPanelExpanded(View panel) {
+                editText.setEnabled(true);
+            }
+
+            @Override
+            public void onPanelAnchored(View panel) {
+                editText.setEnabled(true);
+            }
+
+            @Override
+            public void onPanelHidden(View panel) {
+                editText.setEnabled(true);
+            }
+        });
     }
 }

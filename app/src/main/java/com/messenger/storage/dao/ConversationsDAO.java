@@ -36,6 +36,7 @@ public class ConversationsDAO extends BaseDAO {
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
     public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
     public static final String GROUP_CONVERSATION_NAME_COLUMN = "groupName";
+    public static final String GROUP_CONVERSATION_USER_COUNT_COLUMN = "groupUserCount";
     public static final String LAST_MESSAGE_AUTHOR_COLUMN = "authorName";
 
     private Lazy<DataUser> currentUser;
@@ -112,8 +113,8 @@ public class ConversationsDAO extends BaseDAO {
                                                 "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
 
-                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') || ' ('||COUNT(uuu." + DataUser$Table._ID + ")||')'" +
-                "as " + GROUP_CONVERSATION_NAME_COLUMN + " " +
+                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
+                "COUNT(uuu." + DataUser$Table._ID + ") as " + GROUP_CONVERSATION_USER_COUNT_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +

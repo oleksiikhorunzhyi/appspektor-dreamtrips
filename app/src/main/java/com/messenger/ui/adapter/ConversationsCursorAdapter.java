@@ -100,10 +100,16 @@ public class ConversationsCursorAdapter
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
         DataConversation conversation = SqlUtils.convertToModel(true, DataConversation.class, cursor);
-        if (TextUtils.isEmpty(conversation.getSubject())) {
-            String groupChatName = cursor.getString(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_NAME_COLUMN));
-            conversation.setSubject(groupChatName);
+        if (conversationHelper.isGroup(conversation) || conversationHelper.isTripChat(conversation)) {
+            String groupChatName = conversation.getSubject();
+            if (TextUtils.isEmpty(groupChatName)) {
+                groupChatName = cursor.getString(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_NAME_COLUMN));
+            }
+            int userCount = cursor.getInt(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_USER_COUNT_COLUMN));
+
+            conversationHelper.setGroupChatTitle(holder.getNameTextView(), groupChatName, userCount);
         }
+
         DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
         String attachmentType = cursor.getString(cursor.getColumnIndex(ConversationsDAO.ATTACHMENT_TYPE_COLUMN));
 

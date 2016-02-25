@@ -1,5 +1,7 @@
 package com.messenger.ui.helper;
 
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
@@ -42,18 +44,7 @@ public class ConversationHelper {
                 titleBuilder.append(' ').append("(").append(usersCount).append(")");
                 target.setText(titleBuilder.toString());
             };
-            if (target.getMeasuredWidth() == 0) {
-                target.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                    @Override
-                    public boolean onPreDraw() {
-                        target.getViewTreeObserver().removeOnPreDrawListener(this);
-                        textSetter.run();
-                        return true;
-                    }
-                });
-            } else {
-                textSetter.run();
-            }
+            runTaskAfterMeasure(target, textSetter);
         }
     }
 
@@ -76,12 +67,53 @@ public class ConversationHelper {
         target.setText(subtitle);
     }
 
+    public void setGroupChatTitle(TextView target, String subject, int userCount) {
+        if (TextUtils.isEmpty(subject)) return;
+
+        Runnable runnable = () -> {
+            String counterLabel = String.format(" (%s)", userCount);
+            double widthOfEllipsize = getTextWidthWithMargins(counterLabel, target.getTextSize()) * 1.2; // 20 % infelicity
+            CharSequence ellipsizedText = TextUtils.ellipsize(subject, target.getPaint(), target.getWidth() - (int) widthOfEllipsize, TextUtils.TruncateAt.END);
+            target.setText(ellipsizedText + counterLabel);
+        };
+
+        runTaskAfterMeasure(target, runnable);
+    }
+
+    private void runTaskAfterMeasure(TextView target, Runnable runTask){
+        if (target.getMeasuredWidth() == 0) {
+            target.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    target.getViewTreeObserver().removeOnPreDrawListener(this);
+                    runTask.run();
+                    return true;
+                }
+            });
+        } else {
+            runTask.run();
+        }
+    }
+
+    private int getTextWidthWithMargins(String text, float textSize) {
+        Rect bounds = new Rect();
+        Paint paint = new Paint();
+        paint.setTextSize(textSize);
+        paint.getTextBounds(text, 0, text.length(), bounds);
+
+        return bounds.right;
+    }
+
     public static boolean isGroup(DataConversation conversation) {
         return conversation.getType() != null && !conversation.getType().equals(ConversationType.CHAT);
     }
 
     public static boolean isSingleChat(DataConversation conversation) {
         return ConversationType.CHAT.equals(conversation.getType());
+    }
+
+    public static boolean isTripChat(DataConversation conversation) {
+        return TextUtils.equals(conversation.getType() , ConversationType.TRIP);
     }
 
     public static boolean isOwner(DataConversation conversation, DataUser user) {

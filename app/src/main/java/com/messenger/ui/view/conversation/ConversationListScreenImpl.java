@@ -34,6 +34,7 @@ import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -131,7 +132,11 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
     @Override
     public void setSelectedConversationId(String conversationId) {
-        adapter.setSelectedConversationId(conversationId);
+        if (ViewUtils.isTablet(getContext()) && ViewUtils.isLandscapeOrientation(getContext())) {
+            adapter.setSelectedConversationId(conversationId);
+        } else {
+            adapter.setSelectedConversationId(null);
+        }
     }
 
     protected BaseAdapter createSpinnerAdapter() {

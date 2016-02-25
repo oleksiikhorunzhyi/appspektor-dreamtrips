@@ -45,7 +45,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     protected SnappyRepository db;
 
     protected TripImagesType type;
-    private boolean fullscreenMode;
+    protected boolean fullscreenMode;
 
     private int previousTotal = 0;
     private boolean loading = true;
@@ -349,7 +349,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         //
         if (event.isSuccess) {
             processPhoto(photos.indexOf(event.task), event.photo);
-            uploadTags(event.photo.getFSId());
         } else {
             photoError(getCurrentTask(event.task.getId()));
         }

@@ -27,6 +27,14 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
     }
 
     @Override
+    public void onEventMainThread(ImageUploadedEvent event) {
+        super.onEventMainThread(event);
+        if (!fullscreenMode && event.isSuccess) {
+            uploadTags(event.photo.getFSId());
+        }
+    }
+
+    @Override
     protected void photoUploaded(UploadTask task) {
         super.photoUploaded(task);
         doRequest(new AddTripPhotoCommand(task),

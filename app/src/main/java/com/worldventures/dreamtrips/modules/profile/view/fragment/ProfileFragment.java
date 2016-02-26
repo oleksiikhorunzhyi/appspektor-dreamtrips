@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreatePostBundle;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -135,8 +134,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
     @Override
     public void openPost() {
-        showPostContainer();
-
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())

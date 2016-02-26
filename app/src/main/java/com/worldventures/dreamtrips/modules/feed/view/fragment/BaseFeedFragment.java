@@ -114,11 +114,6 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
                 .build());
     }
 
-    protected void showPostContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
-    }
-
     protected abstract BaseArrayListAdapter createAdapter();
 
     @Override

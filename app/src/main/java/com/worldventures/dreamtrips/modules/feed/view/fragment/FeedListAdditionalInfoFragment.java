@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -20,7 +22,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreatePostBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.feed.view.util.NestedLinearLayoutManager;
@@ -32,7 +33,6 @@ import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -59,6 +59,8 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     View emptyView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.post_avatar)
+    SimpleDraweeView avatar;
 
     CirclesFilterPopupWindow filterPopupWindow;
     BaseArrayListAdapter<User> adapter;
@@ -157,19 +159,12 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .build());
     }
 
-    private void openPost() {
-        showPostContainer();
-
-        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_details_floating)
-                .build());
+    @Override
+    public void setUserAvatar(Uri uri) {
+        avatar.setImageURI(uri);
     }
 
-    private void openSharePhoto() {
-        showPostContainer();
-
+    private void openPost() {
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
                 .containerId(R.id.container_details_floating)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -179,7 +174,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
                 .build());
-
     }
 
     protected void openSearch() {
@@ -188,19 +182,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .build());
     }
 
-    protected void showPostContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
-    }
-
     @OnClick(R.id.share_post)
     protected void onPostClicked() {
         openPost();
-    }
-
-    @OnClick(R.id.share_photo)
-    protected void onSharePhotoClick() {
-        openSharePhoto();
     }
 
     @OnClick(R.id.global)

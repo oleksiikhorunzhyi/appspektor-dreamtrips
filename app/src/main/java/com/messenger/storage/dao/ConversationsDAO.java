@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
@@ -85,7 +86,7 @@ public class ConversationsDAO extends BaseDAO {
                 .queryClose();
     }
 
-    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type) {
+    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type, String searchQuery) {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
@@ -126,13 +127,23 @@ public class ConversationsDAO extends BaseDAO {
                 "ON uu." + DataUser$Table._ID + "=(" +
                 "SELECT pp." + DataParticipant$Table.USERID + " FROM " + DataParticipant.TABLE_NAME + " pp " +
                 "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1)"
+                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) " +
+
+                "WHERE c." + DataConversation$Table.STATUS + "='" + ConversationStatus.PRESENT + "' "
         );
 
-        query.append("WHERE c." + DataConversation$Table.STATUS + "='" + ConversationStatus.PRESENT + "' ");
+
         boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("AND c." + DataConversation$Table.TYPE + " not like '" + ConversationType.CHAT + "'");
+            query.append("AND c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
+        }
+
+        if (!TextUtils.isEmpty(searchQuery)) {
+            String wherePattern = "AND (" +
+                    "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
+                    "OR c." + DataConversation$Table.SUBJECT + " IS '' AND uu." + DataUser$Table.FIRSTNAME + " || ' ' || uu." + DataUser$Table.LASTNAME  + " LIKE '%" + searchQuery + "%')";
+            query.append(wherePattern);
+
         }
 
         query.append("GROUP BY c." + DataConversation$Table._ID + " " +

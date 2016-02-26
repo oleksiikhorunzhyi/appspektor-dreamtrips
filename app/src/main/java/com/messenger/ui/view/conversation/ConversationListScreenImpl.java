@@ -162,7 +162,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
-        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser());
+        adapter = new ConversationsCursorAdapter(getContext(), presenter.getUser());
         adapter.setSwipeButtonsListener(this);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
@@ -195,12 +195,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
     @Override
     public void showConversations(Cursor cursor) {
-        this.showConversations(cursor, null);
-    }
-
-    @Override
-    public void showConversations(Cursor cursor, String searchFilter) {
-        adapter.changeCursor(cursor, searchFilter);
+        adapter.changeCursor(cursor);
     }
 
     @Override

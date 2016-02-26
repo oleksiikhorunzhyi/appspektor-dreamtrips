@@ -2,8 +2,6 @@ package com.messenger.ui.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorWrapper;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -28,16 +26,11 @@ import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.MessageVersionHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import rx.Observable;
-import rx.Subscription;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 import static com.messenger.messengerservers.constant.ConversationType.GROUP;
@@ -53,7 +46,6 @@ public class ConversationsCursorAdapter
     private static final int VIEW_TYPE_GROUP_CLOSE_CONVERSATION = 4;
 
     private final Context context;
-    private final RecyclerView recyclerView;
     private final DataUser currentUser;
 
     private SwipeButtonsListener swipeButtonsListener;
@@ -63,10 +55,6 @@ public class ConversationsCursorAdapter
     private SimpleDateFormat todayDateFormat;
     private SimpleDateFormat moreThanTwoDaysAgoFormat;
 
-    // for filter
-    private Subscription mainSubscription;
-
-    //
     private String selectedConversationId;
 
     public interface ConversationClickListener {
@@ -79,10 +67,9 @@ public class ConversationsCursorAdapter
         void onMoreOptionsButtonPressed(DataConversation conversation);
     }
 
-    public ConversationsCursorAdapter(Context context, RecyclerView recyclerView, DataUser currentUser) {
+    public ConversationsCursorAdapter(Context context, DataUser currentUser) {
         super(null);
         this.context = context;
-        this.recyclerView = recyclerView;
         this.currentUser = currentUser;
 
         conversationHelper = new ConversationHelper();
@@ -240,30 +227,6 @@ public class ConversationsCursorAdapter
         }
     }
 
-    public void changeCursor(Cursor newCursor, String filter) {
-        if (mainSubscription != null && !mainSubscription.isUnsubscribed()) {
-            mainSubscription.unsubscribe();
-        }
-        //
-        if (TextUtils.isEmpty(filter)) {
-            closeCursorIfNeed(swapCursor(newCursor));
-            return;
-        }
-
-        mainSubscription = Observable.defer(() -> Observable.just(new FilterCursorWrapper(newCursor, filter)))
-                .compose(new IoToMainComposer<>())
-                .compose(RxLifecycle.bindView(recyclerView))
-                .subscribe(this::swapCursor);
-    }
-
-    private void closeCursorIfNeed(Cursor oldCursor) {
-        if (oldCursor instanceof FilterCursorWrapper) {
-            oldCursor = ((FilterCursorWrapper) oldCursor).getWrappedCursor();
-        }
-
-        if (oldCursor != null && oldCursor != getCursor()) oldCursor.close();
-    }
-
     public void setConversationClickListener(ConversationClickListener conversationClickListener) {
         this.conversationClickListener = conversationClickListener;
     }
@@ -279,91 +242,5 @@ public class ConversationsCursorAdapter
 
     public void setSwipeButtonsListener(SwipeButtonsListener swipeButtonsListener) {
         this.swipeButtonsListener = swipeButtonsListener;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Search related
-    ///////////////////////////////////////////////////////////////////////////
-
-    // TODO: 2/18/16 implement via SQL query
-    public static class FilterCursorWrapper extends CursorWrapper {
-        private int[] index;
-        private int count;
-        private int pos;
-
-        public FilterCursorWrapper(Cursor cursor, String filter) {
-            super(cursor);
-            filter = filter.toLowerCase();
-
-            if (!TextUtils.isEmpty(filter)) {
-                this.count = super.getCount();
-                this.index = new int[this.count];
-                for (int i = 0; i < this.count; i++) {
-                    super.moveToPosition(i);
-                    DataConversation conversation
-                            = SqlUtils.convertToModel(true, DataConversation.class, cursor);
-                    String conversationName;
-                    if (ConversationHelper.isGroup(conversation)) {
-                        if (TextUtils.isEmpty(conversationName = cursor.getString(cursor.getColumnIndex(DataConversation$Table.SUBJECT)))) {
-                            conversationName = cursor.getString(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_NAME_COLUMN));
-                        }
-                    } else {
-                        conversationName = cursor.getString(cursor.getColumnIndex(ConversationsDAO.SINGLE_CONVERSATION_NAME_COLUMN));
-                    }
-                    if (conversationName.toLowerCase().contains(filter)) {
-                        this.index[this.pos++] = i;
-                    }
-                }
-                this.count = this.pos;
-                this.pos = 0;
-                super.moveToFirst();
-            } else {
-                this.count = super.getCount();
-                this.index = new int[this.count];
-                for (int i = 0; i < this.count; i++) {
-                    this.index[i] = i;
-                }
-            }
-        }
-
-        @Override
-        public boolean move(int offset) {
-            return this.moveToPosition(this.pos + offset);
-        }
-
-        @Override
-        public boolean moveToNext() {
-            return this.moveToPosition(this.pos + 1);
-        }
-
-        @Override
-        public boolean moveToPrevious() {
-            return this.moveToPosition(this.pos - 1);
-        }
-
-        @Override
-        public boolean moveToFirst() {
-            return this.moveToPosition(0);
-        }
-
-        @Override
-        public boolean moveToLast() {
-            return this.moveToPosition(this.count - 1);
-        }
-
-        @Override
-        public boolean moveToPosition(int position) {
-            return !(position >= this.count || position < 0) && super.moveToPosition(this.index[position]);
-        }
-
-        @Override
-        public int getCount() {
-            return this.count;
-        }
-
-        @Override
-        public int getPosition() {
-            return this.pos;
-        }
     }
 }

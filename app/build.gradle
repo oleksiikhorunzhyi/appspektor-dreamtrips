@@ -80,7 +80,7 @@ android {
 
             ext.enableCrashlytics = false
 
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com/"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://techery-qa-dt-social.techery.io/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
@@ -92,7 +92,7 @@ android {
 
             ext.enableCrashlytics = false
 
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com/"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://techery-qa-dt-social.techery.io/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
@@ -100,6 +100,8 @@ android {
         external {
             flavorDimension "build"
             // don't setup minSdkVersion to inherit the one from the "flavors" dimension
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
+            //
             ext.enableCrashlytics = true
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
         }
@@ -110,8 +112,6 @@ android {
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
 
             manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
 
             buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 
@@ -127,8 +127,6 @@ android {
 
             manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
 
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
-
             buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 
             buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
@@ -142,8 +140,6 @@ android {
             versionName = "${versionMajor}.${versionMinor}.${versionPatch}-messenger" + "-${versionBuild}"
 
             manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
 
             buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
 

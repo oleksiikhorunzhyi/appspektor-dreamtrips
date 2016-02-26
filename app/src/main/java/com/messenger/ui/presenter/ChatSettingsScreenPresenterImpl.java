@@ -192,9 +192,13 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     public void applyNewChatSubject(String subject) {
         Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
                 .createMultiUserChatObservable(conversationId, facade.getUsername())
-                .flatMap(multiUserChat -> multiUserChat.setSubject(subject));
+                .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
+                .map(multiUserChat -> {
+                    multiUserChat.close();
+                    return multiUserChat;
+                });
 
-        Observable.zip(multiUserChatObservable, conversationObservable,
+        Observable.zip(multiUserChatObservable, conversationObservable.first(),
                 (multiUserChat, conversation) -> conversation)
                 .compose(new IoToMainComposer<>())
                 .subscribe(conversation -> {

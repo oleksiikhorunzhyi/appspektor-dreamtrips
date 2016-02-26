@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -174,10 +173,11 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(pair -> {
                         DataConversation conversation = pair.first;
-                        participantsDAO.delete(conversation.getId(), pair.second.getId());
-                        if (TextUtils.equals(messengerServerFacade.getUsername(), pair.second.getId())) { // if it is owner action
+                        DataUser dataUser = pair.second;
+                        participantsDAO.delete(conversation.getId(), dataUser.getId());
+                        if (TextUtils.equals(messengerServerFacade.getUsername(), dataUser.getId())) { // if it is owner action
                             conversation.setStatus(leave ? ConversationStatus.LEFT : ConversationStatus.KICKED);
-                            conversationsDAO.save(Collections.singletonList(conversation));
+                            conversationsDAO.save(conversation);
                         }
                     });
         });

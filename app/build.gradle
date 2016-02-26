@@ -61,7 +61,7 @@ android {
         buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
         buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
 
-        buildConfigField 'String', 'MESSENGER_API_URL', '"ejabberd-dev-1245504791.us-east-1.elb.amazonaws.com"'
+        buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
         buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
 
         manifestPlaceholders = [:]
@@ -181,6 +181,8 @@ android {
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
             resValue "string", "facebook_app_id", "761062457321921"
+
+            buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp.worldventures.biz"'
         }
 
     }

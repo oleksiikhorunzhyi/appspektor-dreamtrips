@@ -7,12 +7,9 @@ import android.view.View;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresenter;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -20,9 +17,6 @@ import icepick.State;
 
 @Layout(R.layout.layout_post)
 public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostPresenter> implements CreateFeedPostPresenter.View {
-
-    @Inject
-    BackStackDelegate backStackDelegate;
 
     @InjectView(R.id.photo_picker)
     PhotoPickerLayout photoPickerLayout;
@@ -52,8 +46,6 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
     @Override
     public void onResume() {
         super.onResume();
-        backStackDelegate.setListener(this::onBackPressed);
-        //
         updatePickerState();
     }
 
@@ -66,12 +58,6 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
             else if (!hasFocus)
                 name.requestFocus();
         });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        backStackDelegate.setListener(null);
     }
 
     @Override
@@ -102,14 +88,13 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
         image.setEnabled(!pickerDisabled);
     }
 
-    private boolean onBackPressed() {
+    @Override
+    protected boolean onBackPressed() {
         if (photoPickerLayout.isPanelVisible()) {
             photoPickerLayout.hidePanel();
             return true;
-        } else {
-            getPresenter().cancelClicked();
-            return true;
         }
+        return super.onBackPressed();
     }
 
     @OnClick(R.id.image)

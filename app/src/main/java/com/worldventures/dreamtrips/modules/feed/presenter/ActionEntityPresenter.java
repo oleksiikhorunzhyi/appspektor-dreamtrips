@@ -1,11 +1,15 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
 import icepick.State;
 
@@ -17,33 +21,35 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     @Override
     public void takeView(V view) {
         super.takeView(view);
+        if (cachedPostEntity == null) {
+            cachedPostEntity = new CachedPostEntity();
+        }
+
+        updateUi();
+    }
+
+    protected void updateUi() {
         view.setName(getAccount().getFullName());
         view.setAvatar(getAccount().getAvatar().getThumb());
+        view.setText(cachedPostEntity.getText());
     }
 
     public void cancelClicked() {
-        if (TextUtils.isEmpty(cachedPostEntity.getText()) &&
-                cachedPostEntity.getUploadTask() == null) {
-            view.cancel();
-        } else {
+        if (isChanged()) {
             view.showCancelationDialog();
+        } else {
+            view.cancel();
         }
     }
+
+    protected abstract boolean isChanged();
 
     public void postInputChanged(String input) {
         cachedPostEntity.setText(input);
         enablePostButton();
     }
 
-    private void enablePostButton() {
-        if ((!TextUtils.isEmpty(cachedPostEntity.getText()) && cachedPostEntity.getUploadTask() == null) ||
-                (cachedPostEntity.getUploadTask() != null &&
-                        cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))) {
-            view.enableButton();
-        } else {
-            view.disableButton();
-        }
-    }
+    protected abstract void enablePostButton();
 
     public abstract void post();
 
@@ -64,6 +70,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         void disableButton();
 
         void onPostError();
+
+        void attachPhoto(Uri uri);
     }
 
 }

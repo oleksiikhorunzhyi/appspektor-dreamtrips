@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.model.CachedPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
@@ -34,20 +33,15 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                 processUploadTask();
             }
         });
-        if (cachedPostEntity == null) {
-            cachedPostEntity = new CachedPostEntity();
-        } else {
+
+        if (cachedPostEntity != null) {
             Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
         }
-
-        view.setName(getAccount().getFullName());
-        view.setAvatar(getAccount().getAvatar().getThumb());
-
-        updateUi();
     }
 
+    @Override
     protected void updateUi() {
-        view.setText(cachedPostEntity.getText());
+        super.updateUi();
 
         if (cachedPostEntity.getUploadTask() != null && cachedPostEntity.getUploadTask().getStatus() != null) {
             view.attachPhoto(Uri.parse(cachedPostEntity.getUploadTask().getFilePath()));
@@ -61,6 +55,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
         }
 
         enablePostButton();
+    }
+
+    @Override
+    protected boolean isChanged() {
+        return !TextUtils.isEmpty(cachedPostEntity.getText()) ||
+                cachedPostEntity.getUploadTask() != null;
     }
 
     @Override
@@ -92,6 +92,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
         view = null;
     }
 
+    @Override
     protected void enablePostButton() {
         if ((!TextUtils.isEmpty(cachedPostEntity.getText()) && cachedPostEntity.getUploadTask() == null) ||
                 (cachedPostEntity.getUploadTask() != null &&
@@ -194,8 +195,6 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
     }
 
     public interface View extends ActionEntityPresenter.View {
-
-        void attachPhoto(Uri uri);
 
         void showProgress();
 

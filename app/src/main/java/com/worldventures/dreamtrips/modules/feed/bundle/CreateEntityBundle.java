@@ -8,12 +8,12 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreatePostBundle implements Parcelable {
+public class CreateEntityBundle implements Parcelable {
 
     private List<ChosenImage> images;
     private int imageType;
 
-    public CreatePostBundle(List<ChosenImage> images, int imageType) {
+    public CreateEntityBundle(List<ChosenImage> images, int imageType) {
         this.images = images;
         this.imageType = imageType;
     }
@@ -37,19 +37,19 @@ public class CreatePostBundle implements Parcelable {
         dest.writeInt(this.imageType);
     }
 
-    protected CreatePostBundle(Parcel in) {
+    protected CreateEntityBundle(Parcel in) {
         this.images = new ArrayList<>();
         in.readList(this.images, List.class.getClassLoader());
         this.imageType = in.readInt();
     }
 
-    public static final Creator<CreatePostBundle> CREATOR = new Creator<CreatePostBundle>() {
-        public CreatePostBundle createFromParcel(Parcel source) {
-            return new CreatePostBundle(source);
+    public static final Creator<CreateEntityBundle> CREATOR = new Creator<CreateEntityBundle>() {
+        public CreateEntityBundle createFromParcel(Parcel source) {
+            return new CreateEntityBundle(source);
         }
 
-        public CreatePostBundle[] newArray(int size) {
-            return new CreatePostBundle[size];
+        public CreateEntityBundle[] newArray(int size) {
+            return new CreateEntityBundle[size];
         }
     };
 }

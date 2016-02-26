@@ -612,4 +612,8 @@
     <string name="error_fail_to_mark_notification">Failed to mark notification</string>
     <string name="error_fail_to_mark_notifications">Failed to mark notifications</string>
 
+    <string name="say_something">Say something to the world</string>
+
+    <string name="update">Update</string>
+
 </resources>

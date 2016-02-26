@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreatePostBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import java.util.List;
@@ -83,7 +83,7 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
         if (photos.size() == 0) return;
         //
         hidePhotoPicker();
-        openCreatePhoto(new CreatePostBundle(photos, requestType));
+        openCreatePhoto(new CreateEntityBundle(photos, requestType));
     }
 
     private void setupPicker() {
@@ -98,7 +98,7 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
         photoPickerLayout.hidePanel();
     }
 
-    private void openCreatePhoto(CreatePostBundle bundle) {
+    private void openCreatePhoto(CreateEntityBundle bundle) {
         router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forRemoval()
                 .containerId(R.id.container_details_floating)
                 .fragmentManager(getActivity().getSupportFragmentManager())

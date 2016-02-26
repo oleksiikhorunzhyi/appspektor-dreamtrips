@@ -1,36 +1,19 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.net.Uri;
 import android.view.View;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreatePostBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
 import butterknife.OnClick;
 
-public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreatePostBundle>
+public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle>
         implements CreateEntityPresenter.View {
 
     @Override
     protected int getPostButtonText() {
         return R.string.post;
-    }
-
-    @Override
-    public void attachPhoto(Uri uri) {
-        if (uri != null) {
-            attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController()));
-            post.setHint(R.string.photo_hint);
-            imageContainer.setVisibility(View.VISIBLE);
-            image.setImageResource(R.drawable.ic_post_add_image_selected);
-        } else {
-            attachedPhoto.setImageURI(null);
-            post.setHint(R.string.post_hint);
-            imageContainer.setVisibility(View.GONE);
-            image.setImageResource(R.drawable.ic_post_add_image_normal);
-        }
     }
 
     @Override

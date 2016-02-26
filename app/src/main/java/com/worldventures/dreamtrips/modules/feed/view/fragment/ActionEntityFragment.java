@@ -13,14 +13,18 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -30,6 +34,9 @@ import mbanje.kurt.fabbutton.FabButton;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
         extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View {
+
+    @Inject
+    BackStackDelegate backStackDelegate;
 
     @InjectView(R.id.avatar)
     protected SimpleDraweeView avatar;
@@ -87,6 +94,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     @Override
     public void onResume() {
         super.onResume();
+        backStackDelegate.setListener(this::onBackPressed);
         setupTextField();
     }
 
@@ -103,6 +111,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     public void onPause() {
         super.onPause();
         post.removeTextChangedListener(textWatcher);
+        backStackDelegate.setListener(null);
         post.setOnFocusChangeListener(null);
     }
 
@@ -168,12 +177,32 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         post.setFocusableInTouchMode(true);
     }
 
+    @Override
+    public void attachPhoto(Uri uri) {
+        if (uri != null) {
+            attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController()));
+            post.setHint(R.string.photo_hint);
+            imageContainer.setVisibility(View.VISIBLE);
+            image.setImageResource(R.drawable.ic_post_add_image_selected);
+        } else {
+            attachedPhoto.setImageURI(null);
+            post.setHint(R.string.post_hint);
+            imageContainer.setVisibility(View.GONE);
+            image.setImageResource(R.drawable.ic_post_add_image_normal);
+        }
+    }
+
     @OnClick(R.id.post_button)
     void onPost() {
         SoftInputUtil.hideSoftInputMethod(post);
         postButton.setEnabled(false);
         post.setFocusable(false);
         getPresenter().post();
+    }
+
+    protected boolean onBackPressed() {
+        getPresenter().cancelClicked();
+        return true;
     }
 
     @OnClick(R.id.close)

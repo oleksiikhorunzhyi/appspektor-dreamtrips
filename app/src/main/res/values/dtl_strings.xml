@@ -40,7 +40,7 @@
     <string name="barcode_hint">Center the QR Code and wait it is scanned</string>
     <string name="dtl_congrats">Congratulations!</string>
     <string name="dtl_you_earned">You have earned</string>
-    <string name="dtl_total">Total DreamTrip Points:</string>
+    <string name="dtl_total">Total DreamTrips Points:</string>
     <string name="rate_hint">Please, rate this experience</string>
     <string name="dtl_success_title">Congratulations</string>
     <string name="dtl_amount_invalid">Amount is invalid</string>
@@ -51,7 +51,7 @@
     <string name="dtl_check_in">Check in &amp; earn</string>
     <string name="dtl_earn">Earn</string>
     <string name="dtl_spent_amount">$ %s</string>
-    <string name="dtl_dt_points">%d DreamTrip Points</string>
+    <string name="dtl_dt_points">%d DreamTrips Points</string>
     <string name="suggest_merchant_title">Suggest Merchant</string>
     <string name="suggest_merchant_restaurant_name_hint">Restaurant Name</string>
     <string name="suggest_merchant_restaurant_city_hint">City</string>

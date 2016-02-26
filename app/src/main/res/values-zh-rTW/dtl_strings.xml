@@ -41,7 +41,7 @@
     <string name="barcode_hint">居中QR代碼，請等候它的掃描</string>
     <string name="dtl_congrats">恭喜</string>
     <string name="dtl_you_earned">您賺取了</string>
-    <string name="dtl_total">DreamTrip總點數</string>
+    <string name="dtl_total">DreamTrips總點數</string>
     <string name="rate_hint">請給該體驗打分</string>
     <string name="dtl_success_title">恭喜</string>
     <string name="dtl_amount_invalid">金額無效</string>
@@ -52,7 +52,7 @@
     <string name="dtl_check_in">入住並賺取</string>
     <string name="dtl_earn">賺取</string>
     <string name="dtl_spent_amount">$ %s</string>
-    <string name="dtl_dt_points">%d DreamTrip點數</string>
+    <string name="dtl_dt_points">%d DreamTrips點數</string>
     <string name="suggest_merchant_title">推薦商家</string>
     <string name="suggest_merchant_restaurant_name_hint">餐廳名稱</string>
     <string name="suggest_merchant_restaurant_city_hint">城市</string>

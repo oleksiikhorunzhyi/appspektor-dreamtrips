@@ -60,7 +60,6 @@ public class ConversationsDAO extends BaseDAO {
                 .withSelection(new Select().from(DataConversation.class).byIds(conversationId).toString())
                 .build();
         return query(q, DataConversation.CONTENT_URI)
-                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> {
                     DataConversation conversation = SqlUtils.convertToModel(false, DataConversation.class, cursor);

@@ -283,7 +283,7 @@
     <string name="profile_more">更多</string>
     <string name="profile_platinum">白金会员</string>
     <string name="profile_golden">黄金会员</string>
-    <string name="profile_dt_points">%s DT点数</string>
+    <string name="profile_dt_points">%d DT点数</string>
     <string name="profile_rovia_bucks">%s Rovia币</string>
     <string name="bucket_delete_dialog">您确定要删除目标清单项目吗?</string>
 

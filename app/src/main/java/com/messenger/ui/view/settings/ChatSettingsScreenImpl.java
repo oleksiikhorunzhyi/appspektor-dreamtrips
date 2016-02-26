@@ -43,8 +43,6 @@ public abstract class ChatSettingsScreenImpl<P extends StyledPath>
     GroupAvatarsView groupAvatarsView;
     @InjectView(R.id.chat_settings_single_chat_avatar_view)
     AvatarView singleChatAvatarView;
-    @InjectView(R.id.chat_settings_group_pic)
-    ImageView groupPicView;
     @InjectView(R.id.chat_settings_chat_name_text_view)
     TextView chatNameTextView;
     @InjectView(R.id.chat_settings_chat_description_text_view)

@@ -48,6 +48,7 @@ import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.settings.GroupSettingsPath;
 import com.messenger.ui.view.settings.SingleSettingsPath;
+import com.messenger.ui.view.settings.TripSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.Utils;
@@ -685,7 +686,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .first()
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
-                            if (conversationHelper.isGroup(conversation)) {
+                            if (conversationHelper.isTripChat(conversation)) {
+                                Flow.get(getContext()).set(new TripSettingsPath(conversationId));
+                            } else if (conversationHelper.isGroup(conversation)) {
                                 Flow.get(getContext()).set(new GroupSettingsPath(conversationId));
                             } else {
                                 Flow.get(getContext()).set(new SingleSettingsPath(conversationId));

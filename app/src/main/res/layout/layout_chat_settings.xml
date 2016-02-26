@@ -57,7 +57,7 @@
                             app:roundAsCircle="true"/>
 
                         <ImageView
-                            android:id="@+id/chat_settings_group_pic"
+                            android:id="@+id/chat_settings_trip_pic"
                             style="@style/GroupChatBigAvatarView"
                             android:src="@drawable/ic_chat_trip"
                             android:visibility="gone"/>

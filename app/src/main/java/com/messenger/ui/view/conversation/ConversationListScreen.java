@@ -11,7 +11,6 @@ public interface ConversationListScreen extends MessengerScreen {
     void showError(Throwable e);
     void setSelectedConversationId(String conversationId);
     void showConversations(Cursor cursor);
-    void showConversations(Cursor cursor, String searchFilter);
     void showConversationDeletionConfirmationDialog(DataConversation conversation);
     void showConversationMoreActionsDialog(DataConversation conversation);
 }

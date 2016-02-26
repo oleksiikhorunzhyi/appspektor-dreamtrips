@@ -14,7 +14,6 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
@@ -29,14 +28,15 @@ import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
 import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.ALL_CHATS;
 import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTypeItem.GROUP_CHATS;
@@ -51,8 +51,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Inject
     ConversationsDAO conversationsDAO;
     @Inject
-    ParticipantsDAO participantsDAO;
-    @Inject
     NotificationDelegate notificationDelegate;
     @Inject
     OpenedConversationTracker openedConversationTracker;
@@ -62,6 +60,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     //
     private PublishSubject<String> filterStream;
     private PublishSubject<String> typeStream;
+    private Subscription conversationSubscription;
 
     public ConversationListScreenPresenterImpl(Context context) {
         super(context);
@@ -106,7 +105,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     private void connectData() {
         connectFilterStream();
         connectTypeStream();
-        connectCursor();
+        connectToFilters();
         connectToOpenedConversation();
     }
 
@@ -130,38 +129,39 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         typeStream
                 .doOnNext(getViewState()::setChatType)
                 .compose(bindView()).subscribe();
-
     }
 
-    private void connectCursor() {
-        Observable<Cursor> cursorObs = typeStream.asObservable().startWith(ALL_CHATS).distinctUntilChanged()
-                .flatMap(type -> {
-                    String convType = TextUtils.equals(type, GROUP_CHATS) ? ConversationType.GROUP : null;
-                    return conversationsDAO.selectConversationsList(convType)
-                            .onBackpressureLatest()
-                            .throttleLast(200L, TimeUnit.MILLISECONDS);
-                });
-        Observable<String> filterObs = filterStream.asObservable()
-                .startWith(getViewState().getSearchFilter())
-                .compose(new DelayedComposer<>(300L))
-                .distinctUntilChanged();
-
-        Observable.combineLatest(cursorObs, filterObs, (c, s) -> new Pair<>(c, s))
-                .compose(new IoToMainComposer<>())
+    private void connectToFilters() {
+        Observable.combineLatest(
+                typeStream.asObservable()
+                        .startWith(ALL_CHATS)
+                        .distinctUntilChanged(),
+                filterStream.asObservable()
+                        .startWith(getViewState().getSearchFilter())
+                        .compose(new DelayedComposer<>(300L))
+                        .distinctUntilChanged(),
+                Pair::new)
                 .compose(bindView())
-                .subscribe(pair -> {
-                    state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
-                    applyViewState(pair.first, pair.second);
-                });
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(filters -> {
+                    connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS) ? ConversationType.GROUP : null, filters.second);
+                }, throwable -> Timber.e(throwable, "Filter error"));
     }
 
+    private void connectToConversations(@ConversationType.Type String type, String searchQuery) {
+        if (conversationSubscription != null && !conversationSubscription.isUnsubscribed()) conversationSubscription.unsubscribe();
+        conversationSubscription = conversationsDAO.selectConversationsList(type, searchQuery)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(this::applyViewState, throwable -> Timber.e(throwable, "ConversationsDAO error"));
+    }
     @Override
     public void onNewViewState() {
         state = new ConversationListViewState();
     }
 
-    private void applyViewState(Cursor cursor, String filter) {
-        getView().showConversations(cursor, filter);
+    private void applyViewState(Cursor cursor) {
+        state.setLoadingState(ConversationListViewState.LoadingState.CONTENT);
+        getView().showConversations(cursor);
         applyViewState();
     }
 

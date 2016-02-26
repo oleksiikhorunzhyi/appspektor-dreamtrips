@@ -69,13 +69,6 @@ public class ConversationsDAO extends BaseDAO {
                 });
     }
 
-    public List<DataConversation> getConversationsList(@ConversationType.Type String type) {
-        return new Select()
-                .from(DataConversation.class)
-                .where(Condition.column(DataConversation$Table.TYPE).is(type))
-                .queryList();
-    }
-
     public void save(List<DataConversation> conversations) {
         bulkInsert(conversations, new DataConversation$Adapter(), DataConversation.CONTENT_URI);
     }
@@ -83,12 +76,6 @@ public class ConversationsDAO extends BaseDAO {
     public void save(DataConversation conversation) {
         // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
         save(Collections.singletonList(conversation));
-    }
-
-    public void deleteConversation(String conversationId) {
-        //server sends so many packets about kicking as devices with the same user are online
-        DataConversation conversation = getConversationById(conversationId);
-        if (conversation != null) conversation.delete();
     }
 
     public void deleteBySyncTime(long time) {
@@ -193,6 +180,10 @@ public class ConversationsDAO extends BaseDAO {
                 .withSelectionArgs(args).build();
 
         return query(query, DataConversation.CONTENT_URI)
-                .map(cursor -> cursor.getCount()); // BUG!!! because query is interpreted as object list with one field COUNT(*)
+                .map(cursor -> {
+                    int count = cursor.getCount();
+                    cursor.close();
+                    return count;
+                }); // BUG!!! because query is interpreted as object list with one field COUNT(*)
     }
 }

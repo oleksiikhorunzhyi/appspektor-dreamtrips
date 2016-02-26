@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.util;
 
 import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.widget.TextView;
 
@@ -30,5 +32,26 @@ public class SpanUtils {
             super.updateDrawState(ds);
             ds.setUnderlineText(false);
         }
+    }
+
+    public static SpannableStringBuilder trimSpannable(SpannableStringBuilder spannable) {
+        if (TextUtils.isEmpty(spannable)) return spannable;
+
+        int trimStart = 0;
+        int trimEnd = 0;
+
+        String text = spannable.toString();
+
+        while (text.length() > 0 && text.startsWith("\n")) {
+            text = text.substring(1);
+            trimStart += 1;
+        }
+
+        while (text.length() > 0 && text.endsWith("\n")) {
+            text = text.substring(0, text.length() - 1);
+            trimEnd += 1;
+        }
+
+        return spannable.delete(0, trimStart).delete(spannable.length() - trimEnd, spannable.length());
     }
 }

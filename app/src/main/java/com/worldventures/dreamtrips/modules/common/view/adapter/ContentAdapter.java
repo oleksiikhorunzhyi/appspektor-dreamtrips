@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.adapter;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.HtmlTagHandler;
 import com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
+import com.worldventures.dreamtrips.util.SpanUtils;
 
 import java.util.List;
 
@@ -61,7 +63,9 @@ public class ContentAdapter extends BaseAdapter {
 
         ContentItem contentItem = getItem(position);
         holder.textViewContentHeader.setText(contentItem.getName());
-        holder.textViewContent.setText(Html.fromHtml(contentItem.getDescription(), null, new HtmlTagHandler()));
+
+        SpannableStringBuilder spanned = (SpannableStringBuilder) Html.fromHtml(contentItem.getDescription(), null, new HtmlTagHandler());
+        holder.textViewContent.setText(SpanUtils.trimSpannable(spanned));
 
         return view;
     }

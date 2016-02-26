@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
@@ -31,6 +32,7 @@ import javax.inject.Named;
 
 import flow.Flow;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -92,8 +94,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Override
     public void onDetachedFromWindow() {
+        closeChat();
         super.onDetachedFromWindow();
         activityWatcher.removeOnStartStopListener(startStopAppListener);
+    }
+
+    private void closeChat() {
+        chatObservable.first().subscribeOn(Schedulers.io()).subscribe(Chat::close);
     }
 
     private void connectConversation() {

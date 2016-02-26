@@ -45,6 +45,7 @@ public class ChatLeavingDelegate {
                 conversationHelper.isOwner(conversation, user)
         );
         chat.leave();
+        chat.close();
     }
 
 }

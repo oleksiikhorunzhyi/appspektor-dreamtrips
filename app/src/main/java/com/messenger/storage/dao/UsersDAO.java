@@ -54,7 +54,6 @@ public class UsersDAO extends BaseDAO {
                 .withSortOrder("ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, DataUser.CONTENT_URI)
-                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
     }
 

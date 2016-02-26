@@ -256,7 +256,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             cursorCountDiff = Math.max(0, cursor.getCount() - adapter.getCursor().getCount());
         }
 
-        adapter.swapCursor(cursor);
+        adapter.changeCursor(cursor);
 
         if (firstItemView != null && cursorCountDiff > 0) {
             int position = linearLayoutManager.findFirstVisibleItemPosition() + cursorCountDiff;

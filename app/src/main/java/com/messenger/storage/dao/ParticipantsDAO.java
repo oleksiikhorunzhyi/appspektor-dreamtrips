@@ -83,7 +83,6 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
     }
 

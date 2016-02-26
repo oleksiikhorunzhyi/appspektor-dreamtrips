@@ -142,7 +142,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     @Override
     public void setMembers(Cursor cursor, String query, String queryColumn) {
         this.savedSearchFilter = query;
-        adapter.swapCursor(cursor, query, queryColumn);
+        adapter.changeCursor(cursor, query, queryColumn);
     }
 
     @Override

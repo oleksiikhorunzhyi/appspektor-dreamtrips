@@ -253,7 +253,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void connectConversationStream() {
         ConnectableObservable<DataConversation> source = conversationDAO.getConversation(conversationId)
-                .onBackpressureLatest()
                 .filter(conversation -> conversation != null)
                 .filter(conversation -> {
                     if (TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT)) {
@@ -352,7 +351,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         getView().setShowMarkUnreadMessage(true);
 
         return messageDAO.getMessagesBySyncTime(conversationId, syncTime)
-                .onBackpressureLatest()
                 .filter(cursor -> cursor.getCount() > 0)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(cursor -> {
@@ -387,7 +385,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void connectUnreadMessageCountStream(DataConversation conversation) {
         messageDAO.unreadCount(conversationId, user.getId())
-                .onBackpressureLatest()
                 .compose(bindVisibilityIoToMainComposer())
                 .doOnNext(unreadCount -> {
                     if (conversation.getUnreadMessageCount() != unreadCount) {
@@ -750,8 +747,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         photoPickerDelegate.register();
         photoPickerDelegate
                 .watchChosenImages()
-                .compose(new IoToMainComposer<>())
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(this::onImagesPicked,
                         e -> Timber.e(e, "Error while image picking"));
     }
@@ -798,7 +794,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void connectToPendingAttachments() {
         attachmentDAO.getPendingAttachments(conversationId)
-                .onBackpressureLatest()
                 .flatMap(cursor -> {
                     List<DataAttachment> attachments = SqlUtils.convertToList(DataAttachment.class, cursor);
                     cursor.close();

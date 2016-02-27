@@ -1,5 +1,6 @@
 package com.messenger.messengerservers;
 
+import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.listeners.OnChatCreatedListener;
 import com.messenger.messengerservers.listeners.OnChatJoinedListener;
@@ -16,6 +17,7 @@ import com.messenger.messengerservers.xmpp.UnhandledMessageListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import rx.Observable;
 import timber.log.Timber;
 
 public abstract class GlobalEventEmitter {
@@ -199,5 +201,18 @@ public abstract class GlobalEventEmitter {
         for (OnFriendsChangedListener listener : onFriendsChangedListeners) {
             listener.onFriendsChangedListener(userIds, isFriend);
         }
+    }
+
+//    observables
+    public Observable<JoinedEvent> createChatJoinedObservable() {
+        OnChatJoinedListener[] onChatJoinedListeners = new OnChatJoinedListener[]{null};
+        return Observable.<JoinedEvent>create(subscriber -> {
+            OnChatJoinedListener listener = (participant, isOnline) -> {
+                subscriber.onNext(new JoinedEvent(participant, isOnline));
+            };
+            addOnChatJoinedListener(listener);
+            onChatJoinedListeners[0] = listener;
+        })
+                .doOnUnsubscribe(() -> removeOnChatJoinedListener(onChatJoinedListeners[0]));
     }
 }

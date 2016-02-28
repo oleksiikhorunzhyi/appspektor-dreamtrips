@@ -15,8 +15,10 @@ import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.model.User;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -28,8 +30,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -39,7 +43,6 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
-import static java.util.Collections.singletonList;
 import static rx.Observable.just;
 
 public class ChatFacadeInitializer implements AppInitializer {
@@ -141,27 +144,19 @@ public class ChatFacadeInitializer implements AppInitializer {
                     .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe();
         });
-        emitter.addOnChatJoinedListener((participant, isOnline) -> {
-            Timber.i("Chat joined :: participant=%s", participant);
 
-            Observable.just(new DataParticipant(participant))
-                    .subscribeOn(Schedulers.io())
-                    .doOnNext(participantsDAO::save)
-                    .flatMap(p -> usersDAO.getUserById(p.getUserId()).first())
+        emitter.createChatJoinedObservable()
+                .subscribeOn(Schedulers.io())
+                .buffer(3, TimeUnit.SECONDS)
+                .filter(joinedEvents -> !joinedEvents.isEmpty())
+                .onBackpressureBuffer()
+                .doOnNext(this::saveNewParticipants)
+                .map(this::filterNotExistedUsersAndUpdateExisted)
+                .flatMap(users -> userProcessor.connectToUserProvider(just(users)))
+                .doOnNext(usersDAO::save)
+                .doOnError(throwable -> Timber.d(throwable, ""))
+                .subscribe();
 
-                    .flatMap(cachedUser -> {
-                        if (cachedUser != null) return just(singletonList(cachedUser));
-                        else {
-                            return userProcessor.connectToUserProvider(just(singletonList(createUser(participant.getUserId()))));
-                        }
-                    })
-                    .doOnNext(users -> from(users).filter(u -> u.isOnline() != isOnline).forEachR(u -> {
-                        u.setOnline(isOnline);
-                        usersDAO.save(u);
-                    }))
-                    .doOnError(throwable -> Timber.d(throwable, ""))
-                    .subscribe();
-        });
         emitter.addOnChatLeftListener((conversationId, userId, leave) -> {
             Timber.i("Chat left :: chat=%s , user=%s", conversationId, userId);
             Observable.zip(
@@ -183,8 +178,10 @@ public class ChatFacadeInitializer implements AppInitializer {
         });
     }
 
-    private User createUser(String userId) {
-        return new User(userId);
+    private User createUser(Participant participant, boolean isOnline) {
+        User user = new User(participant.getUserId());
+        user.setOnline(isOnline);
+        return user;
     }
 
     private Observable<List<DataUser>> loadConversation(String conversationId) {
@@ -199,5 +196,29 @@ public class ChatFacadeInitializer implements AppInitializer {
                     );
                     return loaderDelegate.loadParticipants(conversationId);
                 });
+    }
+
+    private void saveNewParticipants(List<JoinedEvent> joinedEvents) {
+        List<DataParticipant> participants = from(joinedEvents).map(e -> new DataParticipant(e.getParticipant())).toList();
+        participantsDAO.save(participants);
+    }
+
+    private List<User> filterNotExistedUsersAndUpdateExisted(List<JoinedEvent> joinedEvents) {
+        List<DataUser> existedUsers = new ArrayList<>(joinedEvents.size());
+        List<User> newUsers = new ArrayList<>(joinedEvents.size());
+
+        for (JoinedEvent e: joinedEvents) {
+            Participant participant = e.getParticipant();
+            DataUser cachedUser = usersDAO.getUserById(participant.getUserId()).toBlocking().first();
+            if (cachedUser != null) {
+                cachedUser.setOnline(e.isOnline());
+                existedUsers.add(cachedUser);
+            }
+            else {
+                newUsers.add(createUser(participant, joinedEvents.isEmpty()));
+            }
+        }
+        usersDAO.save(existedUsers);
+        return newUsers;
     }
 }

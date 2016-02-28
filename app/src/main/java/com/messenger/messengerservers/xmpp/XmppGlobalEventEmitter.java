@@ -19,7 +19,6 @@ import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smackx.muc.MUCAffiliation;
-import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
@@ -138,14 +137,12 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
         //
         MUCItem item = extension.getItem();
-        MUCRole role = item.getRole();
-        if (role == null) return false;
+        MUCAffiliation affiliation = item.getAffiliation();
         //
-        if (role == MUCRole.none) {
+        if (affiliation == MUCAffiliation.none) {
             boolean leave = presence.getType() == Type.unsubscribed;
             notifyOnChatLeftListener(conversationId, userId, leave);
         } else {
-            MUCAffiliation affiliation = item.getAffiliation();
             boolean isOnline = presence.getType() == Type.available;
             notifyOnChatJoinedListener(new Participant(userId, String.valueOf(affiliation), conversationId), isOnline);
         }

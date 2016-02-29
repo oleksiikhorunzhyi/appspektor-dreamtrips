@@ -39,9 +39,8 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbum
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.EditEntityFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.EditEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
@@ -81,6 +80,8 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditFragment;
@@ -147,6 +148,7 @@ public enum Route {
     PHOTO_CREATE(CreateTripImageFragment.class),
     ENTITY_EDIT(EditEntityFragment.class),
     PHOTO_EDIT(PhotoEditFragment.class),
+    EDIT_PHOTO_TAG_FRAGMENT(EditPhotoTagsFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),
     FRIENDS(FriendsMainFragment.class, R.string.profile_friends),
     FRIEND_LIST(FriendListFragment.class),

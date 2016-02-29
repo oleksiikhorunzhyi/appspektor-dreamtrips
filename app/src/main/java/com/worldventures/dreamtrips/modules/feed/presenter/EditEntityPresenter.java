@@ -9,11 +9,20 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import icepick.State;
 
 public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPresenter.View> {
 
-    private FeedEntity entity;
+    @State
+    FeedEntity entity;
+
     private Type type;
 
     private final String IMMUTABLE_DESCRIPTION;
@@ -33,7 +42,7 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
                 description = "";
                 break;
         }
-        IMMUTABLE_DESCRIPTION = description != null ? description : "";
+        cachedText = IMMUTABLE_DESCRIPTION = description != null ? description : "";
     }
 
     @Override
@@ -42,21 +51,45 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
         if (type == Type.PHOTO) {
             view.attachPhoto(Uri.parse(((Photo) entity).getFSImage().getUrl()));
         }
+        invalidateDynamicViews();
     }
 
     @Override
-    protected void updateUi() {
-        cachedPostEntity.setText(IMMUTABLE_DESCRIPTION);
-        super.updateUi();
+    protected EditPhotoTagsBundle.PhotoEntity getImageForTagging() {
+        return new EditPhotoTagsBundle.PhotoEntity(((Photo) entity).getImages().getUrl(), null);
     }
 
     @Override
     protected boolean isChanged() {
-        return !cachedPostEntity.getText().equals(IMMUTABLE_DESCRIPTION);
+        return !IMMUTABLE_DESCRIPTION.equals(cachedText)
+                || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty();
+    }
+
+    public void invalidateAddTagBtn() {
+        boolean isViewShown = type == Type.PHOTO;
+        boolean someTagSets = !((Photo) entity).getPhotoTags().isEmpty() || !cachedAddedPhotoTags.isEmpty();
+        if (view != null) {
+            view.redrawTagButton(isViewShown, someTagSets);
+        }
     }
 
     @Override
-    protected void enablePostButton() {
+    protected List<PhotoTag> getCombinedTags() {
+        ArrayList<PhotoTag> originPhotoTags = new ArrayList<>(((Photo) entity).getPhotoTags());
+        originPhotoTags.removeAll(cachedRemovedPhotoTags);
+
+        List<PhotoTag> combinedTags = super.getCombinedTags();
+        combinedTags.addAll(originPhotoTags);
+        return combinedTags;
+    }
+
+    @Override
+    protected void invalidateDynamicViews() {
+        super.invalidateDynamicViews();
+        invalidatePostBtn();
+    }
+
+    private void invalidatePostBtn() {
         if (isChanged()) {
             view.enableButton();
         } else {
@@ -77,8 +110,8 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     }
 
     private void updatePost() {
-        doRequest(new EditPostCommand(entity.getUid(), cachedPostEntity.getText()),
-                this::processPost, spiceException -> {
+        doRequest(new EditPostCommand(entity.getUid(), cachedText),
+                this::processPostSuccess, spiceException -> {
                     handleError(spiceException);
                     view.onPostError();
                 });
@@ -86,17 +119,16 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
 
     private void updatePhoto() {
         UploadTask uploadTask = new UploadTask();
-        uploadTask.setTitle(cachedPostEntity.getText());
+        uploadTask.setTitle(cachedText);
         doRequest(new EditTripPhotoCommand(entity.getUid(), uploadTask),
-                this::processPost, spiceException -> {
+                this::processPostSuccess, spiceException -> {
                     handleError(spiceException);
                     view.onPostError();
                 });
     }
 
-    protected void processPost(FeedEntity feedEntity) {
+    protected void processTagUploadSuccess(FeedEntity feedEntity) {
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
-        view.cancel();
-        view = null;
+        super.processTagUploadSuccess(feedEntity);
     }
 }

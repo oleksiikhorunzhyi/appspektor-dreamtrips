@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.Calendar;
@@ -23,90 +24,88 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
     public static final int REQUESTER_ID = -2;
 
+    UploadTask cachedUploadTask;
+
     @Override
     public void takeView(V view) {
         super.takeView(view);
         PhotoUploadSubscriber photoUploadSubscriber = PhotoUploadSubscriber.bind(view, photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE));
         photoUploadSubscriber.afterEach(uploadTask -> {
-            if (cachedPostEntity != null && cachedPostEntity.getUploadTask().getId() == uploadTask.getId()) {
-                cachedPostEntity.getUploadTask().setStatus(uploadTask.getStatus());
+            if (cachedUploadTask.getId() == uploadTask.getId()) {
+                cachedUploadTask.setStatus(uploadTask.getStatus());
                 processUploadTask();
             }
         });
-
-        if (cachedPostEntity != null) {
-            Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
-        }
+        Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
     }
 
     @Override
     protected void updateUi() {
         super.updateUi();
 
-        if (cachedPostEntity.getUploadTask() != null && cachedPostEntity.getUploadTask().getStatus() != null) {
-            view.attachPhoto(Uri.parse(cachedPostEntity.getUploadTask().getFilePath()));
+        if (!isCachedUploadTaskEmpty()) {
+            view.attachPhoto(Uri.parse(cachedUploadTask.getFilePath()));
 
-            if (!cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))
+            if (!cachedUploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
                 view.showProgress();
 
-            if (cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
+            if (cachedUploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
                 view.imageError();
             }
         }
 
-        enablePostButton();
+        invalidateDynamicViews();
     }
+
 
     @Override
     protected boolean isChanged() {
-        return !TextUtils.isEmpty(cachedPostEntity.getText()) ||
-                cachedPostEntity.getUploadTask() != null;
+        return !TextUtils.isEmpty(cachedText)
+                || (cachedUploadTask != null && cachedUploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
+                || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty();
     }
 
     @Override
     public void post() {
-        if (cachedPostEntity.getUploadTask() != null && UploadTask.Status.COMPLETED.equals(cachedPostEntity.getUploadTask().getStatus())) {
-            cachedPostEntity.getUploadTask().setTitle(cachedPostEntity.getText());
-            cachedPostEntity.getUploadTask().setShotAt(Calendar.getInstance().getTime());
+        if (!isCachedUploadTaskEmpty() && UploadTask.Status.COMPLETED.equals(cachedUploadTask.getStatus())) {
+            cachedUploadTask.setTitle(cachedText);
+            cachedUploadTask.setShotAt(Calendar.getInstance().getTime());
 
-            doRequest(new AddTripPhotoCommand(cachedPostEntity.getUploadTask()), this::processPost, spiceException -> {
+            doRequest(new AddTripPhotoCommand(cachedUploadTask), this::processPostSuccess, spiceException -> {
                 handleError(spiceException);
                 view.onPostError();
             });
-        } else if (!TextUtils.isEmpty(cachedPostEntity.getText()) && cachedPostEntity.getUploadTask() == null) {
+        } else if (!isCachedTextEmpty() && isCachedUploadTaskEmpty()) {
             postTextualUpdate();
         }
     }
 
     protected void postTextualUpdate() {
-        doRequest(new NewPostCommand(cachedPostEntity.getText()),
-                this::processPost, spiceException -> {
+        doRequest(new NewPostCommand(cachedText),
+                this::processPostSuccess, spiceException -> {
                     handleError(spiceException);
                     view.onPostError();
                 });
     }
 
-    protected void processPost(FeedEntity feedEntity) {
+    protected void processTagUploadSuccess(FeedEntity feedEntity) {
         eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
-        view.cancel();
-        view = null;
+        super.processTagUploadSuccess(feedEntity);
     }
 
     @Override
-    protected void enablePostButton() {
-        if ((!TextUtils.isEmpty(cachedPostEntity.getText()) && cachedPostEntity.getUploadTask() == null) ||
-                (cachedPostEntity.getUploadTask() != null &&
-                        cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.COMPLETED))) {
+    protected void invalidateDynamicViews() {
+        super.invalidateDynamicViews();
+        if (isChanged()) {
             view.enableButton();
         } else {
             view.disableButton();
         }
     }
 
+
     public void attachImages(List<ChosenImage> photos, int requestType) {
-        if (photos.size() == 0
-                || (cachedPostEntity.getUploadTask() != null
-                && cachedPostEntity.getUploadTask().getStatus() == UploadTask.Status.COMPLETED)) {
+        if (photos.size() == 0 || (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED)) {
             return;
         }
 
@@ -133,19 +132,42 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             }
             imageUploadTask.setType(type);
             //
-            cachedPostEntity.setUploadTask(imageUploadTask);
+            cachedUploadTask = imageUploadTask;
             view.attachPhoto(Uri.parse(filePath));
-            doRequest(new CopyFileCommand(context, cachedPostEntity.getUploadTask().getFilePath()), s -> {
+            doRequest(new CopyFileCommand(context, cachedUploadTask.getFilePath()), s -> {
+                imageUploadTask.setFilePath(s);
                 startUpload(imageUploadTask);
             });
         }
     }
 
     public void onProgressClicked() {
-        if (cachedPostEntity.getUploadTask().getStatus().equals(UploadTask.Status.FAILED)) {
-            startUpload(cachedPostEntity.getUploadTask());
+        if (cachedUploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
+            startUpload(cachedUploadTask);
         }
     }
+
+    protected EditPhotoTagsBundle.PhotoEntity getImageForTagging() {
+        return new EditPhotoTagsBundle.PhotoEntity(cachedUploadTask.getOriginUrl(), cachedUploadTask.getFilePath());
+    }
+
+    protected boolean isCachedUploadTaskEmpty() {
+        return cachedUploadTask == null;
+    }
+
+    protected boolean isCachedTextEmpty() {
+        return TextUtils.isEmpty(cachedText);
+    }
+
+    public void invalidateAddTagBtn() {
+        boolean isViewShown = cachedUploadTask != null &&
+                cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED;
+        boolean someTagSets = !cachedAddedPhotoTags.isEmpty();
+        if (view != null) {
+            view.redrawTagButton(isViewShown, someTagSets);
+        }
+    }
+
 
     ////////////////////////////////////////
     /////// Photo upload
@@ -154,12 +176,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
     private void startUpload(UploadTask uploadTask) {
         view.showProgress();
         long upload = photoUploadingManager.upload(uploadTask, UploadPurpose.TRIP_IMAGE);
-        cachedPostEntity.getUploadTask().setId(upload);
+        cachedUploadTask.setId(upload);
     }
 
     private void processUploadTask() {
-        if (cachedPostEntity != null && cachedPostEntity.getUploadTask() != null) {
-            switch (cachedPostEntity.getUploadTask().getStatus()) {
+        if (!isCachedUploadTaskEmpty()) {
+            switch (cachedUploadTask.getStatus()) {
                 case STARTED:
                     photoInProgress();
                     break;
@@ -176,21 +198,21 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
     private void photoInProgress() {
         if (view != null) {
             view.showProgress();
-            enablePostButton();
+            invalidateDynamicViews();
         }
     }
 
-    private void photoCompleted() {
+    protected void photoCompleted() {
         if (view != null) {
             view.hideProgress();
-            enablePostButton();
+            invalidateDynamicViews();
         }
     }
 
     private void photoFailed() {
         if (view != null) {
             view.imageError();
-            enablePostButton();
+            invalidateDynamicViews();
         }
     }
 

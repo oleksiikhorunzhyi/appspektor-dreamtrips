@@ -49,7 +49,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
     public CreationPhotoTaggableHolderViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        LayoutInflater.from(getContext()).inflate(R.layout.photo_tag_title, this, true);
         gestureDetector = new GestureDetector(getContext(), new PhotoTaggableHolderViewDelegate.SingleTapConfirm(this));
     }
 

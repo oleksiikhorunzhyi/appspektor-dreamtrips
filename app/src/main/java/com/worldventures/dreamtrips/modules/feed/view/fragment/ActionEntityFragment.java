@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -23,6 +24,12 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -33,7 +40,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View {
+        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, EditPhotoTagsFragment.Callback {
 
     @Inject
     BackStackDelegate backStackDelegate;
@@ -58,6 +65,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     protected FrameLayout imageContainer;
     @InjectView(R.id.image)
     protected ImageView image;
+    @InjectView(R.id.tag_btn)
+    protected TextView tagBtn;
 
     SweetAlertDialog dialog;
 
@@ -98,6 +107,24 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         setupTextField();
     }
 
+
+    public void attachPhoto(Uri uri) {
+        if (uri != null) {
+            PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController());
+            attachedPhoto.setController(controller);
+            post.setHint(R.string.photo_hint);
+            imageContainer.setVisibility(View.VISIBLE);
+            image.setImageResource(R.drawable.ic_post_add_image_selected);
+        } else {
+            attachedPhoto.setController(null);
+            post.setHint(R.string.post_hint);
+            imageContainer.setVisibility(View.GONE);
+            image.setImageResource(R.drawable.ic_post_add_image_normal);
+        }
+
+        getPresenter().invalidateAddTagBtn();
+    }
+
     protected void setupTextField() {
         post.addTextChangedListener(textWatcher);
         post.setOnKeyPreImeListener((keyCode, event) -> {
@@ -113,6 +140,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         post.removeTextChangedListener(textWatcher);
         backStackDelegate.setListener(null);
         post.setOnFocusChangeListener(null);
+        SoftInputUtil.hideSoftInputMethod(getActivity());
     }
 
     @Override
@@ -177,21 +205,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         post.setFocusableInTouchMode(true);
     }
 
-    @Override
-    public void attachPhoto(Uri uri) {
-        if (uri != null) {
-            attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController()));
-            post.setHint(R.string.photo_hint);
-            imageContainer.setVisibility(View.VISIBLE);
-            image.setImageResource(R.drawable.ic_post_add_image_selected);
-        } else {
-            attachedPhoto.setImageURI(null);
-            post.setHint(R.string.post_hint);
-            imageContainer.setVisibility(View.GONE);
-            image.setImageResource(R.drawable.ic_post_add_image_normal);
-        }
-    }
-
     @OnClick(R.id.post_button)
     void onPost() {
         SoftInputUtil.hideSoftInputMethod(post);
@@ -213,6 +226,41 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     @OnClick(R.id.space)
     void onSpaceClicked() {
         if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
+    }
+
+    @OnClick(R.id.tag_btn)
+    void onTagClicked() {
+        getPresenter().onTagClicked();
+    }
+
+    @Override
+    public void showPhotoTagView(EditPhotoTagsBundle.PhotoEntity photoEntity, List<PhotoTag> photoTags) {
+        router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder
+                .forFragment()
+                .backStackEnabled(true)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .targetFragment(this)
+                .data(new EditPhotoTagsBundle(photoEntity, photoTags))
+                .build());
+    }
+
+    @Override
+    public void redrawTagButton(boolean isViewShown, boolean someTagSets) {
+        if (!someTagSets) {
+            tagBtn.setText(R.string.tag_people);
+            tagBtn.setSelected(false);
+        } else {
+            tagBtn.setText(R.string.empty);
+            tagBtn.setSelected(true);
+        }
+        tagBtn.setVisibility(isViewShown ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onTagSelected(ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags) {
+        getPresenter().onTagSelected(addedTags,removedTags);
+        getPresenter().invalidateAddTagBtn();
     }
 
     protected abstract int getPostButtonText();

@@ -7,7 +7,6 @@ import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
@@ -51,7 +50,7 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
                             if (participantId == null) continue;
                             Participant participant = new Participant(participantId, affiliation.toLowerCase(), null);
 
-                            if (StringUtils.equalsIgnoreCase(affiliation, Participant.Affiliation.OWNER)) {
+                            if (TextUtils.equals(affiliation.toLowerCase(), Participant.Affiliation.OWNER)) {
                                 conversationParticipants.setOwner(participant);
                             } else {
                                 conversationParticipants.addParticipant(participant);

@@ -2,11 +2,10 @@ package com.messenger.ui.dialog;
 
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.raizlabs.android.dbflow.annotation.NotNull;
-
-import org.apache.commons.lang3.StringUtils;
 
 public class InputUserDialog {
 
@@ -32,7 +31,7 @@ public class InputUserDialog {
                 .setView(editText)
                 .setPositiveButton("Ok", (dialog, possitiveButton) -> {
                     String userName = editText.getText().toString();
-                    if (StringUtils.isEmpty(userName)) return;
+                    if (TextUtils.isEmpty(userName)) return;
 
                     listener.onUserInput(userName);
                 })

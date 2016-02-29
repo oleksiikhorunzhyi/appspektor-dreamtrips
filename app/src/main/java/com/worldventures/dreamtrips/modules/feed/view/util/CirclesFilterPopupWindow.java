@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.ListPopupWindow;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,8 +15,6 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -86,7 +85,7 @@ public class CirclesFilterPopupWindow {
         if (listView == null) return;
 
         for (int position = 0; position < adapter.getCount(); position++){
-            if (StringUtils.equals(adapter.getItem(position).getId(), checkedCircle.getId())){
+            if (TextUtils.equals(adapter.getItem(position).getId(), checkedCircle.getId())){
                 listView.setItemChecked(position, true);
                 break;
             }

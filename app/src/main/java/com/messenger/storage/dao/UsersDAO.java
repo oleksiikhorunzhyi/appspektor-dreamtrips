@@ -11,7 +11,6 @@ import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.builder.ConditionQueryBuilder;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
@@ -58,7 +57,7 @@ public class UsersDAO extends BaseDAO {
     }
 
     public void deleteFriends() {
-        new Delete().from(DataUser.class).where(Condition.column(DataUser$Table.FRIEND).is(true)).queryClose();
+        new Update<>(DataUser.class).set(Condition.column(DataUser$Table.FRIEND).is(true)).queryClose();
     }
 
     public void markUserAsFriend(List<String> ids, boolean isFriend) {

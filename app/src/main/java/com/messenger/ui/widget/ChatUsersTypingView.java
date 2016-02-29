@@ -130,6 +130,12 @@ public class ChatUsersTypingView extends RelativeLayout {
         updateUI();
     }
 
+    public void removeAllTypingUsers() {
+        for (ChatUser user : typingUsers) {
+            removeTypingUser(user);
+        }
+    }
+
     private void updateUI() {
         if (typingUsers.isEmpty()) {
             hideView();

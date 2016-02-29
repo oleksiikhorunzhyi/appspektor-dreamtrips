@@ -240,6 +240,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
+    public void removeAllTypingUsers() {
+        chatUsersTypingView.removeAllTypingUsers();
+    }
+
+    @Override
     public void showMessages(Cursor cursor, DataConversation conversation) {
         Timber.i("Show Cursor with size " + cursor.getCount());
         adapter.setConversation(conversation);

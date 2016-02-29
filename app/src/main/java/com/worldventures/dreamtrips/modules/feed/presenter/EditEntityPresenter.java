@@ -5,10 +5,8 @@ import android.net.Uri;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.api.EditPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -23,17 +21,19 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     public EditEntityPresenter(FeedEntity entity, Type type) {
         this.entity = entity;
         this.type = type;
+        String description;
         switch (type) {
             case PHOTO:
-                IMMUTABLE_DESCRIPTION = ((Photo) entity).getTitle();
+                description = ((Photo) entity).getTitle();
                 break;
             case POST:
-                IMMUTABLE_DESCRIPTION = ((TextualPost) entity).getDescription();
+                description = ((TextualPost) entity).getDescription();
                 break;
             default:
-                IMMUTABLE_DESCRIPTION = "";
+                description = "";
                 break;
         }
+        IMMUTABLE_DESCRIPTION = description != null ? description : "";
     }
 
     @Override

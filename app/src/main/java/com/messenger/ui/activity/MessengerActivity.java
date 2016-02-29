@@ -109,6 +109,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         flowActivityHelper.onNewIntent(intent);
+        initFlow(intent.getStringExtra(EXTRA_CHAT_CONVERSATION_ID));
     }
 
     @Override
@@ -161,9 +162,12 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
                     .build();
         }
 
-        flowActivityHelper = new FlowActivityHelper(this, this,
-                defaultBackstack, new GsonParceler(gson));
-
+        if (Flow.get(this) == null) {
+            flowActivityHelper = new FlowActivityHelper(this, this,
+                    defaultBackstack, new GsonParceler(gson));
+        } else {
+            Flow.get(this).setHistory(defaultBackstack, Flow.Direction.REPLACE);
+        }
     }
 
     private Path provideDefaultScreen() {

@@ -112,7 +112,8 @@
 
         <!--Chat activities-->
         <activity
-            android:name="com.messenger.ui.activity.MessengerActivity">
+            android:name="com.messenger.ui.activity.MessengerActivity"
+            android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity" />

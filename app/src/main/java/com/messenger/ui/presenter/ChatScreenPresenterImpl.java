@@ -822,8 +822,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         //
         chatObservable.first()
                 .flatMap(chat -> chat.send(message))
-                .doOnError(throwable -> Timber.w("Unable to send message with attachment"))
-                .subscribe();
+                .subscribe(msg -> {}, throwable -> Timber.w("Unable to send message with attachment"));
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -50,7 +50,7 @@ public class XmppConversationLoader extends Loader<Conversation> {
                                 .subscribe(conversationWithParticipants -> {
                                     Timber.i("Conversations loaded: %s", conversations);
                                     notifyListeners(conversationWithParticipants);
-                                });
+                                }, throwable -> Timber.e(throwable, "Exception while loading conversations"));
                     });
         } catch (SmackException.NotConnectedException e) {
             Timber.e(e, "Can't load conversations");

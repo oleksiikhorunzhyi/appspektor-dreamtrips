@@ -209,7 +209,9 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:padding="@dimen/spacing_small"
-                        android:src="@drawable/ic_post_location_off"/>
+                        android:src="@drawable/ic_location_states"
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
 
                     <ImageView
                         android:id="@+id/image"

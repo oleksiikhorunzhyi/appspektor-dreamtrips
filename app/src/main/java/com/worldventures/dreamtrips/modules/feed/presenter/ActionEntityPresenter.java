@@ -6,6 +6,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
@@ -58,6 +59,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         invalidateDynamicViews();
     }
 
+    public abstract void updateLocation(Location location);
+
     protected void invalidateDynamicViews() {
         invalidateAddTagBtn();
     }
@@ -79,6 +82,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         cachedRemovedPhotoTags = removedTags;
     }
 
+    public abstract Location getLocation();
 
     protected void pushTags(FeedEntity feedEntity) {
         cachedAddedPhotoTags.removeAll(((Photo) feedEntity).getPhotoTags());
@@ -116,6 +120,10 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         view = null;
     }
 
+    public void onLocationClicked() {
+        view.openLocation(getLocation());
+    }
+
     public interface View extends RxView {
 
         void attachPhoto(Uri uri);
@@ -139,6 +147,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         void redrawTagButton(boolean isViewShown, boolean someTagSets);
 
         void showPhotoTagView(EditPhotoTagsBundle.PhotoEntity photoEntity, List<PhotoTag> photoTags);
+
+        void openLocation(Location location);
     }
 
 }

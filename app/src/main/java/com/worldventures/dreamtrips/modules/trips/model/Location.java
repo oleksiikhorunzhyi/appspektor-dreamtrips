@@ -29,6 +29,14 @@ public class Location implements Serializable, Parcelable {
     public Location() {
     }
 
+    public Location(Location location) {
+        if (location != null) {
+            this.name = location.getName();
+            this.lat = location.getLat();
+            this.lng = location.getLng();
+        }
+    }
+
     public Location(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
@@ -80,4 +88,36 @@ public class Location implements Serializable, Parcelable {
         dest.writeString(this.name);
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+                "name='" + name + '\'' +
+                ", lat=" + lat +
+                ", lng=" + lng +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Location location = (Location) o;
+
+        if (Double.compare(location.lat, lat) != 0) return false;
+        if (Double.compare(location.lng, lng) != 0) return false;
+        return !(name != null ? !name.equals(location.name) : location.name != null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = name != null ? name.hashCode() : 0;
+        temp = Double.doubleToLongBits(lat);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(lng);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }

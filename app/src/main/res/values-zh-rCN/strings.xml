@@ -615,6 +615,8 @@
     <string name="say_something">Say something to the world</string>
 
     <string name="update">Update</string>
+    <string name="add_location">Add location</string>
+    <string name="find_your_location">Find your location</string>
 
     <string name="who_is_this">Who is this?</string>
 

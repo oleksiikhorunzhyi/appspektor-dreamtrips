@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -111,6 +112,23 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
         }
     }
 
+    @Override
+    public Location getLocation() {
+        Location location = new Location();
+        if (cachedUploadTask != null) {
+            location.setLat(cachedUploadTask.getLatitude());
+            location.setLng(cachedUploadTask.getLongitude());
+            location.setName(cachedUploadTask.getLocationName());
+        }
+        return location;
+    }
+
+    @Override
+    public void updateLocation(Location location) {
+        cachedUploadTask.setLocationName(location.getName());
+        cachedUploadTask.setLongitude((float) location.getLng());
+        cachedUploadTask.setLatitude((float) location.getLat());
+    }
 
     public void attachImages(List<ChosenImage> photos, int requestType) {
         if (photos.size() == 0 || (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED)) {

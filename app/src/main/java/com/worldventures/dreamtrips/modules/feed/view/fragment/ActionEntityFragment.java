@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
@@ -40,7 +42,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, EditPhotoTagsFragment.Callback {
+        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, EditPhotoTagsFragment.Callback, LocationFragment.Callback {
 
     @Inject
     BackStackDelegate backStackDelegate;
@@ -67,6 +69,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     protected ImageView image;
     @InjectView(R.id.tag_btn)
     protected TextView tagBtn;
+    @InjectView(R.id.location)
+    protected ImageView locationBtn;
 
     SweetAlertDialog dialog;
 
@@ -105,8 +109,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         super.onResume();
         backStackDelegate.setListener(this::onBackPressed);
         setupTextField();
+        updateLocationButtonState();
     }
-
 
     public void attachPhoto(Uri uri) {
         if (uri != null) {
@@ -115,14 +119,27 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             post.setHint(R.string.photo_hint);
             imageContainer.setVisibility(View.VISIBLE);
             image.setImageResource(R.drawable.ic_post_add_image_selected);
+            locationBtn.setVisibility(View.VISIBLE);
+            updateLocationButtonState();
         } else {
             attachedPhoto.setController(null);
             post.setHint(R.string.post_hint);
             imageContainer.setVisibility(View.GONE);
             image.setImageResource(R.drawable.ic_post_add_image_normal);
+            locationBtn.setVisibility(View.GONE);
+            updateLocationButtonState(false);
         }
 
+        updateLocationButtonState();
         getPresenter().invalidateAddTagBtn();
+    }
+
+    private void updateLocationButtonState(){
+        updateLocationButtonState(!TextUtils.isEmpty(getPresenter().getLocation().getName()));
+    }
+
+    private void updateLocationButtonState(boolean isSelected){
+        locationBtn.setSelected(isSelected);
     }
 
     protected void setupTextField() {
@@ -218,6 +235,11 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         return true;
     }
 
+    @OnClick(R.id.location)
+    void onLocation(){
+        getPresenter().onLocationClicked();
+    }
+
     @OnClick(R.id.close)
     void onClose() {
         getPresenter().cancelClicked();
@@ -261,6 +283,23 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     public void onTagSelected(ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags) {
         getPresenter().onTagSelected(addedTags,removedTags);
         getPresenter().invalidateAddTagBtn();
+    }
+
+    @Override
+    public void openLocation(Location location) {
+            router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder
+                    .forFragment()
+                    .backStackEnabled(true)
+                    .fragmentManager(getActivity().getSupportFragmentManager())
+                    .containerId(R.id.container_details_floating)
+                    .targetFragment(ActionEntityFragment.this)
+                    .data(location)
+                    .build());
+    }
+
+    @Override
+    public void onLocationDone(Location location) {
+        getPresenter().updateLocation(location);
     }
 
     protected abstract int getPostButtonText();

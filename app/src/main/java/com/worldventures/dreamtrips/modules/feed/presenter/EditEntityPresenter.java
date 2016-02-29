@@ -8,10 +8,13 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +26,15 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     @State
     FeedEntity entity;
 
+    @State
+    Location cachedLocation;
+
     private Type type;
 
+    @NotNull
     private final String IMMUTABLE_DESCRIPTION;
+    @NotNull
+    private final Location IMMUTABLE_LOCATION;
 
     public EditEntityPresenter(FeedEntity entity, Type type) {
         this.entity = entity;
@@ -43,6 +52,10 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
                 break;
         }
         cachedText = IMMUTABLE_DESCRIPTION = description != null ? description : "";
+
+        IMMUTABLE_LOCATION = entity instanceof Photo ? ((Photo) entity).getLocation() : new Location();
+        cachedLocation = new Location(IMMUTABLE_LOCATION);
+
     }
 
     @Override
@@ -62,7 +75,8 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     @Override
     protected boolean isChanged() {
         return !IMMUTABLE_DESCRIPTION.equals(cachedText)
-                || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty();
+                || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty()
+                || !IMMUTABLE_LOCATION.equals(cachedLocation);
     }
 
     public void invalidateAddTagBtn() {
@@ -81,6 +95,11 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
         List<PhotoTag> combinedTags = super.getCombinedTags();
         combinedTags.addAll(originPhotoTags);
         return combinedTags;
+    }
+
+    @Override
+    public Location getLocation() {
+        return cachedLocation;
     }
 
     @Override
@@ -120,11 +139,19 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     private void updatePhoto() {
         UploadTask uploadTask = new UploadTask();
         uploadTask.setTitle(cachedText);
+        uploadTask.setLocationName(cachedLocation.getName());
+        uploadTask.setLatitude((float) cachedLocation.getLat());
+        uploadTask.setLongitude((float) cachedLocation.getLng());
         doRequest(new EditTripPhotoCommand(entity.getUid(), uploadTask),
                 this::processPostSuccess, spiceException -> {
                     handleError(spiceException);
                     view.onPostError();
                 });
+    }
+
+    @Override
+    public void updateLocation(Location location) {
+        cachedLocation = location;
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {

@@ -36,7 +36,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .withSelectionArgs(new String[]{conversationId, yourId})
                 .build();
 
-        return query(q)
+        return query(q, DataUser.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> {
                     DataUser res = SqlUtils.convertToModel(false, DataUser.class, cursor);

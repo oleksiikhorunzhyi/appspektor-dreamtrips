@@ -572,8 +572,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public boolean sendMessage(String message) {
         if (TextUtils.isEmpty(message)) return false;
 
+        String finalMessage = message.trim();
+
+        if (TextUtils.isEmpty(finalMessage)) return false;
+
         submitOneChatAction(chat -> chat.send(new Message.Builder()
-                .messageBody(messageBodyCreator.provideForText(message))
+                .messageBody(messageBodyCreator.provideForText(finalMessage))
                 .fromId(user.getId())
                 .conversationId(conversationId)
                 .build())

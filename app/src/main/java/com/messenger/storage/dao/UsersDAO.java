@@ -57,7 +57,7 @@ public class UsersDAO extends BaseDAO {
     }
 
     public void deleteFriends() {
-        new Update<>(DataUser.class).set(Condition.column(DataUser$Table.FRIEND).is(true)).queryClose();
+        new Update<>(DataUser.class).set(Condition.column(DataUser$Table.FRIEND).is(false)).queryClose();
     }
 
     public void markUserAsFriend(List<String> ids, boolean isFriend) {

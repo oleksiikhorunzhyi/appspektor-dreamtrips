@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import rx.subjects.ReplaySubject;
 
 public class PhotoPickerDelegate {
 

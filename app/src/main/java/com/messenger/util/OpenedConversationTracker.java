@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import rx.Observable;
-import rx.subjects.ReplaySubject;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class OpenedConversationTracker {
 
-    private ReplaySubject<String> stream = ReplaySubject.create(1);
+    private PublishSubject<String> streamWriter = PublishSubject.create();
+    private Observable<String> streamReader = streamWriter.replay(1).autoConnect();
+
     private Map<String, Integer> openedConversationIds;
 
     public OpenedConversationTracker() {
@@ -23,7 +25,7 @@ public class OpenedConversationTracker {
         if (prevCount == null) prevCount = 0;
         openedConversationIds.put(conversationId, prevCount + 1);
         //
-        stream.onNext(conversationId);
+        streamWriter.onNext(conversationId);
     }
 
     public void removeOpenedConversation(String conversationId) {
@@ -36,12 +38,8 @@ public class OpenedConversationTracker {
         openedConversationIds.put(conversationId, prevCount - 1);
     }
 
-    public String getOpenedConversationId() {
-        return stream.getValue();
-    }
-
     public Observable<String> watchOpenedConversationId() {
-                return stream.asObservable().filter(id -> containsOpenedConversationId(id));
+                return streamReader.asObservable().filter(id -> containsOpenedConversationId(id));
             }
 
     public boolean containsOpenedConversationId(String conversationId) {

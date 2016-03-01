@@ -156,7 +156,7 @@ public class ConversationsDAO extends BaseDAO {
 
         String[] args = new String[]{currentUser.get().getId()};
         queryBuilder.withSelectionArgs(args);
-        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI);
+        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI);
     }
 
     public int updateDate(String conversationId, long date) {

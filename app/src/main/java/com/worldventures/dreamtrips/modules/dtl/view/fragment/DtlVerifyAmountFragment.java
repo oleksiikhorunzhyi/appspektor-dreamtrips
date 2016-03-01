@@ -102,6 +102,6 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
 
     @Override
     public void attachDtPoints(int count) {
-        dtPoints.setText(String.format("+%d", count));
+        dtPoints.setText(String.format("+%dpt", count));
     }
 }

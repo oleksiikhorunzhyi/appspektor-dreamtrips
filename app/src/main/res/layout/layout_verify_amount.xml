@@ -82,7 +82,7 @@
             android:drawablePadding="@dimen/spacing_tiny"
             android:drawableEnd="@drawable/dt_points_big_icon"
             android:textColor="@color/open"
-            tools:text="+12"/>
+            tools:text="+12pt"/>
     </LinearLayout>
 
     <com.facebook.drawee.view.SimpleDraweeView

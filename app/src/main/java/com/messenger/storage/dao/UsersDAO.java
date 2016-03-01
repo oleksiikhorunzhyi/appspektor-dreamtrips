@@ -45,11 +45,11 @@ public class UsersDAO extends BaseDAO {
                 });
     }
 
-    public Observable<Cursor> getFriends() {
+    public Observable<Cursor> getFriends(String currentUserId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT *, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " " +
-                        "FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table.FRIEND + "=?")
-                .withSelectionArgs(new String[]{String.valueOf(1)})
+                        "FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table._ID +  "<>?" + " AND " + DataUser$Table.FRIEND + "=?")
+                .withSelectionArgs(new String[]{currentUserId, String.valueOf(1)})
                 .withSortOrder("ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, DataUser.CONTENT_URI)

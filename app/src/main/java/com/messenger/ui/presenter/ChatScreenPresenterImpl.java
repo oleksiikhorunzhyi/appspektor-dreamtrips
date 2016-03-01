@@ -570,6 +570,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public boolean sendMessage(String message) {
+        if (TextUtils.isEmpty(message)) return false;
+
         submitOneChatAction(chat -> chat.send(new Message.Builder()
                 .messageBody(messageBodyCreator.provideForText(message))
                 .fromId(user.getId())

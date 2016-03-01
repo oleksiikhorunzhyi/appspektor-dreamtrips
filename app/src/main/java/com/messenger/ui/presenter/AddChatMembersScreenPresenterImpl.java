@@ -28,6 +28,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 
@@ -133,7 +134,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                     history.pop();
                     history.push(new ChatPath(newConversation.getId()));
                     Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
-                });
+                }, e -> Timber.e(e, "Could not add chat member"));
     }
 
     ///////////////////////////////////////////////////////////////////////////

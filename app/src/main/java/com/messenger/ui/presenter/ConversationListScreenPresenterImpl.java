@@ -112,8 +112,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     private void connectToOpenedConversation() {
         openedConversationTracker
                 .watchOpenedConversationId()
-                .compose(new IoToMainComposer<>())
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(getView()::setSelectedConversationId);
     }
 

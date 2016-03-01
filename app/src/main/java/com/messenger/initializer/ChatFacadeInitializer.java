@@ -132,17 +132,15 @@ public class ChatFacadeInitializer implements AppInitializer {
             conversationsDAO.getConversation(conversationId).first()
                     .subscribeOn(Schedulers.io())
                     .filter(c -> c != null && !TextUtils.equals(c.getSubject(), subject))
-                    .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(conversation -> {
                         conversation.setSubject(subject);
                         conversationsDAO.save(conversation);
-                    });
+                    }, throwable -> Timber.d(throwable, ""));
         });
         emitter.addInvitationListener((conversationId) -> {
             Timber.i("Chat invited :: chat=%s", conversationId);
             loadConversation(conversationId)
-                    .doOnError(throwable -> Timber.d(throwable, ""))
-                    .subscribe();
+                    .subscribe(dataUsers -> {}, throwable -> Timber.d(throwable, ""));
         });
 
         emitter.createChatJoinedObservable()
@@ -154,8 +152,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                 .map(this::filterNotExistedUsersAndUpdateExisted)
                 .flatMap(users -> userProcessor.connectToUserProvider(just(users)))
                 .doOnNext(usersDAO::save)
-                .doOnError(throwable -> Timber.d(throwable, ""))
-                .subscribe();
+                .subscribe(dataUsers -> {}, throwable -> Timber.d(throwable, ""));
 
         emitter.addOnChatLeftListener((conversationId, userId, leave) -> {
             Timber.i("Chat left :: chat=%s , user=%s", conversationId, userId);
@@ -165,7 +162,6 @@ public class ChatFacadeInitializer implements AppInitializer {
                     (conversation, user) -> new Pair<>(conversation, user)
             )
                     .subscribeOn(Schedulers.io()).first()
-                    .doOnError(throwable -> Timber.d(throwable, ""))
                     .subscribe(pair -> {
                         DataConversation conversation = pair.first;
                         DataUser dataUser = pair.second;
@@ -174,7 +170,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                             conversation.setStatus(leave ? ConversationStatus.LEFT : ConversationStatus.KICKED);
                             conversationsDAO.save(conversation);
                         }
-                    });
+                    }, throwable -> Timber.d(throwable, ""));
         });
     }
 

@@ -221,8 +221,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
             chat.kick(Collections.singletonList(user.getId()))
                     .map(users -> users.get(0))
                     .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))
-                    .doOnError(e -> Timber.e(e, ""))
-                    .subscribe();
+                    .subscribe(s -> {}, e -> Timber.e(e, ""));
         });
     }
 

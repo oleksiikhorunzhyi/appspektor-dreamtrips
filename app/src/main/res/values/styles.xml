@@ -226,6 +226,8 @@
 
     <style name="ChatMessageTextView" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/chat_list_message_text_size</item>
+        <item name="android:maxLength">@integer/messenger_max_message_length</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="ChatImageMessageImageView">

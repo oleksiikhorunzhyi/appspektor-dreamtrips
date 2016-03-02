@@ -249,7 +249,7 @@ public class DtlMerchant implements Parcelable {
         return displayName + " " + distance;
     }
 
-    public static Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
+    public static final Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
         @Override
         public int compare(DtlMerchant lhs, DtlMerchant rhs) {
             if (lhs.distance == rhs.distance) return 0;

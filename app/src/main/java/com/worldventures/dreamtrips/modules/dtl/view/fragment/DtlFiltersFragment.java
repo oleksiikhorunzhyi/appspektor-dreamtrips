@@ -55,7 +55,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), this);
         baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
         baseDelegateAdapter.registerCell(DtlMerchantAttribute.class, DtlFilterAttributeCell.class);
-        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, model -> ((SelectableHeaderItem) model).isSelected());
+        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, model -> selectionManager.setSelectionForAll(((SelectableHeaderItem) model).isSelected()));
         baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, model -> drawHeaderSelection());
         //
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());

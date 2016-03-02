@@ -153,11 +153,11 @@ public abstract class ChatSettingsScreenImpl<P extends StyledPath>
         getPresenter().onLeaveButtonClick();
     }
 
-    public void showLeaveChatDialog(String currentSubject) {
+    public void showLeaveChatDialog(String message) {
         new AlertDialog.Builder(getContext())
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> getPresenter().onLeaveChatClicked())
                 .setNegativeButton(android.R.string.cancel, null)
-                .setMessage(getResources().getString(R.string.chat_settings_leave_group_chat, currentSubject))
+                .setMessage(message)
                 .create()
                 .show();
     }

@@ -184,8 +184,17 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
         if (currentConnectivityStatus != ConnectionStatus.CONNECTED) return;
 
         conversationObservable
-                .map(conversation -> conversation.getSubject())
-                .subscribe(subject -> getView().showLeaveChatDialog(subject));
+                .map(this::getLeaveConversationMessage)
+                .subscribe(message -> getView().showLeaveChatDialog(message));
+    }
+
+    protected String getLeaveConversationMessage(DataConversation conversation) {
+        String subject = conversation.getSubject();
+        if (TextUtils.isEmpty(subject)) {
+            return context.getString(R.string.chat_settings_leave_group_chat);
+        } else {
+            return String.format(context.getString(R.string.chat_settings_leave_group_chat_format), subject);
+        }
     }
 
     @Override

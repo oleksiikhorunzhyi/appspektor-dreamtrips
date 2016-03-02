@@ -50,7 +50,8 @@ public class DtlMerchantManager {
     //
     private final PublishSubject<DtlFilterData> filterStream = PublishSubject.create();
     //
-    private List<DtlMerchantType> dtlMerchantTypes;
+    public static final List<DtlMerchantType> MERCHANT_TYPES = Arrays.asList(DtlMerchantType.values());
+    //
     private List<DtlMerchant> merchants;
     private DtlFilterData filterData;
     //
@@ -59,7 +60,6 @@ public class DtlMerchantManager {
 
     public DtlMerchantManager(Injector injector) {
         injector.inject(this);
-        dtlMerchantTypes = Arrays.asList(DtlMerchantType.OFFER, DtlMerchantType.DINING);
         initFilterData();
     }
 
@@ -98,7 +98,7 @@ public class DtlMerchantManager {
     }
 
     private void patchMerchantDistance(DtlMerchant merchant, LatLng currentLatLng,
-                                         DistanceType distanceType) {
+                                       DistanceType distanceType) {
         merchant.setDistanceType(distanceType);
         merchant.setDistance(DtlLocationHelper.calculateDistance(
                 currentLatLng, merchant.getCoordinates().asLatLng()));
@@ -150,9 +150,6 @@ public class DtlMerchantManager {
         return filterData;
     }
 
-    public List<DtlMerchantType> getDtlMerchantTypes() {
-        return dtlMerchantTypes;
-    }
 
     /**
      * Loads merchants {@link DtlMerchant} for the specified location
@@ -200,6 +197,7 @@ public class DtlMerchantManager {
 
     /**
      * Return loaded merchants or empty arrayList {@link ArrayList}
+     *
      * @return list of current merchants
      */
     public List<DtlMerchant> getMerchants() {
@@ -208,6 +206,7 @@ public class DtlMerchantManager {
 
     /**
      * Return merchant with given id or null
+     *
      * @param id merchant Id
      * @return merchant with provided id
      */

@@ -23,6 +23,7 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
                 new DtlMerchantQueryPredicate(filterData));
     }
 
+    @SafeVarargs
     public DtlMerchantsPredicate(Predicate<DtlMerchant>... predicats) {
         this.predicats = Collections.unmodifiableList(Arrays.asList(predicats));
     }

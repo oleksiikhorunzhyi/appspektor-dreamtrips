@@ -40,14 +40,14 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     }
 
     public void setTabs() {
-        view.setTypes(dtlMerchantManager.getDtlMerchantTypes());
+        view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
         view.updateSelection();
         view.preselectOfferTab(locationRepository.getCachedSelectedLocation().getPartnerCount() > 0);
     }
 
     public Bundle prepareArgsForTab(int position) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DtlMerchantsListFragment.EXTRA_TYPE, dtlMerchantManager.getDtlMerchantTypes().get(position));
+        bundle.putSerializable(DtlMerchantsListFragment.EXTRA_TYPE, DtlMerchantManager.MERCHANT_TYPES.get(position));
         return bundle;
     }
 
@@ -55,7 +55,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        String newTabName = dtlMerchantManager.getDtlMerchantTypes().get(newPosition).equals(DtlMerchantType.OFFER) ?
+        String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
         TrackingHelper.dtlMerchantsTab(newTabName);
     }

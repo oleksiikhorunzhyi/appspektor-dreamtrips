@@ -54,6 +54,7 @@ android {
         buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
         buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
+        buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
         buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
 
         buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
@@ -84,6 +85,7 @@ android {
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
+            buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'true'
         }
         stage { // the same as dev except minSdk
             flavorDimension "build"

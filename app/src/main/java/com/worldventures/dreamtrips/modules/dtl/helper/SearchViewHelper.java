@@ -58,7 +58,7 @@ public class SearchViewHelper {
     private void onSearchViewClosed() {
         unsubcribe();
         if (onQueryChangedListener != null) {
-            onQueryChangedListener.onQueryChanged(null);
+            onQueryChangedListener.onQueryChanged("");
         }
     }
 

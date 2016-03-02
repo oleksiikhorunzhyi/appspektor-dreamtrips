@@ -4,19 +4,23 @@ import com.innahema.collections.query.functions.Predicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
-import org.immutables.value.Value;
-
 /**
  * Opt out merchants of type other than specified
  */
-@Value.Immutable
-public abstract class DtlMerchantTypePredicate implements Predicate<DtlMerchant> {
+public class DtlMerchantTypePredicate implements Predicate<DtlMerchant> {
 
-    @Value.Parameter
-    public abstract DtlMerchantType getMerchantType();
+    private final DtlMerchantType merchantType;
+
+    public DtlMerchantTypePredicate(DtlMerchantType merchantType) {
+        this.merchantType = merchantType;
+    }
+
+    public DtlMerchantType getMerchantType() {
+        return merchantType;
+    }
 
     @Override
     public boolean apply(DtlMerchant dtlMerchant) {
-        return getMerchantType() == null || dtlMerchant.getMerchantType() == getMerchantType();
+        return merchantType == null || dtlMerchant.getMerchantType() == merchantType;
     }
 }

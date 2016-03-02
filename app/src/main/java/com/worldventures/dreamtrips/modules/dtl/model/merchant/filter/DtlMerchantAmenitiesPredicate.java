@@ -3,22 +3,22 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 import com.innahema.collections.query.functions.Predicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-import org.immutables.value.Value;
-
 import java.util.Collections;
 
 /**
  * Opt out merchants that don't qualify for selected set of merchants
  */
-@Value.Immutable
-public abstract class DtlMerchantAmenitiesPredicate implements Predicate<DtlMerchant> {
+public class DtlMerchantAmenitiesPredicate implements Predicate<DtlMerchant> {
 
-    @Value.Parameter
-    public abstract DtlFilterData getFilterData();
+    private final DtlFilterData filterData;
+
+    public DtlMerchantAmenitiesPredicate(DtlFilterData filterData) {
+        this.filterData = filterData;
+    }
 
     @Override
     public boolean apply(DtlMerchant dtlMerchant) {
         return dtlMerchant.getAmenities() == null || dtlMerchant.getAmenities().isEmpty() ||
-                !Collections.disjoint(getFilterData().getSelectedAmenities(), dtlMerchant.getAmenities());
+                !Collections.disjoint(filterData.getSelectedAmenities(), dtlMerchant.getAmenities());
     }
 }

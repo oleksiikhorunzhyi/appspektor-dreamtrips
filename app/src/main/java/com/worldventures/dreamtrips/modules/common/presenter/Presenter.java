@@ -84,7 +84,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         try {
             eventBus.registerSticky(this, priorityEventBus);
         } catch (Exception ignored) {
-            Timber.v(ignored, "Problem on registering sticky");
+            Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
         }
     }
 

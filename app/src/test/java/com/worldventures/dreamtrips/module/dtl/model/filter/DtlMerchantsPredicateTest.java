@@ -12,11 +12,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchan
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantQueryPredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantTypePredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlMerchantAmenitiesPredicate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlMerchantDistancePredicate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlMerchantPricePredicate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlMerchantQueryPredicate;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlMerchantTypePredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import org.junit.Test;
@@ -33,7 +28,7 @@ public class DtlMerchantsPredicateTest {
 
     @Test
     public void checkType_Success() {
-        DtlMerchantTypePredicate predicate = ImmutableDtlMerchantTypePredicate.of(DtlMerchantType.OFFER);
+        DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setOffers(Collections.singletonList(DtlOffer.TYPE_PERK));
@@ -44,7 +39,7 @@ public class DtlMerchantsPredicateTest {
 
     @Test
     public void checkType_Fail() {
-        DtlMerchantTypePredicate predicate = ImmutableDtlMerchantTypePredicate.of(DtlMerchantType.OFFER);
+        DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setOffers(Collections.emptyList());
@@ -56,7 +51,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Success_inDisplayName() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("Plano").build();
-        DtlMerchantQueryPredicate predicate = ImmutableDtlMerchantQueryPredicate.of(filterData);
+        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDisplayName("Plano");
@@ -68,7 +63,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Fail_inDisplayName() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("London").build();
-        DtlMerchantQueryPredicate predicate = ImmutableDtlMerchantQueryPredicate.of(filterData);
+        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDisplayName("Texas");
@@ -80,7 +75,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Success_inCategory() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("pizza").build();
-        DtlMerchantQueryPredicate predicate = ImmutableDtlMerchantQueryPredicate.of(filterData);
+        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDisplayName("Texas");
@@ -93,7 +88,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkQuery_Fail_inCategory() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().searchQuery("whatever").build();
-        DtlMerchantQueryPredicate predicate = ImmutableDtlMerchantQueryPredicate.of(filterData);
+        DtlMerchantQueryPredicate predicate = new DtlMerchantQueryPredicate(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDisplayName("Texas");
@@ -106,7 +101,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkBudget_Success() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().maxPrice(1).maxPrice(3).build();
-        DtlMerchantPricePredicate predicate = ImmutableDtlMerchantPricePredicate.of(filterData);
+        DtlMerchantPricePredicate predicate = new DtlMerchantPricePredicate(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setBudget(3);
@@ -118,7 +113,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkBudget_Fail() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().maxPrice(1).maxPrice(3).build();
-        DtlMerchantPricePredicate predicate = ImmutableDtlMerchantPricePredicate.of(filterData);
+        DtlMerchantPricePredicate predicate = new DtlMerchantPricePredicate(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setBudget(6);
@@ -130,7 +125,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkAmenities_Empty() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().amenities(Collections.emptyList()).build();
-        DtlMerchantAmenitiesPredicate predicate = ImmutableDtlMerchantAmenitiesPredicate.of(filterData);
+        DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
 
         DtlMerchant dtlMerchant = createDefaultMerchant();
 
@@ -142,7 +137,7 @@ public class DtlMerchantsPredicateTest {
     public void checkAmenities_Success() {
         List<DtlMerchantAttribute> amenities = Collections.singletonList(new DtlMerchantAttribute("Free beer"));
         DtlFilterData filterData = ImmutableDtlFilterData.builder().amenities(amenities).selectedAmenities(amenities).build();
-        DtlMerchantAmenitiesPredicate predicate = ImmutableDtlMerchantAmenitiesPredicate.of(filterData);
+        DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beer")));
@@ -155,7 +150,7 @@ public class DtlMerchantsPredicateTest {
     public void checkAmenities_Fail() {
         List<DtlMerchantAttribute> amenities = Collections.singletonList(new DtlMerchantAttribute("Free beer"));
         DtlFilterData filterData = ImmutableDtlFilterData.builder().amenities(amenities).selectedAmenities(amenities).build();
-        DtlMerchantAmenitiesPredicate predicate = ImmutableDtlMerchantAmenitiesPredicate.of(filterData);
+        DtlMerchantAmenitiesPredicate predicate = new DtlMerchantAmenitiesPredicate(filterData);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setAmenities(Collections.singletonList(new DtlMerchantAttribute("Free beverages")));
@@ -167,7 +162,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkDistance_Success_MaxDistance() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
-        DtlMerchantDistancePredicate predicate = ImmutableDtlMerchantDistancePredicate.of(filterData);
+        DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDistanceType(DistanceType.KMS);
@@ -180,7 +175,7 @@ public class DtlMerchantsPredicateTest {
     @Test
     public void checkDistance_Success() {
         DtlFilterData filterData = ImmutableDtlFilterData.builder().distanceType(DistanceType.KMS).build();
-        DtlMerchantDistancePredicate predicate = ImmutableDtlMerchantDistancePredicate.of(filterData);
+        DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDistanceType(DistanceType.KMS);
@@ -196,7 +191,7 @@ public class DtlMerchantsPredicateTest {
                 .distanceType(DistanceType.KMS)
                 .maxDistance(20)
                 .build();
-        DtlMerchantDistancePredicate predicate = ImmutableDtlMerchantDistancePredicate.of(filterData);
+        DtlMerchantDistancePredicate predicate = new DtlMerchantDistancePredicate(filterData);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
         dtlMerchant.setDistanceType(DistanceType.KMS);

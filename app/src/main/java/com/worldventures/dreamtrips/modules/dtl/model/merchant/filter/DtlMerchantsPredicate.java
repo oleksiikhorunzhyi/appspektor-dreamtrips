@@ -2,43 +2,37 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import com.innahema.collections.query.functions.Predicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 
-import org.immutables.builder.Builder;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
+/**
+ * A complex merchant predicate that opts-out given merchant if at least one<br />
+ * supplied predicates fails.
+ */
 public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
 
-    private final DtlMerchantDistancePredicate distancePredicate;
+    private final List<Predicate<DtlMerchant>> predicats;
 
-    private final DtlMerchantAmenitiesPredicate amenitiesPredicate;
-
-    private final DtlMerchantPricePredicate pricePredicate;
-
-    private final DtlMerchantQueryPredicate queryPredicate;
-
-    private final DtlMerchantTypePredicate typePredicate;
-
-    private DtlMerchantsPredicate(DtlMerchantType merchantType,
-                                    DtlFilterData filterData) {
-        this.distancePredicate = ImmutableDtlMerchantDistancePredicate.of(filterData);
-        this.amenitiesPredicate = ImmutableDtlMerchantAmenitiesPredicate.of(filterData);
-        this.pricePredicate = ImmutableDtlMerchantPricePredicate.of(filterData);
-        this.queryPredicate = ImmutableDtlMerchantQueryPredicate.of(filterData);
-        this.typePredicate = ImmutableDtlMerchantTypePredicate.of(merchantType);
+    public static DtlMerchantsPredicate fromFilterData(DtlFilterData filterData) {
+        return new DtlMerchantsPredicate(
+                new DtlMerchantDistancePredicate(filterData),
+                new DtlMerchantAmenitiesPredicate(filterData),
+                new DtlMerchantPricePredicate(filterData),
+                new DtlMerchantQueryPredicate(filterData));
     }
 
-    @Builder.Factory
-    public static DtlMerchantsPredicate dtlMerchantsPredicate(DtlMerchantType merchantType,
-                                                              DtlFilterData filterData) {
-        return new DtlMerchantsPredicate(merchantType, filterData);
+    @SafeVarargs
+    public DtlMerchantsPredicate(Predicate<DtlMerchant>... predicats) {
+        this.predicats = Collections.unmodifiableList(Arrays.asList(predicats));
     }
 
     @Override
     public boolean apply(DtlMerchant merchant) {
-        return typePredicate.apply(merchant)
-                && pricePredicate.apply(merchant)
-                && distancePredicate.apply(merchant)
-                && amenitiesPredicate.apply(merchant)
-                && queryPredicate.apply(merchant);
+        for (Predicate<DtlMerchant> predicate : predicats) {
+            if(!predicate.apply(merchant)) return false;
+        }
+        return true;
     }
 }

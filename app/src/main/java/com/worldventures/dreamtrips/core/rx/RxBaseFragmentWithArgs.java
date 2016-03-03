@@ -11,11 +11,11 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public abstract class RxBaseFragmentWithArgs<PM extends Presenter, P extends Parcelable> extends BaseFragmentWithArgs<PM, P> implements RxView {
 
-    private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
+    private final PublishSubject<FragmentEvent> lifecycleSubject = PublishSubject.create();
 
     private Observable<FragmentEvent> lifecycle() {
         return lifecycleSubject.asObservable();

@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
@@ -40,14 +39,12 @@ import de.greenrobot.event.EventBus;
                 VideoDownloadSpiceService.class,
                 PhotoUploadingManager.class,
                 BucketItemManager.class,
-                DtlFilterDelegate.class,
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
 
                 LogoutDelegate.class,
                 //
-                DtlFilterDelegate.class,
                 DtlLocationManager.class,
                 DtlMerchantManager.class,
                 DtlJobManager.class,
@@ -88,12 +85,6 @@ public class ManagerModule {
     @Provides
     public BucketItemManager provideBucketItemManager(@ForApplication Injector injector) {
         return new BucketItemManager(injector);
-    }
-
-    @Singleton
-    @Provides
-    DtlFilterDelegate dtlFilterDelegate(@ForApplication Injector injector) {
-        return new DtlFilterDelegate(injector);
     }
 
     @Singleton

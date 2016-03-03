@@ -5,32 +5,29 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
-import org.immutables.value.Value;
-
 import java.util.List;
 
 /**
  * Opt out merchants that don't match search query
- * @param dtlMerchant merchant to filter
- * @return true if merchant passes search
  */
-@Value.Immutable
-public abstract class DtlMerchantQueryPredicate implements Predicate<DtlMerchant> {
+public class DtlMerchantQueryPredicate implements Predicate<DtlMerchant> {
 
-    @Value.Parameter
-    public abstract DtlFilterData getFilterData();
+    private final String searchQuery;
+
+    public DtlMerchantQueryPredicate(DtlFilterData filterData) {
+        if (filterData.getSearchQuery() == null) searchQuery = null;
+        else searchQuery = filterData.getSearchQuery().toLowerCase();
+    }
 
     @Override
     public boolean apply(DtlMerchant dtlMerchant) {
-        if (getFilterData().getSearchQuery() == null) return false;
-        //
-        String queryLowerCase = getFilterData().getSearchQuery().toLowerCase();
+        if (searchQuery == null) return false;
         //
         List<DtlMerchantAttribute> categories = dtlMerchant.getCategories();
         //
         return dtlMerchant.getDisplayName().toLowerCase()
-                .contains(queryLowerCase) || (categories != null &&
+                .contains(searchQuery) || (categories != null &&
                 Queryable.from(categories).firstOrDefault(element ->
-                        element.getName().toLowerCase().contains(queryLowerCase)) != null);
+                        element.getName().toLowerCase().contains(searchQuery)) != null);
     }
 }

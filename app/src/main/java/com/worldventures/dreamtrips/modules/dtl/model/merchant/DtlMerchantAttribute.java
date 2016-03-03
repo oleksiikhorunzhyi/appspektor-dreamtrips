@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Comparator;
+
 public class DtlMerchantAttribute implements Parcelable, Comparable<DtlMerchantAttribute> {
 
     private String name;
@@ -51,6 +53,14 @@ public class DtlMerchantAttribute implements Parcelable, Comparable<DtlMerchantA
     ///////////////////////////////////////////////////////////////////////////
     // java.lang.Object-overridden, sorting
     ///////////////////////////////////////////////////////////////////////////
+
+    public static final Comparator<DtlMerchantAttribute> NAME_ALPHABETIC_COMPARATOR =
+            new Comparator<DtlMerchantAttribute>() {
+                @Override
+                public int compare(DtlMerchantAttribute lhs, DtlMerchantAttribute rhs) {
+                    return lhs.name.compareToIgnoreCase(rhs.name);
+                }
+            };
 
     @Override
     public boolean equals(Object o) {

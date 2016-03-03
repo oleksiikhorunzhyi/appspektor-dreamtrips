@@ -1,58 +1,59 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantTypePredicate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
-import java.util.Collections;
 import java.util.List;
 
-import techery.io.library.JobSubscriber;
+import javax.inject.Inject;
 
-public class DtlMerchantListPresenter extends DtlMerchantsPresenter<DtlMerchantListPresenter.View> {
+import rx.Observable;
+
+public class DtlMerchantListPresenter extends JobPresenter<DtlMerchantListPresenter.View> {
+
+    @Inject
+    DtlMerchantManager dtlMerchantManager;
+    //
+    private final DtlMerchantTypePredicate typePredicate;
 
     public DtlMerchantListPresenter(DtlMerchantType dtlMerchantType) {
-        this.dtlMerchantType = dtlMerchantType;
+        this.typePredicate = new DtlMerchantTypePredicate(dtlMerchantType);
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         //
-        if (dtlMerchantType == DtlMerchantType.OFFER) view.setComingSoon();
+        if (typePredicate.getMerchantType() == DtlMerchantType.OFFER) view.setComingSoon();
+        //
+        bindMerchantManager();
     }
 
-    @Override
-    protected JobSubscriber bindApiJob() {
-        return super.bindApiJob()
+    private void bindMerchantManager() {
+        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor)
+                .onSuccess(this::onMerchantsLoaded)
                 .onProgress(view::showProgress)
                 .onError(throwable -> view.hideProgress());
     }
 
-    @Override
-    protected void onMerchantsLoaded() {
-        super.onMerchantsLoaded();
+    private void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
+        Observable.from(dtlMerchants)
+                .compose(new IoToMainComposer<>())
+                .filter(typePredicate::apply)
+                .toList()
+                .subscribe(this::setFilteredMerchants);
+    }
+
+    private void setFilteredMerchants(List<DtlMerchant> merchants) {
         view.hideProgress();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //
-        performFiltering();
-    }
-
-    @Override
-    protected void afterMapping(List<DtlMerchant> merchants) {
-        super.afterMapping(merchants);
-        Collections.sort(merchants, DtlMerchant.DISTANCE_COMPARATOR);
-    }
-
-    @Override
-    protected void merchantsPrepared(List<DtlMerchant> dtlMerchants) {
-        view.setItems(dtlMerchants);
+        view.setItems(merchants);
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {

@@ -10,8 +10,6 @@ import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
-import org.apache.commons.lang3.SerializationUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +48,10 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
     private ArrayList<Setting> cloneList(List<Setting> settingsList) {
         ArrayList<Setting> cloneList = new ArrayList<>();
-        Queryable.from(settingsList).forEachR(setting -> cloneList.add(SerializationUtils.clone(setting)));
+        Queryable.from(settingsList).forEachR(setting -> {
+            Setting<?> clone = new Setting<>(setting.getName(), setting.getType(), setting.getValue());
+            cloneList.add(clone);
+        });
         return cloneList;
     }
 

@@ -35,6 +35,8 @@ public interface ChatScreen extends MessengerScreen {
 
     boolean onBackPressed();
 
+    void hidePicker();
+
     Observable<TextViewTextChangeEvent> getEditMessageObservable();
 
     void showContextualAction(Menu menu, DataMessage message);

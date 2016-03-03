@@ -759,7 +759,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         photoPickerDelegate
                 .watchChosenImages()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(this::onImagesPicked,
+                .subscribe(photos -> {
+                            getView().hidePicker();
+                            onImagesPicked(photos);
+                        },
                         e -> Timber.e(e, "Error while image picking"));
     }
 

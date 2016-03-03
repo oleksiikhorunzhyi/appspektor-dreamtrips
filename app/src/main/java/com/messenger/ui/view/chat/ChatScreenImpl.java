@@ -341,6 +341,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
     }
 
+    @Override
+    public void hidePicker() {
+        photoPickerLayoutDelegate.hidePicker();
+    }
+
     private void onImagesPicked(List<ChosenImage> images) {
         photoPickerLayoutDelegate.hidePicker();
         //

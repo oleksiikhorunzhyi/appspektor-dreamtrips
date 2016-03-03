@@ -35,6 +35,7 @@ public class DtlFilterDelegate {
     }
 
     public DtlFilterData getFilterData() {
+        if (filterData == null) init();
         return filterData;
     }
 

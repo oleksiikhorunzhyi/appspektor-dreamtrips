@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import rx.Observable;
-import rx.subjects.ReplaySubject;
+import rx.subjects.BehaviorSubject;
 
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
@@ -43,7 +43,7 @@ public class MessengerConnector {
     private MessengerServerFacade messengerServerFacade;
     private MessengerCacheSynchronizer messengerCacheSynchronizer;
     //
-    private ReplaySubject<ConnectionStatus> connectionStream;
+    private BehaviorSubject<ConnectionStatus> connectionStream = BehaviorSubject.create(ConnectionStatus.DISCONNECTED);
 
     private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                                SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
@@ -61,7 +61,6 @@ public class MessengerConnector {
                 conversationsDAO, participantsDAO, messageDAO, usersDAO,
                 attachmentDAO);
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
-        this.connectionStream = ReplaySubject.create(1);
 
         messengerServerFacade.addAuthorizationListener(authListener);
         messengerServerFacade.addConnectionListener(connectionListener);
@@ -93,11 +92,7 @@ public class MessengerConnector {
     }
 
     public void connect() {
-        if (appSessionHolder == null
-                || appSessionHolder.get() == null || !appSessionHolder.get().isPresent()
-                || connectionStream.getValue() == CONNECTING || connectionStream.getValue() == CONNECTED) {
-            return;
-        }
+        if (isConnectingOrConnected() || !isUserSessionPresent()) return;
 
         connectionStream.onNext(CONNECTING);
         UserSession userSession = appSessionHolder.get().get();
@@ -106,7 +101,7 @@ public class MessengerConnector {
     }
 
     public void disconnect() {
-        if (connectionStream.getValue() != CONNECTED && connectionStream.getValue() != CONNECTING) return;
+        if (!isConnectingOrConnected()) return;
         //
         if (spiceManager.isStarted()) spiceManager.shouldStop();
         messengerServerFacade.disconnectAsync();
@@ -126,6 +121,16 @@ public class MessengerConnector {
         }
     }
 
+    private boolean isConnectingOrConnected() {
+        ConnectionStatus status = connectionStream.getValue();
+        return status == CONNECTING || status == CONNECTED;
+    }
+
+    private boolean isUserSessionPresent(){
+        return appSessionHolder != null && appSessionHolder.get() != null
+                && appSessionHolder.get().isPresent();
+    }
+
     final private AuthorizeListener authListener = new AuthorizeListener() {
         @Override
         public void onSuccess() {
@@ -138,7 +143,6 @@ public class MessengerConnector {
 
         @Override
         public void onFailed(Exception exception) {
-            super.onFailed(exception);
             connectionStream.onNext(ERROR);
         }
     };

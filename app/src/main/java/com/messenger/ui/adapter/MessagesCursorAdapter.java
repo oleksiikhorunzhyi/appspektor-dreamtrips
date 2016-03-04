@@ -166,7 +166,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         String attachmentImageId = cursor.getString(cursor.getColumnIndex(MessageDAO.ATTACHMENT_ID));
         String imageUrl = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.URL));
 
-        holder.showImageMessage(TextUtils.isEmpty(imageUrl) ? null : Uri.parse(imageUrl));
+        holder.showImageMessage(TextUtils.isEmpty(imageUrl) ? Uri.EMPTY : Uri.parse(imageUrl));
         holder.setOnImageClickListener(v -> {
             if (onImageClickListener != null)
                 onImageClickListener.onImageClickListener(attachmentImageId);

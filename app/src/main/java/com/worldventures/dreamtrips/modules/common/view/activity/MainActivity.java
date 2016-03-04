@@ -11,8 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.techery.spares.annotations.Layout;
@@ -20,20 +20,20 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
+import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
-import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
 import javax.inject.Inject;
 
@@ -109,7 +109,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         if (currentComponent == null && currentFragment != null) {
             currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
         }
-        if (!TextUtils.isEmpty(keyComponent)) {
+        if (currentComponent == null && !TextUtils.isEmpty(keyComponent)) {
             currentComponent = rootComponentsProvider.getComponentByKey(keyComponent);
         }
         if (currentComponent == null) {

@@ -16,6 +16,7 @@ import java.io.InputStream;
 public class SharePresenter extends Presenter<SharePresenter.View> {
 
     public void create(String imageUrl, String shareLink, String text, String type) {
+        text = text == null ? "" : text;
         if (type.equals(ShareType.FACEBOOK)) {
             view.shareFBDialog(imageUrl, shareLink, text);
         } else if (type.equals(ShareType.TWITTER)) {

@@ -22,7 +22,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
-    // App version
+    // App versionq
     def versionMajor = 1
     def versionMinor = 8
     def versionPatch = 0

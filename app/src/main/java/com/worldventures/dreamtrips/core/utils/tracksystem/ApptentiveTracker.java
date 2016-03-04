@@ -1,17 +1,14 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.apptentive.android.sdk.Apptentive;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.Map;
 
-import icepick.Icepick;
 import timber.log.Timber;
 
 public class ApptentiveTracker extends ITracker {
@@ -45,6 +42,8 @@ public class ApptentiveTracker extends ITracker {
 
     @Override
     public void trackEvent(String category, String action, Map<String, Object> data) {
+        if (activity == null) return;
+        //
         Activity activity = this.activity.get();
         if (activity != null) {
             Apptentive.engage(activity, TextUtils.join(":", new String[]{category, action}));

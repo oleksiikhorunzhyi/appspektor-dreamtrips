@@ -161,12 +161,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     private void navigateBack() {
-        router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
-                .fragmentManager(getFragmentManager())
-                .backStackEnabled(false)
-                .clearBackStack(true)
-                .containerId(R.id.dtl_container)
-                .build());
+        getFragmentManager().popBackStack();
     }
 
     @Override

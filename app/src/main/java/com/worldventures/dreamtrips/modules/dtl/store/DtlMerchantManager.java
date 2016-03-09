@@ -80,8 +80,7 @@ public class DtlMerchantManager {
                         dtlLocationManager.getCachedSelectedLocation())));
     }
 
-    private List<DtlMerchant> filterMerchants(LatLng latLng, List<DtlMerchant> dtlMerchants,
-                                              DtlFilterData filterData) {
+    private List<DtlMerchant> filterMerchants(LatLng latLng, List<DtlMerchant> dtlMerchants, DtlFilterData filterData) {
         DtlMerchantsPredicate predicate = DtlMerchantsPredicate.fromFilterData(filterData);
         //
         return Observable.from(dtlMerchants)

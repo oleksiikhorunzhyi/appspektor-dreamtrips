@@ -11,9 +11,13 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
@@ -25,13 +29,24 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
+    private final BehaviorSubject<List<DtlMerchant>> merchants = BehaviorSubject.create();
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
         view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
         //
-        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor)
-                .onSuccess(this::onMerchantsLoaded);
+        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor).onSuccess(this::onMerchantsLoaded);
+        bindFilteredStream();
+    }
+
+    protected void bindFilteredStream() {
+        final Observable<List<DtlMerchant>> merchantsStream = Observable
+                .combineLatest(this.merchants, view.isHideDinings(), (dtlMerchants, isHideDinings) ->
+                        Observable.from(dtlMerchants)
+                                .filter(merchant -> !(isHideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
+                                .toList().toBlocking().firstOrDefault(Collections.emptyList()));
+        view.bind(merchantsStream).subscribe(this::showPins);
     }
 
     public void onMapLoaded() {
@@ -42,7 +57,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
-        showPins(dtlMerchants);
+        this.merchants.onNext(dtlMerchants);
     }
 
     public void onMarkerClick(String merchantId) {
@@ -92,5 +107,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         void centerIn(DtlLocation location);
 
         void renderPins();
+
+        Observable<Boolean> isHideDinings();
     }
 }

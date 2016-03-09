@@ -12,12 +12,12 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 import com.messenger.ui.viewstate.LceViewState;
+import com.messenger.util.UsersDataTransformer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -64,6 +64,8 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private PublishSubject<Void> adapterInitializer = PublishSubject.create();
     private Observable<Void> adapterInitializeObservable;
 
+    private UsersDataTransformer usersDataTransformer;
+
     public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
         super(context);
         ((Injector) context.getApplicationContext()).inject(this);
@@ -71,6 +73,9 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         this.conversationId = conversationId;
 
         this.profileCrosser = new ProfileCrosser(context, routeCreator);
+        usersDataTransformer = new UsersDataTransformer(getContext());
+        usersDataTransformer.setSearchAdmin(true);
+        usersDataTransformer.setSearchHosts(true);
     }
 
     @Override
@@ -167,19 +172,22 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     private void showContent() {
+        usersDataTransformer.setFilter(getViewState().getSearchFilter());
+        membersCursorObservable.subscribe(cursor -> {
+            if (cursor.getCount() <= 1) {
+                // cause admin of group chat is also participant
+                Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
+                return;
+            }
+        });
         Observable.zip(adapterInitializeObservable, membersCursorObservable, (aVoid, cursor) -> cursor)
                 .compose(bindVisibilityIoToMainComposer())
-                .subscribe(cursor -> {
-                    // cause admin of group chat is also participant
-                    if (cursor.getCount() <= 1) {
-                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
-                        return;
-                    }
-
+                .compose(usersDataTransformer)
+                .subscribe(result -> {
                     EditChatMembersScreen view = getView();
                     view.showContent();
-                    view.setMembers(cursor, getViewState().getSearchFilter(), UsersDAO.USER_DISPLAY_NAME);
-                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), cursor.getCount()));
+                    view.setMembers(result.getAdmin(), result.getUsersWithHeaders(), getViewState().getSearchFilter());
+                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), result.getUsersCount()));
                 });
     }
 

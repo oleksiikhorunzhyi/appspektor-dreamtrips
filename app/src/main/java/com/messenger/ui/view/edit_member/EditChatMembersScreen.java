@@ -5,6 +5,8 @@ import android.database.Cursor;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
 
+import java.util.List;
+
 public interface EditChatMembersScreen extends MessengerScreen {
 
     void showLoading();
@@ -17,9 +19,7 @@ public interface EditChatMembersScreen extends MessengerScreen {
 
     void setAdapterWithInfo(DataUser user, boolean isOwner);
 
-    void setMembers(Cursor cursor);
-
-    void setMembers(Cursor cursor, String query, String queryColumn);
+    void setMembers(DataUser admin, List usersWithHeaders, String query);
 
     void invalidateAllSwipedLayouts();
 

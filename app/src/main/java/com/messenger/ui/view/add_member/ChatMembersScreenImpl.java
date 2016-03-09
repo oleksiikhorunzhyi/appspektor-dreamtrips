@@ -20,9 +20,12 @@ import android.widget.EditText;
 import com.messenger.entities.DataUser;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.adapter.CheckableContactsCursorAdapter;
+import com.messenger.ui.adapter.cell.CheckableUserCell;
+import com.messenger.ui.adapter.cell.HeaderCell;
 import com.messenger.ui.anim.WeightSlideAnimator;
 import com.messenger.ui.presenter.ChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.recyclerview.Header;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.SelectionListenerEditText;
@@ -91,8 +94,10 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
 
-        adapter = new CheckableContactsCursorAdapter(getContext(), null);
-        adapter.setAvatarClickListener(user -> getPresenter().openUserProfile(user));
+        adapter = new CheckableContactsCursorAdapter(getContext(), injector, null);
+        adapter.registerCell(DataUser.class, CheckableUserCell.class);
+        adapter.registerCell(Header.class, HeaderCell.class);
+        adapter.registerDelegate(DataUser.class, user -> getPresenter().openUserProfile((DataUser)user));
         adapter.setSelectionListener((selectedUsers) -> {
             setSelectedContacts(selectedUsers);
             getPresenter().onSelectedUsersStateChanged(selectedUsers);
@@ -193,13 +198,8 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public void setContacts(Cursor data) {
-        adapter.changeCursor(data);
-    }
-
-    @Override
-    public void setContacts(Cursor cursor, String query, String queryColumn) {
-        adapter.changeCursor(cursor, query, queryColumn);
+    public void setContacts(List usersWithHeaders, String query) {
+        adapter.setItems(usersWithHeaders);
     }
 
     @Override

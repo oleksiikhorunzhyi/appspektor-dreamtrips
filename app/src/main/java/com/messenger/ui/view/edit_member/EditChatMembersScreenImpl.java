@@ -19,14 +19,19 @@ import android.view.ViewGroup;
 
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
+import com.messenger.ui.adapter.cell.HeaderCell;
+import com.messenger.ui.adapter.cell.SwipeableUserCell;
 import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.recyclerview.Header;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -83,9 +88,20 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
         Context context = getContext();
         EditChatMembersScreenPresenter presenter = getPresenter();
 
-        adapter = new ActionButtonsContactsCursorAdapter(context, user, isOwner, swipeableAdapterManager);
-        adapter.setDeleteRequestListener(presenter::onDeleteUserFromChat);
-        adapter.setUserClickListener(presenter::onUserClicked);
+        adapter = new ActionButtonsContactsCursorAdapter(context, injector, isOwner);
+        adapter.registerCell(DataUser.class, SwipeableUserCell.class);
+        adapter.registerCell(Header.class, HeaderCell.class);
+        adapter.registerDelegate(DataUser.class, new SwipeableUserCell.Delegate() {
+            @Override
+            public void onDeleteUserRequired(DataUser user) {
+                presenter.onDeleteUserFromChat(user);
+            }
+
+            @Override
+            public void onCellClicked(DataUser model) {
+                presenter.onUserClicked(model);
+            }
+        });
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(context));
@@ -135,14 +151,10 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
-    public void setMembers(Cursor cursor) {
-        adapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void setMembers(Cursor cursor, String query, String queryColumn) {
+    public void setMembers(DataUser admin, List usersWithHeaders, String query) {
+        adapter.setItems(admin, usersWithHeaders);
         this.savedSearchFilter = query;
-        adapter.changeCursor(cursor, query, queryColumn);
+        swipeableAdapterManager.closeAllItems(); // cause sometime there is magic NullPointerException
     }
 
     @Override

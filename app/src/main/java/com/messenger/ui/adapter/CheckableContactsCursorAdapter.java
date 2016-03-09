@@ -1,20 +1,17 @@
 package com.messenger.ui.adapter;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.messenger.entities.DataUser;
-import com.messenger.ui.adapter.holder.BaseViewHolder;
-import com.messenger.ui.adapter.holder.ContactViewHolder;
-import com.worldventures.dreamtrips.R;
+import com.messenger.ui.adapter.cell.CheckableUserCell;
+import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.techery.spares.module.Injector;
+import com.techery.spares.ui.view.cell.AbstractCell;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckableContactsCursorAdapter extends ContactCursorAdapter {
+public class CheckableContactsCursorAdapter extends BaseDelegateAdapter<DataUser> {
 
     public interface SelectionListener {
         void onSelectionStateChanged(List<DataUser> selectedContacts);
@@ -23,8 +20,9 @@ public class CheckableContactsCursorAdapter extends ContactCursorAdapter {
     private List<DataUser> selectedContacts = new ArrayList<>();
     private SelectionListener selectionListener;
 
-    public CheckableContactsCursorAdapter(Context context, Cursor cursor) {
-        super(context, cursor);
+    public CheckableContactsCursorAdapter(Context context, Injector injector, List<DataUser> selectedContacts) {
+        super(context, injector);
+        this.selectedContacts = selectedContacts;
     }
 
     public void setSelectedContacts(List<DataUser> selectedContacts) {
@@ -37,11 +35,14 @@ public class CheckableContactsCursorAdapter extends ContactCursorAdapter {
     }
 
     @Override
-    protected void onBindUserHolder(ContactViewHolder holder, Cursor cursor, DataUser user) {
-        super.onBindUserHolder(holder, cursor, user);
-        holder.getTickImageView().setVisibility(View.VISIBLE);
-        holder.getTickImageView().setSelected(selectedContacts.contains(user));
-        holder.itemView.setOnClickListener((v) -> {
+    public void onBindViewHolder(AbstractCell cell, int position) {
+        super.onBindViewHolder(cell, position);
+        if (!(cell instanceof CheckableUserCell)) {
+            return;
+        }
+        DataUser user = getItem(position);
+        ((CheckableUserCell)cell).getTickImageView().setSelected(selectedContacts.contains(user));
+        cell.itemView.setOnClickListener((v) -> {
             if (!selectedContacts.contains(user)) {
                 selectedContacts.add(user);
             } else {
@@ -51,12 +52,5 @@ public class CheckableContactsCursorAdapter extends ContactCursorAdapter {
                 selectionListener.onSelectionStateChanged(selectedContacts);
             }
         });
-    }
-
-    @Override
-    public BaseViewHolder createContactViewHolder(ViewGroup parent, int viewType) {
-        View itemRow = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_contact,
-                parent, false);
-        return new ContactViewHolder(itemRow);
     }
 }

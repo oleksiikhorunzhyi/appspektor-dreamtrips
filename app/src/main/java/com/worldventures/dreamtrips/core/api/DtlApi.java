@@ -27,7 +27,7 @@ public interface DtlApi {
     List<DtlLocation> searchLocations(@Query("query") String query);
 
     @GET("/api/dtl/v2/merchants")
-    ArrayList<DtlMerchant> getNearbyDtlMerchants(@Query("ll") String ll);
+    List<DtlMerchant> getNearbyDtlMerchants(@Query("ll") String ll);
 
     @FormUrlEncoded
     @POST("/api/dtl/v2/merchants/{id}/estimations")

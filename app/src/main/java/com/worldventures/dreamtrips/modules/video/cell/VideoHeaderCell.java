@@ -6,16 +6,16 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
-import com.worldventures.dreamtrips.modules.video.event.LanguageClickedEvent;
+import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoHeaderDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_video_header)
-public class VideoHeaderCell extends AbstractCell<VideoHeader> {
+public class VideoHeaderCell extends AbstractDelegateCell<VideoHeader, VideoHeaderDelegate> {
 
     @InjectView(R.id.header)
     TextView header;
@@ -51,7 +51,7 @@ public class VideoHeaderCell extends AbstractCell<VideoHeader> {
 
     @OnClick(R.id.wrapper_spinner_language)
     void onLanguageClicked() {
-        getEventBus().post(new LanguageClickedEvent());
+        if (cellDelegate != null) cellDelegate.onLanguageClicked();
     }
 
     @Override

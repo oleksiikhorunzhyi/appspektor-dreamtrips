@@ -4,19 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.session.SessionHolder;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.PlayerActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
-import com.worldventures.dreamtrips.modules.video.event.MemberVideoAnalyticEvent;
+import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
@@ -27,21 +27,20 @@ import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.adapter_item_video)
-public class VideoCell extends AbstractCell<Video> {
+public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
 
     @InjectView(R.id.iv_bg)
     protected SimpleDraweeView ivBg;
-    @InjectView(R.id.iv_play)
-    protected ImageView ivPlay;
     @InjectView(R.id.tv_title)
     protected TextView tvTitle;
-
     @InjectView(R.id.download_progress)
     protected PinProgressButton downloadProgress;
 
     @Inject
     @ForActivity
     protected Context context;
+    @Inject
+    protected SessionHolder<UserSession> appSessionHolder;
 
     protected ProgressVideoCellHelper progressVideoCellHelper;
 
@@ -83,8 +82,12 @@ public class VideoCell extends AbstractCell<Video> {
             parse = Uri.parse(CachedEntity.getFilePath(context, videoEntity.getUrl()));
         }
         Intent intent = new Intent(context, PlayerActivity.class).setData(parse);
-        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_PLAY, video.getVideoName()));
-        getEventBus().post(new MemberVideoAnalyticEvent(video.getVideoName(), TrackingHelper.ATTRIBUTE_VIEW));
+        //
+        TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get().get().getUser().getUsername(),
+                TrackingHelper.ACTION_MEMBERSHIP_PLAY, video.getVideoName());
+        if (cellDelegate != null)
+            cellDelegate.sendAnalytic(TrackingHelper.ATTRIBUTE_VIEW, video.getVideoName());
+        //
         context.startActivity(intent);
     }
 
@@ -92,8 +95,11 @@ public class VideoCell extends AbstractCell<Video> {
     public void onDownloadClick() {
         Video video = getModelObject();
         progressVideoCellHelper.onDownloadCLick(context, getEventBus());
-        getEventBus().post(new TrackVideoStatusEvent(TrackingHelper.ACTION_MEMBERSHIP_LOAD_START, video.getVideoName()));
-        getEventBus().post(new MemberVideoAnalyticEvent(video.getVideoName(), TrackingHelper.ATTRIBUTE_DOWNLOAD));
+        //
+        TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get().get().getUser().getUsername(),
+                TrackingHelper.ACTION_MEMBERSHIP_LOAD_START, video.getVideoName());
+        if (cellDelegate != null)
+            cellDelegate.sendAnalytic(TrackingHelper.ATTRIBUTE_DOWNLOAD, video.getVideoName());
     }
 
     @Override

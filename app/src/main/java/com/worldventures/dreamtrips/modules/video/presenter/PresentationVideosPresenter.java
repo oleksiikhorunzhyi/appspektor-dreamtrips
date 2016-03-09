@@ -5,14 +5,12 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.TrackVideoStatusEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
-import com.worldventures.dreamtrips.modules.video.event.MemberVideoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
@@ -27,11 +25,9 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
     @Inject
     protected SnappyRepository db;
-
     @Inject
     @ForApplication
     protected Injector injector;
-
     @Inject
     protected VideoCachingDelegate videoCachingDelegate;
 
@@ -132,15 +128,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         });
     }
 
-    public void onEvent(TrackVideoStatusEvent event) {
-        TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
-                getAccountUserId(), event.getAction(), event.getName());
-    }
-
-    public void onEvent(MemberVideoAnalyticEvent event) {
-        TrackingHelper.actionMembershipVideo(event.getActionAttribute(), event.getVideoName());
-    }
-
     @Override
     public void onStop() {
         super.onStop();
@@ -148,6 +135,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     }
 
     public interface View extends Presenter.View, VideoCachingDelegate.View {
+
         void startLoading();
 
         void finishLoading();

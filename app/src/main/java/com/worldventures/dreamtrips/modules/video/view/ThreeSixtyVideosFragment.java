@@ -9,6 +9,7 @@ import android.view.View;
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -32,11 +33,9 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
     @Optional
     @InjectView(R.id.recyclerViewFeatured)
     protected RecyclerView recyclerViewFeatured;
-
     @Optional
     @InjectView(R.id.recyclerViewRecent)
     protected RecyclerView recyclerViewRecent;
-
     @Optional
     @InjectView(R.id.recyclerViewAll)
     protected RecyclerView recyclerViewAll;
@@ -45,7 +44,7 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
 
     private BaseArrayListAdapter<Object> adapterFeatured;
     private BaseArrayListAdapter<Object> adapterRecent;
-    private BaseArrayListAdapter<Object> adapterAll;
+    private BaseDelegateAdapter<Object> adapterAll;
 
     private WeakHandler weakHandler;
 
@@ -60,7 +59,7 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
         super.afterCreateView(rootView);
 
         if (recyclerViewAll != null) {
-            adapterAll = new BaseArrayListAdapter<>(getActivity(), this);
+            adapterAll = new BaseDelegateAdapter<>(getActivity(), this);
             adapterAll.registerCell(Video.class, Video360Cell.class);
             adapterAll.registerCell(VideoHeader.class, VideoHeaderCell.class);
 
@@ -95,7 +94,6 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
-
     }
 
     @Override

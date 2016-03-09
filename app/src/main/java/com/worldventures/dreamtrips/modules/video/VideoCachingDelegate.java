@@ -34,7 +34,7 @@ public class VideoCachingDelegate {
         this.view = view;
     }
 
-    public void updateProgress(CachedEntity entity) {
+    public void updateItem(CachedEntity entity) {
         view.notifyItemChanged(entity);
     }
 

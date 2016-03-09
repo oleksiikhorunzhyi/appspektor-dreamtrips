@@ -12,8 +12,6 @@ import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.InputStream;
@@ -53,7 +51,7 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
             Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
             entity.setIsFailed(true);
             db.saveDownloadVideoEntity(entity);
-            eventBus.post(new DownloadVideoFailedEvent(spiceException, entity));
+            if (videoCachingDelegate != null) videoCachingDelegate.updateItem(entity);
         }
     }
 
@@ -69,12 +67,11 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
         if (progress > lastProgress) {
             if (progress == START_VALUE) {
                 entity.setIsFailed(false);
-                eventBus.post(new DownloadVideoStartEvent(entity));
             }
             lastProgress = progress;
             entity.setProgress(progress);
             db.saveDownloadVideoEntity(entity);
-            if (videoCachingDelegate != null) videoCachingDelegate.updateProgress(entity);
+            if (videoCachingDelegate != null) videoCachingDelegate.updateItem(entity);
         }
     }
 

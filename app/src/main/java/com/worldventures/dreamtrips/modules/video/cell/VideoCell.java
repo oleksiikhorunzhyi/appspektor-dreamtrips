@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 @Layout(R.layout.adapter_item_video)
 public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
@@ -51,26 +50,12 @@ public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
 
     @Override
     protected void syncUIStateWithModel() {
-        if (!getEventBus().isRegistered(progressVideoCellHelper)) {
-            getEventBus().register(progressVideoCellHelper);
-        }
-
         ivBg.setImageURI(Uri.parse(getModelObject().getImageUrl()));
         tvTitle.setText(getModelObject().getVideoName());
 
         progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
-        progressVideoCellHelper.setUrl(getModelObject().getMp4Url());
 
         progressVideoCellHelper.syncUIStateWithModel();
-    }
-
-    @Override
-    public void clearResources() {
-        super.clearResources();
-        EventBus eventBus = getEventBus();
-        if (eventBus != null && eventBus.isRegistered(progressVideoCellHelper)) {
-            eventBus.unregister(progressVideoCellHelper);
-        }
     }
 
     @OnClick(R.id.iv_play)

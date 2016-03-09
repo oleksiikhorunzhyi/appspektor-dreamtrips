@@ -56,7 +56,6 @@ public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate>
         this.textViewDuration.setText(getModelObject().getDuration());
 
         progressVideoCellHelper.setModelObject(getModelObject().getCacheEntity());
-        progressVideoCellHelper.setUrl(getModelObject().getMp4Url());
         progressVideoCellHelper.syncUIStateWithModel();
     }
 

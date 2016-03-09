@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.map.renderer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.support.annotation.DrawableRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 
 import butterknife.ButterKnife;
+import rx.Observable;
 
 public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
     private final BadgeView itemBadgeView;
@@ -50,9 +52,19 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
 
     @Override
     protected void onBeforeClusterRendered(Cluster<DtlClusterItem> cluster, MarkerOptions markerOptions) {
+        Observable.from(cluster.getItems())
+                .filter(dtlClusterItem -> dtlClusterItem.getDtlMerchantType() == DtlMerchantType.OFFER)
+                .count().subscribe(offersCount ->
+                setupClusterRendering(cluster, markerOptions, offersCount > 0));
+    }
+
+    private void setupClusterRendering(Cluster<DtlClusterItem> cluster, MarkerOptions markerOptions,
+                                       boolean hasOffers) {
+        @DrawableRes final int clusterIconResId = hasOffers ?
+                R.drawable.cluster_pin_icon : R.drawable.dinings_pin_icon;
         itemBadgeView.setVisibility(View.VISIBLE);
         itemBadgeView.setText(String.valueOf(cluster.getItems().size()));
-        pin.setImageResource(R.drawable.cluster_pin_icon);
+        pin.setImageResource(clusterIconResId);
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(makeIcon()));
     }
 

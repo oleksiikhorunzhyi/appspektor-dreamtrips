@@ -194,12 +194,12 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
 
     @Override
     public void setContacts(Cursor data) {
-        adapter.swapCursor(data);
+        adapter.changeCursor(data);
     }
 
     @Override
     public void setContacts(Cursor cursor, String query, String queryColumn) {
-        adapter.swapCursor(cursor, query, queryColumn);
+        adapter.changeCursor(cursor, query, queryColumn);
     }
 
     @Override

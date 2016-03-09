@@ -44,7 +44,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     }
 
     private void contactUsers() {
-        cursorObservable = usersDAO.getFriends()
+        cursorObservable = usersDAO.getFriends(user.getId())
                 .compose(bindViewIoToMainComposer());
 
         cursorObservable.subscribe(this::showContacts);

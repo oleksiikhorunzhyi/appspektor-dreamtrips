@@ -226,7 +226,10 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         isShown = true;
         boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
-        if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
+        if (fragmentManager.getBackStackEntryCount() == 0) {
+            updatePickerDelegate();
+            openGallery();
+        }
         updateCancelButtonState();
         int panelHeight = (int) getResources().getDimension(R.dimen.picker_panel_height);
         if (isKeyboardClosed)

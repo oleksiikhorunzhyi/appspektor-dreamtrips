@@ -283,7 +283,7 @@
     <string name="profile_more">更多</string>
     <string name="profile_platinum">白金會員</string>
     <string name="profile_golden">黃金會員</string>
-    <string name="profile_dt_points">%s DT點數</string>
+    <string name="profile_dt_points">%d DT點數</string>
     <string name="profile_rovia_bucks">%s Rovia幣</string>
     <string name="bucket_delete_dialog">您確定要刪除目標清單項目嗎?</string>
 
@@ -526,8 +526,8 @@
     <string name="settings_new_message">New Message</string>
     <string name="settings_photo_tagging">Photo Tagging</string>
 
-    <string name="abbreviated_miles">mi</string>
-    <string name="abbreviated_kilometers">km</string>
+    <string name="abbreviated_miles">公里</string>
+    <string name="abbreviated_kilometers">英里</string>
     <string name="show_distance_in">Show distance in:</string>
     <string name="settings_kilometers">Kilometers</string>
     <string name="settings_miles">Miles</string>

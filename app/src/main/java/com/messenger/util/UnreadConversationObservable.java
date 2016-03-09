@@ -14,7 +14,6 @@ public class UnreadConversationObservable {
 
     public UnreadConversationObservable(ConversationsDAO conversationsDAO) {
         observable = conversationsDAO.getUnreadConversationsCount()
-                .onBackpressureLatest()
                 .distinctUntilChanged()
                 .compose(new IoToMainComposer<>());
     }

@@ -220,7 +220,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         details.setVisibility(View.VISIBLE);
         viewProfile.setVisibility(View.GONE);
         accountType.setText(user.getCompany());
-        dtPoints.setText(df.format(user.getDreamTripsPoints()));
+        dtPoints.setText(String.valueOf((int) user.getDreamTripsPoints()));
         roviaBucks.setText(df.format(user.getRoviaBucks()));
 
         ProfileViewUtils.setUserStatus(user, accountType, companyName.getResources());

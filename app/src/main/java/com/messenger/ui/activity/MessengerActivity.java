@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
@@ -107,6 +109,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         flowActivityHelper.onNewIntent(intent);
+        initFlow(intent.getStringExtra(EXTRA_CHAT_CONVERSATION_ID));
     }
 
     @Override
@@ -159,9 +162,12 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
                     .build();
         }
 
-        flowActivityHelper = new FlowActivityHelper(this, this,
-                defaultBackstack, new GsonParceler(gson));
-
+        if (Flow.get(this) == null) {
+            flowActivityHelper = new FlowActivityHelper(this, this,
+                    defaultBackstack, new GsonParceler(gson));
+        } else {
+            Flow.get(this).setHistory(defaultBackstack, Flow.Direction.REPLACE);
+        }
     }
 
     private Path provideDefaultScreen() {
@@ -173,7 +179,9 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     }
 
     private void itemReseleted(ComponentDescription route) {
-        //
+        if (!ViewUtils.isLandscapeOrientation(this)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
     }
 
     private void logout() {

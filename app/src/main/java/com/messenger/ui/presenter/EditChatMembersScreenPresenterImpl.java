@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;
-import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -59,7 +59,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     private final String conversationId;
     private Observable<DataConversation> conversationObservable;
-    private Observable<MultiUserChat> chatObservable;
     private Observable<Cursor> membersCursorObservable;
 
     private PublishSubject<Void> adapterInitializer = PublishSubject.create();
@@ -82,7 +81,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         getView().showLoading();
 
         connectConversation();
-        connectChat();
         connectParticipants();
 
         adapterInitializeObservable = adapterInitializer.replay(1).autoConnect();
@@ -96,20 +94,10 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         activityWatcher.removeOnStartStopListener(startStopAppListener);
     }
 
+
     private void connectConversation() {
         conversationObservable = conversationsDAO.getConversation(conversationId)
-                .onBackpressureLatest()
                 .compose(new NonNullFilter<>())
-                .compose(bindViewIoToMainComposer())
-                .replay(1)
-                .autoConnect();
-    }
-
-    private void connectChat() {
-        chatObservable = conversationObservable
-                .first()
-                .map(conversation -> messengerServerFacade.getChatManager()
-                        .createMultiUserChat(conversationId, conversation.getOwnerId()))
                 .compose(bindViewIoToMainComposer())
                 .replay(1)
                 .autoConnect();
@@ -117,7 +105,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     private void connectParticipants() {
         membersCursorObservable = participantsDAO.getParticipants(conversationId)
-                .onBackpressureLatest()
                 .compose(bindViewIoToMainComposer())
                 .replay(1)
                 .autoConnect();
@@ -212,13 +199,19 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Override
     public void onDeleteUserFromChatConfirmed(DataUser user) {
-        chatObservable.subscribe(chat -> {
-            chat.kick(Collections.singletonList(user.getId()))
-                    .map(users -> users.get(0))
-                    .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))
-                    .doOnError(e -> Timber.e(e, ""))
-                    .subscribe();
-        });
+        messengerServerFacade.getChatManager()
+                .createMultiUserChatObservable(conversationId, this.user.getId())
+                .compose(bindViewIoToMainComposer())
+                .subscribe(chat -> kickUser(chat, user.getId()),
+                        e -> Timber.e(e, "Failed to create chat"));
+    }
+
+    private void kickUser(MultiUserChat chat, String userId) {
+        chat.kick(Collections.singletonList(userId))
+                .map(users -> users.get(0))
+                .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))
+                .subscribe(memberId -> chat.close(),
+                        e -> Timber.e(e, "Failed to delete user"));
     }
 
     @Override

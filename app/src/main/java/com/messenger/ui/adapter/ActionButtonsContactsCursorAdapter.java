@@ -76,9 +76,9 @@ public class ActionButtonsContactsCursorAdapter
     }
 
     @Override
-    public Cursor swapCursor(Cursor cursor, String filter, String column) {
+    public void changeCursor(Cursor cursor, String filter, String column) {
         if (swipeableAdapterManager != null) swipeableAdapterManager.closeAllItems(); // cause sometime there is magic NullPointerException
-        return super.swapCursor(cursor, filter, column);
+        super.changeCursor(cursor, filter, column);
     }
 
     @Override

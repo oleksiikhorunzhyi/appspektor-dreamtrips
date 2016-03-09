@@ -6,8 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.MessageBody;
-
-import org.apache.commons.lang3.StringEscapeUtils;
+import com.messenger.util.Utils;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class MessageBodyParser {
     }
 
     public MessageBody parseMessageBody(String stanzaMessageBody) {
-        String messageBodyJson = StringEscapeUtils.unescapeXml(stanzaMessageBody);
+        String messageBodyJson = Utils.unescapeXML(stanzaMessageBody);
 
         MessageBody messageBody;
 

@@ -57,11 +57,12 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
     }
 
     @Override
-    public Cursor swapCursor(Cursor cursor) {
-        return swapCursor(cursor, null, null);
+    public void changeCursor(Cursor cursor) {
+        changeCursor(cursor, null, null);
     }
 
-    public Cursor swapCursor(Cursor cursor, String filter, String column) {
+    //// TODO: 2/26/16 REFACTOR THIS LOGIC!
+    public void changeCursor(Cursor cursor, String filter, String column) {
         if (cursor != null) {
             int adminPositionInCursor = -1;
             if (adminSectionEnabled) {
@@ -90,9 +91,24 @@ public abstract class ContactCursorAdapter extends CursorRecyclerViewAdapter<Bas
                 cursor = new FilterCursorWrapper(cursor, filter, columnIndex);
             }
         }
-        Cursor cursorToReturn = super.swapCursor(cursor);
+
+        closeCursorIfNeed(swapCursor(cursor));
         buildHeaderSectionsData();
-        return cursorToReturn;
+    }
+
+    private void closeCursorIfNeed(Cursor oldCursor) {
+        if (oldCursor instanceof FilterCursorWrapper) {
+            oldCursor = ((FilterCursorWrapper) oldCursor).getWrappedCursor();
+        }
+
+        Cursor currentCursor = getCursor();
+        if (currentCursor instanceof FilterCursorWrapper){
+            currentCursor = ((FilterCursorWrapper) currentCursor).getWrappedCursor();
+        }
+
+        if (oldCursor != null && currentCursor != null && oldCursor != currentCursor) {
+            oldCursor.close();
+        }
     }
 
     private boolean buildHeaderSectionsData() {

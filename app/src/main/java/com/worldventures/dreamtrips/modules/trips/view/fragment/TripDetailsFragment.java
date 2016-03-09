@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
@@ -156,5 +157,10 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
         tripDetailsViewInjector.initTripData(tripModel, getPresenter().getAccount());
         if (toolbarLandscape != null)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
+    }
+
+    @Override
+    public boolean isVisibleOnScreen() {
+        return ViewUtils.isPartVisibleOnScreen(this);
     }
 }

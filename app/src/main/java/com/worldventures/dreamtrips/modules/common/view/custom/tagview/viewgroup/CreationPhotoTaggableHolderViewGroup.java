@@ -22,8 +22,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
-import org.apache.commons.lang3.SerializationUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,7 +156,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
             @Override
             public void onTagCreated(CreationTagView newTagView, SuggestionTagView suggestionTagView, PhotoTag tag) {
-                PhotoTag cloneTag = SerializationUtils.clone(tag);
+                PhotoTag cloneTag = PhotoTag.cloneTag(tag);
                 addTag(cloneTag);
                 addExistsTagView(cloneTag);
                 removeView(newTagView);

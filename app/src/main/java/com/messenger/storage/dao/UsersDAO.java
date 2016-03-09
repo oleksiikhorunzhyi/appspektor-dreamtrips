@@ -11,7 +11,6 @@ import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.builder.ConditionQueryBuilder;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
@@ -46,20 +45,19 @@ public class UsersDAO extends BaseDAO {
                 });
     }
 
-    public Observable<Cursor> getFriends() {
+    public Observable<Cursor> getFriends(String currentUserId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT *, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " " +
-                        "FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table.FRIEND + "=?")
-                .withSelectionArgs(new String[]{String.valueOf(1)})
+                        "FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table._ID +  "<>?" + " AND " + DataUser$Table.FRIEND + "=?")
+                .withSelectionArgs(new String[]{currentUserId, String.valueOf(1)})
                 .withSortOrder("ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, DataUser.CONTENT_URI)
-                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
     }
 
     public void deleteFriends() {
-        new Delete().from(DataUser.class).where(Condition.column(DataUser$Table.FRIEND).is(true)).queryClose();
+        new Update<>(DataUser.class).set(Condition.column(DataUser$Table.FRIEND).is(false)).queryClose();
     }
 
     public void markUserAsFriend(List<String> ids, boolean isFriend) {

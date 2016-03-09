@@ -39,6 +39,13 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
         this.position = position;
     }
 
+    public static PhotoTag cloneTag(PhotoTag photoTag) {
+        PhotoTag result = new PhotoTag();
+        result.targetUserId = photoTag.targetUserId;
+        result.position = photoTag.position;
+        result.user = photoTag.user;
+        return result;
+    }
 
     public static class TagPosition implements Parcelable, Serializable {
 

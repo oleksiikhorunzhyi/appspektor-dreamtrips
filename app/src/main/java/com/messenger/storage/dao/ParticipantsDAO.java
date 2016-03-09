@@ -1,6 +1,5 @@
 package com.messenger.storage.dao;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -37,8 +36,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .withSelectionArgs(new String[]{conversationId, yourId})
                 .build();
 
-        return query(q)
-                .onBackpressureLatest()
+        return query(q, DataUser.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> {
                     DataUser res = SqlUtils.convertToModel(false, DataUser.class, cursor);
@@ -84,7 +82,6 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io());
     }
 
@@ -103,18 +100,6 @@ public class ParticipantsDAO extends BaseDAO {
 
     public void delete(String conversationId, String userId) {
         getContentResolver().delete(DataParticipant.CONTENT_URI,
-                DataParticipant$Table.CONVERSATIONID + "=? AND " +
-                        DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
-    }
-
-    public void delete(String conversationId) {
-        getContentResolver().delete(DataParticipant.CONTENT_URI,
-                DataParticipant$Table.CONVERSATIONID + "=?", new String[]{conversationId});
-    }
-
-    @Deprecated
-    public static void delete(ContentResolver resolver, String conversationId, String userId) {
-        resolver.delete(DataParticipant.CONTENT_URI,
                 DataParticipant$Table.CONVERSATIONID + "=? AND " +
                         DataParticipant$Table.USERID + "=?", new String[]{conversationId, userId});
     }

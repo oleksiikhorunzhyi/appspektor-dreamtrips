@@ -34,6 +34,7 @@ import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -131,7 +132,11 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
     @Override
     public void setSelectedConversationId(String conversationId) {
-        adapter.setSelectedConversationId(conversationId);
+        if (ViewUtils.isTablet(getContext()) && ViewUtils.isLandscapeOrientation(getContext())) {
+            adapter.setSelectedConversationId(conversationId);
+        } else {
+            adapter.setSelectedConversationId(null);
+        }
     }
 
     protected BaseAdapter createSpinnerAdapter() {
@@ -157,7 +162,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     private void setAdapters() {
         ConversationListScreenPresenter presenter = getPresenter();
 
-        adapter = new ConversationsCursorAdapter(getContext(), recyclerView, presenter.getUser());
+        adapter = new ConversationsCursorAdapter(getContext(), presenter.getUser());
         adapter.setSwipeButtonsListener(this);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
@@ -190,12 +195,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
 
     @Override
     public void showConversations(Cursor cursor) {
-        this.showConversations(cursor, null);
-    }
-
-    @Override
-    public void showConversations(Cursor cursor, String searchFilter) {
-        adapter.changeCursor(cursor, searchFilter);
+        adapter.changeCursor(cursor);
     }
 
     @Override

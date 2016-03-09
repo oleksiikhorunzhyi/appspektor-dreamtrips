@@ -62,8 +62,7 @@ public class XmppSingleUserChat extends SingleUserChat {
                     }
                     return false;
                 }))
-                .doOnError(throwable -> Timber.e(throwable, "setCurrentState %s", state))
-                .subscribe();
+                .subscribe(message -> {}, throwable -> Timber.e(throwable, "setCurrentState %s", state));
     }
 
     @Override

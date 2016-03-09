@@ -167,9 +167,9 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
             divider3.setVisibility(View.VISIBLE);
         } else {
             post.setVisibility(View.GONE);
-            friendsContainer.setVisibility(View.GONE);
             divider3.setVisibility(View.GONE);
         }
+        friends.setEnabled(isAccount());
 
         divider1.setVisibility(isAccount() && !featureManager.available(Feature.SOCIAL) ? View.GONE : View.VISIBLE);
 
@@ -299,9 +299,13 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     }
 
     private void setFriendsCount(int count) {
-        int stringResource = QuantityHelper.chooseResource(count, R.string.profile_friends_formatter,
-                R.string.profile_friend_formatter, R.string.profile_friends_formatter);
-        friends.setText(String.format(context.getString(stringResource), count));
+        if (count == 0) {
+            friends.setText(R.string.empty);
+        } else {
+            int stringResource = QuantityHelper.chooseResource(count, R.string.profile_friends_formatter,
+                    R.string.profile_friend_formatter, R.string.profile_friends_formatter);
+            friends.setText(String.format(context.getString(stringResource), count));
+        }
     }
 
     private void setSocial(Boolean isEnabled) {
@@ -319,7 +323,7 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     }
 
     private void setDreamTripPoints(String count) {
-        dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, count)));
+        dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, Float.valueOf(count).intValue())));
     }
 
     private void setIsFriend(boolean isFriend) {
@@ -392,8 +396,10 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
 
     @OnClick(R.id.friends)
     protected void onFriendsClick() {
-        getEventBus().post(new OnFriendsClickedEvent());
-        sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_FRIENDS);
+        if (isAccount()) {
+            getEventBus().post(new OnFriendsClickedEvent());
+            sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_FRIENDS);
+        }
     }
 
     @OnClick(R.id.post)

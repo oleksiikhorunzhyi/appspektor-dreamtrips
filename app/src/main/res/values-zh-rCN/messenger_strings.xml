@@ -83,7 +83,8 @@
     <string name="chat_settings_group_chat_info_text_format">此对话是由%1$s 在%2$s 创建</string>
     <string name="chat_settings_menu_settings">设定</string>
     <string name="chat_settings_menu_edit_chat_name">编辑对话名称</string>
-    <string name="chat_settings_leave_group_chat">你确定要离开%1$s 对话吗</string>
+    <string name="chat_settings_leave_group_chat">你确定要离开 对话吗</string>
+    <string name="chat_settings_leave_group_chat_format">你确定要离开%1$s 对话吗</string>
     <string name="chat_settings_error_change_subject">你无法在离线时更改主题</string>
     <!---->
     <!--Add new members -->

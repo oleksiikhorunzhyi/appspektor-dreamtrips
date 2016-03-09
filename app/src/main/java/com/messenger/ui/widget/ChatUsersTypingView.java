@@ -119,12 +119,19 @@ public class ChatUsersTypingView extends RelativeLayout {
     }
 
     public void addTypingUser(ChatUser typingUser) {
-        this.typingUsers.add(typingUser);
-        updateUI();
+        if (!typingUsers.contains(typingUser)) {
+            this.typingUsers.add(typingUser);
+            updateUI();
+        }
     }
 
     public void removeTypingUser(ChatUser typingUser) {
         this.typingUsers.remove(typingUser);
+        updateUI();
+    }
+
+    public void removeAllTypingUsers() {
+        typingUsers.clear();
         updateUI();
     }
 

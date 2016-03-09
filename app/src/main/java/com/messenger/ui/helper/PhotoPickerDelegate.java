@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import rx.Observable;
-import rx.subjects.ReplaySubject;
+import rx.subjects.PublishSubject;
 
 public class PhotoPickerDelegate {
 
@@ -23,7 +23,7 @@ public class PhotoPickerDelegate {
     @Global
     EventBus eventBus;
 
-    private ReplaySubject<List<ChosenImage>> stream = ReplaySubject.create(1);
+    private PublishSubject<List<ChosenImage>> stream = PublishSubject.create();
 
     public void onEvent(AttachPhotoEvent event) {
         if (event.getRequestType() != -1) {

@@ -43,8 +43,6 @@ public abstract class ChatSettingsScreenImpl<P extends StyledPath>
     GroupAvatarsView groupAvatarsView;
     @InjectView(R.id.chat_settings_single_chat_avatar_view)
     AvatarView singleChatAvatarView;
-    @InjectView(R.id.chat_settings_group_pic)
-    ImageView groupPicView;
     @InjectView(R.id.chat_settings_chat_name_text_view)
     TextView chatNameTextView;
     @InjectView(R.id.chat_settings_chat_description_text_view)
@@ -155,11 +153,11 @@ public abstract class ChatSettingsScreenImpl<P extends StyledPath>
         getPresenter().onLeaveButtonClick();
     }
 
-    public void showLeaveChatDialog(String currentSubject) {
+    public void showLeaveChatDialog(String message) {
         new AlertDialog.Builder(getContext())
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> getPresenter().onLeaveChatClicked())
                 .setNegativeButton(android.R.string.cancel, null)
-                .setMessage(getResources().getString(R.string.chat_settings_leave_group_chat, currentSubject))
+                .setMessage(message)
                 .create()
                 .show();
     }

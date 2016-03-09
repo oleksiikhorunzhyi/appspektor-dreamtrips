@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/chat_toolbar_title"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                style="@style/ActionBarTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
@@ -116,6 +116,7 @@
                         android:singleLine="true"
                         android:textColor="#9F9E9E"
                         android:textColorHint="#9F9E9E"
+                        android:maxLength="@integer/messenger_max_message_length"
                         android:textSize="@dimen/chat_message_edittext_text_size"
                         />
 

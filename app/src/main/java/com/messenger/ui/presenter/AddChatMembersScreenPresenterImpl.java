@@ -28,6 +28,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 
@@ -73,9 +74,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                 selectedStream.asObservable(),
                 (conversation, users) -> new Pair<>(conversation, users)
         )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(pair -> {
                     // show conversation name edit text only for single chats that will turn to become group chats
                     if (!pair.first.getType().equals(CHAT)) return;
@@ -125,15 +124,14 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                     participantsDAO.save(relationships);
                     conversationsDAO.save(newConversation);
                 })
-                .compose(new IoToMainComposer<>())
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(newConversation -> {
                     History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
                     history.pop();
                     history.pop();
                     history.push(new ChatPath(newConversation.getId()));
                     Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
-                });
+                }, e -> Timber.e(e, "Could not add chat member"));
     }
 
     ///////////////////////////////////////////////////////////////////////////

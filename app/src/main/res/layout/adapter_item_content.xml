@@ -49,15 +49,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#666666"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:textSize="16sp" />
 
         <ImageButton
             android:id="@id/expand_collapse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:layout_margin="16dp"
-            android:background="@android:color/transparent" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"/>
     </com.worldventures.dreamtrips.modules.common.view.custom.ExpandableTextViewCallable>
 
 </LinearLayout>

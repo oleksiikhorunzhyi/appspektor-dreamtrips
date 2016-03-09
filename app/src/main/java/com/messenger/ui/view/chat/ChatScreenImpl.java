@@ -145,6 +145,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         messageEditText.setOnFocusChangeListener((view, hasFocus) -> {
             if (hasFocus) photoPickerLayoutDelegate.hidePicker();
         });
+        photoPickerLayoutDelegate.disableEditTextUntilPickerIsShown(messageEditText);
     }
 
     @Override
@@ -239,6 +240,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
+    public void removeAllTypingUsers() {
+        chatUsersTypingView.removeAllTypingUsers();
+    }
+
+    @Override
     public void showMessages(Cursor cursor, DataConversation conversation) {
         Timber.i("Show Cursor with size " + cursor.getCount());
         adapter.setConversation(conversation);
@@ -255,7 +261,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             cursorCountDiff = Math.max(0, cursor.getCount() - adapter.getCursor().getCount());
         }
 
-        adapter.swapCursor(cursor);
+        adapter.changeCursor(cursor);
 
         if (firstItemView != null && cursorCountDiff > 0) {
             int position = linearLayoutManager.findFirstVisibleItemPosition() + cursorCountDiff;
@@ -333,6 +339,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private void initPhotoPicker() {
         photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
         photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
+    }
+
+    @Override
+    public void hidePicker() {
+        photoPickerLayoutDelegate.hidePicker();
     }
 
     private void onImagesPicked(List<ChosenImage> images) {

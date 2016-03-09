@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.messenger.entities.DataMessage;
+import com.messenger.util.TruncateUtils;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
@@ -26,7 +27,8 @@ public abstract class TextMessageViewHolder extends MessageHolder {
 
     public void showMessage() {
         messageTextView.setAutoLinkMask(Linkify.WEB_URLS);
-        messageTextView.setText(message.getText());
+        messageTextView.setText(TruncateUtils.truncate(message.getText(),
+                messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
     }
 
     public void showUnsupportMessage() {

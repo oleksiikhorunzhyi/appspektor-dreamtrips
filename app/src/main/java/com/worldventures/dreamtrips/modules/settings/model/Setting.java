@@ -88,7 +88,6 @@ public class Setting<T extends Serializable> implements Parcelable, Serializable
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
         Setting<?> settings = (Setting<?>) o;
 

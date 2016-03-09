@@ -236,10 +236,11 @@ public class PostPresenter extends Presenter<PostPresenter.View> {
         if (view != null) {
             UploadTask imageUploadTask = new UploadTask();
             imageUploadTask.setFilePath(filePath);
-            imageUploadTask.setStatus(UploadTask.Status.STARTED);
             cachedPostEntity.setUploadTask(imageUploadTask);
             view.attachPhoto(Uri.parse(filePath));
             doRequest(new CopyFileCommand(context, cachedPostEntity.getUploadTask().getFilePath()), s -> {
+                imageUploadTask.setFilePath(s);
+                imageUploadTask.setStatus(UploadTask.Status.STARTED);
                 startUpload(imageUploadTask);
             });
         }

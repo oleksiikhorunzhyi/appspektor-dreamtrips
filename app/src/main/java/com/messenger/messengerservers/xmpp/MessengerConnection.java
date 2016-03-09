@@ -44,4 +44,9 @@ public class MessengerConnection extends XMPPTCPConnection {
             processPacket(stanza);
         }
     }
+
+    @Override
+    public boolean isSecureConnection() {
+        return true;
+    }
 }

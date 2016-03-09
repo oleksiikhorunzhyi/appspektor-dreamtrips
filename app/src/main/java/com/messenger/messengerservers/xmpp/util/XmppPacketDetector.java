@@ -4,8 +4,6 @@ import android.text.TextUtils;
 
 import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
@@ -29,7 +27,7 @@ public final class XmppPacketDetector {
         // TODO: 12/23/15 refactoring this
         if (!TextUtils.isEmpty(message.getBody())) {
             return MESSAGE;
-        } else if (!StringUtils.isEmpty(message.getSubject())) {
+        } else if (!TextUtils.isEmpty(message.getSubject())) {
             return SUBJECT;
         } else if (message.getExtension(ChatStateExtension.NAMESPACE) != null) {
             return EXTENTION_STATUS;

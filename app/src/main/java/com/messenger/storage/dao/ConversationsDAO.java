@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
@@ -36,6 +37,7 @@ public class ConversationsDAO extends BaseDAO {
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
     public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
     public static final String GROUP_CONVERSATION_NAME_COLUMN = "groupName";
+    public static final String GROUP_CONVERSATION_USER_COUNT_COLUMN = "groupUserCount";
     public static final String LAST_MESSAGE_AUTHOR_COLUMN = "authorName";
 
     private Lazy<DataUser> currentUser;
@@ -59,20 +61,12 @@ public class ConversationsDAO extends BaseDAO {
                 .withSelection(new Select().from(DataConversation.class).byIds(conversationId).toString())
                 .build();
         return query(q, DataConversation.CONTENT_URI)
-                .onBackpressureLatest()
                 .subscribeOn(Schedulers.io())
                 .map(cursor -> {
                     DataConversation conversation = SqlUtils.convertToModel(false, DataConversation.class, cursor);
                     cursor.close();
                     return conversation;
                 });
-    }
-
-    public List<DataConversation> getConversationsList(@ConversationType.Type String type) {
-        return new Select()
-                .from(DataConversation.class)
-                .where(Condition.column(DataConversation$Table.TYPE).is(type))
-                .queryList();
     }
 
     public void save(List<DataConversation> conversations) {
@@ -84,12 +78,6 @@ public class ConversationsDAO extends BaseDAO {
         save(Collections.singletonList(conversation));
     }
 
-    public void deleteConversation(String conversationId) {
-        //server sends so many packets about kicking as devices with the same user are online
-        DataConversation conversation = getConversationById(conversationId);
-        if (conversation != null) conversation.delete();
-    }
-
     public void deleteBySyncTime(long time) {
         new Delete().from(DataConversation.class)
                 .where(Condition.column(DataConversation$Table.SYNCTIME).lessThan(time))
@@ -97,7 +85,7 @@ public class ConversationsDAO extends BaseDAO {
                 .queryClose();
     }
 
-    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type) {
+    public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type, String searchQuery) {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
@@ -112,7 +100,8 @@ public class ConversationsDAO extends BaseDAO {
                                                 "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
 
-                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ") as " + GROUP_CONVERSATION_NAME_COLUMN + " " +
+                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
+                "COUNT(uuu." + DataUser$Table._ID + ") as " + GROUP_CONVERSATION_USER_COUNT_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
                 "LEFT JOIN " + DataMessage.TABLE_NAME + " m " +
@@ -137,13 +126,23 @@ public class ConversationsDAO extends BaseDAO {
                 "ON uu." + DataUser$Table._ID + "=(" +
                 "SELECT pp." + DataParticipant$Table.USERID + " FROM " + DataParticipant.TABLE_NAME + " pp " +
                 "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1)"
+                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) " +
+
+                "WHERE c." + DataConversation$Table.STATUS + "='" + ConversationStatus.PRESENT + "' "
         );
 
-        query.append("WHERE c." + DataConversation$Table.STATUS + "='" + ConversationStatus.PRESENT + "' ");
+
         boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("AND c." + DataConversation$Table.TYPE + " not like '" + ConversationType.CHAT + "'");
+            query.append("AND c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
+        }
+
+        if (!TextUtils.isEmpty(searchQuery)) {
+            String wherePattern = "AND (" +
+                    "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
+                    "OR c." + DataConversation$Table.SUBJECT + " IS '' AND uu." + DataUser$Table.FIRSTNAME + " || ' ' || uu." + DataUser$Table.LASTNAME  + " LIKE '%" + searchQuery + "%')";
+            query.append(wherePattern);
+
         }
 
         query.append("GROUP BY c." + DataConversation$Table._ID + " " +
@@ -157,7 +156,7 @@ public class ConversationsDAO extends BaseDAO {
 
         String[] args = new String[]{currentUser.get().getId()};
         queryBuilder.withSelectionArgs(args);
-        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI);
+        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI);
     }
 
     public int updateDate(String conversationId, long date) {
@@ -191,6 +190,10 @@ public class ConversationsDAO extends BaseDAO {
                 .withSelectionArgs(args).build();
 
         return query(query, DataConversation.CONTENT_URI)
-                .map(cursor -> cursor.getCount()); // BUG!!! because query is interpreted as object list with one field COUNT(*)
+                .map(cursor -> {
+                    int count = cursor.getCount();
+                    cursor.close();
+                    return count;
+                }); // BUG!!! because query is interpreted as object list with one field COUNT(*)
     }
 }

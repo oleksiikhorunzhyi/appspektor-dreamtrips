@@ -5,8 +5,6 @@ import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
-import icepick.Icepick;
-
 public class ScrollStatePersister {
 
     private static final String STATE_SCROLL_POSITION = "STATE_SCROLL_POSITION";
@@ -14,11 +12,11 @@ public class ScrollStatePersister {
 
     public Parcelable saveScrollState(Parcelable parcelable, LinearLayoutManager linearLayoutManager) {
         Bundle bundle = (Bundle) parcelable;
-        if (linearLayoutManager.getItemCount() > 0) {
+        if (linearLayoutManager != null && linearLayoutManager.getItemCount() > 0) {
             int position = linearLayoutManager.findFirstVisibleItemPosition();
             bundle.putInt(STATE_SCROLL_POSITION, position);
             View item = linearLayoutManager.findViewByPosition(position);
-            bundle.putInt(STATE_SCROLL_OFFSET, item.getTop());
+            if (item != null) bundle.putInt(STATE_SCROLL_OFFSET, item.getTop());
         }
         return bundle;
     }

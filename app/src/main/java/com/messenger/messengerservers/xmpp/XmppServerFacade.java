@@ -1,6 +1,7 @@
 package com.messenger.messengerservers.xmpp;
 
 import android.content.Context;
+import android.net.SSLCertificateSocketFactory;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -85,6 +87,8 @@ public class XmppServerFacade implements MessengerServerFacade {
                 .setServiceName(JidCreatorHelper.SERVICE_NAME)
                 .setHost(serverParams.host)
                 .setPort(serverParams.port)
+                .setSecurityMode(ConnectionConfiguration.SecurityMode.required)
+                .setSocketFactory(SSLCertificateSocketFactory.getDefault())
                 .setResource(StringGenerator.getRandomString(5))
                 .setSendPresence(false)
                 .setDebuggerEnabled(BuildConfig.DEBUG)

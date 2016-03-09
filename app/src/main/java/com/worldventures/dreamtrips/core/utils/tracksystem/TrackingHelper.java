@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterD
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import org.apache.commons.lang3.text.StrBuilder;
 import org.intellij.lang.annotations.MagicConstant;
 
 import java.util.HashMap;
@@ -817,7 +816,7 @@ public class TrackingHelper {
     }
 
     public static void dtlMerchantsTab(@MagicConstant(stringValues = {DTL_ACTION_OFFERS_TAB, DTL_ACTION_DINING_TAB})
-                                    String tabType) {
+                                       String tabType) {
         sendSimpleAttributetoAdobeTracker(tabType, ATTRIBUTE_LIST);
     }
 
@@ -868,7 +867,7 @@ public class TrackingHelper {
     }
 
     public static void dtlMerchantView(@MagicConstant(stringValues = {DTL_ACTION_OFFER_VIEW, DTL_ACTION_DINING_VIEW})
-                                    String merchantTypeAction, String merchantId) {
+                                       String merchantTypeAction, String merchantId) {
         Map data = prepareAttributeMap(ATTRIBUTE_VIEW);
         data.put(DTL_ATTRIBUTE_MERCHANT, merchantId);
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, merchantTypeAction, data);
@@ -877,9 +876,12 @@ public class TrackingHelper {
     public static void dtlSuggestMerchant(@Nullable DtlMerchant place) {
         Map data = prepareAttributeMap(ATTRIBUTE_MERCHANT);
         if (place != null) {
-            data.put(DTL_ATTRIBUTE_MERCHANT, new StrBuilder(place.getId()).setNullText("")
-                    .append(place.getDisplayName()).append(":")
-                    .append(place.getCity()).append(":")
+            data.put(DTL_ATTRIBUTE_MERCHANT, new StringBuilder()
+                    .append(place.getId())
+                    .append(place.getDisplayName())
+                    .append(":")
+                    .append(place.getCity())
+                    .append(":")
                     .append(place.getState()).toString()
             );
         }

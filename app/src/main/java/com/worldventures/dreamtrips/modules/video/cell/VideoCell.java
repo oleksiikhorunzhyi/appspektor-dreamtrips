@@ -94,7 +94,7 @@ public class VideoCell extends AbstractDelegateCell<Video, VideoCellDelegate> {
     @OnClick(R.id.download_progress)
     public void onDownloadClick() {
         Video video = getModelObject();
-        progressVideoCellHelper.onDownloadCLick(context, getEventBus());
+        progressVideoCellHelper.onDownloadClick(context, cellDelegate);
         //
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP, appSessionHolder.get().get().getUser().getUsername(),
                 TrackingHelper.ACTION_MEMBERSHIP_LOAD_START, video.getVideoName());

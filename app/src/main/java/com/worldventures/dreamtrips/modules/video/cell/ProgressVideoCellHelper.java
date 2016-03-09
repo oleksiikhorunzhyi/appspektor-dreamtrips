@@ -3,14 +3,10 @@ package com.worldventures.dreamtrips.modules.video.cell;
 import android.content.Context;
 
 import com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton;
-import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
+import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
-
-import de.greenrobot.event.EventBus;
 
 public class ProgressVideoCellHelper {
 
@@ -66,16 +62,18 @@ public class ProgressVideoCellHelper {
         this.url = url;
     }
 
-    public void onDownloadCLick(Context context, EventBus eventBus) {
+    public void onDownloadClick(Context context, VideoCellDelegate delegate) {
+        if (delegate == null) return;
+        //
         boolean cached = cacheEntity.isCached(context);
         boolean inProgress = cacheEntity.getProgress() > 0 && cacheEntity.getProgress() < 100;
         boolean failed = cacheEntity.isFailed();
         if ((!cached && !inProgress) || failed) {
-            eventBus.post(new DownloadVideoRequestEvent(cacheEntity));
+            delegate.onDownloadVideo(cacheEntity);
         } else if (cached) {
-            eventBus.post(new DeleteCachedVideoRequestEvent(cacheEntity));
+            delegate.onDeleteVideo(cacheEntity);
         } else {
-            eventBus.post(new CancelCachingVideoRequestEvent(cacheEntity));
+            delegate.onCancelCachingVideo(cacheEntity);
         }
     }
 }

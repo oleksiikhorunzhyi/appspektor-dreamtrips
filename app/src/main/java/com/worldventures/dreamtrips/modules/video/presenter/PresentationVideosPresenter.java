@@ -48,17 +48,6 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         super.onResume();
         view.startLoading();
         loadOnStart();
-        if (!eventBus.isRegistered(videoCachingDelegate)) {
-            eventBus.register(videoCachingDelegate);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (eventBus.isRegistered(videoCachingDelegate)) {
-            eventBus.unregister(videoCachingDelegate);
-        }
     }
 
     public void onDeleteAction(CachedEntity videoEntity) {
@@ -116,7 +105,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
                 boolean inProgress = cachedVideo.getProgress() > 0;
                 boolean cached = cachedVideo.isCached(context);
                 if (!failed && inProgress && !cached) {
-                    DownloadVideoListener listener = new DownloadVideoListener(cachedVideo);
+                    DownloadVideoListener listener = new DownloadVideoListener(cachedVideo, videoCachingDelegate);
                     injector.inject(listener);
                     videoDownloadSpiceManager.addListenerIfPending(
                             InputStream.class,
@@ -128,10 +117,16 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         });
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        eventBus.unregister(videoCachingDelegate);
+    public void downloadVideo(CachedEntity cachedEntity) {
+        videoCachingDelegate.downloadVideo(cachedEntity);
+    }
+
+    public void deleteCachedVideo(CachedEntity cachedEntity) {
+        videoCachingDelegate.deleteCachedVideo(cachedEntity);
+    }
+
+    public void cancelCachingVideo(CachedEntity cachedEntity) {
+        videoCachingDelegate.cancelCachingVideo(cachedEntity);
     }
 
     public interface View extends Presenter.View, VideoCachingDelegate.View {

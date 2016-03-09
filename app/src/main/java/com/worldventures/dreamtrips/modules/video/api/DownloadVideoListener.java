@@ -11,9 +11,8 @@ import com.octo.android.robospice.request.listener.RequestProgressListener;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoFailedEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.event.DownloadVideoStartEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
@@ -25,6 +24,7 @@ import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 public class DownloadVideoListener implements PendingRequestListener<InputStream>, RequestProgressListener {
+
     public static final int START_VALUE = 10;
     public static final int RESIDUE = 90;
 
@@ -37,11 +37,13 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     protected SnappyRepository db;
 
     protected CachedEntity entity;
+    protected VideoCachingDelegate videoCachingDelegate;
 
     protected int lastProgress = -1;
 
-    public DownloadVideoListener(CachedEntity entity) {
+    public DownloadVideoListener(CachedEntity entity, VideoCachingDelegate videoCachingDelegate) {
         this.entity = entity;
+        this.videoCachingDelegate = videoCachingDelegate;
     }
 
     @Override
@@ -72,13 +74,13 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
             lastProgress = progress;
             entity.setProgress(progress);
             db.saveDownloadVideoEntity(entity);
-            eventBus.post(new DownloadVideoProgressEvent(progress, entity));
+            if (videoCachingDelegate != null) videoCachingDelegate.updateProgress(entity);
         }
     }
 
     @Override
     public void onRequestNotFound() {
         Timber.v("onRequestNotFound");
-        eventBus.post(new DownloadVideoRequestEvent(entity));
+        if (videoCachingDelegate != null) videoCachingDelegate.downloadVideo(entity);
     }
 }

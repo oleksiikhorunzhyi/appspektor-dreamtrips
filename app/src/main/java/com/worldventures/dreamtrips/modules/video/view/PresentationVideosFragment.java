@@ -145,6 +145,21 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     }
 
     @Override
+    public void onDownloadVideo(CachedEntity entity) {
+        getPresenter().downloadVideo(entity);
+    }
+
+    @Override
+    public void onDeleteVideo(CachedEntity entity) {
+        getPresenter().deleteCachedVideo(entity);
+    }
+
+    @Override
+    public void onCancelCachingVideo(CachedEntity entity) {
+        getPresenter().cancelCachingVideo(entity);
+    }
+
+    @Override
     public void onCellClicked(Video model) {
         // nothing to do
     }

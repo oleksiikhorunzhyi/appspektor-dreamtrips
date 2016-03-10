@@ -495,44 +495,44 @@
     <string name="back">回到</string>
     <string name="start_typing_name">開始輸入名稱</string>
 
-    <string name="multiple_dates">Multiple Dates, %s...</string>
+    <string name="multiple_dates">多個日期，％s…</string>
 
-    <string name="tag_photo">tagged you on</string>
+    <string name="tag_photo">標記了您，在</string>
 
-    <string name="user_already_exists">%s already exists</string>
-    <string name="photo_tag_title">Tap anywhere to tag people</string>
-    <string name="profile_friend_formatter">%d Friend</string>
-    <string name="profile_friends_formatter">%d Friends</string>
+    <string name="user_already_exists">％s已存在</string>
+    <string name="photo_tag_title">點擊任何地方標記好友</string>
+    <string name="profile_friend_formatter">％d個好友</string>
+    <string name="profile_friends_formatter">％d個好友</string>
 
-    <string name="send_feedback">Send Feedback</string>
-    <string name="working_hard">We\'re working hard to make DreamTrips better. Please help us to improve.</string>
-    <string name="feedback_message_hint">Please, type your message here</string>
-    <string name="message_can_not_be_empty">Message can\'t be empty</string>
-    <string name="feedback_has_been_sent">Your feedback is sent. Thank you</string>
-    <string name="feedback_send_btn">Send</string>
-    <string name="feedback_select_category">Choose Reason</string>
+    <string name="send_feedback">發送反饋</string>
+    <string name="working_hard">我們正努力讓DreamTrips變得更好，請幫助我們提高。</string>
+    <string name="feedback_message_hint">請在此輸入您的留言</string>
+    <string name="message_can_not_be_empty">留言不能為空</string>
+    <string name="feedback_has_been_sent">您的反饋已經發送。謝謝。</string>
+    <string name="feedback_send_btn">發送</string>
+    <string name="feedback_select_category">選擇原因</string>
 
-    <string name="years_ago">%d years ago</string>
-    <string name="invitation_template">Select template</string>
+    <string name="years_ago">％d年前</string>
+    <string name="invitation_template">選擇模板</string>
 
-    <string name="settings">Settings</string>
-    <string name="notifications">Notifications</string>
-    <string name="general">General</string>
+    <string name="settings">設置</string>
+    <string name="notifications">通知</string>
+    <string name="general">一般</string>
 
-    <string name="what_notifications_get">What notifications you get</string>
+    <string name="what_notifications_get">您收到什麼通知</string>
 
-    <string name="settings_distance_units">Distance Units</string>
-    <string name="settings_friend_requests">Friend Requests</string>
-    <string name="settings_new_message">New Message</string>
-    <string name="settings_photo_tagging">Photo Tagging</string>
+    <string name="settings_distance_units">距離單位</string>
+    <string name="settings_friend_requests">好友請求</string>
+    <string name="settings_new_message">新消息</string>
+    <string name="settings_photo_tagging">照片標記</string>
 
     <string name="abbreviated_miles">公里</string>
     <string name="abbreviated_kilometers">英里</string>
-    <string name="show_distance_in">Show distance in:</string>
-    <string name="settings_kilometers">Kilometers</string>
-    <string name="settings_miles">Miles</string>
+    <string name="show_distance_in">顯示距離單位：</string>
+    <string name="settings_kilometers">公里</string>
+    <string name="settings_miles">英里</string>
 
-    <string name="save_changes_before_proceed">Do you want to save changes before you proceed?</string>
-    <string name="discard">Discard</string>
+    <string name="save_changes_before_proceed">繼續前您想保存更改嗎？</string>
+    <string name="discard">放棄</string>
 
 </resources>

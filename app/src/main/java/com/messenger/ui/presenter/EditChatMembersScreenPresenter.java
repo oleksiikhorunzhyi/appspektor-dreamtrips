@@ -4,10 +4,12 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 
+import rx.Observable;
+
 public interface EditChatMembersScreenPresenter extends MessengerPresenter<EditChatMembersScreen,
         EditChatMembersViewState> {
 
-    void onSearchFilterSelected(String search);
+//    void onSearchFilterSelected(String search);
 
     void onDeleteUserFromChat(DataUser user);
 
@@ -15,5 +17,5 @@ public interface EditChatMembersScreenPresenter extends MessengerPresenter<EditC
 
     void onUserClicked(DataUser user);
 
-    void requireAdapterInfo();
+//    void requireAdapterInfo();
 }

@@ -1,7 +1,6 @@
 package com.messenger.ui.view.edit_member;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
 import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
@@ -28,8 +28,12 @@ import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
+import timber.log.Timber;
 
 public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembersScreen,
         EditChatMembersScreenPresenter, EditChatPath> implements EditChatMembersScreen {
@@ -49,12 +53,12 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     private ToolbarPresenter toolbarPresenter;
 
     private SearchView searchView;
-    private String savedSearchFilter;
 
     private ActionButtonsContactsCursorAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private SwipeableAdapterManager swipeableAdapterManager = new SwipeableAdapterManager();
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
+    private Observable<CharSequence> searchObservable;
 
     public EditChatMembersScreenImpl(Context context) {
         super(context);
@@ -71,12 +75,11 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected void onPostAttachToWindowView() {
+        super.onPostAttachToWindowView();
         if (inflateToolbarMenu(toolbar)) {
             prepareOptionsMenu(toolbar.getMenu());
         }
-        getPresenter().requireAdapterInfo();
     }
 
     public void setAdapterWithInfo(DataUser user, boolean isOwner) {
@@ -135,14 +138,9 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
-    public void setMembers(Cursor cursor) {
-        adapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void setMembers(Cursor cursor, String query, String queryColumn) {
-        this.savedSearchFilter = query;
-        adapter.changeCursor(cursor, query, queryColumn);
+    public void setMembers(List<DataUser> members) {
+        Timber.d("setMembers(%s): %s", members.size(), members);
+//        adapter.swapCursor(cursor);
     }
 
     @Override
@@ -167,39 +165,15 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     public void prepareOptionsMenu(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    return true;
-                }
-
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    getPresenter().onSearchFilterSelected(null);
-                    return true;
-                }
-            });
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            // search filter not null search was opened before (e.g. before orientation change), open it
-            if (savedSearchFilter != null) {
-                searchItem.expandActionView();
-                searchView.setQuery(savedSearchFilter, false);
-            }
             searchView.setQueryHint(getContext().getString(R.string.edit_chat_members_search_hint));
-            searchView.setOnCloseListener(() -> false);
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    getPresenter().onSearchFilterSelected(newText);
-                    return false;
-                }
-            });
+            searchObservable = RxSearchView.queryTextChanges(searchView);
         }
+    }
+
+    @Override
+    public Observable<CharSequence> getSearchObservable() {
+        return searchObservable != null ? searchObservable : Observable.just((CharSequence) "").replay();
     }
 
     @NonNull

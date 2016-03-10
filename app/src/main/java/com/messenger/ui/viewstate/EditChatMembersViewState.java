@@ -10,13 +10,13 @@ public class EditChatMembersViewState extends LceViewState<Parcelable> {
 
     private String searchFilter;
 
-    public String getSearchFilter() {
-        return searchFilter;
-    }
-
-    public void setSearchFilter(String searchFilter) {
-        this.searchFilter = searchFilter;
-    }
+//    public String getSearchFilter() {
+//        return searchFilter;
+//    }
+//
+//    public void setSearchFilter(String searchFilter) {
+//        this.searchFilter = searchFilter;
+//    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable

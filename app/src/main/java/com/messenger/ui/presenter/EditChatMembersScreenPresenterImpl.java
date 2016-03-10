@@ -1,18 +1,20 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.UsersDAO;
+import com.messenger.ui.model.UsersGroup;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -24,14 +26,19 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import flow.Flow;
 import rx.Observable;
-import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
@@ -59,10 +66,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     private final String conversationId;
     private Observable<DataConversation> conversationObservable;
-    private Observable<Cursor> membersCursorObservable;
-
-    private PublishSubject<Void> adapterInitializer = PublishSubject.create();
-    private Observable<Void> adapterInitializeObservable;
+    private Observable<List<Pair<DataUser, String>>> membersObservable;
 
     public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
         super(context);
@@ -83,8 +87,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         connectConversation();
         connectParticipants();
 
-        adapterInitializeObservable = adapterInitializer.replay(1).autoConnect();
-
         activityWatcher.addOnStartStopListener(startStopAppListener);
     }
 
@@ -104,15 +106,24 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     private void connectParticipants() {
-        membersCursorObservable = participantsDAO.getParticipants(conversationId)
-                .compose(bindViewIoToMainComposer())
-                .replay(1)
-                .autoConnect();
+        membersObservable = participantsDAO.getParticipants(conversationId);
 
-        membersCursorObservable.subscribe(cursor -> {
-            getViewState().setLoadingState(LceViewState.LoadingState.CONTENT);
-            showContent();
-        });
+        Observable
+                .combineLatest(membersObservable, getView().getSearchObservable(), this::applyFilter)
+                .map(pairs -> groupMembers(pairs, true))
+                .subscribe(groups -> {
+                    // cause admin of group chat is also participant
+                    if (groups.size() <= 1) {
+                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
+                        return;
+                    }
+
+                    EditChatMembersScreen view = getView();
+                    view.showContent();
+                    Timber.d("Groups was prepared: %s", groups);
+//                    view.setMembers(members);
+//                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), members.size()));
+                });
     }
 
     ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
@@ -135,12 +146,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     @Override
-    public void onSearchFilterSelected(String search) {
-        getViewState().setSearchFilter(search);
-        applyViewState();
-    }
-
-    @Override
     public void onNewViewState() {
         state = new EditChatMembersViewState();
         state.setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
@@ -158,7 +163,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 view.showLoading();
                 break;
             case CONTENT:
-                showContent();
+//                showContent();
                 break;
             case ERROR:
                 view.showError(editChatMembersViewState.getError());
@@ -166,21 +171,30 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         }
     }
 
-    private void showContent() {
-        Observable.zip(adapterInitializeObservable, membersCursorObservable, (aVoid, cursor) -> cursor)
-                .compose(bindVisibilityIoToMainComposer())
-                .subscribe(cursor -> {
-                    // cause admin of group chat is also participant
-                    if (cursor.getCount() <= 1) {
-                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
-                        return;
-                    }
+    private List<Pair<DataUser, String>> applyFilter(List<Pair<DataUser, String>> members, CharSequence searchQuery) {
+        if (TextUtils.isEmpty(searchQuery)) return members;
+        String query = searchQuery.toString();
+        List<Pair<DataUser, String>> result = new ArrayList<>(members.size());
+        for (Pair<DataUser, String> userData : members) {
+            String displayName = userData.first.getDisplayedName();
+            if (displayName.matches(query)) result.add(userData);
+        }
+        return result;
+    }
 
-                    EditChatMembersScreen view = getView();
-                    view.showContent();
-                    view.setMembers(cursor, getViewState().getSearchFilter(), UsersDAO.USER_DISPLAY_NAME);
-                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), cursor.getCount()));
-                });
+    private List<UsersGroup> groupMembers(List<Pair<DataUser, String>> members, boolean isTripConversation) {
+        Map<String, Collection<DataUser>> groupedMap = Queryable.from(members)
+                .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation), pair -> pair.first);
+        Set<String> names = groupedMap.keySet();
+        List<UsersGroup> groups = new LinkedList<>();
+        for (String groupName : names) groups.add(new UsersGroup(groupName, groupedMap.get(groupName)));
+        return groups;
+    }
+
+    private String getUserGroup(DataUser user, String affiliation, boolean isTripConversation) {
+        if (TextUtils.equals(affiliation, Participant.Affiliation.OWNER)) return "Admin";
+        else if (isTripConversation && user.isHost()) return "Host";
+        else return user.getFirstName().substring(0, 1).toLowerCase();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -217,23 +231,5 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Override
     public void onUserClicked(DataUser user) {
         profileCrosser.crossToProfile(user);
-    }
-
-    @Override
-    public void requireAdapterInfo() {
-        conversationObservable
-                .distinctUntilChanged()
-                .subscribe(conversation -> {
-                    getView().setAdapterWithInfo(user, isOwner(conversation));
-                    adapterInitializer.onNext(null);
-                });
-    }
-
-    ////////////////////////////////////////////////////////
-    ////   Helpers
-    ////////////////////////////////////////////////////////
-
-    private boolean isOwner(DataConversation conversation) {
-        return TextUtils.equals(user.getId(), conversation.getOwnerId());
     }
 }

@@ -1,5 +1,7 @@
 package com.messenger.delegate;
 
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -8,7 +10,6 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.User;
 import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.utils.TextUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -82,6 +83,7 @@ public class UserProcessor {
                                 u.setSocialId(z.getId());
                                 u.setFirstName(z.getFirstName());
                                 u.setLastName(z.getLastName());
+                                u.setHost(hasHostBadge(z.getBadges()));
                                 u.setOnline(loadedUser.isOnline());
                                 u.setFriend(loadedUser.getType() != null ? true : null);
 
@@ -100,5 +102,14 @@ public class UserProcessor {
                     return result;
                 })
                 .doOnNext(usersDAO::save);
+    }
+
+    private boolean hasHostBadge(@Nullable List<String> badges) {
+        if (badges == null || badges.isEmpty()) return false;
+        for (String badge : badges) {
+            if (TextUtils.equals(badge, "Host"))
+                return true;
+        }
+        return false;
     }
 }

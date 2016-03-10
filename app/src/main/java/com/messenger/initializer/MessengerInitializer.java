@@ -10,7 +10,9 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.util.EventBusWrapper;
@@ -48,7 +50,13 @@ public class MessengerInitializer implements AppInitializer {
     @Inject
     ParticipantsDAO participantsDAO;
     @Inject
+    TranslationsDAO translationsDAO;
+    @Inject
     EventBusWrapper eventBusWrapper;
+    @Inject
+    SessionHolder<UserSession> userSessionHolder;
+    @Inject
+    LocaleHelper localeHelper;
     //
     @Inject
     Application app;
@@ -60,7 +68,8 @@ public class MessengerInitializer implements AppInitializer {
         injector.inject(this);
         //
         MessengerConnector.init(context, watcher, appSessionHolder, messengerServerFacade, spiceManager,
-                conversationsDAO, participantsDAO, messageDAO, attachmentDAO, usersDAO, eventBusWrapper);
+                conversationsDAO, participantsDAO, messageDAO, attachmentDAO, usersDAO, translationsDAO,
+                eventBusWrapper, userSessionHolder, localeHelper);
         //// TODO: 12/29/15 refactor
         app.registerActivityLifecycleCallbacks(new SimpleActivityLifecycleCallbacks() {
 

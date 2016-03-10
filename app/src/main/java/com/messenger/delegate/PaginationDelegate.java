@@ -1,17 +1,23 @@
 package com.messenger.delegate;
 
 import android.support.annotation.Nullable;
-import android.util.Pair;
+import android.text.TextUtils;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataTranslation;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.TranslationsDAO;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -22,25 +28,34 @@ import rx.schedulers.Schedulers;
 import static com.innahema.collections.query.queriables.Queryable.from;
 
 public class PaginationDelegate {
+
+    public static final int DEFAULT_PAGE_SIZE = 20;
+
     private final MessengerServerFacade messengerServerFacade;
     private final MessageDAO messageDAO;
     private final AttachmentDAO attachmentDAO;
-    private final int pageSize;
+    private final TranslationsDAO translationsDAO;
+    private final LocaleHelper localeHelper;
+
+    private final String nativeLanguage;
+    private int pageSize = DEFAULT_PAGE_SIZE;
 
     private PagePagination<Message> messagePagePagination;
 
-    public interface PageLoadedListener {
-        void onPageLoaded(int loadedPage, List<Message> loadedMessage);
-    }
-
-    public interface PageErrorListener {
-        void onPageError();
-    }
-
-    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO, int pageSize) {
+    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO,
+                              TranslationsDAO translationsDAO, LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
         this.messengerServerFacade = messengerServerFacade;
         this.messageDAO = messageDAO;
         this.attachmentDAO = attachmentDAO;
+        this.translationsDAO = translationsDAO;
+        this.localeHelper = localeHelper;
+
+        String userLocaleName = userSessionHolder.get().get().getUser().getLocale();
+        this.nativeLanguage = localeHelper.obtainLanguageCode(userLocaleName);
+    }
+
+    public void setPageSize(int pageSize) {
+        stopPaginate();
         this.pageSize = pageSize;
     }
 
@@ -58,13 +73,16 @@ public class PaginationDelegate {
                     List<DataMessage> msgs = from(serverMessages).map(DataMessage::new).toList();
                     List<DataAttachment> attachments = getDataAttachment(serverMessages);
                     from(msgs).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
-                    return new Pair<>(msgs, attachments);
+                    List<DataTranslation> translations = from(msgs).filter(msg -> TextUtils.equals(nativeLanguage, localeHelper.obtainLanguageCode(msg.getLocaleName())))
+                            .map(msg -> new DataTranslation(msg.getId(), null, TranslationStatus.NATIVE)).toList();
+                    return new Object[]{msgs, attachments, translations};
                 })
-                .subscribe(listListPair -> {
-                    messageDAO.save(listListPair.first);
-                    attachmentDAO.save(listListPair.second);
-                }))
-        ;
+                .subscribe(data -> {
+                    messageDAO.save((List<DataMessage>) data[0]);
+                    attachmentDAO.save((List<DataAttachment>) data[1]);
+                    translationsDAO.save((List<DataTranslation>) data[2]);
+                }));
+
         messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
             @Override
             public void onLoaded(List<Message> entities) {
@@ -96,4 +114,11 @@ public class PaginationDelegate {
         messagePagePagination = null;
     }
 
+    public interface PageLoadedListener {
+        void onPageLoaded(int loadedPage, List<Message> loadedMessage);
+    }
+
+    public interface PageErrorListener {
+        void onPageError();
+    }
 }

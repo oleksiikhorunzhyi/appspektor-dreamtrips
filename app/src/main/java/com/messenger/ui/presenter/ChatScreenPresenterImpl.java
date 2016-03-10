@@ -12,6 +12,7 @@ import android.view.View;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.MessageBodyCreator;
+import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.StartChatDelegate;
@@ -35,6 +36,7 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.storage.helper.AttachmentHelper;
 import com.messenger.storage.helper.ParticipantsDaoHelper;
@@ -54,6 +56,7 @@ import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.Utils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -63,6 +66,8 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -103,6 +108,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private final GlobalEventEmitter messengerGlobalEmitter;
 
     @Inject
+    SessionHolder<UserSession> userSessionHolder;
+    @Inject
     DataUser user;
     @Inject
     MessageBodyCreator messageBodyCreator;
@@ -121,8 +128,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     OpenedConversationTracker openedConversationTracker;
     @Inject
     AttachmentDelegate attachmentDelegate;
+    @Inject
+    PaginationDelegate paginationDelegate;
 
-    protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
     protected ParticipantsDaoHelper participantsDaoHelper;
@@ -141,9 +149,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ParticipantsDAO participantsDAO;
     @Inject
     AttachmentDAO attachmentDAO;
+    @Inject
+    TranslationsDAO translationsDAO;
 
     @Inject
     StartChatDelegate startChatDelegate;
+    @Inject
+    LocaleHelper localeHelper;
+    @Inject
+    MessageTranslationDelegate messageTranslationDelegate;
 
     private int page = 0;
     private long before = 0;
@@ -175,12 +189,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
         backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
-        paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, MAX_MESSAGE_PER_PAGE);
+        paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
         attachmentHelper = new AttachmentHelper(attachmentDAO, messageDAO, usersDAO);
-        contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO);
+        contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO, translationsDAO);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
         openScreenTime = System.currentTimeMillis();
@@ -615,6 +629,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onCopyMessageTextToClipboard(DataMessage message) {
         Utils.copyToClipboard(context, message.getText());
+    }
+
+    @Override
+    public void onTranslateMessage(DataMessage message) {
+        messageTranslationDelegate.translateMessage(message, userSessionHolder);
+    }
+
+    @Override
+    public void onRevertTranslate(DataMessage message) {
+        messageTranslationDelegate.revertTranslation(message);
     }
 
     @Override

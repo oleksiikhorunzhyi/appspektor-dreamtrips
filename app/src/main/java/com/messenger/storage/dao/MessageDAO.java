@@ -9,6 +9,8 @@ import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Adapter;
 import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataTranslation;
+import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -52,22 +54,27 @@ public class MessageDAO extends BaseDAO {
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
-                        "a." +  DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
-                        "a." +  DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
-                        "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + " " +
+                        "a." + DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
+                        "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
+                        "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + ", " +
+
+                        "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "+
+                        "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + " "+
 
                         "FROM " + DataMessage.TABLE_NAME + " m " +
                         "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
                         "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
                         "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
+                        "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
+                        "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " " +
 
                         "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
                         "AND m." + DataMessage$Table.SYNCTIME +" >=? " +
                         "ORDER BY m." + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)}).build();
 
-        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI);
+        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI, DataTranslation.CONTENT_URI);
     }
 
     public Observable<DataMessage> findNewestUnreadMessage(String conversationId, String currentUserId, long syncTime) {

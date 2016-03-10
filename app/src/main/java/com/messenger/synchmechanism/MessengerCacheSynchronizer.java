@@ -12,8 +12,12 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import timber.log.Timber;
 
@@ -23,9 +27,10 @@ public class MessengerCacheSynchronizer {
 
     public MessengerCacheSynchronizer(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
                                       ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                                      MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
+                                      MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO,
+                                      TranslationsDAO translationsDAO, SessionHolder<UserSession> userSessionHolder, LocaleHelper localeHelper) {
         this.loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
-                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
+                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO, translationsDAO, userSessionHolder, localeHelper);
     }
 
     public void updateCache(OnUpdatedListener listener) {

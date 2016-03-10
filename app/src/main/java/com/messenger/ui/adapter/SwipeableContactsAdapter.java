@@ -13,13 +13,13 @@ import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
-public class ActionButtonsContactsCursorAdapter
+public class SwipeableContactsAdapter
         extends BaseDelegateAdapter<DataUser> implements SwipeLayoutContainer {
 
     private final boolean owner;
     private DataUser admin;
 
-    public ActionButtonsContactsCursorAdapter(Context context, Injector injector, boolean owner) {
+    public SwipeableContactsAdapter(Context context, Injector injector, boolean owner) {
         super(context, injector);
         this.owner = owner;
     }

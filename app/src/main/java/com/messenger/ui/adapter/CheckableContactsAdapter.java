@@ -11,7 +11,7 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckableContactsCursorAdapter extends BaseDelegateAdapter<DataUser> {
+public class CheckableContactsAdapter extends BaseDelegateAdapter<DataUser> {
 
     public interface SelectionListener {
         void onSelectionStateChanged(List<DataUser> selectedContacts);
@@ -20,7 +20,7 @@ public class CheckableContactsCursorAdapter extends BaseDelegateAdapter<DataUser
     private List<DataUser> selectedContacts = new ArrayList<>();
     private SelectionListener selectionListener;
 
-    public CheckableContactsCursorAdapter(Context context, Injector injector, List<DataUser> selectedContacts) {
+    public CheckableContactsAdapter(Context context, Injector injector, List<DataUser> selectedContacts) {
         super(context, injector);
         this.selectedContacts = selectedContacts;
     }

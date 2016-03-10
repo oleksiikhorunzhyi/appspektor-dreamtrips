@@ -3,8 +3,8 @@ package com.messenger.di;
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
-import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
-import com.messenger.ui.adapter.CheckableContactsCursorAdapter;
+import com.messenger.ui.adapter.SwipeableContactsAdapter;
+import com.messenger.ui.adapter.CheckableContactsAdapter;
 import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
@@ -45,8 +45,8 @@ import dagger.Module;
                 EditChatMembersScreenPresenterImpl.class,
 
                 // adapters
-                ActionButtonsContactsCursorAdapter.class,
-                CheckableContactsCursorAdapter.class,
+                SwipeableContactsAdapter.class,
+                CheckableContactsAdapter.class,
 
                 PhotoPickerDelegate.class,
 

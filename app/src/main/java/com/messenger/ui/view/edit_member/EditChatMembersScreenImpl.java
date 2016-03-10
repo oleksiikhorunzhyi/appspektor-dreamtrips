@@ -1,7 +1,6 @@
 package com.messenger.ui.view.edit_member;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -18,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.messenger.entities.DataUser;
-import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
+import com.messenger.ui.adapter.SwipeableContactsAdapter;
 import com.messenger.ui.adapter.cell.HeaderCell;
 import com.messenger.ui.adapter.cell.SwipeableUserCell;
 import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
@@ -56,7 +55,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     private SearchView searchView;
     private String savedSearchFilter;
 
-    private ActionButtonsContactsCursorAdapter adapter;
+    private SwipeableContactsAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private SwipeableAdapterManager swipeableAdapterManager = new SwipeableAdapterManager();
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
@@ -88,7 +87,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
         Context context = getContext();
         EditChatMembersScreenPresenter presenter = getPresenter();
 
-        adapter = new ActionButtonsContactsCursorAdapter(context, injector, isOwner);
+        adapter = new SwipeableContactsAdapter(context, injector, isOwner);
         adapter.registerCell(DataUser.class, SwipeableUserCell.class);
         adapter.registerCell(Header.class, HeaderCell.class);
         adapter.registerDelegate(DataUser.class, new SwipeableUserCell.Delegate() {

@@ -1,7 +1,6 @@
 package com.messenger.ui.view.add_member;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +18,7 @@ import android.widget.EditText;
 
 import com.messenger.entities.DataUser;
 import com.messenger.flow.path.StyledPath;
-import com.messenger.ui.adapter.CheckableContactsCursorAdapter;
+import com.messenger.ui.adapter.CheckableContactsAdapter;
 import com.messenger.ui.adapter.cell.CheckableUserCell;
 import com.messenger.ui.adapter.cell.HeaderCell;
 import com.messenger.ui.anim.WeightSlideAnimator;
@@ -62,7 +61,7 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
 
     private ToolbarPresenter toolbarPresenter;
 
-    private CheckableContactsCursorAdapter adapter;
+    private CheckableContactsAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
@@ -94,7 +93,7 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
 
-        adapter = new CheckableContactsCursorAdapter(getContext(), injector, null);
+        adapter = new CheckableContactsAdapter(getContext(), injector, null);
         adapter.registerCell(DataUser.class, CheckableUserCell.class);
         adapter.registerCell(Header.class, HeaderCell.class);
         adapter.registerDelegate(DataUser.class, user -> getPresenter().openUserProfile((DataUser)user));

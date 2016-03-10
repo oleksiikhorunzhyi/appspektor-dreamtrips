@@ -46,13 +46,19 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     public void takeView(BucketItemEditPresenterView view) {
         priorityEventBus = 1;
         super.takeView(view);
-
-        photoUploadSubscriber = PhotoUploadSubscriber.bind(view, photoUploadingManager.getTaskChangingObservable(UploadPurpose.BUCKET_IMAGE));
+        photoUploadSubscriber = new PhotoUploadSubscriber();
+        photoUploadingManager.getTaskChangingObservable(UploadPurpose.BUCKET_IMAGE).subscribe(photoUploadSubscriber);
         photoUploadSubscriber
                 .onError(view::itemChanged)
                 .onSuccess(this::addPhotoToBucketItem)
                 .onProgress(view::addImage)
                 .onCancel(view::deleteImage);
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        photoUploadSubscriber.unsubscribe();
     }
 
     @Override

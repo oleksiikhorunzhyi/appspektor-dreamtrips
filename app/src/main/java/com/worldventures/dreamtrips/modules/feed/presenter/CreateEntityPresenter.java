@@ -25,18 +25,26 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
     public static final int REQUESTER_ID = -2;
 
     UploadTask cachedUploadTask;
+    PhotoUploadSubscriber photoUploadSubscriber;
 
     @Override
     public void takeView(V view) {
         super.takeView(view);
-        PhotoUploadSubscriber photoUploadSubscriber = PhotoUploadSubscriber.bind(view, photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE));
+        photoUploadSubscriber = new PhotoUploadSubscriber();
+        photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE).subscribe(photoUploadSubscriber);
         photoUploadSubscriber.afterEach(uploadTask -> {
-            if (cachedUploadTask.getId() == uploadTask.getId()) {
+            if (cachedUploadTask != null && cachedUploadTask.getId() == uploadTask.getId()) {
                 cachedUploadTask.setStatus(uploadTask.getStatus());
                 processUploadTask();
             }
         });
         Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        photoUploadSubscriber.unsubscribe();
     }
 
     @Override

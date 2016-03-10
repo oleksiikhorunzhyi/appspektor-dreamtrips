@@ -175,7 +175,7 @@ android {
             buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
 
             buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-            buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
+            buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
             resValue "string", "facebook_app_id", "761062457321921"

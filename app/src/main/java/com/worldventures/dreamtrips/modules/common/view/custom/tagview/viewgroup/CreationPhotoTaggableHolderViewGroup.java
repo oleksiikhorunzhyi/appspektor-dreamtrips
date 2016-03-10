@@ -5,11 +5,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.SuggestionTagView;
@@ -69,6 +67,23 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
         TagView view = new SuggestionTagView(getContext());
         view.setTagListener(createTagListener(view));
         addTagView(view, photoTag, 0);
+        //
+        if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag, (SuggestionTagView) view);
+    }
+
+    private boolean isSuggestionHelpExists() {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) instanceof SuggestionHelpView) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected void addSuggestionHelp(PhotoTag photoTag, SuggestionTagView suggestionTagView) {
+        SuggestionHelpView helpView = new SuggestionHelpView(getContext());
+        addTagView(helpView, photoTag, 0);
+        suggestionTagView.setSuggestionHelpView(helpView);
     }
 
     protected void addCreationTagView(PhotoTag photoTag) {
@@ -87,12 +102,10 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
         addTagView(view, photoTag);
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         gestureDetector.onTouchEvent(event);
         return true;
-
     }
 
     @Override
@@ -125,7 +138,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
             tagCreationActionsListener = getTagCreationActionsListener((CreationTagView) view);
         } else {
             tagCreationActionsListener = super.createTagListener(view);
-
         }
         return tagCreationActionsListener;
     }
@@ -160,6 +172,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
                 addExistsTagView(cloneTag);
                 removeView(newTagView);
                 removeView(suggestionTagView);
+                if (suggestionTagView != null) suggestionTagView.removeHelpView();
             }
 
             @Override
@@ -189,7 +202,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
                 .subscribe(this::addSuggestionTagView);
     }
 
-
     protected boolean isIntersectedWithPhotoTags(PhotoTag suggestion) {
         ArrayList<PhotoTag> existed = new ArrayList<>(presenter.getPhoto().getPhotoTags());
         existed.removeAll(locallyDeletedTags);
@@ -208,6 +220,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     }
 
     public interface TaggableCompleteListener {
+
         void onTagRequestsComplete();
     }
 

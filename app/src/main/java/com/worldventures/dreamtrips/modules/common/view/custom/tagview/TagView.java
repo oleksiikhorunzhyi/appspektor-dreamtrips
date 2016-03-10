@@ -16,6 +16,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 public abstract class TagView<T extends TagActionListener> extends RelativeLayout {
+
     protected PhotoTag photoTag;
     protected T tagListener;
     protected User account;
@@ -101,7 +102,6 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
     protected void deleteTag() {
         ((ViewGroup) getParent()).removeView(this);
     }
-
 
     public PhotoTag.TagPosition getAbsoluteTagPosition() {
         return absoluteTagPosition;

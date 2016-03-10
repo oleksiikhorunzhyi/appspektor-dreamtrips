@@ -78,10 +78,6 @@ public interface DreamTripsApi {
     @Multipart
     User uploadAvatar(@Part("avatar") TypedFile image);
 
-    @POST("/uploadery/upload ")
-    @Multipart
-    PhotoUploadResponse uploadPhoto(@Part("photo") TypedFile image);
-
     @POST("/api/profile/background_photo")
     @Multipart
     User uploadBackgroundPhoto(@Part("background_photo") TypedFile image);

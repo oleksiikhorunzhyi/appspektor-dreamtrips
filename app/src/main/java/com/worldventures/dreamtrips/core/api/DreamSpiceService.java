@@ -25,6 +25,9 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
     protected DreamTripsApi dreamTripsApi;
 
     @Inject
+    protected UploaderyApi uploaderyApi;
+
+    @Inject
     protected Lazy<SharedServicesApi> sharedServicesApi;
 
     @Inject
@@ -78,6 +81,8 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
             t = (T) configApi;
         } else if (serviceClass == DtlApi.class) {
             t = (T) dtlApi;
+        } else if (serviceClass == UploaderyApi.class) {
+            t = (T) uploaderyApi;
         }
         return t;
     }

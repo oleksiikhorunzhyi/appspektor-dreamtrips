@@ -74,7 +74,7 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    public PhotoUploadingManager providePhotoSpiceManager(@ForApplication Injector injector) {
+    public PhotoUploadingManager providePhotoManager(@ForApplication Injector injector) {
         return new PhotoUploadingManager(injector);
     }
 

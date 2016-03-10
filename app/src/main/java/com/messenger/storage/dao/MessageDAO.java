@@ -17,6 +17,9 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +29,8 @@ import rx.Observable;
 public class MessageDAO extends BaseDAO {
 
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
+    public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
+
 
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -35,7 +40,7 @@ public class MessageDAO extends BaseDAO {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
                         "WHERE " + DataMessage$Table._ID + "=?")
-                .withSelectionArgs(new String[] {messageId})
+                .withSelectionArgs(new String[]{messageId})
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
@@ -58,6 +63,7 @@ public class MessageDAO extends BaseDAO {
                         "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
                         "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + ", " +
 
+                        "t." + DataTranslation$Table.TRANSLATION + " as " + TRANSLATION_ID + ", " +
                         "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "+
                         "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + " "+
 
@@ -70,7 +76,7 @@ public class MessageDAO extends BaseDAO {
                         "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " " +
 
                         "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
-                        "AND m." + DataMessage$Table.SYNCTIME +" >=? " +
+                        "AND m." + DataMessage$Table.SYNCTIME + " >=? " +
                         "ORDER BY m." + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)}).build();
 
@@ -82,8 +88,8 @@ public class MessageDAO extends BaseDAO {
                 .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME +
                         " WHERE " + DataMessage$Table.CONVERSATIONID + " =?" +
                         " AND " + DataMessage$Table.FROMID + " <>?" +
-                        " AND " + DataMessage$Table.SYNCTIME +" >=?" +
-                        " ORDER BY " + DataMessage$Table.DATE + " DESC "+
+                        " AND " + DataMessage$Table.SYNCTIME + " >=?" +
+                        " ORDER BY " + DataMessage$Table.DATE + " DESC " +
                         " LIMIT 1")
                 .withSelectionArgs(new String[]{conversationId, currentUserId, Long.toString(syncTime)})
                 .build();
@@ -135,10 +141,9 @@ public class MessageDAO extends BaseDAO {
     }
 
     /**
-     *
      * @return observable, which emits int values which includes first unread message
      */
-    public Observable<Integer> countFromFirstUnreadMessage(String conversationId, String userId){
+    public Observable<Integer> countFromFirstUnreadMessage(String conversationId, String userId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT COUNT(_id) FROM " + DataMessage.TABLE_NAME + " " +
                         "WHERE " + DataMessage$Table.CONVERSATIONID + " = ? "
@@ -166,7 +171,7 @@ public class MessageDAO extends BaseDAO {
         save(Collections.singletonList(message));
     }
 
-    public void deleteMessageById(String messageId){
+    public void deleteMessageById(String messageId) {
         new Delete().from(DataMessage.class).byIds(messageId).query();
     }
 
@@ -175,6 +180,6 @@ public class MessageDAO extends BaseDAO {
         contentValues.put(DataMessage$Table.STATUS, messageStatus);
         contentValues.put(DataMessage$Table.DATE, time);
         contentValues.put(DataMessage$Table.SYNCTIME, time);
-        getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID +"=?", new String[] {msgId});
+        getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID + "=?", new String[]{msgId});
     }
 }

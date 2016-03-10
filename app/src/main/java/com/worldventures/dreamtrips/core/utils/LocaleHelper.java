@@ -40,6 +40,13 @@ public class LocaleHelper {
         return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
     }
 
+    public String getAccountLocaleFormatted(User user) {
+        Locale userLocale = getAccountLocale(user);
+        Locale locale = userLocale == null ? getDefaultLocale() : userLocale;
+        return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()})
+                .toLowerCase();
+    }
+
     public Locale getAccountLocale(User user) {
         if (user.getLocale() == null) return null;
         //

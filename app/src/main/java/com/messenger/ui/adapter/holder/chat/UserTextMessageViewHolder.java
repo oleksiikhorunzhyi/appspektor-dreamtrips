@@ -1,24 +1,49 @@
 package com.messenger.ui.adapter.holder.chat;
 
+import android.text.util.Linkify;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
+import com.messenger.util.TruncateUtils;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
+import static com.messenger.messengerservers.constant.TranslationStatus.*;
+import static android.view.View.VISIBLE;
+import static android.view.View.GONE;
+
+
+
 public class UserTextMessageViewHolder extends TextMessageViewHolder implements MessageHolder.UserMessageHolder {
 
     @InjectView(R.id.chat_item_avatar)
-    public ImageView avatarImageView;
+    ImageView avatarImageView;
     @InjectView(R.id.chat_username)
-    public TextView nameTextView;
+    TextView nameTextView;
+    @InjectView(R.id.message_container)
+    FrameLayout messageContainer;
+    @InjectView(R.id.translation_progress)
+    ProgressBar translationProgress;
+    @InjectView(R.id.translation_status)
+    TextView translationStatus;
+    @InjectView(R.id.message_linear_layout)
+    LinearLayout messageLinearLayout;
+    @InjectView(R.id.ic_translation_available)
+    ImageView iconTranslation;
+
+    private DataTranslation translation;
 
     public UserTextMessageViewHolder(View itemView) {
         super(itemView);
@@ -30,6 +55,17 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     ///////////////////////////////////////////////////////////////////////////
     // General messages logic
     ///////////////////////////////////////////////////////////////////////////
+
+
+    public void setTranslation(DataTranslation translation) {
+        this.translation = translation;
+    }
+
+    @Override
+    public void showMessage() {
+        messageTextView.setAutoLinkMask(Linkify.WEB_URLS);
+        applyTranslationStatus();
+    }
 
     @Override
     public void setBubbleBackground() {
@@ -43,7 +79,8 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
             backgroundResource = isSelected ? R.drawable.dark_grey_bubble_comics
                     : R.drawable.grey_bubble_comics;
         }
-        messageTextView.setBackgroundResource(backgroundResource);
+
+        messageContainer.setBackgroundResource(backgroundResource);
     }
 
     @Override
@@ -53,6 +90,11 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
         } else {
             chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
         }
+    }
+
+    @Override
+    public View getMessageView() {
+        return messageContainer;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -73,6 +115,12 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     }
 
     @Override
+    public void setPreviousMessageFromTheSameUser(boolean previousMessageFromTheSameUser) {
+        super.setPreviousMessageFromTheSameUser(previousMessageFromTheSameUser);
+        someoneMessageHolderHelper.setIsPreviousMessageFromTheSameUser(previousMessageFromTheSameUser);
+    }
+
+    @Override
     public void updateAvatar() {
         someoneMessageHolderHelper.updateAvatar();
     }
@@ -80,5 +128,72 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     @Override
     public void updateName(DataConversation dataConversation) {
         someoneMessageHolderHelper.updateName(dataConversation);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Translation staff
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    public void applyTranslationStatus() {
+        setTranslationUiState();
+
+        if (translation == null) { // means not translated message
+            setNotTranslated();
+            return;
+        }
+
+        switch (translation.getTranslateStatus()) {
+            case TranslationStatus.TRANSLATED:
+                setIsTranslated();
+                break;
+            case TranslationStatus.ERROR:
+                setTranslationError();
+                break;
+            case TranslationStatus.NATIVE:
+                setNative();
+                break;
+        }
+    }
+
+    private void setTranslationUiState(){
+        int status = translation == null ? -10 : translation.getTranslateStatus();
+        iconTranslation.setVisibility(status == NATIVE ? GONE : VISIBLE);
+        translationProgress.setVisibility(status == TRANSLATING ? VISIBLE : GONE);
+        messageTextView.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
+        translationStatus.setVisibility(status == TRANSLATING || status == NATIVE ? GONE : VISIBLE);
+    }
+
+    public void setNotTranslated() {
+        translationStatus.setVisibility(GONE);
+        messageTextView.setText(message.getText());
+    }
+
+    public void setTranslationError() {
+        translationStatus.setText(itemView.getResources().getText(R.string.translate_error));
+        translationStatus.setTextColor(itemView.getResources().getColor(R.color.translation_state_error));
+
+        messageTextView.setText(TruncateUtils.truncate(message.getText(),
+                messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
+    }
+
+    public void setIsTranslated() {
+        translationStatus.setText(itemView.getResources().getString(R.string.translate_from, message.getLocale()));
+        translationStatus.setTextColor(itemView.getResources().getColor(R.color.translation_state_translated));
+
+        messageTextView.setText(TruncateUtils.truncate(translation.getTranslation(),
+                messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
+
+        applyPositionOfTranslateIcon(messageTextView.getLineCount());
+    }
+
+    private void applyPositionOfTranslateIcon(int messageLines) {
+        if (messageLines == 1) messageLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        else messageLinearLayout.setOrientation(LinearLayout.VERTICAL);
+    }
+
+    public void setNative() {
+        messageTextView.setText(TruncateUtils.truncate(message.getText(),
+                messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
     }
 }

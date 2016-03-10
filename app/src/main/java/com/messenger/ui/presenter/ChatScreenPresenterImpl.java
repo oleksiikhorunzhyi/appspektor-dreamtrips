@@ -296,7 +296,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
             participantsStreamSubscription = participantsDaoHelper.obtainParticipantsStream(dataConversation, user)
                     .compose(bindViewIoToMainComposer())
-                    .subscribe(dataUsers -> getView().setTitle(dataConversation, dataUsers));
+                    .subscribe(dataUsers -> getView().setTitle(dataConversation, dataUsers),
+                            e -> Timber.w("Failed to connect to participants"));
         }, e -> Timber.w("Unable to connectMembersStream"));
     }
 
@@ -385,7 +386,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(dataMessage -> {
                     firstLoadedMessageMarked = true;
                     tryMarkAsReadMessage(dataMessage);
-                });
+                }, e -> Timber.w("Failed to mark message as read"));
     }
 
     private void connectUnreadMessageCountStream(DataConversation conversation) {
@@ -672,7 +673,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .compose(bindVisibilityIoToMainComposer())
                 .subscribe(conversation -> {
-                    if (conversationHelper.isGroup(conversation)) {
+                    if (ConversationHelper.isGroup(conversation)) {
                         // hide button for adding user for not owners of group chats
                         boolean owner = user.getId().equals(conversation.getOwnerId());
                         menu.findItem(R.id.action_add).setVisible(owner);
@@ -694,9 +695,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .first()
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
-                            if (conversationHelper.isTripChat(conversation)) {
+                            if (ConversationHelper.isTripChat(conversation)) {
                                 Flow.get(getContext()).set(new TripSettingsPath(conversationId));
-                            } else if (conversationHelper.isGroup(conversation)) {
+                            } else if (ConversationHelper.isGroup(conversation)) {
                                 Flow.get(getContext()).set(new GroupSettingsPath(conversationId));
                             } else {
                                 Flow.get(getContext()).set(new SingleSettingsPath(conversationId));
@@ -894,7 +895,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));
             case ConversationType.GROUP:
             default:
-                boolean isOwner = conversationHelper.isOwner(conversation, user);
+                boolean isOwner = ConversationHelper.isOwner(conversation, user);
                 return Observable.defer(() -> Observable.just(chatManager.createMultiUserChat(conversation.getId(), user.getId(), isOwner)));
         }
     }

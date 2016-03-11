@@ -1,7 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
@@ -11,15 +11,19 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.ui.model.UsersGroup;
+import com.messenger.ui.model.Group;
+import com.messenger.ui.model.SwipDataUser;
+import com.messenger.ui.util.recyclerview.Header;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 import com.messenger.ui.viewstate.LceViewState;
+import com.messenger.util.UsersDataTransformer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -39,12 +43,15 @@ import javax.inject.Named;
 
 import flow.Flow;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
 public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<EditChatMembersScreen,
         EditChatMembersViewState> implements EditChatMembersScreenPresenter {
+    private static final String ADMIN_TYPE = "Admin";
+    private static final String HOST_TYPE = "Host";
 
     @Inject
     @Named(PROFILE)
@@ -65,8 +72,11 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
+
     private Observable<DataConversation> conversationObservable;
     private Observable<List<Pair<DataUser, String>>> membersObservable;
+
+    private UsersDataTransformer usersDataTransformer;
 
     public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
         super(context);
@@ -75,6 +85,9 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         this.conversationId = conversationId;
 
         this.profileCrosser = new ProfileCrosser(context, routeCreator);
+        usersDataTransformer = new UsersDataTransformer(getContext());
+        usersDataTransformer.setSearchAdmin(true);
+        usersDataTransformer.setSearchHosts(true);
     }
 
     @Override
@@ -100,7 +113,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private void connectConversation() {
         conversationObservable = conversationsDAO.getConversation(conversationId)
                 .compose(new NonNullFilter<>())
-                .compose(bindViewIoToMainComposer())
                 .replay(1)
                 .autoConnect();
     }
@@ -110,20 +122,45 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
         Observable
                 .combineLatest(membersObservable, getView().getSearchObservable(), this::applyFilter)
-                .map(pairs -> groupMembers(pairs, true))
-                .subscribe(groups -> {
-                    // cause admin of group chat is also participant
-                    if (groups.size() <= 1) {
+                .zipWith(conversationObservable, (pairs, conversation) -> {
+                    return new Pair<>(prepareMemberGroups(pairs, conversation), pairs.size());
+                })
+                .map(pairGroupAndUserCount -> {
+                    List<Group<SwipDataUser>> groups = pairGroupAndUserCount.first;
+                    Integer usersCount = pairGroupAndUserCount.second;
+                    List<Object> items = new ArrayList<>(usersCount + groups.size());
+                    for (Group<SwipDataUser> group : groups) {
+                        items.add(new Header(getGroupName(group.groupName)));
+                        items.addAll(group.items);
+                    }
+                    return new Pair<>(items, usersCount);
+                })
+                .compose(bindView())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(itemsWithUserCount -> {
+                    List<Object> items = itemsWithUserCount.first;
+                    // items admin of group chat is also participant
+                    if (items.size() <= 1) {
                         Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
                         return;
                     }
 
                     EditChatMembersScreen view = getView();
                     view.showContent();
-                    Timber.d("Groups was prepared: %s", groups);
-//                    view.setMembers(members);
-//                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), members.size()));
+                    view.setAdapterData(items);
+                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), itemsWithUserCount.second));
                 });
+    }
+
+    private String getGroupName(@NonNull String name) {
+        switch (name) {
+            case ADMIN_TYPE:
+                return context.getString(R.string.edit_chat_members_admin_section);
+            case HOST_TYPE:
+                return context.getString(R.string.edit_chat_members_host_section);
+            default:
+                return name;
+        }
     }
 
     ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
@@ -136,14 +173,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
             if (getView() != null) getView().invalidateAllSwipedLayouts();
         }
     };
-
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        //if presenter is recreated and view has previous state with LOADING status,
-        //in applyViewState method all observables will be null cause onAttachedToWindow method calls after one
-        getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
-        super.onSaveInstanceState(bundle);
-    }
 
     @Override
     public void onNewViewState() {
@@ -163,7 +192,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 view.showLoading();
                 break;
             case CONTENT:
-//                showContent();
+                view.showContent();
                 break;
             case ERROR:
                 view.showError(editChatMembersViewState.getError());
@@ -182,18 +211,25 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         return result;
     }
 
-    private List<UsersGroup> groupMembers(List<Pair<DataUser, String>> members, boolean isTripConversation) {
-        Map<String, Collection<DataUser>> groupedMap = Queryable.from(members)
-                .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation), pair -> pair.first);
+    private List<Group<SwipDataUser>> prepareMemberGroups(List<Pair<DataUser, String>> members, DataConversation conversation) {
+        boolean isAdmin = TextUtils.equals(conversation.getOwnerId(), user.getId());
+        boolean isTripConversation = TextUtils.equals(conversation.getType(), ConversationType.TRIP);
+        Map<String, Collection<SwipDataUser>> groupedMap = Queryable.from(members)
+                .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation), pair -> toSwipDataUser(pair.first, pair.second, isAdmin));
+
         Set<String> names = groupedMap.keySet();
-        List<UsersGroup> groups = new LinkedList<>();
-        for (String groupName : names) groups.add(new UsersGroup(groupName, groupedMap.get(groupName)));
+        List<Group<SwipDataUser>> groups = new LinkedList<>();
+        for (String groupName : names) groups.add(new Group<>(groupName, groupedMap.get(groupName)));
         return groups;
     }
 
+    private SwipDataUser toSwipDataUser(DataUser user, String affiliation, boolean isOwner) {
+        return new SwipDataUser(user, isOwner && !TextUtils.equals(affiliation, Participant.Affiliation.OWNER));
+    }
+
     private String getUserGroup(DataUser user, String affiliation, boolean isTripConversation) {
-        if (TextUtils.equals(affiliation, Participant.Affiliation.OWNER)) return "Admin";
-        else if (isTripConversation && user.isHost()) return "Host";
+        if (TextUtils.equals(affiliation, Participant.Affiliation.OWNER)) return ADMIN_TYPE;
+        else if (isTripConversation && user.isHost()) return HOST_TYPE;
         else return user.getFirstName().substring(0, 1).toLowerCase();
     }
 

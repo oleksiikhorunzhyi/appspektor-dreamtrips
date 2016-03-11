@@ -14,7 +14,6 @@ import com.messenger.entities.DataUser$Adapter;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.sql.queriable.StringQuery;
 
 import java.util.ArrayList;
 import java.util.Collections;

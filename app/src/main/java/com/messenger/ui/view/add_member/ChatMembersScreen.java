@@ -19,9 +19,7 @@ public interface ChatMembersScreen extends MessengerScreen {
 
     void setTitle(@StringRes int title);
 
-    void setContacts(Cursor cursor);
-
-    void setContacts(Cursor cursor, String query, String queryColumn);
+    void setContacts(List users, String query);
 
     void setSelectedContacts(List<DataUser> selectedContacts);
 

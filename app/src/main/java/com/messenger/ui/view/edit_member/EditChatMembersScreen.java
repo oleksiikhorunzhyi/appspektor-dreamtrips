@@ -17,10 +17,7 @@ public interface EditChatMembersScreen extends MessengerScreen {
 
     void setTitle(String title);
 
-    @Deprecated
-    void setAdapterWithInfo(DataUser user, boolean isOwner);
-
-    void setMembers(List<DataUser> cursor);
+    void setAdapterData(List<Object> item);
 
     void invalidateAllSwipedLayouts();
 

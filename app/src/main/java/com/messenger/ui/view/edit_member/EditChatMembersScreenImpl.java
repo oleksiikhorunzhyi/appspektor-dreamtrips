@@ -18,11 +18,15 @@ import android.view.ViewGroup;
 
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
+import com.messenger.ui.adapter.SwipeableContactsAdapter;
+import com.messenger.ui.adapter.cell.HeaderCell;
+import com.messenger.ui.adapter.cell.SwipeableUserCell;
 import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
+import com.messenger.ui.model.SwipDataUser;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.recyclerview.Header;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
@@ -33,7 +37,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
-import timber.log.Timber;
 
 public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembersScreen,
         EditChatMembersScreenPresenter, EditChatPath> implements EditChatMembersScreen {
@@ -54,7 +57,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     private SearchView searchView;
 
-    private ActionButtonsContactsCursorAdapter adapter;
+    private SwipeableContactsAdapter<Object> adapter;
     private LinearLayoutManager linearLayoutManager;
     private SwipeableAdapterManager swipeableAdapterManager = new SwipeableAdapterManager();
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
@@ -80,15 +83,27 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
         if (inflateToolbarMenu(toolbar)) {
             prepareOptionsMenu(toolbar.getMenu());
         }
+        setAdapterWithInfo();
     }
 
-    public void setAdapterWithInfo(DataUser user, boolean isOwner) {
+    public void setAdapterWithInfo() {
         Context context = getContext();
         EditChatMembersScreenPresenter presenter = getPresenter();
 
-        adapter = new ActionButtonsContactsCursorAdapter(context, user, isOwner, swipeableAdapterManager);
-        adapter.setDeleteRequestListener(presenter::onDeleteUserFromChat);
-        adapter.setUserClickListener(presenter::onUserClicked);
+        adapter = new SwipeableContactsAdapter<>(context, injector);
+        adapter.registerCell(SwipDataUser.class, SwipeableUserCell.class);
+        adapter.registerCell(Header.class, HeaderCell.class);
+        adapter.registerDelegate(SwipDataUser.class, new SwipeableUserCell.Delegate() {
+            @Override
+            public void onDeleteUserRequired(SwipDataUser swipDataUser) {
+                presenter.onDeleteUserFromChat(swipDataUser.user);
+            }
+
+            @Override
+            public void onCellClicked(SwipDataUser swipDataUser) {
+                presenter.onUserClicked(swipDataUser.user);
+            }
+        });
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(context));
@@ -100,7 +115,6 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     private void initUi() {
         ButterKnife.inject(this);
-        //
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
         toolbarPresenter.setTitle(null);
@@ -138,9 +152,8 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
-    public void setMembers(List<DataUser> members) {
-        Timber.d("setMembers(%s): %s", members.size(), members);
-//        adapter.swapCursor(cursor);
+    public void setAdapterData(List<Object> items) {
+        adapter.setItems(items);
     }
 
     @Override

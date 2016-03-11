@@ -100,6 +100,7 @@
     <string name="edit_chat_dialog_confirm_user_deletion_message">Do you want to delete this user from chat?</string>
     <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Delete</string>
     <string name="edit_chat_members_admin_section">Admin</string>
+    <string name="edit_chat_members_host_section">Host</string>
     <!---->
     <!--Messenger misc -->
     <!---->

@@ -16,7 +16,6 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.util.List;
 
@@ -25,8 +24,6 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -65,7 +62,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                 .replay(1)
                 .autoConnect();
 
-        cursorObservable.subscribe(this::showContacts);
+        connectToContactsCursor();
     }
 
     private void connectSelectedCandidates() {

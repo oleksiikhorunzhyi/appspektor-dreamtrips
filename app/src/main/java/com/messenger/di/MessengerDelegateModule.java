@@ -1,8 +1,12 @@
 package com.messenger.di;
 
+import android.content.Context;
+
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.MessageBodyCreator;
+import com.messenger.delegate.MessageTranslationDelegate;
+import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -11,15 +15,18 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.modules.common.model.Session;
 
 import javax.inject.Singleton;
 
@@ -40,6 +47,18 @@ public class MessengerDelegateModule {
     @Provides
     ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade, ParticipantsDAO participantsDAO) {
         return new ChatDelegate(user.getId(), messengerServerFacade);
+    }
+
+    @Provides
+    PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO,
+                                                 TranslationsDAO translationsDAO, LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
+        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, translationsDAO, localeHelper, userSessionHolder);
+    }
+
+    @Singleton
+    @Provides
+    MessageTranslationDelegate provideMessageTranslationDelegate(@ForApplication Context context, DreamSpiceManager dreamSpiceManager, TranslationsDAO translationsDAO, LocaleHelper localeHelper){
+        return new MessageTranslationDelegate(context, dreamSpiceManager, translationsDAO, localeHelper);
     }
 
     @Provides

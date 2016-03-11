@@ -8,6 +8,7 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -71,5 +72,11 @@ public class MessengerStorageModule {
     @Singleton
     AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
         return new AttachmentDAO(context, rxContentResolver);
+    }
+
+    @Provides
+    @Singleton
+    TranslationsDAO provideTranslationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new TranslationsDAO(rxContentResolver, context);
     }
 }

@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
@@ -40,8 +39,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @MessageStatus.Status @Column int status;
     @Column long syncTime;
     @Column int version = MESSAGE_FORMAT_VERSION;
-    @Column String translation;
-    @TranslationStatus.Status @Column int translateStatus;
 
     public DataMessage() {
     }
@@ -71,12 +68,14 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setDate(builder.date);
         setSyncTime(builder.syncTime);
         setStatus(builder.status);
-        setTranslation(builder.translation);
-        setTranslateStatus(builder.translationStatus);
     }
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public String getLocaleName(){
+        return locale;
     }
 
     public int getVersion() {
@@ -151,23 +150,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         this.syncTime = syncTime;
     }
 
-    public String getTranslation() {
-        return translation;
-    }
-
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
-
-    @TranslationStatus.Status
-    public int getTranslateStatus() {
-        return translateStatus;
-    }
-
-    public void setTranslateStatus(@TranslationStatus.Status int translateStatus) {
-        this.translateStatus = translateStatus;
-    }
-
     @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
@@ -203,8 +185,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         private String locale;
         private int status;
         private long syncTime;
-        private String translation;
-        private @TranslationStatus.Status int translationStatus;
 
         public Builder() {
         }
@@ -251,16 +231,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
 
         public Builder syncTime(long val) {
             syncTime = val;
-            return this;
-        }
-
-        public Builder translation(String val) {
-            translation = val;
-            return this;
-        }
-
-        public Builder translationStatus (@TranslationStatus.Status int val) {
-            translationStatus = val;
             return this;
         }
 

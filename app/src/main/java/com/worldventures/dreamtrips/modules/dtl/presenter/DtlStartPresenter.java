@@ -72,6 +72,12 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         gpsLocationDelegate.onLocationObtained(null);
     }
 
+    @Override
+    public void dropView() {
+        gpsLocationDelegate.dropPermissionView();
+        super.dropView();
+    }
+
     public interface View extends RxView, PermissionView {
         void checkPermissions();
 

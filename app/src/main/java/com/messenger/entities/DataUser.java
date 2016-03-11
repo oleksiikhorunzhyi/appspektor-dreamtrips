@@ -31,7 +31,7 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     @Column String lastName;
     @Column boolean online;
     @Column boolean host;
-    @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
+    @Column String userAvatarUrl;
     @Column Boolean friend;
 
     public DataUser() {

@@ -1,20 +1,15 @@
 package com.messenger.storage;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import com.messenger.entities.DataUser;
-import com.messenger.entities.DataUser$Adapter;
+import com.messenger.entities.DataUser$Table;
 import com.raizlabs.android.dbflow.annotation.Migration;
-import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
+import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
 @Migration(version = 3, databaseName = MessengerDatabase.NAME)
-public class MigrationToVersion3 extends BaseMigration {
+public class MigrationToVersion3 extends AlterTableMigration<DataUser> {
 
-    @Override
-    public void migrate(SQLiteDatabase database) {
-        database.execSQL("DROP TABLE " + DataUser.TABLE_NAME);
-
-        DataUser$Adapter userAdapter = new DataUser$Adapter();
-        database.execSQL(userAdapter.getCreationQuery());
+    public MigrationToVersion3(Class<DataUser> table) {
+        super(table);
+        addColumn(boolean.class, DataUser$Table.HOST);
     }
 }

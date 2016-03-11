@@ -22,6 +22,7 @@ import timber.log.Timber;
 import static com.innahema.collections.query.queriables.Queryable.from;
 
 public class UserProcessor {
+    private static final String HOST_BADGE = "DreamTrips Host";
     private final UsersDAO usersDAO;
     private final DreamSpiceManager requester;
 
@@ -107,8 +108,7 @@ public class UserProcessor {
     private boolean hasHostBadge(@Nullable List<String> badges) {
         if (badges == null || badges.isEmpty()) return false;
         for (String badge : badges) {
-            if (TextUtils.equals(badge, "Host"))
-                return true;
+            if (TextUtils.equals(badge, HOST_BADGE)) return true;
         }
         return false;
     }

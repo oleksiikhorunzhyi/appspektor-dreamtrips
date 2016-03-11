@@ -23,7 +23,6 @@ import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 import com.messenger.ui.viewstate.LceViewState;
-import com.messenger.util.UsersDataTransformer;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -76,8 +75,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private Observable<DataConversation> conversationObservable;
     private Observable<List<Pair<DataUser, String>>> membersObservable;
 
-    private UsersDataTransformer usersDataTransformer;
-
     public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
         super(context);
         ((Injector) context.getApplicationContext()).inject(this);
@@ -85,9 +82,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         this.conversationId = conversationId;
 
         this.profileCrosser = new ProfileCrosser(context, routeCreator);
-        usersDataTransformer = new UsersDataTransformer(getContext());
-        usersDataTransformer.setSearchAdmin(true);
-        usersDataTransformer.setSearchHosts(true);
     }
 
     @Override
@@ -127,29 +121,48 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 })
                 .map(pairGroupAndUserCount -> {
                     List<Group<SwipDataUser>> groups = pairGroupAndUserCount.first;
+                    sortGroups(groups);
                     Integer usersCount = pairGroupAndUserCount.second;
-                    List<Object> items = new ArrayList<>(usersCount + groups.size());
-                    for (Group<SwipDataUser> group : groups) {
-                        items.add(new Header(getGroupName(group.groupName)));
-                        items.addAll(group.items);
-                    }
-                    return new Pair<>(items, usersCount);
+                    return new Pair<>(prepareAdapterItems(groups, usersCount + groups.size()), usersCount);
                 })
                 .compose(bindView())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(itemsWithUserCount -> {
-                    List<Object> items = itemsWithUserCount.first;
-                    // items admin of group chat is also participant
-                    if (items.size() <= 1) {
-                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
-                        return;
-                    }
+                .subscribe(itemsWithUserCount ->
+                        adapterDataPrepared(itemsWithUserCount.first, itemsWithUserCount.second));
+    }
 
-                    EditChatMembersScreen view = getView();
-                    view.showContent();
-                    view.setAdapterData(items);
-                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), itemsWithUserCount.second));
-                });
+    private void adapterDataPrepared(List<Object> items, int userCount) {
+        // items admin of group chat is also participant
+        if (items.size() <= 1) {
+            Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
+            return;
+        }
+
+        EditChatMembersScreen view = getView();
+        view.showContent();
+        view.setAdapterData(items);
+        view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), userCount));
+    }
+
+    private List<Object> prepareAdapterItems(List<Group<SwipDataUser>> groups, int capacity) {
+        List<Object> items = new ArrayList<>(capacity);
+        for (Group<SwipDataUser> group : groups) {
+            items.add(new Header(getGroupName(group.groupName)));
+            items.addAll(group.items);
+        }
+        return items;
+    }
+
+    private void sortGroups(List<Group<SwipDataUser>> groups) {
+        Collections.sort(groups, (lhs, rhs) -> {
+            if (TextUtils.equals(lhs.groupName, ADMIN_TYPE)) return -1;
+            if (TextUtils.equals(rhs.groupName, ADMIN_TYPE)) return 1;
+
+            if (TextUtils.equals(lhs.groupName, HOST_TYPE)) return -1;
+            if (TextUtils.equals(rhs.groupName, HOST_TYPE)) return 1;
+
+            return lhs.groupName.compareTo(rhs.groupName);
+        });
     }
 
     private String getGroupName(@NonNull String name) {

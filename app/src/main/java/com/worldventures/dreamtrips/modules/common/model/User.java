@@ -443,6 +443,7 @@ public class User extends BaseEntity implements Parcelable {
         this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
         circles = new ArrayList<>();
         in.readList(circles, Circle.class.getClassLoader());
+        badges = new ArrayList<>();
         in.readStringList(badges);
     }
 

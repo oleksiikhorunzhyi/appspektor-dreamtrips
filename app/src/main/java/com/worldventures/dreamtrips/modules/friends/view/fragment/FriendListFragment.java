@@ -41,7 +41,9 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
         router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
-                .data(new FriendGlobalSearchBundle("" + search.getQuery()))
+                .data(new FriendGlobalSearchBundle(
+                        (adapter.getCount() == 0 && search.getQuery() != null) ?
+                                search.getQuery().toString() : ""))
                 .build());
     }
 

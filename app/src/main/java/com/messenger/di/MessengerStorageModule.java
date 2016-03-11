@@ -13,6 +13,9 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -64,13 +67,15 @@ public class MessengerStorageModule {
 
     @Provides
     @Singleton
-    MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+    MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
+                                 @ForApplication Context context) {
         return new MessageDAO(rxContentResolver, context);
     }
 
     @Provides
     @Singleton
-    AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+    AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
+                                       @ForApplication Context context) {
         return new AttachmentDAO(context, rxContentResolver);
     }
 

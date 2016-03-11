@@ -28,6 +28,7 @@ import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
@@ -629,7 +630,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onCopyMessageTextToClipboard(DataMessage message) {
-        Utils.copyToClipboard(context, message.getText());
+        translationsDAO.getTranslation(message.getId()).first()
+                .map(translation -> {
+                    if (translation != null && translation.getTranslateStatus() == TranslationStatus.TRANSLATED) {
+                        return translation.getTranslation();
+                    } else {
+                        return message.getText();
+                    }
+                }).subscribe(text -> Utils.copyToClipboard(context, text));
     }
 
     @Override

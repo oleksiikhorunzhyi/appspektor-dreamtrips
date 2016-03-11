@@ -170,6 +170,10 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         return CONTENT_URI;
     }
 
+    public String getLocale() {
+        return locale;
+    }
+
     @Override
     public String toString() {
         return id + "  " + text;

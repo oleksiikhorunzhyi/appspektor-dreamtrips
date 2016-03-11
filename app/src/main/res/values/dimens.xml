@@ -208,6 +208,8 @@
     <dimen name="chat_list_row_margin">4dp</dimen>
     <dimen name="chat_list_date_entry_text_size">10sp</dimen>
     <dimen name="chat_list_username_text_size">10sp</dimen>
+    <dimen name="chat_list_translation_status_size">10sp</dimen>
+    <dimen name="chat_list_translation_margin">26dp</dimen>
     <dimen name="chat_list_username_bottom_margin">4dp</dimen>
     <dimen name="chat_list_message_text_size">15sp</dimen>
     <dimen name="chat_message_edittext_text_size">@dimen/chat_list_message_text_size</dimen>

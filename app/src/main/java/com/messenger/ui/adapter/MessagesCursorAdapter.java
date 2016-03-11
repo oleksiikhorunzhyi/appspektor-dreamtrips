@@ -18,6 +18,7 @@ import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -130,6 +131,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindUserTextMessageHolder(UserTextMessageViewHolder holder, Cursor cursor) {
+        boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
+        DataTranslation dataTranslation = translationExist? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
+        holder.setTranslation(dataTranslation);
+        //
         bindMessageHolder(holder, cursor);
         bindTextMessageHolder(holder, cursor);
         bindUserMessageHolder(holder, cursor);
@@ -183,9 +188,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public void bindUserMessageHolder(MessageHolder.UserMessageHolder holder, Cursor cursor) {
         DataUser userFrom = SqlUtils.convertToModel(true, DataUser.class, cursor);
-        holder.setAuthor(userFrom);
 
+        holder.setAuthor(userFrom);
         holder.setAvatarClickListener(avatarClickListener);
+
         holder.updateAvatar();
         holder.updateName(conversation);
     }

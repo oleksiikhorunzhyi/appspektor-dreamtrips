@@ -114,5 +114,8 @@
     <string name="warning_no_internet_connection">无法连线</string>
 
     <string name="chat_update_proposition"><![CDATA[为查看附件，请升级至DreamTrips App最新版本 <a href="https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips">点击此处</a>]]></string>
+
+    <string name="translate_from">Translated from %s</string>
+    <string name="translate_error">Translation error</string>
     <!-- messenger ends-->
 </resources>

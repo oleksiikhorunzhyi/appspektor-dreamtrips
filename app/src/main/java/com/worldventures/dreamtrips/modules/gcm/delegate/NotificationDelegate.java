@@ -17,6 +17,7 @@ import java.util.Random;
 
 import de.greenrobot.event.EventBus;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class NotificationDelegate {
 
@@ -66,7 +67,7 @@ public class NotificationDelegate {
                 .subscribeOn(Schedulers.io())
                 .subscribe(notification -> {
                     notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, new Random().nextInt(), notification);
-                });
+                }, e -> Timber.w(e, "Failed with creation of image message notification"));
     }
 
     public void cancel(String tag) {

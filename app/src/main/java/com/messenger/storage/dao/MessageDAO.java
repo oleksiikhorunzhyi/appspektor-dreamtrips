@@ -63,7 +63,7 @@ public class MessageDAO extends BaseDAO {
                         "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
                         "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + ", " +
 
-                        "t." + DataTranslation$Table.TRANSLATION + " as " + TRANSLATION_ID + ", " +
+                        "t." + DataTranslation$Table._ID + " as " + TRANSLATION_ID + ", " +
                         "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "+
                         "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + " "+
 

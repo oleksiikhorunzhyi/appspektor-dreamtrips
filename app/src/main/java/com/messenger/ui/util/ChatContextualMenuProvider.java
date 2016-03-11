@@ -57,14 +57,31 @@ public class ChatContextualMenuProvider {
                     if (queryResult.attachment != null) {
                         menu.removeItem(R.id.action_copy_message);
                     }
-                    // message locale is the same to user or attachment is not null, translate action is not shown
-                    DataTranslation dataTranslation = queryResult.translation;
-                    if (dataTranslation != null && dataTranslation.getTranslateStatus() == TranslationStatus.NATIVE
-                            || queryResult.attachment != null) {
-                        menu.removeItem(R.id.action_translate);
-                    }
+
+                    setTranslationsSubMenu(queryResult.translation, menu);
                     return menu;
                 });
+    }
+
+    private void setTranslationsSubMenu(DataTranslation dataTranslation, Menu menu) {
+        if (dataTranslation == null){
+            menu.removeItem(R.id.action_revert_translate);
+            return;
+        }
+
+        int status = dataTranslation.getTranslateStatus();
+
+        if (status == TranslationStatus.NATIVE || status == TranslationStatus.TRANSLATING)  {
+            menu.removeItem(R.id.action_translate);
+            menu.removeItem(R.id.action_revert_translate);
+            return;
+        }
+
+        if (status != TranslationStatus.TRANSLATED){
+            menu.removeItem(R.id.action_revert_translate);
+        } else {
+            menu.removeItem(R.id.action_translate);
+        }
     }
 
     private static class QueryResult {

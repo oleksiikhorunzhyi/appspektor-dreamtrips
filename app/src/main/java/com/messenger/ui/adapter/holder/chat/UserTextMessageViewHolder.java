@@ -144,21 +144,24 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
         }
 
         switch (translation.getTranslateStatus()) {
-            case TranslationStatus.TRANSLATED:
-                setIsTranslated();
-                break;
-            case TranslationStatus.ERROR:
+            case ERROR:
                 setTranslationError();
                 break;
-            case TranslationStatus.NATIVE:
+            case NATIVE:
                 setNative();
+                break;
+            case TRANSLATED:
+                setIsTranslated();
+                break;
+            case REVERTED:
+                setNotTranslated();
                 break;
         }
     }
 
     private void setTranslationUiState(){
         int status = translation == null ? -10 : translation.getTranslateStatus();
-        iconTranslation.setVisibility(status == NATIVE ? GONE : VISIBLE);
+        iconTranslation.setVisibility(status == TRANSLATING || status == NATIVE ? GONE : VISIBLE);
         translationProgress.setVisibility(status == TRANSLATING ? VISIBLE : GONE);
         messageTextView.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
         translationStatus.setVisibility(status == TRANSLATING || status == NATIVE ? GONE : VISIBLE);

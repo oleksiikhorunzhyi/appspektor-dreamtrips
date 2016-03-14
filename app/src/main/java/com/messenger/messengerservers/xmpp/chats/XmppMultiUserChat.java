@@ -5,10 +5,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.LeavePresence;
@@ -27,67 +25,52 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class XmppMultiUserChat extends MultiUserChat {
+public class XmppMultiUserChat extends XmppChat implements MultiUserChat {
     @Nullable
     private org.jivesoftware.smackx.muc.MultiUserChat chat;
 
-    private final XmppServerFacade facade;
-    private final String userId;
+    private String userId;
     private boolean isOwner;
-    private final String roomId;
-    private AbstractXMPPConnection connection;
-
-
-    private AuthorizeListener authorizeListener = new AuthorizeListener() {
-        @Override
-        public void onSuccess() {
-            super.onSuccess();
-            setConnection(facade.getConnection());
-        }
-    };
 
     public XmppMultiUserChat(XmppServerFacade facade, String roomId, String userId, boolean isOwner) {
-        this.facade = facade;
-        this.userId = userId;
-        this.roomId = roomId;
+        super(facade, roomId);
         this.isOwner = isOwner;
+        this.userId = userId;
+        connectToFacade();
+    }
 
-        synchronized (this.facade) {
-            if (facade.isAuthorized()) {
-                setConnection(facade.getConnection());
+    public void setConnection(@NonNull AbstractXMPPConnection connection) {
+        String jid = JidCreatorHelper.obtainGroupJid(roomId);
+        chat = MultiUserChatManager.getInstanceFor(connection).getMultiUserChat(jid);
+
+        if (!chat.isJoined()) {
+            try {
+                chat.createOrJoin(userId);
+            } catch (IllegalStateException | XMPPException.XMPPErrorException | SmackException e) {
+                Timber.e(e, "SetConnection");
             }
-            facade.addAuthorizationListener(authorizeListener);
         }
     }
 
     @Override
     public Observable<Message> send(Message message) {
-        return Observable.just(message)
-                .doOnNext(msg -> {
-                    msg.setFromId(userId);
-                    msg.setConversationId(roomId);
-                })
-                .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), smackMsg -> {
-                    if (chat != null) {
-                        chat.sendMessage(smackMsg);
-                        return true;
-                    }
-                    return false;
-                }));
+        message.setFromId(userId);
+        return super.send(message);
     }
 
     @Override
-    public Observable<String> sendReadStatus(String messageId) {
-        return Observable.just(messageId)
-                .compose(new StatusMessageTransformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
-                        JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat),
-                        stanza -> {
-                            if (connection != null) {
-                                connection.sendStanza(stanza);
-                                return true;
-                            }
-                            return false;
-                        }));
+    protected boolean trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException {
+        if (chat != null) {
+            chat.sendMessage(message);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected StatusMessagePacket createStatusMessage(String messageId) {
+        return new StatusMessagePacket(messageId, Status.DISPLAYED,
+                JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat);
     }
 
     @Override
@@ -115,11 +98,8 @@ public class XmppMultiUserChat extends MultiUserChat {
 
             try {
                 if (initializedAndConnected()) {
-                    chat.revokeMembership(Queryable
-                            .from(userIds)
-                            .map(id -> JidCreatorHelper.obtainUserJid(id))
-                            .toList());
-
+                    List <String> jids = Queryable.from(userIds).map(id -> JidCreatorHelper.obtainUserJid(id)).toList();
+                    chat.revokeMembership(jids);
                     subscriber.onNext(userIds);
                 }
                 subscriber.onCompleted();
@@ -150,24 +130,10 @@ public class XmppMultiUserChat extends MultiUserChat {
         try {
             LeavePresence leavePresence = new LeavePresence();
             leavePresence.setTo(chat.getRoom() + "/" + chat.getNickname());
-            connection.sendStanza(leavePresence);
+            facade.getConnection().sendStanza(leavePresence);
         } catch (SmackException.NotConnectedException e) {
             Timber.e(e, "Error");
         }
-    }
-
-    @Override
-    public void setCurrentState(@ChatState.State String state) {
-        Observable.just(state)
-                .subscribeOn(Schedulers.io())
-                .compose(new ChatStateTransformer(message -> {
-                    if (chat != null) {
-                        chat.sendMessage(message);
-                        return true;
-                    }
-                    return false;
-                }))
-                .subscribe(message -> {}, throwable -> Timber.e(throwable, "setCurrentState %s", state));
     }
 
     @Override
@@ -199,30 +165,7 @@ public class XmppMultiUserChat extends MultiUserChat {
     }
 
     private boolean initializedAndConnected(){
+        AbstractXMPPConnection connection = facade.getConnection();
         return chat != null && connection != null && connection.isConnected() && connection.isAuthenticated();
-    }
-
-    public void setConnection(@NonNull AbstractXMPPConnection connection) {
-        this.connection = connection;
-        String jid = JidCreatorHelper.obtainGroupJid(roomId);
-        chat = MultiUserChatManager.getInstanceFor(connection).getMultiUserChat(jid);
-
-        if (!chat.isJoined()) {
-            try {
-                try {
-                    chat.createOrJoin(userId);
-                } catch (IllegalStateException e) {
-                    Timber.e(e, "SetConnection");
-                } // cause the method is synchronized var in library not volatile
-            } catch (XMPPException.XMPPErrorException | SmackException e) {
-                Timber.e(e, "Error");
-            }
-        }
-    }
-
-    @Override
-    public void close() {
-        super.close();
-        facade.removeAuthorizationListener(authorizeListener);
     }
 }

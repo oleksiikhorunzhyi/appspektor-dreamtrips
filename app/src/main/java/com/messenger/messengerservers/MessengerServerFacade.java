@@ -30,8 +30,6 @@ public interface MessengerServerFacade {
 
     PaginationManager getPaginationManager();
 
-    ContactManager getContactManager();
-
     GlobalEventEmitter getGlobalEventEmitter();
 
     String getUsername();

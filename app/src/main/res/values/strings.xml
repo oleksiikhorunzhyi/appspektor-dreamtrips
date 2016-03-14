@@ -510,7 +510,7 @@
     <string name="message_can_not_be_empty">Message can\'t be empty</string>
     <string name="feedback_has_been_sent">Your feedback is sent. Thank you</string>
     <string name="feedback_send_btn">Send</string>
-    <string name="feedback_select_category">Choose Reason</string>
+    <string name="feedback_select_category">Choose Category</string>
 
     <string name="years_ago">%d years ago</string>
     <string name="invitation_template">Select template</string>

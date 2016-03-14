@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
+import com.worldventures.dreamtrips.modules.map.view.MapUtils;
 
 import butterknife.InjectView;
 import icepick.State;
@@ -79,6 +81,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        MapUtils.adjustLocationButtonPosition(mapView);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         searchViewHelper = new SearchViewHelper();

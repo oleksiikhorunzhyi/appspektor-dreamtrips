@@ -81,7 +81,7 @@ android {
 
             ext.enableCrashlytics = false
 
-            buildConfigField 'String', 'DreamTripsApi', '"http://techery-qa-dt-social.techery.io/"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://dtappstage.worldventures.biz/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
@@ -94,7 +94,7 @@ android {
 
             ext.enableCrashlytics = false
 
-            buildConfigField 'String', 'DreamTripsApi', '"http://techery-qa-dt-social.techery.io/"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://dtappstage.worldventures.biz/"'
 
             buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'

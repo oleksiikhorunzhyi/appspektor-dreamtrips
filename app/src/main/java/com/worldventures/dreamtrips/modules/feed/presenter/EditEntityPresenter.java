@@ -25,7 +25,6 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
 
     @State
     FeedEntity entity;
-
     @State
     Location cachedLocation;
 
@@ -80,8 +79,18 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     }
 
     public void invalidateAddTagBtn() {
-        boolean isViewShown = type == Type.PHOTO;
-        boolean someTagSets = !((Photo) entity).getPhotoTags().isEmpty() || !cachedAddedPhotoTags.isEmpty();
+        boolean isViewShown;
+        boolean someTagSets;
+        switch (type) {
+            case PHOTO:
+                isViewShown = true;
+                someTagSets = !((Photo) entity).getPhotoTags().isEmpty() || !cachedAddedPhotoTags.isEmpty();
+                break;
+            default:
+                isViewShown = false;
+                someTagSets = false;
+                break;
+        }
         if (view != null) {
             view.redrawTagButton(isViewShown, someTagSets);
         }
@@ -136,6 +145,12 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
                 });
     }
 
+    @Override
+    protected void processPostSuccess(FeedEntity feedEntity) {
+        eventBus.post(new FeedEntityChangedEvent(feedEntity));
+        super.processPostSuccess(feedEntity);
+    }
+
     private void updatePhoto() {
         UploadTask uploadTask = new UploadTask();
         uploadTask.setTitle(cachedText);
@@ -144,7 +159,7 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
         uploadTask.setLongitude((float) cachedLocation.getLng());
         uploadTask.setShotAt(((Photo) entity).getShotAt());
         doRequest(new EditTripPhotoCommand(entity.getUid(), uploadTask),
-                this::processPostSuccess, spiceException -> {
+                this::processPhotoSuccess, spiceException -> {
                     handleError(spiceException);
                     view.onPostError();
                 });

@@ -84,7 +84,7 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             cachedUploadTask.setTitle(cachedText);
             cachedUploadTask.setShotAt(Calendar.getInstance().getTime());
 
-            doRequest(new AddTripPhotoCommand(cachedUploadTask), this::processPostSuccess, spiceException -> {
+            doRequest(new AddTripPhotoCommand(cachedUploadTask), this::processPhotoSuccess, spiceException -> {
                 handleError(spiceException);
                 view.onPostError();
             });
@@ -99,6 +99,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
                     handleError(spiceException);
                     view.onPostError();
                 });
+    }
+
+    @Override
+    protected void processPostSuccess(FeedEntity feedEntity) {
+        eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
+        super.processPostSuccess(feedEntity);
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {

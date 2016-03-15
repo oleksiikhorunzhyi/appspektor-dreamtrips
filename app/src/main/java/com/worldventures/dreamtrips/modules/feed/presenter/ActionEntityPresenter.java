@@ -110,12 +110,20 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     }
 
     protected void processPostSuccess(FeedEntity feedEntity) {
+        closeView();
+    }
+
+    protected void processPhotoSuccess(FeedEntity feedEntity) {
         pushTags(feedEntity);
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {
         ((Photo) feedEntity).getPhotoTags().addAll(cachedAddedPhotoTags);
         ((Photo) feedEntity).getPhotoTags().removeAll(cachedRemovedPhotoTags);
+        closeView();
+    }
+
+    private void closeView() {
         view.cancel();
         view = null;
     }

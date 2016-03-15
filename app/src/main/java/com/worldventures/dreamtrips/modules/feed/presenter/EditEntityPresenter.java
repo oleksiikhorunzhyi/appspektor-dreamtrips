@@ -142,6 +142,7 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
         uploadTask.setLocationName(cachedLocation.getName());
         uploadTask.setLatitude((float) cachedLocation.getLat());
         uploadTask.setLongitude((float) cachedLocation.getLng());
+        uploadTask.setShotAt(((Photo) entity).getShotAt());
         doRequest(new EditTripPhotoCommand(entity.getUid(), uploadTask),
                 this::processPostSuccess, spiceException -> {
                     handleError(spiceException);

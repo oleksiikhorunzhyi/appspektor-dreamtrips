@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
+import com.worldventures.dreamtrips.modules.gcm.model.NewUnsupportedMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
@@ -68,6 +69,12 @@ public class NotificationDelegate {
                 .subscribe(notification -> {
                     notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, new Random().nextInt(), notification);
                 }, e -> Timber.w(e, "Failed with creation of image message notification"));
+    }
+
+    public void notifyUnsupportedMessageReceived(NewUnsupportedMessage newUnsupportedMessage){
+        Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
+                .createUnsupportedMessage(newUnsupportedMessage);
+        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, 0, notification);
     }
 
     public void cancel(String tag) {

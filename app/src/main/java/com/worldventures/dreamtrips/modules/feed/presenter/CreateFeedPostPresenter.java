@@ -44,7 +44,7 @@ public class CreateFeedPostPresenter extends CreateEntityPresenter<CreateFeedPos
     @Override
     public void attachImages(List<ChosenImage> photos, int requestType) {
         super.attachImages(photos, requestType);
-        view.disableImagePicker();
+        if (photos.size() != 0) view.disableImagePicker();
     }
 
     public interface View extends CreateEntityPresenter.View {

@@ -9,9 +9,9 @@ import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
+import com.messenger.util.UsersDataTransformer;
 import com.messenger.util.ContactsHeaderCreator;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -50,6 +50,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
     final private ProfileCrosser profileCrosser;
     final private ContactsHeaderCreator contactsHeaderCreator;
+    final private UsersDataTransformer usersDataTransformer;
 
     public ChatMembersScreenPresenterImpl(Context context) {
         super(context);
@@ -61,6 +62,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);
+        usersDataTransformer = new UsersDataTransformer(getContext());
     }
 
     @Override
@@ -73,6 +75,14 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public void detachView(boolean retainInstance) {
         super.detachView(retainInstance);
         dreamSpiceManager.shouldStop();
+    }
+
+    protected void connectToContactsCursor() {
+        if (getViewState() != null) {
+            usersDataTransformer.setFilter(getViewState().getSearchFilter());
+        }
+        cursorObservable.compose(usersDataTransformer).subscribe(transformResult
+                -> showContacts(transformResult.getUsersWithHeaders()));
     }
 
     @Override
@@ -144,15 +154,14 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         String searchQuery = text.substring(textInChosenContactsLength, textLength);
         getViewState().setSearchFilter(searchQuery);
 
-        cursorObservable.subscribe(cursor ->
-                getView().setContacts(cursor, searchQuery, UsersDAO.USER_DISPLAY_NAME));
+        connectToContactsCursor();
     }
 
-    protected void showContacts(Cursor cursor) {
+    protected void showContacts(List<Object> usersWithHeaders) {
         if (!isViewAttached()) return;
 
         getViewState().setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
-        getView().setContacts(cursor);
+        getView().setContacts(usersWithHeaders, getViewState().getSearchFilter());
         getView().showContent();
     }
 

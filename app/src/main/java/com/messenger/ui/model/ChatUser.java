@@ -1,4 +1,4 @@
-package com.messenger.model;
+package com.messenger.ui.model;
 
 import android.os.Parcelable;
 

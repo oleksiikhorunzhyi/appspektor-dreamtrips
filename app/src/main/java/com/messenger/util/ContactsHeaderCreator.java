@@ -8,7 +8,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 
 import com.messenger.entities.DataUser;
-import com.messenger.model.ChatUser;
+import com.messenger.ui.model.ChatUser;
 import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;

@@ -26,13 +26,18 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
 
     @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        onPostAttachToWindowView();
         // TODO extract to delegate for reuse in other views
         if (lastInstanceState == null) {
             presenter.onNewViewState();
         } else {
             presenter.onRestoreInstanceState(lastInstanceState);
         }
+
         presenter.onAttachedToWindow();
+    }
+
+    protected void onPostAttachToWindowView() {
     }
 
     @Override protected void onDetachedFromWindow() {

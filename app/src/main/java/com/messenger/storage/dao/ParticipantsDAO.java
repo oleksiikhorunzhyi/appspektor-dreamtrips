@@ -3,16 +3,19 @@ package com.messenger.storage.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataParticipant$Adapter;
 import com.messenger.entities.DataParticipant$Table;
 import com.messenger.entities.DataUser;
+import com.messenger.entities.DataUser$Adapter;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,14 +48,26 @@ public class ParticipantsDAO extends BaseDAO {
                 });
     }
 
-    public Observable<Cursor> getParticipants(String conversationId) {
+    public Observable<List<Pair<DataUser, String>>> getParticipants(String conversationId) {
+        final String affiliation = "p." + DataParticipant$Table.AFFILIATION + " as " + DataParticipant$Table.AFFILIATION;
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection(participantsSelection("*, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " "))
+                .withSelection(participantsSelection("*, " + affiliation))
                 .withSelectionArgs(new String[]{conversationId})
                 .withSortOrder(userOrder())
                 .build();
 
-        return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI);
+        return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
+                .map(cursor -> {
+                    final DataUser$Adapter adapter = new DataUser$Adapter();
+                    final int affiliationColumn = cursor.getColumnIndex(DataParticipant$Table.AFFILIATION);
+                    List<Pair<DataUser, String>> result = new ArrayList<>(cursor.getCount());
+                    while (cursor.moveToNext()) {
+                        DataUser user = adapter.loadFromCursor(cursor);
+                        result.add(new Pair<>(user, cursor.getString(affiliationColumn)));
+                    }
+                    cursor.close();
+                    return result;
+                });
     }
 
     public Observable<List<DataUser>> getParticipantsEntities(String conversationId) {

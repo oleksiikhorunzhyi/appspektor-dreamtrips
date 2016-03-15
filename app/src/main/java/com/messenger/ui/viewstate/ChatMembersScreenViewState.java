@@ -3,7 +3,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.messenger.entities.DataUser;
-import com.messenger.model.ChatUser;
+import com.messenger.ui.model.ChatUser;
 
 import java.util.ArrayList;
 import java.util.List;

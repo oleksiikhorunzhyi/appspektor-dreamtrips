@@ -79,7 +79,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     public List<PhotoTag> getPhotoTags() {
-        return photoTags == null ? Collections.emptyList() : photoTags;
+        return photoTags == null ? new ArrayList<>() : photoTags;
     }
 
     public void setPhotoTags(List<PhotoTag> photoTags) {

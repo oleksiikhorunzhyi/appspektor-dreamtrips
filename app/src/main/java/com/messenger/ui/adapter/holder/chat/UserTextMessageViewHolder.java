@@ -13,16 +13,19 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.util.TruncateUtils;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
-import static com.messenger.messengerservers.constant.TranslationStatus.*;
-import static android.view.View.VISIBLE;
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.messenger.messengerservers.constant.TranslationStatus.ERROR;
+import static com.messenger.messengerservers.constant.TranslationStatus.NATIVE;
+import static com.messenger.messengerservers.constant.TranslationStatus.REVERTED;
+import static com.messenger.messengerservers.constant.TranslationStatus.TRANSLATED;
+import static com.messenger.messengerservers.constant.TranslationStatus.TRANSLATING;
 
 
 
@@ -47,7 +50,7 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
 
     public UserTextMessageViewHolder(View itemView) {
         super(itemView);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) messageTextView.getLayoutParams();
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) getMessageView().getLayoutParams();
         params.setMargins(params.leftMargin, params.topMargin, freeSpaceForMessageRowUserMessage,
                 params.bottomMargin);
     }
@@ -170,6 +173,8 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     public void setNotTranslated() {
         translationStatus.setVisibility(GONE);
         messageTextView.setText(message.getText());
+
+        applyPositionOfTranslateIcon();
     }
 
     public void setTranslationError() {
@@ -178,6 +183,8 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
 
         messageTextView.setText(TruncateUtils.truncate(message.getText(),
                 messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
+
+        applyPositionOfTranslateIcon();
     }
 
     public void setIsTranslated() {
@@ -187,12 +194,15 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
         messageTextView.setText(TruncateUtils.truncate(translation.getTranslation(),
                 messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
 
-        applyPositionOfTranslateIcon(messageTextView.getLineCount());
+        applyPositionOfTranslateIcon();
     }
 
-    private void applyPositionOfTranslateIcon(int messageLines) {
-        if (messageLines == 1) messageLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        else messageLinearLayout.setOrientation(LinearLayout.VERTICAL);
+    private void applyPositionOfTranslateIcon() {
+        messageTextView.post(() -> {
+            int messageLines = messageTextView.getLineCount();
+            if (messageLines == 1) messageLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+            else messageLinearLayout.setOrientation(LinearLayout.VERTICAL);
+        });
     }
 
     public void setNative() {

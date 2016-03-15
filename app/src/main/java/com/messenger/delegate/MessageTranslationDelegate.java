@@ -36,7 +36,8 @@ public class MessageTranslationDelegate {
                 .subscribe(dataTranslation -> {
                     if ((dataTranslation == null || dataTranslation.getTranslateStatus() == TranslationStatus.ERROR)
                             && SessionHolderHelper.hasEntity(userSession)){
-                        translateMessageRequest(message, userSession.get().get().getUser().getLocale());
+                        translateMessageRequest(message, localeHelper.
+                                getAccountLocaleFormatted(userSession.get().get().getUser()));
                     }
                     if (dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED){
                         dataTranslation.setTranslateStatus(TranslationStatus.TRANSLATED);
@@ -46,9 +47,8 @@ public class MessageTranslationDelegate {
     }
 
     private void translateMessageRequest(DataMessage dataMessage, String toLocale) {
-        String fromLanguage = localeHelper.obtainLanguageCode(dataMessage.getLocaleName());
-        String toLanguage = localeHelper.obtainLanguageCode(toLocale);
-        TranslateTextBody body = new TranslateTextBody(dataMessage.getText(), fromLanguage, toLanguage);
+        TranslateTextBody body = new TranslateTextBody(dataMessage.getText(),
+                dataMessage.getLocaleName(), toLocale);
 
         DataTranslation dataTranslation = new DataTranslation(dataMessage.getId(), null, TranslationStatus.TRANSLATING);
         translationsDAO.save(dataTranslation);

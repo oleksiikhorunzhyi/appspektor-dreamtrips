@@ -121,7 +121,7 @@ public class CommonModule {
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
         featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlModule.DTL));
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
-        activeComponents.add(TripsModule.OTA);
+        featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(VideoModule.MEMBERSHIP);
         activeComponents.add(BucketListModule.BUCKETLIST);

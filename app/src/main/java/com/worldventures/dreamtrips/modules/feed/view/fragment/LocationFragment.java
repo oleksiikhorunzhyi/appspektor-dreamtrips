@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -61,12 +63,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (getArgs() != null && !TextUtils.isEmpty(getArgs().getName())) {
-            input.setText(getArgs().getName());
-        } else {
-            fetchAndSetLocation();
-        }
+        activityResult(activityResultDelegate.getRequestCode(),
+                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
     }
 
     private void fetchAndSetLocation() {
@@ -97,6 +95,14 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         return true;
     }
 
+    private void fillLocationInput(){
+        if (getArgs() != null && !TextUtils.isEmpty(getArgs().getName())) {
+            input.setText(getArgs().getName());
+        } else {
+            fetchAndSetLocation();
+        }
+    }
+
     private Location composeLocation() {
         String name = input.getText().toString();
         Location result = new Location();
@@ -120,6 +126,27 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
 
     private void cancelClicked() {
         router.back();
+    }
+
+    private void activityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        getPresenter().onPermissionGranted();
+                        fillLocationInput();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        getPresenter().locationNotGranted();
+                        break;
+                    default:
+                        break;
+                }
+                activityResultDelegate.clear();
+                break;
+        }
     }
 
     @Override

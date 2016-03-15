@@ -30,6 +30,7 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        gpsLocationDelegate.setPermissionView(view);
         view.checkPermissions();
     }
 

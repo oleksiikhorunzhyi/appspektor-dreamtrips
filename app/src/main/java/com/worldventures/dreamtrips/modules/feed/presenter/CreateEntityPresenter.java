@@ -21,11 +21,15 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import java.util.Calendar;
 import java.util.List;
 
+import icepick.State;
+
 public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
     public static final int REQUESTER_ID = -2;
 
+    @State
     UploadTask cachedUploadTask;
+
     PhotoUploadSubscriber photoUploadSubscriber;
 
     @Override

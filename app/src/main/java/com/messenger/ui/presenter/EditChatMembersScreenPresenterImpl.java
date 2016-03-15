@@ -18,7 +18,6 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.model.Group;
 import com.messenger.ui.model.SwipDataUser;
 import com.messenger.ui.util.recyclerview.Header;
-import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
@@ -40,8 +39,8 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import flow.Flow;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -74,6 +73,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     private Observable<DataConversation> conversationObservable;
     private Observable<List<Pair<DataUser, String>>> membersObservable;
+    private Subscription adapterSubscribtion;
 
     public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
         super(context);
@@ -114,11 +114,12 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private void connectParticipants() {
         membersObservable = participantsDAO.getParticipants(conversationId);
 
-        Observable
+        adapterSubscribtion = Observable
                 .combineLatest(membersObservable, getView().getSearchObservable(), this::applyFilter)
-                .zipWith(conversationObservable, (pairs, conversation) -> {
-                    return new Pair<>(prepareMemberGroups(pairs, conversation), pairs.size());
-                })
+                .compose(listObservable ->
+                        Observable.combineLatest(listObservable, conversationObservable,
+                                (pairs, conversation) -> new Pair<>(prepareMemberGroups(pairs, conversation), pairs.size())
+                        ))
                 .map(pairGroupAndUserCount -> {
                     List<Group<SwipDataUser>> groups = pairGroupAndUserCount.first;
                     sortGroups(groups);
@@ -132,12 +133,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     }
 
     private void adapterDataPrepared(List<Object> items, int userCount) {
-        // items admin of group chat is also participant
-        if (items.size() <= 1) {
-            Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
-            return;
-        }
-
         EditChatMembersScreen view = getView();
         view.showContent();
         view.setAdapterData(items);
@@ -219,7 +214,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         List<Pair<DataUser, String>> result = new ArrayList<>(members.size());
         for (Pair<DataUser, String> userData : members) {
             String displayName = userData.first.getDisplayedName();
-            if (displayName.matches(query)) result.add(userData);
+            if (displayName.toLowerCase().contains(query.toLowerCase())) result.add(userData);
         }
         return result;
     }
@@ -243,7 +238,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private String getUserGroup(DataUser user, String affiliation, boolean isTripConversation) {
         if (TextUtils.equals(affiliation, Participant.Affiliation.OWNER)) return ADMIN_TYPE;
         else if (isTripConversation && user.isHost()) return HOST_TYPE;
-        else return user.getFirstName().substring(0, 1).toLowerCase();
+        else return user.getFirstName().substring(0, 1).toUpperCase();
     }
 
     ///////////////////////////////////////////////////////////////////////////

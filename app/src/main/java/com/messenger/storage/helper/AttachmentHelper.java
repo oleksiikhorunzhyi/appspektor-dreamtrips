@@ -4,6 +4,7 @@ import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.PhotoAttachment;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -41,7 +42,10 @@ public class AttachmentHelper {
 
                     builder.image(image);
                     builder.user(user);
-                    builder.date(dataMessage.getDate());
+
+                    if (dataMessage.getStatus() != MessageStatus.ERROR)
+                        builder.date(dataMessage.getDate());
+
                     return builder.build();
                 });
     }

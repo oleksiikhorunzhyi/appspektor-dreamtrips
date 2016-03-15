@@ -4,8 +4,10 @@ import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
+import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
@@ -15,7 +17,11 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -40,10 +46,15 @@ public class LoaderDelegate {
     private final MessageDAO messageDAO;
     private final UsersDAO usersDAO;
     private final AttachmentDAO attachmentDAO;
+    private final TranslationsDAO translationsDAO;
+
+    private final SessionHolder<UserSession> userSessionHolder;
+    private final LocaleHelper localHelper;
 
     public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
                           ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                          MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
+                          MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO,
+                          TranslationsDAO translationsDAO, SessionHolder<UserSession> userSessionHolder, LocaleHelper localeHelper) {
         this.messengerServerFacade = messengerServerFacade;
         this.userProcessor = userProcessor;
         this.conversationsDAO = conversationsDAO;
@@ -51,6 +62,10 @@ public class LoaderDelegate {
         this.messageDAO = messageDAO;
         this.usersDAO = usersDAO;
         this.attachmentDAO = attachmentDAO;
+        this.translationsDAO = translationsDAO;
+
+        this.localHelper = localeHelper;
+        this.userSessionHolder = userSessionHolder;
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
@@ -75,6 +90,14 @@ public class LoaderDelegate {
                             .map(c -> new DataMessage(c.getLastMessage())).notNulls().toList();
                     from(messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
+                    List<DataTranslation> translations = new ArrayList<>();
+                    if (userSessionHolder.get() != null && userSessionHolder.get().isPresent()
+                            && userSessionHolder.get().get() != null) {
+                        String userLocale = userSessionHolder.get().get().getUser().getLocale();
+                        translations = from(messages).filter(msg -> localHelper.isTheSameLanguage(msg.getLocaleName(), userLocale))
+                                .map(msg -> new DataTranslation(msg.getId(), null, TranslationStatus.NATIVE)).toList();
+                    }
+
                     List<DataParticipant> relationships = new ArrayList<>();
                     if (!data.isEmpty()) {
                         from(data)
@@ -93,6 +116,7 @@ public class LoaderDelegate {
                     messageDAO.save(messages);
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
+                    translationsDAO.save(translations);
 
                     List<User> users = data.isEmpty() ? Collections.emptyList() : from(relationships)
                             .map((elem, idx) -> new User(elem.getUserId()))

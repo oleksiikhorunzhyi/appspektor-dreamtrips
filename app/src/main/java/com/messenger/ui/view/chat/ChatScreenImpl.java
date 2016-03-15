@@ -292,6 +292,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                 case R.id.action_copy_message:
                     getPresenter().onCopyMessageTextToClipboard(message);
                     break;
+                case R.id.action_translate:
+                    getPresenter().onTranslateMessage(message);
+                    break;
+                case R.id.action_revert_translate:
+                    getPresenter().onRevertTranslate(message);
+                    break;
                 case R.id.action_start_chat:
                     getPresenter().onStartNewChatForMessageOwner(message);
                     break;

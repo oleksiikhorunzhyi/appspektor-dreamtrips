@@ -74,6 +74,10 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         this.locale = locale;
     }
 
+    public String getLocaleName(){
+        return locale;
+    }
+
     public int getVersion() {
         return version;
     }
@@ -164,6 +168,10 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @Override
     public Uri getQueryUri() {
         return CONTENT_URI;
+    }
+
+    public String getLocale() {
+        return locale;
     }
 
     @Override

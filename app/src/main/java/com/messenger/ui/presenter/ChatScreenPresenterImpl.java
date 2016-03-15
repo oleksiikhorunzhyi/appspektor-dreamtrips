@@ -12,6 +12,7 @@ import android.view.View;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.MessageBodyCreator;
+import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.StartChatDelegate;
@@ -27,6 +28,7 @@ import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
@@ -35,6 +37,7 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.storage.helper.AttachmentHelper;
 import com.messenger.storage.helper.ParticipantsDaoHelper;
@@ -54,6 +57,7 @@ import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.Utils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -63,6 +67,8 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -103,6 +109,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private final GlobalEventEmitter messengerGlobalEmitter;
 
     @Inject
+    SessionHolder<UserSession> userSessionHolder;
+    @Inject
     DataUser user;
     @Inject
     MessageBodyCreator messageBodyCreator;
@@ -121,8 +129,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     OpenedConversationTracker openedConversationTracker;
     @Inject
     AttachmentDelegate attachmentDelegate;
+    @Inject
+    PaginationDelegate paginationDelegate;
 
-    protected PaginationDelegate paginationDelegate;
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
     protected ParticipantsDaoHelper participantsDaoHelper;
@@ -141,9 +150,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ParticipantsDAO participantsDAO;
     @Inject
     AttachmentDAO attachmentDAO;
+    @Inject
+    TranslationsDAO translationsDAO;
 
     @Inject
     StartChatDelegate startChatDelegate;
+    @Inject
+    LocaleHelper localeHelper;
+    @Inject
+    MessageTranslationDelegate messageTranslationDelegate;
 
     private int page = 0;
     private long before = 0;
@@ -175,12 +190,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
         backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
-        paginationDelegate = new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, MAX_MESSAGE_PER_PAGE);
+        paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
         participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
         attachmentHelper = new AttachmentHelper(attachmentDAO, messageDAO, usersDAO);
-        contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO);
+        contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO, translationsDAO);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
         openScreenTime = System.currentTimeMillis();
@@ -296,7 +311,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
             participantsStreamSubscription = participantsDaoHelper.obtainParticipantsStream(dataConversation, user)
                     .compose(bindViewIoToMainComposer())
-                    .subscribe(dataUsers -> getView().setTitle(dataConversation, dataUsers));
+                    .subscribe(dataUsers -> getView().setTitle(dataConversation, dataUsers),
+                            e -> Timber.w("Failed to connect to participants"));
         }, e -> Timber.w("Unable to connectMembersStream"));
     }
 
@@ -385,7 +401,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .subscribe(dataMessage -> {
                     firstLoadedMessageMarked = true;
                     tryMarkAsReadMessage(dataMessage);
-                });
+                }, e -> Timber.w("Failed to mark message as read"));
     }
 
     private void connectUnreadMessageCountStream(DataConversation conversation) {
@@ -614,7 +630,24 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onCopyMessageTextToClipboard(DataMessage message) {
-        Utils.copyToClipboard(context, message.getText());
+        translationsDAO.getTranslation(message.getId()).first()
+                .map(translation -> {
+                    if (translation != null && translation.getTranslateStatus() == TranslationStatus.TRANSLATED) {
+                        return translation.getTranslation();
+                    } else {
+                        return message.getText();
+                    }
+                }).subscribe(text -> Utils.copyToClipboard(context, text));
+    }
+
+    @Override
+    public void onTranslateMessage(DataMessage message) {
+        messageTranslationDelegate.translateMessage(message, userSessionHolder);
+    }
+
+    @Override
+    public void onRevertTranslate(DataMessage message) {
+        messageTranslationDelegate.revertTranslation(message);
     }
 
     @Override
@@ -672,7 +705,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .compose(bindVisibilityIoToMainComposer())
                 .subscribe(conversation -> {
-                    if (conversationHelper.isGroup(conversation)) {
+                    if (ConversationHelper.isGroup(conversation)) {
                         // hide button for adding user for not owners of group chats
                         boolean owner = user.getId().equals(conversation.getOwnerId());
                         menu.findItem(R.id.action_add).setVisible(owner);
@@ -694,9 +727,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .first()
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
-                            if (conversationHelper.isTripChat(conversation)) {
+                            if (ConversationHelper.isTripChat(conversation)) {
                                 Flow.get(getContext()).set(new TripSettingsPath(conversationId));
-                            } else if (conversationHelper.isGroup(conversation)) {
+                            } else if (ConversationHelper.isGroup(conversation)) {
                                 Flow.get(getContext()).set(new GroupSettingsPath(conversationId));
                             } else {
                                 Flow.get(getContext()).set(new SingleSettingsPath(conversationId));
@@ -894,7 +927,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));
             case ConversationType.GROUP:
             default:
-                boolean isOwner = conversationHelper.isOwner(conversation, user);
+                boolean isOwner = ConversationHelper.isOwner(conversation, user);
                 return Observable.defer(() -> Observable.just(chatManager.createMultiUserChat(conversation.getId(), user.getId(), isOwner)));
         }
     }

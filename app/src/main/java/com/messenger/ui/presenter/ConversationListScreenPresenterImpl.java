@@ -25,7 +25,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import javax.inject.Inject;
@@ -148,11 +147,13 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     private void connectToConversations(@ConversationType.Type String type, String searchQuery) {
-        if (conversationSubscription != null && !conversationSubscription.isUnsubscribed()) conversationSubscription.unsubscribe();
+        if (conversationSubscription != null && !conversationSubscription.isUnsubscribed())
+            conversationSubscription.unsubscribe();
         conversationSubscription = conversationsDAO.selectConversationsList(type, searchQuery)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(this::applyViewState, throwable -> Timber.e(throwable, "ConversationsDAO error"));
     }
+
     @Override
     public void onNewViewState() {
         state = new ConversationListViewState();
@@ -259,10 +260,24 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public boolean onToolbarMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_add:
-                Flow.get(getContext()).set(new NewChatPath());
+                openRoster();
                 return true;
         }
         return false;
+    }
+
+    private void openRoster() {
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory()
+                .buildUpon();
+        //
+        Object oldPath = historyBuilder.pop();
+
+        if (oldPath instanceof NewChatPath) return;
+
+        historyBuilder.push(oldPath);
+        historyBuilder.push(new NewChatPath());
+
+        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
     }
 }
 

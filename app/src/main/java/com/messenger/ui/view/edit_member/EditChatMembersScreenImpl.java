@@ -186,7 +186,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     @Override
     public Observable<CharSequence> getSearchObservable() {
-        return searchObservable != null ? searchObservable : Observable.just((CharSequence) "").replay();
+        return searchObservable;
     }
 
     @NonNull

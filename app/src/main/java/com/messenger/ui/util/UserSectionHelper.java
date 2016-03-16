@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Participant;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.model.Group;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.model.SwipeDataUser;
@@ -38,7 +38,7 @@ public class UserSectionHelper {
         this.currentUser = currentUser;
     }
 
-    public Observable.Transformer<List<DataUser>, Pair<List<Object>, Integer>> prepareItemInCheckableList(Set<DataUser> selectedUsers) {
+    public Observable.Transformer<List<DataUser>, Pair<List<Object>, Integer>> prepareItemInCheckableList(Collection<DataUser> selectedUsers) {
         return listObservable -> listObservable
                 .map(dataUsers -> {
                     List<SelectableDataUser> res = new ArrayList<>(selectedUsers.size());
@@ -74,10 +74,10 @@ public class UserSectionHelper {
 
     private List<Group<SwipeDataUser>> prepareMemberGroups(List<Pair<DataUser, String>> members, DataConversation conversation) {
         boolean isAdmin = TextUtils.equals(conversation.getOwnerId(), currentUser.getId());
-        boolean isTripConversation = TextUtils.equals(conversation.getType(), ConversationType.TRIP);
+        boolean isTripConversation = ConversationHelper.isTripChat(conversation);
         Map<String, Collection<SwipeDataUser>> groupedMap = Queryable.from(members)
                 .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation),
-                        pair -> toSwipDataUser(pair.first, pair.second, isAdmin));
+                        pair -> toSwipeDataUser(pair.first, pair.second, isAdmin));
 
         return convertToGroups(groupedMap);
     }
@@ -101,7 +101,6 @@ public class UserSectionHelper {
         });
     }
 
-
     private <T> List<Object> prepareAdapterItems(List<Group<T>> groups, int capacity) {
         List<Object> items = new ArrayList<>(capacity);
         for (Group<T> group : groups) {
@@ -122,8 +121,7 @@ public class UserSectionHelper {
         }
     }
 
-
-    private SwipeDataUser toSwipDataUser(DataUser user, String affiliation, boolean isOwner) {
+    private SwipeDataUser toSwipeDataUser(DataUser user, String affiliation, boolean isOwner) {
         return new SwipeDataUser(user, isOwner && !TextUtils.equals(affiliation, Participant.Affiliation.OWNER));
     }
 

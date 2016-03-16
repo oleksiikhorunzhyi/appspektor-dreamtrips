@@ -56,7 +56,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     }
 
     private void tryCreateChat() {
-        List<DataUser> newChatUsers = getViewState().getSelectedContacts();
+        List<DataUser> newChatUsers = selectedUsers;
         if (newChatUsers == null || newChatUsers.isEmpty()) {
             Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
                     Toast.LENGTH_SHORT).show();

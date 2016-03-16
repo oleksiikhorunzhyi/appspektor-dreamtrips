@@ -10,10 +10,10 @@ import android.view.View;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;
-import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.ui.model.SelectableDataUser;
+import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.util.ContactsHeaderCreator;
@@ -23,8 +23,7 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,7 +52,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     UserSectionHelper userSectionHelper;
 
     private final RxSearchHelper<DataUser> searchHelper = new RxSearchHelper<>();
-    protected final Set<DataUser> selectedUsers = new ConcurrentSkipListSet<>();
+    protected final List<DataUser> selectedUsers = new CopyOnWriteArrayList<>();
     @Nullable
     private CharSequence textInChosenContactsEditText;
 
@@ -85,13 +84,13 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     protected abstract Observable<List<DataUser>> createContactListObservable();
 
     protected void connectToContacts() {
-        ConnectableObservable<CharSequence> chosenObservable = getView().getChosenObservable()
+        ConnectableObservable<CharSequence> chosenObservable = getView().getSearchQueryObservable()
                 .compose(bindView())
                 .publish();
 
         chosenObservable
                 .filter(text -> !availableFilter(text))
-                .subscribe(sequence -> resetSelectedContactsHeader());
+                .subscribe(sequence -> removeLastUserIfExist());
 
         Observable<CharSequence> filterObservable = chosenObservable
                 .compose(bindView())
@@ -158,8 +157,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                 break;
         }
 
-        int conversationNameVisibility = getViewState()
-                .isChatNameEditTextVisible() ? View.VISIBLE : View.GONE;
+        int conversationNameVisibility = selectedUsers.size() > 1 ? View.VISIBLE : View.GONE;
         getView().setConversationNameEditTextVisibility(conversationNameVisibility);
     }
 
@@ -179,8 +177,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         getView().setSelectedUsersHeaderText(spannableString);
     }
 
-    private void resetSelectedContactsHeader() {
-        getView().setSelectedUsersHeaderText(textInChosenContactsEditText);
+    private void removeLastUserIfExist() {
+        if (!selectedUsers.isEmpty()) selectedUsers.remove(selectedUsers.size() - 1);
+        refreshSelectedContactsHeader();
     }
 
     protected void addListItems(List<Object> items) {
@@ -189,11 +188,11 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         getView().showContent();
     }
 
-    protected void showConversationNameEditText(boolean show) {
+    @SuppressWarnings("all")
+    protected void setConversationNameInputFieldVisible(boolean show) {
         ChatMembersScreen view = getView();
         if (show) view.slideInConversationNameEditText();
         else view.slideOutConversationNameEditText();
-        getViewState().setChatNameEditTextVisible(true);
     }
 
     @Override

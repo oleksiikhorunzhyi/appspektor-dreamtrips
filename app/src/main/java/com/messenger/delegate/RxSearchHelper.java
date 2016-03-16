@@ -29,7 +29,7 @@ public class RxSearchHelper<T> {
     }
 
     public boolean contains(String string, String searchQuery) {
-        return string.toLowerCase().contains(searchQuery);
+        return string.toLowerCase().contains(searchQuery.toLowerCase());
     }
 
     public interface FilterPredicate<T> {

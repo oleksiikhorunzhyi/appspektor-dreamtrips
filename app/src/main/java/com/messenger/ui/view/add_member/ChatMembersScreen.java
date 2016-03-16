@@ -31,5 +31,5 @@ public interface ChatMembersScreen extends MessengerScreen {
 
     String getConversationName();
 
-    Observable<CharSequence> getChosenObservable();
+    Observable<CharSequence> getSearchQueryObservable();
 }

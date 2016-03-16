@@ -16,6 +16,7 @@ public class CheckableUserCell extends UserCell<SelectableDataUser, CheckableUse
     public CheckableUserCell(View view) {
         super(view);
         tickImageView.setVisibility(View.VISIBLE);
+        view.setOnClickListener(v -> onSelectChanged());
     }
 
     @Override
@@ -34,7 +35,6 @@ public class CheckableUserCell extends UserCell<SelectableDataUser, CheckableUse
         cellDelegate.onCellClicked(getModelObject());
     }
 
-    @OnClick(R.id.contact_chat_tick_image_view)
     void onSelectChanged() {
         SelectableDataUser model = getModelObject();
         boolean selected = !model.isSelected();

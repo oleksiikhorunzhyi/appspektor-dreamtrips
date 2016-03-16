@@ -77,9 +77,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 };
 
                 if (selectedUsers.size() == 1) {
-                    DataUser[] dataUser = {null};
-                    selectedUsers.toArray(dataUser);
-                    startChatDelegate.startSingleChat(dataUser[0], action1);
+                    startChatDelegate.startSingleChat(selectedUsers.get(0), action1);
                 } else {
                     startChatDelegate.startNewGroupChat(user.getId(), new ArrayList<>(selectedUsers),
                             getView().getConversationName(), action1);
@@ -93,7 +91,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     @Override
     public void onItemSelectChange(SelectableDataUser contact) {
         super.onItemSelectChange(contact);
-        showConversationNameEditText(selectedUsers.size() > 1);
+        setConversationNameInputFieldVisible(selectedUsers.size() > 1);
     }
 
 }

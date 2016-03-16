@@ -64,7 +64,7 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private WeightSlideAnimator conversationNameAnimator;
-    private Observable<CharSequence> chosenObservable;
+    private Observable<CharSequence> searchQueryObservable;
 
     public ChatMembersScreenImpl(Context context) {
         super(context);
@@ -115,7 +115,7 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
-        chosenObservable = RxTextView.textChanges(chosenContactsEditText);
+        searchQueryObservable = RxTextView.textChanges(chosenContactsEditText);
         chosenContactsEditText.setSelectionListener((s, a)
                 -> chosenContactsEditText.setSelection(chosenContactsEditText.getText().length()));
         conversationNameAnimator =
@@ -169,8 +169,8 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public Observable<CharSequence> getChosenObservable() {
-        return chosenObservable;
+    public Observable<CharSequence> getSearchQueryObservable() {
+        return searchQueryObservable;
     }
 
     @Override

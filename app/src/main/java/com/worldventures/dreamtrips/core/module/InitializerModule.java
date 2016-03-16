@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
+import com.worldventures.dreamtrips.core.initializer.DtlInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.HockeyInitializer;
@@ -25,7 +26,8 @@ import dagger.Provides;
                 FrescoInitializer.class,
                 SoftInputInitializer.class,
                 BadgeCountObserverInitializer.class,
-                JodaTimeInitializer.class
+                JodaTimeInitializer.class,
+                DtlInitializer.class
         },
         library = true, complete = false)
 public class InitializerModule {
@@ -80,5 +82,10 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideBadgeCountObserverInitializer() {
         return new BadgeCountObserverInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideDtlInitializer() {
+        return new DtlInitializer();
     }
 }

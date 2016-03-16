@@ -516,6 +516,10 @@ public class SnappyRepository {
         return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
     }
 
+    public void cleanLastSelectedOffersOnlyToogle(){
+        clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // DTL Transaction
     ///////////////////////////////////////////////////////////////////////////

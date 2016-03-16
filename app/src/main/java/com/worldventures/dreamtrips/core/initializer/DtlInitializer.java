@@ -11,7 +11,7 @@ import javax.inject.Inject;
 public class DtlInitializer implements AppInitializer {
 
     @Inject
-    protected SnappyRepository repository;
+    protected SnappyRepository db;
 
     @Inject
     protected DtlLocationManager locationManager;
@@ -19,7 +19,7 @@ public class DtlInitializer implements AppInitializer {
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-        repository.cleanLastSelectedOffersOnlyToogle();
+        db.cleanLastSelectedOffersOnlyToogle();
         locationManager.cleanLocation();
     }
 }

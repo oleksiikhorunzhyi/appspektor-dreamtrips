@@ -63,8 +63,12 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     @Override
     public void onResume() {
         super.onResume();
-        activityResult(activityResultDelegate.getRequestCode(),
-                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
+        if (getPresenter().isGpsOn()) {
+            fillLocationInput();
+        } else {
+            activityResult(activityResultDelegate.getRequestCode(),
+                    activityResultDelegate.getResultCode(), activityResultDelegate.getData());
+        }
     }
 
     private void fetchAndSetLocation() {
@@ -95,7 +99,7 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         return true;
     }
 
-    private void fillLocationInput(){
+    private void fillLocationInput() {
         if (getArgs() != null && !TextUtils.isEmpty(getArgs().getName())) {
             input.setText(getArgs().getName());
         } else {
@@ -106,14 +110,14 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     private Location composeLocation() {
         String name = input.getText().toString();
         Location result = new Location();
-        if (obtainedLocation != null){
-            if (!name.equals(obtainedLocation.getName())){
+        if (obtainedLocation != null) {
+            if (!name.equals(obtainedLocation.getName())) {
                 obtainedLocation.setName(name);
                 obtainedLocation.setLng(0);
                 obtainedLocation.setLat(0);
             }
             result = obtainedLocation;
-        } else if (!TextUtils.isEmpty(name)){
+        } else if (!TextUtils.isEmpty(name)) {
             result.setName(name);
         }
         return result;

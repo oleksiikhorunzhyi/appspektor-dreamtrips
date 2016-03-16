@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.common.api.Status;
@@ -39,6 +40,11 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
                 .getLastKnownLocation())
                 .compose(IoToMainComposer.get())
                 .map(this::getLocationFromAndroidLocation);
+    }
+
+    public boolean isGpsOn() {
+        LocationManager manager = (LocationManager) view.getContext().getSystemService(Context.LOCATION_SERVICE);
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @NonNull

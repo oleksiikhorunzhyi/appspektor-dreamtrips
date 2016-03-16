@@ -23,5 +23,7 @@ public interface EditChatMembersScreen extends MessengerScreen {
 
     void showDeletionConfirmationDialog(DataUser user);
 
+    void restoreSearchQuery(String query);
+
     Observable<CharSequence> getSearchObservable();
 }

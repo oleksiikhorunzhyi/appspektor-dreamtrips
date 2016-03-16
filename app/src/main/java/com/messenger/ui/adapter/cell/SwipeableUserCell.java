@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.model.SwipDataUser;
+import com.messenger.ui.model.SwipeDataUser;
 import com.messenger.util.SwipeClickListener;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.R;
 import butterknife.InjectView;
 
 @Layout(R.layout.list_item_contact_swipe)
-public class SwipeableUserCell extends UserCell<SwipDataUser, SwipeableUserCell.Delegate> {
+public class SwipeableUserCell extends UserCell<SwipeDataUser, SwipeableUserCell.Delegate> {
     @InjectView(R.id.swipe)
     SwipeLayout swipeLayout;
     @InjectView(R.id.swipe_layout_button_delete)
@@ -31,8 +31,8 @@ public class SwipeableUserCell extends UserCell<SwipDataUser, SwipeableUserCell.
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-        SwipDataUser swipDataUser = getModelObject();
-        swipeLayout.setSwipeEnabled(swipDataUser.swipAvailable);
+        SwipeDataUser swipeDataUser = getModelObject();
+        swipeLayout.setSwipeEnabled(swipeDataUser.swipeAvailable);
         tickImageView.setVisibility(View.GONE);
         View.OnClickListener clickListener = view -> {
             if (cellDelegate != null) cellDelegate.onCellClicked(getModelObject());
@@ -44,7 +44,7 @@ public class SwipeableUserCell extends UserCell<SwipDataUser, SwipeableUserCell.
         });
     }
 
-    public interface Delegate extends CellDelegate<SwipDataUser> {
-        void onDeleteUserRequired(SwipDataUser user);
+    public interface Delegate extends CellDelegate<SwipeDataUser> {
+        void onDeleteUserRequired(SwipeDataUser user);
     }
 }

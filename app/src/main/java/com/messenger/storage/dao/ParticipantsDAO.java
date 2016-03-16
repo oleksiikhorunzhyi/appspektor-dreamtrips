@@ -1,7 +1,6 @@
 package com.messenger.storage.dao;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
@@ -13,7 +12,6 @@ import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Adapter;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,8 +19,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
-
-import static com.messenger.storage.dao.UsersDAO.USER_DISPLAY_NAME;
 
 public class ParticipantsDAO extends BaseDAO {
 
@@ -41,11 +37,7 @@ public class ParticipantsDAO extends BaseDAO {
 
         return query(q, DataUser.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
-                .map(cursor -> {
-                    DataUser res = SqlUtils.convertToModel(false, DataUser.class, cursor);
-                    cursor.close();
-                    return res;
-                });
+                .compose(DaoTransformers.toDataUser());
     }
 
     public Observable<List<Pair<DataUser, String>>> getParticipants(String conversationId) {
@@ -78,17 +70,12 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .map(cursor -> {
-                    List<DataUser> users = SqlUtils.convertToList(DataUser.class, cursor);
-                    cursor.close();
-                    return users;
-                });
+                .compose(DaoTransformers.toDataUsers());
     }
 
-    public Observable<Cursor> getNewParticipantsCandidates(String conversationId) {
+    public Observable<List<DataUser>> getNewParticipantsCandidates(String conversationId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT *, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " " +
-                        "FROM Users " +
+                .withSelection("SELECT * FROM Users " +
                         "where (" + DataUser$Table._ID + " not in (" + participantsSelection(DataUser$Table._ID) + "))" +
                         "and (" + DataUser$Table.FRIEND + " = 1)"
                 )
@@ -97,7 +84,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .subscribeOn(Schedulers.io());
+                .compose(DaoTransformers.toDataUsers());
     }
 
     @NonNull

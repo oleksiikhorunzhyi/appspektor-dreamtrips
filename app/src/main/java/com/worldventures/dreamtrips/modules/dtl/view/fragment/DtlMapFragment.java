@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,7 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
-import com.worldventures.dreamtrips.modules.map.view.MapUtils;
+import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
 import butterknife.InjectView;
 import icepick.State;
@@ -112,6 +112,11 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public Observable<Boolean> isHideDinings() {
         return RxCompoundButton.checkedChanges(swHideDinings);
+    }
+
+    @Override
+    public void hideDinings(boolean hide) {
+        swHideDinings.setChecked(hide);
     }
 
     @Override

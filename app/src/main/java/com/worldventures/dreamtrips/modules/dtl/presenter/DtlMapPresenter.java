@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
@@ -17,7 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
@@ -25,11 +26,13 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
+    @Inject
+    SnappyRepository snappyRepository;
     //
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
-    private final BehaviorSubject<List<DtlMerchant>> merchants = BehaviorSubject.create();
+    private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
 
     @Override
     public void takeView(View view) {
@@ -41,12 +44,17 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     protected void bindFilteredStream() {
-        final Observable<List<DtlMerchant>> merchantsStream = Observable
-                .combineLatest(this.merchants, view.isHideDinings(), (dtlMerchants, isHideDinings) ->
-                        Observable.from(dtlMerchants)
-                                .filter(merchant -> !(isHideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
-                                .toList().toBlocking().firstOrDefault(Collections.emptyList()));
+        final Observable<List<DtlMerchant>> merchantsStream = Observable.combineLatest(this.merchantsStream, prepareFilterToogle(), (dtlMerchants, hideDinings) ->
+                Observable.from(dtlMerchants)
+                        .filter(merchant -> !(hideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
+                        .toList().toBlocking().firstOrDefault(Collections.emptyList()));
         view.bind(merchantsStream).subscribe(this::showPins);
+    }
+
+    private Observable<Boolean> prepareFilterToogle() {
+        return view.isHideDinings()
+                .doOnSubscribe(() -> view.hideDinings(snappyRepository.getLastSelectedOffersOnlyToogle()))// set initial value before emitting switching
+                .doOnNext(st -> snappyRepository.saveLastSelectedOffersOnlyToogle(st));
     }
 
     public void onMapLoaded() {
@@ -57,7 +65,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
-        this.merchants.onNext(dtlMerchants);
+        this.merchantsStream.onNext(dtlMerchants);
     }
 
     public void onMarkerClick(String merchantId) {
@@ -107,6 +115,8 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         void centerIn(DtlLocation location);
 
         void renderPins();
+
+        void hideDinings(boolean hide);
 
         Observable<Boolean> isHideDinings();
     }

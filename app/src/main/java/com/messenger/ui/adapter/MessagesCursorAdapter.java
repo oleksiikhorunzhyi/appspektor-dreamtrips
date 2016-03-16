@@ -112,12 +112,19 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.setSelected(position == manualTimestampPosition);
         holder.setBubbleBackground();
         holder.updateMessageStatusUi(needMarkUnreadMessages);
-        holder.getMessageView().setOnLongClickListener(view -> {
+        View.OnLongClickListener onLongClickListener = view -> {
             if (messageLongClickListener != null) {
                 messageLongClickListener.onMessageLongClick(message);
             }
             return true;
-        });
+        };
+        holder.getMessageView().setOnLongClickListener(onLongClickListener);
+        //TODO tweak for user message. fix it later
+        if (holder instanceof UserTextMessageViewHolder) {
+            ((UserTextMessageViewHolder) holder).getMessageTextView()
+                    .setOnLongClickListener(onLongClickListener);
+        }
+
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -295,14 +302,21 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             holder.dateTextView.setVisibility(View.GONE);
             return;
         }
-        holder.getMessageView().setOnClickListener(view -> {
+
+        View.OnClickListener listener = view -> {
             if (messageClickListener != null) {
                 messageClickListener.onMessageClick(message);
             }
             if (clickableTimestamp) {
                 showManualTimestampForPosition(position);
             }
-        });
+        };
+
+        holder.getMessageView().setOnClickListener(listener);
+        //TODO tweak for user message. fix it later
+        if (holder instanceof UserTextMessageViewHolder) {
+            ((UserTextMessageViewHolder) holder).getMessageTextView().setOnClickListener(listener);
+        }
 
         TextView dateTextView = holder.dateTextView;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.map.renderer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +12,11 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.map.model.ClusterType;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
@@ -71,8 +68,9 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
         return cluster.getSize() > 3;
     }
 
-    private Bitmap makeIcon(View icon){
-        if(icon.getMeasuredWidth() == 0 || icon.getMeasuredHeight() == 0) measureIcon(icon); // skip measuring if all icons is same size
+    private Bitmap makeIcon(View icon) {
+        if (icon.getMeasuredWidth() == 0 || icon.getMeasuredHeight() == 0)
+            measureIcon(icon); // skip measuring if all icons is same size
 
         Bitmap bitmap = Bitmap.createBitmap(icon.getMeasuredWidth(), icon.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bitmap);
@@ -80,7 +78,7 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
         return bitmap;
     }
 
-    private void measureIcon(View icon){
+    private void measureIcon(View icon) {
         int measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
         icon.measure(measureSpec, measureSpec);
         icon.layout(0, 0, icon.getMeasuredWidth(), icon.getMeasuredHeight());

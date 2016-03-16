@@ -81,7 +81,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        MapUtils.adjustLocationButtonPosition(mapView);
+        MapViewUtils.setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         searchViewHelper = new SearchViewHelper();

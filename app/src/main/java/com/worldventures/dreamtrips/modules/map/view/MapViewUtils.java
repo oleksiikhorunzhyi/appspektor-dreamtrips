@@ -4,21 +4,13 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-public class MapUtils {
-
-    /**
-     * Move location button to right-bottom corner in map view
-     * @param mapView
-     */
-    public static void adjustLocationButtonPosition(View mapView){
-        setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
-    }
+public class MapViewUtils {
 
     /**
      * Move location button with custom direction
      * @param mapView - map
      * @param margin - margin button
-     * @param relativeDirections - array for adjusting button inside map
+     * @param relativeDirections - array with RelativeLayout rules for adjusting button inside map
      */
     public static void setLocationButtonGravity(View mapView, int margin, int...relativeDirections) {
         View locationButton = ((View) mapView.findViewById(1).getParent()).findViewById(2);

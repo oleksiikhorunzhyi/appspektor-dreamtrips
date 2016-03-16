@@ -3,6 +3,7 @@ package com.messenger.ui.util;
 import android.content.Context;
 import android.support.v7.view.SupportMenuInflater;
 import android.support.v7.view.menu.MenuBuilder;
+import android.text.TextUtils;
 import android.view.Menu;
 
 import com.messenger.entities.DataAttachment;
@@ -58,35 +59,36 @@ public class ChatContextualMenuProvider {
                         menu.removeItem(R.id.action_copy_message);
                     }
 
-                    setTranslationsSubMenu(menu, queryResult.translation, queryResult.attachment);
+                    setTranslationsSubMenu(menu, message, currentUser, queryResult);
                     return menu;
                 });
     }
 
-    private void setTranslationsSubMenu(Menu menu, DataTranslation dataTranslation, DataAttachment dataAttachment) {
-        if (dataAttachment != null) {
+    private void setTranslationsSubMenu(Menu menu, DataMessage message, DataUser currentUser, QueryResult data) {
+        if (data.attachment != null || TextUtils.equals(message.getFromId(), currentUser.getId())) {
             menu.removeItem(R.id.action_translate);
             menu.removeItem(R.id.action_revert_translate);
             return;
         }
 
+        DataTranslation dataTranslation = data.translation;
         if (dataTranslation == null){
             menu.removeItem(R.id.action_revert_translate);
             return;
         }
 
-        int status = dataTranslation.getTranslateStatus();
-
-        if (status == TranslationStatus.NATIVE || status == TranslationStatus.TRANSLATING)  {
-            menu.removeItem(R.id.action_translate);
-            menu.removeItem(R.id.action_revert_translate);
-            return;
-        }
-
-        if (status != TranslationStatus.TRANSLATED){
-            menu.removeItem(R.id.action_revert_translate);
-        } else {
-            menu.removeItem(R.id.action_translate);
+        switch (dataTranslation.getTranslateStatus()){
+            case TranslationStatus.TRANSLATING:
+                menu.removeItem(R.id.action_translate);
+                menu.removeItem(R.id.action_revert_translate);
+                break;
+            case TranslationStatus.TRANSLATED:
+                menu.removeItem(R.id.action_translate);
+                break;
+            case TranslationStatus.ERROR:
+            case TranslationStatus.REVERTED:
+                menu.removeItem(R.id.action_revert_translate);
+                break;
         }
     }
 

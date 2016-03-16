@@ -115,7 +115,7 @@
 
     <string name="chat_update_proposition"><![CDATA[為查看附件，請升級至DreamTrips App最新版本 <a href="https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips">點擊此處</a>]]></string>
 
-    <string name="translate_from">Translated from %s</string>
+    <string name="translate_from">Translated</string>
     <string name="translate_error">Translation error</string>
     <!-- messenger ends-->
 </resources>

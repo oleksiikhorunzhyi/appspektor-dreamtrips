@@ -20,7 +20,6 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.OpenedConversationTracker;
-import com.messenger.util.TranslationStatusHelper;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
@@ -46,7 +45,7 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade, ParticipantsDAO participantsDAO) {
+    ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade) {
         return new ChatDelegate(user.getId(), messengerServerFacade);
     }
 
@@ -56,21 +55,14 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO,
-                                                 TranslationsDAO translationsDAO, TranslationStatusHelper translationStatusHelper, SessionHolder<UserSession> userSessionHolder) {
-        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, translationsDAO, translationStatusHelper, userSessionHolder);
+    PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
+        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO);
     }
 
     @Singleton
     @Provides
     MessageTranslationDelegate provideMessageTranslationDelegate(@ForApplication Context context, DreamSpiceManager dreamSpiceManager, TranslationsDAO translationsDAO, LocaleHelper localeHelper){
         return new MessageTranslationDelegate(context, dreamSpiceManager, translationsDAO, localeHelper);
-    }
-
-    @Singleton
-    @Provides
-    TranslationStatusHelper provideTranslationStatusHelper(LocaleHelper localeHelper) {
-        return new TranslationStatusHelper(localeHelper);
     }
 
     @Provides

@@ -110,7 +110,6 @@
                     android:gravity="center"
                     android:paddingBottom="10dp"
                     android:paddingTop="10dp"
-                    android:text="@string/profile_friends"
                     android:textSize="@dimen/font_small"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.BadgeView

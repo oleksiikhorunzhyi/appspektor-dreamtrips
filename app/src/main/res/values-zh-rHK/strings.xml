@@ -495,14 +495,14 @@
     <string name="back">回到</string>
     <string name="start_typing_name">開始輸入名稱</string>
 
-    <string name="multiple_dates">多個日期，％s…</string>
+    <string name="multiple_dates">多個日期，%s…</string>
 
     <string name="tag_photo">標記了您，在</string>
 
-    <string name="user_already_exists">％s已存在</string>
+    <string name="user_already_exists">%s已存在</string>
     <string name="photo_tag_title">點擊任何地方標記好友</string>
-    <string name="profile_friend_formatter">％d個好友</string>
-    <string name="profile_friends_formatter">％d個好友</string>
+    <string name="profile_friend_formatter">%d個好友</string>
+    <string name="profile_friends_formatter">%d個好友</string>
 
     <string name="send_feedback">發送反饋</string>
     <string name="working_hard">我們正努力讓DreamTrips變得更好，請幫助我們提高。</string>
@@ -512,7 +512,7 @@
     <string name="feedback_send_btn">發送</string>
     <string name="feedback_select_category">選擇原因</string>
 
-    <string name="years_ago">％d年前</string>
+    <string name="years_ago">%d年前</string>
     <string name="invitation_template">選擇模板</string>
 
     <string name="settings">設置</string>

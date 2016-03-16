@@ -49,7 +49,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
     public CreationPhotoTaggableHolderViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        LayoutInflater.from(getContext()).inflate(R.layout.photo_tag_title, this, true);
+        addPhotoTagTitle();
         gestureDetector = new GestureDetector(getContext(), new PhotoTaggableHolderViewDelegate.SingleTapConfirm(this));
     }
 
@@ -93,7 +93,12 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     public boolean onTouchEvent(MotionEvent event) {
         gestureDetector.onTouchEvent(event);
         return true;
+    }
 
+    @Override
+    public void redrawTags() {
+        super.redrawTags();
+        addPhotoTagTitle();
     }
 
     @Override
@@ -210,6 +215,10 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
     public interface TaggableCompleteListener {
         void onTagRequestsComplete();
+    }
+
+    private void addPhotoTagTitle() {
+        LayoutInflater.from(getContext()).inflate(R.layout.photo_tag_title, this, true);
     }
 
 }

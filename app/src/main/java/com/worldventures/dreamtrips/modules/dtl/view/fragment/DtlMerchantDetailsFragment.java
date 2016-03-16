@@ -130,8 +130,8 @@ public class DtlMerchantDetailsFragment
 
     @Override
     public void onPause() {
+        backStackDelegate.clearListener();
         super.onPause();
-        backStackDelegate.setListener(null);
     }
 
     @Override

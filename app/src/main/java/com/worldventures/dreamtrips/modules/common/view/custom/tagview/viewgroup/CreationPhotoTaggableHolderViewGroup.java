@@ -155,8 +155,8 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     private TagCreationActionsListener getTagCreationActionsListener(final CreationTagView view) {
         return new TagCreationActionsListener() {
             @Override
-            public void requestFriendList(String query) {
-                presenter.loadFriends(query, view);
+            public void requestFriendList(String query, int page) {
+                presenter.loadFriends(query, page, view);
             }
 
             @Override

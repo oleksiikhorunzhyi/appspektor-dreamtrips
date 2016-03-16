@@ -22,24 +22,21 @@ import java.util.Set;
 public class TagFriendAdapter extends ArrayAdapter<User> {
 
     private Context context;
+    private OnFriendRequestListener onFriendRequestListener;
     private List<User> friendList = new ArrayList<>();
     private Set<User> cachedFriendList = new HashSet<>();
-    private TagCreationActionsListener tagListener;
 
-    public TagFriendAdapter(Context context) {
+    public TagFriendAdapter(Context context, OnFriendRequestListener onFriendRequestListener) {
         super(context, 0, 0, new ArrayList<>());
         this.context = context;
+        this.onFriendRequestListener = onFriendRequestListener;
     }
 
-    public void setTagListener(TagCreationActionsListener tagListener) {
-        this.tagListener = tagListener;
-    }
-
-    public void setFriendList(List<User> friendList) {
+    public void addFriends(List<User> friendList) {
         boolean isNewList = !this.friendList.containsAll(friendList) || !friendList.containsAll(this.friendList);
         if (isNewList) {
-            this.friendList = friendList;
-            cachedFriendList.addAll(friendList);
+            this.friendList.addAll(friendList);
+            this.cachedFriendList.addAll(friendList);
             notifyDataSetChanged();
         }
     }
@@ -91,16 +88,20 @@ public class TagFriendAdapter extends ArrayAdapter<User> {
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 String trim = constraint != null ? constraint.toString().trim().toLowerCase() : "";
-                if (trim.length() > 2) {
-                    tagListener.requestFriendList(trim);
+                if (trim.length() > 2 && onFriendRequestListener != null) {
+                    onFriendRequestListener.requestFriends(trim);
                 } else {
                     friendList = Queryable.from(cachedFriendList).filter(element -> {
                         return element.getFullName().toLowerCase().contains(trim);
                     }).toList();
+                    notifyDataSetChanged();
                 }
-                notifyDataSetChanged();
             }
         };
+    }
+
+    interface OnFriendRequestListener {
+        void requestFriends(String constraint);
     }
 
     static class FriendHolder {

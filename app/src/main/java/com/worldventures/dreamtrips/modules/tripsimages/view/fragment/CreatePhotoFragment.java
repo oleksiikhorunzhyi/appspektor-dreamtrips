@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
@@ -89,6 +90,11 @@ public class CreatePhotoFragment extends BaseFragment<CreatePhotoPresenter> impl
         taggableImageHolder.setup(this, photo);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

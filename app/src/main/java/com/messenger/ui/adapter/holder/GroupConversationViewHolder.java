@@ -20,6 +20,6 @@ public class GroupConversationViewHolder extends BaseGroupConversationViewHolder
     @Override
     public void bindConversation(DataConversation conversation, String participantsList, int participantsCount) {
         super.bindConversation(conversation, participantsList, participantsCount);
-        groupAvatarsView.setConversationAvatar(conversation.getId());
+        groupAvatarsView.setConversationAvatar(conversation);
     }
 }

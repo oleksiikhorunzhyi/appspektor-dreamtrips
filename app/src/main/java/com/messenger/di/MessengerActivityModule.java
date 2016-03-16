@@ -2,9 +2,11 @@ package com.messenger.di;
 
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
+import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
 import com.messenger.ui.view.chat.ChatScreenImpl;
 import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
+import com.messenger.ui.view.settings.GroupChatSettingsScreenImpl;
 import com.messenger.ui.widget.MessengerPhotoPickerLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -21,6 +23,9 @@ import dagger.Provides;
                 ChatScreenPresenterImpl.class,
                 MessengerActivityPresenter.class,
                 MessengerPhotoPickerLayout.class,
+                GroupChatSettingsScreenImpl.class,
+
+                ChangeAvatarDelegate.class
 },
         complete = false, library = true
 )public class MessengerActivityModule {

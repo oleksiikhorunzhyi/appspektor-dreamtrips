@@ -28,8 +28,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public abstract class ChatSettingsScreenImpl<P extends StyledPath>
-        extends MessengerPathLayout<ChatSettingsScreen, ChatSettingsScreenPresenter, P>
+public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P extends StyledPath>
+        extends MessengerPathLayout<S, ChatSettingsScreenPresenter<S>, P>
         implements ChatSettingsScreen {
 
     @InjectView(R.id.chat_settings_content_view)

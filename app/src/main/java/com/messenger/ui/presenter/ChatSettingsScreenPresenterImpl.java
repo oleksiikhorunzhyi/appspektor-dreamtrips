@@ -16,6 +16,7 @@ import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
@@ -35,8 +36,8 @@ import flow.Flow;
 import flow.History;
 import rx.Observable;
 
-public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
-        ChatSettingsViewState> implements ChatSettingsScreenPresenter {
+public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScreen> extends MessengerPresenterImpl<C,
+        ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
 
     protected String conversationId;
     protected Observable<DataConversation> conversationObservable;
@@ -231,8 +232,18 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onToolbarMenuPrepared(Menu menu) {
-        conversationObservable.subscribe(conversation ->
-                menu.findItem(R.id.action_overflow).setVisible(!isSingleChat(conversation) && isUserOwner(conversation)));
+        conversationObservable.subscribe(conversation -> {
+                boolean isMultiUserChat = !ConversationHelper.isSingleChat(conversation);
+                if (isMultiUserChat && !isUserOwner(conversation)) {
+                    menu.findItem(R.id.action_overflow).setVisible(false);
+                    return;
+                }
+                if (ConversationHelper.isTripChat(conversation)) {
+                    menu.findItem(R.id.action_change_chat_avatar).setVisible(false);
+                    menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
+                }
+            });
+
     }
 
     @Override

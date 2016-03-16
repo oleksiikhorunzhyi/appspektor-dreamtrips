@@ -27,6 +27,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @PrimaryKey @Column String _id;
     @Column String ownerId;
     @Column String subject;
+    String avatar;
     @Column String type;
     @Column String status;
     @Column int unreadMessageCount;
@@ -77,6 +78,14 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @ConversationType.Type
@@ -138,6 +147,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
                 "_id='" + _id + '\'' +
                 ", ownerId='" + ownerId + '\'' +
                 ", subject='" + subject + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", status='" + status + '\'' +
                 ", type='" + type + '\'' +
                 ", unreadMessageCount=" + unreadMessageCount +

@@ -18,6 +18,7 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
+import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -26,7 +27,6 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.common.model.Session;
 
 import javax.inject.Singleton;
 
@@ -47,6 +47,11 @@ public class MessengerDelegateModule {
     @Provides
     ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade, ParticipantsDAO participantsDAO) {
         return new ChatDelegate(user.getId(), messengerServerFacade);
+    }
+
+    @Provides
+    UserSectionHelper provideUserSectionHelper(@ForApplication  Context context, DataUser user) {
+        return new UserSectionHelper(context, user);
     }
 
     @Provides

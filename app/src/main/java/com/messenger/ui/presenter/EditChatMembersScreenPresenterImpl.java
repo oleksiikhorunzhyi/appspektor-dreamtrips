@@ -55,13 +55,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Inject
     ActivityWatcher activityWatcher;
+    @Inject
+    UserSectionHelper userSectionHelper;
 
     private final RxSearchHelper<Pair<DataUser, String>> rxSearchHelper = new RxSearchHelper<>();
-    private final UserSectionHelper userSectionHelper;
     private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
-
     private Observable<DataConversation> conversationObservable;
 
     public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
@@ -71,7 +71,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         this.conversationId = conversationId;
 
         this.profileCrosser = new ProfileCrosser(context, routeCreator);
-        this.userSectionHelper = new UserSectionHelper(context, user);
     }
 
     @Override

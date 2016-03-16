@@ -49,10 +49,11 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     DreamSpiceManager dreamSpiceManager;
     @Inject
     ChatDelegate chatDelegate;
+    @Inject
+    UserSectionHelper userSectionHelper;
 
     private final RxSearchHelper<DataUser> searchHelper = new RxSearchHelper<>();
     protected final Set<DataUser> selectedUsers = new ConcurrentSkipListSet<>();
-    private final UserSectionHelper userSectionHelper;
     @Nullable
     private CharSequence textInChosenContactsEditText;
 
@@ -64,7 +65,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
         ((Injector) context.getApplicationContext()).inject(this);
 
-        userSectionHelper = new UserSectionHelper(context, user);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);
     }

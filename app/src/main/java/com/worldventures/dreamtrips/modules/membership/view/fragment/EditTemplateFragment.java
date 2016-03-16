@@ -87,7 +87,11 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE) {
-            getActivity().finish();
+            if (isTabletLandscape()) {
+                router.back();
+            } else {
+                getActivity().finish();
+            }
         }
     }
 

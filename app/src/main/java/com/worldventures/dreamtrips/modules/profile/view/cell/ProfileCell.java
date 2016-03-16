@@ -232,12 +232,10 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
         return appSessionHolder.get().isPresent() && appSessionHolder.get().get().getUser().getId() == getModelObject().getId();
     }
 
-
     @Override
     public void prepareForReuse() {
 
     }
-
 
     private void setAvatarImage(Uri uri) {
         if (uri != null) {
@@ -299,13 +297,9 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     }
 
     private void setFriendsCount(int count) {
-        if (count == 0) {
-            friends.setText(R.string.empty);
-        } else {
-            int stringResource = QuantityHelper.chooseResource(count, R.string.profile_friends_formatter,
-                    R.string.profile_friend_formatter, R.string.profile_friends_formatter);
-            friends.setText(String.format(context.getString(stringResource), count));
-        }
+        int stringResource = QuantityHelper.chooseResource(count, R.string.empty,
+                R.string.profile_friend_formatter, R.string.profile_friends_formatter);
+        friends.setText(String.format(context.getString(stringResource), count));
     }
 
     private void setSocial(Boolean isEnabled) {

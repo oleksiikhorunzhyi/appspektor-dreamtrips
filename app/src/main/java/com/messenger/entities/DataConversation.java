@@ -27,7 +27,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @PrimaryKey @Column String _id;
     @Column String ownerId;
     @Column String subject;
-    String avatar;
+    @Column String avatar;
     @Column String type;
     @Column String status;
     @Column int unreadMessageCount;
@@ -40,6 +40,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setId(conversation.getId());
         setOwnerId(conversation.getOwnerId());
         setSubject(conversation.getSubject());
+        setAvatar(conversation.getAvatar());
         setStatus(conversation.getStatus());
         setType(conversation.getType());
         setUnreadMessageCount(conversation.getUnreadMessageCount());
@@ -50,6 +51,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setId(builder.id);
         setOwnerId(builder.ownerId);
         setSubject(builder.subject);
+        setAvatar(builder.avatar);
         setStatus(builder.status);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
@@ -183,6 +185,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         private String id;
         private String ownerId;
         private String subject;
+        private String avatar;
         private String type;
         private String status;
         private long date;
@@ -208,6 +211,11 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
         public Builder subject(String val) {
             subject = val;
+            return this;
+        }
+
+        public Builder avatar(String val) {
+            avatar = val;
             return this;
         }
 

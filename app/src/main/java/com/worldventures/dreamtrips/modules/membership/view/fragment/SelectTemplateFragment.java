@@ -98,8 +98,9 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
 
     @Override
     public void openTemplate(TemplateBundle templateBundle) {
+        boolean isBackStackEnabled = isTabletLandscape();
         router.moveTo(Route.EDIT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
+                .backStackEnabled(isBackStackEnabled)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_main)
                 .data(templateBundle)

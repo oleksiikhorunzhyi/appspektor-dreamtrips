@@ -49,6 +49,7 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     public TaggableImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         delegate = new PhotoTaggableHolderViewDelegate(this);
+
     }
 
     public void setup(Injector injector, Photo photo) {

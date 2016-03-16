@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.adapter.inflater.ConversationLastMessageDateInflater;
@@ -66,8 +67,10 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
         unreadMessagesCountTextView.setText(hasNewMessage ? String.valueOf(unreadMessageCount) : null);
     }
 
-    public void bindLastMessage(DataMessage message, String messageAuthor, String attachmentType) {
-        lastMessageInflater.setLastMessage(conversation, message, messageAuthor, currentUser, attachmentType);
+    public void bindLastMessage(DataMessage message, String messageAuthor,
+                                String attachmentType, DataTranslation translation) {
+        lastMessageInflater.setLastMessage(conversation, message, messageAuthor, currentUser,
+                attachmentType, translation);
         lastMessageDateInflater.setDate(conversation);
     }
 

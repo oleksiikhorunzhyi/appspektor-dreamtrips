@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -67,11 +68,12 @@ public class ConversationsCursorAdapter
             conversationParticipantsCount = cursor.getInt(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_USER_COUNT_COLUMN));
         }
         DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
+        DataTranslation translation = SqlUtils.convertToModel(true, DataTranslation.class, cursor);
         String messageAuthor = cursor.getString(cursor.getColumnIndex(ConversationsDAO.LAST_MESSAGE_AUTHOR_COLUMN));
         String attachmentType = cursor.getString(cursor.getColumnIndex(ConversationsDAO.ATTACHMENT_TYPE_COLUMN));
 
         holder.bindConversation(conversation, conversationParticipants, conversationParticipantsCount);
-        holder.bindLastMessage(message, messageAuthor, attachmentType);
+        holder.bindLastMessage(message, messageAuthor, attachmentType, translation);
         holder.applySelection(selectedConversationId);
         if (holder instanceof OneToOneConversationViewHolder) {
             bindParticipantData((OneToOneConversationViewHolder) holder, cursor);

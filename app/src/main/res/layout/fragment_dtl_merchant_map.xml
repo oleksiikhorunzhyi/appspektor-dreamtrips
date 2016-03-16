@@ -16,5 +16,38 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/fragment_map_with_info"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:background="@android:color/white"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:text="@string/dtl_show_offers_only"
+                />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/sw_filter"
+                android:layout_gravity="center_vertical|end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:checked="false"/>
+        </FrameLayout>
+
+        <include layout="@layout/fragment_map_with_info"/>
+
+    </LinearLayout>
 </LinearLayout>

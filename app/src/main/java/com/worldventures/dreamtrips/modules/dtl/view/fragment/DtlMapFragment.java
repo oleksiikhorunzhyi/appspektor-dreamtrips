@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -11,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -27,15 +30,20 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
+import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
 import butterknife.InjectView;
 import icepick.State;
+import rx.Observable;
 
 @Layout(R.layout.fragment_dtl_merchant_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
 
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    @InjectView(R.id.sw_filter)
+    SwitchCompat swHideDinings;
+
     SearchViewHelper searchViewHelper;
     //
     DtlMapBundle bundle;
@@ -73,6 +81,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        MapViewUtils.setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
         toolbar.inflateMenu(R.menu.menu_dtl_map);
         MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         searchViewHelper = new SearchViewHelper();
@@ -101,10 +110,19 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
+    public Observable<Boolean> isHideDinings() {
+        return RxCompoundButton.checkedChanges(swHideDinings);
+    }
+
+    @Override
+    public void hideDinings(boolean hide) {
+        swHideDinings.setChecked(hide);
+    }
+
+    @Override
     protected void onMapLoaded() {
         clusterManager = new ClusterManager<>(getActivity(), googleMap);
-        clusterManager.setRenderer(new DtClusterRenderer(getActivity().getApplicationContext(),
-                googleMap, clusterManager));
+        clusterManager.setRenderer(new DtClusterRenderer(getActivity().getApplicationContext(), googleMap, clusterManager));
         googleMap.setOnCameraChangeListener(clusterManager);
         googleMap.setOnMarkerClickListener(clusterManager);
 

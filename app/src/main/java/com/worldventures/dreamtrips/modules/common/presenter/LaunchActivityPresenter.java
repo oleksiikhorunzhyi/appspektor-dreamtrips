@@ -79,7 +79,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         startPreloadChain();
 
         // we should clean dtl location when app was relaunched
-        dtlLocationManager.cleanLocation();
+        //dtlLocationManager.cleanLocation();
     }
 
     @Override

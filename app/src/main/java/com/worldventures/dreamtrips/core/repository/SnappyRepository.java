@@ -68,7 +68,7 @@ public class SnappyRepository {
     public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
-    public static final String DTL_DISTANCE_TOGGLE = "DTL_DISTANCE_TOGGLE";
+    public static final String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
 
     private Context context;
@@ -506,6 +506,18 @@ public class SnappyRepository {
     //TODO add implementation
     public DistanceType getMerchantsDistanceType() {
         return DistanceType.KMS;
+    }
+
+    public void saveLastSelectedOffersOnlyToogle(boolean state){
+        act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
+    }
+
+    public Boolean getLastSelectedOffersOnlyToogle(){
+        return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
+    }
+
+    public void cleanLastSelectedOffersOnlyToogle(){
+        clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
     }
 
     ///////////////////////////////////////////////////////////////////////////

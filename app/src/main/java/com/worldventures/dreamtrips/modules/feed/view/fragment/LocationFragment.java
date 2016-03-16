@@ -63,8 +63,10 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     @Override
     public void onResume() {
         super.onResume();
-        if (getPresenter().isGpsOn()) {
-            fillLocationInput();
+        if (getArgs() != null && !TextUtils.isEmpty(getArgs().getName())) {
+            setInputLocation(getArgs().getName());
+        } else if (getPresenter().isGpsOn()) {
+            fetchAndSetLocation();
         } else {
             activityResult(activityResultDelegate.getRequestCode(),
                     activityResultDelegate.getResultCode(), activityResultDelegate.getData());
@@ -74,7 +76,7 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     private void fetchAndSetLocation() {
         getPresenter().getLocation().subscribe((Action1<Location>) location -> {
             obtainedLocation = location;
-            input.setText(obtainedLocation.getName());
+            setInputLocation(obtainedLocation.getName());
         });
     }
 
@@ -99,12 +101,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         return true;
     }
 
-    private void fillLocationInput() {
-        if (getArgs() != null && !TextUtils.isEmpty(getArgs().getName())) {
-            input.setText(getArgs().getName());
-        } else {
-            fetchAndSetLocation();
-        }
+    private void setInputLocation(String location) {
+        input.setText(location);
     }
 
     private Location composeLocation() {
@@ -125,7 +123,7 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
 
     @OnClick(R.id.clear_location)
     void clearLocation() {
-        input.setText(null);
+        setInputLocation(null);
     }
 
     private void cancelClicked() {
@@ -139,7 +137,7 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
                         getPresenter().onPermissionGranted();
-                        fillLocationInput();
+                        fetchAndSetLocation();
                         break;
                     case Activity.RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to

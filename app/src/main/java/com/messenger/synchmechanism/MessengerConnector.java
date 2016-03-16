@@ -16,6 +16,7 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.EventBusWrapper;
+import com.messenger.util.TranslationStatusHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -53,7 +54,7 @@ public class MessengerConnector {
                                ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
                                MessageDAO messageDAO, AttachmentDAO attachmentDAO, UsersDAO usersDAO,
                                TranslationsDAO translationsDAO, EventBusWrapper eventBusWrapper,
-                               SessionHolder<UserSession> userSessionHolder, LocaleHelper localeHelper) {
+                               SessionHolder<UserSession> userSessionHolder, TranslationStatusHelper translationStatusHelper) {
 
         this.applicationContext = applicationContext;
         this.appSessionHolder = appSessionHolder;
@@ -62,7 +63,7 @@ public class MessengerConnector {
         this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade,
                 new UserProcessor(usersDAO, spiceManager),
                 conversationsDAO, participantsDAO, messageDAO, usersDAO,
-                attachmentDAO, translationsDAO, userSessionHolder, localeHelper);
+                attachmentDAO, translationsDAO, userSessionHolder, translationStatusHelper);
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
 
         messengerServerFacade.addAuthorizationListener(authListener);
@@ -86,11 +87,11 @@ public class MessengerConnector {
                             DreamSpiceManager spiceManager, ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
                             MessageDAO messageDAO, AttachmentDAO attachmentDAO, UsersDAO usersDAO,
                             TranslationsDAO translationsDAO, EventBusWrapper eventBusWrapper,
-                            SessionHolder<UserSession> userSessionHolder, LocaleHelper localeHelper) {
+                            SessionHolder<UserSession> userSessionHolder, TranslationStatusHelper translationStatusHelper) {
 
         INSTANCE = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
                 spiceManager, conversationsDAO, participantsDAO, messageDAO, attachmentDAO, usersDAO, translationsDAO,
-                eventBusWrapper, userSessionHolder, localeHelper);
+                eventBusWrapper, userSessionHolder, translationStatusHelper);
     }
 
     public Observable<ConnectionStatus> status() {

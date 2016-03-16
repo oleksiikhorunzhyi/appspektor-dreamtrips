@@ -29,6 +29,7 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.SessionHolderHelper;
+import com.messenger.util.TranslationStatusHelper;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -74,6 +75,8 @@ public class ChatFacadeInitializer implements AppInitializer {
     SessionHolder<UserSession> userHolder;
     @Inject
     LocaleHelper localeHelper;
+    @Inject
+    TranslationStatusHelper translationStatusHelper;
     //
     @Inject
     DreamSpiceManager spiceManager;
@@ -88,7 +91,7 @@ public class ChatFacadeInitializer implements AppInitializer {
         userProcessor = new UserProcessor(usersDAO, spiceManager);
         loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
                 conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO, translationsDAO,
-                userHolder, localeHelper);
+                userHolder, translationStatusHelper);
 
         //
         GlobalEventEmitter emitter = messengerServerFacade.getGlobalEventEmitter();

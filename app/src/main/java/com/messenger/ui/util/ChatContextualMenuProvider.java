@@ -58,12 +58,18 @@ public class ChatContextualMenuProvider {
                         menu.removeItem(R.id.action_copy_message);
                     }
 
-                    setTranslationsSubMenu(queryResult.translation, menu);
+                    setTranslationsSubMenu(menu, queryResult.translation, queryResult.attachment);
                     return menu;
                 });
     }
 
-    private void setTranslationsSubMenu(DataTranslation dataTranslation, Menu menu) {
+    private void setTranslationsSubMenu(Menu menu, DataTranslation dataTranslation, DataAttachment dataAttachment) {
+        if (dataAttachment != null) {
+            menu.removeItem(R.id.action_translate);
+            menu.removeItem(R.id.action_revert_translate);
+            return;
+        }
+
         if (dataTranslation == null){
             menu.removeItem(R.id.action_revert_translate);
             return;

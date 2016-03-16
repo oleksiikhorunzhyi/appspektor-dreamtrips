@@ -19,6 +19,7 @@ import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.util.OpenedConversationTracker;
+import com.messenger.util.TranslationStatusHelper;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
@@ -51,14 +52,20 @@ public class MessengerDelegateModule {
 
     @Provides
     PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO,
-                                                 TranslationsDAO translationsDAO, LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
-        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, translationsDAO, localeHelper, userSessionHolder);
+                                                 TranslationsDAO translationsDAO, TranslationStatusHelper translationStatusHelper, SessionHolder<UserSession> userSessionHolder) {
+        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, translationsDAO, translationStatusHelper, userSessionHolder);
     }
 
     @Singleton
     @Provides
     MessageTranslationDelegate provideMessageTranslationDelegate(@ForApplication Context context, DreamSpiceManager dreamSpiceManager, TranslationsDAO translationsDAO, LocaleHelper localeHelper){
         return new MessageTranslationDelegate(context, dreamSpiceManager, translationsDAO, localeHelper);
+    }
+
+    @Singleton
+    @Provides
+    TranslationStatusHelper provideTranslationStatusHelper(LocaleHelper localeHelper) {
+        return new TranslationStatusHelper(localeHelper);
     }
 
     @Provides

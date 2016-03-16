@@ -7,7 +7,6 @@ import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
@@ -19,9 +18,9 @@ import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.util.TranslationStatusHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -49,12 +48,12 @@ public class LoaderDelegate {
     private final TranslationsDAO translationsDAO;
 
     private final SessionHolder<UserSession> userSessionHolder;
-    private final LocaleHelper localHelper;
+    private final TranslationStatusHelper translationStatusHelper;
 
     public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
                           ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
                           MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO,
-                          TranslationsDAO translationsDAO, SessionHolder<UserSession> userSessionHolder, LocaleHelper localeHelper) {
+                          TranslationsDAO translationsDAO, SessionHolder<UserSession> userSessionHolder, TranslationStatusHelper translationStatusHelper) {
         this.messengerServerFacade = messengerServerFacade;
         this.userProcessor = userProcessor;
         this.conversationsDAO = conversationsDAO;
@@ -64,7 +63,7 @@ public class LoaderDelegate {
         this.attachmentDAO = attachmentDAO;
         this.translationsDAO = translationsDAO;
 
-        this.localHelper = localeHelper;
+        this.translationStatusHelper = translationStatusHelper;
         this.userSessionHolder = userSessionHolder;
     }
 
@@ -93,9 +92,7 @@ public class LoaderDelegate {
                     List<DataTranslation> translations = new ArrayList<>();
                     if (userSessionHolder.get() != null && userSessionHolder.get().isPresent()
                             && userSessionHolder.get().get() != null) {
-                        String userLocale = userSessionHolder.get().get().getUser().getLocale();
-                        translations = from(messages).filter(msg -> localHelper.isTheSameLanguage(msg.getLocaleName(), userLocale))
-                                .map(msg -> new DataTranslation(msg.getId(), null, TranslationStatus.NATIVE)).toList();
+                        translations = translationStatusHelper.obtainNativeTranslations(messages, userSessionHolder);
                     }
 
                     List<DataParticipant> relationships = new ArrayList<>();

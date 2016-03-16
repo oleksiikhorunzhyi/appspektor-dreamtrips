@@ -1,23 +1,21 @@
 package com.messenger.delegate;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataTranslation;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.TranslationsDAO;
+import com.messenger.util.TranslationStatusHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,23 +33,22 @@ public class PaginationDelegate {
     private final MessageDAO messageDAO;
     private final AttachmentDAO attachmentDAO;
     private final TranslationsDAO translationsDAO;
-    private final LocaleHelper localeHelper;
+    private final TranslationStatusHelper translationStatusHelper;
 
-    private final String nativeLanguage;
+    private final SessionHolder<UserSession> userSessionHolder;
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private PagePagination<Message> messagePagePagination;
 
     public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO,
-                              TranslationsDAO translationsDAO, LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
+                              TranslationsDAO translationsDAO, TranslationStatusHelper translationStatusHelper, SessionHolder<UserSession> userSessionHolder) {
         this.messengerServerFacade = messengerServerFacade;
         this.messageDAO = messageDAO;
         this.attachmentDAO = attachmentDAO;
         this.translationsDAO = translationsDAO;
-        this.localeHelper = localeHelper;
+        this.translationStatusHelper = translationStatusHelper;
 
-        String userLocaleName = userSessionHolder.get().get().getUser().getLocale();
-        this.nativeLanguage = localeHelper.obtainLanguageCode(userLocaleName);
+        this.userSessionHolder = userSessionHolder;
     }
 
     public void setPageSize(int pageSize) {
@@ -73,8 +70,7 @@ public class PaginationDelegate {
                     List<DataMessage> msgs = from(serverMessages).map(DataMessage::new).toList();
                     List<DataAttachment> attachments = getDataAttachment(serverMessages);
                     from(msgs).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
-                    List<DataTranslation> translations = from(msgs).filter(msg -> TextUtils.equals(nativeLanguage, localeHelper.obtainLanguageCode(msg.getLocaleName())))
-                            .map(msg -> new DataTranslation(msg.getId(), null, TranslationStatus.NATIVE)).toList();
+                    List<DataTranslation> translations = translationStatusHelper.obtainNativeTranslations(msgs, userSessionHolder);
                     return new Object[]{msgs, attachments, translations};
                 })
                 .subscribe(data -> {

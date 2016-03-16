@@ -16,6 +16,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/pointer_shift_x"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:src="@drawable/photo_tag_additional_part"/>
 
     <LinearLayout

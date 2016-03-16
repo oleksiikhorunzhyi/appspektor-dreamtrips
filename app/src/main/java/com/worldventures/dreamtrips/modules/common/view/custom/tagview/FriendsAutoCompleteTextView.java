@@ -36,8 +36,8 @@ public class FriendsAutoCompleteTextView extends AutoCompleteTextView {
     public void showDropDown() {
         super.showDropDown();
 
-        getListView().setOnScrollListener(listener);
         try {
+            getListView().setOnScrollListener(listener);
             getAdapter().unregisterDataSetObserver(getDataSetObserver());
         } catch (Exception e) {
             Timber.e("");
@@ -60,7 +60,7 @@ public class FriendsAutoCompleteTextView extends AutoCompleteTextView {
         try {
             Field privateStringField = AutoCompleteTextView.class.getDeclaredField("mObserver");
             privateStringField.setAccessible(true);
-            Object fieldValue = (Object) privateStringField.get(this);
+            Object fieldValue = privateStringField.get(this);
             return (DataSetObserver) fieldValue;
         } catch (Exception e) {
             return null;

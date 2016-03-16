@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.AbsListView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -30,6 +31,7 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
     private SuggestionTagView suggestionTagView;
     private boolean loading = true;
     private int page = 1;
+    private WeakHandler weakHandler = new WeakHandler();
 
     public CreationTagView(Context context) {
         this(context, null);
@@ -57,6 +59,9 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         LayoutInflater.from(getContext()).inflate(getLayout(), this, true);
         ButterKnife.inject(this);
         adapter = new TagFriendAdapter(getContext(), constraint -> tagListener.requestFriendList(constraint, page));
+        if (pointerTop != null) {
+            pointerTop.requestFocus();
+        }
         inputFriendName.setAdapter(adapter);
         inputFriendName.setDropDownBackgroundResource(R.drawable.background_common_tag_view);
         inputFriendName.setDropDownWidth(getSize().getWidth());
@@ -70,8 +75,8 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         inputFriendName.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 inputFriendName.requestFocus();
-                if (!inputFriendName.isPopupShowing()) {
-                    inputFriendName.showDropDown();
+                if (!inputFriendName.isPopupShowing() || !inputFriendName.isFocused()) {
+                    weakHandler.postDelayed(() -> inputFriendName.showDropDown(), 500);
                 }
             }
             return false;

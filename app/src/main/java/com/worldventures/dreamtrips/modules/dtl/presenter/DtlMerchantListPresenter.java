@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
@@ -31,16 +32,14 @@ public class DtlMerchantListPresenter extends JobPresenter<DtlMerchantListPresen
     public void takeView(View view) {
         super.takeView(view);
         //
-        if (typePredicate.getMerchantType() == DtlMerchantType.OFFER) view.setComingSoon();
-        //
         bindMerchantManager();
     }
 
     private void bindMerchantManager() {
         bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor)
                 .onSuccess(this::onMerchantsLoaded)
-                .onProgress(view::showProgress)
-                .onError(throwable -> view.hideProgress());
+                .onProgress(this::showProgress)
+                .onError(thr -> hideProgress());
     }
 
     private void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -52,12 +51,24 @@ public class DtlMerchantListPresenter extends JobPresenter<DtlMerchantListPresen
     }
 
     private void setFilteredMerchants(List<DtlMerchant> merchants) {
-        view.hideProgress();
+        hideProgress();
         view.setItems(merchants);
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {
         view.toggleSelection(event.getDtlMerchant());
+    }
+
+    protected void showProgress() {
+        int messageRes = typePredicate.getMerchantType() == DtlMerchantType.OFFER ? R.string.dtl_wait_for_offers : R.string.dtl_wait_for_dinings;
+        view.showMessage(messageRes);
+        view.showProgress();
+    }
+
+    protected void hideProgress() {
+        int messageRes = typePredicate.getMerchantType() == DtlMerchantType.OFFER ? R.string.dtl_coming_soon_offers : R.string.dtl_place_list_empty_text;
+        view.showMessage(messageRes);
+        view.hideProgress();
     }
 
     public interface View extends RxView, ApiErrorView {
@@ -68,8 +79,9 @@ public class DtlMerchantListPresenter extends JobPresenter<DtlMerchantListPresen
 
         void hideProgress();
 
+        void showMessage(int textResourceId);
+
         void toggleSelection(DtlMerchant DtlMerchant);
 
-        void setComingSoon();
     }
 }

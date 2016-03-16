@@ -88,9 +88,8 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         });
         //
         toolbar.inflateMenu(R.menu.menu_dtl_list);
-        MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         searchViewHelper = new SearchViewHelper();
-        searchViewHelper.init(searchItem, lastQuery, query -> {
+        searchViewHelper.init(toolbar.getMenu().findItem(R.id.action_search), lastQuery, query -> {
             lastQuery = query;
             getPresenter().applySearch(query);
         });

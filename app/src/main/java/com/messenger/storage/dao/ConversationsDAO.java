@@ -15,6 +15,8 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataParticipant$Table;
+import com.messenger.entities.DataTranslation;
+import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.ConversationStatus;
@@ -99,6 +101,9 @@ public class ConversationsDAO extends BaseDAO {
                 "IFNULL(uu." + DataUser$Table.FIRSTNAME  + ",'') || ' ' || IFNULL(uu." + DataUser$Table.LASTNAME + ",'') "+
                                                 "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
+                "t." + DataTranslation$Table.TRANSLATESTATUS + " as  " + DataTranslation$Table.TRANSLATESTATUS + ", " +
+                "t." + DataTranslation$Table.TRANSLATION + " as  " + DataTranslation$Table.TRANSLATION + ", " +
+
 
                 "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
                 "COUNT(uuu." + DataUser$Table._ID + ") as " + GROUP_CONVERSATION_USER_COUNT_COLUMN + " " +
@@ -118,6 +123,9 @@ public class ConversationsDAO extends BaseDAO {
 
                 "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                 "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
+
+                "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
+                "ON t." + DataTranslation$Table._ID + "=m." + DataMessage$Table._ID + " " +
 
                 "LEFT JOIN " + DataUser.TABLE_NAME + " uuu " +
                 "ON p." + DataParticipant$Table.USERID + "=uuu." + DataUser$Table._ID + " " +
@@ -156,7 +164,7 @@ public class ConversationsDAO extends BaseDAO {
 
         String[] args = new String[]{currentUser.get().getId()};
         queryBuilder.withSelectionArgs(args);
-        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI);
+        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI, DataTranslation.CONTENT_URI);
     }
 
     public int updateDate(String conversationId, long date) {

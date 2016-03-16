@@ -4,9 +4,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
-import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
-import com.messenger.entities.DataUser;
+import com.messenger.entities.DataTranslation;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
@@ -34,12 +33,13 @@ public class CloseGroupConversationViewHolder extends GroupConversationViewHolde
     }
 
     @Override
-    public void bindLastMessage(DataMessage message, String messageAuthor, String attachmentType) {
-
+    public void bindLastMessage(DataMessage message, String messageAuthor,
+                                String attachmentType, DataTranslation dataTranslation) {
+        //nothing to here now
     }
 
     @Override
     protected void updateUnreadCountTextView() {
-
+        //nothing to here now
     }
 }

@@ -36,7 +36,7 @@ public class DateTimeUtils {
 
     public static final String DATE_FORMAT = "MMM dd, yyyy";
     public static final String TIME_FORMAT = "hh:mm a";
-    public static final String MEMBER_FORMAT = "MMM dd, hha";
+    public static final String MEMBER_FORMAT = "MMM dd, hh:mma";
 
     public static final String FULL_SCREEN_PHOTO_DATE_FORMAT = "MMM dd, yyyy hh:mma";
     public static final String FEED_DATE_FORMAT = "MMM d 'at' h:mma";

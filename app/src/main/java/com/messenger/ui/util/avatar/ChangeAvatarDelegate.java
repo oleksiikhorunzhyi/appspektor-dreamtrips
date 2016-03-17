@@ -1,4 +1,5 @@
 package com.messenger.ui.util.avatar;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.module.Injector;

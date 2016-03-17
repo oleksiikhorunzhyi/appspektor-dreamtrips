@@ -17,6 +17,7 @@ import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
 import com.messenger.flow.util.GsonParceler;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
+import com.messenger.ui.util.avatar.CropImageDelegate;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.techery.spares.annotations.Layout;
@@ -41,6 +42,7 @@ import flow.Flow;
 import flow.History;
 import flow.path.Path;
 import flow.path.PathContainerView;
+import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.activity_base_messenger)
 public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPresenter> implements Flow.Dispatcher {
@@ -57,6 +59,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected NavigationDrawerPresenter navigationDrawerPresenter;
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    @Inject
+    CropImageDelegate cropImageDelegate;
     @Inject
     ActivityRouter activityRouter;
 
@@ -80,6 +84,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         //
         initPickerLayout();
+        initCropAvatarDelegate();
         initNavDrawer();
         initFlow(conversationId);
         //
@@ -125,6 +130,13 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!Crop.onActivityResult(requestCode, resultCode, data, cropImageDelegate::onCropFinished)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (backStackDelegate.handleBackPressed()) return;
         if (flowActivityHelper.handleBack()) return;
@@ -142,6 +154,10 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
         photoPickerLayoutDelegate.initPicker(getSupportFragmentManager(), false);
         photoPickerLayoutDelegate.hidePicker();
+    }
+
+    private void initCropAvatarDelegate() {
+        cropImageDelegate.init(this);
     }
 
     private void initNavDrawer() {

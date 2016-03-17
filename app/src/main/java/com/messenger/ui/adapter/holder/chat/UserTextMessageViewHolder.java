@@ -161,8 +161,7 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
 
     private void setTranslationUiState(){
         int status = translation == null ? -10 : translation.getTranslateStatus();
-        iconTranslation.setVisibility(userLocale.equals(message.getLocale())
-                || status == TRANSLATING ? GONE : VISIBLE);
+        iconTranslation.setVisibility(GONE);
         translationProgress.setVisibility(status == TRANSLATING ? VISIBLE : GONE);
         messageTextView.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
         translationStatus.setVisibility(status == TRANSLATING ? GONE : VISIBLE);

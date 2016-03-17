@@ -1,10 +1,6 @@
 package com.worldventures.dreamtrips.core.utils;
 
 
-import android.support.annotation.Nullable;
-
-import android.text.TextUtils;
-
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
@@ -23,13 +19,6 @@ public class LocaleHelper {
 
     public Locale getDefaultLocale() {
         return Locale.getDefault();
-    }
-
-    public boolean isTheSameLanguage(String locale1, String locale2){
-        String language1 = obtainLanguageCode(locale1);
-        String language2 = obtainLanguageCode(locale2);
-
-        return TextUtils.equals(language1, language2);
     }
 
     /**
@@ -65,15 +54,6 @@ public class LocaleHelper {
         }
 
         return new Locale(language, country);
-    }
-
-    public String obtainLanguageCode(@Nullable String localeName) {
-        if (localeName == null) return "en";
-
-        AvailableLocale mappedLocale = obtainAvailableLocale(localeName);
-
-        return mappedLocale == null ?
-                localeName.split("-")[0] : mappedLocale.getLanguage();
     }
 
     private AvailableLocale obtainAvailableLocale(String localeName){

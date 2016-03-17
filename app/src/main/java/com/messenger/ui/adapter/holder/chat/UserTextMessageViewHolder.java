@@ -22,11 +22,9 @@ import butterknife.InjectView;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.messenger.messengerservers.constant.TranslationStatus.ERROR;
-import static com.messenger.messengerservers.constant.TranslationStatus.NATIVE;
 import static com.messenger.messengerservers.constant.TranslationStatus.REVERTED;
 import static com.messenger.messengerservers.constant.TranslationStatus.TRANSLATED;
 import static com.messenger.messengerservers.constant.TranslationStatus.TRANSLATING;
-
 
 
 public class UserTextMessageViewHolder extends TextMessageViewHolder implements MessageHolder.UserMessageHolder {
@@ -47,6 +45,7 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     ImageView iconTranslation;
 
     private DataTranslation translation;
+    private String userLocale;
 
     public UserTextMessageViewHolder(View itemView) {
         super(itemView);
@@ -60,8 +59,9 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     ///////////////////////////////////////////////////////////////////////////
 
 
-    public void setTranslation(DataTranslation translation) {
+    public void setTranslation(DataTranslation translation, String userLocale) {
         this.translation = translation;
+        this.userLocale = userLocale;
     }
 
     @Override
@@ -150,9 +150,6 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
             case ERROR:
                 setTranslationError();
                 break;
-            case NATIVE:
-                setNative();
-                break;
             case TRANSLATED:
                 setIsTranslated();
                 break;
@@ -164,10 +161,11 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
 
     private void setTranslationUiState(){
         int status = translation == null ? -10 : translation.getTranslateStatus();
-        iconTranslation.setVisibility(status == TRANSLATING || status == NATIVE ? GONE : VISIBLE);
+        iconTranslation.setVisibility(userLocale.equals(message.getLocale())
+                || status == TRANSLATING ? GONE : VISIBLE);
         translationProgress.setVisibility(status == TRANSLATING ? VISIBLE : GONE);
         messageTextView.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
-        translationStatus.setVisibility(status == TRANSLATING || status == NATIVE ? GONE : VISIBLE);
+        translationStatus.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
     }
 
     public void setNotTranslated() {
@@ -188,7 +186,7 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     }
 
     public void setIsTranslated() {
-        translationStatus.setText(itemView.getResources().getString(R.string.translate_from, message.getLocale()));
+        translationStatus.setText(itemView.getResources().getString(R.string.translate_from));
         translationStatus.setTextColor(itemView.getResources().getColor(R.color.translation_state_translated));
 
         messageTextView.setText(TruncateUtils.truncate(translation.getTranslation(),
@@ -205,8 +203,4 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
         });
     }
 
-    public void setNative() {
-        messageTextView.setText(TruncateUtils.truncate(message.getText(),
-                messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
-    }
 }

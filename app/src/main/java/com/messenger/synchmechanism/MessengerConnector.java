@@ -13,14 +13,11 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.EventBusWrapper;
-import com.messenger.util.TranslationStatusHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import rx.Observable;
@@ -53,8 +50,7 @@ public class MessengerConnector {
                                DreamSpiceManager spiceManager,
                                ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
                                MessageDAO messageDAO, AttachmentDAO attachmentDAO, UsersDAO usersDAO,
-                               TranslationsDAO translationsDAO, EventBusWrapper eventBusWrapper,
-                               SessionHolder<UserSession> userSessionHolder, TranslationStatusHelper translationStatusHelper) {
+                               EventBusWrapper eventBusWrapper) {
 
         this.applicationContext = applicationContext;
         this.appSessionHolder = appSessionHolder;
@@ -62,8 +58,7 @@ public class MessengerConnector {
         this.spiceManager = spiceManager;
         this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade,
                 new UserProcessor(usersDAO, spiceManager),
-                conversationsDAO, participantsDAO, messageDAO, usersDAO,
-                attachmentDAO, translationsDAO, userSessionHolder, translationStatusHelper);
+                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
 
         messengerServerFacade.addAuthorizationListener(authListener);
@@ -85,13 +80,10 @@ public class MessengerConnector {
     public static void init(Context applicationContext, ActivityWatcher activityWatcher,
                             SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
                             DreamSpiceManager spiceManager, ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                            MessageDAO messageDAO, AttachmentDAO attachmentDAO, UsersDAO usersDAO,
-                            TranslationsDAO translationsDAO, EventBusWrapper eventBusWrapper,
-                            SessionHolder<UserSession> userSessionHolder, TranslationStatusHelper translationStatusHelper) {
+                            MessageDAO messageDAO, AttachmentDAO attachmentDAO, UsersDAO usersDAO, EventBusWrapper eventBusWrapper) {
 
         INSTANCE = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
-                spiceManager, conversationsDAO, participantsDAO, messageDAO, attachmentDAO, usersDAO, translationsDAO,
-                eventBusWrapper, userSessionHolder, translationStatusHelper);
+                spiceManager, conversationsDAO, participantsDAO, messageDAO, attachmentDAO, usersDAO, eventBusWrapper);
     }
 
     public Observable<ConnectionStatus> status() {

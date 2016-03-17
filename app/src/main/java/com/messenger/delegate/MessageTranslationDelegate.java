@@ -47,8 +47,7 @@ public class MessageTranslationDelegate {
     }
 
     private void translateMessageRequest(DataMessage dataMessage, String toLocale) {
-        TranslateTextBody body = new TranslateTextBody(dataMessage.getText(),
-                dataMessage.getLocaleName(), toLocale);
+        TranslateTextBody body = new TranslateTextBody(dataMessage.getText(), toLocale);
 
         DataTranslation dataTranslation = new DataTranslation(dataMessage.getId(), null, TranslationStatus.TRANSLATING);
         translationsDAO.save(dataTranslation);

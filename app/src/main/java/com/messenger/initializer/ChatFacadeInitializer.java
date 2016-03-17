@@ -9,14 +9,12 @@ import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
-import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.ConversationIdHelper;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
@@ -28,8 +26,6 @@ import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.util.SessionHolderHelper;
-import com.messenger.util.TranslationStatusHelper;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -68,15 +64,7 @@ public class ChatFacadeInitializer implements AppInitializer {
     @Inject
     AttachmentDAO attachmentDAO;
     @Inject
-    TranslationsDAO translationsDAO;
-    @Inject
     Lazy<DataUser> currentUser;
-    @Inject
-    SessionHolder<UserSession> userHolder;
-    @Inject
-    LocaleHelper localeHelper;
-    @Inject
-    TranslationStatusHelper translationStatusHelper;
     //
     @Inject
     DreamSpiceManager spiceManager;
@@ -90,8 +78,7 @@ public class ChatFacadeInitializer implements AppInitializer {
         injector.inject(this);
         userProcessor = new UserProcessor(usersDAO, spiceManager);
         loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
-                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO, translationsDAO,
-                userHolder, translationStatusHelper);
+                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
 
         //
         GlobalEventEmitter emitter = messengerServerFacade.getGlobalEventEmitter();
@@ -112,13 +99,6 @@ public class ChatFacadeInitializer implements AppInitializer {
                 messageDAO.save(dataMessage);
                 conversationsDAO.incrementUnreadField(message.getConversationId());
                 conversationsDAO.updateDate(message.getConversationId(), time);
-
-                if (SessionHolderHelper.hasEntity(userHolder)) {
-                    String userLocale = userHolder.get().get().getUser().getLocale();
-                    if (localeHelper.isTheSameLanguage(dataMessage.getLocaleName(), userLocale)) {
-                        translationsDAO.save(new DataTranslation(message.getId(), null, TranslationStatus.NATIVE));
-                    }
-                }
             }
 
             @Override
@@ -133,7 +113,6 @@ public class ChatFacadeInitializer implements AppInitializer {
 
                 messageDAO.save(dataMessage);
                 conversationsDAO.updateDate(message.getConversationId(), time);
-                translationsDAO.save(new DataTranslation(dataMessage.getId(), null, TranslationStatus.NATIVE));
             }
 
             @Override

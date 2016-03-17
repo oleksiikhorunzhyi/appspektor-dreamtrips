@@ -45,6 +45,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private static final int VIEW_TYPE_USER_IMAGE_MESSAGE = 4;
 
     private final DataUser user;
+    private final String userLocale;
     private final ChatTimestampFormatter timestampFormatter;
     private DataConversation conversation;
 
@@ -60,9 +61,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private boolean needMarkUnreadMessages;
 
-    public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user, @Nullable Cursor cursor) {
+    public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user,
+                                 @NonNull String userLocale, @Nullable Cursor cursor) {
         super(cursor);
         this.user = user;
+        this.userLocale = userLocale;
         this.timestampFormatter = new ChatTimestampFormatter(context);
     }
 
@@ -140,7 +143,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private void bindUserTextMessageHolder(UserTextMessageViewHolder holder, Cursor cursor) {
         boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
         DataTranslation dataTranslation = translationExist? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
-        holder.setTranslation(dataTranslation);
+        holder.setTranslation(dataTranslation, userLocale);
         //
         bindMessageHolder(holder, cursor);
         bindTextMessageHolder(holder, cursor);

@@ -48,15 +48,15 @@
                     android:textColor="@color/chat_color_message"
                     />
 
-                <ImageView
-                    android:id="@+id/ic_translation_available"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:visibility="gone"
-                    android:paddingLeft="@dimen/spacing_tiny"
-                    android:paddingStart="@dimen/spacing_tiny"
-                    android:src="@drawable/ic_translation"/>
+                <!--<ImageView-->
+                    <!--android:id="@+id/ic_translation_available"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="end"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:paddingLeft="@dimen/spacing_tiny"-->
+                    <!--android:paddingStart="@dimen/spacing_tiny"-->
+                    <!--android:src="@drawable/ic_translation"/>-->
 
             </LinearLayout>
 

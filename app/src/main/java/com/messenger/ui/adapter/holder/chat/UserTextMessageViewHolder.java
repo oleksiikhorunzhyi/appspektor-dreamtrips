@@ -21,6 +21,7 @@ import butterknife.InjectView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static android.view.View.INVISIBLE;
 import static com.messenger.messengerservers.constant.TranslationStatus.ERROR;
 import static com.messenger.messengerservers.constant.TranslationStatus.REVERTED;
 import static com.messenger.messengerservers.constant.TranslationStatus.TRANSLATED;
@@ -41,8 +42,8 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     TextView translationStatus;
     @InjectView(R.id.message_linear_layout)
     LinearLayout messageLinearLayout;
-    @InjectView(R.id.ic_translation_available)
-    ImageView iconTranslation;
+//    @InjectView(R.id.ic_translation_available)
+//    ImageView iconTranslation;
 
     private DataTranslation translation;
     private String userLocale;
@@ -150,6 +151,9 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
             case ERROR:
                 setTranslationError();
                 break;
+            case TRANSLATING:
+                setTranslating();
+                break;
             case TRANSLATED:
                 setIsTranslated();
                 break;
@@ -161,17 +165,22 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
 
     private void setTranslationUiState(){
         int status = translation == null ? -10 : translation.getTranslateStatus();
-        iconTranslation.setVisibility(GONE);
+//        iconTranslation.setVisibility(userLocale.equals(message.getLocale())
+//                || status == TRANSLATING ? GONE : VISIBLE);
         translationProgress.setVisibility(status == TRANSLATING ? VISIBLE : GONE);
-        messageTextView.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
+        messageTextView.setVisibility(status == TRANSLATING ? INVISIBLE : VISIBLE);
         translationStatus.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
+    }
+
+    public void setTranslating(){
+        messageTextView.setText(message.getText());
     }
 
     public void setNotTranslated() {
         translationStatus.setVisibility(GONE);
         messageTextView.setText(message.getText());
 
-        applyPositionOfTranslateIcon();
+        //applyPositionOfTranslateIcon();
     }
 
     public void setTranslationError() {
@@ -181,7 +190,7 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
         messageTextView.setText(TruncateUtils.truncate(message.getText(),
                 messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
 
-        applyPositionOfTranslateIcon();
+       // applyPositionOfTranslateIcon();
     }
 
     public void setIsTranslated() {
@@ -191,15 +200,15 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
         messageTextView.setText(TruncateUtils.truncate(translation.getTranslation(),
                 messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
 
-        applyPositionOfTranslateIcon();
+        //applyPositionOfTranslateIcon();
     }
 
-    private void applyPositionOfTranslateIcon() {
-        messageTextView.post(() -> {
-            int messageLines = messageTextView.getLineCount();
-            if (messageLines == 1) messageLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-            else messageLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        });
-    }
+//    private void applyPositionOfTranslateIcon() {
+//        messageTextView.post(() -> {
+//            int messageLines = messageTextView.getLineCount();
+//            if (messageLines == 1) messageLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
+//            else messageLinearLayout.setOrientation(LinearLayout.VERTICAL);
+//        });
+//    }
 
 }

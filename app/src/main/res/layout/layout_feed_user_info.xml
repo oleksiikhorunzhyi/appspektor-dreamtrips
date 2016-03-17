@@ -133,29 +133,6 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"/>
 
-        <LinearLayout
-            android:id="@+id/share_post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/post_avatar"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="@dimen/spacing_small"
-                fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-                fresco:placeholderImageScaleType="centerInside"
-                fresco:roundAsCircle="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/say_something"
-                android:textSize="@dimen/font_normal"/>
-        </LinearLayout>
     </LinearLayout>
 
     <TextView

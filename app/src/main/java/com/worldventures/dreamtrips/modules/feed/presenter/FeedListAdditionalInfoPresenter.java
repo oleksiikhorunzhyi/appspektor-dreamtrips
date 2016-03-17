@@ -37,7 +37,6 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
         if (view.isTabletLandscape()) {
             loadFriends();
             view.setCurrentCircle(getFilterCircle());
-            view.setUserAvatar(Uri.parse(getAccount().getAvatar().getThumb()));
         }
     }
 
@@ -142,6 +141,5 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
 
         void openUser(UserBundle bundle);
 
-        void setUserAvatar(Uri uri);
     }
 }

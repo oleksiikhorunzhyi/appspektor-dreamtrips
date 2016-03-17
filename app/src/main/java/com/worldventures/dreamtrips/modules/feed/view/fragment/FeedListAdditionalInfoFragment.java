@@ -59,8 +59,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     View emptyView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.post_avatar)
-    SimpleDraweeView avatar;
 
     CirclesFilterPopupWindow filterPopupWindow;
     BaseArrayListAdapter<User> adapter;
@@ -159,32 +157,10 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .build());
     }
 
-    @Override
-    public void setUserAvatar(Uri uri) {
-        avatar.setImageURI(uri);
-    }
-
-    private void openPost() {
-        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
-                .containerId(R.id.container_details_floating)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .build());
-        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_details_floating)
-                .build());
-    }
-
     protected void openSearch() {
         router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
                 .data(new FriendGlobalSearchBundle(""))
                 .build());
-    }
-
-    @OnClick(R.id.share_post)
-    protected void onPostClicked() {
-        openPost();
     }
 
     @OnClick(R.id.global)

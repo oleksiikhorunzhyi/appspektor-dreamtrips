@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBuck
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.ForeignBucketTabsFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
+import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
@@ -207,7 +208,9 @@ public enum Route {
 
     SETTINGS(SettingsGroupFragment.class, R.string.settings),
     SETTINGS_NOTIFICATIONS(NotificationsSettingsFragment.class),
-    SETTINGS_GENERAL(GeneralSettingsFragment.class);
+    SETTINGS_GENERAL(GeneralSettingsFragment.class),
+
+    MEDIA_PICKER(MediaPickerFragment.class);
 
     private Class<? extends Fragment> fragmentClass;
     @StringRes

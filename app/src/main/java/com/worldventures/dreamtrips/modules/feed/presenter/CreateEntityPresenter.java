@@ -141,7 +141,8 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
     }
 
     public void attachImages(List<ChosenImage> photos, int requestType) {
-        if (photos.size() == 0 || (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED)) {
+        if (photos.size() == 0 || (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED
+                && photos.get(0).getFileThumbnail().equals(cachedUploadTask.getFilePath()))) {
             return;
         }
 

@@ -42,7 +42,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     }
 
     @OnClick(R.id.cancel_action)
-    void onPhotoCancel() {
+    protected void onPhotoCancel() {
         getPresenter().cancelClicked();
     }
 

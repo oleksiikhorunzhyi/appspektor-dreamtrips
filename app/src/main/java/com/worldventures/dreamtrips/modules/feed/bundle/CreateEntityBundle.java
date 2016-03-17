@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.modules.feed.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,13 +46,27 @@ public class CreateEntityBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.images);
+        List<TempImage> tempImages = new ArrayList<>();
+        Queryable.from(images).forEachR(image -> {
+            TempImage tempImage = new TempImage();
+            tempImage.filePathOriginal = image.getFilePathOriginal();
+            tempImage.fileThumbnail = image.getFileThumbnail();
+            tempImage.fileThumbnailSmall = image.getFileThumbnailSmall();
+        });
+        dest.writeList(tempImages);
         dest.writeInt(this.imageType);
     }
 
     protected CreateEntityBundle(Parcel in) {
+        List<TempImage> tempImages = new ArrayList<>();
+        in.readList(tempImages, List.class.getClassLoader());
         this.images = new ArrayList<>();
-        in.readList(this.images, List.class.getClassLoader());
+        Queryable.from(tempImages).forEachR(tempImage -> {
+            ChosenImage image = new ChosenImage();
+            image.setFilePathOriginal(tempImage.filePathOriginal);
+            image.setFileThumbnail(tempImage.fileThumbnail);
+            image.setFileThumbnailSmall(tempImage.fileThumbnailSmall);
+        });
         this.imageType = in.readInt();
     }
 
@@ -63,4 +79,10 @@ public class CreateEntityBundle implements Parcelable {
             return new CreateEntityBundle[size];
         }
     };
+
+    class TempImage implements Serializable {
+        public String filePathOriginal;
+        public String fileThumbnail;
+        public String fileThumbnailSmall;
+    }
 }

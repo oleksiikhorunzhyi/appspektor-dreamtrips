@@ -109,7 +109,7 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
     }
 
     @OnClick(R.id.cancel_action)
-    void onPhotoCancel() {
+    protected void onPhotoCancel() {
         getPresenter().removeImage();
     }
 }

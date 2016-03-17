@@ -1,81 +1,41 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.view.View;
-
-import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
 public class MemberImagesListFragment<P extends MembersImagesPresenter> extends TripImagesListFragment<P>
-        implements MembersImagesPresenter.View {
-
-    @Inject
-    BackStackDelegate backStackDelegate;
-
-    @InjectView(R.id.fab_photo)
-    protected FloatingActionButton fabPhoto;
-    @InjectView(R.id.photo_picker)
-    PhotoPickerLayout photoPickerLayout;
-
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        inject(photoPickerLayout);
-        setupPicker();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        backStackDelegate.setListener(this::onBackPressed);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        backStackDelegate.setListener(null);
-    }
-
-    private boolean onBackPressed() {
-        if (photoPickerLayout.isPanelVisible()) {
-            photoPickerLayout.hidePanel();
-            return true;
-        }
-        return false;
-    }
-
-    @OnClick(R.id.fab_photo)
-    public void actionPhoto() {
-        photoPickerLayout.showPanel();
-
-        if (this instanceof AccountImagesListFragment) {
-            TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
-        } else {
-            TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
-        }
-    }
+        implements MembersImagesPresenter.View, MediaPickerFragment.Callback {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        setupPicker();
+        if (!isVisibleToUser)
+            hidePhotoPicker();
+    }
+
+    @OnClick(R.id.fab_photo)
+    public void actionPhoto() {
+        showPhotoPicker();
+        //
+        if (this instanceof AccountImagesListFragment) {
+            TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MY_IMAGES);
+        } else {
+            TrackingHelper.uploadTripImagePhoto(TrackingHelper.ACTION_MEMBER_IMAGES);
+        }
     }
 
     @Override
@@ -86,16 +46,23 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
         openCreatePhoto(new CreateEntityBundle(photos, requestType));
     }
 
-    private void setupPicker() {
-        if (photoPickerLayout == null) return;
-        //
-        photoPickerLayout.setup(getChildFragmentManager(), false, getUserVisibleHint());
-        photoPickerLayout.setOnDoneClickListener(this::attachImages);
-        hidePhotoPicker();
+    private void showPhotoPicker() {
+        router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.picker_container)
+                .targetFragment(this)
+                .data(new PickerBundle())
+                .build());
     }
 
     private void hidePhotoPicker() {
-        photoPickerLayout.hidePanel();
+        if (router == null) return;
+        //
+        router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
+                .containerId(R.id.picker_container)
+                .fragmentManager(getChildFragmentManager())
+                .build());
     }
 
     private void openCreatePhoto(CreateEntityBundle bundle) {
@@ -109,5 +76,10 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .containerId(R.id.container_details_floating)
                 .data(bundle)
                 .build());
+    }
+
+    @Override
+    public void onImagesSelected(List<ChosenImage> images, int type) {
+        attachImages(images, type);
     }
 }

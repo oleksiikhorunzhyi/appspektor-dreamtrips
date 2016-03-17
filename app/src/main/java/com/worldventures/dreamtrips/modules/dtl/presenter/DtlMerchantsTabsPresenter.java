@@ -22,13 +22,13 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
-    DtlLocationManager locationRepository;
+    DtlLocationManager dtlLocationManager;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        view.initToolbar(locationRepository.getCachedSelectedLocation());
+        view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
         setTabs();
         //
         bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe)

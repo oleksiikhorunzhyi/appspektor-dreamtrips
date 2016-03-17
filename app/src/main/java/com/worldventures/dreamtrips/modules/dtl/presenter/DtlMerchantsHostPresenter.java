@@ -14,7 +14,7 @@ public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresent
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
-    DtlLocationManager locationRepository;
+    DtlLocationManager dtlLocationManager;
     //
     @State
     boolean initialized;
@@ -29,7 +29,8 @@ public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresent
     }
 
     private void loadMerchants() {
-        dtlMerchantManager.loadMerchants(locationRepository.getCachedSelectedLocation());
+        dtlMerchantManager.loadMerchants(dtlLocationManager.getCachedSelectedLocation()
+                .getCoordinates().asAndroidLocation());
     }
 
     public void onEventMainThread(final MerchantClickedEvent event) {

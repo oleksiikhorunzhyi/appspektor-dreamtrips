@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -120,14 +121,14 @@ public class DtlMerchantsListFragment
     }
 
     @Override
-    public void toggleSelection(DtlMerchant DtlMerchant) {
-        int index = baseDelegateAdapter.getItems().indexOf(DtlMerchant);
-        if (index != -1) selectionManager.toggleSelection(index);
+    public void showMessage(@StringRes int textResourceId) {
+        emptyTextView.setText(textResourceId);
     }
 
     @Override
-    public void setComingSoon() {
-        emptyTextView.setText(R.string.dtl_coming_soon_offers);
+    public void toggleSelection(DtlMerchant DtlMerchant) {
+        int index = baseDelegateAdapter.getItems().indexOf(DtlMerchant);
+        if (index != -1) selectionManager.toggleSelection(index);
     }
 
     @Override

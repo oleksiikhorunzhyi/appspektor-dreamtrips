@@ -44,7 +44,9 @@ public class CropImageDelegate {
     public void init(Activity activity) {
         this.activity = activity;
         context = activity.getApplicationContext();
-        dreamSpiceManager.start(context);
+        if (!dreamSpiceManager.isStarted()) {
+            dreamSpiceManager.start(context);
+        }
     }
 
     public void cropImage(ChosenImage image) {
@@ -77,7 +79,7 @@ public class CropImageDelegate {
         dreamSpiceManager.execute(new CopyFileTask(originalFile,
                         originalFile.getParentFile() + "/" + TEMP_PHOTO_FILE_PREFIX + originalFile.getName()),
                 path -> startCropActivity(path),
-                e -> reportErrorToImagesStream(e, "Could not copy avatar file from disk"));
+                e -> reportError(e, "Could not copy avatar file from disk"));
     }
 
     private void cacheFacebookImage(String url, Action<String> action) {
@@ -85,18 +87,22 @@ public class CropImageDelegate {
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
 
         dreamSpiceManager.execute(bigBinaryRequest, inputStream -> action.action(filePath),
-                e -> reportErrorToImagesStream(e, "Could not copy avatar file from Facebook"));
+                e -> reportError(e, "Could not copy avatar file from Facebook"));
     }
 
     public void onCropFinished(String path, String errorMsg) {
         if (!TextUtils.isEmpty(path)) {
-            croppedImagesStream.onNext(new File(path));
+            reportSuccess(path);
         } else {
-            reportErrorToImagesStream(null, "Error during cropping: " + errorMsg);
+            reportError(null, "Error during cropping: " + errorMsg);
         }
     }
 
-    private void reportErrorToImagesStream(Throwable originalException, String message) {
+    private void reportSuccess(String path) {
+        croppedImagesStream.onNext(new File(path));
+    }
+
+    private void reportError(Throwable originalException, String message) {
         if (originalException == null) {
             Timber.e(message);
             croppedImagesStream.onError(new RuntimeException(message));

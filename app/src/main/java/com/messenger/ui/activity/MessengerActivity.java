@@ -84,7 +84,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         //
         initPickerLayout();
-        initCropAvatarDelegate();
+        initCropImageDelegate();
         initNavDrawer();
         initFlow(conversationId);
         //
@@ -156,7 +156,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         photoPickerLayoutDelegate.hidePicker();
     }
 
-    private void initCropAvatarDelegate() {
+    private void initCropImageDelegate() {
         cropImageDelegate.init(this);
     }
 

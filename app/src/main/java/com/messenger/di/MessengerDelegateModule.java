@@ -109,7 +109,7 @@ public class MessengerDelegateModule {
 
     @Provides
     @Singleton
-    CropImageDelegate provideCropAvatarDelegate(DreamSpiceManager dreamSpiceManager) {
+    CropImageDelegate provideCropImageDelegate(DreamSpiceManager dreamSpiceManager) {
         return new CropImageDelegate(dreamSpiceManager);
     }
 }

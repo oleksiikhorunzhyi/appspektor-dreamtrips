@@ -1,10 +1,12 @@
 package com.messenger.messengerservers.xmpp.packets;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class ChangeAvatarExtension implements ExtensionElement {
-    public static final String ELEMENT = "icon";
+    private static final String ELEMENT = "icon";
 
     private String avatarUrl;
 
@@ -26,7 +28,9 @@ public class ChangeAvatarExtension implements ExtensionElement {
     public XmlStringBuilder toXML() {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.rightAngleBracket();
-        xml.append(avatarUrl);
+        if (!TextUtils.isEmpty(avatarUrl)) {
+            xml.append(avatarUrl);
+        }
         xml.closeElement(ELEMENT);
         return xml;
     }

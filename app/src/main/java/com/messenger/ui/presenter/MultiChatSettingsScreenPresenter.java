@@ -36,8 +36,8 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         super.onAttachedToWindow();
         cropImageDelegate.setAspectRatio(ASPECT_RATIO_AVATAR_X, ASPECT_RATIO_AVATAR_Y);
         getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
-        cropImageDelegate.getCroppedImagesStream().
-                zipWith(conversationObservable, (image, conversation) -> new Pair<>(conversation, image))
+        Observable.combineLatest(cropImageDelegate.getCroppedImagesStream(),
+                conversationObservable, (image, conversation) -> new Pair<>(conversation, image))
                 .subscribe(pair -> onAvatarCropped(pair.first, pair.second),
                 e -> {
                     Timber.w(e, "Could not crop avatar image");

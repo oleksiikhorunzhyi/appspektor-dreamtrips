@@ -25,7 +25,7 @@ public class CropImageDelegate {
     private static final int RATIO_X_DEFAULT = 1;
     private static final int RATIO_Y_DEFAULT = 1;
 
-    private static final String TEMP_PHOTO_FILE_PREFIX = "temp_copy_of_";
+    private static final String TEMP_PHOTO_DIR = "cropped_images";
 
     private Activity activity;
     private Context context;
@@ -75,9 +75,8 @@ public class CropImageDelegate {
      * @param originalFilePath
      */
     private void executeCrop(String originalFilePath) {
-        File originalFile = new File(originalFilePath);
-        dreamSpiceManager.execute(new CopyFileTask(originalFile,
-                        originalFile.getParentFile() + "/" + TEMP_PHOTO_FILE_PREFIX + originalFile.getName()),
+        dreamSpiceManager.execute(new CopyFileTask(new File(originalFilePath),
+                getTempFile(originalFilePath).getAbsolutePath()),
                 path -> startCropActivity(path),
                 e -> reportError(e, "Could not copy avatar file from disk"));
     }
@@ -96,6 +95,18 @@ public class CropImageDelegate {
         } else {
             reportError(null, "Error during cropping: " + errorMsg);
         }
+    }
+
+    private File getTempFile(String originalFilePath) {
+        File originalFile = new File(originalFilePath);
+        File tempDir = new File(context.getCacheDir().getAbsolutePath()
+                + File.separator + TEMP_PHOTO_DIR);
+        String fileName = String.valueOf(System.currentTimeMillis() + "_" + originalFile.getName());
+        File targetFile = new File(tempDir, fileName);
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }
+        return targetFile;
     }
 
     private void reportSuccess(String path) {

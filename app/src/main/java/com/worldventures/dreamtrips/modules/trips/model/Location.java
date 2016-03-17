@@ -34,6 +34,11 @@ public class Location implements Serializable, Parcelable {
         this.lng = lng;
     }
 
+    public Location(android.location.Location location) {
+        this.lat = location.getLatitude();
+        this.lng = location.getLongitude();
+    }
+
     private Location(Parcel in) {
         this.lat = in.readDouble();
         this.lng = in.readDouble();
@@ -66,6 +71,13 @@ public class Location implements Serializable, Parcelable {
 
     public LatLng asLatLng() {
         return new LatLng(lat, lng);
+    }
+
+    public android.location.Location asAndroidLocation() {
+        android.location.Location androidLocation = new android.location.Location("");
+        androidLocation.setLatitude(lat);
+        androidLocation.setLongitude(lng);
+        return androidLocation;
     }
 
     @Override

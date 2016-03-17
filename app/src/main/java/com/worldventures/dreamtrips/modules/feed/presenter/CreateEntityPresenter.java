@@ -103,13 +103,13 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
 
     @Override
     protected void processPostSuccess(FeedEntity feedEntity) {
-        eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
         super.processPostSuccess(feedEntity);
+        eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {
+        super.processTagUploadSuccess(feedEntity); //Firstly update tags, then notify everyone else
         eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
-        super.processTagUploadSuccess(feedEntity);
     }
 
     @Override

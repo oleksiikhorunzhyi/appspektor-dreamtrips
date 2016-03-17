@@ -171,7 +171,7 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {
-        eventBus.post(new FeedEntityChangedEvent(feedEntity));
         super.processTagUploadSuccess(feedEntity);
+        eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 }

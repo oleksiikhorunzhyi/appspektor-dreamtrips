@@ -5,11 +5,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.SuggestionTagView;
@@ -49,7 +47,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
     public CreationPhotoTaggableHolderViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        addPhotoTagTitle();
         gestureDetector = new GestureDetector(getContext(), new PhotoTaggableHolderViewDelegate.SingleTapConfirm(this));
     }
 
@@ -114,7 +111,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     @Override
     public void redrawTags() {
         super.redrawTags();
-        addPhotoTagTitle();
     }
 
     @Override
@@ -126,6 +122,7 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     @Override
     public void addTag(PhotoTag tag) {
         locallyAddedTags.add(tag);
+        locallyDeletedTags.remove(tag);
     }
 
     @Override
@@ -230,10 +227,6 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
 
     public interface TaggableCompleteListener {
         void onTagRequestsComplete();
-    }
-
-    private void addPhotoTagTitle() {
-        LayoutInflater.from(getContext()).inflate(R.layout.photo_tag_title, this, true);
     }
 
 }

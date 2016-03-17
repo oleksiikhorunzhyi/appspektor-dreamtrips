@@ -60,7 +60,7 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem>
             } else {
                 title.setVisibility(View.GONE);
             }
-            tag.setVisibility(photoObj.getPhotoTagsCount() > 0 ? View.VISIBLE : View.GONE);
+            tag.setVisibility(photoObj.getPhotoTagsCount() > 0 || !photoObj.getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
         }
 
         photo.setOnClickListener(v -> {

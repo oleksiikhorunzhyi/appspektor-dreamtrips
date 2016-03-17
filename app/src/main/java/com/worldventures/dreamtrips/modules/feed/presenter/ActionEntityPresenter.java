@@ -102,7 +102,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     }
 
     private void postRemovedPhotoTags(FeedEntity feedEntity) {
-        List<Integer> userIds = Queryable.from(cachedAddedPhotoTags)
+        List<Integer> userIds = Queryable.from(cachedRemovedPhotoTags)
                 .concat(((Photo) feedEntity).getPhotoTags()).map(photo -> photo.getUser().getId()).toList();
         doRequest(new DeletePhotoTagsCommand(feedEntity.getUid(), userIds), bVoid -> {
             processTagUploadSuccess(feedEntity);
@@ -120,6 +120,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     protected void processTagUploadSuccess(FeedEntity feedEntity) {
         ((Photo) feedEntity).getPhotoTags().addAll(cachedAddedPhotoTags);
         ((Photo) feedEntity).getPhotoTags().removeAll(cachedRemovedPhotoTags);
+
         closeView();
     }
 

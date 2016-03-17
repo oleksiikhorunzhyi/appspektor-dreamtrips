@@ -45,6 +45,7 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     ImageView iconTranslation;
 
     private DataTranslation translation;
+    private String userLocale;
 
     public UserTextMessageViewHolder(View itemView) {
         super(itemView);
@@ -58,8 +59,9 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
     ///////////////////////////////////////////////////////////////////////////
 
 
-    public void setTranslation(DataTranslation translation) {
+    public void setTranslation(DataTranslation translation, String userLocale) {
         this.translation = translation;
+        this.userLocale = userLocale;
     }
 
     @Override
@@ -159,7 +161,8 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder implements 
 
     private void setTranslationUiState(){
         int status = translation == null ? -10 : translation.getTranslateStatus();
-        iconTranslation.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
+        iconTranslation.setVisibility(userLocale.equals(message.getLocale())
+                || status == TRANSLATING ? GONE : VISIBLE);
         translationProgress.setVisibility(status == TRANSLATING ? VISIBLE : GONE);
         messageTextView.setVisibility(status == TRANSLATING ? GONE : VISIBLE);
         translationStatus.setVisibility(status == TRANSLATING ? GONE : VISIBLE);

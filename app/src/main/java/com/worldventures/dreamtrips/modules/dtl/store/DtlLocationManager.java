@@ -155,10 +155,8 @@ public class DtlLocationManager {
     }
 
     public void persistLocation(DtlLocation location) {
-        if (persistedLocation == null || !location.getId().equals(persistedLocation.getId())) {
-            persistedLocation = location;
-            db.saveDtlLocation(location);
-        }
+        persistedLocation = location;
+        db.saveDtlLocation(location);
     }
 
     @Nullable

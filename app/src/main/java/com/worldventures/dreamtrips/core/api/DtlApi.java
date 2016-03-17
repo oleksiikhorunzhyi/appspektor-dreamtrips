@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.api;
 
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
@@ -21,10 +21,10 @@ import retrofit.http.Query;
 public interface DtlApi {
 
     @GET("/api/dtl/v2/locations")
-    List<DtlLocation> getNearbyLocations(@Query("ll") String latLng);
+    List<DtlExternalLocation> getNearbyLocations(@Query("ll") String latLng);
 
     @GET("/api/dtl/v2/locations")
-    List<DtlLocation> searchLocations(@Query("query") String query);
+    List<DtlExternalLocation> searchLocations(@Query("query") String query);
 
     @GET("/api/dtl/v2/merchants")
     List<DtlMerchant> getNearbyDtlMerchants(@Query("ll") String ll);

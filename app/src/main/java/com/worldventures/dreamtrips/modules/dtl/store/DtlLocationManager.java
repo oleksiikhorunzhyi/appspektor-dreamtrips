@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.transfromer.ListFilter;
 import com.worldventures.dreamtrips.core.rx.transfromer.ListSorter;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class DtlLocationManager {
     // Nearby
     ///////////////////////////////////////////////////////////////////////////
 
-    public final Job1Executor<Location, List<DtlLocation>> nearbyLocationExecutor =
+    public final Job1Executor<Location, List<DtlExternalLocation>> nearbyLocationExecutor =
             new Job1Executor<>(this::loadNearby);
     private Subscription nearbySubscription;
 
@@ -54,7 +55,7 @@ public class DtlLocationManager {
         nearbySubscription = nearbyLocationExecutor.createJobWith(userLocation).subscribe();
     }
 
-    private Observable<List<DtlLocation>> loadNearby(Location location) {
+    private Observable<List<DtlExternalLocation>> loadNearby(Location location) {
         return rxApiFactory.composeApiCall(() ->
                 this.dtlApi.getNearbyLocations(location.getLatitude() + ","
                         + location.getLongitude()));
@@ -66,12 +67,13 @@ public class DtlLocationManager {
 
     private static final int API_SEARCH_QUERY_LENGHT = 3;
 
-    public final Job0Executor<List<DtlLocation>> searchLocationExecutor = new Job0Executor<>(this::search);
+    public final Job0Executor<List<DtlExternalLocation>> searchLocationExecutor =
+            new Job0Executor<>(this::search);
 
     private Subscription searchSubscription;
 
     private String query;
-    private List<DtlLocation> searchLocations;
+    private List<DtlExternalLocation> searchLocations;
 
     public void searchLocations(String query) {
         this.query = query;
@@ -89,26 +91,26 @@ public class DtlLocationManager {
         searchSubscription = searchLocationExecutor.createJob().subscribe();
     }
 
-    private Observable<List<DtlLocation>> search() {
+    private Observable<List<DtlExternalLocation>> search() {
         return Observable.concat(emptySearch(), localSearch(), apiSearch())
                 .first()
                 .compose(prepareLocations());
     }
 
-    private Observable<List<DtlLocation>> emptySearch() {
+    private Observable<List<DtlExternalLocation>> emptySearch() {
         return shouldPerformEmptySearch()
-                ? Observable.from(Collections.<DtlLocation>emptyList()).toList().doOnNext(locations -> cleanCache())
+                ? Observable.from(Collections.<DtlExternalLocation>emptyList()).toList().doOnNext(locations -> cleanCache())
                 : Observable.empty();
     }
 
-    private Observable<List<DtlLocation>> apiSearch() {
+    private Observable<List<DtlExternalLocation>> apiSearch() {
         return shouldPerformApiSearch()
                 ? rxApiFactory.composeApiCall(() -> this.dtlApi.searchLocations(query))
                 .doOnNext(this::cacheInMemory)
                 : Observable.empty();
     }
 
-    private Observable<List<DtlLocation>> localSearch() {
+    private Observable<List<DtlExternalLocation>> localSearch() {
         return shouldPerformLocalSearch() || (shouldPerformApiSearch() && searchLocations != null)
                 ? Observable.from(searchLocations).toList()
                 : Observable.empty();
@@ -118,12 +120,12 @@ public class DtlLocationManager {
         searchLocations = null;
     }
 
-    private void cacheInMemory(List<DtlLocation> locations) {
+    private void cacheInMemory(List<DtlExternalLocation> locations) {
         searchLocations = locations;
     }
 
-    private Observable.Transformer<List<DtlLocation>, List<DtlLocation>> prepareLocations() {
-        Comparator<DtlLocation> comparator = DtlLocation.provideComparator(query);
+    private Observable.Transformer<List<DtlExternalLocation>, List<DtlExternalLocation>> prepareLocations() {
+        Comparator<DtlExternalLocation> comparator = DtlExternalLocation.provideComparator(query);
         return observable -> observable
                 .compose(new ListFilter<>(dtlLocation -> dtlLocation.getLongName().toLowerCase().contains(query)))
                 .compose(new ListSorter<>(comparator::compare));

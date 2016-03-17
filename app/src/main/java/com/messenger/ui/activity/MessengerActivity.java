@@ -17,7 +17,7 @@ import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
 import com.messenger.flow.util.GsonParceler;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
-import com.messenger.ui.util.avatar.CropImageDelegate;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.techery.spares.annotations.Layout;

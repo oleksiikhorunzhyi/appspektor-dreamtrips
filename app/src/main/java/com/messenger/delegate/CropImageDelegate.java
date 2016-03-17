@@ -1,4 +1,4 @@
-package com.messenger.ui.util.avatar;
+package com.messenger.delegate;
 
 
 import android.app.Activity;

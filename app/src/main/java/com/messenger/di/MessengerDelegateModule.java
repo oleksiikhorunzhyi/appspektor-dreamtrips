@@ -19,7 +19,7 @@ import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
-import com.messenger.ui.util.avatar.CropImageDelegate;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;

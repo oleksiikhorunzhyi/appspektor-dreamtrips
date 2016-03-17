@@ -7,7 +7,7 @@ import android.view.MenuItem;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.ui.util.avatar.CropImageDelegate;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;

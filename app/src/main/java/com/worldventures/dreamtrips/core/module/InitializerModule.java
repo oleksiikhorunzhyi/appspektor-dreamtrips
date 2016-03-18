@@ -10,7 +10,6 @@ import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
-import com.worldventures.dreamtrips.core.initializer.HockeyInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
@@ -23,7 +22,6 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                HockeyInitializer.class,
                 InstabugInitializer.class,
                 LeakCanaryInitializer.class,
                 FabricInitializer.class,
@@ -61,11 +59,6 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     AppInitializer provideSoftInputInitializer() {
         return new SoftInputInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    AppInitializer provideHockeyInitializer() {
-        return new HockeyInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

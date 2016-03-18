@@ -16,6 +16,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -67,6 +68,7 @@ public class LoaderDelegate {
             conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<Conversation, User>(subscriber) {
                 @Override
                 protected List<User> process(List<Conversation> data) {
+                    TrackingHelper.setConversationCount(data.size());
                     final long syncTime = System.currentTimeMillis();
                     List<DataConversation> convs = from(data).map(DataConversation::new).toList();
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));

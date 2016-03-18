@@ -82,6 +82,8 @@ public class PhotoPickerLayoutDelegate {
     }
 
     public void disableEditTextUntilPickerIsShown(EditText editText) {
+        if (photoPickerLayout == null) return;
+
         photoPickerLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {

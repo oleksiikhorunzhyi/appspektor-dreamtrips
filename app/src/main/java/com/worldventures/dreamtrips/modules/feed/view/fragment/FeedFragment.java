@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,17 +7,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
@@ -26,10 +23,6 @@ import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWin
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
@@ -37,13 +30,6 @@ import butterknife.Optional;
 @MenuResource(R.menu.menu_activity_feed)
 public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
-
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
-    @Optional
-    @InjectView(R.id.post_avatar)
-    SimpleDraweeView avatar;
 
     BadgeImageView friendsBadge;
     BadgeImageView unreadConversationBadge;
@@ -140,6 +126,14 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     private void openPost() {
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .build());
+    }
+
+    private void openSharePhoto() {
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
                 .containerId(R.id.container_details_floating)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -148,6 +142,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
+                .data(new CreateEntityBundle(true))
                 .build());
     }
 
@@ -165,15 +160,16 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         }
     }
 
-    @Override
-    public void setUserAvatar(Uri uri) {
-        if (avatar != null) avatar.setImageURI(uri);
-    }
-
     @Optional
     @OnClick(R.id.share_post)
     protected void onPostClicked() {
         openPost();
+    }
+
+    @Optional
+    @OnClick(R.id.share_photo)
+    protected void onSharePhotoClick() {
+        openSharePhoto();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.messenger.ui.activity.MessengerActivity;
@@ -38,12 +37,6 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     Circle filterCircle;
     @State
     int unreadConversationCount;
-
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        view.setUserAvatar(Uri.parse(getAccount().getAvatar().getThumb()));
-    }
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -125,7 +118,5 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         void setRequestsCount(int count);
 
         void setUnreadConversationCount(int count);
-
-        void setUserAvatar(Uri uri);
     }
 }

@@ -46,6 +46,7 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
     @Override
     public void onResume() {
         super.onResume();
+        if (getArgs() != null && getArgs().isShowPickerImmediately()) photoPickerLayout.showPanel();
         updatePickerState();
     }
 

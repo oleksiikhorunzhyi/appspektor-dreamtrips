@@ -13,6 +13,13 @@ public class CreateEntityBundle implements Parcelable {
     private List<ChosenImage> images;
     private int imageType;
 
+    private boolean showPickerImmediately;
+
+    public CreateEntityBundle(boolean showPickerImmediately) {
+        this.showPickerImmediately = showPickerImmediately;
+        this.images = new ArrayList<>();
+    }
+
     public CreateEntityBundle(List<ChosenImage> images, int imageType) {
         this.images = images;
         this.imageType = imageType;
@@ -24,6 +31,10 @@ public class CreateEntityBundle implements Parcelable {
 
     public int getImageType() {
         return imageType;
+    }
+
+    public boolean isShowPickerImmediately() {
+        return showPickerImmediately;
     }
 
     @Override

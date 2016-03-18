@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
@@ -22,6 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.feed.view.util.NestedLinearLayoutManager;
@@ -157,10 +156,42 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .build());
     }
 
+    private void openPost() {
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .build());
+    }
+
+    private void openSharePhoto() {
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+                .containerId(R.id.container_details_floating)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .build());
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .data(new CreateEntityBundle(true))
+                .build());
+
+    }
+
     protected void openSearch() {
         router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
                 .data(new FriendGlobalSearchBundle(""))
                 .build());
+    }
+
+    @OnClick(R.id.share_post)
+    protected void onPostClicked() {
+        openPost();
+    }
+
+    @OnClick(R.id.share_photo)
+    protected void onSharePhotoClick() {
+        openSharePhoto();
     }
 
     @OnClick(R.id.global)
@@ -186,4 +217,3 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     }
 
 }
-

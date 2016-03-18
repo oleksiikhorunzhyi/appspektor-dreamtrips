@@ -36,6 +36,8 @@ public class CreateFeedPostPresenter extends CreateEntityPresenter<CreateFeedPos
 
     public void removeImage() {
         cachedUploadTask = null;
+        cachedRemovedPhotoTags.clear();
+        cachedAddedPhotoTags.clear();
         invalidateDynamicViews();
         view.attachPhoto(null);
         view.enableImagePicker();

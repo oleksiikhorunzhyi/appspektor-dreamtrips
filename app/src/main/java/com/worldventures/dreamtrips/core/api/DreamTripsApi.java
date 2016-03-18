@@ -327,10 +327,10 @@ public interface DreamTripsApi {
     @DELETE_WITH_BODY("/api/social/circles/{circle_id}/users")
     Void deleteFromGroup(@Path("circle_id") String groupId, @Field("user_ids[]") List<String> userIds);
 
-    @POST("/api/{uid}/like")
+    @POST("/api/{uid}/likes")
     Void likeEntity(@Path("uid") String uid);
 
-    @DELETE("/api/{uid}/like")
+    @DELETE("/api/{uid}/likes")
     Void dislikeEntity(@Path("uid") String uid);
 
     @GET("/api/{uid}/likes")

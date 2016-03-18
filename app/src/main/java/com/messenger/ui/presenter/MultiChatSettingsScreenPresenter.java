@@ -91,6 +91,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
                 getView().showAvatarPhotoPicker();
                 return true;
             case R.id.action_remove_chat_avatar:
+                getView().hideAvatarPhotoPicker();
                 onRemoveAvatar();
                 return true;
 

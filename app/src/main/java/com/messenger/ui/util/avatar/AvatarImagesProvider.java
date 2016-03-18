@@ -6,5 +6,6 @@ import rx.Observable;
 
 public interface AvatarImagesProvider {
     void showAvatarPhotoPicker();
+    void hideAvatarPhotoPicker();
     Observable<ChosenImage> getAvatarImagesStream();
 }

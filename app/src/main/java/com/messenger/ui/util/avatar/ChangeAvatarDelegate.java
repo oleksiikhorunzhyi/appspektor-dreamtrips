@@ -32,6 +32,11 @@ public class ChangeAvatarDelegate implements AvatarImagesProvider {
     }
 
     @Override
+    public void hideAvatarPhotoPicker() {
+        photoPickerLayoutDelegate.hidePicker();
+    }
+
+    @Override
     public Observable<ChosenImage> getAvatarImagesStream() {
         return imagesStream;
     }

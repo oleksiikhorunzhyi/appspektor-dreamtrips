@@ -102,4 +102,9 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     public void showAvatarPhotoPicker() {
         changeAvatarDelegate.showAvatarPhotoPicker();
     }
+
+    @Override
+    public void hideAvatarPhotoPicker() {
+        changeAvatarDelegate.hideAvatarPhotoPicker();
+    }
 }

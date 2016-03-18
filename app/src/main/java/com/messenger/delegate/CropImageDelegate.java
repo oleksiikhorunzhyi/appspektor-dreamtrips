@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.util.CopyFileTask;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 import io.techery.scalablecropp.library.Crop;
 import rx.Observable;
@@ -27,7 +28,7 @@ public class CropImageDelegate {
 
     private static final String TEMP_PHOTO_DIR = "cropped_images";
 
-    private Activity activity;
+    private WeakReference<Activity> activity;
     private Context context;
 
     private DreamSpiceManager dreamSpiceManager;
@@ -42,7 +43,7 @@ public class CropImageDelegate {
     }
 
     public void init(Activity activity) {
-        this.activity = activity;
+        this.activity = new WeakReference<>(activity);
         context = activity.getApplicationContext();
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
@@ -50,6 +51,9 @@ public class CropImageDelegate {
     }
 
     public void cropImage(ChosenImage image) {
+        if (activity == null) {
+            throw new IllegalStateException("You must call init() first");
+        }
         if (image != null) {
             String filePath = image.getFilePathOriginal();
             if (ValidationUtils.isUrl(filePath)) {
@@ -89,6 +93,9 @@ public class CropImageDelegate {
                 e -> reportError(e, "Could not copy avatar file from Facebook"));
     }
 
+    /*
+     * Called from onActivityResult()
+     */
     public void onCropFinished(String path, String errorMsg) {
         if (!TextUtils.isEmpty(path)) {
             reportSuccess(path);
@@ -124,6 +131,10 @@ public class CropImageDelegate {
     }
 
     private void startCropActivity(String path) {
-        Crop.prepare(path).ratio(ratioX, ratioY).startFrom(activity);
+        if (activity.get() == null) {
+            Timber.w("Cannot start cropping activity, starting activity is null");
+            return;
+        }
+        Crop.prepare(path).ratio(ratioX, ratioY).startFrom(activity.get());
     }
 }

@@ -85,7 +85,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DreamTrip points:"
+                    android:text="@string/dream_trips_points"
                     android:textColor="@color/black"
                     android:textSize="@dimen/font_normal"/>
 
@@ -110,7 +110,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rovia Bucks:"
+                    android:text="@string/rovia_bucks"
                     android:textColor="@color/black"
                     android:textSize="@dimen/font_normal"/>
 

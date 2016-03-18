@@ -620,5 +620,7 @@
     <string name="find_your_location">Find your location</string>
 
     <string name="who_is_this">Who is this?</string>
+    <string name="dream_trips_points">DreamTrip points:</string>
+    <string name="rovia_bucks">Rovia Bucks:</string>
 
 </resources>

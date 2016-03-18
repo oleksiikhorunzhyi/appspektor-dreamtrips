@@ -27,6 +27,8 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import flow.Flow;
@@ -42,6 +44,8 @@ import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTyp
 
 public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
+
+    private static final int SELECTED_CONVERSATION_DELAY = 400;
 
     @Inject
     DataUser user;
@@ -59,6 +63,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     //
     private PublishSubject<String> filterStream;
     private PublishSubject<String> typeStream;
+    private PublishSubject<DataConversation> selectedConversationStream;
     private Subscription conversationSubscription;
 
     public ConversationListScreenPresenterImpl(Context context) {
@@ -106,6 +111,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         connectTypeStream();
         connectToFilters();
         connectToOpenedConversation();
+        connectToSelectedConversationStream();
     }
 
     private void connectToOpenedConversation() {
@@ -144,6 +150,14 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
                 .subscribe(filters -> {
                     connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS) ? ConversationType.GROUP : null, filters.second);
                 }, throwable -> Timber.e(throwable, "Filter error"));
+    }
+
+    private void connectToSelectedConversationStream(){
+        selectedConversationStream = PublishSubject.<DataConversation>create();
+        selectedConversationStream
+                .throttleLast(SELECTED_CONVERSATION_DELAY, TimeUnit.MILLISECONDS)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(this::openConversation);
     }
 
     private void connectToConversations(@ConversationType.Type String type, String searchQuery) {
@@ -186,6 +200,10 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onConversationSelected(DataConversation conversation) {
+        selectedConversationStream.onNext(conversation);
+    }
+
+    public void openConversation(DataConversation conversation) {
         History.Builder historyBuilder = Flow.get(getContext()).getHistory()
                 .buildUpon();
         //

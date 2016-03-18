@@ -51,6 +51,7 @@ public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetails
                 additionalContainer.setVisibility(View.GONE);
             }
         }
+        recyclerView.post(() -> recyclerView.scrollBy(0, 1));
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -26,6 +27,9 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
+import icepick.Icepick;
+import icepick.State;
 import permissions.dispatcher.DeniedPermission;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -46,8 +50,17 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     Toolbar toolbar;
     @InjectView(R.id.input_location)
     EditText input;
+    @InjectView(R.id.progress)
+    View progress;
 
-    private Location obtainedLocation;
+    @State
+    Location obtainedLocation;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Icepick.restoreInstanceState(this, savedInstanceState);
+    }
 
     @Override
     protected LocationPresenter createPresenter(Bundle savedInstanceState) {
@@ -63,7 +76,9 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     @Override
     public void onResume() {
         super.onResume();
-        if (getArgs() != null && !TextUtils.isEmpty(getArgs().getName())) {
+        if (obtainedLocation != null && !TextUtils.isEmpty(obtainedLocation.getName())) {
+            setInputLocation(obtainedLocation.getName());
+        } else if (getArgs() != null && !TextUtils.isEmpty(getArgs().getName())) {
             setInputLocation(getArgs().getName());
         } else if (getPresenter().isGpsOn()) {
             fetchAndSetLocation();
@@ -73,15 +88,27 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        obtainedLocation = obtainedLocation == null ? new Location() : obtainedLocation;
+        obtainedLocation.setName(input.getText().toString());
+        Icepick.saveInstanceState(this, outState);
+    }
+
     private void fetchAndSetLocation() {
+        if (!TextUtils.isEmpty(input.getText())) return;
+        showProgress();
         getPresenter().getLocation().subscribe((Action1<Location>) location -> {
-            obtainedLocation = location;
-            setInputLocation(obtainedLocation.getName());
+            if (location != null) {
+                obtainedLocation = location;
+                setInputLocation(obtainedLocation.getName());
+            }
         });
     }
 
     private void initToolbar() {
-        toolbar.inflateMenu(R.menu.menu_photo_tag_screen);
+        toolbar.inflateMenu(R.menu.menu_add_location_screen);
         toolbar.setTitle(R.string.add_location);
         toolbar.setOnMenuItemClickListener(this::onToolBarMenuItemClicked);
         toolbar.setNavigationContentDescription(R.string.back);
@@ -121,8 +148,18 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         return result;
     }
 
+    @OnTextChanged(R.id.input_location)
+    void onTextChanged(CharSequence text) {
+        if (text.length() == 1) getPresenter().stopDetectLocation();
+    }
+
     @OnClick(R.id.clear_location)
     void clearLocation() {
+        if (obtainedLocation != null) {
+            obtainedLocation.setName("");
+            obtainedLocation.setLng(0);
+            obtainedLocation.setLat(0);
+        }
         setInputLocation(null);
     }
 
@@ -136,8 +173,12 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         // All required changes were successfully made
-                        getPresenter().onPermissionGranted();
-                        fetchAndSetLocation();
+                        if (getPresenter().isGpsOn()) {
+                            getPresenter().onPermissionGranted();
+                            fetchAndSetLocation();
+                        } else {
+                            getPresenter().locationNotGranted();
+                        }
                         break;
                     case Activity.RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to
@@ -149,6 +190,18 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
                 activityResultDelegate.clear();
                 break;
         }
+    }
+
+    @Override
+    public void showProgress() {
+        progress.setVisibility(View.VISIBLE);
+        toolbar.getMenu().findItem(R.id.action_done).setEnabled(false);
+    }
+
+    @Override
+    public void hideProgress() {
+        progress.setVisibility(View.GONE);
+        toolbar.getMenu().findItem(R.id.action_done).setEnabled(true);
     }
 
     @Override

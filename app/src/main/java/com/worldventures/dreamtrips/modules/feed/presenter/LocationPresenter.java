@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.LocationManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -28,6 +30,8 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
     @Inject
     LocationDelegate gpsLocationDelegate;
 
+    private boolean isCanceled;
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
@@ -43,12 +47,31 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
     }
 
     public boolean isGpsOn() {
-        LocationManager manager = (LocationManager) view.getContext().getSystemService(Context.LOCATION_SERVICE);
-        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        int locationMode = 0;
+        String locationProviders;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (Settings.SettingNotFoundException e) {
+                Timber.e(e, "");
+            }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
+    public void stopDetectLocation() {
+        isCanceled = true;
+        view.hideProgress();
     }
 
     @NonNull
     private Location getLocationFromAndroidLocation(android.location.Location location) {
+        view.hideProgress();
+        if (isCanceled) return null;
         Geocoder coder = new Geocoder(view.getContext(), Locale.ENGLISH);
         Location newLocation = new Location();
         try {
@@ -94,5 +117,9 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
         void resolutionRequired(Status status);
 
         Context getContext();
+
+        void showProgress();
+
+        void hideProgress();
     }
 }

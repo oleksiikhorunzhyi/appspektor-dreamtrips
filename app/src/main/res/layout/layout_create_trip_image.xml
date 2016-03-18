@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
                 android:id="@+id/avatar"
                 android:layout_width="@dimen/size_large"
                 android:layout_height="@dimen/size_large"

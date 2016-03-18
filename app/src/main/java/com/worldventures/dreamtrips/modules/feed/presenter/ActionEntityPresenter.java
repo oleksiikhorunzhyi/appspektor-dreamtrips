@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -38,7 +39,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     protected void updateUi() {
         view.setName(getAccount().getFullName());
-        view.setAvatar(getAccount().getAvatar().getThumb());
+        view.setAvatar(getAccount());
         view.setText(cachedText);
     }
 
@@ -139,7 +140,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
         void setName(String userName);
 
-        void setAvatar(String avatarUrl);
+        void setAvatar(User user);
 
         void setText(String text);
 

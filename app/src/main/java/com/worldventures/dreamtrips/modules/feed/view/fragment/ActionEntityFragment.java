@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -21,8 +23,10 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -34,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -47,8 +52,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     @Inject
     BackStackDelegate backStackDelegate;
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
     @InjectView(R.id.avatar)
-    protected SimpleDraweeView avatar;
+    protected SmartAvatarView avatar;
     @InjectView(R.id.attached_photo)
     protected SimpleDraweeView attachedPhoto;
     @InjectView(R.id.name)
@@ -166,8 +175,9 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     }
 
     @Override
-    public void setAvatar(String avatarUrl) {
-        avatar.setImageURI(Uri.parse(avatarUrl));
+    public void setAvatar(User user) {
+        avatar.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+        avatar.setup(user, injectorProvider.get());
     }
 
     @Override

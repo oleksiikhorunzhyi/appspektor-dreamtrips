@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -28,6 +30,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.util.FullScreenPhot
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -51,11 +54,14 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Inject
     SnappyRepository db;
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount());
+        viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injectorProvider.get());
         viewDelegate.setContentVisibilityListener(this);
     }
 

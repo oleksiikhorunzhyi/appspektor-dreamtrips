@@ -24,10 +24,6 @@ public class FriendCell extends BaseUserCell {
     @Inject
     protected DrawableUtil drawableUtil;
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-
     public FriendCell(View view) {
         super(view);
     }
@@ -39,7 +35,6 @@ public class FriendCell extends BaseUserCell {
         String circleName = getModelObject().getCirclesString();
         tvGroup.setVisibility(TextUtils.isEmpty(circleName) ? View.GONE : View.VISIBLE);
         tvGroup.setText(circleName);
-        ((SmartAvatarView)sdvAvatar).setup(getModelObject(), injectorProvider.get());
     }
 
     @Override

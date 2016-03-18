@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Pair;
 import android.view.MenuItem;
 
+import com.messenger.delegate.ConversationAvatarDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.delegate.CropImageDelegate;
@@ -17,6 +18,7 @@ import java.io.File;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> {
@@ -26,6 +28,8 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
 
     @Inject
     CropImageDelegate cropImageDelegate;
+    @Inject
+    ConversationAvatarDelegate conversationAvatarDelegate;
 
     public MultiChatSettingsScreenPresenter(Context context, String conversationId) {
         super(context, conversationId);
@@ -37,51 +41,44 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         cropImageDelegate.setAspectRatio(ASPECT_RATIO_AVATAR_X, ASPECT_RATIO_AVATAR_Y);
         getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
         Observable.combineLatest(cropImageDelegate.getCroppedImagesStream(),
-                conversationObservable, (image, conversation) -> new Pair<>(conversation, image))
+                conversationObservable.first(),
+                (image, conversation) -> new Pair<>(conversation, image))
+                .compose(bindView())
                 .subscribe(pair -> onAvatarCropped(pair.first, pair.second),
-                e -> {
-                    Timber.w(e, "Could not crop avatar image");
-                    getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-                });
+                getErrorAction("Could not crop avatar image"));
     }
 
     protected void onAvatarCropped(DataConversation conversation, File croppedAvatarFile) {
-        conversation.setAvatar(Uri.fromFile(croppedAvatarFile).toString());
+        String path = Uri.fromFile(croppedAvatarFile).toString();
+        conversation.setAvatar(path);
+        // TODO do this from updates from ConversationDAO
         getView().setConversation(conversation);
-        // TODO add uploading to Amazon here
-    }
+        conversationAvatarDelegate.saveAvatar(conversation)
+                .compose(bindView())
+                .subscribe(c -> getView().setConversation(c), getErrorAction("Could not save avatar"));
+}
 
     protected void onRemoveAvatar() {
-        // Temp, for testing purposes
-        setAvatar("https://kdetalk.net/images/xmpp_logo.png");
-        // setAvatar("");
+        conversationObservable
+                .flatMap(conversationAvatarDelegate::removeAvatar)
+                .subscribe(c -> getView().setConversation(c), getErrorAction("Could not remove avatar"));
+    }
+
+    private Action1<Throwable> getErrorAction(String logMessage) {
+        return e -> {
+            Timber.w(e, logMessage);
+            getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+            conversationObservable.first().subscribe(conversation -> {
+                conversation.setAvatar(null);
+                conversationsDAO.save(conversation);
+                getView().setConversation(conversation);
+            });
+        };
     }
 
     @Override
     public void onConversationAvatarClick() {
         // nothing to do
-    }
-
-    public void setAvatar(String avatarUrl) {
-        Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
-                .createMultiUserChatObservable(conversationId, facade.getUsername())
-                .flatMap(multiUserChat -> multiUserChat.setAvatar(avatarUrl))
-                .map(multiUserChat -> {
-                    multiUserChat.close();
-                    return multiUserChat;
-                });
-
-        Observable.zip(multiUserChatObservable, conversationObservable.first(),
-                (multiUserChat, conversation) -> conversation)
-                .compose(new IoToMainComposer<>())
-                .subscribe(conversation -> {
-                    conversation.setAvatar(avatarUrl);
-                    conversationsDAO.save(conversation);
-                    getView().setConversation(conversation);
-                }, e -> {
-                    Timber.w(e, "Could not set avatar on XMPP server");
-                    getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-                });
     }
 
     @Override

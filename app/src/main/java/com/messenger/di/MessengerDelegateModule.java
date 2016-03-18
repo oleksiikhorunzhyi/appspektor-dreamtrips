@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.ConversationAvatarDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
@@ -111,5 +112,11 @@ public class MessengerDelegateModule {
     @Singleton
     CropImageDelegate provideCropImageDelegate(DreamSpiceManager dreamSpiceManager) {
         return new CropImageDelegate(dreamSpiceManager);
+    }
+
+    @Provides
+    @Singleton
+    ConversationAvatarDelegate provideCropImageDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {
+        return new ConversationAvatarDelegate(photoUploadingManager, messengerServerFacade, conversationsDAO);
     }
 }

@@ -135,8 +135,8 @@ public class MessengerConnector {
         public void onSuccess() {
             if (!spiceManager.isStarted()) spiceManager.start(applicationContext);
             messengerCacheSynchronizer.updateCache(success -> {
-                messengerServerFacade.setPresenceStatus(success);
-                connectionStream.onNext(success ? CONNECTED : ERROR);
+                boolean statusSet = messengerServerFacade.setPresenceStatus(success);
+                connectionStream.onNext(success && statusSet ? CONNECTED : ERROR);
             });
         }
 

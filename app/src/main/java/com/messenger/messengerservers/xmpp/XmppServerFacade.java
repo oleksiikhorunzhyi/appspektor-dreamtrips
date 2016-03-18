@@ -169,12 +169,13 @@ public class XmppServerFacade implements MessengerServerFacade {
     }
 
     @Override
-    public void setPresenceStatus(boolean active) {
+    public boolean setPresenceStatus(boolean active) {
         try {
             connection.sendStanza(new Presence(active ? Presence.Type.available : Presence.Type.unavailable));
-            this.active = true;
+            return this.active = true;
         } catch (SmackException.NotConnectedException e) {
             Timber.w(e, "Presence failed");
+            return false;
         }
     }
 

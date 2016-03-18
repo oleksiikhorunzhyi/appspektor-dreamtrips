@@ -5,10 +5,9 @@ import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoReuploadRequestEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoUploadCancelRequestEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import butterknife.InjectView;
@@ -17,7 +16,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_bucket_photo_upload_cell)
-public class BucketPhotoUploadCell extends AbstractCell<UploadTask> {
+public class BucketPhotoUploadCell extends AbstractDelegateCell<UploadTask, BucketPhotoUploadCellDelegate> {
 
     @InjectView(R.id.imageViewPhoto)
     protected SimpleDraweeView ivPhoto;
@@ -55,10 +54,6 @@ public class BucketPhotoUploadCell extends AbstractCell<UploadTask> {
 
     @OnClick(R.id.fab_progress)
     public void onCellClick() {
-        if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {
-            getEventBus().post(new BucketPhotoReuploadRequestEvent(getModelObject()));
-        } else {
-            getEventBus().post(new BucketPhotoUploadCancelRequestEvent(getModelObject()));
-        }
+        cellDelegate.onCellClicked(getModelObject());
     }
 }

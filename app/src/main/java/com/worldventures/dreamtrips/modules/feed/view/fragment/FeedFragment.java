@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -13,7 +13,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -44,6 +43,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     RouteCreator<Integer> routeCreator;
 
     BadgeImageView friendsBadge;
+    BadgeImageView unreadConversationBadge;
 
     private CirclesFilterPopupWindow filterPopupWindow;
 
@@ -69,26 +69,29 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     private void restorePostIfNeeded() {
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        BaseFragment baseFragment = fragmentCompass.getCurrentFragment();
-        if (baseFragment instanceof PostFragment) {
-            showPostContainer();
-        }
+
     }
 
     @Override
     protected void onMenuInflated(Menu menu) {
         super.onMenuInflated(menu);
-        MenuItem item = menu.findItem(R.id.action_friend_requests);
-        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(item);
+        MenuItem friendsItem = menu.findItem(R.id.action_friend_requests);
+        friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(friendsItem);
+        setRequestsCount(getPresenter().getFriendsRequestsCount());
         friendsBadge.setOnClickListener(v -> {
-            NavigationBuilder.create()
-                    .with(activityRouter)
+            router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity()
                     .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                    .attach(Route.FRIENDS);
+                    .build());
             TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_OPEN_FRIENDS);
         });
-        setRequestsCount(getPresenter().getFriendsRequestsCount());
+
+        MenuItem conversationItem = menu.findItem(R.id.action_unread_conversation);
+        if (conversationItem != null) {
+            unreadConversationBadge = (BadgeImageView) MenuItemCompat.getActionView(conversationItem);
+            unreadConversationBadge.setImage(R.drawable.messenger_icon_white);
+            unreadConversationBadge.setBadgeValue(getPresenter().getUnreadConversationCount());
+            unreadConversationBadge.setOnClickListener(v -> getPresenter().onUnreadConversationsClick());
+        }
     }
 
     @Override
@@ -136,32 +139,39 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     private void openPost() {
         showPostContainer();
 
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-        //
-        NavigationBuilder.create()
-                .with(fragmentCompass)
-                .attach(Route.POST_CREATE);
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .build());
     }
 
     private void openSharePhoto() {
         showPostContainer();
 
-        fragmentCompass.removePost();
-        fragmentCompass.disableBackStack();
-        fragmentCompass.setContainerId(R.id.container_details_floating);
-
-        NavigationBuilder.create()
-                .with(fragmentCompass)
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+                .containerId(R.id.container_details_floating)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .build());
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
                 .data(new PostBundle(null, PostBundle.PHOTO))
-                .attach(Route.POST_CREATE);
-
+                .build());
     }
 
     @Override
     public void setRequestsCount(int count) {
         if (friendsBadge != null) {
             friendsBadge.setBadgeValue(count);
+        }
+    }
+
+    @Override
+    public void setUnreadConversationCount(int count) {
+        if (unreadConversationBadge != null) {
+            unreadConversationBadge.setBadgeValue(count);
         }
     }
 

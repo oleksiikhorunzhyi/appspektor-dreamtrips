@@ -53,10 +53,8 @@ public class PostEditPresenter extends PostPresenter {
         }
     }
 
-    @Override
     public void cancel() {
         textualPost.setDescription(IMMUTABLE_INPUT);
-        super.cancel();
     }
 
     @Override

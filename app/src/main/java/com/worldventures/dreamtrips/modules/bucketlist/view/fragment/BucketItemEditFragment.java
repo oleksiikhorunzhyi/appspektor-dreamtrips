@@ -21,21 +21,20 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoCellDelegate;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.Calendar;
 import java.util.List;
@@ -48,7 +47,7 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
-public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
+public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
 
     @Inject
@@ -164,8 +163,8 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        bucketPhotosView.init(this, BucketPhotosView.Type.EDIT);
-
+        setupPhotoCellCallbacks();
+        bucketPhotosView.init(this);
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
@@ -173,7 +172,27 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
         inject(photoPickerLayout);
         photoPickerLayout.setup(getChildFragmentManager(), true, 5);
         photoPickerLayout.hidePanel();
-        photoPickerLayout.setOnDoneClickListener(chosenImages -> getPresenter().attachImages(chosenImages, PickImageDelegate.REQUEST_MULTI_SELECT));
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
+    }
+
+    protected void setupPhotoCellCallbacks() {
+        bucketPhotosView.setBucketAddPhotoCellDelegate(model -> {
+            if (isVisibleOnScreen()) {
+                showPhotoPicker();
+            }
+        });
+        bucketPhotosView.setBucketPhotoUploadCellDelegate(getPresenter()::onUploadTaskClicked);
+        bucketPhotosView.setBucketPhotoCellDelegate(new BucketPhotoCellDelegate() {
+            @Override
+            public void deletePhotoRequest(BucketPhoto photo) {
+                getPresenter().deletePhotoRequest(photo);
+            }
+
+            @Override
+            public void onCellClicked(BucketPhoto model) {
+
+            }
+        });
     }
 
     @Override
@@ -288,11 +307,6 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     }
 
     @Override
-    public IBucketPhotoView getBucketPhotosView() {
-        return bucketPhotosView;
-    }
-
-    @Override
     public void hidePhotoPicker() {
         photoPickerLayout.hidePanel();
     }
@@ -314,7 +328,9 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        NavigationBuilder.create().with(activityRouter).data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
     }
 
     @Override
@@ -353,7 +369,7 @@ public class BucketItemEditFragment extends BaseFragmentWithArgs<BucketItemEditP
     }
 
     @Override
-    public UploadTask getBucketPhotoUploadTask(String taskId) {
+    public UploadTask getBucketPhotoUploadTask(long taskId) {
         return bucketPhotosView.getBucketPhotoUploadTask(taskId);
     }
 

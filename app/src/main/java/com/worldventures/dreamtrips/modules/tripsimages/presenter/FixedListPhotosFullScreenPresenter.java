@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
+import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -33,7 +34,12 @@ public class FixedListPhotosFullScreenPresenter extends TripImagesListPresenter<
     }
 
     @Override
-    public TripImagesRoboSpiceController getTripImagesRoboSpiceController() {
+    protected SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
+        return null;
+    }
+
+    @Override
+    protected SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
         return null;
     }
 

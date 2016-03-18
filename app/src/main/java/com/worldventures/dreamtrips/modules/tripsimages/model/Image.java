@@ -6,9 +6,7 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 
 import java.io.Serializable;
 

@@ -18,19 +18,24 @@ import java.util.List;
 
 public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter<CreationPhotoTaggableHolderPresenter.View> {
 
+    private static final int PAGE_SIZE = 100;
+
     private boolean addComplete, deleteComplete, updated;
 
     public CreationPhotoTaggableHolderPresenter(Photo photo) {
         super(photo);
     }
 
-    public void addPhotoTag(PhotoTag tag) {
-        view.addTag(tag);
+    @Override
+    public void showExistingTags() {
+        view.showSuggestions();
+        super.showExistingTags();
     }
 
     @Override
     public void deletePhotoTag(PhotoTag tag) {
         view.deleteTag(tag);
+        view.showSuggestions();
     }
 
     public void pushRequests() {
@@ -52,6 +57,9 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
             doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
                 newDeletedTags.clear();
                 deleteComplete = true;
+                List<PhotoTag> tags = Queryable.from(photo.getPhotoTags())
+                        .filter(tag -> userIds.contains(tag.getUser().getId())).toList();
+                photo.getPhotoTags().removeAll(tags);
                 onComplete();
             });
         } else {
@@ -81,8 +89,8 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         });
     }
 
-    public void loadFriends(String query, CreationTagView tagView) {
-        doRequest(new GetFriendsQuery(null, query, 1, 100), friends -> {
+    public void loadFriends(String query, int nextPage, CreationTagView tagView) {
+        doRequest(new GetFriendsQuery(null, query, nextPage, PAGE_SIZE), friends -> {
             if (ViewCompat.isAttachedToWindow(tagView)) {
                 tagView.setUserFriends(Queryable.from(friends).filter(user -> !isUserExists(user)).toList());
             }
@@ -97,7 +105,7 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
     }
 
     private boolean isContainUser(List<PhotoTag> tagList, User user) {
-        return Queryable.from(tagList).map(tag -> tag.getUser()).contains(user);
+        return Queryable.from(tagList).map(tag -> tag.getUser() == null ? new User() : tag.getUser()).contains(user);
     }
 
     public interface View extends TaggableImageHolderPresenter.View {
@@ -110,6 +118,8 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         ArrayList<PhotoTag> getLocallyAddedTags();
 
         ArrayList<PhotoTag> getLocallyDeletedTags();
+
+        void showSuggestions();
     }
 
 }

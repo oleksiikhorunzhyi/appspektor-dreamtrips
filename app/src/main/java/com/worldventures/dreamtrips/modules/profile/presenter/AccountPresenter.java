@@ -97,7 +97,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         this.user.setAvatar(currentUser.getAvatar());
         this.user.setAvatarUploadInProgress(false);
         view.notifyUserChanged();
-        eventBus.post(new UpdateUserInfoEvent(user));
+        eventBus.postSticky(new UpdateUserInfoEvent(user));
     }
 
     private void onCoverUploadSuccess(User obj) {
@@ -112,7 +112,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         if (coverTempFilePath != null) {
             new File(coverTempFilePath).delete();
         }
-        eventBus.post(new UpdateUserInfoEvent(user));
+        eventBus.postSticky(new UpdateUserInfoEvent(user));
     }
 
     @Override
@@ -295,6 +295,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public interface View extends ProfilePresenter.View {
+
         void openAvatarPicker();
 
         void openCoverPicker();

@@ -27,7 +27,7 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
         }
     }
 
-    public TagPosition getPosition() {
+    public TagPosition getProportionalPosition() {
         return position;
     }
 
@@ -39,6 +39,13 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
         this.position = position;
     }
 
+    public static PhotoTag cloneTag(PhotoTag photoTag) {
+        PhotoTag result = new PhotoTag();
+        result.targetUserId = photoTag.targetUserId;
+        result.position = photoTag.position;
+        result.user = photoTag.user;
+        return result;
+    }
 
     public static class TagPosition implements Parcelable, Serializable {
 
@@ -96,6 +103,22 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
             dest.writeParcelable(topLeft, flags);
             dest.writeParcelable(bottomRight, flags);
         }
+
+        public boolean intersected(TagPosition tagPosition) {
+            if (this.getTopLeft().getX() > tagPosition.getBottomRight().getX() || this.getBottomRight().getX() < tagPosition.getTopLeft().getX() ||
+                    this.getTopLeft().getY() > tagPosition.getBottomRight().getY() || this.getBottomRight().getY() < tagPosition.getTopLeft().getY()) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "TagPosition{" +
+                    "topLeft=" + topLeft +
+                    ", bottomRight=" + bottomRight +
+                    '}';
+        }
     }
 
     public static class Position implements Parcelable, Serializable {
@@ -146,6 +169,14 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeFloat(x);
             dest.writeFloat(y);
+        }
+
+        @Override
+        public String toString() {
+            return "Position{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
         }
     }
 

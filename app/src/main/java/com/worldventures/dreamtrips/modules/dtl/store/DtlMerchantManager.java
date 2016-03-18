@@ -21,6 +21,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterP
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,8 +113,10 @@ public class DtlMerchantManager {
         if (filterData == null) {
             filterData = ImmutableDtlFilterData.builder().build();
         }
+        Setting distanceSetting = Queryable.from(db.getSettings()).filter(setting ->
+                setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
         filterData = ImmutableDtlFilterData.copyOf(filterData)
-                .withDistanceType(db.getMerchantsDistanceType());
+                .withDistanceType(DistanceType.provideFromSetting(distanceSetting));
         filterStream.onNext(filterData);
     }
 

@@ -7,35 +7,42 @@ import android.view.View;
 
 public class EmptyRecyclerView extends RecyclerView {
 
+    private AdapterDataObserver adapterDataCallback;
+
     protected final AdapterDataObserver observer = new AdapterDataObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
             checkIfEmpty();
+            if (adapterDataCallback != null) adapterDataCallback.onChanged();
         }
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
             super.onItemRangeChanged(positionStart, itemCount);
             checkIfEmpty();
+            if (adapterDataCallback != null) adapterDataCallback.onItemRangeChanged(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
             super.onItemRangeInserted(positionStart, itemCount);
             checkIfEmpty();
+            if (adapterDataCallback != null) adapterDataCallback.onItemRangeInserted(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             super.onItemRangeMoved(fromPosition, toPosition, itemCount);
             checkIfEmpty();
+            if (adapterDataCallback != null) adapterDataCallback.onItemRangeMoved(fromPosition, toPosition, itemCount);
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
             super.onItemRangeRemoved(positionStart, itemCount);
             checkIfEmpty();
+            if (adapterDataCallback != null) adapterDataCallback.onItemRangeRemoved(positionStart, itemCount);
         }
     };
 
@@ -88,5 +95,9 @@ public class EmptyRecyclerView extends RecyclerView {
     public void setEmptyView(View emptyView) {
         this.emptyView = emptyView;
         checkIfEmpty();
+    }
+
+    public void setAdapterDataCallback(AdapterDataObserver adapterDataCallback) {
+        this.adapterDataCallback = adapterDataCallback;
     }
 }

@@ -12,7 +12,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import timber.log.Timber;
 
-
 public class AdapterHelper {
     private final LayoutInflater layoutInflater;
 

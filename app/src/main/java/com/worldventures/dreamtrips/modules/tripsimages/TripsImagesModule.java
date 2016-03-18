@@ -1,13 +1,17 @@
 package com.worldventures.dreamtrips.modules.tripsimages;
 
+import android.content.Context;
+
+import com.messenger.ui.fragment.MessageImageFullscreenFragment;
+import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.common.presenter.PreviewPhotoTaggableHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.api.GetMembersPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
@@ -16,7 +20,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPrese
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesTabsPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MemberImagesPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.YSBHPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.FullScreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.BucketFullscreenPresenter;
@@ -53,7 +57,7 @@ import dagger.Provides;
                 TripImagesListPresenter.class,
                 InspireMePresenter.class,
                 AccountImagesPresenter.class,
-                MemberImagesPresenter.class,
+                MembersImagesPresenter.class,
                 YSBHPresenter.class,
                 FullScreenPhotoFragment.class,
                 CreatePhotoParentPresenter.class,
@@ -75,7 +79,6 @@ import dagger.Provides;
                 PhotoCell.class,
                 PhotoUploadCell.class,
 
-                GetMembersPhotosQuery.class,
                 FullScreenPhotoWrapperFragment.class,
                 GetUserPhotosQuery.class,
                 AccountImagesListFragment.class,
@@ -91,6 +94,9 @@ import dagger.Provides;
 
                 InspirationFullscreenPresenter.class,
                 TripImageFullscreenPresenter.class,
+
+                MessageImageFullscreenFragment.class,
+                MessageImageFullscreenPresenter.class,
 
                 TaggableImageHolderPresenter.class,
                 CreationPhotoTaggableHolderPresenter.class,
@@ -109,4 +115,10 @@ public class TripsImagesModule {
     ComponentDescription provideTripImagesComponent() {
         return new ComponentDescription(TRIP_IMAGES, R.string.trip_images, R.string.trip_images, R.drawable.ic_trip_images, TripImagesTabsFragment.class);
     }
+
+    @Provides
+    DrawableUtil provideDrawableUtil(Context context) {
+        return new DrawableUtil(context);
+    }
+
 }

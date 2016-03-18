@@ -59,6 +59,9 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
     ZXingScannerView scanner;
     //
     private DtlEnrollWizard dtlEnrollWizard;
+    //
+    private SweetAlertDialog progressDialog;
+    private SweetAlertDialog alertDialog;
 
     @Override
     protected DtlScanQrCodePresenter createPresenter(Bundle savedInstanceState) {
@@ -134,25 +137,23 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
         getActivity().finish();
     }
 
-    private SweetAlertDialog pDialog;
-
     @Override
     public void hideProgress() {
-        if (pDialog != null) pDialog.dismissWithAnimation();
+        if (progressDialog != null) progressDialog.dismissWithAnimation();
     }
 
     @Override
     public void showProgress(@StringRes int titleText) {
-        if (pDialog == null || !pDialog.isShowing()) {
+        if (progressDialog == null || !progressDialog.isShowing()) {
             scanner.stopCamera();
             //
-            pDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
-            pDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
-            pDialog.setTitleText(getString(titleText));
-            pDialog.setCancelable(false);
-            pDialog.show();
+            progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
+            progressDialog.getProgressHelper().setBarColor(getResources().getColor(R.color.theme_main));
+            progressDialog.setTitleText(getString(titleText));
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         } else
-            pDialog.setTitle(getString(titleText));
+            progressDialog.setTitle(getString(titleText));
     }
 
     @Override
@@ -170,8 +171,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
             scanner.startCamera();
         });
     }
-
-    SweetAlertDialog alertDialog;
 
     private void showImageUploadError(SweetAlertDialog.OnSweetClickListener onSweetClickListener) {
         if (alertDialog != null && alertDialog.isShowing()) return;

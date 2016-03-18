@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.cell.filter;
 
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -7,7 +8,6 @@ import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 
@@ -30,7 +30,7 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
     protected TextView textViewEnd;
 
     @Inject
-    protected FragmentCompass fragmentCompass;
+    protected FragmentManager fragmentManager;
 
     public DateCell(View view) {
         super(view);
@@ -61,12 +61,16 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
             calendar.setTime(getModelObject().getStartDate());
         }
 
+        Calendar startDate = Calendar.getInstance();
+        startDate.setTime(getModelObject().getStartDate());
+        int startYear = startDate.get(Calendar.YEAR);
+
         DatePickerDialog datePickerDialog =
                 DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH), false);
-        datePickerDialog.setYearRange(calendar.get(Calendar.YEAR), calendar.get(Calendar.YEAR) + 5);
-        datePickerDialog.show(fragmentCompass.getFragmentManager(), tag);
+        datePickerDialog.setYearRange(startYear, calendar.get(Calendar.YEAR) + 5);
+        datePickerDialog.show(fragmentManager, tag);
     }
 
     @Override
@@ -111,6 +115,7 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
     private boolean validateStartDate(Calendar selectedStartDate) {
         return selectedStartDate.getTimeInMillis() < getModelObject().getEndDate().getTime();
     }
+
     @Override
     public void prepareForReuse() {
         //nothing to do here

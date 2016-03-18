@@ -122,7 +122,6 @@ public class FacebookAlbumFragment extends BaseFragment<FacebookAlbumPresenter> 
         super.onDestroyView();
     }
 
-
     @Override
     protected FacebookAlbumPresenter createPresenter(Bundle savedInstanceState) {
         return new FacebookAlbumPresenter();

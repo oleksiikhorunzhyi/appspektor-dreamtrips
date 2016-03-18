@@ -4,13 +4,10 @@ import android.app.Activity;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.DreamSpiceAdapterController;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
@@ -24,7 +21,6 @@ import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -43,7 +39,6 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     private boolean loadFromApi;
     private boolean loadWithStatus;
 
-    private DreamSpiceAdapterController<TripModel> adapterController;
     private SweetDialogHelper sweetDialogHelper;
 
     public TripListPresenter() {
@@ -52,65 +47,11 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
 
     @Override
     public void onInjected() {
-        adapterController = new DreamSpiceAdapterController<TripModel>() {
-            @Override
-            public SpiceRequest<ArrayList<TripModel>> getReloadRequest() {
-                boolean makeApiCall = loadFromApi || cacheEmpty() || resetCacheOnStart();
-                return new GetTripsQuery(db, prefs, makeApiCall);
-            }
-
-            @Override
-            public void onStart(LoadType loadType) {
-                super.onStart(loadType);
-                if (loadWithStatus || cacheEmpty()) {
-                    view.startLoading();
-                }
-            }
-
-            @Override
-            protected void onRefresh(ArrayList<TripModel> tripModels) {
-                super.onRefresh(performFiltering(tripModels));
-                cachedTrips.clear();
-                cachedTrips.addAll(tripModels);
-            }
-
-            @Override
-            public void onFinish(LoadType type, List<TripModel> items, SpiceException spiceException) {
-                if (view == null) return;
-                loadFromApi = false;
-                view.finishLoading();
-                if (spiceException != null) {
-                    handleError(spiceException);
-                } else if (shouldUpdate()) {
-                    loadWithStatus = false;
-                    loadFromApi = true;
-                    reload();
-                }
-            }
-
-            private Boolean cacheEmpty() {
-                return db.isEmpty(SnappyRepository.TRIP_KEY);
-            }
-
-            private boolean shouldUpdate() {
-                long current = Calendar.getInstance().getTimeInMillis();
-                return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
-            }
-
-            /** one-time fix to deal with deploy issue */
-            private static final long RESET_POINT = 1443501000;
-
-            private boolean resetCacheOnStart() {
-                return prefs.getLong(Prefs.LAST_SYNC) / 1000 < RESET_POINT;
-            }
-        };
-        adapterController.setSpiceManager(dreamSpiceManager);
         entityManager.setRequestingPresenter(this);
     }
 
     public void takeView(View view) {
         super.takeView(view);
-        adapterController.setAdapter(view.getAdapter());
         TrackingHelper.dreamTrips(getAccountUserId());
     }
 
@@ -120,19 +61,60 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         loadWithStatus = true;
         loadFromApi = false;
-        adapterController.reload();
-    }
-
-    @Override
-    public void dropView() {
-        adapterController.setAdapter(null);
-        super.dropView();
+        reload();
     }
 
     public void loadFromApi() {
         loadFromApi = true;
         loadWithStatus = true;
-        adapterController.reload();
+        reload();
+    }
+
+    public void reload() {
+        if (loadWithStatus || cacheEmpty()) {
+            view.startLoading();
+        }
+        //
+        boolean makeApiCall = loadFromApi || cacheEmpty() || resetCacheOnStart();
+        doRequest(new GetTripsQuery(db, prefs, makeApiCall), items -> {
+            cachedTrips.clear();
+            cachedTrips.addAll(items);
+            //
+            view.finishLoading();
+            //
+            loadFromApi = false;
+            if (shouldUpdate()) {
+                loadWithStatus = false;
+                loadFromApi = true;
+                reload();
+            }
+            //
+            view.getAdapter().clear();
+            view.getAdapter().addItems(performFiltering(items));
+            view.getAdapter().notifyDataSetChanged();
+        });
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        view.finishLoading();
+        super.handleError(error);
+    }
+
+    private Boolean cacheEmpty() {
+        return db.isEmpty(SnappyRepository.TRIP_KEY);
+    }
+
+    private boolean shouldUpdate() {
+        long current = Calendar.getInstance().getTimeInMillis();
+        return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
+    }
+
+    /** one-time fix to deal with deploy issue */
+    private static final long RESET_POINT = 1443501000;
+
+    private boolean resetCacheOnStart() {
+        return prefs.getLong(Prefs.LAST_SYNC) / 1000 < RESET_POINT;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -212,11 +194,8 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         view.showErrorMessage();
     }
 
-    public void actionMap() {
-        fragmentCompass.replace(Route.MAP);
-    }
-
     public interface View extends Presenter.View {
+
         void dataSetChanged();
 
         void showErrorMessage();

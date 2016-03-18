@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -51,10 +52,28 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
     public void onResume() {
         super.onResume();
         photoPickerDelegate.attachScrollableView(picker);
-        photoPickerDelegate.setSelectedPhotosProvider(() -> getPresenter().getSelectedPhotos());
+        photoPickerDelegate.setSelectedPhotosProvider(new PhotoPickerDelegate.SelectedPhotosProvider() {
+            @Override
+            public List<ChosenImage> provideSelectedPhotos() {
+                return getPresenter().getSelectedPhotos();
+            }
+
+            @Override
+            public int getType() {
+                return getPhotosType();
+            }
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        photoPickerDelegate.setSelectedPhotosProvider(null);
     }
 
     protected abstract void registerCells();
+
+    protected abstract int getPhotosType();
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {

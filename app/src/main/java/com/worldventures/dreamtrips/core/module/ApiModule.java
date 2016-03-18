@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
+import com.worldventures.dreamtrips.core.api.UploaderyApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
@@ -31,6 +32,9 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsDeserializer;
+import com.worldventures.dreamtrips.modules.settings.model.serializer.SettingsSerializer;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -55,6 +59,23 @@ public class ApiModule {
     @Provides
     DreamTripsApi provideApi(RestAdapter adapter) {
         return adapter.create(DreamTripsApi.class);
+    }
+
+    @Provides
+    UploaderyApi provideImageryApi(RestAdapter.Builder adapterBuilder, SessionHolder<UserSession> appSessionHolder) {
+        UploaderyApi api = null;
+        if (appSessionHolder.get().isPresent()) {
+            AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
+            if (appConfig != null) {
+                AppConfig.URLS urls = appConfig.getUrls();
+                if (urls.getProduction().getUploaderyBaseURL() != null)
+                    api = adapterBuilder
+                            .setEndpoint(urls.getProduction().getUploaderyBaseURL())
+                            .build()
+                            .create(UploaderyApi.class);
+            }
+        }
+        return api;
     }
 
     @Provides
@@ -111,6 +132,8 @@ public class ApiModule {
                 .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())
                 .registerTypeAdapter(FeedEntityHolder.class, new FeedEntityDeserializer())
                 .registerTypeAdapter(DtlOffer.class, new DtlOfferDeserializer())
+                .registerTypeAdapter(Setting.class, new SettingsDeserializer())
+                .registerTypeAdapter(Setting.class, new SettingsSerializer())
                 .create();
     }
 

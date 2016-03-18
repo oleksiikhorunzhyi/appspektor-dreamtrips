@@ -1,27 +1,36 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.di.MessengerActivityModule;
+import com.messenger.ui.activity.MessengerActivity;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.navigation.NavigationDrawerListener;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
+import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
+import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,25 +38,20 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import butterknife.Optional;
 import icepick.State;
-
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
-        implements MainActivityPresenter.View, NavigationDrawerListener {
+        implements MainActivityPresenter.View {
+
+    public static final String COMPONENT_KEY = "MainActivity$ComponentKey";
 
     @InjectView(R.id.toolbar_actionbar)
     protected Toolbar toolbar;
-    @InjectView(R.id.container_wrapper)
-    protected View wrapperContainer;
-    @InjectView(R.id.container_main)
-    protected View mainContainer;
-    @Optional
-    @InjectView(R.id.container_details_floating)
-    protected FrameLayout detailsFloatingContainer;
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
+    @InjectView(R.id.drawer_layout)
+    protected NavigationDrawerViewImpl navDrawer;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private List<DrawerListener> rightDrawerListeners = new ArrayList<>();
@@ -60,7 +64,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @State
     protected boolean toolbarGone;
 
-    private NavigationDrawerFragment navigationDrawerFragment;
+    protected NavigationDrawerPresenter navigationDrawerPresenter;
 
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -88,26 +92,54 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
+        //
+        String keyComponent = null;
+        if (getIntent().getExtras() != null)
+            keyComponent = getIntent()
+                    .getBundleExtra(ActivityRouter.EXTRA_BUNDLE)
+                    .getString(COMPONENT_KEY);
+        //
         setSupportActionBar(this.toolbar);
         setUpBurger();
         setUpMenu();
         //
-        navigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_drawer);
 
-        BaseFragment currentFragment = fragmentCompass.getCurrentFragment();
+        BaseFragment currentFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.container_main);
+
         if (currentComponent == null && currentFragment != null) {
             currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
+        }
+        if (currentComponent == null && !TextUtils.isEmpty(keyComponent)) {
+            currentComponent = rootComponentsProvider.getComponentByKey(keyComponent);
         }
         if (currentComponent == null) {
             currentComponent = rootComponentsProvider.getActiveComponents().get(0);
         }
+        //
+        initNavDrawer();
+        //
         if (currentFragment == null) {
-            onNavigationDrawerItemSelected(currentComponent);
+            itemSelected(currentComponent);
         } else {
             setTitle(currentComponent.getToolbarTitle());
-            navigationDrawerFragment.setCurrentComponent(currentComponent);
+            navigationDrawerPresenter.setCurrentComponent(currentComponent);
         }
+    }
+
+    private void initNavDrawer() {
+        navigationDrawerPresenter = new NavigationDrawerPresenter();
+        inject(navigationDrawerPresenter);
+        //
+        navigationDrawerPresenter.attachView(navDrawer, rootComponentsProvider.getActiveComponents());
+        navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
+        navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
+        navigationDrawerPresenter.setOnLogout(this::logout);
+    }
+
+    @Override
+    public void onDestroy() {
+        navigationDrawerPresenter.detach();
+        super.onDestroy();
     }
 
     @Override
@@ -166,22 +198,78 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         }
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(ComponentDescription component) {
+    private void itemSelected(ComponentDescription component) {
+        if (component.getKey().equals(MessengerActivityModule.MESSENGER)) {
+            MessengerActivity.startMessenger(this);
+            return;
+        }
+        //
+        currentComponent = component;
+        //
         eventBus.post(new MenuPressedEvent());
         //
         closeLeftDrawer();
         disableRightDrawer();
         makeActionBarGone(component.isSkipGeneralToolbar());
         //
-        navigationDrawerFragment.setCurrentComponent(component);
         currentComponent = component;
-        getPresentationModel().openComponent(component);
+        openComponent(component);
     }
 
-    @Override
-    public void onNavigationDrawerItemReselected(ComponentDescription route) {
+    private void openComponent(ComponentDescription component) {
+        openComponent(component, null);
+    }
+
+    private void openComponent(ComponentDescription component, @Nullable Bundle args) {
+        setTitle(component.getToolbarTitle());
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container_main);
+        // check if current
+        boolean theSame = currentFragment != null && currentFragment.getClass().equals(component.getFragmentClass());
+        if (theSame) return;
+        //
+        navigationDrawerPresenter.setCurrentComponent(component);
+        // check if in stack
+        String backStackName = null;
+        FragmentManager fm = getSupportFragmentManager();
+        for (int entry = 0; entry < fm.getBackStackEntryCount(); entry++) {
+            String name = fm.getBackStackEntryAt(entry).getName();
+            if (name.equals(component.getKey())) {
+                backStackName = name;
+                break;
+            }
+        }
+        if (backStackName != null) {
+            fm.popBackStack(backStackName, 0);
+            return;
+        }
+        router.moveTo(Route.restoreByKey(component.getKey()), NavigationConfigBuilder.forFragment()
+                .fragmentManager(getSupportFragmentManager())
+                .containerId(R.id.container_main)
+                .backStackEnabled(true)
+                .data(args)
+                .build());
+    }
+
+    private void itemReseleted(ComponentDescription route) {
         closeLeftDrawer();
+    }
+
+    private void logout() {
+        new MaterialDialog.Builder(this)
+                .title(getString(R.string.logout_dialog_title))
+                .content(getString(R.string.logout_dialog_message))
+                .positiveText(getString(R.string.logout_dialog_positive_btn))
+                .negativeText(getString(R.string.logout_dialog_negative_btn))
+                .positiveColorRes(R.color.theme_main_darker)
+                .negativeColorRes(R.color.theme_main_darker)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        TrackingHelper.logout();
+                        getPresentationModel().logout();
+                    }
+                }).show();
+
     }
 
     boolean handleBackPressed() {
@@ -255,7 +343,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         currentComponent = this.rootComponentsProvider.getComponent(getSupportFragmentManager());
         //
         if (rootComponentsProvider.getActiveComponents().contains(currentComponent)) {
-            navigationDrawerFragment.setCurrentComponent(currentComponent);
+            navigationDrawerPresenter.setCurrentComponent(currentComponent);
             setTitle(currentComponent.getToolbarTitle());
             makeActionBarGone(currentComponent.isSkipGeneralToolbar());
         }

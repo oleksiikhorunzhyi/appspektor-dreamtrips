@@ -4,16 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp">
+    android:layout_height="match_parent">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
-        fresco:actualImageScaleType="centerCrop"/>
+        fresco:actualImageScaleType="focusCrop"
+        />
 
     <view
         android:id="@+id/fab_progress"

@@ -17,8 +17,8 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -27,8 +27,6 @@ import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter;
 import com.worldventures.dreamtrips.modules.reptools.view.adapter.SuccessStoryHeaderAdapter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
-
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -150,19 +148,9 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onDestroyView() {
         this.recyclerView.setAdapter(null);
         super.onDestroyView();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -176,7 +164,7 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     }
 
     @Override
-    public void finishLoading(List<SuccessStory> result) {
+    public void finishLoading() {
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
             openFirst();
@@ -212,13 +200,17 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
     @Override
     public void openStory(Bundle bundle) {
         if (isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.detail_container);
-            fragmentCompass.setFragmentManager(getChildFragmentManager());
-
             bundle.putBoolean(SuccessStoryDetailsFragment.EXTRA_SLAVE, true);
-            NavigationBuilder.create().with(fragmentCompass).args(bundle).move(Route.SUCCESS_STORES_DETAILS);
+            router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(true)
+                    .fragmentManager(getChildFragmentManager())
+                    .containerId(R.id.detail_container)
+                    .data(bundle)
+                    .build());
         } else {
-            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.SUCCESS_STORES_DETAILS);
+            router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forActivity()
+                    .data(bundle)
+                    .build());
         }
 
     }

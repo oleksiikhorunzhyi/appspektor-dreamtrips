@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
     }
 
     @Override
+    @NotNull
     public List<Comment> getComments() {
         if (comments == null) {
             comments = new ArrayList<>();

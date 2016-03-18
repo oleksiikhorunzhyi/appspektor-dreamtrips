@@ -13,9 +13,10 @@ import com.linearlistview.LinearListView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
@@ -26,7 +27,7 @@ import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
-import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewDelegate;
+import com.worldventures.dreamtrips.modules.trips.view.util.TripDetailsViewInjector;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     @InjectView(R.id.toolbar_actionbar_landscape)
     protected Toolbar toolbarLandscape;
 
-    TripDetailsViewDelegate tripDetailsViewDelegate;
+    TripDetailsViewInjector tripDetailsViewInjector;
 
     @Override
     protected TripDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        tripDetailsViewDelegate.initMenuItems(menu);
+        tripDetailsViewInjector.initMenuItems(menu);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -91,7 +92,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        tripDetailsViewDelegate = new TripDetailsViewDelegate(rootView);
+        tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -104,11 +105,11 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
             toolbarLandscape.getBackground().setAlpha(255);
         }
 
-        tripDetailsViewDelegate.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
+        tripDetailsViewInjector.initGalleryData(getChildFragmentManager(), getPresenter().getFilteredImages());
     }
 
     public void onEvent(ImageClickedEvent event) {
-        getPresenter().onItemClick(tripDetailsViewDelegate.getCurrentActivePhotoPosition());
+        getPresenter().onItemClick(tripDetailsViewInjector.getCurrentActivePhotoPosition());
     }
 
     @Override
@@ -138,20 +139,28 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        NavigationBuilder.create().with(activityRouter)
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data)
+                .build());
     }
 
     @Override
     public void openBookIt(String url) {
-        NavigationBuilder.create().with(activityRouter).data(new UrlBundle(url)).move(Route.BOOK_IT);
+        router.moveTo(Route.BOOK_IT, NavigationConfigBuilder.forActivity()
+                .data(new UrlBundle(url))
+                .build());
     }
 
     @Override
     public void setup(TripModel tripModel) {
-        tripDetailsViewDelegate.initTripData(tripModel, getPresenter().getAccount());
+        tripDetailsViewInjector.initTripData(tripModel, getPresenter().getAccount());
         if (toolbarLandscape != null)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
+    }
+
+    @Override
+    public boolean isVisibleOnScreen() {
+        return ViewUtils.isPartVisibleOnScreen(this);
     }
 }

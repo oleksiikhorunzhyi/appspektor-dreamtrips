@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
@@ -159,4 +159,198 @@
         <item name="holdRepeatDelay">1000</item>
     </style>
 
+
+    <style name="EditTextMessage" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/theme_main_darker</item>
+        <item name="colorControlActivated">@color/theme_main_darker</item>
+        <item name="android:textColorSecondary">@color/theme_main_darker</item>
+    </style>
+
+    <!--messenger-->
+    <style name="SmallSingleChatAvatarView">
+        <item name="android:layout_width">@dimen/list_item_small_avatar_image_size</item>
+        <item name="android:layout_height">@dimen/list_item_small_avatar_image_size</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="SingleChatBigAvatarView">
+        <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="GroupChatBigAvatarView">
+        <item name="android:layout_width">@dimen/list_item_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/list_item_avatar_image_view_size</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
+    <style name="TypingAvatarImageView">
+        <item name="android:layout_width">@dimen/chat_avatar_size</item>
+        <item name="android:layout_height">@dimen/chat_avatar_size</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="ActionBarTitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="ActionBarSubtitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/action_bar_subtitle_size</item>
+    </style>
+
+    <style name="ChatMessageContainerStyle">
+        <item name="android:paddingBottom">@dimen/chat_list_item_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/chat_list_item_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/chat_list_item_horizontal_padding</item>
+        <item name="android:paddingTop">@dimen/chat_list_item_vertical_padding</item>
+        <item name="android:background">@color/main_background</item>
+    </style>
+
+    <style name="ChatAvatarImageView">
+        <item name="android:layout_width">@dimen/chat_avatar_size</item>
+        <item name="android:layout_height">@dimen/chat_avatar_size</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="ChatUsernameTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/chat_color_username</item>
+        <item name="android:textSize">@dimen/chat_list_username_text_size</item>
+        <item name="android:layout_marginBottom">@dimen/chat_list_username_bottom_margin</item>
+    </style>
+
+    <style name="ChatMessageTextView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/chat_list_message_text_size</item>
+        <item name="android:maxLength">@integer/messenger_max_message_length</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ChatImageMessageImageView">
+        <item name="android:layout_height">120dp</item>
+        <item name="android:layout_width">186dp</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="ConversationListNameTextView">
+        <item name="android:layout_marginLeft">@dimen/conversation_list_item_conversation_name_textview_left_margin</item>
+        <item name="android:layout_marginTop">@dimen/conversation_list_item_conversation_name_textview_top_margin</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/conversation_list_name</item>
+        <item name="android:textSize">@dimen/conversation_list_item_conversation_name_text_size</item>
+    </style>
+
+    <style name="ConversationListLastMessageTextView">
+        <item name="android:layout_marginRight">@dimen/conversation_list_item_conversation_last_message_textview_right_margin</item>
+        <item name="android:layout_marginTop">@dimen/conversation_list_item_conversation_last_message_textview_top_margin</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/conversation_list_message</item>
+        <item name="android:textSize">@dimen/list_item_description_text_size</item>
+    </style>
+
+    <style name="ConversationListLastMessageDateTextView">
+        <item name="android:textColor">@color/conversation_list_last_message_date</item>
+        <item name="android:textSize">@dimen/new_chat_conversation_list_last_message_textview_textsize</item>
+    </style>
+
+    <style name="ConversationListUnreadMessagesCountTextView">
+        <item name="android:layout_marginTop">@dimen/conversation_list_item_conversation_unread_messages_count_textview_top_margin</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/new_chat_conversation_list_last_message_textview_textsize</item>
+        <item name="android:background">@drawable/badge_blue_small</item>
+    </style>
+
+    <style name="MessengerSwappableActionButton">
+        <item name="android:textSize">@dimen/messenger_swappable_action_button_text_size</item>
+        <item name="android:textColor">@color/chat_edit_members_delete_button_text_color</item>
+        <item name="android:padding">@dimen/messenger_swappable_action_button_padding</item>
+        <item name="android:drawablePadding">@dimen/messenger_swappable_action_button_drawable_padding</item>
+    </style>
+
+    <style name="BaseMessengerChatInfoSettingsContainer">
+        <item name="android:layout_marginTop">@dimen/chat_settings_chat_info_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/chat_settings_chat_info_vertical_margin
+        </item>
+        <item name="android:layout_marginLeft">@dimen/chat_settings_chat_info_horizontal_margin
+        </item>
+        <item name="android:layout_marginRight">@dimen/chat_settings_chat_info_vertical_margin
+        </item>
+    </style>
+
+    <style name="MessengerChatInfoSettingsContainer" parent="BaseMessengerChatInfoSettingsContainer">
+        <item name="android:gravity">left</item>
+    </style>
+
+    <style name="MessengerImageFullscreenDateStyle">
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <!--end messenger-->
+
+    <!--in app notifications-->
+    <style name="BaseInAppNotificationUiElementsContainer">
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InAppNotificationUiElementsContainer" parent="BaseInAppNotificationUiElementsContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_gravity">left</item>
+        <item name="android:layout_toLeftOf">@+id/in_app_notif_close_btn</item>
+    </style>
+
+    <style name="InAppNotificationSingleChatAvatarView">
+        <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <style name="InAppNotificationGroupChatAvatarView">
+        <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
+        <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">@dimen/in_app_notification_group_chat_icon_avatar_padding</item>
+    </style>
+
+    <style name="InAppNotificationTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/in_app_notification_title_text_color</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="InAppNotificationText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/in_app_notification_subtitle_text_color</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="InAppNotificationCloseButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:paddingLeft">@dimen/in_app_notification_close_button_padding</item>
+        <item name="android:paddingTop">@dimen/in_app_notification_close_button_padding</item>
+        <item name="android:paddingBottom">@dimen/in_app_notification_close_button_padding</item>
+        <item name="android:paddingRight">@dimen/in_app_notification_close_button_padding_right</item>
+        <item name="android:src">@drawable/close</item>
+    </style>
+
+    <!--end in app notifications-->
 </resources>

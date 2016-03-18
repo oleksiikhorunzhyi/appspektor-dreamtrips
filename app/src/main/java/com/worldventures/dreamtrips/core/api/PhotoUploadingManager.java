@@ -10,44 +10,50 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.DurationInMillis;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.tripsimages.api.upload.PhotoUploadCommand;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
+
+import retrofit.mime.TypedFile;
+import rx.Observable;
+import rx.subjects.PublishSubject;
+import rx.subjects.SerializedSubject;
+import rx.subjects.Subject;
+import timber.log.Timber;
 
 public class PhotoUploadingManager {
 
     @Inject
     Context context;
+
     @Inject
-    TransferUtility transferUtility;
+    SnappyRepository db;
+
+    @Inject
+    DreamSpiceManager spiceManager;
+
+    private final Subject<UploadTask, UploadTask> bus = new SerializedSubject<>(PublishSubject.create());
 
     public PhotoUploadingManager(Injector injector) {
         injector.inject(this);
+        bus.doOnError(throwable -> Timber.d("", throwable));
     }
 
-    public void cancelUploading(UploadTask uploadTask) {
-        transferUtility.cancel(Integer.valueOf(uploadTask.getAmazonTaskId()));
-    }
-
-    public List<TransferObserver> getUploadingTranferListeners() {
-        return transferUtility.getTransfersWithType(TransferType.UPLOAD);
-    }
-
-    public TransferObserver getTransferById(String id) {
-        return transferUtility.getTransferById(Integer.valueOf(id));
-    }
-
-    public TransferObserver upload(UploadTask uploadTask) {
+    public long upload(UploadTask uploadTask, String purpose) {
+        if (uploadTask.getId() <= 0) {
+            uploadTask.setId(System.currentTimeMillis());
+        }
+        uploadTask.setPurpose(purpose);
+        uploadTask.setStatus(UploadTask.Status.STARTED);
         String path = null;
         try {
             path = getPath(context, Uri.parse(uploadTask.getFilePath()));
@@ -55,25 +61,57 @@ public class PhotoUploadingManager {
             e.printStackTrace();
         }
 
-        if (path == null) return null;
+        db.saveUploadTask(uploadTask);
+        bus.onNext(uploadTask);
+        if (!spiceManager.isStarted()) {
+            spiceManager.start(context);
+        }
 
         File file = new File(path);
-        String bucketName = BuildConfig.BUCKET_NAME.toLowerCase(Locale.US);
-        String key = BuildConfig.BUCKET_ROOT_PATH + file.getName();
+        final TypedFile typedFile = new TypedFile("image/*", file);
 
-        uploadTask.setBucketName(bucketName);
-        uploadTask.setKey(key);
-
-        return transferUtility.upload(bucketName, key, file);
+        spiceManager.execute(new PhotoUploadCommand(typedFile), String.valueOf(uploadTask.getId()), DurationInMillis.ALWAYS_EXPIRED, originUrl -> {
+            uploadTask.setOriginUrl(originUrl.getLocation());
+            uploadTask.setStatus(UploadTask.Status.COMPLETED);
+            db.removeUploadTask(uploadTask);
+            bus.onNext(uploadTask);
+        }, spiceException -> {
+            uploadTask.setStatus(UploadTask.Status.FAILED);
+            db.saveUploadTask(uploadTask);
+            bus.onNext(uploadTask);
+        });
+        return uploadTask.getId();
     }
 
-    public String getResultUrl(UploadTask uploadTask) {
-        return uploadTask == null ? null : "https://" + uploadTask.getBucketName()
-                + ".s3.amazonaws.com/" + uploadTask.getKey();
+    public List<UploadTask> getUploadTasksForLinkedItemId(String purpose, String linkedId) {
+        List<UploadTask> items = getUploadTasks(purpose);
+        return Queryable.from(items)
+                .filter(item -> linkedId.equals(item.getLinkedItemId()))
+                .toList();
+    }
+
+
+    public void cancelUpload(UploadTask uploadTask) {
+        spiceManager.cancel(String.class, String.valueOf(uploadTask.getId()));
+        uploadTask.setStatus(UploadTask.Status.CANCELED);
+        db.removeUploadTask(uploadTask);
+        bus.onNext(uploadTask);
+    }
+
+    public Observable<List<UploadTask>> getUploadTasksObservable(String purpose) {
+        return Observable.from(db.getAllUploadTask()).filter((t) -> t.getPurpose().equals(purpose)).toList();
+    }
+
+    public List<UploadTask> getUploadTasks(String purpose) {
+        return Queryable.from(db.getAllUploadTask()).filter((t) -> t.getPurpose().equals(purpose)).toList();
+    }
+
+    public Observable<UploadTask> getTaskChangingObservable(String purpose) {
+        return bus.filter((t) -> t.getPurpose().equals(purpose));
     }
 
     @SuppressLint("NewApi")
-    public static String getPath(Context context, Uri uri) throws URISyntaxException {
+    private static String getPath(Context context, Uri uri) throws URISyntaxException {
         final boolean needToCheckUri = Build.VERSION.SDK_INT >= 19;
         String selection = null;
         String[] selectionArgs = null;
@@ -148,5 +186,4 @@ public class PhotoUploadingManager {
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
-
 }

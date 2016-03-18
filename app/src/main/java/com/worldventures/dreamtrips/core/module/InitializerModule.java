@@ -2,16 +2,20 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.messenger.di.MessengerInitializerModule;
+import com.messenger.initializer.MessengerInitializer;
+import com.messenger.initializer.PresenceListenerInitializer;
+import com.messenger.initializer.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.DtlInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
-import com.worldventures.dreamtrips.core.initializer.HockeyInitializer;
 import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
+import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 
 import dagger.Module;
@@ -19,7 +23,6 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                HockeyInitializer.class,
                 InstabugInitializer.class,
                 LeakCanaryInitializer.class,
                 FabricInitializer.class,
@@ -27,9 +30,20 @@ import dagger.Provides;
                 SoftInputInitializer.class,
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
-                DtlInitializer.class
+                DtlInitializer.class,
+                //
+                StorageInitializer.class,
+                //
+                MessengerInitializer.class,
+                //
+                PresenceListenerInitializer.class
+
         },
-        library = true, complete = false)
+        includes = {
+                MessengerInitializerModule.class
+        },
+        library = true, complete = false
+)
 public class InitializerModule {
 
     @Provides(type = Provides.Type.SET)
@@ -50,11 +64,6 @@ public class InitializerModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    AppInitializer provideHockeyInitializer() {
-        return new HockeyInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
     public AppInitializer provideInstabugInitializer() {
         return new InstabugInitializer();
     }
@@ -67,6 +76,11 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideLoggingInitializer() {
         return new LoggingInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideRxLogInitializer() {
+        return new RxJavaLoggingInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

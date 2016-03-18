@@ -84,7 +84,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
     private void onReceiptUploaded() {
         dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withReceiptPhotoUrl(photoUploadingSpiceManager.getResultUrl(dtlTransaction.getUploadTask()));
+                .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(dtlTransaction.getUploadTask()));
         jobManager.earnPointsExecutor.createJobWith(dtlMerchant.getId(),
                 dtlMerchant.getDefaultCurrency().getCode(),
                 dtlTransaction).subscribe();
@@ -118,12 +118,12 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         UploadTask uploadTask = dtlTransaction.getUploadTask();
         //
         transferObserver =
-                photoUploadingSpiceManager.getTransferById(uploadTask.getAmazonTaskId());
+                photoUploadingManagerS3.getTransferById(uploadTask.getAmazonTaskId());
         //
         switch (transferObserver.getState()) {
             case FAILED:
                 //restart upload if failed
-                transferObserver = photoUploadingSpiceManager.upload(dtlTransaction.getUploadTask());
+                transferObserver = photoUploadingManagerS3.upload(dtlTransaction.getUploadTask());
                 uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
                 setListener();
                 break;

@@ -11,23 +11,20 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.bundle.TripDetailsBundle;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,8 +52,6 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     @InjectView(R.id.notification_header_image)
     SimpleDraweeView notificationImage;
 
-    @Inject
-    ActivityRouter activityRouter;
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> profileRouteCreator;
@@ -127,18 +122,16 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     }
 
     private void openProfile(User user) {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new UserBundle(user))
+        router.moveTo(profileRouteCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(profileRouteCreator.createRoute(user.getId()));
+                .data(new UserBundle(user))
+                .build());
     }
 
     private void openDetails() {
-        NavigationBuilder.create()
-                .with(activityRouter)
-                .data(new FeedItemDetailsBundle(getModelObject()))
-                .move(Route.FEED_ITEM_DETAILS);
+        router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+                .data(new FeedDetailsBundle(getModelObject()))
+                .build());
     }
 
     @Override

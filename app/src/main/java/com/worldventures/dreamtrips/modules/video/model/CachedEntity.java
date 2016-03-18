@@ -53,10 +53,11 @@ public class CachedEntity implements Serializable {
         return url;
     }
 
-    public static String getFilePath(Context context,String url) {
+    public static String getFilePath(Context context, String url) {
         return context.getFilesDir().toString() + File.separator + getFileName(url);
     }
-    public static String getExternalFilePath(Context context,String url) {
+
+    public static String getExternalFilePath(Context context, String url) {
         return context.getExternalCacheDir().toString() + File.separator + getFileName(url);
     }
 
@@ -64,7 +65,7 @@ public class CachedEntity implements Serializable {
         return uuid;
     }
 
-    protected static String getFileName(String url) {
+    public static String getFileName(String url) {
         return url.substring(url.lastIndexOf("/") + 1);
     }
 

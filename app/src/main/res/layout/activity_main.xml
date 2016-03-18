@@ -47,11 +47,10 @@
         android:id="@+id/container_details_floating"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:clickable="false"/>
 
-    <fragment
-        android:id="@+id/fragment_drawer"
-        android:name="com.worldventures.dreamtrips.modules.common.view.fragment.navigationdrawer.NavigationDrawerFragment"
+    <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
+        android:id="@+id/drawer_layout"
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"

@@ -44,7 +44,7 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
             distance.setText(res.getString(
                     R.string.distance_caption_format,
                     merchant.getDistance(),
-                    res.getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.km : R.string.mi)));
+                    res.getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
         } else distance.setVisibility(View.GONE);
         //
         String categoriesString = helper.getCategories(merchant);

@@ -12,12 +12,13 @@ import com.innahema.collections.query.queriables.Queryable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import timber.log.Timber;
 
 public class FileUtils {
 
-    public static void cleanDirectory(Context context, File directory) throws IOException {
+    public static void cleanDirectory(Context context, File directory, List<String> exceptFilePaths) throws IOException {
         if (!directory.exists()) {
             throw new IllegalArgumentException(directory + " does not exist");
         }
@@ -31,9 +32,9 @@ public class FileUtils {
             throw new IOException("Failed to list contents of " + directory);
         }
 
-        Queryable.from(files).forEachR(file -> {
+        Queryable.from(files).filter(file -> !isExcepted(file.getAbsolutePath(), exceptFilePaths)).forEachR(file -> {
             try {
-                forceDelete(context, file);
+                forceDelete(context, file, exceptFilePaths);
             } catch (IOException e) {
                 Timber.e("Unable to delete file: " + file, e);
             }
@@ -41,9 +42,17 @@ public class FileUtils {
 
     }
 
-    public static void forceDelete(Context context, File file) throws IOException {
+    private static boolean isExcepted(String filePath, List<String> exceptedFilePaths) {
+        for (String exceptFilePath: exceptedFilePaths){
+            //exceptedFilePath contains "file://" and unlike filePath
+            if (exceptFilePath.endsWith(filePath)) return true;
+        }
+        return false;
+    }
+
+    public static void forceDelete(Context context, File file, List<String> exceptFilePaths) throws IOException {
         if (file.isDirectory()) {
-            cleanDirectory(context, file);
+            cleanDirectory(context, file, exceptFilePaths);
         } else {
             if (!file.exists()) {
                 throw new FileNotFoundException("File does not exist: " + file);

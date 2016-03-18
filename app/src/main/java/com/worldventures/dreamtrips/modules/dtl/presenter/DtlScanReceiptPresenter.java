@@ -118,7 +118,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     ///////////////////////////////////////////////////////////////////////////
 
     public void scanReceipt() {
-        eventBus.post(new ImagePickRequestEvent(PickImageDelegate.REQUEST_CAPTURE_PICTURE, REQUESTER_ID));
+        eventBus.post(new ImagePickRequestEvent(PickImageDelegate.CAPTURE_PICTURE, REQUESTER_ID));
     }
 
     public void onEvent(ImagePickedEvent event) {
@@ -144,7 +144,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
         //
         UploadTask uploadTask = new UploadTask();
         uploadTask.setFilePath(filePath);
-        TransferObserver transferObserver = photoUploadingSpiceManager.upload(uploadTask);
+        TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
         uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
         //
         dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)

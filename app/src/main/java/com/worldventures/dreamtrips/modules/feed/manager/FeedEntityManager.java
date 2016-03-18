@@ -17,7 +17,6 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-
 public class FeedEntityManager {
 
     EventBus eventBus;
@@ -67,7 +66,6 @@ public class FeedEntityManager {
         requestingPresenter.doRequest(new CreateCommentCommand(feedEntity.getUid(), comment),
                 comment1 -> eventBus.post(new CommentEvent(comment1, CommentEvent.Type.ADDED)),
                 spiceException -> handelCommentError(spiceException, CommentEvent.Type.ADDED));
-
     }
 
     public void deleteComment(Comment comment) {

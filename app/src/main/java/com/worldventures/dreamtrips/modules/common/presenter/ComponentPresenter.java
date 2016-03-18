@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
 
@@ -14,16 +15,23 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String DIALOG_GRAVITY = "DIALOG_GRAVITY";
 
-
     private Bundle args;
     private Route route;
+
+    private boolean needMove;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            fragmentCompass.replace(route, args);
+            needMove = true;
         }
+    }
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        if (needMove) view.moveTo(route, args.getParcelable(EXTRA_DATA));
     }
 
     @Override
@@ -51,5 +59,7 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
     }
 
     public interface View extends ActivityPresenter.View {
+
+        void moveTo(Route route, Parcelable args);
     }
 }

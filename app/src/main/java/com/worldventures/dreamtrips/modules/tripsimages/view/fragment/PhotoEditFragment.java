@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.facebook.drawee.drawable.ScalingUtils;
@@ -68,6 +68,12 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
         toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    }
+
     private void showTimePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(this,
@@ -119,11 +125,8 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     }
 
     protected void showTagViewGroup() {
-        ivImage.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         tag.setSelected(true);
-        RectF imageBounds = new RectF();
-        ivImage.getHierarchy().getActualImageBounds(imageBounds);
-        taggableImageHolder.show(imageBounds);
+        taggableImageHolder.show(ivImage);
     }
 
     protected void hideTagViewGroup() {
@@ -136,12 +139,13 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     public void onStart() {
         super.onStart();
         taggableImageHolder.post(() -> {
+            if (taggableImageHolder == null) return;
+            //
             if (taggableImageHolder.isShown()) {
                 showTagViewGroup();
             } else {
                 hideTagViewGroup();
             }
-            taggableImageHolder.restoreState();
         });
     }
 
@@ -214,6 +218,7 @@ public class PhotoEditFragment extends BaseFragmentWithArgs<PhotoEditPresenter, 
     public void setupTaggingHolder(Photo photo) {
         taggableImageHolder.setup(this, photo);
         taggableImageHolder.setCompleteListener(this::finish);
+        showTagViewGroup();
     }
 
     @Override

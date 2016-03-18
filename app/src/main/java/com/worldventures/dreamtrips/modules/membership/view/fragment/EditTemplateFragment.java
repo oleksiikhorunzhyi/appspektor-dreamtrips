@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,8 +14,11 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 
 import javax.inject.Inject;
@@ -27,6 +31,8 @@ import icepick.State;
 @MenuResource(R.menu.menu_edit_template)
 public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePresenter, TemplateBundle>
         implements EditTemplatePresenter.View {
+
+    public static final int REQUEST_CODE = 228;
 
     @Inject
     @ForActivity
@@ -79,6 +85,13 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
     public void setFrom(String from) {
         tvFrom.setText(from);
     }
@@ -116,6 +129,19 @@ public class EditTemplateFragment extends BaseFragmentWithArgs<EditTemplatePrese
     @Override
     public void hidePhotoUpload() {
         photoContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void openPreviewTemplate(UrlBundle bundle) {
+        router.moveTo(Route.PREVIEW_TEMPLATE, NavigationConfigBuilder.forActivity()
+                .data(bundle)
+                .build());
+    }
+
+    @Override
+    public void openShare(Intent intent) {
+        startActivityForResult(Intent.createChooser(intent,
+                getActivity().getString(R.string.action_share)), REQUEST_CODE);
     }
 
     @Override

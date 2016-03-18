@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 
 public class ShareBundle implements Parcelable {
 
@@ -40,10 +40,9 @@ public class ShareBundle implements Parcelable {
         return shareType;
     }
 
-    public void setShareType(@ShareFragment.ShareType String shareType) {
+    public void setShareType(@ShareType String shareType) {
         this.shareType = shareType;
     }
-
 
     @Override
     public int describeContents() {

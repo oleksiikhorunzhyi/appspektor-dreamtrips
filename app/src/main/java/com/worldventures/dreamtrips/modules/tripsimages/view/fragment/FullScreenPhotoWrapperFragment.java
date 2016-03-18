@@ -11,10 +11,11 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -34,7 +35,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment
-        extends BaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
+        extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
         implements TripImagesListPresenter.View {
 
     @InjectView(R.id.pager)
@@ -90,11 +91,28 @@ public class FullScreenPhotoWrapperFragment
         toolbar.getBackground().mutate().setAlpha(0);
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setDefaultSocialPagerState();
+        boolean isFirstLaunch = savedInstanceState == null;
+        setDefaultSocialPagerState(isFirstLaunch);
+    }
+
+    protected void setDefaultSocialPagerState(boolean firstLaunch) {
+        SocialViewPagerState state = db.getSocialViewPagerState();
+        state = state == null ? new SocialViewPagerState() : state;
+
+        boolean isFromNotification = getArgs().getNotificationId() != FullScreenImagesBundle.NO_NOTIFICATION;
+
+        if (isFromNotification) {
+            state.setContentWrapperVisible(false);
+            state.setTagHolderVisible(true);
+        } else if (firstLaunch) {
+            state.setContentWrapperVisible(true);
+            state.setTagHolderVisible(getArgs().isShowTags());
+        }
+
+        db.saveSocialViewPagerState(state);
     }
 
     private void setupAdapter() {
@@ -116,7 +134,6 @@ public class FullScreenPhotoWrapperFragment
     public void startLoading() {
     }
 
-
     @Override
     public void finishLoading() {
     }
@@ -133,9 +150,10 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     public void openFullscreen(FullScreenImagesBundle data) {
-        NavigationBuilder.create().with(activityRouter)
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(data).move(Route.FULLSCREEN_PHOTO_LIST);
+                .data(data)
+                .build());
     }
 
     @Override
@@ -173,13 +191,6 @@ public class FullScreenPhotoWrapperFragment
 
     @Override
     public void replace(int position, IFullScreenObject item) {
-    }
-
-    protected void setDefaultSocialPagerState() {
-        SocialViewPagerState state = new SocialViewPagerState();
-        state.setTagHolderVisible(getArgs().getNotificationId() == FullScreenImagesBundle.NO_NOTIFICATION ? false : true);
-        state.setContentWrapperVisible(getArgs().getNotificationId() == FullScreenImagesBundle.NO_NOTIFICATION ? true : false);
-        db.saveSocialViewPagerState(state);
     }
 
     @Override

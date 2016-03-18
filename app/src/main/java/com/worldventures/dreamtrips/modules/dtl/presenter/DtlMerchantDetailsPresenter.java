@@ -7,12 +7,12 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
@@ -89,7 +89,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
             // in the enrollment wizard(maybe needed in future)
             // NOTE! :: but we save checkin (coordinates and checkin time)
             if (dtlTransaction.getUploadTask() != null)
-                photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+            photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
             db.cleanDtlTransaction(merchant.getId(), dtlTransaction);
             view.openTransaction(merchant, dtlTransaction);
         } else {
@@ -162,7 +162,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     /**
      * Analytic-related
      */
-    public void trackSharing(@ShareFragment.ShareType String type) {
+    public void trackSharing(@ShareType String type) {
         TrackingHelper.dtlShare(type);
     }
 

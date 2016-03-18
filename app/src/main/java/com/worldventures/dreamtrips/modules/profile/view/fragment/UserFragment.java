@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -11,19 +12,18 @@ import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.presenter.UserPresenter;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
@@ -32,7 +32,9 @@ import butterknife.ButterKnife;
 public class UserFragment extends ProfileFragment<UserPresenter>
         implements UserPresenter.View {
 
-    private DrawableUtil drawableUtil;
+    private MenuItem chatActionItem;
+    @Inject
+    protected DrawableUtil drawableUtil;
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
@@ -44,7 +46,30 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         super.afterCreateView(rootView);
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
-        drawableUtil = new DrawableUtil(getContext());
+
+        profileToolbar.inflateMenu(R.menu.user_profile_fragment);
+        chatActionItem = profileToolbar.getMenu().findItem(R.id.action_chat);
+        chatActionItem.setOnMenuItemClickListener(item -> {
+            getPresenter().onStartChatClicked();
+            return true;
+        });
+        showChatButtonForFriend(getPresenter().getUser());
+    }
+
+    @Override
+    public void setUser(User user) {
+        super.setUser(user);
+        showChatButtonForFriend(user);
+    }
+
+    @Override
+    public void notifyUserChanged() {
+        super.notifyUserChanged();
+        showChatButtonForFriend(getPresenter().getUser());
+    }
+
+    public void showChatButtonForFriend(User user) {
+        chatActionItem.setVisible(user.getRelationship() == User.Relationship.FRIEND);
     }
 
     public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
@@ -64,8 +89,9 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         ImageView userPhoto = ButterKnife.findById(feedView, R.id.user_photo);
         if (userPhoto != null) {
             userPhoto.setDrawingCacheEnabled(true);
-            new FriendActionDialogDelegate(getActivity(), getEventBus()).showFriendDialog(user,
-                    drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
+            new FriendActionDialogDelegate(getActivity(), getEventBus())
+                    .showFriendDialogSkipChat
+                            (user, drawableUtil.copyIntoDrawable(userPhoto.getDrawingCache()));
         }
     }
 
@@ -81,4 +107,5 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
+
 }

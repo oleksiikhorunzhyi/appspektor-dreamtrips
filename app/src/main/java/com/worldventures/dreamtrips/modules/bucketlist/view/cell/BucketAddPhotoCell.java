@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketAddPhotoCellDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddBucketPhotoModel;
 
 import butterknife.InjectView;
@@ -16,7 +16,7 @@ import butterknife.OnClick;
 
 
 @Layout(R.layout.adapter_item_bucket_photo_cell)
-public class BucketAddPhotoCell extends AbstractCell<AddBucketPhotoModel> {
+public class BucketAddPhotoCell extends AbstractDelegateCell<AddBucketPhotoModel, BucketAddPhotoCellDelegate> {
 
     @InjectView(R.id.imageViewPhoto)
     protected ImageView ivPhoto;
@@ -46,6 +46,6 @@ public class BucketAddPhotoCell extends AbstractCell<AddBucketPhotoModel> {
 
     @OnClick(R.id.imageViewPhoto)
     public void onClick() {
-        getEventBus().post(new BucketAddPhotoClickEvent());
+        cellDelegate.onCellClicked(getModelObject());
     }
 }

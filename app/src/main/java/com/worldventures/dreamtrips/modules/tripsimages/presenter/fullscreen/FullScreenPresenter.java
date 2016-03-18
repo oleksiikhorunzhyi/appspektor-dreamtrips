@@ -1,30 +1,20 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER_VIEW extends FullScreenPresenter.View> extends Presenter<PRESENTER_VIEW> {
 
     protected TripImagesType type;
     protected T photo;
-
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
 
     public FullScreenPresenter(T photo, TripImagesType type) {
         this.photo = photo;
@@ -57,11 +47,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
     public void onUserClicked() {
         User user = photo.getUser();
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(user))
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(user.getId()));
-
+        view.openUser(new UserBundle(user));
     }
 
     public final void setupActualViewState() {
@@ -74,14 +60,22 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
     public void onDeleteAction() {
     }
 
-    public void onShare(@ShareFragment.ShareType String type) {
-        activityRouter.openShare(photo.getFSImage().getUrl(), null, photo.getFSShareText(), type);
+    public void onShare(@ShareType String type) {
+        if (type.equals(ShareType.EXTERNAL_STORAGE)) {
+            doRequest(new DownloadImageCommand(context, photo.getFSImage().getUrl()));
+        } else {
+            view.openShare(photo.getFSImage().getUrl(), photo.getFSShareText(), type);
+        }
         if (photo instanceof Inspiration) {
             TrackingHelper.insprShare(photo.getFSId(), type);
         }
     }
 
     public interface View extends Presenter.View {
+
+        void openUser(UserBundle bundle);
+
+        void openShare(String imageUrl, String text, @ShareType String type);
 
         <T extends IFullScreenObject> void setContent(T photo);
     }

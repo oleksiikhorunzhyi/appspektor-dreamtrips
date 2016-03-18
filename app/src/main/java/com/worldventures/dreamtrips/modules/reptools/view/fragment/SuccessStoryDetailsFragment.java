@@ -7,12 +7,16 @@ import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 
@@ -55,23 +59,21 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
         } else {
             Bundle bundle = new Bundle();
             bundle.putParcelable(SuccessStoryDetailsFragment.EXTRA_STORY, story);
-            NavigationBuilder.create().with(activityRouter).args(bundle).move(Route.SUCCESS_STORES_DETAILS);
+            router.moveTo(Route.SUCCESS_STORES_DETAILS, NavigationConfigBuilder.forActivity()
+                    .data(bundle)
+                    .build());
         }
     }
 
     @Override
     public void afterCreateView(View rootView) {
-        slave = getArguments().getBoolean(EXTRA_SLAVE);
+        slave = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getBoolean(EXTRA_SLAVE);
 
         if (!ViewUtils.isTablet(getActivity())) {
             ivFullscreen.setVisibility(View.GONE);
         }
         super.afterCreateView(rootView);
-        if (story.isLiked()) {
-            ivLike.setImageResource(R.drawable.ic_success_heart_selected);
-        } else {
-            ivLike.setImageResource(R.drawable.ic_success_heart_normal);
-        }
+        updateStoryLike(story.isLiked());
 
         webView.getSettings().setUseWideViewPort(true);
         TrackingHelper.viewSuccessStory(story.getUrl());
@@ -97,7 +99,7 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
 
     @Override
     protected SuccessStoryDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        story = getArguments().getParcelable(EXTRA_STORY);
+        story = getArguments().getBundle(ComponentPresenter.EXTRA_DATA).getParcelable(EXTRA_STORY);
         return new SuccessStoryDetailsPresenter(story, getURL());
     }
 
@@ -118,6 +120,27 @@ public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStory
             informUser(getString(R.string.ss_has_been_added_to_favorites));
         } else {
             informUser(getString(R.string.ss_has_been_removed_from_favorites));
+        }
+
+        eventBus.post(new StoryLikedEvent(story.getUrl(), story.isLiked()));
+    }
+
+    @Override
+    public void openShare(String url, @ShareType String type) {
+        ShareBundle data = new ShareBundle();
+        data.setShareUrl(url);
+        data.setShareType(type);
+        router.moveTo(Route.SHARE, NavigationConfigBuilder.forActivity()
+                .data(data)
+                .build());
+    }
+
+    @Override
+    public void updateStoryLike(boolean isLiked) {
+        if (isLiked) {
+            ivLike.setImageResource(R.drawable.ic_success_heart_selected);
+        } else {
+            ivLike.setImageResource(R.drawable.ic_success_heart_normal);
         }
     }
 }

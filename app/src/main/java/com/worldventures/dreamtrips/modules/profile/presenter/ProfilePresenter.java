@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -112,6 +113,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public interface View extends BaseFeedPresenter.View {
+        
         Bundle getArguments();
 
         void openPost();

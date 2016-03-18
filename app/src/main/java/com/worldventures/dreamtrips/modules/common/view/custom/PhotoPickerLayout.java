@@ -61,6 +61,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     private boolean multiPickEnabled;
     private int pickLimit;
 
+    private PhotoPickerListener photoPickerListener;
+
     public PhotoPickerLayout(Context context) {
         this(context, null);
     }
@@ -103,6 +105,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         ButterKnife.reset(this);
+        photoPickerDelegate.setupPhotoPickerLayout(null);
+        setScrollableView(null);
     }
 
     @Override
@@ -210,6 +214,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     private void updateCancelButtonState() {
+        if (cancel == null) return;
         if (fragmentManager.getBackStackEntryCount() < 2)
             cancel.setText(R.string.cancel);
         else
@@ -217,12 +222,16 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void showPanel() {
+        if (photoPickerListener != null) photoPickerListener.onOpened();
         isShown = true;
         boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
         //
-        if (fragmentManager.getBackStackEntryCount() == 0) openGallery();
+        if (fragmentManager.getBackStackEntryCount() == 0) {
+            updatePickerDelegate();
+            openGallery();
+        }
         updateCancelButtonState();
-        int panelHeight = (int) container.getResources().getDimension(R.dimen.picker_panel_height);
+        int panelHeight = (int) getResources().getDimension(R.dimen.picker_panel_height);
         if (isKeyboardClosed)
             handler.postDelayed(() -> setPanelHeight(panelHeight), 250);
         else
@@ -230,6 +239,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void hidePanel() {
+        if (photoPickerListener != null) photoPickerListener.onClosed();
         isShown = false;
         updatePickedItemsCount(0);
         setPanelHeight(0);
@@ -247,15 +257,30 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         return isShown;
     }
 
+    public View getDraggableView() {
+        return draggableView;
+    }
+
     public void setOnDoneClickListener(OnDoneClickListener onDoneClickListener) {
         photoPickerDelegate.setOnDoneClickListener(onDoneClickListener);
     }
 
     public interface OnDoneClickListener {
-        void onDone(List<ChosenImage> chosenImages);
+        void onDone(List<ChosenImage> chosenImages, int type);
     }
 
     private void clearAllBackStack() {
         fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    public void setPhotoPickerListener(PhotoPickerListener photoPickerListener) {
+        this.photoPickerListener = photoPickerListener;
+    }
+
+    public interface PhotoPickerListener {
+
+        void onClosed();
+
+        void onOpened();
     }
 }

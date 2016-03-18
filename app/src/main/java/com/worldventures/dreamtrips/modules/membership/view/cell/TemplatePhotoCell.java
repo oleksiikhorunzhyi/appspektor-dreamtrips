@@ -7,11 +7,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAddPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.membership.model.TemplatePhoto;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_bucket_photo_cell)
 public class TemplatePhotoCell extends AbstractCell<TemplatePhoto> {

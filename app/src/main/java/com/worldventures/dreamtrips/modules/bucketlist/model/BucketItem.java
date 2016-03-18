@@ -48,11 +48,11 @@ public class BucketItem extends BaseFeedEntity {
         return status;
     }
 
-    public Date getTarget_date() {
+    public Date getTargetDate() {
         return targetDate;
     }
 
-    public Date getCompletion_date() {
+    public Date getCompletionDate() {
         return completionDate;
     }
 

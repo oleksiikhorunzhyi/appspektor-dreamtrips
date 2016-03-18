@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.facebook.model.FacebookPhoto;
 import com.worldventures.dreamtrips.modules.facebook.presenter.FacebookPhotoPresenter;
 import com.worldventures.dreamtrips.modules.facebook.view.cell.FacebookPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPresenter> implements FacebookPhotoPresenter.View {
 
@@ -32,6 +33,11 @@ public class FacebookPhotoFragment extends BasePickerFragment<FacebookPhotoPrese
     @Override
     protected void registerCells() {
         adapter.registerCell(FacebookPhoto.class, FacebookPhotoCell.class);
+    }
+
+    @Override
+    protected int getPhotosType() {
+        return PickImageDelegate.FACEBOOK;
     }
 
     @Override

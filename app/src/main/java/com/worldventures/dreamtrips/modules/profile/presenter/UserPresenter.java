@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import com.innahema.collections.query.functions.Action1;
+import com.messenger.delegate.StartChatDelegate;
+import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
@@ -38,6 +40,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     @Inject
     NotificationDelegate notificationDelegate;
+    @Inject
+    StartChatDelegate startSingleChatDelegate;
 
     public UserPresenter(UserBundle userBundle) {
         super(userBundle.getUser());
@@ -80,6 +84,16 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     @Override
     protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
         return new GetUserTimelineQuery(user.getId(), date);
+    }
+
+    @Override
+    public boolean isConnected() {
+        return super.isConnected();
+    }
+
+    public void onStartChatClicked() {
+        startSingleChatDelegate.startSingleChat(user, conversation ->
+                MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId()));
     }
 
     public void addFriendClicked() {

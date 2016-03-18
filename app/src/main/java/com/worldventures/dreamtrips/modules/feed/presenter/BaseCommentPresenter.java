@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -44,8 +42,8 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
+
     @State
     FeedEntity feedEntity;
     @State
@@ -57,6 +55,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     @Inject
     FeedEntityManager entityManager;
+    @Inject
+    BucketItemManager bucketItemManager;
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
@@ -68,7 +68,9 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         super.takeView(view);
         view.setDraftComment(draftComment);
         view.setLikersPanel(feedEntity);
-        checkCommentsAndLikesToLoad();
+        //
+        if (isNeedCheckCommentsWhenStart())
+            checkCommentsAndLikesToLoad();
     }
 
     @Override
@@ -77,7 +79,16 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         entityManager.setRequestingPresenter(this);
     }
 
-    /** Request comments and likes only once per view loading if suitable count > 0 */
+    @Override
+    public void onResume() {
+        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+        //
+        super.onResume();
+    }
+
+    /**
+     * Request comments and likes only once per view loading if suitable count > 0
+     */
     protected void checkCommentsAndLikesToLoad() {
         if (loadInitiated) return;
         //
@@ -89,6 +100,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             loadLikes();
             loadInitiated = true;
         }
+    }
+
+    protected boolean isNeedCheckCommentsWhenStart() {
+        return true;
     }
 
     private void loadComments() {
@@ -114,7 +129,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             case ADDED:
                 if (event.getSpiceException() == null) {
                     view.addComment(event.getComment());
-                    feedEntity.getComments().add(0, event.getComment());
+                    feedEntity.getComments().add(event.getComment());
                     feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
                     sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
                 } else {
@@ -135,7 +150,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         }
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
-
     }
 
     public void onEvent(LoadMoreEvent event) {
@@ -154,18 +168,13 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     }
 
     public void onEvent(EditBucketEvent event) {
+        if (!view.isVisibleOnScreen()) return;
+        //
         BucketBundle bundle = new BucketBundle();
         bundle.setType(event.getType());
         bundle.setBucketItemUid(event.getUid());
 
-        if (view.isTabletLandscape()) {
-            fragmentCompass.setContainerId(R.id.container_details_floating);
-            fragmentCompass.showContainer();
-            NavigationBuilder.create().with(fragmentCompass).data(bundle).attach(Route.BUCKET_EDIT);
-        } else {
-            bundle.setLock(true);
-            NavigationBuilder.create().with(activityRouter).data(bundle).move(Route.BUCKET_EDIT);
-        }
+        view.showEdit(bundle);
     }
 
     public void onEvent(DeletePostEvent event) {
@@ -182,14 +191,17 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public void onEvent(DeleteBucketEvent event) {
         if (view.isVisibleOnScreen())
-            doRequest(new DeleteBucketItemCommand(event.getEntity().getUid()),
-                    aVoid -> itemDeleted(event.getEntity()));
-
+            bucketItemManager.deleteBucketItem(event.getEntity(), bucketItemManager.getType(event.getEntity().getType()),
+                    jsonObject -> {
+                        itemDeleted(event.getEntity());
+                        eventBus.post(new BucketItemUpdatedEvent(event.getEntity()));
+                    }, this::handleError);
     }
 
     private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
-        fragmentCompass.pop();
+        //
+        view.back();
     }
 
     public void onEvent(LoadFlagEvent event) {
@@ -251,7 +263,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     @Override
     public void handleError(SpiceException error) {
-
         super.handleError(error);
         view.setLoading(false);
     }
@@ -278,6 +289,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         void showViewMore();
 
+        void showEdit(BucketBundle bucketBundle);
+
         void setLikersPanel(FeedEntity entity);
+
+        void back();
     }
 }

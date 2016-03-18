@@ -12,10 +12,9 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
@@ -64,10 +63,7 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    ActivityRouter activityRouter;
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
+    @Inject @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
     private CommentCellHelper commentCellHelper;
@@ -161,10 +157,10 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     }
 
     private void openUser(User user) {
-        NavigationBuilder.create().with(activityRouter)
-                .data(new UserBundle(user))
+        router.moveTo(routeCreator.createRoute(user.getId()), NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .move(routeCreator.createRoute(user.getId()));
+                .data(new UserBundle(user))
+                .build());
     }
 
 }

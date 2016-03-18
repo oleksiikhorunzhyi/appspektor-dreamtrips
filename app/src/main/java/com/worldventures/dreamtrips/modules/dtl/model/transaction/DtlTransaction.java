@@ -18,7 +18,7 @@ import java.util.Date;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public abstract class DtlTransaction {
 
-    public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000L;
+    public static final long DURATION_OF_LIFE = 4 * 60 * 60 * 1000L; // 4 hours
 
     public static final String BILL_TOTAL = "bill_total";
     public static final String LOCATION = "location.ll";

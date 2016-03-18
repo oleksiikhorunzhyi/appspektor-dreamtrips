@@ -14,9 +14,9 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
+import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
-import com.worldventures.dreamtrips.core.navigation.FragmentCompass;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -36,8 +36,6 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     @Inject
     protected ActivityRouter activityRouter;
     @Inject
-    protected FragmentCompass fragmentCompass;
-    @Inject
     @Global
     protected EventBus eventBus;
     @Inject
@@ -49,7 +47,9 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     @Inject
     protected VideoDownloadSpiceManager videoDownloadSpiceManager;
     @Inject
-    protected PhotoUploadingManager photoUploadingSpiceManager;
+    protected PhotoUploadingManager photoUploadingManager;
+    @Inject
+    protected PhotoUploadingManagerS3 photoUploadingManagerS3;
 
     protected int priorityEventBus = 0;
 

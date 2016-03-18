@@ -109,6 +109,11 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_actionbar"
+                    style="@style/ToolBarStyle"
+                    android:layout_width="match_parent"/>
+
             </RelativeLayout>
 
             <include layout="@layout/include_bucket_item_meta"/>

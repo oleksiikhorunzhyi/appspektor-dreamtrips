@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.video.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Video {
@@ -58,7 +60,7 @@ public class Video {
     }
 
     public boolean isFeatured() {
-        return category.equals(FEATURED);
+        return !TextUtils.isEmpty(category) && category.trim().equals(FEATURED);
     }
 
     public boolean isRecent() {

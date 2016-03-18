@@ -8,19 +8,21 @@ import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
-import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.core.utils.events.AppConfigUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
@@ -29,12 +31,14 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
+import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 import com.worldventures.dreamtrips.modules.trips.api.GetActivitiesAndRegionsQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +46,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import timber.log.Timber;
 
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
@@ -52,7 +55,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private BusWrapper busWrapper;
     private NetworkEvents networkEvents;
-
 
     @Inject
     LocalesHolder localeStorage;
@@ -66,12 +68,18 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     SnappyRepository snappyRepository;
 
+    @Inject
+    Router router;
+
+    @Inject
+    ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
+
     private boolean requestInProgress = false;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        clearTempDirectory();
+        clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
         busWrapper = getGreenRobotBusWrapper(eventBus);
         networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
         networkEvents.register();
@@ -94,6 +102,20 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
         localeStorage.put(locales);
+        UserSession userSession = appSessionHolder.get().isPresent() ? appSessionHolder.get().get() : null;
+        if (userSession != null && userSession.getApiToken() != null)
+            loadSettings();
+        else
+            done();
+    }
+
+    private void loadSettings() {
+        doRequest(new GetSettingsQuery(), this::onSettingsLoaded);
+    }
+
+    private void onSettingsLoaded(SettingsHolder settingsHolder) {
+        snappyRepository.saveSettings(SettingsManager.merge(settingsHolder.getSettings(),
+                SettingsFactory.createSettings()), true);
         loadStaticPagesContent();
     }
 
@@ -130,6 +152,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
             userSession.setGlobalConfig(appConfig);
             appSessionHolder.put(userSession);
+            eventBus.postSticky(new AppConfigUpdatedEvent());
             loadFiltersData();
         }
     }
@@ -150,10 +173,11 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
+            MessengerConnector.getInstance().connect();
         } else {
-            NavigationBuilder.create()
+            router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .with(activityRouter).move(Route.LOGIN);
+                    .build());
         }
         activityRouter.finish();
     }
@@ -166,8 +190,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             List<AvailableLocale> availableLocales = localesOptional.get();
             contains = Queryable.from(availableLocales)
                     .any((availableLocale) ->
-                                    localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
-                                            localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage())
+                            localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
+                                    localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage())
                     );
         }
         return !contains ? Locale.US : localeCurrent;
@@ -191,17 +215,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Override
     protected boolean canShowTermsDialog() {
         return false;
-    }
-
-    private void clearTempDirectory() {
-        snappyRepository.removeAllUploadTasks();
-        File directory = new File(com.kbeanie.imagechooser.api.FileUtils.getDirectory(PickImageDelegate.FOLDERNAME));
-        if (!directory.exists()) return;
-        try {
-            FileUtils.cleanDirectory(context, directory);
-        } catch (IOException e) {
-            Timber.e(e, "Problem with remove temp image directory");
-        }
     }
 
     @NonNull

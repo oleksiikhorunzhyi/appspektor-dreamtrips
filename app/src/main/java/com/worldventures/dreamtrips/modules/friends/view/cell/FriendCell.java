@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
+import javax.inject.Inject;
+
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_friend)
@@ -15,11 +17,11 @@ public class FriendCell extends BaseUserCell {
 
     FriendActionDialogDelegate dialog;
 
-    private DrawableUtil drawableUtil;
+    @Inject
+    protected DrawableUtil drawableUtil;
 
     public FriendCell(View view) {
         super(view);
-        drawableUtil = new DrawableUtil(view.getContext());
     }
 
     @Override

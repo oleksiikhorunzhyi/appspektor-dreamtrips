@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.NavigationBuilder;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
@@ -40,9 +40,9 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
 
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
-        NavigationBuilder.create().with(activityRouter)
+        router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
                 .data(new FriendGlobalSearchBundle("" + search.getQuery()))
-                .move(Route.FRIEND_SEARCH);
+                .build());
     }
 
     @Override

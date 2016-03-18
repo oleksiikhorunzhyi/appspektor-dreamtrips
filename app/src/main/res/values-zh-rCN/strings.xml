@@ -56,7 +56,7 @@
     <string name="filter_no_results">抱歉，没有符合您要求的结果</string>
     <string name="filter_apply_all">应用筛检程式</string>
     <string name="filter_reset_all">重置全部</string>
-    <string name="filter_reset"></string>
+    <string name="filter_reset">Reset Filters</string>
     <string name="trip_details">旅行详情</string>
     <string name="trip_featured">特色旅行</string>
     <string name="profile_from_hint">自</string>
@@ -105,6 +105,11 @@
     <string-array name="share_dialog_items">
         <item>Facebook</item>
         <item>Twitter</item>
+    </string-array>
+    <string-array name="share_dialog_with_download_items">
+        <item>Facebook</item>
+        <item>Twitter</item>
+        <item>Save to Gallery</item>
     </string-array>
     <string name="buffering">正在缓冲…</string>
     <string name="profile_select_avatar_header">选择头像</string>
@@ -278,7 +283,7 @@
     <string name="profile_more">更多</string>
     <string name="profile_platinum">白金会员</string>
     <string name="profile_golden">黄金会员</string>
-    <string name="profile_dt_points">%s DT点数</string>
+    <string name="profile_dt_points">%d DT点数</string>
     <string name="profile_rovia_bucks">%s Rovia币</string>
     <string name="bucket_delete_dialog">您确定要删除目标清单项目吗?</string>
 
@@ -490,10 +495,44 @@
     <string name="back">回到</string>
     <string name="start_typing_name">开始输入名称</string>
 
-    <string name="multiple_dates">Multiple Dates, %s...</string>
+    <string name="multiple_dates">多个日期，%s…</string>
 
-    <string name="tag_photo">tagged you on</string>
+    <string name="tag_photo">标记了您，在</string>
 
-    <string name="user_already_exists">%s already exists</string>
+    <string name="user_already_exists">%s已存在</string>
+    <string name="photo_tag_title">点击任何地方标记好友</string>
+    <string name="profile_friend_formatter">%d个好友</string>
+    <string name="profile_friends_formatter">%d个好友</string>
+
+    <string name="send_feedback">发送反馈</string>
+    <string name="working_hard">我们正努力让DreamTrips变得更好，请帮助我们提高。</string>
+    <string name="feedback_message_hint">请在此输入您的留言</string>
+    <string name="message_can_not_be_empty">留言不能为空</string>
+    <string name="feedback_has_been_sent">您的反馈已经发送。谢谢。</string>
+    <string name="feedback_send_btn">发送</string>
+    <string name="feedback_select_category">选择原因</string>
+
+    <string name="years_ago">%d年前</string>
+    <string name="invitation_template">选择模板</string>
+
+    <string name="settings">设置</string>
+    <string name="notifications">通知</string>
+    <string name="general">一般</string>
+
+    <string name="what_notifications_get">您收到什么通知</string>
+
+    <string name="settings_distance_units">距离单位</string>
+    <string name="settings_friend_requests">好友请求</string>
+    <string name="settings_new_message">新消息</string>
+    <string name="settings_photo_tagging">照片标记</string>
+
+    <string name="abbreviated_miles">公里</string>
+    <string name="abbreviated_kilometers">英里</string>
+    <string name="show_distance_in">显示距离单位：</string>
+    <string name="settings_kilometers">公里</string>
+    <string name="settings_miles">英里</string>
+
+    <string name="save_changes_before_proceed">继续前您想保存更改吗？</string>
+    <string name="discard">放弃</string>
 
 </resources>

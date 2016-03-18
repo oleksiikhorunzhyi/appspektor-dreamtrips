@@ -284,7 +284,7 @@ public class DreamSpiceManager extends SpiceManager {
             }
 
         } catch (Exception e) {
-            Log.e(DreamSpiceManager.class.getSimpleName(), "", e);
+            Timber.e(e, "");
         }
         return "";
     }

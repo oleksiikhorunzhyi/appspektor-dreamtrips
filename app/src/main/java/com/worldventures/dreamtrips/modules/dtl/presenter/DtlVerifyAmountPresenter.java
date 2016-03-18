@@ -40,7 +40,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     }
 
     public void rescan() {
-        photoUploadingSpiceManager.cancelUploading(dtlTransaction.getUploadTask());
+        photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
         dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
                 .withUploadTask(null);
         db.saveDtlTransaction(merchantId, dtlTransaction);

@@ -1,5 +1,10 @@
 package com.worldventures.dreamtrips.core.utils;
 
+import com.innahema.collections.query.queriables.Queryable;
+
+import java.util.Collections;
+import java.util.List;
+
 public class TextUtils {
 
     public static String joinWithFirstUpperCase(Object[] groups) {
@@ -39,8 +44,9 @@ public class TextUtils {
 
     /**
      * Give index of first occurence of subString in superString, all lowercased.
+     *
      * @param superString where to search
-     * @param subString substring to search
+     * @param subString   substring to search
      * @return index of first occurence, if any. Otherwise - returns {@link Integer#MAX_VALUE}
      */
     public static int substringLocation(String superString, String subString) {
@@ -50,5 +56,18 @@ public class TextUtils {
         if (!superLowerCase.contains(subLowerCase)) return Integer.MAX_VALUE;
 
         return superLowerCase.indexOf(subLowerCase);
+    }
+
+
+    public static List<String> getListFromString(String temp) {
+        return getListFromString(temp, ",");
+    }
+
+    public static List<String> getListFromString(String temp, String divider) {
+        if (android.text.TextUtils.isEmpty(temp)) {
+            return Collections.emptyList();
+        } else {
+            return Queryable.from(temp.split(divider)).map(String::trim).toList();
+        }
     }
 }

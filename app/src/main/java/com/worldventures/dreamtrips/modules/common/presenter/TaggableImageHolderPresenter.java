@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
@@ -18,12 +17,7 @@ public abstract class TaggableImageHolderPresenter<VIEW extends TaggableImageHol
         this.photo = photo;
     }
 
-    @Override
-    public void takeView(VIEW view) {
-        super.takeView(view);
-    }
-
-    public void setupTags() {
+    public void showExistingTags() {
         if (photo != null && photo.getPhotoTags() != null) view.addTags(photo.getPhotoTags());
     }
 

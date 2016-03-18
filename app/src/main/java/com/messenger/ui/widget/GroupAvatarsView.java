@@ -22,7 +22,7 @@ import butterknife.InjectView;
 
 public class GroupAvatarsView extends FrameLayout {
 
-    private static GroupAvatarColorHelper colorHelper;
+    private static final GroupAvatarColorHelper COLOR_HELPER = new GroupAvatarColorHelper();
 
     @InjectView(R.id.group_avatar_default_view)
     RoundBackgroundImageView defaultGroupAvatar;
@@ -40,8 +40,6 @@ public class GroupAvatarsView extends FrameLayout {
     }
 
     private void init() {
-        colorHelper = new GroupAvatarColorHelper();
-
         LayoutInflater.from(getContext()).inflate(R.layout.widget_group_avatars_view, this, true);
         ButterKnife.inject(this, this);
     }
@@ -53,11 +51,10 @@ public class GroupAvatarsView extends FrameLayout {
         } else {
             loadCustomAvatar(conversation);
         }
-        invalidate();
     }
 
     private void showDefaultAvatar(String conversationId) {
-        defaultGroupAvatar.setRoundBackgroundColor(colorHelper.obtainColor(getContext(), conversationId));
+        defaultGroupAvatar.setRoundBackgroundColor(COLOR_HELPER.obtainColor(getContext(), conversationId));
         defaultGroupAvatar.setVisibility(VISIBLE);
     }
 
@@ -74,22 +71,25 @@ public class GroupAvatarsView extends FrameLayout {
     }
 
     private void loadCustomAvatar(DataConversation conversation) {
-        // show default avatar first as placeholder
+        // show default avatar first as placeholder,
+        // while loading the pic custom avatar will be transparent
         showDefaultAvatar(conversation.getId());
+        showCustomAvatar();
 
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setControllerListener(new BaseControllerListener<ImageInfo>() {
                     @Override
                     public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
                         hideDefaultAvatar();
-                        showCustomAvatar();
                     }
 
                     @Override
                     public void onFailure(String id, Throwable throwable) {
+                        hideCustomAvatar();
                         showDefaultAvatar(conversation.getId());
                     }
                 })
+                .setOldController(customImageGroupAvatar.getController())
                 .setUri(Uri.parse(conversation.getAvatar()))
                 .build();
         customImageGroupAvatar.setController(controller);

@@ -26,6 +26,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.util.List;
 
@@ -147,6 +148,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onLeaveChatClicked() {
+        TrackingHelper.leaveConversation();
         conversationObservable.subscribe(conversation -> chatLeavingDelegate.leave(conversation));
     }
 

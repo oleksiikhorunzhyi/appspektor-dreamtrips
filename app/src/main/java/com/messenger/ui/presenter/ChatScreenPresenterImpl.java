@@ -69,7 +69,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -205,7 +205,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         connectConnectivityStatusStream();
         connectConversationStream();
         connectToChatStream();
@@ -290,6 +289,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         conversationObservable = source
                 .replay(1)
                 .autoConnect();
+
+        source
+                .compose(new NonNullFilter<>())
+                .first()
+                .subscribe(conversation -> {
+                    TrackingHelper.openConversation(
+                            TextUtils.equals(conversation.getType(), ConversationType.CHAT)
+                                    ? TrackingHelper.MESSENGER_VALUE_INDIVIDUAL
+                                    : TrackingHelper.MESSENGER_VALUE_GROUP
+                    );
+                }, throwable -> Timber.e(throwable, ""));
 
         source.doOnSubscribe(() -> getView().showLoading());
         source.connect();
@@ -588,7 +598,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public boolean sendMessage(String message) {
         if (TextUtils.isEmpty(message)) return false;
-
         String finalMessage = message.trim();
 
         if (TextUtils.isEmpty(finalMessage)) return false;
@@ -721,6 +730,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
+                TrackingHelper.addPeopleToChat();
                 Flow.get(getContext()).set(new ExistingChatPath(conversationId));
                 return true;
             case R.id.action_settings:

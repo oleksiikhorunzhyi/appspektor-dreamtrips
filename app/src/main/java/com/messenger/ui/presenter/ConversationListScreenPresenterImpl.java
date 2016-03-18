@@ -25,6 +25,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import javax.inject.Inject;
@@ -119,7 +120,11 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         filterStream = PublishSubject.create();
         filterStream
                 .doOnNext(getViewState()::setSearchFilter)
-                .compose(bindView()).subscribe();
+                .doOnNext(selectedValue -> TrackingHelper.conversationSort(
+                        TextUtils.equals(selectedValue, GROUP_CHATS) ? TrackingHelper.MESSENGER_VALUE_GROUP
+                                : TrackingHelper.MESSENGER_VALUE_INDIVIDUAL))
+                .compose(bindView())
+                .subscribe();
     }
 
     private void connectTypeStream() {

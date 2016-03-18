@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import org.intellij.lang.annotations.MagicConstant;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -506,6 +507,56 @@ public class TrackingHelper {
     public static final String DTL_ATTRIBUTE_FILTER = "filter_id";
     public static final String DTL_ATTRIBUTE_SEARCH_RESULTS = "results_id";
 
+    // ---------------- Messenger actions
+    public static final String MESSENGER_ACTION_INBOX = "dta:Messenger:Inbox"; //capture the number of conversations in the inbox
+    public static final String MESSENGER_ACTION_VIEW_CONVERSATION = "dta:Messenger:View Conversation";
+    public static final String MESSENGER_ACTION_ADD_FRIEND_TO_CHAT = "dta:Messenger:Add Friends to Chat";
+    public static final String MESSENGER_ACTION_CONVERSATION_FILTER = "dta:Messenger:Conversation Filter";
+    public static final String MESSENGER_ACTION_CONVERSATION_SORT = "dta:Messenger:Conversation Sort";
+    public static final String MESSENGER_ACTION_GROUP_CHAT_SETINGS = "dta:Messenger:Group Chat Settings";
+
+    // ---------------- Messenger attributes
+    public static final String MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS = "eVar177";
+    public static final String MESSENGER_ATTRIBUTE_CONVERSATION_TYPE= "eVar178";
+    public static final String MESSENGER_ATTRIBUTE_CONVERSATION_SORT_TYPE= "eVar180";
+
+    public static final String MESSENGER_VALUE_INDIVIDUAL= "Individual";
+    public static final String MESSENGER_VALUE_GROUP = "Group";
+
+    public static final String MESSENGER_ATTRIBUTE_LEAVE_CONVERSATION = "Event425";
+
+    // Action/ViewState=dta:Messenger:Inbox
+    public static void setConversationCount(int count) {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_INBOX, MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS, count);
+    }
+
+    // Action/ViewState=dta:Messenger:View Conversation
+    public static void openConversation(
+            @MagicConstant(stringValues = {MESSENGER_VALUE_INDIVIDUAL, MESSENGER_VALUE_GROUP}) String value) {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_VIEW_CONVERSATION, MESSENGER_ATTRIBUTE_CONVERSATION_TYPE, value);
+    }
+
+    // Action/ViewState=dta:Messenger:Add Friends to Chat
+    public static void addPeopleToChat() {
+        sendActionToAdobeTracker(MESSENGER_ACTION_ADD_FRIEND_TO_CHAT);
+    }
+
+    // Action/ViewState=dta:Messenger:Conversation Sort
+    public static void conversationSort(
+            @MagicConstant(stringValues = {MESSENGER_VALUE_INDIVIDUAL, MESSENGER_VALUE_GROUP}) String value) {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_CONVERSATION_SORT, MESSENGER_ATTRIBUTE_CONVERSATION_SORT_TYPE, value);
+    }
+
+    // Action/ViewState=dta:Messenger:Group Chat Settings
+    public static void leaveConversation() {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_GROUP_CHAT_SETINGS, MESSENGER_ATTRIBUTE_LEAVE_CONVERSATION);
+    }
+
+    // Action/ViewState=dta:Messenger:Conversation Filter
+    public static void conversationSearchSelected() {
+        sendActionToAdobeTracker(MESSENGER_ACTION_CONVERSATION_FILTER);
+    }
+
     // ---------------- Tracking helper methods
 
     public static void setUserId(String userId) {
@@ -516,6 +567,16 @@ public class TrackingHelper {
 
     private static void sendSimpleAttributetoAdobeTracker(String action, String attribute) {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, prepareAttributeMap(attribute));
+    }
+
+    private static void sendSimpleAttributetoAdobeTracker(String action, String attribute, Object value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(attribute, value);
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
+    }
+
+    private static void sendActionToAdobeTracker(String action) {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, Collections.emptyMap());
     }
 
     public static String resolveSharingType(@ShareType String type) {

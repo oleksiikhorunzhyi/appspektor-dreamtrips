@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import org.intellij.lang.annotations.MagicConstant;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -576,7 +575,7 @@ public class TrackingHelper {
     }
 
     private static void sendActionToAdobeTracker(String action) {
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, Collections.emptyMap());
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, null);
     }
 
     public static String resolveSharingType(@ShareType String type) {

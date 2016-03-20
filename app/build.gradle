@@ -248,6 +248,8 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // Data storage, flow
+    compile 'com.github.techery.janet:janet:0.0.16'
+    compile 'com.github.techery.janet:command-service:0.0.16'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'

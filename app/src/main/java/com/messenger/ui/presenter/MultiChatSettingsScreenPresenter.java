@@ -7,20 +7,16 @@ import android.view.MenuItem;
 
 import com.messenger.delegate.ConversationAvatarDelegate;
 import com.messenger.entities.DataConversation;
-import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> {
@@ -42,26 +38,32 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         super.onAttachedToWindow();
         cropImageDelegate.setAspectRatio(ASPECT_RATIO_AVATAR_X, ASPECT_RATIO_AVATAR_Y);
         getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
-        Observable.combineLatest(cropImageDelegate.getCroppedImagesStream(),
-                conversationObservable.first(),
-                (image, conversation) -> new Pair<>(conversation, image))
-                .compose(bindView())
-                .subscribe(pair -> onAvatarCropped(pair.first, pair.second),
-                getErrorAction("Could not crop avatar image"));
+        Observable.combineLatest(
+            cropImageDelegate.getCroppedImagesStream(),
+            conversationObservable.first(),
+            (image, conversation) -> new Pair<>(conversation, image))
+            .compose(bindView())
+            .subscribe(pair -> onAvatarCropped(pair.first, pair.second),
+                e -> {
+                    Timber.w(e, "Could not crop image");
+                    getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+                }
+            );
+
         conversationObservable.first().subscribe(conversation -> {
-            conversationAvatarDelegate
-                    .listenToAvatarUpdates(conversation)
-                    .compose(bindView())
-                    .subscribe(getView()::setConversation, e -> {
-                        Timber.e(e, "Cannot refresh conversation avatar");
-                        getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-                    });
+            conversationAvatarDelegate.listenToAvatarUpdates(conversation)
+                .compose(bindView())
+                .subscribe(
+                   new ActionStateSubscriber<ConversationAvatarDelegate.BaseAvatarAction>()
+                   .onSuccess(state -> getView().setConversation(state.getResult()))
+                   .onFail((state, error) -> getView()
+                           .showErrorDialog(R.string.chat_settings_error_changing_avatar_subject))
+                );
         });
+
         conversationsDAO.getConversation(conversationId)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(conversation -> {
-                    getView().setConversation(conversation);
-        });
+                .subscribe(getView()::setConversation);
     }
 
     protected void onAvatarCropped(DataConversation conversation, File croppedAvatarFile) {
@@ -71,19 +73,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
 }
 
     protected void onRemoveAvatar() {
-        conversationObservable.first().subscribe(conversationAvatarDelegate::removeAvatar);
-    }
-
-    private Action1<Throwable> getErrorAction(String logMessage) {
-        return e -> {
-            Timber.w(e, logMessage);
-            getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-            conversationObservable.first().subscribe(conversation -> {
-                conversation.setAvatar(null);
-                conversationsDAO.save(conversation);
-                getView().setConversation(conversation);
-            });
-        };
+        conversationAvatarDelegate.removeAvatar(conversationObservable.toBlocking().first());
     }
 
     @Override

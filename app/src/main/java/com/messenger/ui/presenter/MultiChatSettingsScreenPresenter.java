@@ -46,6 +46,15 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
                 .compose(bindView())
                 .subscribe(pair -> onAvatarCropped(pair.first, pair.second),
                 getErrorAction("Could not crop avatar image"));
+        conversationObservable.first().subscribe(conversation -> {
+            conversationAvatarDelegate
+                    .listenToAvatarUpdates(conversation)
+                    .compose(bindView())
+                    .subscribe(getView()::setConversation, e -> {
+                        Timber.e(e, "Cannot refresh conversation avatar");
+                        getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+                    });
+        });
     }
 
     protected void onAvatarCropped(DataConversation conversation, File croppedAvatarFile) {
@@ -53,15 +62,11 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         conversation.setAvatar(path);
         // TODO do this from updates from ConversationDAO
         getView().setConversation(conversation);
-        conversationAvatarDelegate.saveAvatar(conversation)
-                .compose(bindView())
-                .subscribe(c -> getView().setConversation(c), getErrorAction("Could not save avatar"));
+        conversationAvatarDelegate.saveAvatar(conversation);
 }
 
     protected void onRemoveAvatar() {
-        conversationObservable
-                .flatMap(conversationAvatarDelegate::removeAvatar)
-                .subscribe(c -> getView().setConversation(c), getErrorAction("Could not remove avatar"));
+        conversationObservable.first().subscribe(conversationAvatarDelegate::removeAvatar);
     }
 
     private Action1<Throwable> getErrorAction(String logMessage) {

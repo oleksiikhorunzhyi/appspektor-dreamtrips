@@ -1,5 +1,7 @@
 package com.messenger.delegate;
 
+import android.text.TextUtils;
+
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.messenger.entities.DataConversation;
@@ -11,12 +13,15 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 public class ConversationAvatarDelegate {
 
     private PhotoUploadingManagerS3 photoUploadingManager;
     private MessengerServerFacade messengerServerFacade;
     private ConversationsDAO conversationsDAO;
+
+    private PublishSubject<DataConversation> conversationsStream = PublishSubject.create();
 
     public ConversationAvatarDelegate(PhotoUploadingManagerS3 photoUploadingManager,
                                       MessengerServerFacade messengerServerFacade,
@@ -26,27 +31,33 @@ public class ConversationAvatarDelegate {
         this.conversationsDAO = conversationsDAO;
     }
 
-    public Observable<DataConversation> saveAvatar(DataConversation conversation) {
-        return saveAvatarToDatabase(conversation)
-                .flatMap(c -> uploadAvatar(conversation.getAvatar()))
-                .map(url -> {
-                    conversation.setAvatar(url);
-                    return conversation;
-                })
-                .flatMap(this::sendAvatar)
-                .flatMap(this::saveAvatarToDatabase)
-                .compose(new IoToMainComposer<>());
+    public Observable<DataConversation> listenToAvatarUpdates(DataConversation dataConversation) {
+        return conversationsStream.filter(c -> TextUtils.equals(c.getId(), dataConversation.getId()));
     }
 
-    public Observable<DataConversation> removeAvatar(DataConversation conversation) {
-        return Observable.just(conversation)
-                .map(c -> {
-                    c.setAvatar(null);
-                    return c;
-                })
-                .flatMap(c -> sendAvatar(c)
-                .flatMap(this::saveAvatarToDatabase)
-                .compose(new IoToMainComposer<>()));
+    public void saveAvatar(DataConversation conversation) {
+        saveAvatarToDatabase(conversation)
+            .flatMap(c -> uploadAvatar(conversation.getAvatar()))
+            .map(url -> {
+                conversation.setAvatar(url);
+                return conversation;
+            })
+            .flatMap(this::sendAvatar)
+            .flatMap(this::saveAvatarToDatabase)
+            .compose(new IoToMainComposer<>())
+            .subscribe(conversationsStream);
+    }
+
+    public void removeAvatar(DataConversation conversation) {
+        Observable.just(conversation)
+            .map(c -> {
+                c.setAvatar(null);
+                return c;
+            })
+            .flatMap(this::sendAvatar)
+            .flatMap(this::saveAvatarToDatabase)
+            .compose(new IoToMainComposer<>())
+            .subscribe(conversationsStream);
     }
 
     public Observable<DataConversation> saveAvatarToDatabase(DataConversation dataConversation) {

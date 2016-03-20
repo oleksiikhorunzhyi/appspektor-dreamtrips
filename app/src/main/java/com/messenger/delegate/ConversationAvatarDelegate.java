@@ -12,8 +12,8 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class ConversationAvatarDelegate {
 
@@ -91,7 +91,6 @@ public class ConversationAvatarDelegate {
                 .createMultiUserChatObservable(conversation.getId(), messengerServerFacade.getUsername())
                 .flatMap(multiUserChat -> multiUserChat.setAvatar(conversation.getAvatar()))
                 .doOnNext(multiUserChat -> multiUserChat.close())
-                .map(multiUserChat1 -> conversation)
-                .subscribeOn(Schedulers.io());
+                .map(multiUserChat1 -> conversation);
     }
 }

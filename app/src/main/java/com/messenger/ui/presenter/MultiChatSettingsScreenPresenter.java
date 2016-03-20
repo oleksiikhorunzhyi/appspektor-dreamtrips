@@ -14,6 +14,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -55,13 +57,16 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
                         getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
                     });
         });
+        conversationsDAO.getConversation(conversationId)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(conversation -> {
+                    getView().setConversation(conversation);
+        });
     }
 
     protected void onAvatarCropped(DataConversation conversation, File croppedAvatarFile) {
         String path = Uri.fromFile(croppedAvatarFile).toString();
         conversation.setAvatar(path);
-        // TODO do this from updates from ConversationDAO
-        getView().setConversation(conversation);
         conversationAvatarDelegate.saveAvatar(conversation);
 }
 

@@ -381,7 +381,6 @@ dependencies {
 
     externalCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     devCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
-    stageCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     compile 'com.github.pwittchen:networkevents:2.1.2'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'

@@ -26,4 +26,8 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
         return new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, currentCount / PER_PAGE + 1);
     }
 
+    @Override
+    public int getMediaRequestId() {
+        return AccountImagesPresenter.class.getSimpleName().hashCode();
+    }
 }

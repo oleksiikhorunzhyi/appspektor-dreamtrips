@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -21,14 +22,19 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import icepick.State;
 
 public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
     public static final int REQUESTER_ID = -2;
+    public static final int MEDIA_REQUEST_ID = 19888;
 
     @State
     UploadTask cachedUploadTask;
+    @Inject
+    MediaPickerManager mediaPickerManager;
 
     PhotoUploadSubscriber photoUploadSubscriber;
 
@@ -44,6 +50,12 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
             }
         });
         Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
+        //
+        view.bind(mediaPickerManager.toObservable())
+                .filter(attachment -> attachment.requestId == MEDIA_REQUEST_ID)
+                .subscribe(mediaAttachment -> {
+                    attachImages(mediaAttachment.chosenImages, mediaAttachment.type);
+                });
     }
 
     @Override

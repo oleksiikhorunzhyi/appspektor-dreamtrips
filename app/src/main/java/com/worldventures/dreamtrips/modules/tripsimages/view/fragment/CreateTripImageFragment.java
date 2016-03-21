@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
-import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 
@@ -18,9 +17,10 @@ import java.util.List;
 
 import icepick.State;
 
+import static com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter.MEDIA_REQUEST_ID;
+
 @Layout(R.layout.layout_create_trip_image)
-public class CreateTripImageFragment extends CreateEntityFragment<CreateEntityPresenter>
-        implements MediaPickerFragment.Callback {
+public class CreateTripImageFragment extends CreateEntityFragment<CreateEntityPresenter> {
 
     @State
     boolean imageFromArgsAlreadyAttached;
@@ -65,18 +65,12 @@ public class CreateTripImageFragment extends CreateEntityFragment<CreateEntityPr
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .targetFragment(this)
-                .data(new PickerBundle())
+                .data(new PickerBundle(MEDIA_REQUEST_ID))
                 .build());
     }
 
     @Override
     protected Route getRoute() {
         return Route.PHOTO_CREATE;
-    }
-
-    @Override
-    public void onImagesSelected(List<ChosenImage> images, int type) {
-        getPresenter().attachImages(images, type);
     }
 }

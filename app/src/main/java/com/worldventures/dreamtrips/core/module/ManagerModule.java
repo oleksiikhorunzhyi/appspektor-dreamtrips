@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
 import com.worldventures.dreamtrips.modules.dtl.delegate.DtlSearchDelegate;
@@ -165,5 +166,11 @@ public class ManagerModule {
     @Singleton
     ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, AttachmentDAO attachmentDAO, SnappyRepository snappyRepository) {
         return new ClearDirectoryDelegate(context, attachmentDAO, snappyRepository);
+    }
+
+    @Provides
+    @Singleton
+    MediaPickerManager provideMediaPickerManager() {
+        return new MediaPickerManager();
     }
 }

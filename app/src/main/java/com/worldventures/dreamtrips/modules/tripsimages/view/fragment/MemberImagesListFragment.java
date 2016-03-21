@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
-import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
@@ -17,7 +16,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
 public class MemberImagesListFragment<P extends MembersImagesPresenter> extends TripImagesListFragment<P>
-        implements MembersImagesPresenter.View, MediaPickerFragment.Callback {
+        implements MembersImagesPresenter.View {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -40,8 +39,6 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
 
     @Override
     public void attachImages(List<ChosenImage> photos, int requestType) {
-        if (photos.size() == 0) return;
-        //
         hidePhotoPicker();
         openCreatePhoto(new CreateEntityBundle(photos, requestType));
     }
@@ -51,8 +48,7 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .targetFragment(this)
-                .data(new PickerBundle())
+                .data(new PickerBundle(getPresenter().getMediaRequestId()))
                 .build());
     }
 
@@ -78,8 +74,4 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .build());
     }
 
-    @Override
-    public void onImagesSelected(List<ChosenImage> images, int type) {
-        attachImages(images, type);
-    }
 }

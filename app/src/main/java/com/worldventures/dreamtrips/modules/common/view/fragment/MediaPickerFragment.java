@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
@@ -13,8 +12,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.MediaPickerPresente
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.InjectView;
@@ -23,7 +20,6 @@ import butterknife.InjectView;
 public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresenter, PickerBundle>
         implements MediaPickerPresenter.View {
 
-    private static final String STATE_REQUEST_CODE = "TARGET_STATE_CODE";
     private static final int DEFAULT_CONTAINER_ID = R.id.picker_container;
 
     @Inject
@@ -52,25 +48,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
             }
         });
         photoPickerLayout.setTransparentView(transparentView);
-        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> {
-            if (getTargetFragment() instanceof Callback)
-                ((Callback) getTargetFragment()).onImagesSelected(chosenImages, type);
-        });
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_REQUEST_CODE, getTargetRequestCode());
-        setTargetFragment(null, -1);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_REQUEST_CODE)) {
-            setTargetFragment(null, savedInstanceState.getInt(STATE_REQUEST_CODE));
-        }
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
     }
 
     @Override
@@ -87,7 +65,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
 
     @Override
     protected MediaPickerPresenter createPresenter(Bundle savedInstanceState) {
-        return new MediaPickerPresenter();
+        return new MediaPickerPresenter(getArgs().getRequestId());
     }
 
     private boolean onBackPressed() {
@@ -109,10 +87,5 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
             pickLimit = getArgs().getPickLimit();
         }
         photoPickerLayout.setup(getChildFragmentManager(), multipickEnabled, pickLimit);
-    }
-
-    public interface Callback {
-
-        void onImagesSelected(List<ChosenImage> images, int type);
     }
 }

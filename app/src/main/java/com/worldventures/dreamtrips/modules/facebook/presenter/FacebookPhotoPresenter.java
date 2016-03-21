@@ -71,7 +71,7 @@ public class FacebookPhotoPresenter extends BasePickerPresenter<FacebookPhotoPre
 
     @Override
     protected String generateUri(BasePhotoPickerModel model) {
-        return model.getThumbnailPath();
+        return model.getOriginalPath();
     }
 
     public interface View extends BasePickerPresenter.View {

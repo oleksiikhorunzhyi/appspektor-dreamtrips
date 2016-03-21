@@ -34,10 +34,10 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-import permissions.dispatcher.DeniedPermission;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.RuntimePermissions;
-import permissions.dispatcher.ShowsRationale;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
@@ -87,12 +87,12 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
         scanner.startCamera();
     }
 
-    @ShowsRationale(Manifest.permission.CAMERA)
+    @OnShowRationale(Manifest.permission.CAMERA)
     void showRationaleForCamera() {
         Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
     }
 
-    @DeniedPermission(Manifest.permission.CAMERA)
+    @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
         Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
     }

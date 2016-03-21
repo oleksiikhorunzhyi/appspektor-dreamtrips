@@ -42,7 +42,8 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     public void setTabs() {
         view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
         view.updateSelection();
-        view.preselectOfferTab(locationRepository.getCachedSelectedLocation().getPartnerCount() > 0);
+        // TODO :: 3/16/16 deal with this pre-selection
+//        view.preselectOfferTab(dtlLocationManager.getCachedSelectedLocation().getPartnerCount() > 0);
     }
 
     public Bundle prepareArgsForTab(int position) {

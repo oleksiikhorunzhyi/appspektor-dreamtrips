@@ -1,18 +1,24 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
@@ -20,70 +26,106 @@ import icepick.State;
 
 public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
 
-    @State
-    boolean initialized;
-    //
     @Inject
     LocationDelegate gpsLocationDelegate;
     @Inject
     DtlLocationManager dtlLocationManager;
+    @Inject
+    DtlMerchantManager dtlMerchantManager;
+    //
+    @State
+    boolean initialized;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        gpsLocationDelegate.setPermissionView(view);
         //
         if (initialized) return;
         initialized = true;
         //
-        DtlLocation dtlLocation = dtlLocationManager.getSelectedLocation();
-        if (dtlLocation != null) {
-            TrackingHelper.dtlLocationLoaded(dtlLocation.getId());
-            view.openMerchants();
-        } else {
-            view.openDtlLocationsScreen();
+        if (needsLocation()) {
+            view.bind(gpsLocationDelegate.requestLocationUpdate()
+                    .compose(new IoToMainComposer<>()))
+                    .subscribe(this::proceedNavigation, this::onLocationError);
+        }
+        else proceedNavigation(null);
+    }
+
+    public void onLocationResolutionGranted() {
+        gpsLocationDelegate.requestLocationUpdate();
+    }
+
+    public void onLocationResolutionDenied() {
+        proceedNavigation(null);
+    }
+
+    /**
+     * Determines whether we can proceed without locating device by GPS.
+     */
+    private boolean needsLocation() {
+        DtlLocation persistedLocation = dtlLocationManager.getSelectedLocation();
+        return persistedLocation != null && persistedLocation.getLocationSourceType() == LocationSourceType.NEAR_ME;
+    }
+
+    public void proceedNavigation(@Nullable Location newLocation) {
+        DtlLocation persistedLocation = dtlLocationManager.getSelectedLocation();
+        if (persistedLocation == null) {
+            if (newLocation == null) view.openDtlLocationsScreen();
+            else {
+                DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
+                        .locationSourceType(LocationSourceType.NEAR_ME)
+                        .longName(((Fragment) view).getString(R.string.dtl_near_me_caption)) // TODO better resource resolving?
+                        .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
+                        .build();
+                dtlLocationManager.persistLocation(dtlLocation);
+                view.openMerchants();
+            }
+        }
+        else {
+            switch (persistedLocation.getLocationSourceType()) {
+                case NEAR_ME:
+                    if (newLocation == null) { // we had location before, but not now - and we need it
+                        dtlLocationManager.cleanLocation();
+                        dtlMerchantManager.clean();
+                        view.openDtlLocationsScreen();
+                        break;
+                    }
+                    //
+                    if (DtlLocationHelper.checkLocation(0.5, newLocation,
+                            persistedLocation.getCoordinates().asAndroidLocation(), DistanceType.MILES))
+                        dtlMerchantManager.clean();
+                    //
+                    view.openMerchants();
+                    break;
+                case FROM_MAP:
+                    view.openMerchants();
+                    break;
+                case EXTERNAL:
+                    TrackingHelper.dtlLocationLoaded(
+                            ((DtlExternalLocation) dtlLocationManager.getSelectedLocation()).getId());
+                    view.openMerchants();
+                    break;
+            }
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    public void permissionGranted() {
-        view.bind(gpsLocationDelegate.requestLocationUpdate()
-                .compose(new IoToMainComposer<>()))
-                .subscribe(this::onLocationObtained, this::onLocationError);
-    }
-
-    private void onStatusError(Status status) {
-        view.resolutionRequired(status);
-    }
-
+    /**
+     * Check if given error's cause is insufficient GPS resolution or usual throwable and act accordingly
+     * @param e exception that {@link LocationDelegate} subscription returned
+     */
     private void onLocationError(Throwable e) {
         if (e instanceof LocationDelegate.LocationException)
-            onStatusError(((LocationDelegate.LocationException) e).getStatus());
-        else locationNotGranted();
+            view.locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
+        else onLocationResolutionDenied();
     }
 
-    private void onLocationObtained(Location location) {
-        gpsLocationDelegate.onLocationObtained(location);
-    }
+    public interface View extends RxView {
 
-    public void locationNotGranted() {
-        gpsLocationDelegate.onLocationObtained(null);
-    }
+        void locationResolutionRequired(Status status);
 
-    @Override
-    public void dropView() {
-        gpsLocationDelegate.dropPermissionView();
-        super.dropView();
-    }
+        void showProgress();
 
-    public interface View extends RxView, PermissionView {
-        void checkPermissions();
-
-        void resolutionRequired(Status status);
+        void hideProgress();
 
         void openDtlLocationsScreen();
 

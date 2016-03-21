@@ -50,7 +50,7 @@ public class DtlExternalLocation implements DtlLocation, Parcelable {
 
     @Override
     public Location getCoordinates() {
-        return null;
+        return coordinates;
     }
 
     @Override

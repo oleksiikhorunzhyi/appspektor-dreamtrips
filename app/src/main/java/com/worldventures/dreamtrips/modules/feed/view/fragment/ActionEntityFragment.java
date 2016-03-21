@@ -116,7 +116,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     @Override
     public void onResume() {
         super.onResume();
-        backStackDelegate.setListener(this::onBackPressed);
+        backStackDelegate.setListener(this::onBack);
         setupTextField();
         updateLocationButtonState();
     }
@@ -143,11 +143,11 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         getPresenter().invalidateAddTagBtn();
     }
 
-    private void updateLocationButtonState(){
+    private void updateLocationButtonState() {
         updateLocationButtonState(!TextUtils.isEmpty(getPresenter().getLocation().getName()));
     }
 
-    private void updateLocationButtonState(boolean isSelected){
+    private void updateLocationButtonState(boolean isSelected) {
         locationBtn.setSelected(isSelected);
     }
 
@@ -240,13 +240,13 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         getPresenter().post();
     }
 
-    protected boolean onBackPressed() {
+    protected boolean onBack() {
         getPresenter().cancelClicked();
         return true;
     }
 
     @OnClick(R.id.location)
-    void onLocation(){
+    void onLocation() {
         getPresenter().onLocationClicked();
     }
 
@@ -291,20 +291,20 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     @Override
     public void onTagSelected(ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags) {
-        getPresenter().onTagSelected(addedTags,removedTags);
+        getPresenter().onTagSelected(addedTags, removedTags);
         getPresenter().invalidateAddTagBtn();
     }
 
     @Override
     public void openLocation(Location location) {
-            router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder
-                    .forFragment()
-                    .backStackEnabled(true)
-                    .fragmentManager(getActivity().getSupportFragmentManager())
-                    .containerId(R.id.container_details_floating)
-                    .targetFragment(ActionEntityFragment.this)
-                    .data(location)
-                    .build());
+        router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder
+                .forFragment()
+                .backStackEnabled(true)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .containerId(R.id.container_details_floating)
+                .targetFragment(ActionEntityFragment.this)
+                .data(location)
+                .build());
     }
 
     @Override

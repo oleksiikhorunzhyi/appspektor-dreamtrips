@@ -26,10 +26,7 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
-
-    public static final int REQUESTER_ID = -2;
-    public static final int MEDIA_REQUEST_ID = 19888;
+public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
     @State
     UploadTask cachedUploadTask;
@@ -52,11 +49,13 @@ public class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends
         Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
         //
         view.bind(mediaPickerManager.toObservable())
-                .filter(attachment -> attachment.requestId == MEDIA_REQUEST_ID)
+                .filter(attachment -> attachment.requestId == getMediaRequestId())
                 .subscribe(mediaAttachment -> {
                     attachImages(mediaAttachment.chosenImages, mediaAttachment.type);
                 });
     }
+
+    public abstract int getMediaRequestId();
 
     @Override
     public void dropView() {

@@ -69,6 +69,11 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
     }
 
     private boolean onBackPressed() {
+        if (getChildFragmentManager().getBackStackEntryCount() > 1) {
+            getChildFragmentManager().popBackStack();
+            return true;
+        }
+        //
         int containerId = (getView() != null && getView().getParent() != null)
                 ? ((View) getView().getParent()).getId()
                 : DEFAULT_CONTAINER_ID;

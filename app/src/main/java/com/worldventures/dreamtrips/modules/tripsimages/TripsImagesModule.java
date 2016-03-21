@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.PhotoEditPresenter;
@@ -105,9 +106,9 @@ import dagger.Provides;
                 PreviewPhotoTaggableHolderPresenter.class,
 
                 EditPhotoTagsPresenter.class,
-                EditPhotoTagsFragment.class
+                EditPhotoTagsFragment.class,
 
-
+                CreateTripImagePresenter.class,
         },
         complete = false,
         library = true

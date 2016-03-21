@@ -18,10 +18,10 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ProfileClickedEvent;
@@ -43,7 +43,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Parcelable>
-        extends BaseFragmentWithArgs<P, T>
+        extends RxBaseFragmentWithArgs<P, T>
         implements BaseFeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.feed)

@@ -7,41 +7,29 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
-import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import icepick.State;
 
-import static com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter.MEDIA_REQUEST_ID;
-
 @Layout(R.layout.layout_create_trip_image)
-public class CreateTripImageFragment extends CreateEntityFragment<CreateEntityPresenter> {
+public class CreateTripImageFragment extends CreateEntityFragment<CreateTripImagePresenter> {
 
     @State
     boolean imageFromArgsAlreadyAttached;
 
     @Override
-    protected CreateEntityPresenter createPresenter(Bundle savedInstanceState) {
-        return new CreateEntityPresenter();
+    protected CreateTripImagePresenter createPresenter(Bundle savedInstanceState) {
+        return new CreateTripImagePresenter();
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         attachImages();
-        post.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus)
-                router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
-                        .fragmentManager(getChildFragmentManager())
-                        .containerId(R.id.picker_container)
-                        .build());
-            else name.requestFocus();
-        });
     }
 
     protected void attachImages() {
@@ -61,12 +49,7 @@ public class CreateTripImageFragment extends CreateEntityFragment<CreateEntityPr
 
     @Override
     protected void onPhotoCancel() {
-        router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(true)
-                .fragmentManager(getChildFragmentManager())
-                .containerId(R.id.picker_container)
-                .data(new PickerBundle(MEDIA_REQUEST_ID))
-                .build());
+        showMediaPicker();
     }
 
     @Override

@@ -126,6 +126,10 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     private void openPost() {
+        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
+                .containerId(R.id.container_details_floating)
+                .fragmentManager(getActivity().getSupportFragmentManager())
+                .build());
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())

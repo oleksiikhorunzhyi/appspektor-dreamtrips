@@ -283,7 +283,7 @@
     <string name="profile_more">更多</string>
     <string name="profile_platinum">白金會員</string>
     <string name="profile_golden">黃金會員</string>
-    <string name="profile_dt_points">%d DT點數</string>
+    <string name="profile_dt_points">%s DT點數</string>
     <string name="profile_rovia_bucks">%s Rovia幣</string>
     <string name="bucket_delete_dialog">您確定要刪除目標清單項目嗎?</string>
 

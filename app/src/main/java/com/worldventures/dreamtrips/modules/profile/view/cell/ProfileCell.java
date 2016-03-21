@@ -336,7 +336,7 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     }
 
     private void setDreamTripPoints(String count) {
-        dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, Float.valueOf(count).intValue())));
+        dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, count)));
     }
 
     private void setIsFriend(boolean isFriend) {

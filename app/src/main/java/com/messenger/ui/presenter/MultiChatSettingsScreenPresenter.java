@@ -6,6 +6,7 @@ import android.util.Pair;
 import android.view.MenuItem;
 
 import com.messenger.delegate.ConversationAvatarDelegate;
+import com.messenger.delegate.actions.AvatarAction;
 import com.messenger.entities.DataConversation;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
@@ -50,8 +51,8 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
             conversationAvatarDelegate.listenToAvatarUpdates(conversation)
                 .compose(bindView())
                 .subscribe(
-                   new ActionStateSubscriber<ConversationAvatarDelegate.BaseAvatarAction>()
-                   .onSuccess(state -> getView().setConversation(state.getResult()))
+                   new ActionStateSubscriber<AvatarAction>()
+                   .onSuccess(action -> getView().setConversation(action.getResult()))
                    .onFail((state, error) -> getView()
                            .showErrorDialog(R.string.chat_settings_error_changing_avatar_subject))
                 );

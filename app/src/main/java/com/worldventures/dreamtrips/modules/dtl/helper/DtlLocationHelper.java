@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 
@@ -20,9 +21,11 @@ public class DtlLocationHelper {
      * @return LatLng object preferable for filtering purposes
      */
     public static LatLng selectAcceptableLocation(Location deviceLocation, DtlLocation dtlLocation) {
+        if (dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME)
+            new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
+        //
         LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         LatLng cityLatLng = dtlLocation.getCoordinates().asLatLng();
-        //
         return checkLocation(DtlFilterParameters.MAX_DISTANCE, deviceLatLng, cityLatLng, DistanceType.MILES)
                 ? deviceLatLng
                 : cityLatLng;
@@ -30,10 +33,23 @@ public class DtlLocationHelper {
 
     public static boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLatLng,
                                  DistanceType distanceType) {
+        return checkLocation((double) maxDistance, currentLocation, targetLatLng, distanceType);
+    }
+
+    public static boolean checkLocation(double maxDistance, LatLng currentLocation, LatLng targetLatLng,
+                                 DistanceType distanceType) {
         double distance = distanceType == DistanceType.KMS
                 ? distanceInKms(currentLocation, targetLatLng)
                 : distanceInMiles(currentLocation, targetLatLng);
         return distance < maxDistance;
+    }
+
+    public static boolean checkLocation(double maxDistance, Location currentLocation, Location targetLatLng,
+                                 DistanceType distanceType) {
+        LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng target = new LatLng(targetLatLng.getLatitude(), targetLatLng.getLongitude());
+        //
+        return checkLocation(maxDistance, current, target, distanceType);
     }
 
     public static double calculateDistance(LatLng currentLatLng, LatLng targetLatLng) {

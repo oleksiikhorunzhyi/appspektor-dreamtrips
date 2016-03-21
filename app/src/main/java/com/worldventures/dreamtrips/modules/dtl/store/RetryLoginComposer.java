@@ -2,8 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.store;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -16,8 +14,6 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import retrofit.RetrofitError;
 import rx.Observable;
 import timber.log.Timber;
@@ -26,18 +22,17 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 public class RetryLoginComposer<T> implements Observable.Transformer<T, T> {
 
-    @ForApplication
-    @Inject
-    Context context;
-    @Inject
-    DreamTripsApi dreamTripsApi;
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    private final Context context;
+    private final DreamTripsApi dreamTripsApi;
+    private final SessionHolder<UserSession> appSessionHolder;
 
     private volatile boolean loginErrorHandled = false;
 
-    public RetryLoginComposer(Injector injector) {
-        injector.inject(this);
+    public RetryLoginComposer(Context context, DreamTripsApi dreamTripsApi,
+                              SessionHolder<UserSession> appSessionHolder) {
+        this.context = context;
+        this.dreamTripsApi = dreamTripsApi;
+        this.appSessionHolder = appSessionHolder;
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.innahema.collections.query.queriables.Queryable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
@@ -56,7 +57,7 @@ public class LocationDelegate {
     }
 
     public Observable<Location> requestLocationUpdate() {
-        return checkSettings().flatMap(this::settingsResultObtained);
+        return checkSettings().flatMap(this::settingsResultObtained).timeout(15, TimeUnit.SECONDS);
     }
 
     private Observable<LocationSettingsResult> checkSettings() {

@@ -47,7 +47,9 @@ public class ChatContextualMenuProvider {
                     new SupportMenuInflater(context).inflate(R.menu.menu_chat_contextual, menu);
 
                     // cannot chat with yourself, doesn't make sense to start new 1 : 1 chat with the same user either
-                    if (currentUser.getId().equals(message.getFromId()) || ConversationHelper.isSingleChat(queryResult.conversation)) {
+                    if (currentUser.getId().equals(message.getFromId())
+                            || ConversationHelper.isSingleChat(queryResult.conversation)
+                            || queryResult.messageAuthor == null) {
                         menu.removeItem(R.id.action_start_chat);
                     } else {
                         String title = String.format(context

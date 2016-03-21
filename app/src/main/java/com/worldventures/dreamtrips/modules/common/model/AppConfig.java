@@ -62,6 +62,9 @@ public class AppConfig {
             @SerializedName("OTAPageURL")
             private String otaPageURL;
 
+            @SerializedName("UploaderyBaseURL")
+            private String uploaderyBaseURL;
+
             public String getBookingPageURL() {
                 return bookingPageURL;
             }
@@ -88,6 +91,10 @@ public class AppConfig {
 
             public String getTrainingVideosURL() {
                 return trainingVideosURL;
+            }
+
+            public String getUploaderyBaseURL() {
+                return uploaderyBaseURL;
             }
 
             private String replaceWithBase64(String uid, String url) {

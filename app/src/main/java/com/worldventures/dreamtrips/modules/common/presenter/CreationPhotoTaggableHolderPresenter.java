@@ -18,12 +18,13 @@ import java.util.List;
 
 public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPresenter<CreationPhotoTaggableHolderPresenter.View> {
 
+    private static final int PAGE_SIZE = 100;
+
     private boolean addComplete, deleteComplete, updated;
 
     public CreationPhotoTaggableHolderPresenter(Photo photo) {
         super(photo);
     }
-
 
     @Override
     public void showExistingTags() {
@@ -88,8 +89,8 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         });
     }
 
-    public void loadFriends(String query, CreationTagView tagView) {
-        doRequest(new GetFriendsQuery(null, query, 1, 100), friends -> {
+    public void loadFriends(String query, int nextPage, CreationTagView tagView) {
+        doRequest(new GetFriendsQuery(null, query, nextPage, PAGE_SIZE), friends -> {
             if (ViewCompat.isAttachedToWindow(tagView)) {
                 tagView.setUserFriends(Queryable.from(friends).filter(user -> !isUserExists(user)).toList());
             }

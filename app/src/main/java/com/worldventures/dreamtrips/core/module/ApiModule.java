@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
+import com.worldventures.dreamtrips.core.api.UploaderyApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
@@ -58,6 +59,23 @@ public class ApiModule {
     @Provides
     DreamTripsApi provideApi(RestAdapter adapter) {
         return adapter.create(DreamTripsApi.class);
+    }
+
+    @Provides
+    UploaderyApi provideImageryApi(RestAdapter.Builder adapterBuilder, SessionHolder<UserSession> appSessionHolder) {
+        UploaderyApi api = null;
+        if (appSessionHolder.get().isPresent()) {
+            AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
+            if (appConfig != null) {
+                AppConfig.URLS urls = appConfig.getUrls();
+                if (urls.getProduction().getUploaderyBaseURL() != null)
+                    api = adapterBuilder
+                            .setEndpoint(urls.getProduction().getUploaderyBaseURL())
+                            .build()
+                            .create(UploaderyApi.class);
+            }
+        }
+        return api;
     }
 
     @Provides

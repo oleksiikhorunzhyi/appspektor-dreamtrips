@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
+import com.worldventures.dreamtrips.core.utils.events.AppConfigUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
@@ -154,6 +155,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
             userSession.setGlobalConfig(appConfig);
             appSessionHolder.put(userSession);
+            eventBus.postSticky(new AppConfigUpdatedEvent());
             loadFiltersData();
         }
     }
@@ -191,8 +193,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             List<AvailableLocale> availableLocales = localesOptional.get();
             contains = Queryable.from(availableLocales)
                     .any((availableLocale) ->
-                                    localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
-                                            localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage())
+                            localeCurrent.getCountry().equalsIgnoreCase(availableLocale.getCountry()) &&
+                                    localeCurrent.getLanguage().equalsIgnoreCase(availableLocale.getLanguage())
                     );
         }
         return !contains ? Locale.US : localeCurrent;

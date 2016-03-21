@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 public interface TagCreationActionsListener extends TagActionListener {
 
-    void requestFriendList(String query);
+    void requestFriendList(String query, int page);
 
     void onTagCreated(CreationTagView newTagView, SuggestionTagView suggestionTagView, PhotoTag tag);
 

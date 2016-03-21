@@ -7,4 +7,6 @@
 -keep class com.messenger.** { *; }
 -keep class cn.pedant.SweetAlert.** { *; }
 
+-dontwarn pl.itako.iconversion.**
+
 -keepattributes InnerClasses

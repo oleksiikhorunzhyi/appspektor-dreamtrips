@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.AutoCompleteTextView;
+import android.view.MotionEvent;
+import android.widget.AbsListView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -23,10 +25,13 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
 
     @Optional
     @InjectView(R.id.new_user_input_name)
-    public AutoCompleteTextView inputFriendName;
+    public FriendsAutoCompleteTextView inputFriendName;
 
     private TagFriendAdapter adapter;
     private SuggestionTagView suggestionTagView;
+    private boolean loading = true;
+    private int page = 1;
+    private WeakHandler weakHandler = new WeakHandler();
 
     public CreationTagView(Context context) {
         this(context, null);
@@ -40,10 +45,12 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         super(context, attrs, defStyleAttr);
     }
 
+
     public void setUserFriends(@Nullable List<User> userFriends) {
-        adapter.setFriendList(userFriends);
+        adapter.addFriends(userFriends);
         inputFriendName.post(() -> {
             if (!inputFriendName.isPopupShowing()) inputFriendName.showDropDown();
+            loading = false;
         });
     }
 
@@ -51,7 +58,10 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
     protected void initialize() {
         LayoutInflater.from(getContext()).inflate(getLayout(), this, true);
         ButterKnife.inject(this);
-        adapter = new TagFriendAdapter(getContext());
+        adapter = new TagFriendAdapter(getContext(), constraint -> tagListener.requestFriendList(constraint, page));
+        if (pointerTop != null) {
+            pointerTop.requestFocus();
+        }
         inputFriendName.setAdapter(adapter);
         inputFriendName.setDropDownBackgroundResource(R.drawable.background_common_tag_view);
         inputFriendName.setDropDownWidth(getSize().getWidth());
@@ -60,11 +70,14 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         inputFriendName.setDropDownAnchor(R.id.new_user_suggestions_popup_anchor);
         inputFriendName.setOnItemClickListener((parent, view, position, id) -> {
             PhotoTag.TagPosition tagPosition = photoTag.getProportionalPosition();
-            tagListener.onTagCreated(this,suggestionTagView, new PhotoTag(tagPosition, adapter.getItem(position)));
+            tagListener.onTagCreated(this, suggestionTagView, new PhotoTag(tagPosition, adapter.getItem(position)));
         });
         inputFriendName.setOnTouchListener((v, event) -> {
-            if (!inputFriendName.isPopupShowing()) {
-                inputFriendName.showDropDown();
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                inputFriendName.requestFocus();
+                if (!inputFriendName.isPopupShowing() || !inputFriendName.isFocused()) {
+                    weakHandler.postDelayed(() -> inputFriendName.showDropDown(), 500);
+                }
             }
             return false;
         });
@@ -78,6 +91,20 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
                 }
             }
         });
+        inputFriendName.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (!(loading) && (totalItemCount - visibleItemCount) <= (firstVisibleItem)) {
+                    page++;
+                    tagListener.requestFriendList(inputFriendName.getText().toString(), page);
+                    loading = true;
+                }
+            }
+        });
     }
 
     protected int getLayout() {
@@ -87,8 +114,7 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
     @Override
     public void setTagListener(TagCreationActionsListener tagListener) {
         super.setTagListener(tagListener);
-        adapter.setTagListener(tagListener);
-        tagListener.requestFriendList("");
+        tagListener.requestFriendList("", page);
 
     }
 
@@ -96,7 +122,6 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
     public void onClick() {
         deleteTag();
     }
-
 
     public void setSuggestionTagView(SuggestionTagView suggestionTagView) {
         this.suggestionTagView = suggestionTagView;

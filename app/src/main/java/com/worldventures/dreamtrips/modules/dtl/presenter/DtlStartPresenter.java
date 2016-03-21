@@ -43,12 +43,9 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         if (initialized) return;
         initialized = true;
         //
-        if (needsLocation()) {
-            view.bind(gpsLocationDelegate.requestLocationUpdate()
-                    .compose(new IoToMainComposer<>()))
-                    .subscribe(this::proceedNavigation, this::onLocationError);
-        }
-        else proceedNavigation(null);
+        view.bind(gpsLocationDelegate.requestLocationUpdate()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::proceedNavigation, this::onLocationError);
     }
 
     public void onLocationResolutionGranted() {
@@ -114,9 +111,14 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
      * @param e exception that {@link LocationDelegate} subscription returned
      */
     private void onLocationError(Throwable e) {
-        if (e instanceof LocationDelegate.LocationException)
-            view.locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-        else onLocationResolutionDenied();
+        if (!needsLocation()) {
+            proceedNavigation(null);
+            return;
+        } else {
+            if (e instanceof LocationDelegate.LocationException)
+                view.locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
+            else onLocationResolutionDenied();
+        }
     }
 
     public interface View extends RxView {

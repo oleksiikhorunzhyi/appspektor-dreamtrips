@@ -99,7 +99,7 @@ public class DtlMerchantsListFragment
 
     @Override
     public void onCellClicked(DtlMerchant model) {
-        // TODO
+        // TODO think how to use CellDelegate here
     }
 
     @Override

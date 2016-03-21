@@ -133,14 +133,12 @@ public class DtlLocationsSearchFragment extends RxBaseFragment<DtlLocationsSearc
 
     @Override
     public void navigateToMerchants() {
-        informUser("TODO :: Here will be merchants screen navigation");
-        // TODO :: 3/17/16 uncomment this
-//        router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
-//                .containerId(R.id.dtl_container)
-//                .fragmentManager(getFragmentManager())
-//                .backStackEnabled(false)
-//                .clearBackStack(true)
-//                .build());
+        router.moveTo(Route.DTL_MERCHANTS_HOLDER, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.dtl_container)
+                .fragmentManager(getFragmentManager())
+                .backStackEnabled(false)
+                .clearBackStack(true)
+                .build());
     }
 
     @Override

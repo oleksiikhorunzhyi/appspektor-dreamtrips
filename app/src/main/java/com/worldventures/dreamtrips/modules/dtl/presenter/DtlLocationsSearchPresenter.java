@@ -69,8 +69,7 @@ public class DtlLocationsSearchPresenter extends JobPresenter<DtlLocationsSearch
      * Analytic-related
      */
     private void trackLocationSelection(DtlLocation previousLocation, DtlExternalLocation newLocation) {
-        if (previousLocation != null)
-        TrackingHelper.dtlChangeLocation(newLocation.getId());
+        if (previousLocation != null) TrackingHelper.dtlChangeLocation(newLocation.getId());
         TrackingHelper.dtlSelectLocation(TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_SEARCH, newLocation.getId());
     }
 

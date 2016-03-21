@@ -138,15 +138,16 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
         }
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
-        View title = toolbar.findViewById(R.id.spinnerStyledTitle);
-        if (title != null) {
-            title.setOnClickListener(v ->
+        //
+        View titleView = toolbar.findViewById(R.id.spinnerStyledTitle);
+        if (titleView != null) {
+            titleView.setOnClickListener(v ->
                     router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
                             .backStackEnabled(false)
                             .containerId(R.id.dtl_container)
                             .fragmentManager(getParentFragment().getFragmentManager())
                             .build()));
-            ((TextView) title).setText(location.getLongName());
+            ((TextView) titleView).setText(location.getLongName());
         }
     }
 

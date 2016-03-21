@@ -6,4 +6,6 @@
 -keep class com.worldventures.dreamtrips.** { *; }
 -keep class cn.pedant.SweetAlert.** { *; }
 
+-dontwarn pl.itako.iconversion.**
+
 -keepattributes InnerClasses

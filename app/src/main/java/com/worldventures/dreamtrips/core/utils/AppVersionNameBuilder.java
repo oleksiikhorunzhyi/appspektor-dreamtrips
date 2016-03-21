@@ -43,7 +43,7 @@ public class AppVersionNameBuilder {
     }
 
     private boolean isCurrentFlavor(String flavor) {
-        return FLAVOR.equals(flavor);
+        return FLAVOR.contains(flavor);
     }
 
     private boolean isCurrentBuildType(String flavor) {
@@ -51,6 +51,10 @@ public class AppVersionNameBuilder {
     }
 
     private String generateName(String name) {
-        return String.format("%s.%s.%s-%s-%s", versionMajor, versionMinor, versionPatch, versionBuild, name);
+        String result = String.format("%s.%s.%s-%s", versionMajor, versionMinor, versionPatch, versionBuild);
+        if (!android.text.TextUtils.isEmpty(name)) {
+            result = String.format("%s-%s", result, name);
+        }
+        return result;
     }
 }

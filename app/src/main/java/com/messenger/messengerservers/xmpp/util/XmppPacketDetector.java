@@ -2,6 +2,7 @@ package com.messenger.messengerservers.xmpp.util;
 
 import android.text.TextUtils;
 
+import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 
 import org.jivesoftware.smack.packet.Message;
@@ -12,6 +13,7 @@ public final class XmppPacketDetector {
     public static final int SUBJECT = 0x74741;
     public static final int SYSTEM = 0x74748;
     public static final int EXTENTION_STATUS = 0x74749;
+    public static final int EXTENTION_AVATAR = 0x74750;
     public static final int UNKNOW = -1;
 
     public static int stanzaType(Stanza stanza) {
@@ -31,6 +33,8 @@ public final class XmppPacketDetector {
             return SUBJECT;
         } else if (message.getExtension(ChatStateExtension.NAMESPACE) != null) {
             return EXTENTION_STATUS;
+        } else if (message.getExtension(ChangeAvatarExtension.NAMESPACE) != null) {
+            return EXTENTION_AVATAR;
         }
         return UNKNOW;
     }

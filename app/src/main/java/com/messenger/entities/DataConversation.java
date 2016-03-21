@@ -27,6 +27,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @PrimaryKey @Column String _id;
     @Column String ownerId;
     @Column String subject;
+    @Column String avatar;
     @Column String type;
     @Column String status;
     @Column int unreadMessageCount;
@@ -39,6 +40,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setId(conversation.getId());
         setOwnerId(conversation.getOwnerId());
         setSubject(conversation.getSubject());
+        setAvatar(conversation.getAvatar());
         setStatus(conversation.getStatus());
         setType(conversation.getType());
         setUnreadMessageCount(conversation.getUnreadMessageCount());
@@ -49,6 +51,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setId(builder.id);
         setOwnerId(builder.ownerId);
         setSubject(builder.subject);
+        setAvatar(builder.avatar);
         setStatus(builder.status);
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
@@ -77,6 +80,14 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     @ConversationType.Type
@@ -138,6 +149,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
                 "_id='" + _id + '\'' +
                 ", ownerId='" + ownerId + '\'' +
                 ", subject='" + subject + '\'' +
+                ", avatar='" + avatar + '\'' +
                 ", status='" + status + '\'' +
                 ", type='" + type + '\'' +
                 ", unreadMessageCount=" + unreadMessageCount +
@@ -173,6 +185,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         private String id;
         private String ownerId;
         private String subject;
+        private String avatar;
         private String type;
         private String status;
         private long date;
@@ -198,6 +211,11 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
         public Builder subject(String val) {
             subject = val;
+            return this;
+        }
+
+        public Builder avatar(String val) {
+            avatar = val;
             return this;
         }
 

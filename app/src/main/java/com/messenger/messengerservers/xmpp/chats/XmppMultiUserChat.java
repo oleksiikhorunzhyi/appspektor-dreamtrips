@@ -9,6 +9,7 @@ import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
+import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.packets.LeavePresence;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -160,6 +161,35 @@ public class XmppMultiUserChat extends XmppChat implements MultiUserChat {
                     // TODO: 1/5/16 implement exception wrapper
                     subscriber.onError(e);
                 }
+            }
+        });
+    }
+
+    @Override
+    public Observable<MultiUserChat> setAvatar(String avatar) {
+        // TODO March 17, 2016 Extract observable creation, preconditions and error processing logic
+        // to common place
+        if (!isOwner)
+            throw new IllegalAccessError("You are not owner of chat");
+
+        return Observable.create(subscriber -> {
+            subscriber.onStart();
+            if (!initializedAndConnected()) {
+                subscriber.onError(new ConnectionException());
+                return;
+            }
+
+            try {
+                org.jivesoftware.smack.packet.Message message
+                        = new org.jivesoftware.smack.packet.Message();
+                message.addExtension(new ChangeAvatarExtension(avatar));
+                chat.sendMessage(message);
+
+                subscriber.onNext(XmppMultiUserChat.this);
+                subscriber.onCompleted();
+            } catch (SmackException e) {
+                // TODO: 1/5/16 implement exception wrapper
+                subscriber.onError(e);
             }
         });
     }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.messenger.ui.widget.RoundBackgroundImageView
+        android:id="@+id/group_avatar_default_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="center"
+        android:src="@drawable/regular_group"/>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/group_avatar_custom_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:roundAsCircle="true"
+        />
+
+</merge>

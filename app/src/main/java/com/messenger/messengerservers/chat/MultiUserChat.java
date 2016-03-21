@@ -17,4 +17,6 @@ public interface MultiUserChat extends Chat {
     void leave();
 
     Observable<MultiUserChat> setSubject(String subject);
+
+    Observable<MultiUserChat> setAvatar(String avatar);
 }

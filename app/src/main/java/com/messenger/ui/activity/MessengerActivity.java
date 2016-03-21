@@ -17,6 +17,7 @@ import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
 import com.messenger.flow.util.GsonParceler;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.techery.spares.annotations.Layout;
@@ -58,6 +59,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
     @Inject
+    CropImageDelegate cropImageDelegate;
+    @Inject
     ActivityRouter activityRouter;
 
     @InjectView(R.id.drawer)
@@ -80,6 +83,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         //
         initPickerLayout();
+        initCropImageDelegate();
         initNavDrawer();
         initFlow(conversationId);
         //
@@ -125,6 +129,13 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!cropImageDelegate.onActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (backStackDelegate.handleBackPressed()) return;
         if (flowActivityHelper.handleBack()) return;
@@ -142,6 +153,10 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
         photoPickerLayoutDelegate.initPicker(getSupportFragmentManager(), false);
         photoPickerLayoutDelegate.hidePicker();
+    }
+
+    private void initCropImageDelegate() {
+        cropImageDelegate.init(this);
     }
 
     private void initNavDrawer() {

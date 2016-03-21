@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
+import com.messenger.entities.DataConversation;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
 
@@ -41,8 +42,8 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
         super.initialize();
     }
 
-    public void setConversationId(String conversationId) {
-        avatarViewGroup.setConversationAvatar(conversationId);
+    public void setConversation(DataConversation conversation) {
+        avatarViewGroup.setConversationAvatar(conversation);
     }
 
     @Override

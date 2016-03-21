@@ -5,20 +5,30 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
+import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
-public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends ChatSettingsScreenImpl<P> {
+import javax.inject.Inject;
+
+import rx.Observable;
+
+public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends ChatSettingsScreenImpl<GroupChatSettingsScreen, P>
+    implements GroupChatSettingsScreen {
 
     private ChatSettingsRow membersSettingsRow;
     private ConversationHelper conversationHelper;
+
+    @Inject
+    ChangeAvatarDelegate changeAvatarDelegate;
 
     public GroupChatSettingsScreenImpl(Context context) {
         super(context);
@@ -30,7 +40,9 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
 
     @Override
     protected void initUi() {
+        injector.inject(this);
         conversationHelper = new ConversationHelper();
+        injector.inject(this);
         super.initUi();
     }
 
@@ -41,13 +53,12 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
         if (!TextUtils.isEmpty(conversation.getSubject())) {
             chatNameTextView.setText(conversation.getSubject());
         }
+        groupAvatarsView.setConversationAvatar(conversation);
+        groupAvatarsView.setVisibility(VISIBLE);
     }
 
     @Override
     public void setParticipants(DataConversation conversation, List<DataUser> participants) {
-        groupAvatarsView.setConversationAvatar(conversation.getId());
-        groupAvatarsView.setVisibility(VISIBLE);
-
         conversationHelper.setTitle(chatNameTextView, conversation, participants, false);
         String chatDescriptionFormat = getContext()
                 .getString(R.string.chat_settings_group_chat_description);
@@ -80,5 +91,20 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     public ChatSettingsScreenPresenter createPresenter() {
         return new MultiChatSettingsScreenPresenter(getContext(), getPath().getConversationId());
+    }
+
+    @Override
+    public Observable<ChosenImage> getAvatarImagesStream() {
+        return changeAvatarDelegate.getAvatarImagesStream();
+    }
+
+    @Override
+    public void showAvatarPhotoPicker() {
+        changeAvatarDelegate.showAvatarPhotoPicker();
+    }
+
+    @Override
+    public void hideAvatarPhotoPicker() {
+        changeAvatarDelegate.hideAvatarPhotoPicker();
     }
 }

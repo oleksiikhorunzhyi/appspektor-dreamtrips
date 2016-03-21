@@ -15,7 +15,7 @@ import java.util.List;
 
 import butterknife.OnClick;
 
-public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<SingleSettingsPath> {
+public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSettingsScreen, SingleSettingsPath> {
 
     public SingleChatSettingsScreenImpl(Context context) {
         super(context);

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.ConversationAvatarDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
@@ -19,6 +20,7 @@ import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -104,5 +106,17 @@ public class MessengerDelegateModule {
     @Provides
     MessageBodyCreator provideMessageBodyCreator(LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
         return new MessageBodyCreator(localeHelper, userSessionHolder.get().get().getUser());
+    }
+
+    @Provides
+    @Singleton
+    CropImageDelegate provideCropImageDelegate(DreamSpiceManager dreamSpiceManager) {
+        return new CropImageDelegate(dreamSpiceManager);
+    }
+
+    @Provides
+    @Singleton
+    ConversationAvatarDelegate provideConversationAvatarDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {
+        return new ConversationAvatarDelegate(photoUploadingManager, messengerServerFacade, conversationsDAO);
     }
 }

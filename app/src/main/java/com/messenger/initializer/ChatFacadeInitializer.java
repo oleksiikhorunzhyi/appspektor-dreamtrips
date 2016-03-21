@@ -141,6 +141,9 @@ public class ChatFacadeInitializer implements AppInitializer {
                         conversationsDAO.save(conversation);
                     }, throwable -> Timber.d(throwable, ""));
         });
+
+        emitter.addOnAvatarChangeListener(this::onAvatarChanged);
+
         emitter.addInvitationListener((conversationId) -> {
             Timber.i("Chat invited :: chat=%s", conversationId);
             loadConversation(conversationId)
@@ -220,5 +223,15 @@ public class ChatFacadeInitializer implements AppInitializer {
         }
         usersDAO.save(existedUsers);
         return newUsers;
+    }
+
+    private void onAvatarChanged(String conversationId, String avatar) {
+        conversationsDAO.getConversation(conversationId).first()
+                .subscribeOn(Schedulers.io())
+                .filter(c -> c != null && !TextUtils.equals(c.getAvatar(), avatar))
+                .subscribe(conversation -> {
+                    conversation.setAvatar(avatar);
+                    conversationsDAO.save(conversation);
+                }, e -> Timber.d(e, "Could not save avatar to conversation"));
     }
 }

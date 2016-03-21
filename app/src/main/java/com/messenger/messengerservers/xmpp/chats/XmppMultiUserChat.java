@@ -172,27 +172,24 @@ public class XmppMultiUserChat extends XmppChat implements MultiUserChat {
         if (!isOwner)
             throw new IllegalAccessError("You are not owner of chat");
 
-        return Observable.create(new Observable.OnSubscribe<MultiUserChat>() {
-            @Override
-            public void call(Subscriber<? super MultiUserChat> subscriber) {
-                subscriber.onStart();
-                if (!initializedAndConnected()) {
-                    subscriber.onError(new ConnectionException());
-                    return;
-                }
+        return Observable.create(subscriber -> {
+            subscriber.onStart();
+            if (!initializedAndConnected()) {
+                subscriber.onError(new ConnectionException());
+                return;
+            }
 
-                try {
-                    org.jivesoftware.smack.packet.Message message
-                            = new org.jivesoftware.smack.packet.Message();
-                    message.addExtension(new ChangeAvatarExtension(avatar));
-                    chat.sendMessage(message);
+            try {
+                org.jivesoftware.smack.packet.Message message
+                        = new org.jivesoftware.smack.packet.Message();
+                message.addExtension(new ChangeAvatarExtension(avatar));
+                chat.sendMessage(message);
 
-                    subscriber.onNext(XmppMultiUserChat.this);
-                    subscriber.onCompleted();
-                } catch (SmackException e) {
-                    // TODO: 1/5/16 implement exception wrapper
-                    subscriber.onError(e);
-                }
+                subscriber.onNext(XmppMultiUserChat.this);
+                subscriber.onCompleted();
+            } catch (SmackException e) {
+                // TODO: 1/5/16 implement exception wrapper
+                subscriber.onError(e);
             }
         });
     }

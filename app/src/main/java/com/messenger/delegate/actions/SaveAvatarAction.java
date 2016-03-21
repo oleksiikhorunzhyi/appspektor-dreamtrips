@@ -4,7 +4,6 @@ import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import io.techery.janet.command.annotations.CommandAction;
 import timber.log.Timber;
@@ -29,7 +28,6 @@ public class SaveAvatarAction extends AvatarAction {
                 })
                 .flatMap(this::sendAvatar)
                 .flatMap(this::saveAvatarToDatabase)
-                .compose(new IoToMainComposer<>())
                 .doOnError(e -> {
                     Timber.e(e, "Group avatar - failed to update conversation avatar, setting to null");
                     conversation.setAvatar(null);

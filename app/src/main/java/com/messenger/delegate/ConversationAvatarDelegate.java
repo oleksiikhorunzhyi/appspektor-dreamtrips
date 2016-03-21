@@ -15,6 +15,8 @@ import io.techery.janet.ActionState;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class ConversationAvatarDelegate {
 
@@ -35,13 +37,13 @@ public class ConversationAvatarDelegate {
         janet = new Janet.Builder()
                 .addService(new CommandActionService())
                 .build();
-        actionPipe = janet.createPipe(AvatarAction.class);
+        actionPipe = janet.createPipe(AvatarAction.class, Schedulers.io());
     }
 
     public Observable<ActionState<AvatarAction>> listenToAvatarUpdates(DataConversation dataConversation) {
         return actionPipe
                 .filter(action -> TextUtils.equals(action.getConversation().getId(), dataConversation.getId()))
-                .observe();
+                .observe().observeOn(AndroidSchedulers.mainThread());
     }
 
     public void saveAvatar(DataConversation conversation) {

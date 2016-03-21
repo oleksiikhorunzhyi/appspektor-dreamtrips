@@ -4,7 +4,6 @@ import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
@@ -26,9 +25,8 @@ public class RemoveAvatarAction extends AvatarAction {
                     c.setAvatar(null);
                     return c;
                 })
-                .flatMap(c -> sendAvatar(c)
-                        .flatMap(this::saveAvatarToDatabase)
-                        .compose(new IoToMainComposer<>()))
+                .flatMap(c -> sendAvatar(c))
+                .flatMap(this::saveAvatarToDatabase)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 }

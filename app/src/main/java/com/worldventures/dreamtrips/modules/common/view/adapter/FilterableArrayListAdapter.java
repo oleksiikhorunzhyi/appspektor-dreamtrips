@@ -142,15 +142,6 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
     }
 
     @Override
-    public void addItems(ArrayList<BaseItemClass> items) {
-        if (query == null) super.addItems(items);
-        else {
-            filterHandler.post(() -> cachedItems.addAll(items));
-            setFilter(query);
-        }
-    }
-
-    @Override
     public void addItems(List<BaseItemClass> items) {
         if (query == null) super.addItems(items);
         else {

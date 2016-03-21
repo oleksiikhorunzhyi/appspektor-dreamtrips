@@ -3,6 +3,7 @@ package com.messenger.ui.presenter;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Menu;
@@ -36,11 +37,9 @@ import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.storage.helper.AttachmentHelper;
-import com.messenger.storage.helper.ParticipantsDaoHelper;
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.PhotoPickerDelegate;
@@ -135,7 +134,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
-    protected ParticipantsDaoHelper participantsDaoHelper;
     protected AttachmentHelper attachmentHelper;
     protected PhotoPickerDelegate photoPickerDelegate;
 
@@ -147,8 +145,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     UsersDAO usersDAO;
     @Inject
     MessageDAO messageDAO;
-    @Inject
-    ParticipantsDAO participantsDAO;
     @Inject
     AttachmentDAO attachmentDAO;
     @Inject
@@ -175,9 +171,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private boolean imageAttachmentClicked = false;
 
     private Subscription messageStreamSubscription;
-    private Subscription participantsStreamSubscription;
     private Observable<Chat> chatObservable;
-    private Observable<DataConversation> conversationObservable;
+    private Observable<Pair<DataConversation, List<DataUser>>> conversationObservable;
     private PublishSubject<ChatChangeStateEvent> chatStateStream;
     private PublishSubject<Pair<Cursor, Integer>> lastVisibleItemStream = PublishSubject.create();
 
@@ -194,7 +189,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
-        participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
         attachmentHelper = new AttachmentHelper(attachmentDAO, messageDAO, usersDAO);
         contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO, translationsDAO);
         //
@@ -208,7 +202,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         connectConnectivityStatusStream();
         connectConversationStream();
         connectToChatStream();
-        connectMembersStream();
         connectToUnreadCounterStream();
         connectToLastVisibleItemStream();
         submitOneChatAction(this::connectChatTypingStream);
@@ -272,10 +265,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void connectConversationStream() {
-        ConnectableObservable<DataConversation> source = conversationDAO.getConversation(conversationId)
-                .filter(conversation -> conversation != null)
-                .filter(conversation -> {
-                    if (TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT)) {
+        ConnectableObservable<Pair<DataConversation, List<DataUser>>> source = conversationDAO.getConversationWithParticipants(conversationId)
+                .filter(conversationWithParticipant -> conversationWithParticipant != null)
+                .filter(conversationWithParticipant -> {
+                    if (TextUtils.equals(conversationWithParticipant.first.getStatus(), ConversationStatus.PRESENT)) {
                         return true;
                     } else {
                         //if we were kicked from conversation
@@ -292,6 +285,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         source
                 .compose(new NonNullFilter<>())
+                .map(conversationListPair -> conversationListPair.first)
                 .first()
                 .subscribe(conversation -> {
                     TrackingHelper.openConversation(
@@ -302,33 +296,27 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 }, throwable -> Timber.e(throwable, ""));
 
         source.doOnSubscribe(() -> getView().showLoading());
+        source
+                .compose(bindViewIoToMainComposer())
+                .subscribe(conversationWithParticipants ->
+                        conversationLoaded(conversationWithParticipants.first, conversationWithParticipants.second));
+
         source.connect();
     }
 
     private void connectToChatStream() {
         chatObservable = conversationObservable
                 .first()
-                .flatMap(c -> createChat(messengerServerFacade.getChatManager(), c)
-                        .subscribeOn(Schedulers.io()))
+                .flatMap(conversationListWithParticipants ->
+                        createChat(messengerServerFacade.getChatManager(), conversationListWithParticipants.first, conversationListWithParticipants.second)
+                                .subscribeOn(Schedulers.io()))
                 .replay(1)
                 .autoConnect();
     }
 
-    protected void connectMembersStream() {
-        conversationObservable.subscribe(dataConversation -> {
-            if (participantsStreamSubscription != null && !participantsStreamSubscription.isUnsubscribed()) {
-                participantsStreamSubscription.unsubscribe();
-            }
-
-            participantsStreamSubscription = participantsDaoHelper.obtainParticipantsStream(dataConversation, user)
-                    .compose(bindViewIoToMainComposer())
-                    .subscribe(dataUsers -> getView().setTitle(dataConversation, dataUsers),
-                            e -> Timber.w("Failed to connect to participants"));
-        }, e -> Timber.w("Unable to connectMembersStream"));
-    }
-
     private void connectToUnreadCounterStream() {
-        conversationObservable.map(c -> c.getUnreadMessageCount())
+        conversationObservable
+                .map(conversationWithParticipants -> conversationWithParticipants.first.getUnreadMessageCount())
                 .subscribe(count -> {
                     if (count == 0 && needShowUnreadMessages) {
                         needShowUnreadMessages = false;
@@ -363,9 +351,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         e -> Timber.w("Unable to connect chat stream"));
     }
 
+    private void conversationLoaded(DataConversation conversation, List<DataUser> participants) {
+        //noinspection all
+        getView().setTitle(conversation, participants);
+    }
+
     private void loadInitialData() {
         conversationObservable
                 .first()
+                .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .compose(new IoToMainComposer<>())
                 .subscribe(conversation -> {
                     notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
@@ -382,20 +376,21 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         getView().setShowMarkUnreadMessage(true);
 
-        return messageDAO.getMessagesBySyncTime(conversationId, syncTime)
-                .filter(cursor -> cursor.getCount() > 0)
+        Observable<Cursor> messagesObservable = messageDAO
+                .getMessagesBySyncTime(conversationId, syncTime)
+                .filter(cursor -> cursor.getCount() > 0);
+
+        return Observable.combineLatest(messagesObservable, conversationObservable,
+                (cursor, dataConversationListPair) -> new Pair<>(cursor, dataConversationListPair.first))
                 .compose(bindViewIoToMainComposer())
-                .subscribe(cursor -> {
+                .subscribe(cursorAndConversation -> {
+                    Cursor cursor = cursorAndConversation.first;
                     Timber.i("Retrived message count " + cursor.getCount());
                     if (!unreadMessagesLoading) {
                         markUnreadMessageFromDB(syncTime);
                     }
 
-                    conversationObservable.first()
-                            .compose(bindViewIoToMainComposer())
-                            .subscribe(conversation -> {
-                                getView().showMessages(cursor, conversation);
-                            }, e -> Timber.w("Unable to get conversation"));
+                    getView().showMessages(cursor, cursorAndConversation.second);
                 }, e -> Timber.w("Unable to get messages"));
     }
 
@@ -464,6 +459,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         conversationObservable.first()
                 .compose(bindViewIoToMainComposer())
+                .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .subscribe(conversation -> {
                     paginationDelegate.loadConversationHistoryPage(conversation, ++page, before,
                             (loadedPage, loadedMessage) ->
@@ -566,6 +562,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .flatMap(chat -> chat.sendReadStatus(message.getId()).flatMap(this::markMessagesAsRead))
                 .doOnNext(m -> Timber.i("Message marked as read %s", m))
                 .flatMap(msg -> conversationObservable.first())
+                .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .subscribe(dataConversation -> {
                     int unreadMessageCount = dataConversation.getUnreadMessageCount() - 1;
                     dataConversation.setUnreadMessageCount(unreadMessageCount < 0 ? 0 : unreadMessageCount);
@@ -619,7 +616,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindView())
                 .subscribe(attachment -> {
                     if (attachment != null) {
-                        if (Utils.isFileUri(Uri.parse(attachment.getUrl()))) retryUploadAttachment(messageId);
+                        if (Utils.isFileUri(Uri.parse(attachment.getUrl())))
+                            retryUploadAttachment(messageId);
                         else retrySendAttachment(attachment);
                     } else retrySendTextMessage(messageId);
                 });
@@ -714,6 +712,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         conversationObservable
                 .first()
                 .compose(bindVisibilityIoToMainComposer())
+                .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .subscribe(conversation -> {
                     if (ConversationHelper.isGroup(conversation)) {
                         // hide button for adding user for not owners of group chats
@@ -735,6 +734,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 return true;
             case R.id.action_settings:
                 conversationObservable
+                        .map(dataConversationStringPair -> dataConversationStringPair.first)
                         .first()
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
@@ -758,7 +758,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onShowContextualMenu(DataMessage message) {
         contextualMenuProvider
-                .provideMenu(message, user, conversationObservable,
+                .provideMenu(message, user, conversationObservable.map(dataConversationStringPair -> dataConversationStringPair.first),
                         attachmentDAO.getAttachmentByMessageId(message.getId()))
                 .filter(menu -> menu.size() > 0)
                 .compose(bindViewIoToMainComposer())
@@ -875,7 +875,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         //
         chatObservable.first()
                 .flatMap(chat -> chat.send(message))
-                .subscribe(msg -> {}, throwable -> Timber.w("Unable to send message with attachment"));
+                .subscribe(msg -> {
+                }, throwable -> Timber.w("Unable to send message with attachment"));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -928,13 +929,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
 
-    private Observable<Chat> createChat(ChatManager chatManager, DataConversation conversation) {
+    private Observable<Chat> createChat(ChatManager chatManager, DataConversation conversation, @NonNull List<DataUser> particioants) {
         switch (conversation.getType()) {
             case ConversationType.CHAT:
-                return participantsDAO
-                        .getParticipant(conversation.getId(), user.getId())
-                        .first()
-                        .compose(new NonNullFilter<>())
+                return Observable.just(particioants)
+                        .filter(usersList -> !usersList.isEmpty())
+                        .map(users -> users.get(0))
                         .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));
             case ConversationType.GROUP:
             default:

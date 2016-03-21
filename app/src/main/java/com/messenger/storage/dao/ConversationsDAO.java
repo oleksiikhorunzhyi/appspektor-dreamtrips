@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
@@ -64,11 +65,44 @@ public class ConversationsDAO extends BaseDAO {
                 .build();
         return query(q, DataConversation.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
-                .map(cursor -> {
-                    DataConversation conversation = SqlUtils.convertToModel(false, DataConversation.class, cursor);
-                    cursor.close();
-                    return conversation;
-                });
+                .compose(DaoTransformers.toDataConversation());
+    }
+
+    public Observable<Pair<DataConversation, List<DataUser>>> getConversationWithParticipants(String conversationId) {
+        //TODO: rename DataUser#_ID field to userId, because we don't use cursor with DataUser in list
+        String stringQuery = "SELECT c.*, u.*" +
+                "FROM " + DataConversation.TABLE_NAME + " c " +
+
+                "JOIN " + DataParticipant.TABLE_NAME + " p " +
+                "ON p." + DataParticipant$Table.CONVERSATIONID + "= c." + DataConversation$Table._ID + " " +
+
+                "JOIN " + DataUser$Table.TABLE_NAME + " u " +
+                "ON p." + DataParticipant$Table.USERID + "=u." + DataUser$Table._ID + " " +
+
+                "WHERE c." + DataConversation$Table._ID + "=? " +
+                "ORDER BY u." + DataUser$Table._ID;
+
+        RxContentResolver.Query query = new RxContentResolver.Query.Builder(null)
+                .withSelection(stringQuery)
+                .withSelectionArgs(new String[] {conversationId})
+                .build();
+        return query(query, DataConversation.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI)
+                .subscribeOn(Schedulers.io())
+                .map(cursor -> convertConversationWithParticipantFromCursor(cursor, conversationId));
+    }
+
+    @Nullable
+    private Pair<DataConversation, List<DataUser>> convertConversationWithParticipantFromCursor(Cursor cursor, String conversationId) {
+        if (cursor.getCount() == 0) {
+            cursor.close();
+            return null;
+        }
+        DataConversation conversation = SqlUtils.convertToModel(false, DataConversation.class, cursor);
+        // TODO: 3/21/16 because _id exist in conversation and user table, see todo in #getConversationWithParticipants(String)
+        conversation.setId(conversationId);
+        List<DataUser> users = SqlUtils.convertToList(DataUser.class, cursor);
+        cursor.close();
+        return new Pair<>(conversation, users);
     }
 
     public void save(List<DataConversation> conversations) {
@@ -105,7 +139,8 @@ public class ConversationsDAO extends BaseDAO {
                 "t." + DataTranslation$Table.TRANSLATION + " as  " + DataTranslation$Table.TRANSLATION + ", " +
 
 
-                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
+                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') " +
+                                                    "as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
                 "COUNT(uuu." + DataUser$Table._ID + ") as " + GROUP_CONVERSATION_USER_COUNT_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +

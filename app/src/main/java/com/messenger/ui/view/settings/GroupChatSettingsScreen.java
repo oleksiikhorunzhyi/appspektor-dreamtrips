@@ -1,6 +1,6 @@
 package com.messenger.ui.view.settings;
 
-import com.messenger.ui.util.avatar.AvatarImagesProvider;
+import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
 
-public interface GroupChatSettingsScreen extends ChatSettingsScreen, AvatarImagesProvider {
+public interface GroupChatSettingsScreen extends ChatSettingsScreen, ChangeAvatarDelegate {
 }

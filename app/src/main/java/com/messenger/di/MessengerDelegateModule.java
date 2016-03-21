@@ -116,7 +116,7 @@ public class MessengerDelegateModule {
 
     @Provides
     @Singleton
-    ConversationAvatarDelegate provideCropImageDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {
+    ConversationAvatarDelegate provideConversationAvatarDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {
         return new ConversationAvatarDelegate(photoUploadingManager, messengerServerFacade, conversationsDAO);
     }
 }

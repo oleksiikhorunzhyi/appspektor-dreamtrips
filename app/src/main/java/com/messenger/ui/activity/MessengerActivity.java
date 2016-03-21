@@ -42,7 +42,6 @@ import flow.Flow;
 import flow.History;
 import flow.path.Path;
 import flow.path.PathContainerView;
-import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.activity_base_messenger)
 public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPresenter> implements Flow.Dispatcher {
@@ -131,7 +130,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!Crop.onActivityResult(requestCode, resultCode, data, cropImageDelegate::onCropFinished)) {
+        if (!cropImageDelegate.onActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

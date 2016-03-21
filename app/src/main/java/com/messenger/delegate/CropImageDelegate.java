@@ -3,6 +3,7 @@ package com.messenger.delegate;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -73,11 +74,6 @@ public class CropImageDelegate {
         this.ratioY = ratioY;
     }
 
-    /**
-     * Crop library needs temp file for processing
-     *
-     * @param originalFilePath
-     */
     private void executeCrop(String originalFilePath) {
         dreamSpiceManager.execute(new CopyFileTask(new File(originalFilePath),
                 getTempFile(originalFilePath).getAbsolutePath()),
@@ -93,10 +89,11 @@ public class CropImageDelegate {
                 e -> reportError(e, "Could not copy avatar file from Facebook"));
     }
 
-    /*
-     * Called from onActivityResult()
-     */
-    public void onCropFinished(String path, String errorMsg) {
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        return Crop.onActivityResult(requestCode, resultCode, data, this::onCropFinished);
+    }
+
+    private void onCropFinished (String path, String errorMsg) {
         if (!TextUtils.isEmpty(path)) {
             reportSuccess(path);
         } else {

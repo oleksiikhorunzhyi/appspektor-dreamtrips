@@ -14,7 +14,6 @@ import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
 import java.util.List;
 
@@ -28,7 +27,8 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     private ChatSettingsRow membersSettingsRow;
     private ConversationHelper conversationHelper;
 
-    private ChangeAvatarDelegate changeAvatarDelegate;
+    @Inject
+    ChangeAvatarDelegate changeAvatarDelegate;
 
     public GroupChatSettingsScreenImpl(Context context) {
         super(context);
@@ -42,7 +42,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     protected void initUi() {
         injector.inject(this);
         conversationHelper = new ConversationHelper();
-        changeAvatarDelegate = new ChangeAvatarDelegate(injector);
+        injector.inject(this);
         super.initUi();
     }
 

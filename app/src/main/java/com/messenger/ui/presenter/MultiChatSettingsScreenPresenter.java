@@ -21,9 +21,6 @@ import timber.log.Timber;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> {
 
-    private static final int ASPECT_RATIO_AVATAR_X = 1;
-    private static final int ASPECT_RATIO_AVATAR_Y = 1;
-
     @Inject
     CropImageDelegate cropImageDelegate;
     @Inject
@@ -36,7 +33,6 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        cropImageDelegate.setAspectRatio(ASPECT_RATIO_AVATAR_X, ASPECT_RATIO_AVATAR_Y);
         getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
         Observable.combineLatest(
             cropImageDelegate.getCroppedImagesStream(),
@@ -70,7 +66,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         String path = Uri.fromFile(croppedAvatarFile).toString();
         conversation.setAvatar(path);
         conversationAvatarDelegate.saveAvatar(conversation);
-}
+    }
 
     protected void onRemoveAvatar() {
         conversationAvatarDelegate.removeAvatar(conversationObservable.toBlocking().first());

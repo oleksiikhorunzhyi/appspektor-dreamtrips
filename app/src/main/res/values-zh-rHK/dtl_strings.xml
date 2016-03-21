@@ -80,8 +80,6 @@
     <string name="suggest_merchant_rating_error_format">\'%s\'打分必須確定下來！</string>
     <string name="dtl_details_share_title">我將在%s賺取DreamTrips點數</string>
     <string name="dtl_details_share_title_earned" formatted="false">我在%s賺取了%s 點數</string>
-    <string name="dtl_wait_for_location">請稍候…獲取當前地點</string>
-    <string name="dtl_wait_for_cities">請稍候…獲取最近城市</string>
     <string name="dtl_wait_for_receipt">請稍候…上傳收據</string>
     <string name="dtl_wait_for_earn">請稍候…賺取點數</string>
     <string name="dtl_estimator_explanation">點數計算是基於在商家的最低消費量和一周的哪一天</string>

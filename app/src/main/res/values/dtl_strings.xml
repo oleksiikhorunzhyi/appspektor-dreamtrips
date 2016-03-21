@@ -79,8 +79,6 @@
     <string name="suggest_merchant_rating_error_format">\'%s\' rating must be set!</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %s DreamTrips points in %s</string>
-    <string name="dtl_wait_for_location">Wait… Obtaining current location</string>
-    <string name="dtl_wait_for_cities">Wait… Obtaining nearest cities</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
     <string name="dtl_wait_for_earn">Wait… Earning points</string>
     <string name="dtl_wait_for_offers">Searching for nearby offers.</string>

@@ -52,9 +52,10 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        if (merchant.hasNoOffers())
-            featureManager.with(Feature.REP_SUGGEST_MERCHANT, () -> view.setSuggestMerchantButtonAvailable(true),
-                    () -> view.setSuggestMerchantButtonAvailable(false));
+        if (merchant.hasNoOffers()) {
+            boolean canSuggest = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
+            view.setSuggestMerchantButtonAvailable(canSuggest);
+        }
     }
 
     private void processTransaction() {

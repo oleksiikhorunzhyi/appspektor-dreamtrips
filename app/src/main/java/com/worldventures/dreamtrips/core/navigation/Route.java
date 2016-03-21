@@ -71,7 +71,6 @@ import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryListFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuggestRestaurantFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
@@ -120,7 +119,6 @@ public enum Route {
     DETAIL_FOREIGN_BUCKET(ForeignBucketDetailsFragment.class),
 
     MAP(TripMapFragment.class),
-    ENROLL(StaticInfoFragment.EnrollFragment.class),
     TRIPLIST(TripListFragment.class),
     TRIP_FILTERS(FiltersFragment.class),
     TRIP_IMAGES_PAGER(TripImagePagerFragment.class),
@@ -130,10 +128,15 @@ public enum Route {
     ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
     USER_IMAGES(MemberImagesListFragment.class),
     BASE_IMAGES(BaseImageFragment.class),
+
     MEMBERSHIP(MembershipFragment.class),
+    TRAINING_VIDEOS(TrainingVideosFragment.class),
+    ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class),
+    ENROLL_RESTAURANT(StaticInfoFragment.EnrollRestaurantFragment.class),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
     INVITE(InviteFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
+
     BUCKET_TABS(BucketTabsFragment.class, R.string.bucket_list),
     FOREIGN_BUCKET_TABS(ForeignBucketTabsFragment.class, R.string.bucket_list),
     ACCOUNT_PROFILE(AccountFragment.class),
@@ -192,9 +195,7 @@ public enum Route {
 
     MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
-    TRAINING_VIDEOS(TrainingVideosFragment.class),
     ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
-    SUGGEST_RESTAURANT(SuggestRestaurantFragment.class),
     SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 
     INSPIRE_PHOTO_FULLSCREEN(InspirePhotoFullscreenFragment.class),

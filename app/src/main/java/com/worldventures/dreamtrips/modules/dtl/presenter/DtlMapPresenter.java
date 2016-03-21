@@ -39,7 +39,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         super.takeView(view);
         view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
         //
-        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor).onSuccess(this::onMerchantsLoaded);
+        bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe).onSuccess(this::onMerchantsLoaded);
         bindFilteredStream();
     }
 

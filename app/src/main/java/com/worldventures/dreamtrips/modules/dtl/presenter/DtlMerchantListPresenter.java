@@ -36,7 +36,7 @@ public class DtlMerchantListPresenter extends JobPresenter<DtlMerchantListPresen
     }
 
     private void bindMerchantManager() {
-        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor)
+        bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe)
                 .onSuccess(this::onMerchantsLoaded)
                 .onProgress(this::showProgress)
                 .onError(thr -> hideProgress());

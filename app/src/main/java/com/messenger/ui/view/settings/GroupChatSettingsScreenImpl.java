@@ -42,8 +42,19 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     protected void initUi() {
         injector.inject(this);
         conversationHelper = new ConversationHelper();
-        injector.inject(this);
         super.initUi();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        changeAvatarDelegate.register();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        changeAvatarDelegate.unregister();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.messenger.di;
 
+import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
@@ -12,8 +13,6 @@ import com.messenger.ui.widget.MessengerPhotoPickerLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,7 +39,7 @@ import dagger.Provides;
     }
 
     @Provides
-    ChangeAvatarDelegate provideChangeAvatarDelegate(PhotoPickerLayoutDelegate photoPickerLayoutDelegate) {
-        return new ChangeAvatarDelegateImpl(photoPickerLayoutDelegate);
+    ChangeAvatarDelegate provideChangeAvatarDelegate(PhotoPickerDelegate photoPickerDelegate, PhotoPickerLayoutDelegate photoPickerLayoutDelegate) {
+        return new ChangeAvatarDelegateImpl(photoPickerDelegate, photoPickerLayoutDelegate);
     }
 }

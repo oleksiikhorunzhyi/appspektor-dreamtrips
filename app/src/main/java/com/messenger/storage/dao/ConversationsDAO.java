@@ -153,7 +153,7 @@ public class ConversationsDAO extends BaseDAO {
                 "LEFT JOIN " + DataUser.TABLE_NAME + " u " +
                 "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
 
-                "LEFT JOIN " + DataParticipant.TABLE_NAME + " p " +
+                "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
 
                 "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
@@ -162,7 +162,7 @@ public class ConversationsDAO extends BaseDAO {
                 "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
                 "ON t." + DataTranslation$Table._ID + "=m." + DataMessage$Table._ID + " " +
 
-                "LEFT JOIN " + DataUser.TABLE_NAME + " uuu " +
+                "JOIN " + DataUser.TABLE_NAME + " uuu " +
                 "ON p." + DataParticipant$Table.USERID + "=uuu." + DataUser$Table._ID + " " +
 
                 "LEFT JOIN " + DataUser.TABLE_NAME + " uu " +

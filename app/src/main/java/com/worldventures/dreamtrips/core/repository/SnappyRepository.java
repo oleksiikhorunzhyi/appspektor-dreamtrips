@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
@@ -171,11 +172,22 @@ public class SnappyRepository {
      * @param key key to be deleted.
      */
     public void clearAllForKey(String key) {
-        act(db -> {
-            String[] placesKeys = db.findKeys(key);
-            for (String placeKey : placesKeys) {
-                db.del(placeKey);
-            }
+        clearAllForKeys(key);
+    }
+
+    /**
+     * Method is intended to delete all records for given keys.
+     *
+     * @param key keys array to be deleted.
+     */
+    public void clearAllForKeys(String... keys) {
+        Queryable.from(keys).forEachR(key -> {
+            act(db -> {
+                String[] placesKeys = db.findKeys(key);
+                for (String placeKey : placesKeys) {
+                    db.del(placeKey);
+                }
+            });
         });
     }
 
@@ -519,6 +531,7 @@ public class SnappyRepository {
         clearAllForKey(DTL_SELECTED_LOCATION);
     }
 
+    @Nullable
     public DtlLocation getDtlLocation() {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class))
                 .orNull();
@@ -543,9 +556,7 @@ public class SnappyRepository {
     }
 
     public void clearMerchantData() {
-        clearAllForKey(DTL_MERCHANTS);
-        clearAllForKey(DTL_AMENITIES);
-        clearAllForKey(DTL_TRANSACTION_PREFIX);
+        clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
     }
 
     public void saveLastSelectedOffersOnlyToogle(boolean state){

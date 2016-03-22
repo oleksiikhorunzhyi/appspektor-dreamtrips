@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationF
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsSearchFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantDetailsFragment;
@@ -161,6 +162,7 @@ public enum Route {
 
     DTL_START(DtlStartFragment.class),
     DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
+    DTL_LOCATIONS_SEARCH(DtlLocationsSearchFragment.class, R.string.dtl_locations_title),
     DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
     DTL_MERCHANTS_HOLDER(DtlMerchantsHostFragment.class),
     DTL_MERCHANTS_TABS(DtlMerchantsTabsFragment.class),

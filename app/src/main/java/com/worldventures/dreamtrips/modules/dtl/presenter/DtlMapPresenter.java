@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.location.Location;
+import android.support.annotation.Nullable;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -7,11 +10,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
@@ -48,11 +54,11 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
         toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
         //
         bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe).onSuccess(this::onMerchantsLoaded);
         bindFilteredStream();
+        bindLocationStream();
     }
 
     protected void bindFilteredStream() {
@@ -61,6 +67,11 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
                         .filter(merchant -> !(hideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
                         .toList().toBlocking().firstOrDefault(Collections.emptyList()));
         view.bind(merchantsStream).subscribe(this::showPins);
+    }
+
+    private void bindLocationStream() {
+        view.bind(dtlLocationManager.getLocationStream()).compose(new IoToMainComposer<>())
+                .subscribe(view::updateToolbarTitle);
     }
 
     private Observable<Boolean> prepareFilterToogle() {
@@ -73,21 +84,28 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         mapReady = true;
         //
         view.bind(subscribeToCameraChange()).subscribe(show -> view.showButtonLoadMerchants(show));
-        view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap())).subscribe(marker -> view.markerClick(marker));
+        view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap()))
+                .subscribe(marker -> view.markerClick(marker));
         view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         checkPendingMapInfo();
     }
 
     protected Observable<Boolean> subscribeToCameraChange() {
+        // TODO :: 3/22/16 bad signature and content of method. Needs re-writing
         return MapObservableFactory.createCameraChangeObservable(view.getMap())
                 .doOnNext(position -> view.cameraPositionChange(position))
-                .map(position -> position.zoom < MapViewUtils.DEFAULT_ZOOM ||
-                        !DtlLocationHelper.checkLocation(MAX_DISTANCE, dtlLocationManager.getCachedSelectedLocation().asLatLng(), position.target, DistanceType.MILES));
-
+                .map(position ->
+                        position.zoom < MapViewUtils.DEFAULT_ZOOM ||
+                        !DtlLocationHelper.checkLocation(MAX_DISTANCE,
+                                dtlLocationManager.getCachedSelectedLocation().getCoordinates().asLatLng(),
+                                position.target, DistanceType.MILES));
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
         this.merchantsStream.onNext(dtlMerchants);
+        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
+                view.getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
+            view.zoom(MapViewUtils.DEFAULT_ZOOM);
     }
 
     public void onMarkerClick(String merchantId) {
@@ -127,9 +145,18 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         }
     }
 
-    public void onLoadMerchantsClick(LatLng location){
-        //TODO dtlMerchantManager.loadMerchants();
-        if(view.getMap().getCameraPosition().zoom < 10f) view.zoom(10f);
+    public void onLoadMerchantsClick(LatLng latLng) {
+        DtlLocation mapSelectedLocation = ImmutableDtlManualLocation.builder()
+                .locationSourceType(LocationSourceType.FROM_MAP)
+                .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(latLng.latitude, latLng.longitude))
+//                .longName(null) // TODO :: 3/22/16
+                .build();
+        dtlLocationManager.persistLocation(mapSelectedLocation);
+        //
+        Location location = new Location("");
+        location.setLatitude(latLng.latitude);
+        location.setLongitude(latLng.longitude);
+        dtlMerchantManager.loadMerchants(location);
     }
 
     public interface View extends RxView {
@@ -140,8 +167,6 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         void showMerchantInfo(String merchantId);
 
         void prepareInfoWindow(int height);
-
-        void initToolbar(DtlLocation location);
 
         void centerIn(DtlLocation location);
 
@@ -158,5 +183,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         void showButtonLoadMerchants(boolean show);
 
         void zoom(float zoom);
+
+        void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
     }
 }

@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsTabsPresen
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
@@ -108,6 +109,8 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
             }
             return super.onOptionsItemSelected(item);
         });
+        //
+        initToolbar();
     }
 
     @Override
@@ -128,26 +131,47 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
     }
 
     @Override
+    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
+        if (dtlLocation == null) return; // for safety reasons
+        //
+        TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
+        TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
+        //
+        switch (dtlLocation.getLocationSourceType()) {
+            case NEAR_ME:
+            case EXTERNAL:
+                locationTitle.setText(dtlLocation.getLongName());
+                locationModeCaption.setVisibility(View.GONE);
+                break;
+            case FROM_MAP:
+                if (dtlLocation.getLongName() == null) {
+                    locationModeCaption.setVisibility(View.GONE);
+                    locationTitle.setText(R.string.dtl_nearby_caption);
+                } else {
+                    locationModeCaption.setVisibility(View.VISIBLE);
+                    locationTitle.setText(dtlLocation.getLongName());
+                }
+                break;
+        }
+    }
+
+    @Override
     public void updateSelection() {
         pager.setCurrentItem(currentPosition);
     }
 
-    @Override
-    public void initToolbar(DtlLocation location) {
+    private void initToolbar() {
         if (!tabletAnalytic.isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
         }
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
-        View title = toolbar.findViewById(R.id.spinnerStyledTitle);
-        if (title != null) {
-            title.setOnClickListener(v ->
-                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-                            .backStackEnabled(false)
-                            .containerId(R.id.dtl_container)
-                            .fragmentManager(getParentFragment().getFragmentManager())
-                            .build()));
-            ((TextView) title).setText(location.getLongName());
-        }
+        //
+        ButterKnife.findById(toolbar, R.id.titleContainer).setOnClickListener(v ->
+                router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                        .backStackEnabled(false)
+                        .containerId(R.id.dtl_container)
+                        .fragmentManager(getParentFragment().getFragmentManager())
+                        .build()));
     }
 
     @Override

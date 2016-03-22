@@ -1,8 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
@@ -22,17 +24,19 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
-    DtlLocationManager locationRepository;
+    DtlLocationManager dtlLocationManager;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        view.initToolbar(locationRepository.getCachedSelectedLocation());
         setTabs();
         //
         bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe)
                 .onError(apiErrorPresenter::handleError);
+        //
+        view.bind(dtlLocationManager.getLocationStream()).compose(new IoToMainComposer<>())
+                .subscribe(view::updateToolbarTitle);
     }
 
     public void applySearch(String query) {
@@ -42,7 +46,8 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     public void setTabs() {
         view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
         view.updateSelection();
-        view.preselectOfferTab(locationRepository.getCachedSelectedLocation().getPartnerCount() > 0);
+        // TODO :: 3/16/16 deal with this pre-selection
+//        view.preselectOfferTab(dtlLocationManager.getCachedSelectedLocation().getPartnerCount() > 0);
     }
 
     public Bundle prepareArgsForTab(int position) {
@@ -72,10 +77,10 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
 
         void updateSelection();
 
-        void initToolbar(DtlLocation location);
-
         void openDetails(String merchantId);
 
         void preselectOfferTab(boolean preselectOffer);
+
+        void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
     }
 }

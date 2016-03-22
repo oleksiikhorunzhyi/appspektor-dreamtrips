@@ -10,7 +10,6 @@ import com.appyvet.rangebar.RangeBar;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
@@ -110,7 +109,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
 
     @Override
     public void syncUi(DtlFilterData filterData) {
-        rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
+        rangeBarDistance.setRangePinsByValue(10f, (float) filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
         distanceCaption.setText(getString(R.string.dtl_distance,
                 getString(filterData.getDistanceType() == DistanceType.MILES ?

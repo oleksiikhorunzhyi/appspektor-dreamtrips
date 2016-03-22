@@ -2,11 +2,12 @@ package com.worldventures.dreamtrips.modules.map.reactive;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.jakewharton.rxbinding.internal.MainThreadSubscription;
-import com.jakewharton.rxbinding.internal.Preconditions;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.MainThreadSubscription;
+
+import static rx.android.MainThreadSubscription.verifyMainThread;
 
 public class CameraChangeObservable implements Observable.OnSubscribe<CameraPosition> {
     private final GoogleMap map;
@@ -21,7 +22,7 @@ public class CameraChangeObservable implements Observable.OnSubscribe<CameraPosi
 
     @Override
     public void call(final Subscriber<? super CameraPosition> subscriber) {
-        Preconditions.checkUiThread();
+        verifyMainThread();
 
         GoogleMap.OnCameraChangeListener listener = cameraPosition -> {
             if (!subscriber.isUnsubscribed()) {

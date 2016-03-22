@@ -5,11 +5,12 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsSearchPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapInfoPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMapPresenter;
+import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantDetailsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantListPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsHostPresenter;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantDetailsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsTabsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationF
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
+import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsSearchFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantDetailsFragment;
@@ -49,7 +51,9 @@ import dagger.Provides;
                 DtlMerchantsHostFragment.class,
                 DtlMerchantsHostPresenter.class,
                 DtlLocationsPresenter.class,
+                DtlLocationsSearchPresenter.class,
                 DtlLocationsFragment.class,
+                DtlLocationsSearchFragment.class,
                 DtlLocationCell.class,
                 DtlFilterAttributeCell.class,
                 DtlFilterAttributeHeaderCell.class,

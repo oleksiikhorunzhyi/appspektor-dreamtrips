@@ -110,7 +110,7 @@ public abstract class MapFragment<T extends Presenter> extends RxBaseFragment<T>
     private void initMap() {
         mapView.getMapAsync(map -> {
             googleMap = map;
-            googleMap.setMyLocationEnabled(true);
+            googleMap.setMyLocationEnabled(true); // TODO :: 3/22/16 for DTL should not always be true
             googleMap.setOnMarkerClickListener(this::onMarkerClick);
             mapView.setMapTouchListener(this::onMapTouched);
             onMapLoaded();

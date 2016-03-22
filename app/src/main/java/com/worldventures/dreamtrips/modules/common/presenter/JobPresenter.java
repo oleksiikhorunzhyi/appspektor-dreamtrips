@@ -29,7 +29,6 @@ public class JobPresenter<VT extends RxView> extends Presenter<VT> {
         return subscriber;
     }
 
-    // TODO :: temporary solution - WIP for current task
     public <T> JobSubscriber<T> bindJobPersistantCached(JobExecutor<T> executor) {
         JobSubscriber<T> subscriber = new JobSubscriber<>();
         view.bind(executor.connectWithCache()

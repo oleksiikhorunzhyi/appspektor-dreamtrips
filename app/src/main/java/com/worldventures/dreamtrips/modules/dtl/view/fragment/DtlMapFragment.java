@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
@@ -103,7 +105,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             }
             return super.onOptionsItemSelected(item);
         });
-
+        //
+        initToolbar();
         swHideDinings.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().onCheckHideDinings(isChecked));
     }
 
@@ -151,6 +154,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     protected void onMapLoaded() {
+        // googleMap.setMyLocationEnabled(true); // TODO :: 3/22/16 for DTL should not always be true
         clusterManager = new ClusterManager<>(getActivity(), googleMap);
         clusterManager.setRenderer(new DtClusterRenderer(getActivity().getApplicationContext(), googleMap, clusterManager));
 
@@ -246,20 +250,43 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         super.onDestroyView();
     }
 
-    @Override
-    public void initToolbar(DtlLocation location) {
+    public void initToolbar() {
         if (!tabletAnalytic.isTabletLandscape() || !bundle.isSlave()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
-            toolbar.findViewById(R.id.spinnerStyledTitle).setOnClickListener(v ->
+            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v ->
                     router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
                             .backStackEnabled(false)
                             .containerId(R.id.dtl_container)
                             .fragmentManager(getFragmentManager())
                             .build()));
-            ((TextView) toolbar.findViewById(R.id.spinnerStyledTitle)).setText(location.getLongName());
         } else {
             toolbar.findViewById(R.id.spinnerStyledTitle).setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
+        if (dtlLocation == null) return; // for safety reasons
+        //
+        TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
+        TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
+        //
+        switch (dtlLocation.getLocationSourceType()) {
+            case NEAR_ME:
+            case EXTERNAL:
+                locationTitle.setText(dtlLocation.getLongName());
+                locationModeCaption.setVisibility(View.GONE);
+                break;
+            case FROM_MAP:
+                if (dtlLocation.getLongName() == null) {
+                    locationModeCaption.setVisibility(View.GONE);
+                    locationTitle.setText(R.string.dtl_nearby_caption);
+                } else {
+                    locationModeCaption.setVisibility(View.VISIBLE);
+                    locationTitle.setText(dtlLocation.getLongName());
+                }
+                break;
         }
     }
 }

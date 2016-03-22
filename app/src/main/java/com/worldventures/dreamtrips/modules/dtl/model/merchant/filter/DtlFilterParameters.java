@@ -4,8 +4,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttrib
 
 import org.immutables.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +13,7 @@ public abstract class DtlFilterParameters {
 
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
-    public static final int MAX_DISTANCE = 50;
+    public static final double MAX_DISTANCE = 50;
 
     @Value.Default
     public int getMinPrice() {
@@ -28,7 +26,7 @@ public abstract class DtlFilterParameters {
     }
 
     @Value.Default
-    public int getMaxDistance() {
+    public double getMaxDistance() {
         return MAX_DISTANCE;
     }
 

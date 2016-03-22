@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.module.dtl.repository;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class DtlLocationManagerTest {
 
     @Test
     public void persistLocation_LocationPersisted() {
-        DtlLocation location = mock(DtlLocation.class);
+        DtlExternalLocation location = mock(DtlExternalLocation.class);
         //
         dtlLocationManager.persistLocation(location);
         //
@@ -43,11 +43,11 @@ public class DtlLocationManagerTest {
 
     @Test
     public void persistLocation_LocationUpdated() {
-        DtlLocation locationOld = new DtlLocation();
+        DtlExternalLocation locationOld = new DtlExternalLocation();
         locationOld.setId("oldId");
         dtlLocationManager.persistLocation(locationOld);
         //
-        DtlLocation locationNew = new DtlLocation();
+        DtlExternalLocation locationNew = new DtlExternalLocation();
         locationNew.setId("newId");
         dtlLocationManager.persistLocation(locationNew);
         //

@@ -84,10 +84,10 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         MapViewUtils.setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
+        //
         toolbar.inflateMenu(R.menu.menu_dtl_map);
-        MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         searchViewHelper = new SearchViewHelper();
-        searchViewHelper.init(searchItem, lastQuery, query -> {
+        searchViewHelper.init(toolbar.getMenu().findItem(R.id.action_search), lastQuery, query -> {
             lastQuery = query;
             getPresenter().applySearch(query);
         });
@@ -176,7 +176,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void centerIn(DtlLocation location) {
         LatLng latLng = new LatLng(location.getCoordinates().getLat(), location.getCoordinates().getLng());
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10.0f));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewUtils.DEFAULT_ZOOM));
     }
 
     @Override
@@ -229,7 +229,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     public void prepareInfoWindow(int height) {
         int ownHeight = getView().getHeight();
         int centerY = ownHeight / 2;
-        int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
+        int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge); // TODO add switch height
         int offset = resultY - centerY;
         animateToMarker(selectedLocation, offset);
     }

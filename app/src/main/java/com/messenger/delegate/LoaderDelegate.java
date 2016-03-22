@@ -68,7 +68,6 @@ public class LoaderDelegate {
             conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<Conversation, User>(subscriber) {
                 @Override
                 protected List<User> process(List<Conversation> data) {
-                    TrackingHelper.setConversationCount(data.size());
                     final long syncTime = System.currentTimeMillis();
                     List<DataConversation> convs = from(data).map(DataConversation::new).toList();
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));

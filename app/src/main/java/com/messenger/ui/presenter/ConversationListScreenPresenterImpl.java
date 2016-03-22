@@ -14,6 +14,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
@@ -83,6 +84,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         applyViewState();
         connectData();
+        trackConversations();
     }
 
     public void onDetachedFromWindow() {
@@ -126,20 +128,29 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         filterStream = PublishSubject.create();
         filterStream
                 .doOnNext(getViewState()::setSearchFilter)
-                .doOnNext(selectedValue -> TrackingHelper.conversationSort(
-                        TextUtils.equals(selectedValue, GROUP_CHATS) ? TrackingHelper.MESSENGER_VALUE_GROUP
-                                : TrackingHelper.MESSENGER_VALUE_INDIVIDUAL))
                 .compose(bindView())
                 .subscribe();
     }
 
     private void connectTypeStream() {
         typeStream = PublishSubject.create();
-        typeStream
+        typeStream.doOnNext(selectedValue -> TrackingHelper.conversationType(
+                TextUtils.equals(selectedValue, GROUP_CHATS)
+                        ? TrackingHelper.MESSENGER_VALUE_GROUPS
+                        : TrackingHelper.MESSENGER_VALUE_ALL))
                 .doOnNext(getViewState()::setChatType)
                 .compose(bindView()).subscribe();
     }
 
+    private void trackConversations() {
+        connectionStatusStream
+                .filter(status -> status == ConnectionStatus.CONNECTED)
+                .flatMap(status -> conversationsDAO.conversationsCount())
+                .first()
+                .compose(bindView())
+                .subscribe(TrackingHelper::setConversationCount,
+                        e -> Timber.e(e, "Failed to get conv count"));
+    }
     private void connectToFilters() {
         Observable.combineLatest(
                 typeStream.asObservable()
@@ -153,11 +164,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
                 .compose(bindView())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(filters -> {
-                    connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS) ? ConversationType.GROUP : null, filters.second);
+                    connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS)
+                            ? ConversationType.GROUP : null, filters.second);
                 }, throwable -> Timber.e(throwable, "Filter error"));
     }
 
-    private void connectToSelectedConversationStream(){
+    private void connectToSelectedConversationStream() {
         selectedConversationStream = PublishSubject.<DataConversation>create();
         selectedConversationStream
                 .throttleLast(SELECTED_CONVERSATION_DELAY, TimeUnit.MILLISECONDS)

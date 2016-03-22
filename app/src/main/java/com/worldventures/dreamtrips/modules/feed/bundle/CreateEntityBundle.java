@@ -39,6 +39,10 @@ public class CreateEntityBundle implements Parcelable {
         return showPickerImmediately;
     }
 
+    public void setShowPickerImmediately(boolean showPickerImmediately) {
+        this.showPickerImmediately = showPickerImmediately;
+    }
+
     @Override
     public int describeContents() {
         return 0;

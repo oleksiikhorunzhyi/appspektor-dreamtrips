@@ -25,7 +25,10 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
     @Override
     public void onResume() {
         super.onResume();
-        if (getArgs() != null && getArgs().isShowPickerImmediately()) showMediaPicker();
+        if (getArgs() != null && getArgs().isShowPickerImmediately()) {
+            showMediaPicker();
+            getArgs().setShowPickerImmediately(false);
+        }
         updatePickerState();
     }
 

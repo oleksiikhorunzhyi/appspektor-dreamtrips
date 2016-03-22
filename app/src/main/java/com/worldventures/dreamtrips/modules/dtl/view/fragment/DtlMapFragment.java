@@ -231,9 +231,9 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void prepareInfoWindow(int height) {
-        int ownHeight = getView().getHeight();
+        int ownHeight = getView().getHeight() - ButterKnife.findById(getView(), R.id.filterToggleContainer).getBottom();
         int centerY = ownHeight / 2;
-        int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge); // TODO add switch height
+        int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;
         animateToMarker(selectedLocation, offset);
     }

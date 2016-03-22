@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.map.renderer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,8 @@ public class DtClusterRenderer extends DefaultClusterRenderer<DtlClusterItem> {
 
     private void setupClusterRendering(Cluster<DtlClusterItem> cluster, MarkerOptions markerOptions, List<DtlClusterItem> clusterItemtypes) {
         final int clusterIconResId = clusterItemtypes.size() == 2 ? ClusterType.COMBINE.asResource() : ClusterType.from(clusterItemtypes.get(0)).asResource();
-        clusterSizeView.setText(String.valueOf(cluster.getItems().size()));
+        final String size = cluster.getItems().size() > 99 ? "99+" : String.valueOf(cluster.getItems().size());
+        clusterSizeView.setText(size);
         clusterView.setBackground(ContextCompat.getDrawable(clusterView.getContext(), clusterIconResId));
         //
         markerOptions.icon(BitmapDescriptorFactory.fromBitmap(makeIcon(clusterView)));

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
-import android.support.v4.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.R;
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -53,12 +53,16 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
         //
         locationRequestNoFallback = view.bind(gpsLocationDelegate.requestLocationUpdate())
                 .compose(new IoToMainComposer<>())
+                .timeout(15, TimeUnit.SECONDS)
                 .subscribe(this::onLocationObtained, throwable -> {});
     }
     
     public void onLocationResolutionGranted() {
-        view.bind(gpsLocationDelegate.requestLocationUpdate()
-                .compose(new IoToMainComposer<>()))
+        if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+            locationRequestNoFallback.unsubscribe();
+        //
+        gpsLocationDelegate.requestLocationUpdate()
+                .compose(new IoToMainComposer<>())
                 .subscribe(this::onLocationObtained, this::onLocationError);
     }
 

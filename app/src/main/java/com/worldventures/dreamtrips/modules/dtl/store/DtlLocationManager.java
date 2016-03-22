@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 import techery.io.library.Job0Executor;
 import techery.io.library.Job1Executor;
 
@@ -148,15 +149,22 @@ public class DtlLocationManager {
     ///////////////////////////////////////////////////////////////////////////
 
     private DtlLocation persistedLocation;
+    private BehaviorSubject<DtlLocation> locationStream = BehaviorSubject.create();
+
+    public Observable<DtlLocation> getLocationStream() {
+        return locationStream.asObservable();
+    }
 
     public void cleanLocation() {
         persistedLocation = null;
         db.cleanDtlLocation();
+        locationStream.onNext(null);
     }
 
     public void persistLocation(DtlLocation location) {
         persistedLocation = location;
         db.saveDtlLocation(location);
+        locationStream.onNext(location);
     }
 
     @Nullable
@@ -166,7 +174,10 @@ public class DtlLocationManager {
 
     @NonNull
     public DtlLocation getCachedSelectedLocation() {
-        if (persistedLocation == null) persistedLocation = db.getDtlLocation();
+        if (persistedLocation == null) {
+            persistedLocation = db.getDtlLocation();
+            locationStream.onNext(persistedLocation);
+        }
         return persistedLocation;
     }
 }

@@ -14,6 +14,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -77,7 +81,7 @@ public class DtlMerchantManager {
                 combineLocationObservable(),
                 apiFactory.composeApiCall(() -> dtlApi.getNearbyDtlMerchants(ll))
                         .doOnNext(this::processAmenities),
-                filterStream,
+                filterStream.asObservable().take(1),
                 this::filterMerchants);
     }
 
@@ -97,6 +101,7 @@ public class DtlMerchantManager {
                         patchMerchantDistance(merchant, latLng, filterData.getDistanceType()))
                 .toSortedList(DtlMerchant.DISTANCE_COMPARATOR::compare)
                 .doOnNext(this::cacheAndPersistMerchants)
+                .doOnNext(this::tryUpdateLocation)
                 .flatMap(Observable::from)
                 .filter(predicate::apply)
                 .toList()
@@ -173,6 +178,16 @@ public class DtlMerchantManager {
     private void cacheAndPersistMerchants(List<DtlMerchant> dtlMerchants) {
         this.merchants = dtlMerchants;
         db.saveDtlMerhants(merchants);
+    }
+
+    private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
+        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
+                !dtlMerchants.isEmpty()) {
+            DtlLocation updatedLocation = ImmutableDtlManualLocation
+                    .copyOf((DtlManualLocation) dtlLocationManager.getSelectedLocation())
+                    .withLongName(dtlMerchants.get(0).getCity());
+            dtlLocationManager.persistLocation(updatedLocation);
+        }
     }
 
     /**

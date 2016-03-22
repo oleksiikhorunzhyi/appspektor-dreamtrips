@@ -20,10 +20,10 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.DeniedPermission;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.RuntimePermissions;
-import permissions.dispatcher.ShowsRationale;
 import timber.log.Timber;
 
 /**
@@ -51,12 +51,12 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
         getPresenter().permissionGranted();
     }
 
-    @ShowsRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
     void showRationaleForLocation() {
         Snackbar.make(getView(), R.string.permission_location_rationale, Snackbar.LENGTH_SHORT).show();
     }
 
-    @DeniedPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
     void showDeniedForLocation() {
         Snackbar.make(getView(), R.string.no_location_permission, Snackbar.LENGTH_SHORT).show();
     }

@@ -1,6 +1,13 @@
 package com.messenger.ui.view.settings;
 
-import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
+import com.kbeanie.imagechooser.api.ChosenImage;
 
-public interface GroupChatSettingsScreen extends ChatSettingsScreen, ChangeAvatarDelegate {
+import rx.Observable;
+
+public interface GroupChatSettingsScreen extends ChatSettingsScreen {
+    void showAvatarPhotoPicker();
+
+    void hideAvatarPhotoPicker();
+
+    Observable<ChosenImage> getAvatarImagesStream();
 }

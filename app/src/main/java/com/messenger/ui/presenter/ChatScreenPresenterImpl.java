@@ -132,12 +132,13 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     AttachmentDelegate attachmentDelegate;
     @Inject
     PaginationDelegate paginationDelegate;
+    @Inject
+    PhotoPickerDelegate photoPickerDelegate;
 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
     protected ParticipantsDaoHelper participantsDaoHelper;
     protected AttachmentHelper attachmentHelper;
-    protected PhotoPickerDelegate photoPickerDelegate;
 
     protected String conversationId;
 
@@ -240,7 +241,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         paginationDelegate.stopPaginate();
         backStackDelegate.setListener(null);
         disconnectFromPhotoPicker();
-
     }
 
     private void closeChat() {
@@ -796,9 +796,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void connectToPhotoPicker() {
-        photoPickerDelegate = new PhotoPickerDelegate();
-        ((Injector) context.getApplicationContext()).inject(photoPickerDelegate);
-        //
         photoPickerDelegate.register();
         photoPickerDelegate
                 .watchChosenImages()

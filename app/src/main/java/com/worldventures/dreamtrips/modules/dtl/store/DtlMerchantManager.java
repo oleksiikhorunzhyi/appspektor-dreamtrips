@@ -35,7 +35,9 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import techery.io.library.Job0Executor;
 import techery.io.library.Job1Executor;
+import techery.io.library.JobToValue;
 
 public class DtlMerchantManager {
 
@@ -60,9 +62,13 @@ public class DtlMerchantManager {
     public final Job1Executor<String, List<DtlMerchant>> getMerchantsExecutor =
             new Job1Executor<>(this::loadAndProcessMerchants);
 
+    public final Job0Executor<List<DtlMerchant>> merchantsResultPipe =
+            new Job0Executor<>(() -> getMerchantsExecutor.connect().compose(new JobToValue<>()));
+
     public DtlMerchantManager(Injector injector) {
         injector.inject(this);
         initFilterData();
+        merchantsResultPipe.executeJob();
     }
 
     private Observable<List<DtlMerchant>> loadAndProcessMerchants(String ll) {

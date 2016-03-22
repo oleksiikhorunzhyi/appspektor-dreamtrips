@@ -19,7 +19,7 @@ public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> 
         //
         view.attachFilterData(dtlMerchantManager.getFilterData());
         //
-        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor)
+        bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe)
                 .onSuccess(dtlMerchants -> attachAmenities());
     }
 

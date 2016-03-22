@@ -51,7 +51,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
         toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
         //
-        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor).onSuccess(this::onMerchantsLoaded);
+        bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe).onSuccess(this::onMerchantsLoaded);
         bindFilteredStream();
     }
 

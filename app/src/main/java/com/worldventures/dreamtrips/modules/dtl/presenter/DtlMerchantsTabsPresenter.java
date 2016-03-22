@@ -31,7 +31,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         view.initToolbar(locationRepository.getCachedSelectedLocation());
         setTabs();
         //
-        bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor)
+        bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe)
                 .onError(apiErrorPresenter::handleError);
     }
 

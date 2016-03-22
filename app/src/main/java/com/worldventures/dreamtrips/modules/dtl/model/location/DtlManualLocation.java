@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.location;
 
+import android.support.annotation.Nullable;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -16,6 +18,7 @@ public abstract class DtlManualLocation implements DtlLocation {
     public abstract LocationSourceType getLocationSourceType();
 
     @Override
+    @Nullable
     public abstract String getLongName();
 
     @Override

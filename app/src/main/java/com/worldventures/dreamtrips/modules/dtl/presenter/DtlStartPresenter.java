@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.R;
@@ -71,14 +70,13 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
             else {
                 DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
                         .locationSourceType(LocationSourceType.NEAR_ME)
-                        .longName(((Fragment) view).getString(R.string.dtl_near_me_caption)) // TODO better resource resolving?
+                        .longName(context.getString(R.string.dtl_near_me_caption))
                         .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
                         .build();
                 dtlLocationManager.persistLocation(dtlLocation);
                 view.openMerchants();
             }
-        }
-        else {
+        } else {
             switch (persistedLocation.getLocationSourceType()) {
                 case NEAR_ME:
                     if (newLocation == null) { // we had location before, but not now - and we need it

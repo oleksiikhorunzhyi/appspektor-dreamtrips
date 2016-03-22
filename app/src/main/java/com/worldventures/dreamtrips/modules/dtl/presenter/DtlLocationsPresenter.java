@@ -86,7 +86,7 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
             case AUTO_NEAR_ME:
                 DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
                         .locationSourceType(LocationSourceType.NEAR_ME)
-                        .longName(((Fragment) view).getString(R.string.dtl_near_me_caption)) // TODO better resource resolving?
+                        .longName(context.getString(R.string.dtl_near_me_caption))
                         .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                         .build();
                 dtlLocationManager.persistLocation(dtlLocation);

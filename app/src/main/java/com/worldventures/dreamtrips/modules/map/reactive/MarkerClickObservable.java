@@ -2,11 +2,12 @@ package com.worldventures.dreamtrips.modules.map.reactive;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.jakewharton.rxbinding.internal.MainThreadSubscription;
-import com.jakewharton.rxbinding.internal.Preconditions;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.MainThreadSubscription;
+
+import static rx.android.MainThreadSubscription.verifyMainThread;
 
 public class MarkerClickObservable implements Observable.OnSubscribe<Marker> {
     private final GoogleMap map;
@@ -21,7 +22,7 @@ public class MarkerClickObservable implements Observable.OnSubscribe<Marker> {
 
     @Override
     public void call(final Subscriber<? super Marker> subscriber) {
-        Preconditions.checkUiThread();
+        verifyMainThread();
 
         GoogleMap.OnMarkerClickListener listener = marker -> {
             if (!subscriber.isUnsubscribed()) {

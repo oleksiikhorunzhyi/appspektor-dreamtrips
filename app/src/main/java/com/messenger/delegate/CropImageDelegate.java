@@ -4,6 +4,7 @@ package com.messenger.delegate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -82,11 +83,15 @@ public class CropImageDelegate {
     }
 
     private void cacheFacebookImage(String url, Action<String> action) {
-        String filePath = CachedEntity.getFilePath(context, CachedEntity.getFilePath(context, url));
+        String filePath = CachedEntity.getFilePath(context, truncateUrlParams(url));
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
 
         dreamSpiceManager.execute(bigBinaryRequest, inputStream -> action.action(filePath),
                 e -> reportError(e, "Could not copy avatar file from Facebook"));
+    }
+
+    private String truncateUrlParams(@NonNull String url) {
+        return url.split("\\?")[0];
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {

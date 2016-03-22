@@ -2,6 +2,7 @@ package com.messenger.storage.dao;
 
 import android.database.Cursor;
 
+import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 
@@ -23,6 +24,15 @@ public class DaoTransformers {
         return cursorObservable -> cursorObservable
                 .map(cursor -> {
                     DataUser user = SqlUtils.convertToModel(false, DataUser.class, cursor);
+                    cursor.close();
+                    return user;
+                });
+    }
+
+    public static Observable.Transformer<Cursor, DataConversation> toDataConversation() {
+        return cursorObservable -> cursorObservable
+                .map(cursor -> {
+                    DataConversation user = SqlUtils.convertToModel(false, DataConversation.class, cursor);
                     cursor.close();
                     return user;
                 });

@@ -46,28 +46,6 @@
     <string name="dtl_earn">賺取</string>
     <string name="dtl_dt_points">%d DreamTrips點數</string>
     <string name="suggest_merchant_title">推薦商家</string>
-    <string name="suggest_merchant_restaurant_name_hint">餐廳名稱</string>
-    <string name="suggest_merchant_restaurant_city_hint">城市</string>
-    <string name="suggest_merchant_contact_name_hint">聯繫人名稱</string>
-    <string name="suggest_merchant_phone_number_hint">電話</string>
-    <string name="suggest_merchant_contact_email_hint">電子郵件</string>
-    <string name="suggest_merchant_best_time_contact_caption">最佳聯繫時間</string>
-    <string name="suggest_merchant_best_time_contact_switcher">之間</string>
-    <string name="suggest_merchant_best_time_contact_from_caption">寄件者：</string>
-    <string name="suggest_merchant_best_time_contact_to_caption">收件者：</string>
-    <string name="suggest_merchant_rate_experience_caption">給您的體驗打分</string>
-    <string name="suggest_merchant_food_caption">食品</string>
-    <string name="suggest_merchant_service_caption">服務</string>
-    <string name="suggest_merchant_cleanliness_caption">清潔程度</string>
-    <string name="suggest_merchant_uniqueness_caption">獨特性</string>
-    <string name="suggest_merchant">推薦商家</string>
-    <string name="suggest_merchant_additional_info_caption">其他資訊</string>
-    <string name="suggest_merchant_submit_button_caption">提交</string>
-    <string name="suggest_merchant_additional_info_length_error">輸入的内容太長！</string>
-    <string name="suggest_merchant_to_date_overlap_error">\'To\' 字段不能早於\'From\'!</string>
-    <string name="suggest_merchant_to_date_past_error">\'From\' 字段不能是過去時間!</string>
-    <string name="suggest_merchant_contact_time_past_error_format">\'%s\' 字段不能是過去時間！</string>
-    <string name="suggest_merchant_rating_error_format">\'%s\'打分必須確定下來！</string>
     <string name="dtl_details_share_title">我將在%s賺取DreamTrips點數</string>
     <string name="dtl_details_share_title_earned" formatted="false">我在%s賺取了%s 點數</string>
     <string name="dtl_wait_for_receipt">請稍候…上傳收據</string>
@@ -87,7 +65,6 @@
     <string name="mi">英里</string>
     <string name="dtl_coming_soon_offers">更多優惠即將到來</string>
     <string name="dtl_details_share_title_without_points">我發現%s在使用DreamTrips app</string>
-    <string name="suggest_restaurant">推薦餐廳</string>
     <string name="details_collapsed_text_caption">顯示更多</string>
     <string name="details_expanded_text_caption">顯示更少</string>
 </resources>

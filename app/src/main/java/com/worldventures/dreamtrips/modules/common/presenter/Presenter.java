@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
@@ -44,8 +43,6 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     protected FeatureManager featureManager;
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
-    @Inject
-    protected VideoDownloadSpiceManager videoDownloadSpiceManager;
     @Inject
     protected PhotoUploadingManager photoUploadingManager;
     @Inject
@@ -127,17 +124,11 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
-        if (!videoDownloadSpiceManager.isStarted()) {
-            videoDownloadSpiceManager.start(context);
-        }
     }
 
     private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
-        }
-        if (videoDownloadSpiceManager.isStarted()) {
-            videoDownloadSpiceManager.shouldStop();
         }
     }
 

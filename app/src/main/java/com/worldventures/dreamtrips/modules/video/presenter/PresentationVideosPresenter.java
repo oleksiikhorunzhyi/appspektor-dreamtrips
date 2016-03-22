@@ -4,6 +4,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
+import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -29,6 +30,8 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     @ForApplication
     protected Injector injector;
     @Inject
+    protected VideoDownloadSpiceManager videoDownloadSpiceManager;
+
     protected VideoCachingDelegate videoCachingDelegate;
 
     protected List<Object> currentItems;
@@ -40,7 +43,24 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        videoCachingDelegate = new VideoCachingDelegate(db, context, injector, videoDownloadSpiceManager);
         videoCachingDelegate.setView(this.view);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!videoDownloadSpiceManager.isStarted()) {
+            videoDownloadSpiceManager.start(context);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (videoDownloadSpiceManager.isStarted()) {
+            videoDownloadSpiceManager.shouldStop();
+        }
     }
 
     @Override

@@ -84,17 +84,9 @@ public class ManagerModule {
         return new PhotoUploadingManagerS3(injector);
     }
 
-    @Singleton
     @Provides
     public VideoDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
         return new VideoDownloadSpiceManager(VideoDownloadSpiceService.class);
-    }
-
-    @Provides
-    public VideoCachingDelegate provideVideoCachingDelegate(SnappyRepository snappyRepository,
-                                                            Context context,
-                                                            @ForApplication Injector injector, VideoDownloadSpiceManager spiceManger) {
-        return new VideoCachingDelegate(snappyRepository, context, injector, spiceManger);
     }
 
     @Singleton

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              xmlns:tools="http://schemas.android.com/tools"
               android:orientation="vertical"
     >
 
@@ -9,8 +10,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include layout="@layout/include_dtl_places_toolbar"/>
 
@@ -47,7 +47,23 @@
                 android:checked="false"/>
         </FrameLayout>
 
-        <include layout="@layout/fragment_map_with_info"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <include layout="@layout/fragment_map_with_info"/>
+
+            <Button
+                android:id="@+id/redo_merchants"
+                android:text="redo merchants"
+                android:textAllCaps="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                android:layout_margin="16dp"
+                tools:visibility="visible"/>
+
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

@@ -3,17 +3,18 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -33,8 +34,8 @@ import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import icepick.State;
-import rx.Observable;
 
 @Layout(R.layout.fragment_dtl_merchant_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
@@ -43,6 +44,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     Toolbar toolbar;
     @InjectView(R.id.sw_filter)
     SwitchCompat swHideDinings;
+    @InjectView(R.id.redo_merchants)
+    Button loadMerchants;
 
     SearchViewHelper searchViewHelper;
     //
@@ -101,6 +104,13 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             }
             return super.onOptionsItemSelected(item);
         });
+
+        swHideDinings.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().onCheckHideDinings(isChecked));
+    }
+
+    @OnClick(R.id.redo_merchants)
+    public void onMechantsRedoClick() {
+        getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
     }
 
     @Override
@@ -110,21 +120,40 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public Observable<Boolean> isHideDinings() {
-        return RxCompoundButton.checkedChanges(swHideDinings);
+    public void hideDinings(boolean hide) {
+        swHideDinings.setChecked(hide);
     }
 
     @Override
-    public void hideDinings(boolean hide) {
-        swHideDinings.setChecked(hide);
+    public GoogleMap getMap() {
+        return googleMap;
+    }
+
+    @Override
+    public void cameraPositionChange(CameraPosition cameraPosition) {
+        clusterManager.onCameraChange(cameraPosition);
+        selectedLocation = cameraPosition.target;
+    }
+
+    @Override
+    public void markerClick(Marker marker) {
+        clusterManager.onMarkerClick(marker);
+    }
+
+    @Override
+    public void showButtonLoadMerchants(boolean show) {
+        loadMerchants.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void zoom(float zoom) {
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
     }
 
     @Override
     protected void onMapLoaded() {
         clusterManager = new ClusterManager<>(getActivity(), googleMap);
         clusterManager.setRenderer(new DtClusterRenderer(getActivity().getApplicationContext(), googleMap, clusterManager));
-        googleMap.setOnCameraChangeListener(clusterManager);
-        googleMap.setOnMarkerClickListener(clusterManager);
 
         clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
             selectedLocation = dtlClusterItem.getPosition();
@@ -137,7 +166,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                 selectedLocation = cluster.getPosition();
                 getPresenter().onMarkerClick(Queryable.from(cluster.getItems()).first().getId());
             } else googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
-                    googleMap.getCameraPosition().zoom + 1.0f), cameraAnimationDuration, null);
+                    googleMap.getCameraPosition().zoom + 1.0f), MapViewUtils.MAP_ANIMATION_DURATION, null);
 
             return true;
         });

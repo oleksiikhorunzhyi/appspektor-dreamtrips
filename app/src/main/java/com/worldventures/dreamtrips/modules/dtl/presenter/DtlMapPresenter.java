@@ -52,16 +52,26 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     private Observable<Boolean> prepareFilterToogle() {
-        return view.isHideDinings()
-                .doOnSubscribe(() -> view.hideDinings(snappyRepository.getLastSelectedOffersOnlyToogle()))// set initial value before emitting switching
-                .doOnNext(st -> snappyRepository.saveLastSelectedOffersOnlyToogle(st));
+        return toggleStream
+                .doOnSubscribe(() -> view.hideDinings(db.getLastSelectedOffersOnlyToogle()))// set initial value before emitting switching
+                .doOnNext(st -> db.saveLastSelectedOffersOnlyToogle(st));
     }
 
     public void onMapLoaded() {
         mapReady = true;
         //
+        view.bind(subscribeToCameraChange()).subscribe(show -> view.showButtonLoadMerchants(show));
+        view.bind(mapDelegate.subscribeToMarkerClick(view.getMap())).subscribe(marker -> view.markerClick(marker));
         view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         checkPendingMapInfo();
+    }
+
+    protected Observable<Boolean> subscribeToCameraChange() {
+        return mapDelegate.subscribeToCameraChange(view.getMap())
+                .doOnNext(position -> view.cameraPositionChange(position))
+                .map(position -> position.zoom < MapViewUtils.DEFAULT_ZOOM ||
+                        !DtlLocationHelper.checkLocation(MapViewUtils.MAX_DISTANCE, dtlLocationManager.getCachedSelectedLocation().asLatLng(), position.target, DistanceType.MILES));
+
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -99,6 +109,11 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
             pendingMapInfoEvent = null;
             view.prepareInfoWindow(event.height);
         }
+    }
+
+    public void onLoadMerchantsClick(LatLng location){
+        //TODO dtlMerchantManager.loadMerchants();
+        if(view.getMap().getCameraPosition().zoom < 10f) view.zoom(10f);
     }
 
     public interface View extends RxView {

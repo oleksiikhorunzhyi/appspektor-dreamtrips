@@ -16,6 +16,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import timber.log.Timber;
@@ -47,31 +48,39 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
                 }
             );
 
-        conversationObservable.first().subscribe(conversation -> {
-            conversationAvatarDelegate.listenToAvatarUpdates(conversation)
+        conversationAvatarDelegate.listenToAvatarUpdates(conversationId)
                 .compose(bindView())
                 .doOnNext(state -> getView().invalidateToolbarMenu())
-                .subscribe(new ActionStateSubscriber<AvatarAction>()
-                   .onSuccess(action -> {
-                       getView().setConversation(action.getResult());
-                       getView().invalidateToolbarMenu();
-                   })
-                   .onFail((state, error) -> {
-                       getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-
-                   })
-                );
-        });
+                .subscribe(getUploadAvatarSubscriber());
 
         conversationsDAO.getConversation(conversationId)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(getView()::setConversation);
     }
 
+    private ActionStateSubscriber<AvatarAction> getUploadAvatarSubscriber() {
+        return new ActionStateSubscriber<AvatarAction>()
+                .beforeEach(state -> {
+                    if (state.status == ActionState.Status.START
+                        || state.status == ActionState.Status.PROGRESS) {
+                        getView().showChangingAvatarProgressBar();
+                    } else {
+                        getView().hideChangingAvatarProgressBar();
+                    }
+                })
+                .onSuccess(action -> {
+                    getView().setConversation(action.getResult());
+                    getView().invalidateToolbarMenu();
+                })
+                .onFail((state, error) -> {
+                    getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+
+                });
+    }
+
     protected void onAvatarCropped(DataConversation conversation, File croppedAvatarFile) {
         String path = Uri.fromFile(croppedAvatarFile).toString();
-        conversation.setAvatar(path);
-        conversationAvatarDelegate.saveAvatar(conversation);
+        conversationAvatarDelegate.saveAvatar(conversation, path);
     }
 
     protected void onRemoveAvatar() {

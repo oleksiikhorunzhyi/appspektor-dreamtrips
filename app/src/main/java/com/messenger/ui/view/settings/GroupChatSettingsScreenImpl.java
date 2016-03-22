@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
@@ -13,16 +15,21 @@ import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
+import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.InjectView;
 import rx.Observable;
 
 public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends ChatSettingsScreenImpl<GroupChatSettingsScreen, P>
     implements GroupChatSettingsScreen {
+
+    @InjectView(R.id.chat_settings_group_avatars_view_progress_bar)
+    ProgressBar groupAvatarsViewProgressBar;
 
     private ChatSettingsRow membersSettingsRow;
     private ConversationHelper conversationHelper;
@@ -117,5 +124,15 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     public void hideAvatarPhotoPicker() {
         changeAvatarDelegate.hideAvatarPhotoPicker();
+    }
+
+    @Override
+    public void showChangingAvatarProgressBar() {
+        groupAvatarsViewProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideChangingAvatarProgressBar() {
+        groupAvatarsViewProgressBar.setVisibility(View.GONE);
     }
 }

@@ -10,4 +10,8 @@ public interface GroupChatSettingsScreen extends ChatSettingsScreen {
     void hideAvatarPhotoPicker();
 
     Observable<ChosenImage> getAvatarImagesStream();
+
+    void showChangingAvatarProgressBar();
+
+    void hideChangingAvatarProgressBar();
 }

@@ -11,21 +11,20 @@ import timber.log.Timber;
 @CommandAction
 public class SaveAvatarAction extends AvatarAction {
 
+    private String avatarPath;
+
     public SaveAvatarAction(DataConversation conversation,
+                            String avatarPath,
                             PhotoUploadingManagerS3 photoUploadingManager,
                             MessengerServerFacade messengerServerFacade,
                             ConversationsDAO conversationsDAO) {
         super(conversation, photoUploadingManager, messengerServerFacade, conversationsDAO);
+        this.avatarPath = avatarPath;
     }
 
     @Override
     protected void run(CommandCallback<DataConversation> callback) {
-        saveAvatarToDatabase(conversation)
-                .flatMap(c -> uploadAvatar(conversation.getAvatar()))
-                .map(url -> {
-                    conversation.setAvatar(url);
-                    return conversation;
-                })
+        uploadAvatar(avatarPath)
                 .flatMap(this::sendAvatar)
                 .flatMap(this::saveAvatarToDatabase)
                 .doOnError(e -> {

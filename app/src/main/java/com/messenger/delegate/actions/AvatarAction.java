@@ -17,6 +17,7 @@ import rx.Observable;
 public abstract class AvatarAction extends CommandActionBase<DataConversation> {
 
     protected DataConversation conversation;
+
     protected PhotoUploadingManagerS3 photoUploadingManager;
     protected MessengerServerFacade messengerServerFacade;
     protected ConversationsDAO conversationsDAO;
@@ -35,9 +36,10 @@ public abstract class AvatarAction extends CommandActionBase<DataConversation> {
         return conversation;
     }
 
-    public Observable<DataConversation> saveAvatarToDatabase(DataConversation dataConversation) {
-        return Observable.just(dataConversation)
+    public Observable<DataConversation> saveAvatarToDatabase(String avatar) {
+        return Observable.just(conversation)
                 .map(conversation -> {
+                    conversation.setAvatar(avatar);
                     conversationsDAO.save(conversation);
                     return conversation;
                 });
@@ -62,11 +64,11 @@ public abstract class AvatarAction extends CommandActionBase<DataConversation> {
         return observer.getState().equals(TransferState.COMPLETED);
     }
 
-    public Observable<DataConversation> sendAvatar(DataConversation conversation) {
+    public Observable<String> sendAvatar(String avatar) {
         return messengerServerFacade.getChatManager()
                 .createMultiUserChatObservable(conversation.getId(), messengerServerFacade.getUsername())
-                .flatMap(multiUserChat -> multiUserChat.setAvatar(conversation.getAvatar()))
+                .flatMap(multiUserChat -> multiUserChat.setAvatar(avatar))
                 .doOnNext(multiUserChat -> multiUserChat.close())
-                .map(multiUserChat1 -> conversation);
+                .map(chat -> avatar);
     }
 }

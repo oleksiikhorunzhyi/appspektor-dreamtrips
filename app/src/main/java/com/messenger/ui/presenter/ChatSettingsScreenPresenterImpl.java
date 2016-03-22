@@ -244,6 +244,9 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                     menu.findItem(R.id.action_change_chat_avatar).setVisible(false);
                     menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
                 }
+                if (TextUtils.isEmpty(conversation.getAvatar())) {
+                    menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
+                }
             });
 
     }

@@ -29,4 +29,6 @@ public interface ChatSettingsScreen extends MessengerScreen {
     void showErrorDialog(@StringRes int msg);
 
     void showLeaveChatDialog(String currentSubject);
+
+    void invalidateToolbarMenu();
 }

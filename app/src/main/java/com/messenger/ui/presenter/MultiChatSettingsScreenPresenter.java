@@ -50,11 +50,16 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         conversationObservable.first().subscribe(conversation -> {
             conversationAvatarDelegate.listenToAvatarUpdates(conversation)
                 .compose(bindView())
-                .subscribe(
-                   new ActionStateSubscriber<AvatarAction>()
-                   .onSuccess(action -> getView().setConversation(action.getResult()))
-                   .onFail((state, error) -> getView()
-                           .showErrorDialog(R.string.chat_settings_error_changing_avatar_subject))
+                .doOnNext(state -> getView().invalidateToolbarMenu())
+                .subscribe(new ActionStateSubscriber<AvatarAction>()
+                   .onSuccess(action -> {
+                       getView().setConversation(action.getResult());
+                       getView().invalidateToolbarMenu();
+                   })
+                   .onFail((state, error) -> {
+                       getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+
+                   })
                 );
         });
 

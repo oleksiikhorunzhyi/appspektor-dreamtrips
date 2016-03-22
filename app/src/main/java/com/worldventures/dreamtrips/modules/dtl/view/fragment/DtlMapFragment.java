@@ -61,7 +61,6 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cameraAnimationDuration = 400;
         bundle = getArguments().getParcelable(ComponentPresenter.EXTRA_DATA);
     }
 

@@ -6,13 +6,17 @@ import android.widget.RelativeLayout;
 
 public class MapViewUtils {
 
+    public static final int MAP_ANIMATION_DURATION = 400;
+    public static final float DEFAULT_ZOOM = 10f;
+
     /**
      * Move location button with custom direction
-     * @param mapView - map
-     * @param margin - margin button
+     *
+     * @param mapView            - map
+     * @param margin             - margin button
      * @param relativeDirections - array with RelativeLayout rules for adjusting button inside map
      */
-    public static void setLocationButtonGravity(View mapView, int margin, int...relativeDirections) {
+    public static void setLocationButtonGravity(View mapView, int margin, int... relativeDirections) {
         View locationButton = ((View) mapView.findViewById(1).getParent()).findViewById(2);
 
         if (locationButton != null && locationButton.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
@@ -31,6 +35,5 @@ public class MapViewUtils {
         }
         return params;
     }
-
 
 }

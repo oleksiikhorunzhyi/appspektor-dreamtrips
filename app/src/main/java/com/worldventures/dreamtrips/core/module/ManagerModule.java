@@ -116,6 +116,7 @@ public class ManagerModule {
         return new DtlJobManager(injector);
     }
 
+
     @Singleton
     @Provides
     LocationDelegate provideLocationDelegate(@ForApplication Context context) {

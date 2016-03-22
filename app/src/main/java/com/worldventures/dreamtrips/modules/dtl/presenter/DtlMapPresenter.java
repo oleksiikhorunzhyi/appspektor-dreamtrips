@@ -1,16 +1,23 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
+import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,26 +25,31 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
+
+    public static final int MAX_DISTANCE = 50;
 
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
-    SnappyRepository snappyRepository;
+    SnappyRepository db;
     //
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
     private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
+    private BehaviorSubject<Boolean> toggleStream;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
+        toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
         //
         bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor).onSuccess(this::onMerchantsLoaded);
         bindFilteredStream();
@@ -52,16 +64,26 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     private Observable<Boolean> prepareFilterToogle() {
-        return view.isHideDinings()
-                .doOnSubscribe(() -> view.hideDinings(snappyRepository.getLastSelectedOffersOnlyToogle()))// set initial value before emitting switching
-                .doOnNext(st -> snappyRepository.saveLastSelectedOffersOnlyToogle(st));
+        return toggleStream
+                .doOnSubscribe(() -> view.hideDinings(db.getLastSelectedOffersOnlyToggle()))// set initial value before emitting switching
+                .doOnNext(st -> db.saveLastSelectedOffersOnlyToogle(st));
     }
 
     public void onMapLoaded() {
         mapReady = true;
         //
+        view.bind(subscribeToCameraChange()).subscribe(show -> view.showButtonLoadMerchants(show));
+        view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap())).subscribe(marker -> view.markerClick(marker));
         view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         checkPendingMapInfo();
+    }
+
+    protected Observable<Boolean> subscribeToCameraChange() {
+        return MapObservableFactory.createCameraChangeObservable(view.getMap())
+                .doOnNext(position -> view.cameraPositionChange(position))
+                .map(position -> position.zoom < MapViewUtils.DEFAULT_ZOOM ||
+                        !DtlLocationHelper.checkLocation(MAX_DISTANCE, dtlLocationManager.getCachedSelectedLocation().asLatLng(), position.target, DistanceType.MILES));
+
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -70,6 +92,10 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
     public void onMarkerClick(String merchantId) {
         view.showMerchantInfo(merchantId);
+    }
+
+    public void onCheckHideDinings(boolean checked) {
+        toggleStream.onNext(checked);
     }
 
     public void applySearch(String query) {
@@ -101,6 +127,11 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         }
     }
 
+    public void onLoadMerchantsClick(LatLng location){
+        //TODO dtlMerchantManager.loadMerchants();
+        if(view.getMap().getCameraPosition().zoom < 10f) view.zoom(10f);
+    }
+
     public interface View extends RxView {
         void addPin(String id, LatLng latLng, DtlMerchantType type);
 
@@ -118,6 +149,14 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
         void hideDinings(boolean hide);
 
-        Observable<Boolean> isHideDinings();
+        GoogleMap getMap();
+
+        void cameraPositionChange(CameraPosition cameraPosition);
+
+        void markerClick(Marker marker);
+
+        void showButtonLoadMerchants(boolean show);
+
+        void zoom(float zoom);
     }
 }

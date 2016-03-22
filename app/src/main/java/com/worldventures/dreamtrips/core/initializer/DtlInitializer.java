@@ -19,7 +19,7 @@ public class DtlInitializer implements AppInitializer {
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-        db.cleanLastSelectedOffersOnlyToogle();
+        db.cleanLastSelectedOffersOnlyToggle();
         locationManager.cleanLocation();
     }
 }

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -22,7 +23,6 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
-import com.worldventures.dreamtrips.core.rx.viewbinding.DtSearchViewQueryTextChangesOnSubscribe;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsSearchPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
@@ -91,7 +91,7 @@ public class DtlLocationsSearchFragment extends RxBaseFragment<DtlLocationsSearc
             searchView.setIconified(false);
             // line below is magic - prevents empty string to be sent as query during screen creation
             searchView.setQuery("", false);
-            bind(Observable.create(new DtSearchViewQueryTextChangesOnSubscribe(searchView)))
+            bind(RxSearchView.queryTextChanges(searchView).skip(1))
                     .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(charSequence -> Observable.just(charSequence.toString()))
                     .subscribe(getPresenter()::search);

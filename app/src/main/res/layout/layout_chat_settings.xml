@@ -44,10 +44,23 @@
                         android:layout_height="wrap_content"
                         >
 
-                        <com.messenger.ui.widget.GroupAvatarsView
-                            android:id="@+id/chat_settings_group_avatars_view"
-                            style="@style/GroupChatBigAvatarView"
-                            android:visibility="gone"/>
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <com.messenger.ui.widget.GroupAvatarsView
+                                android:id="@+id/chat_settings_group_avatars_view"
+                                style="@style/GroupChatBigAvatarView"
+                                android:visibility="gone"/>
+
+                            <ProgressBar
+                                android:id="@+id/chat_settings_group_avatars_view_progress_bar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:visibility="gone"/>
+
+                        </FrameLayout>
 
                         <com.messenger.ui.widget.AvatarView
                             android:id="@+id/chat_settings_single_chat_avatar_view"

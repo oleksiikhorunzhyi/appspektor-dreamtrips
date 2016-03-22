@@ -21,11 +21,7 @@ public class RemoveAvatarAction extends AvatarAction {
     @Override
     protected void run(CommandCallback<DataConversation> callback) {
         Observable.just(conversation)
-                .map(c -> {
-                    c.setAvatar(null);
-                    return c;
-                })
-                .flatMap(c -> sendAvatar(c))
+                .flatMap(conversation -> sendAvatar(null))
                 .flatMap(this::saveAvatarToDatabase)
                 .subscribe(callback::onSuccess, callback::onFail);
     }

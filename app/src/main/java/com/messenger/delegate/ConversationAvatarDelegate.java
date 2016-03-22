@@ -40,14 +40,14 @@ public class ConversationAvatarDelegate {
         actionPipe = janet.createPipe(AvatarAction.class, Schedulers.io());
     }
 
-    public Observable<ActionState<AvatarAction>> listenToAvatarUpdates(DataConversation dataConversation) {
-        return actionPipe
-                .filter(action -> TextUtils.equals(action.getConversation().getId(), dataConversation.getId()))
-                .observe().observeOn(AndroidSchedulers.mainThread());
+    public Observable<ActionState<AvatarAction>> listenToAvatarUpdates(String conversationId) {
+        return actionPipe.observeWithReplay()
+                .filter(state -> TextUtils.equals(state.action.getConversation().getId(), conversationId))
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public void saveAvatar(DataConversation conversation) {
-        actionPipe.send(new SaveAvatarAction(conversation, photoUploadingManager, messengerServerFacade, conversationsDAO));
+    public void saveAvatar(DataConversation conversation, String avatarPath) {
+        actionPipe.send(new SaveAvatarAction(conversation, avatarPath, photoUploadingManager, messengerServerFacade, conversationsDAO));
     }
 
     public void removeAvatar(DataConversation conversation) {

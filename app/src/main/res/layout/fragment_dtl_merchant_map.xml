@@ -22,6 +22,7 @@
         android:orientation="vertical">
 
         <FrameLayout
+            android:id="@+id/filterToggleContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
@@ -62,6 +63,7 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:visibility="gone"
                 android:layout_margin="16dp"
+                android:textColor="@color/white"
                 tools:visibility="visible"/>
 
         </FrameLayout>

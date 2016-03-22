@@ -44,10 +44,12 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     }
 
     public void cancelClicked() {
-        if (isChanged()) {
-            view.showCancelationDialog();
-        } else {
-            view.cancel();
+        if (view != null) {
+            if (isChanged()) {
+                view.showCancelationDialog();
+            } else {
+                view.cancel();
+            }
         }
     }
 

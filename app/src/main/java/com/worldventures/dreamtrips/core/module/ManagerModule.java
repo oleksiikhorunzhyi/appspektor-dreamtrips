@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
-import com.worldventures.dreamtrips.modules.map.reactive.MapDelegate;
-import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
@@ -46,7 +44,6 @@ import de.greenrobot.event.EventBus;
                 PhoneContactRequest.class,
 
                 LogoutDelegate.class,
-                MapDelegate.class,
                 //
                 DtlLocationManager.class,
                 DtlMerchantManager.class,
@@ -108,11 +105,6 @@ public class ManagerModule {
         return new DtlJobManager(injector);
     }
 
-    @Singleton
-    @Provides
-    MapDelegate provideMapDelegate(@ForApplication Injector injector) {
-        return new MapDelegate(injector);
-    }
 
     @Singleton
     @Provides

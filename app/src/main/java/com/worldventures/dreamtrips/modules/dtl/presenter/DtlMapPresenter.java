@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
-import com.worldventures.dreamtrips.modules.map.reactive.MapDelegate;
+import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 
 import java.util.Collections;
@@ -30,14 +30,14 @@ import rx.subjects.PublishSubject;
 
 public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
+    public static final int MAX_DISTANCE = 50;
+
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
     SnappyRepository db;
-    @Inject
-    MapDelegate mapDelegate;
     //
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
@@ -73,16 +73,16 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         mapReady = true;
         //
         view.bind(subscribeToCameraChange()).subscribe(show -> view.showButtonLoadMerchants(show));
-        view.bind(mapDelegate.subscribeToMarkerClick(view.getMap())).subscribe(marker -> view.markerClick(marker));
+        view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap())).subscribe(marker -> view.markerClick(marker));
         view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         checkPendingMapInfo();
     }
 
     protected Observable<Boolean> subscribeToCameraChange() {
-        return mapDelegate.subscribeToCameraChange(view.getMap())
+        return MapObservableFactory.createCameraChangeObservable(view.getMap())
                 .doOnNext(position -> view.cameraPositionChange(position))
                 .map(position -> position.zoom < MapViewUtils.DEFAULT_ZOOM ||
-                        !DtlLocationHelper.checkLocation(MapViewUtils.MAX_DISTANCE, dtlLocationManager.getCachedSelectedLocation().asLatLng(), position.target, DistanceType.MILES));
+                        !DtlLocationHelper.checkLocation(MAX_DISTANCE, dtlLocationManager.getCachedSelectedLocation().asLatLng(), position.target, DistanceType.MILES));
 
     }
 

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import org.intellij.lang.annotations.MagicConstant;
@@ -21,7 +22,6 @@ import java.util.Map;
 public class TrackingHelper {
 
     private static final String KEY_ADOBE_TRACKER = "adobe_tracker";
-    private static final String KEY_GOOGLE_TRACKER = "google_tracker";
     private static final String KEY_APPTENTIVE_TRACKER = "apptentive_tracker";
 
     public static final String CATEGORY_NAV_MENU = "nav_menu";
@@ -33,7 +33,7 @@ public class TrackingHelper {
     public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
     public static final String ACTION_PHOTOS_MINE = "photos-mine";
     public static final String ACTION_ENROLL = "membership-enroll";
-    public static final String ACTION_FAQ = "faq";
+    public static final String ACTION_FAQ = "FAQ";
     public static final String ACTION_PRIVACY = "terms-privacy";
     public static final String ACTION_COOKIE = "terms-cookie";
     public static final String ACTION_SERVICE = "terms-service";
@@ -91,7 +91,6 @@ public class TrackingHelper {
         trackers = new HashMap<>(3);
         trackers.put(KEY_ADOBE_TRACKER, new AdobeTracker());
         trackers.put(KEY_APPTENTIVE_TRACKER, new ApptentiveTracker());
-        trackers.put(KEY_GOOGLE_TRACKER, new GoogleTracker());
     }
 
     private TrackingHelper() {
@@ -144,7 +143,6 @@ public class TrackingHelper {
     ///////////////////////////////////////////////////////////////////////////
 
     private static void trackMemberAction(String category, String action, Map<String, Object> data) {
-        trackers.get(KEY_GOOGLE_TRACKER).trackEvent(category, action, data);
         trackers.get(KEY_APPTENTIVE_TRACKER).trackEvent(category, action, data);
     }
 
@@ -163,7 +161,7 @@ public class TrackingHelper {
 
 
     ///////////////////////////////////////////////////////////////////////////
-    // Tracking actions
+    // Tracking actions deprecated
     ///////////////////////////////////////////////////////////////////////////
 
     public static void login(String userId) {
@@ -397,7 +395,7 @@ public class TrackingHelper {
     public static final String ACTION_360_VIDEOS = "360_videos";
     public static final String ACTION_MEMBERSHIP = "membership";
     public static final String ACTION_MEMBERSHIP_ENROLL = "membership-enroll";
-    public static final String ACTION_LOGOUT = "logout";
+    public static final String ACTION_LOGOUT = "Logout";
     public static final String ACTION_TERMS_PRIVACY = "terms-privacy";
     public static final String ACTION_TERMS_SERVICE = "terms_service";
     public static final String ACTION_TERMS_COOKIE = "terms-cookie";
@@ -405,6 +403,13 @@ public class TrackingHelper {
     public static final String ACTION_REP_TOOLS_TRAINING_VIDEO = "rep_tools:training_video";
     public static final String ACTION_REP_TOOLS_REP_ENROLLMENT = "rep_tools:rep_enrollment";
     public static final String ACTION_REP_TOOLS_INVITE_SHARE = "rep_tools:invite_share";
+    public static final String ACTION_FEEDBACK = "Send Feedback";
+    public static final String ACTION_TERMS = "Terms and Conditions";
+    public static final String ACTION_SETTINGS = "Settings";
+    public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
+    public static final String ACTION_SETTINGS_NOTIFICATIONS = "Settings:Notifications";
+    public static final String ACTION_SETTINGS_FAQ = "FAQ";
+    public static final String ACTION_SETTINGS_LOGOUT = "Logout";
 
     // ---------------- DreamTrips attributes
     public static final String ATTRIBUTE_LOGIN = "login";
@@ -436,6 +441,8 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_SHARE = "share";
     public static final String ATTRIBUTE_DOWNLOAD = "download";
     public static final String ATTRIBUTE_MARK_AS_DONE = "mark_as_done";
+    public static final String ATTRIBUTE_RESON = "feedbackreason";
+    public static final String ATTRIBUTE_TERMS = "optinoptout";
     public static final String ATTRIBUTE_COMPLETE = "complete";
     public static final String ATTRIBUTE_LOGOUT = "logout";
     public static final String ATTRIBUTE_FAVORITE = "favorite";
@@ -655,6 +662,29 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
     }
 
+    public static void sendFeedback(int reason) {
+        Map data = new HashMap<>();
+        data.put(ATTRIBUTE_RESON, String.valueOf(reason));
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_FEEDBACK, data);
+    }
+
+    public static void termsConditionsAction(boolean accepted) {
+        Map data = new HashMap<>();
+        data.put(ATTRIBUTE_TERMS, accepted ? "Opt In" : "Opt out");
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_TERMS, data);
+    }
+
+    public static void settings() {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_SETTINGS, null);
+    }
+
+    public static void settingsDetailed(SettingsGroup.Type type) {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null,
+                type == SettingsGroup.Type.GENERAL
+                        ? ACTION_SETTINGS_GENERAL
+                        : ACTION_NOTIFICATIONS, null);
+    }
+
     public static void actionTripVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
                                        String eventType, String videoName) {
         Map<String, Object> data = new HashMap<>();
@@ -726,7 +756,7 @@ public class TrackingHelper {
     }
 
     public static void logout() {
-        sendSimpleAttributetoAdobeTracker(ACTION_LOGOUT, ATTRIBUTE_LOGOUT);
+        sendSimpleAttributetoAdobeTracker(ACTION_LOGOUT, null);
         trackers.get(KEY_ADOBE_TRACKER).setHeaderData(null);
     }
 
@@ -787,9 +817,8 @@ public class TrackingHelper {
 
     // ---------------- FAQ
 
-    public static void actionFaq(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-            ATTRIBUTE_LOADING_ERROR}) String eventType) {
-        sendSimpleAttributetoAdobeTracker(ACTION_FAQ, eventType);
+    public static void actionFaq() {
+        sendSimpleAttributetoAdobeTracker(ACTION_FAQ, null);
     }
 
     // ---------------- Terms
@@ -877,12 +906,12 @@ public class TrackingHelper {
         Map data = prepareAttributeMap(ATTRIBUTE_MERCHANT);
         if (place != null) {
             data.put(DTL_ATTRIBUTE_MERCHANT, new StringBuilder()
-                    .append(place.getId())
-                    .append(place.getDisplayName())
-                    .append(":")
-                    .append(place.getCity())
-                    .append(":")
-                    .append(place.getState()).toString()
+                            .append(place.getId())
+                            .append(place.getDisplayName())
+                            .append(":")
+                            .append(place.getCity())
+                            .append(":")
+                            .append(place.getState()).toString()
             );
         }
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_MERCHANT, data);

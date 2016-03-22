@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.infopages.api.GetFeedbackTypesQuery;
 import com.worldventures.dreamtrips.modules.infopages.api.SendFeedbackCommand;
@@ -31,6 +32,7 @@ public class SendFeedbackPresenter extends Presenter<SendFeedbackPresenter.View>
     }
 
     public void sendFeedback(int type, String text) {
+        TrackingHelper.sendFeedback(type);
         doRequest(new SendFeedbackCommand(type, text), o -> view.feedbackSent());
     }
 

@@ -77,8 +77,7 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
             presenter.acceptTerms(termsText);
         });
         reject.setOnClickListener(v -> {
-            TrackingHelper.logout();
-            presenter.logout();
+            presenter.denyTerms();
         });
     }
 

@@ -1,5 +1,6 @@
 package com.messenger.ui.view.settings;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import com.messenger.entities.DataConversation;
@@ -16,7 +17,7 @@ public interface ChatSettingsScreen extends MessengerScreen {
 
     void showError(Throwable e);
 
-    void setConversation(DataConversation conversation);
+    void setConversation(@NonNull DataConversation conversation);
 
     void setParticipants(DataConversation conversation, List<DataUser> participants);
 

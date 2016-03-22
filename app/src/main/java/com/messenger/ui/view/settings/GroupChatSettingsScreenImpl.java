@@ -65,7 +65,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     }
 
     @Override
-    public void setConversation(DataConversation conversation) {
+    public void setConversation(@NonNull DataConversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_group_chat);
         if (!TextUtils.isEmpty(conversation.getSubject())) {
@@ -107,7 +107,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
 
     @NonNull
     @Override
-    public ChatSettingsScreenPresenter createPresenter() {
+    public ChatSettingsScreenPresenter<GroupChatSettingsScreen> createPresenter() {
         return new MultiChatSettingsScreenPresenter(getContext(), getPath().getConversationId());
     }
 

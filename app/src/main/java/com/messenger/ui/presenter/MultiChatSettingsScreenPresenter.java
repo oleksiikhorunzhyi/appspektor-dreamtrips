@@ -11,6 +11,7 @@ import com.messenger.entities.DataConversation;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.io.File;
 
@@ -55,6 +56,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
 
         conversationsDAO.getConversation(conversationId)
                 .compose(bindViewIoToMainComposer())
+                .compose(new NonNullFilter<>())
                 .subscribe(getView()::setConversation);
     }
 

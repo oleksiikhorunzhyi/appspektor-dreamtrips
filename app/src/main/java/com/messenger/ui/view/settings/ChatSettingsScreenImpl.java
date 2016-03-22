@@ -1,6 +1,7 @@
 package com.messenger.ui.view.settings;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -191,7 +192,7 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
     }
 
     @Override
-    public void setConversation(DataConversation conversation) {
+    public void setConversation(@NonNull DataConversation conversation) {
     }
 
     @Override

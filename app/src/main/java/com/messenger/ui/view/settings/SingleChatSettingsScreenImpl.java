@@ -40,7 +40,7 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
     }
 
     @Override
-    public void setConversation(DataConversation conversation) {
+    public void setConversation(@NonNull DataConversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_single_chat);
     }

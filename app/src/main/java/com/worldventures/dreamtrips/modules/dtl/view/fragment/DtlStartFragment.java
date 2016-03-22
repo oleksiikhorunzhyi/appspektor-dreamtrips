@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import timber.log.Timber;
 
@@ -52,7 +53,7 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showRationaleForLocation() {
+    void showRationaleForLocation(PermissionRequest request) {
         Snackbar.make(getView(), R.string.permission_location_rationale, Snackbar.LENGTH_SHORT).show();
     }
 

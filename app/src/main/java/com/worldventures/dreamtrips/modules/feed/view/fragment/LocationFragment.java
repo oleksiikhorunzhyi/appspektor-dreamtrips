@@ -7,7 +7,6 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -30,10 +29,11 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import icepick.Icepick;
 import icepick.State;
-import permissions.dispatcher.DeniedPermission;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import permissions.dispatcher.ShowsRationale;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -228,12 +228,12 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         getPresenter().onPermissionGranted();
     }
 
-    @ShowsRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showRationaleForLocation() {
+    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    void showRationaleForLocation(PermissionRequest request) {
         Snackbar.make(getView(), R.string.permission_location_rationale, Snackbar.LENGTH_SHORT).show();
     }
 
-    @DeniedPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
     void showDeniedForLocation() {
         Snackbar.make(getView(), R.string.no_location_permission, Snackbar.LENGTH_SHORT).show();
     }

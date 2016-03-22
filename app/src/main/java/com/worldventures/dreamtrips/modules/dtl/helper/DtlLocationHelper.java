@@ -22,18 +22,13 @@ public class DtlLocationHelper {
      */
     public static LatLng selectAcceptableLocation(Location deviceLocation, DtlLocation dtlLocation) {
         if (dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME)
-            new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
+            return new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         //
         LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         LatLng cityLatLng = dtlLocation.getCoordinates().asLatLng();
         return checkLocation(DtlFilterParameters.MAX_DISTANCE, deviceLatLng, cityLatLng, DistanceType.MILES)
                 ? deviceLatLng
                 : cityLatLng;
-    }
-
-    public static boolean checkLocation(int maxDistance, LatLng currentLocation, LatLng targetLatLng,
-                                 DistanceType distanceType) {
-        return checkLocation((double) maxDistance, currentLocation, targetLatLng, distanceType);
     }
 
     public static boolean checkLocation(double maxDistance, LatLng currentLocation, LatLng targetLatLng,

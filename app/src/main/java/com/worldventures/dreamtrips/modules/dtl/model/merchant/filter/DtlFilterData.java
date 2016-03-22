@@ -29,7 +29,7 @@ public abstract class DtlFilterData {
     }
 
     @Value.Default
-    public int getMaxDistance() {
+    public double getMaxDistance() {
         return DtlFilterParameters.MAX_DISTANCE;
     }
 

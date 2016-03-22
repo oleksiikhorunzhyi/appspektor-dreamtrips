@@ -512,11 +512,11 @@ public class SnappyRepository {
         act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
     }
 
-    public Boolean getLastSelectedOffersOnlyToogle(){
+    public Boolean getLastSelectedOffersOnlyToggle(){
         return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
     }
 
-    public void cleanLastSelectedOffersOnlyToogle(){
+    public void cleanLastSelectedOffersOnlyToggle(){
         clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
     }
 

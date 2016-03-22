@@ -49,7 +49,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         view.initToolbar(dtlLocationManager.getCachedSelectedLocation());
-        toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToogle());
+        toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
         //
         bindJobPersistantCached(dtlMerchantManager.getMerchantsExecutor).onSuccess(this::onMerchantsLoaded);
         bindFilteredStream();
@@ -65,7 +65,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
     private Observable<Boolean> prepareFilterToogle() {
         return toggleStream
-                .doOnSubscribe(() -> view.hideDinings(db.getLastSelectedOffersOnlyToogle()))// set initial value before emitting switching
+                .doOnSubscribe(() -> view.hideDinings(db.getLastSelectedOffersOnlyToggle()))// set initial value before emitting switching
                 .doOnNext(st -> db.saveLastSelectedOffersOnlyToogle(st));
     }
 

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
@@ -32,6 +33,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 
@@ -44,7 +46,7 @@ import static com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreen
 @Layout(R.layout.fragment_trip_list_images)
 public class TripImagesListFragment<T extends TripImagesListPresenter>
         extends RxBaseFragmentWithArgs<T, TripsImagesBundle>
-        implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements TripImagesListPresenter.View, SwipeRefreshLayout.OnRefreshListener, MembersImagesPresenter.View {
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
@@ -205,4 +207,8 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         arrayListAdapter.notifyItemRemoved(index);
     }
 
+    @Override
+    public void attachImages(List<ChosenImage> photos, int requestType) {
+        //TODO temp solution will be removed after refactoring
+    }
 }

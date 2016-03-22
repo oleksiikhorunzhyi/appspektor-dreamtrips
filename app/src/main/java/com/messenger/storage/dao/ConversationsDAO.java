@@ -68,6 +68,22 @@ public class ConversationsDAO extends BaseDAO {
                 .compose(DaoTransformers.toDataConversation());
     }
 
+    public Observable<Integer> conversationsCount() {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT COUNT(_id) FROM " + DataConversation.TABLE_NAME + " " +
+                        "WHERE " + DataConversation$Table.STATUS + " =  ?"
+                )
+                .withSelectionArgs(new String[]{ConversationStatus.PRESENT})
+                .build();
+
+        return query(q, null)
+                .map(cursor -> {
+                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
+                    cursor.close();
+                    return res;
+                });
+    }
+
     public Observable<Pair<DataConversation, List<DataUser>>> getConversationWithParticipants(String conversationId) {
         //TODO: rename DataUser#_ID field to userId, because we don't use cursor with DataUser in list
         String stringQuery = "SELECT c.*, u.*" +

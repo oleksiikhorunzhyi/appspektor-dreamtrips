@@ -6,12 +6,13 @@ import android.util.Pair;
 import android.view.MenuItem;
 
 import com.messenger.delegate.ConversationAvatarDelegate;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.actions.AvatarAction;
 import com.messenger.entities.DataConversation;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.io.File;
 
@@ -36,6 +37,8 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        TrackingHelper.groupSettingsOpened();
+
         getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
         Observable.combineLatest(
             cropImageDelegate.getCroppedImagesStream(),

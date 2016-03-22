@@ -283,21 +283,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .replay(1)
                 .autoConnect();
 
-        source
-                .compose(new NonNullFilter<>())
-                .map(conversationListPair -> conversationListPair.first)
+        source.compose(new NonNullFilter<>())
                 .first()
-                .subscribe(conversation -> {
-                    TrackingHelper.openConversation(
-                            TextUtils.equals(conversation.getType(), ConversationType.CHAT)
-                                    ? TrackingHelper.MESSENGER_VALUE_INDIVIDUAL
-                                    : TrackingHelper.MESSENGER_VALUE_GROUP
-                    );
+                .subscribe(conversationUsersPair -> {
+                    if (ConversationHelper.isSingleChat(conversationUsersPair.first))
+                        TrackingHelper.openSingleConversation();
+                    else
+                        TrackingHelper.openGroupConversation(conversationUsersPair.second.size());
                 }, throwable -> Timber.e(throwable, ""));
 
         source.doOnSubscribe(() -> getView().showLoading());
-        source
-                .compose(bindViewIoToMainComposer())
+
+        source.compose(bindViewIoToMainComposer())
                 .subscribe(conversationWithParticipants ->
                         conversationLoaded(conversationWithParticipants.first, conversationWithParticipants.second));
 

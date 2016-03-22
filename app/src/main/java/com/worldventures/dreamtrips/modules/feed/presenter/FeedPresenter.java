@@ -55,6 +55,12 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        refreshFeed();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (unreadConversationSubscription != null && !unreadConversationSubscription.isUnsubscribed()) {

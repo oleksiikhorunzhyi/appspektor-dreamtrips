@@ -199,4 +199,9 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
         if (!isOwner) return;
         leaveChatButton.setVisibility(GONE);
     }
+
+    @Override
+    public void invalidateToolbarMenu() {
+        inflateToolbarMenu(toolbar);
+    }
 }

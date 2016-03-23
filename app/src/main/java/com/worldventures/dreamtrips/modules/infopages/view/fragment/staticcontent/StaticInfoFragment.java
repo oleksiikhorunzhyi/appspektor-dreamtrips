@@ -334,7 +334,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollMemberFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
+    public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment {
         @Override
         protected String getURL() {
             return provider.getEnrollMemberUrl();
@@ -354,7 +354,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollMerchantFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
+    public static class EnrollMerchantFragment extends AuthorizedStaticInfoFragment {
         @Override
         protected String getURL() {
             return provider.getEnrollMerchantUrl();
@@ -374,7 +374,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollRepFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
+    public static class EnrollRepFragment extends AuthorizedStaticInfoFragment {
 
         @Override
         protected String getURL() {

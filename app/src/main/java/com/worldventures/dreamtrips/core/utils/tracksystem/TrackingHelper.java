@@ -33,8 +33,9 @@ public class TrackingHelper {
     public static final String ACTION_PHOTOS_YSBH = "photos-ysbh";
     public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
     public static final String ACTION_PHOTOS_MINE = "photos-mine";
-    public static final String ACTION_ENROLL = "membership-enroll";
-    public static final String ACTION_FAQ = "FAQ";
+    public static final String ACTION_ENROLL_MEMBER = "membership-enroll";
+    public static final String ACTION_ENROLL_RESTAURANT = "membership-enroll-restaurant";
+    public static final String ACTION_FAQ = "faq";
     public static final String ACTION_PRIVACY = "terms-privacy";
     public static final String ACTION_COOKIE = "terms-cookie";
     public static final String ACTION_SERVICE = "terms-service";
@@ -251,8 +252,12 @@ public class TrackingHelper {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_MINE);
     }
 
-    public static void enroll(String memberId) {
-        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL);
+    public static void enrollMember(String memberId) {
+        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MEMBER);
+    }
+
+    public static void enrollRestaurant(String memberId) {
+        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_RESTAURANT);
     }
 
     public static void profile(String memberId) {
@@ -298,7 +303,7 @@ public class TrackingHelper {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_OTA);
     }
 
-    public static void repEnroll(String memberId) {
+    public static void enrollRep(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_ENROLL);
     }
 
@@ -778,9 +783,14 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_LIST);
     }
 
-    public static void actionMembershipEnrollScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
+    public static void actionMembershipEnrollMemberScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
             ATTRIBUTE_LOADING_ERROR}) String eventType) {
         sendSimpleAttributetoAdobeTracker(ACTION_MEMBERSHIP_ENROLL, eventType);
+    }
+
+    public static void actionMembershipEnrollRestaurantScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
+            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+        sendSimpleAttributetoAdobeTracker(DTL_ACTION_MERCHANT_VIEW, eventType);
     }
 
     public static void actionMembershipVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})

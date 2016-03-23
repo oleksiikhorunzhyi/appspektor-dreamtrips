@@ -87,7 +87,7 @@
     <string name="mi">英里</string>
     <string name="dtl_coming_soon_offers">更多優惠即將到來</string>
     <string name="dtl_details_share_title_without_points">我發現%s在使用DreamTrips app</string>
-    <string name="rep_suggest_restaurant">推薦餐廳</string>
+    <string name="suggest_restaurant">推薦餐廳</string>
     <string name="details_collapsed_text_caption">顯示更多</string>
     <string name="details_expanded_text_caption">顯示更少</string>
 </resources>

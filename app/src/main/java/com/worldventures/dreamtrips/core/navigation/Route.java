@@ -34,7 +34,6 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsTabsFr
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlSuggestMerchantFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
@@ -71,7 +70,6 @@ import com.worldventures.dreamtrips.modules.profile.view.fragment.UserFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryListFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuggestRestaurantFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.TrainingVideosFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
@@ -120,7 +118,6 @@ public enum Route {
     DETAIL_FOREIGN_BUCKET(ForeignBucketDetailsFragment.class),
 
     MAP(TripMapFragment.class),
-    ENROLL(StaticInfoFragment.EnrollFragment.class),
     TRIPLIST(TripListFragment.class),
     TRIP_FILTERS(FiltersFragment.class),
     TRIP_IMAGES_PAGER(TripImagePagerFragment.class),
@@ -130,10 +127,15 @@ public enum Route {
     ACCOUNT_IMAGES(AccountImagesListFragment.class, R.string.trip_images),
     USER_IMAGES(MemberImagesListFragment.class),
     BASE_IMAGES(BaseImageFragment.class),
+
     MEMBERSHIP(MembershipFragment.class),
+    TRAINING_VIDEOS(TrainingVideosFragment.class),
+    ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class),
+    ENROLL_RESTAURANT(StaticInfoFragment.EnrollRestaurantFragment.class),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
     INVITE(InviteFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
+
     BUCKET_TABS(BucketTabsFragment.class, R.string.bucket_list),
     FOREIGN_BUCKET_TABS(ForeignBucketTabsFragment.class, R.string.bucket_list),
     ACCOUNT_PROFILE(AccountFragment.class),
@@ -182,7 +184,6 @@ public enum Route {
     DTL_MAP(DtlMapFragment.class),
     DTL_MAP_INFO(DtlMapInfoFragment.class),
     DTL_MERCHANT_DETAILS(DtlMerchantDetailsFragment.class),
-    DTL_SUGGEST_MERCHANT(DtlSuggestMerchantFragment.class, R.string.suggest_merchant_title),
 
     DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
@@ -192,9 +193,7 @@ public enum Route {
 
     MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
-    TRAINING_VIDEOS(TrainingVideosFragment.class),
     ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
-    SUGGEST_RESTAURANT(SuggestRestaurantFragment.class),
     SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 
     INSPIRE_PHOTO_FULLSCREEN(InspirePhotoFullscreenFragment.class),

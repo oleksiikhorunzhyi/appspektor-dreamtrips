@@ -120,13 +120,14 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     private void showPins(List<DtlMerchant> filtered) {
-        if (view != null) {
-            view.clearMap();
-            Queryable.from(filtered).forEachR(dtlMerchant ->
-                    view.addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
-                            dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
-            view.renderPins();
-        }
+        if (view == null) return;
+        //
+        view.clearMap();
+        Queryable.from(filtered).forEachR(dtlMerchant ->
+                view.addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
+                        dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
+        view.renderPins();
+
     }
 
     private void checkPendingMapInfo() {
@@ -148,7 +149,6 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         DtlLocation mapSelectedLocation = ImmutableDtlManualLocation.builder()
                 .locationSourceType(LocationSourceType.FROM_MAP)
                 .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(latLng.latitude, latLng.longitude))
-//                .longName(null) // TODO :: 3/22/16
                 .build();
         dtlLocationManager.persistLocation(mapSelectedLocation);
         //

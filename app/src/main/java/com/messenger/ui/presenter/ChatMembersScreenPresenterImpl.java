@@ -163,6 +163,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
     @Override
     public void onItemSelectChange(SelectableDataUser item) {
+        setConversationNameInputFieldVisible(selectedUsers.size() > 1);
         if (item.isSelected()) {
             selectedUsers.add(item.getDataUser());
         } else {

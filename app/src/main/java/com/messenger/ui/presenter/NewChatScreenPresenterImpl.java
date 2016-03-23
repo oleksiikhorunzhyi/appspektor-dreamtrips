@@ -8,7 +8,6 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
 import com.worldventures.dreamtrips.R;
@@ -87,11 +86,4 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
         }
         return false;
     }
-
-    @Override
-    public void onItemSelectChange(SelectableDataUser contact) {
-        super.onItemSelectChange(contact);
-        setConversationNameInputFieldVisible(selectedUsers.size() > 1);
-    }
-
 }

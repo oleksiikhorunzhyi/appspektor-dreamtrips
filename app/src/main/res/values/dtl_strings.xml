@@ -49,28 +49,7 @@
     <string name="dtl_earn">Earn</string>
     <string name="dtl_dt_points">%d DreamTrips Points</string>
     <string name="suggest_merchant_title">Suggest Merchant</string>
-    <string name="suggest_merchant_restaurant_name_hint">Restaurant Name</string>
-    <string name="suggest_merchant_restaurant_city_hint">City</string>
-    <string name="suggest_merchant_contact_name_hint">Contact Name</string>
-    <string name="suggest_merchant_phone_number_hint">Phone</string>
-    <string name="suggest_merchant_contact_email_hint">Email</string>
-    <string name="suggest_merchant_best_time_contact_caption">Best time for contact</string>
-    <string name="suggest_merchant_best_time_contact_switcher">Between</string>
-    <string name="suggest_merchant_best_time_contact_from_caption">From:</string>
-    <string name="suggest_merchant_best_time_contact_to_caption">To:</string>
-    <string name="suggest_merchant_rate_experience_caption">Rate your experience</string>
-    <string name="suggest_merchant_food_caption">Food</string>
-    <string name="suggest_merchant_service_caption">Service</string>
-    <string name="suggest_merchant_cleanliness_caption">Cleanliness</string>
-    <string name="suggest_merchant_uniqueness_caption">Uniqueness</string>
-    <string name="suggest_merchant">Suggest merchant</string>
-    <string name="suggest_merchant_additional_info_caption">Additional information</string>
-    <string name="suggest_merchant_submit_button_caption">Submit</string>
-    <string name="suggest_merchant_additional_info_length_error">Input too long!</string>
-    <string name="suggest_merchant_to_date_overlap_error">\'To\' field cannot be earlier than \'From\'!</string>
-    <string name="suggest_merchant_to_date_past_error">\'From\' field cannot be in the past!</string>
-    <string name="suggest_merchant_contact_time_past_error_format">\'%s\' field cannot be in the past!</string>
-    <string name="suggest_merchant_rating_error_format">\'%s\' rating must be set!</string>
+    <string name="suggest_merchant">@string/suggest_merchant_title</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %s DreamTrips points in %s</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
@@ -93,7 +72,6 @@
     <string name="dtl_coming_soon_offers">Offers coming soon</string>
     <string name="dtl_show_offers_only">Show offers only</string>
     <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
-    <string name="rep_suggest_restaurant">Suggest Restaurant</string>
     <string name="distance_caption_format" formatted="false" translatable="false">%1$.1f %2$s</string>
     <string name="details_collapsed_text_caption">Show More</string>
     <string name="details_expanded_text_caption">Show Less</string>

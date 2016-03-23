@@ -126,7 +126,7 @@ public class FullScreenPhotoWrapperFragment
             }
 
             @Override
-            public void addItems(ArrayList baseItemClasses) {
+            public void addItems(List baseItemClasses) {
                 addToAdapter(baseItemClasses);
             }
         };

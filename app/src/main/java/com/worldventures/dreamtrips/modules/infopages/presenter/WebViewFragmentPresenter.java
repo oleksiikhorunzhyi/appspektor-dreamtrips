@@ -35,7 +35,15 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        load();
+    }
+
+    protected void load() {
         view.load(getLocalizedUrl());
+    }
+
+    protected void reload() {
+        view.reload(getLocalizedUrl());
     }
 
     protected String getLocalizedUrl() {

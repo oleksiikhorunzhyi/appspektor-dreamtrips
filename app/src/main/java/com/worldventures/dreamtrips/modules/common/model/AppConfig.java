@@ -65,6 +65,10 @@ public class AppConfig {
             @SerializedName("UploaderyBaseURL")
             private String uploaderyBaseURL;
 
+            public String getAuthBaseURL() {
+                return this.authBaseURL;
+            }
+
             public String getBookingPageURL() {
                 return bookingPageURL;
             }
@@ -77,11 +81,7 @@ public class AppConfig {
                 return replaceWithBase64(uid, enrollRepURL);
             }
 
-            public String getAuthBaseURL() {
-                return this.authBaseURL;
-            }
-
-            public String getEnrollMemeberURL(String uid) {
+            public String getEnrollMemberURL(String uid) {
                 return replaceWithBase64(uid, enrollMemeberURL);
             }
 

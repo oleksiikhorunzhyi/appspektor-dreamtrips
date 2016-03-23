@@ -243,7 +243,7 @@ public class DtlMerchantDetailsFragment
 
     @Override
     public void openSuggestMerchant(MerchantIdBundle data) {
-        router.moveTo(Route.DTL_SUGGEST_MERCHANT, NavigationConfigBuilder.forActivity()
+        router.moveTo(Route.ENROLL_MERCHANT, NavigationConfigBuilder.forActivity()
                 .data(data)
                 .build());
     }

@@ -14,10 +14,10 @@
         android:id="@+id/post_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/spacing_medium"
+        android:layout_marginBottom="@dimen/post_spacing_vertical_bottom"
         android:layout_marginLeft="@dimen/post_spacing_horizontal"
         android:layout_marginRight="@dimen/post_spacing_horizontal"
-        android:layout_marginTop="@dimen/post_spacing_vertical"
+        android:layout_marginTop="@dimen/post_spacing_vertical_top"
         android:background="@drawable/background_post"
         android:clickable="true"
         android:orientation="vertical">

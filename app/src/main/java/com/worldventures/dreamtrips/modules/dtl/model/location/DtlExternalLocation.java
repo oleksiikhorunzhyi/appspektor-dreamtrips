@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -58,12 +59,23 @@ public class DtlExternalLocation implements DtlLocation, Parcelable {
         return locationSourceType;
     }
 
+    public String asAnalyticsLocation() {
+        return String.format("%s:%s:%s", longName, getLongNameFor(DtlLocationType.STATE),
+                getLongNameFor(DtlLocationType.COUNTRY));
+    }
+
     public void setCoordinates(Location coordinates) {
         this.coordinates = coordinates;
     }
 
     public List<DtlExternalLocation> getLocatedIn() {
         return locatedIn != null ? locatedIn : Collections.emptyList();
+    }
+
+    private String getLongNameFor(DtlLocationType type) {
+        DtlExternalLocation location = Queryable.from(locatedIn)
+                .firstOrDefault(tempLocation -> tempLocation.type == type);
+        return location == null ? "-" : location.getLongName();
     }
 
     public android.location.Location asAndroidLocation() {
@@ -160,7 +172,7 @@ public class DtlExternalLocation implements DtlLocation, Parcelable {
     public static Comparator<DtlExternalLocation> ALPHABETICAL_COMPARATOR = (lhs, rhs) ->
             lhs.getLongName().compareToIgnoreCase(rhs.getLongName());
 
-    public static Comparator<DtlExternalLocation> provideComparator(String query)  {
+    public static Comparator<DtlExternalLocation> provideComparator(String query) {
         return new DtlLocationRangeComparator(query);
     }
 

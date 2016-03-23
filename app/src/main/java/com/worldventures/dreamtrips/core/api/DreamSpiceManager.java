@@ -36,6 +36,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
@@ -68,12 +69,15 @@ public class DreamSpiceManager extends SpiceManager {
     DTErrorHandler dtErrorHandler;
     @Inject
     LogoutDelegate logoutDelegate;
+    //
+    private final ErrorParser errorParser;
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
         super(spiceServiceClass);
         injector.inject(this);
         Ln.getConfig().setLoggingLevel(Log.ERROR);
         logoutDelegate.setDreamSpiceManager(this);
+        errorParser = new ErrorParser(context);
     }
 
     public <T> void execute(final SpiceRequest<T> request) {
@@ -133,7 +137,9 @@ public class DreamSpiceManager extends SpiceManager {
 
             loginUser(userPassword, username, onLoginSuccess);
         } else {
-            failureListener.handleError(new SpiceException(getErrorMessage(request, error), dtErrorHandler.handleSpiceError(error)));
+            String detailMessage = errorParser.parseErrorMessage(request, error);
+            Throwable handledError = dtErrorHandler.handleSpiceError(error);
+            failureListener.handleError(new SpiceException(detailMessage, handledError));
         }
     }
 
@@ -156,8 +162,7 @@ public class DreamSpiceManager extends SpiceManager {
         }
     }
 
-    public void loginUser(String userPassword, String username,
-                          OnLoginSuccess onLoginSuccess) {
+    public void loginUser(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
         LoginCommand request = new LoginCommand(username, userPassword);
         execute(request, session -> {
             LoginResponse loginResponse = new LoginResponse();
@@ -166,8 +171,10 @@ public class DreamSpiceManager extends SpiceManager {
                     username, userPassword);
             authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
-        }, spiceError -> {
-            onLoginSuccess.result(null, new SpiceException(getErrorMessage(request, spiceError), dtErrorHandler.handleSpiceError(spiceError)));
+        }, error -> {
+            String detailMessage = errorParser.parseErrorMessage(request, error);
+            Throwable handledError = dtErrorHandler.handleSpiceError(error);
+            onLoginSuccess.result(null, new SpiceException(detailMessage, handledError));
         });
     }
 
@@ -227,77 +234,7 @@ public class DreamSpiceManager extends SpiceManager {
         return false;
     }
 
-    private String getErrorMessage(SpiceRequest request, SpiceException error) {
-        String errorMessage = "";
-        if (error != null && error.getCause() instanceof RetrofitError) {
-            RetrofitError retrofitError = (RetrofitError) error.getCause();
-            String body = getBody(retrofitError.getResponse());
-            String message = grabDetailedMessage(body);
 
-            if (message.isEmpty()) {
-                Throwable t = retrofitError.getCause();
-                if (t instanceof UnknownHostException) {
-                    errorMessage = context
-                            .getResources().getString(R.string.no_connection);
-                }
-            } else if (isShouldToBeProcessedLocally(request, retrofitError)) {
-                errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
-            } else {
-                errorMessage = message;
-            }
-        } else if (error != null && !TextUtils.isEmpty(error.getMessage())) {
-            errorMessage = error.getMessage();
-        }
-        return errorMessage;
-    }
-
-    private boolean isShouldToBeProcessedLocally(SpiceRequest request, RetrofitError retrofitError) {
-        return retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY
-                && request instanceof DreamTripsRequest && ((DreamTripsRequest) request).getErrorMessage() != 0;
-    }
-
-    private String getBody(Response response) {
-        String result = "";
-        try {
-            TypedInput body = response.getBody();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
-            StringBuilder out = new StringBuilder();
-            String newLine = System.getProperty("line.separator");
-            String line;
-            while ((line = reader.readLine()) != null) {
-                out.append(line);
-                out.append(newLine);
-            }
-
-            result = out.toString();
-        } catch (Exception e) {
-            Timber.e(e, "Cant parse response body");
-        }
-        return result;
-    }
-
-    private String grabDetailedMessage(String response) {
-        try {
-            JSONObject parent = new JSONObject(response);
-            JSONObject errors = parent.getJSONObject("errors");
-
-            Iterator<?> keys = errors.keys();
-
-            while (keys.hasNext()) {
-                String key = (String) keys.next();
-                try {
-                    JSONArray o = errors.getJSONArray(key);
-                    return o.getString(0);
-                } catch (JSONException e) {
-                    return errors.getString(key);
-                }
-            }
-
-        } catch (Exception e) {
-            Timber.e(e, "");
-        }
-        return "";
-    }
 
     @Override
     public synchronized void start(Context context) {
@@ -320,5 +257,84 @@ public class DreamSpiceManager extends SpiceManager {
 
         SuccessListener STUB = t -> {
         };
+    }
+
+    private static class ErrorParser {
+
+        Context context;
+
+        public ErrorParser(Context context) {
+            this.context = context;
+        }
+
+        public String parseErrorMessage(SpiceRequest request, SpiceException error) {
+            String errorMessage = "";
+            if (error != null && error.getCause() instanceof RetrofitError) {
+                RetrofitError retrofitError = (RetrofitError) error.getCause();
+                String message = getDetailedMessage(retrofitError);
+
+                if (TextUtils.isEmpty(message)) {
+                    Throwable t = retrofitError.getCause();
+                    if (t instanceof UnknownHostException || t instanceof ConnectException) {
+                        errorMessage = context.getResources().getString(R.string.no_connection);
+                    }
+                } else if (isShouldToBeProcessedLocally(request, retrofitError)) {
+                    errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
+                } else {
+                    errorMessage = message;
+                }
+            } else if (error != null && !TextUtils.isEmpty(error.getMessage())) {
+                errorMessage = error.getMessage();
+            }
+            return errorMessage;
+        }
+
+        private boolean isShouldToBeProcessedLocally(SpiceRequest request, RetrofitError retrofitError) {
+            return retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY
+                    && request instanceof DreamTripsRequest && ((DreamTripsRequest) request).getErrorMessage() != 0;
+        }
+
+        private String getDetailedMessage(RetrofitError error) {
+            String body = getBody(error.getResponse());
+            if (TextUtils.isEmpty(body)) return null;
+            try {
+                JSONObject parent = new JSONObject(body);
+                JSONObject errors = parent.getJSONObject("errors");
+                Iterator<?> keys = errors.keys();
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    try {
+                        JSONArray arr = errors.getJSONArray(key);
+                        return arr.getString(0);
+                    } catch (JSONException e) {
+                        return errors.getString(key);
+                    }
+                }
+
+            } catch (Exception e) {
+                Timber.e(e, "Can't get error message from response");
+            }
+            return null;
+        }
+
+        private String getBody(Response response) {
+            String result = null;
+            try {
+                TypedInput body = response.getBody();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
+                StringBuilder out = new StringBuilder();
+                String newLine = System.getProperty("line.separator");
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    out.append(line);
+                    out.append(newLine);
+                }
+
+                result = out.toString();
+            } catch (Exception e) {
+                Timber.e(e, "Cant parse response body");
+            }
+            return result;
+        }
     }
 }

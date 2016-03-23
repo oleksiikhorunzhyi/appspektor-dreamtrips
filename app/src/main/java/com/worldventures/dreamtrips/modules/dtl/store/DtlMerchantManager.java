@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -87,10 +88,12 @@ public class DtlMerchantManager {
 
     private Observable<LatLng> combineLocationObservable() {
         return locationDelegate.getLastKnownLocation()
-                .onErrorResumeNext(Observable.just(dtlLocationManager.getCachedSelectedLocation()
-                        .getCoordinates().asAndroidLocation()))
-                .flatMap(location -> Observable.just(DtlLocationHelper.selectAcceptableLocation(location,
-                        dtlLocationManager.getCachedSelectedLocation())));
+                .timeout(200, TimeUnit.MILLISECONDS)
+                .onErrorResumeNext(Observable.empty())
+                .defaultIfEmpty(dtlLocationManager.getCachedSelectedLocation()
+                        .getCoordinates().asAndroidLocation())
+                .map(location -> DtlLocationHelper.selectAcceptableLocation(location,
+                        dtlLocationManager.getCachedSelectedLocation()));
     }
 
     private List<DtlMerchant> filterMerchants(LatLng latLng, List<DtlMerchant> dtlMerchants, DtlFilterData filterData) {

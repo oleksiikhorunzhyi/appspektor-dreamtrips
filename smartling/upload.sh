@@ -4,7 +4,7 @@ string=""
 
 stringsPathSocial="../app/src/main/res/values/strings.xml"
 stringsPathDtl="../app/src/main/res/values/dtl_strings.xml"
-stringsPathMessenger="../app/src/main/res/values/strings.xml"
+stringsPathMessenger="../app/src/main/res/values/messenger_strings.xml"
 
 if [[ $* == *"social"* ]];
 then

@@ -106,6 +106,9 @@
     <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Delete</string>
     <string name="edit_chat_members_admin_section">Admin</string>
     <string name="edit_chat_members_host_section">In-destination Support</string>
+    <!--Messenger notifications-->
+    <string name="push_unsupported_message">To see attachment, update to latest version of DreamTrips App</string>
+    <!---->
     <!---->
     <!--Messenger misc -->
     <!---->

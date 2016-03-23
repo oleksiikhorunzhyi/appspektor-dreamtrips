@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
+import rx.Subscription;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
@@ -49,6 +51,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     LogoutDelegate logoutDelegate;
     @Inject
     MediaPickerManager mediaPickerManager;
+
+    private Subscription mediaSubscription;
 
     private String coverTempFilePath;
 
@@ -127,13 +131,23 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
-        view.bind(mediaPickerManager.toObservable())
-                .filter(attachment -> attachment.requestId == mediaRequestId && attachment.chosenImages.size() > 0)
+        //
+        mediaSubscription = mediaPickerManager.toObservable()
+                .filter(attachment -> (attachment.requestId == AVATAR_MEDIA_REQUEST_ID
+                        || attachment.requestId == COVER_MEDIA_REQUEST_ID)  && attachment.chosenImages.size() > 0)
                 .subscribe(mediaAttachment -> {
-                    view.hideMediaPicker();
-                    //
-                    imageSelected(mediaAttachment.chosenImages.get(0));
+                    if (view != null) {
+                        view.hideMediaPicker();
+                        //
+                        imageSelected(mediaAttachment);
+                    }
                 });
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
     }
 
     @Override
@@ -224,16 +238,15 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
     }
 
-    private void imageSelected(ChosenImage chosenImage) {
-        if (view != null) {
-            switch (mediaRequestId) {
-                case AVATAR_MEDIA_REQUEST_ID:
-                    onAvatarChosen(chosenImage);
-                    break;
-                case COVER_MEDIA_REQUEST_ID:
-                    onCoverChosen(chosenImage);
-                    break;
-            }
+    private void imageSelected(MediaAttachment mediaAttachment) {
+        ChosenImage image = mediaAttachment.chosenImages.get(0);
+        switch (mediaAttachment.requestId) {
+            case AVATAR_MEDIA_REQUEST_ID:
+                onAvatarChosen(image);
+                break;
+            case COVER_MEDIA_REQUEST_ID:
+                onCoverChosen(image);
+                break;
         }
     }
 

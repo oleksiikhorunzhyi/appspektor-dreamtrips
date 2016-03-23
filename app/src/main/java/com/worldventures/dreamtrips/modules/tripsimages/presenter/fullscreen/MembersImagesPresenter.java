@@ -13,6 +13,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 /**
  * ALL MEMBERS PHOTOS. 1 TAB in Trip Images page.
  */
@@ -20,6 +22,8 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
 
     @Inject
     MediaPickerManager mediaPickerManager;
+
+    private Subscription mediaSubscription;
 
     public MembersImagesPresenter() {
         this(TripImagesType.MEMBERS_IMAGES, 0);
@@ -32,11 +36,17 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        view.bind(mediaPickerManager.toObservable())
+        mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> attachment.requestId == getMediaRequestId() && attachment.chosenImages.size() > 0)
                 .subscribe(mediaAttachment -> {
                     view.attachImages(mediaAttachment.chosenImages, mediaAttachment.type);
                 });
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
     }
 
     public int getMediaRequestId() {

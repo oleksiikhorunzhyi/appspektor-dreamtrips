@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.store;
 import android.annotation.SuppressLint;
 import android.location.Location;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
@@ -41,9 +42,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import techery.io.library.Job0Executor;
+import techery.io.library.Job;
 import techery.io.library.Job1Executor;
-import techery.io.library.JobToValue;
 
 public class DtlMerchantManager {
 
@@ -58,31 +58,33 @@ public class DtlMerchantManager {
     @Inject
     DtlLocationManager dtlLocationManager;
     //
-    private final PublishSubject<DtlFilterData> filterStream = PublishSubject.create();
+    private PublishSubject<DtlFilterData> filterStream;
     //
     public static final List<DtlMerchantType> MERCHANT_TYPES = Arrays.asList(DtlMerchantType.values());
     //
     private List<DtlMerchant> merchants;
     private DtlFilterData filterData;
     //
-    public final Job1Executor<String, List<DtlMerchant>> getMerchantsExecutor =
-            new Job1Executor<>(this::loadAndProcessMerchants);
+    private Pair<String, List<DtlMerchant>> lastResult;
 
-    public final Job0Executor<List<DtlMerchant>> merchantsResultPipe =
-            new Job0Executor<>(() -> getMerchantsExecutor.connect().compose(new JobToValue<>()));
+    public final Job1Executor<String, List<DtlMerchant>> getMerchantsExecutor =
+            new Job1Executor<>(s -> loadAndProcessMerchants(s)
+                    .doOnNext(merchants -> lastResult = new Pair<>(s, merchants)));
 
     public DtlMerchantManager(Injector injector) {
         injector.inject(this);
+        this.filterStream = PublishSubject.create();
         initFilterData();
-        merchantsResultPipe.executeJob();
     }
 
     private Observable<List<DtlMerchant>> loadAndProcessMerchants(String ll) {
+        filterStream.onCompleted();
+        filterStream = PublishSubject.create();
         return Observable.combineLatest(
                 combineLocationObservable(),
                 apiFactory.composeApiCall(() -> dtlApi.getNearbyDtlMerchants(ll))
                         .doOnNext(this::processAmenities),
-                filterStream.asObservable().take(1),
+                filterStream,
                 this::filterMerchants);
     }
 
@@ -177,9 +179,28 @@ public class DtlMerchantManager {
      */
     @SuppressLint("DefaultLocale")
     public void loadMerchants(Location location) {
-        getMerchantsExecutor.createJobWith(String.format("%1$f,%2$f",
-                    location.getLatitude(), location.getLongitude()))
+        String locationArg = String.format("%1$f,%2$f",
+                location.getLatitude(), location.getLongitude());
+        if (lastResult != null && !lastResult.first.equals(locationArg)) {
+            lastResult = null;
+        }
+        getMerchantsExecutor.createJobWith(locationArg)
                 .subscribe();
+    }
+
+    public Observable<Job<List<DtlMerchant>>> connectMerchantsWithCache() {
+        Job<List<DtlMerchant>> progressStatus = new Job.Builder<List<DtlMerchant>>()
+                .status(Job.JobStatus.PROGRESS)
+                .create();
+        Observable<Job<List<DtlMerchant>>> observable = getMerchantsExecutor.connect()
+                .skipWhile(job -> job.status == Job.JobStatus.PROGRESS);
+        if (lastResult == null) {
+            return observable.startWith(progressStatus);
+        }
+        return observable
+                .startWith(
+                        new Job.Builder<List<DtlMerchant>>().status(Job.JobStatus.SUCCESS).value(lastResult.second).create(),
+                        progressStatus);
     }
 
     private void cacheAndPersistMerchants(List<DtlMerchant> dtlMerchants) {
@@ -239,4 +260,5 @@ public class DtlMerchantManager {
     public DtlMerchant getMerchantById(String id) {
         return Queryable.from(getMerchants()).firstOrDefault(merchant -> merchant.getId().equals(id));
     }
+
 }

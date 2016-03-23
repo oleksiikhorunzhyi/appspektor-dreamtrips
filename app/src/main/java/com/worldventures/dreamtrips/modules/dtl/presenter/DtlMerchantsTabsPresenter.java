@@ -32,7 +32,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         apiErrorPresenter.setView(view);
         setTabs();
         //
-        bindJobPersistantCached(dtlMerchantManager.merchantsResultPipe)
+        bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
                 .onError(apiErrorPresenter::handleError);
         //
         view.bind(dtlLocationManager.getLocationStream()).compose(new IoToMainComposer<>())

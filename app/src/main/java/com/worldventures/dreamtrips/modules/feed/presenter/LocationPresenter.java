@@ -42,7 +42,7 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
     public Observable<Location> getLocation() {
         return view.bind(gpsLocationDelegate
                 .getLastKnownLocation())
-                .compose(IoToMainComposer.get())
+                .compose(new IoToMainComposer<>())
                 .map(this::getLocationFromAndroidLocation);
     }
 
@@ -90,7 +90,7 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
 
     public void onPermissionGranted() {
         view.bind(gpsLocationDelegate.requestLocationUpdate()
-                .compose(IoToMainComposer.get()))
+                .compose(new IoToMainComposer<>()))
                 .subscribe(this::onLocationObtained, this::onLocationError);
     }
 

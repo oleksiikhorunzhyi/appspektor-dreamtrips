@@ -25,6 +25,7 @@
     <string name="dtl_description">描述</string>
     <string name="ok">確認</string>
     <string name="permission_camera_rationale">檢測時需要訪問攝像頭</string>
+    <string name="permission_location_rationale">檢測時需要訪問地點</string>
     <string name="no_camera_permission">這個應用程序不能運行，因為它沒有攝像頭授權。該應用程序現在將退出。</string>
     <string name="no_location_permission">這個應用程序不能運行，因為它沒有地點授權。該應用程序現在將退出。</string>
     <string name="dtl_checkin_location_error">應啟動地點服務來簽到</string>

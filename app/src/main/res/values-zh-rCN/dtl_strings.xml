@@ -25,6 +25,7 @@
     <string name="dtl_description">描述</string>
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">检测时需要访问摄像头</string>
+    <string name="permission_location_rationale">检测时需要访问您的地点</string>
     <string name="no_camera_permission">这个应用程序不能运行，因为它没有摄像头授权。该应用程序现在将退出。</string>
     <string name="no_location_permission">这个应用程序不能运行，因为它没有地点授权。该应用程序现在将退出。</string>
     <string name="dtl_checkin_location_error">应启动位置服务来签到</string>

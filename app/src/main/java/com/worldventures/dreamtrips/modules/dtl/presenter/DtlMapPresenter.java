@@ -83,15 +83,14 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     public void onMapLoaded() {
         mapReady = true;
         //
-        view.bind(subscribeToCameraChange()).subscribe(show -> view.showButtonLoadMerchants(show));
+        view.bind(showingLoadMerchantsButton()).subscribe(show -> view.showButtonLoadMerchants(show));
         view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap()))
                 .subscribe(marker -> view.markerClick(marker));
         view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         checkPendingMapInfo();
     }
 
-    protected Observable<Boolean> subscribeToCameraChange() {
-        // TODO :: 3/22/16 bad signature and content of method. Needs re-writing
+    protected Observable<Boolean> showingLoadMerchantsButton() {
         return MapObservableFactory.createCameraChangeObservable(view.getMap())
                 .doOnNext(position -> view.cameraPositionChange(position))
                 .map(position ->

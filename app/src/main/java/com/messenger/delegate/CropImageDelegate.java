@@ -19,6 +19,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 
 import io.techery.scalablecropp.library.Crop;
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -35,7 +36,7 @@ public class CropImageDelegate {
 
     private DreamSpiceManager dreamSpiceManager;
 
-    private PublishSubject<File> croppedImagesStream = PublishSubject.create();
+    private PublishSubject<Notification<File>> croppedImagesStream = PublishSubject.create();
 
     private int ratioX = RATIO_X_DEFAULT;
     private int ratioY = RATIO_Y_DEFAULT;
@@ -66,7 +67,7 @@ public class CropImageDelegate {
         }
     }
 
-    public Observable<File> getCroppedImagesStream() {
+    public Observable<Notification<File>> getCroppedImagesStream() {
         return croppedImagesStream;
     }
 
@@ -119,17 +120,19 @@ public class CropImageDelegate {
     }
 
     private void reportSuccess(String path) {
-        croppedImagesStream.onNext(new File(path));
+        croppedImagesStream.onNext(Notification.createOnNext(new File(path)));
     }
 
     private void reportError(Throwable originalException, String message) {
+        Exception exception;
         if (originalException == null) {
             Timber.e(message);
-            croppedImagesStream.onError(new RuntimeException(message));
+            exception = new RuntimeException(message);
         } else {
             Timber.e(originalException, message);
-            croppedImagesStream.onError(new RuntimeException(message, originalException));
+            exception = new RuntimeException(message, originalException);
         }
+        croppedImagesStream.onNext(Notification.createOnError(exception));
     }
 
     private void startCropActivity(String path) {

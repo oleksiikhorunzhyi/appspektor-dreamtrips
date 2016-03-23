@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Notification;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -40,17 +41,22 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         TrackingHelper.groupSettingsOpened();
 
         getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
+
         Observable.combineLatest(
             cropImageDelegate.getCroppedImagesStream(),
             conversationObservable.first(),
             (image, conversation) -> new Pair<>(conversation, image))
             .compose(bindView())
-            .subscribe(pair -> onAvatarCropped(pair.first, pair.second),
-                e -> {
-                    Timber.w(e, "Could not crop image");
+            .subscribe(pair -> {
+                DataConversation conversation = pair.first;
+                Notification<File> notification = pair.second;
+                if (notification.isOnNext()) {
+                    onAvatarCropped(conversation, notification.getValue());
+                } else if (notification.isOnError()) {
+                    Timber.w(notification.getThrowable(), "Could not crop image");
                     getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
                 }
-            );
+            });
 
         conversationAvatarDelegate.listenToAvatarUpdates(conversationId)
                 .compose(bindView())

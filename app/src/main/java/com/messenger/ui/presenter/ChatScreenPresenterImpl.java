@@ -271,16 +271,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
                         return false;
                     }
-                }).publish();
+                })
+                .compose(bindViewIoToMainComposer())
+                .publish();
 
         conversationObservable = source
                 .replay(1)
                 .autoConnect();
 
-        source
-                .compose(new NonNullFilter<>())
+        source.compose(new NonNullFilter<>())
                 .first()
-                .compose(bindViewIoToMainComposer())
                 .subscribe(conversationUsersPair -> {
                     if (ConversationHelper.isSingleChat(conversationUsersPair.first))
                         TrackingHelper.openSingleConversation();
@@ -288,11 +288,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         TrackingHelper.openGroupConversation(conversationUsersPair.second.size());
                 }, throwable -> Timber.e(throwable, ""));
 
-        source
-                .compose(bindViewIoToMainComposer())
-                .doOnSubscribe(() -> getView().showLoading());
-        source
-                .compose(bindViewIoToMainComposer())
+        source.doOnSubscribe(() -> getView().showLoading());
+
+        source.compose(bindViewIoToMainComposer())
                 .subscribe(conversationWithParticipants ->
                         conversationLoaded(conversationWithParticipants.first, conversationWithParticipants.second));
 
@@ -312,7 +310,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectToUnreadCounterStream() {
         conversationObservable
                 .map(conversationWithParticipants -> conversationWithParticipants.first.getUnreadMessageCount())
-                .compose(bindViewIoToMainComposer())
                 .subscribe(count -> {
                     if (count == 0 && needShowUnreadMessages) {
                         needShowUnreadMessages = false;
@@ -356,7 +353,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         conversationObservable
                 .first()
                 .map(conversationWithParticipants -> conversationWithParticipants.first)
-                .compose(bindViewIoToMainComposer())
+                .compose(new IoToMainComposer<>())
                 .subscribe(conversation -> {
                     notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
                     //

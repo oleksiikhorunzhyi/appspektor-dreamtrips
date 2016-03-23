@@ -120,8 +120,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
     @Inject
-    BackStackDelegate backStackDelegate;
-    @Inject
     NotificationDelegate notificationDelegate;
     @Inject
     MessengerServerFacade messengerServerFacade;
@@ -186,7 +184,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         injector.inject(this);
 
         messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
-        backStackDelegate.setListener(() -> !isViewAttached() || getView().onBackPressed());
         paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
@@ -232,7 +229,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         closeChat();
         super.onDetachedFromWindow();
         paginationDelegate.stopPaginate();
-        backStackDelegate.setListener(null);
         disconnectFromPhotoPicker();
     }
 

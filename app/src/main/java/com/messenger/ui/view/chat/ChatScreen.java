@@ -33,8 +33,6 @@ public interface ChatScreen extends MessengerScreen {
 
     void showMessages(Cursor cursor, DataConversation conversation);
 
-    boolean onBackPressed();
-
     void hidePicker();
 
     Observable<TextViewTextChangeEvent> getEditMessageObservable();

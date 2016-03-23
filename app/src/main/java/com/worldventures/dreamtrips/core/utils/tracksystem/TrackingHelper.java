@@ -409,8 +409,6 @@ public class TrackingHelper {
     public static final String ACTION_SETTINGS = "Settings";
     public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
     public static final String ACTION_SETTINGS_NOTIFICATIONS = "Settings:Notifications";
-    public static final String ACTION_SETTINGS_FAQ = "FAQ";
-    public static final String ACTION_SETTINGS_LOGOUT = "Logout";
 
     // ---------------- DreamTrips attributes
     public static final String ATTRIBUTE_LOGIN = "login";
@@ -442,10 +440,9 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_SHARE = "share";
     public static final String ATTRIBUTE_DOWNLOAD = "download";
     public static final String ATTRIBUTE_MARK_AS_DONE = "mark_as_done";
-    public static final String ATTRIBUTE_RESON = "feedbackreason";
+    public static final String ATTRIBUTE_REASON = "feedbackreason";
     public static final String ATTRIBUTE_TERMS = "optinoptout";
     public static final String ATTRIBUTE_COMPLETE = "complete";
-    public static final String ATTRIBUTE_LOGOUT = "logout";
     public static final String ATTRIBUTE_FAVORITE = "favorite";
     public static final String ATTRIBUTE_DINING = "dining";
     public static final String ATTRIBUTE_ACTIVITIES = "activities";
@@ -524,7 +521,7 @@ public class TrackingHelper {
     public static final String DTL_LOCATION_METHOD = "locationmethod";
 
     // ---------------- Messenger actions
-    public static final String MESSENGER_ACTION_INBOX = "Messenger:Inbox"; //capture the number of conversations in the inbox
+    public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
     public static final String MESSENGER_ACTION_VIEW_CONVERSATION = "Messenger:View Conversation";
     public static final String MESSENGER_ACTION_ADD_FRIEND_TO_CHAT = "Messenger:Add Friends to Chat";
     public static final String MESSENGER_ACTION_CONVERSATION_FILTER = "Messenger:Conversation Filter";
@@ -742,13 +739,13 @@ public class TrackingHelper {
 
     public static void sendFeedback(int reason) {
         Map data = new HashMap<>();
-        data.put(ATTRIBUTE_RESON, String.valueOf(reason));
+        data.put(ATTRIBUTE_REASON, String.valueOf(reason));
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_FEEDBACK, data);
     }
 
     public static void termsConditionsAction(boolean accepted) {
         Map data = new HashMap<>();
-        data.put(ATTRIBUTE_TERMS, accepted ? "Opt In" : "Opt out");
+        data.put(ATTRIBUTE_TERMS, accepted ? "Opt In" : "Opt Out");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_TERMS, data);
     }
 
@@ -760,7 +757,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null,
                 type == SettingsGroup.Type.GENERAL
                         ? ACTION_SETTINGS_GENERAL
-                        : ACTION_NOTIFICATIONS, null);
+                        : ACTION_SETTINGS_NOTIFICATIONS, null);
     }
 
     public static void actionTripVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})

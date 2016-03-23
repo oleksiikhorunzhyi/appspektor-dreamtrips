@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,9 +12,11 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
@@ -38,6 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_merchant_map)
 public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlMapPresenter.View {
@@ -59,6 +63,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     String lastQuery;
     //
     private ClusterManager<DtlClusterItem> clusterManager;
+    private Marker locationPin;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +115,14 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         swHideDinings.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().onCheckHideDinings(isChecked));
     }
 
+    @Override
+    public void addLocationMarker(LatLng location) {
+        if (locationPin != null) locationPin.remove();
+        locationPin = googleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_red_pin))
+                .position(location));
+    }
+
     @OnClick(R.id.redo_merchants)
     public void onMechantsRedoClick() {
         getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
@@ -153,8 +166,17 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
+    public void informUser(int stringId) {
+        if (isAdded() && getView() != null)
+            try {
+                Snackbar.make(getView(), stringId, Snackbar.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Timber.e(e.getMessage());
+            }
+    }
+
+    @Override
     protected void onMapLoaded() {
-        // googleMap.setMyLocationEnabled(true); // TODO :: 3/22/16 for DTL should not always be true
         clusterManager = new ClusterManager<>(getActivity(), googleMap);
         clusterManager.setRenderer(new DtClusterRenderer(getActivity().getApplicationContext(), googleMap, clusterManager));
 

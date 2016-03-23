@@ -160,6 +160,8 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     public interface View extends RxView {
+        void addLocationMarker(LatLng location);
+
         void addPin(String id, LatLng latLng, DtlMerchantType type);
 
         void clearMap();

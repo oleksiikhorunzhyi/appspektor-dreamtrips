@@ -14,6 +14,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
@@ -25,8 +26,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -44,6 +47,8 @@ import static com.messenger.ui.presenter.ConversationListScreenPresenter.ChatTyp
 public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<ConversationListScreen,
         ConversationListViewState> implements ConversationListScreenPresenter {
 
+    private static final int SELECTED_CONVERSATION_DELAY = 400;
+
     @Inject
     DataUser user;
     @Inject
@@ -60,6 +65,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     //
     private PublishSubject<String> filterStream;
     private PublishSubject<String> typeStream;
+    private PublishSubject<DataConversation> selectedConversationStream;
     private Subscription conversationSubscription;
 
     public ConversationListScreenPresenterImpl(Context context) {
@@ -78,6 +84,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         applyViewState();
         connectData();
+        trackConversations();
     }
 
     public void onDetachedFromWindow() {
@@ -107,6 +114,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         connectTypeStream();
         connectToFilters();
         connectToOpenedConversation();
+        connectToSelectedConversationStream();
     }
 
     private void connectToOpenedConversation() {
@@ -120,16 +128,29 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         filterStream = PublishSubject.create();
         filterStream
                 .doOnNext(getViewState()::setSearchFilter)
-                .compose(bindView()).subscribe();
+                .compose(bindView())
+                .subscribe();
     }
 
     private void connectTypeStream() {
         typeStream = PublishSubject.create();
-        typeStream
+        typeStream.doOnNext(selectedValue -> TrackingHelper.conversationType(
+                TextUtils.equals(selectedValue, GROUP_CHATS)
+                        ? TrackingHelper.MESSENGER_VALUE_GROUPS
+                        : TrackingHelper.MESSENGER_VALUE_ALL))
                 .doOnNext(getViewState()::setChatType)
                 .compose(bindView()).subscribe();
     }
 
+    private void trackConversations() {
+        connectionStatusStream
+                .filter(status -> status == ConnectionStatus.CONNECTED)
+                .flatMap(status -> conversationsDAO.conversationsCount())
+                .first()
+                .compose(bindView())
+                .subscribe(TrackingHelper::setConversationCount,
+                        e -> Timber.e(e, "Failed to get conv count"));
+    }
     private void connectToFilters() {
         Observable.combineLatest(
                 typeStream.asObservable()
@@ -143,16 +164,27 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
                 .compose(bindView())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(filters -> {
-                    connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS) ? ConversationType.GROUP : null, filters.second);
+                    connectToConversations(TextUtils.equals(filters.first, GROUP_CHATS)
+                            ? ConversationType.GROUP : null, filters.second);
                 }, throwable -> Timber.e(throwable, "Filter error"));
     }
 
+    private void connectToSelectedConversationStream() {
+        selectedConversationStream = PublishSubject.<DataConversation>create();
+        selectedConversationStream
+                .throttleLast(SELECTED_CONVERSATION_DELAY, TimeUnit.MILLISECONDS)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(this::openConversation);
+    }
+
     private void connectToConversations(@ConversationType.Type String type, String searchQuery) {
-        if (conversationSubscription != null && !conversationSubscription.isUnsubscribed()) conversationSubscription.unsubscribe();
+        if (conversationSubscription != null && !conversationSubscription.isUnsubscribed())
+            conversationSubscription.unsubscribe();
         conversationSubscription = conversationsDAO.selectConversationsList(type, searchQuery)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(this::applyViewState, throwable -> Timber.e(throwable, "ConversationsDAO error"));
     }
+
     @Override
     public void onNewViewState() {
         state = new ConversationListViewState();
@@ -185,6 +217,10 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onConversationSelected(DataConversation conversation) {
+        selectedConversationStream.onNext(conversation);
+    }
+
+    public void openConversation(DataConversation conversation) {
         History.Builder historyBuilder = Flow.get(getContext()).getHistory()
                 .buildUpon();
         //
@@ -259,10 +295,24 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public boolean onToolbarMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.action_add:
-                Flow.get(getContext()).set(new NewChatPath());
+                openRoster();
                 return true;
         }
         return false;
+    }
+
+    private void openRoster() {
+        History.Builder historyBuilder = Flow.get(getContext()).getHistory()
+                .buildUpon();
+        //
+        Object oldPath = historyBuilder.pop();
+
+        if (oldPath instanceof NewChatPath) return;
+
+        historyBuilder.push(oldPath);
+        historyBuilder.push(new NewChatPath());
+
+        Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
     }
 }
 

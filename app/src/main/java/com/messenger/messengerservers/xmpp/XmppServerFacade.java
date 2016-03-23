@@ -7,9 +7,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.ChatManager;
-import com.messenger.messengerservers.ContactManager;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
@@ -54,7 +52,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     private XmppServerParams serverParams;
     private DreamSpiceManager requester;
     private AbstractXMPPConnection connection;
-    private volatile boolean isActive;
+    private volatile boolean active;
 
     private final ExecutorService connectionExecutor = Executors.newSingleThreadExecutor();
     private final List<AuthorizeListener> authListeners = new CopyOnWriteArrayList<>();
@@ -64,7 +62,6 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final PaginationManager paginationManager;
     private final XmppGlobalEventEmitter globalEventEmitter;
     private final ChatManager chatManager;
-    private final RosterManager rosterManager;
     private final Gson gson;
 
     public XmppServerFacade(XmppServerParams serverParams, Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
@@ -77,8 +74,6 @@ public class XmppServerFacade implements MessengerServerFacade {
         paginationManager = new XmppPaginationManager(this);
         globalEventEmitter = new XmppGlobalEventEmitter(this);
         chatManager = new XmppChatManager(this);
-        rosterManager = new RosterManager(new UserProcessor(usersDAO, requester), globalEventEmitter);
-
     }
 
     private MessengerConnection createConnection() {
@@ -109,7 +104,6 @@ public class XmppServerFacade implements MessengerServerFacade {
                         connection.connect();
                         connection.login(username, password);
                         //
-                        rosterManager.init(connection);
                         if (!requester.isStarted()) requester.start(context);
                         Timber.i("Login success");
                         synchronized (XmppServerFacade.this) {
@@ -130,11 +124,10 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     @Override
     public void disconnectAsync() {
-        rosterManager.release();
         if (requester.isStarted()) requester.shouldStop();
         if (connection == null) return; // skip if not connected yet
         connectionExecutor.execute(connection::disconnect);
-        isActive = false;
+        active = false;
     }
 
     private AbstractConnectionListener connectionListener = new AbstractConnectionClosedListener() {
@@ -176,18 +169,19 @@ public class XmppServerFacade implements MessengerServerFacade {
     }
 
     @Override
-    public void setPresenceStatus(boolean active) {
+    public boolean setPresenceStatus(boolean active) {
         try {
             connection.sendStanza(new Presence(active ? Presence.Type.available : Presence.Type.unavailable));
-            isActive = true;
+            return this.active = true;
         } catch (SmackException.NotConnectedException e) {
             Timber.w(e, "Presence failed");
+            return false;
         }
     }
 
     @Override
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     @Override
@@ -203,11 +197,6 @@ public class XmppServerFacade implements MessengerServerFacade {
     @Override
     public PaginationManager getPaginationManager() {
         return paginationManager;
-    }
-
-    @Override
-    public ContactManager getContactManager() {
-        return rosterManager;
     }
 
     @Override

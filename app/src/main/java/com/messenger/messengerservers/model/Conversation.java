@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Conversation {
     private final String id;
     private final String subject;
+    private final String avatar;
     private final String type;
     private final int unreadMessageCount;
     private final String status;
@@ -21,6 +22,7 @@ public class Conversation {
     private Conversation(Builder builder) {
         id = builder.id;
         subject = builder.subject;
+        avatar = builder.avatar;
         type = builder.type;
         unreadMessageCount = builder.unreadMessageCount;
         status = builder.status;
@@ -36,6 +38,10 @@ public class Conversation {
 
     public String getSubject() {
         return subject;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 
     @ConversationType.Type
@@ -83,6 +89,7 @@ public class Conversation {
     public static final class Builder {
         private String id;
         private String subject;
+        private String avatar;
         private String type;
         private int unreadMessageCount;
         private String status;
@@ -100,6 +107,11 @@ public class Conversation {
 
         public Builder subject(String val) {
             subject = val;
+            return this;
+        }
+
+        public Builder avatar(String val) {
+            avatar = val;
             return this;
         }
 

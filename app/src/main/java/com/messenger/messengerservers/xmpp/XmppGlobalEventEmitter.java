@@ -3,10 +3,12 @@ package com.messenger.messengerservers.xmpp;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Participant;
+import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
+import com.messenger.messengerservers.xmpp.util.XmppPacketDetector;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.XMPPConnection;
@@ -26,6 +28,7 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import java.util.List;
 
+import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_AVATAR;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
@@ -52,6 +55,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
             ChatManager.getInstanceFor(abstractXMPPConnection).addChatListener(XmppGlobalEventEmitter.this::onChatCreated);
             ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT, ChatStateExtension.NAMESPACE, new ChatStateExtension.Provider());
+            ProviderManager.addExtensionProvider(ChangeAvatarExtension.ELEMENT, ChangeAvatarExtension.NAMESPACE, ChangeAvatarExtension.PROVIDER);
             MultiUserChatManager.getInstanceFor(abstractXMPPConnection).addInvitationListener(XmppGlobalEventEmitter.this::onChatInvited);
         }
     };
@@ -83,8 +87,9 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         if (!facade.isActive()) return;
 
         Message messageXMPP = (Message) packet;
-        if (isMessageIgnored(messageXMPP)) return;
-        switch (stanzaType(packet)) {
+        int packetType = stanzaType(packet);
+        if (isMessageIgnored(messageXMPP, packetType)) return;
+        switch (packetType) {
             case EXTENTION_STATUS:
                 ChatStateExtension extension = (ChatStateExtension) messageXMPP.getExtension(ChatStateExtension.NAMESPACE);
                 String from = messageXMPP.getFrom();
@@ -99,6 +104,12 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                     notifyOnChatStateChangedListener(JidCreatorHelper.obtainId(from),
                             JidCreatorHelper.obtainUserIdFromGroupJid(from), extension.getChatState());
                 }
+                break;
+            case EXTENTION_AVATAR:
+                ChangeAvatarExtension changeAvatarExtension = (ChangeAvatarExtension) messageXMPP
+                        .getExtension(ChangeAvatarExtension.NAMESPACE);
+                notifyOnAvatarStateChangedListener(JidCreatorHelper.obtainId(messageXMPP.getFrom()),
+                        changeAvatarExtension.getAvatarUrl());
                 break;
             case MESSAGE:
                 com.messenger.messengerservers.model.Message message = messageConverter.convert(messageXMPP);
@@ -149,7 +160,10 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         return true;
     }
 
-    private boolean isMessageIgnored(Message message) {
+    private boolean isMessageIgnored(Message message, int packetType) {
+        if (packetType == XmppPacketDetector.EXTENTION_AVATAR) {
+            return false;
+        }
         boolean ownMessage = message.getType() == Message.Type.groupchat
                 && JidCreatorHelper.obtainId(message.getTo()).equals(JidCreatorHelper.obtainUserIdFromGroupJid(message.getFrom()));
         boolean delayed = message.getExtension("urn:xmpp:delay") != null;

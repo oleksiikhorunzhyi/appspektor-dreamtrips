@@ -33,6 +33,7 @@ public class User extends BaseEntity implements Parcelable {
     private String lastName;
     private String location;
     private String locale;
+    private List<String> badges;
     private Date birthDate;
     private Date enrollDate;
 
@@ -250,6 +251,14 @@ public class User extends BaseEntity implements Parcelable {
         relationship = Relationship.NONE;
     }
 
+    public List<String> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<String> badges) {
+        this.badges = badges;
+    }
+
 
     public static class Avatar implements Parcelable, Serializable {
         public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
@@ -404,6 +413,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.mutualFriends, 0);
         dest.writeList(this.circles);
+        dest.writeStringList(this.badges);
     }
 
     protected User(Parcel in) {
@@ -433,6 +443,8 @@ public class User extends BaseEntity implements Parcelable {
         this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
         circles = new ArrayList<>();
         in.readList(circles, Circle.class.getClassLoader());
+        badges = new ArrayList<>();
+        in.readStringList(badges);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

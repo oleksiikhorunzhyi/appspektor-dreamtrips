@@ -21,21 +21,71 @@
             app:placeholderImage="@drawable/noavatar_small"
             app:roundAsCircle="true"/>
 
-        <TextView
-            android:id="@+id/chat_message"
-            style="@style/ChatMessageTextView"
+        <FrameLayout
+            android:id="@+id/message_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/chat_username"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
+            android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
+            android:layout_toEndOf="@id/chat_item_avatar"
             android:layout_toRightOf="@id/chat_item_avatar"
-            android:textColor="@color/chat_color_message"
+            android:background="@drawable/dark_grey_bubble_comics"
+            >
+
+            <LinearLayout
+                android:id="@+id/message_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/chat_message"
+                    style="@style/ChatMessageTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/chat_color_message"
+                    />
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/ic_translation_available"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="end"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:paddingLeft="@dimen/spacing_tiny"-->
+                    <!--android:paddingStart="@dimen/spacing_tiny"-->
+                    <!--android:src="@drawable/ic_translation"/>-->
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/translation_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/translation_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/message_container"
+            android:layout_marginLeft="@dimen/chat_list_translation_margin"
+            android:layout_marginStart="@dimen/chat_list_translation_margin"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:layout_toEndOf="@id/chat_item_avatar"
+            android:layout_toRightOf="@id/chat_item_avatar"
+            android:textSize="@dimen/chat_list_translation_status_size"
             />
 
         <TextView
             android:id="@+id/chat_username"
             style="@style/ChatUsernameTextView"
-            android:layout_alignLeft="@id/chat_message"/>
+            android:layout_alignLeft="@id/message_container"
+            android:layout_alignStart="@+id/message_container"/>
     </RelativeLayout>
 </LinearLayout>

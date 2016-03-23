@@ -31,7 +31,10 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -53,6 +56,10 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    @Inject
+    LocaleHelper localeHelper;
+    @Inject
+    SessionHolder<UserSession> sessionHolder;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -158,7 +165,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
 
     protected MessagesCursorAdapter createAdapter() {
-        MessagesCursorAdapter adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(), null);
+        MessagesCursorAdapter adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(),
+                localeHelper.getAccountLocaleFormatted(sessionHolder.get().get().getUser()), null);
         ChatScreenPresenter presenter = getPresenter();
         adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
         adapter.setAvatarClickListener(presenter::openUserProfile);
@@ -292,12 +300,18 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                 case R.id.action_copy_message:
                     getPresenter().onCopyMessageTextToClipboard(message);
                     break;
+                case R.id.action_translate:
+                    getPresenter().onTranslateMessage(message);
+                    break;
+                case R.id.action_revert_translate:
+                    getPresenter().onRevertTranslate(message);
+                    break;
                 case R.id.action_start_chat:
                     getPresenter().onStartNewChatForMessageOwner(message);
                     break;
             }
         }))
-        .show();
+                .show();
     }
 
     @Override
@@ -350,18 +364,5 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         photoPickerLayoutDelegate.hidePicker();
         //
         getPresenter().onImagesPicked(images);
-    }
-
-    ////////////////////////////////////////
-    /////// Back pressure handling
-    ////////////////////////////////////////
-
-    @Override
-    public boolean onBackPressed() {
-        if (photoPickerLayoutDelegate.isPanelVisible()) {
-            photoPickerLayoutDelegate.hidePicker();
-            return true;
-        }
-        return false;
     }
 }

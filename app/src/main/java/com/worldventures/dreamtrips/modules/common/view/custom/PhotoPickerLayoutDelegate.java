@@ -5,14 +5,18 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 
 import timber.log.Timber;
 
 public class PhotoPickerLayoutDelegate {
 
+    private BackStackDelegate backStackDelegate;
+
     private PhotoPickerLayout photoPickerLayout;
 
-    public PhotoPickerLayoutDelegate() {
+    public PhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
+        this.backStackDelegate = backStackDelegate;
     }
 
     public void setPhotoPickerLayout(PhotoPickerLayout photoPickerLayout) {
@@ -55,13 +59,23 @@ public class PhotoPickerLayoutDelegate {
     public void showPicker() {
         if (photoPickerLayout != null) {
             photoPickerLayout.showPanel();
+            backStackDelegate.setListener(() -> {
+                if (photoPickerLayout.isPanelVisible()) {
+                    photoPickerLayout.hidePanel();
+                    return true;
+                }
+                return false;
+            });
             applyWhiteScreenWorkaround();
         }
         else Timber.d("Photo picker was not initialized");
     }
 
     public void hidePicker() {
-        if (photoPickerLayout != null) photoPickerLayout.hidePanel();
+        if (photoPickerLayout != null) {
+            photoPickerLayout.hidePanel();
+            backStackDelegate.setListener(null);
+        }
         else Timber.d("Photo picker was not initialized");
     }
 
@@ -82,6 +96,8 @@ public class PhotoPickerLayoutDelegate {
     }
 
     public void disableEditTextUntilPickerIsShown(EditText editText) {
+        if (photoPickerLayout == null) return;
+
         photoPickerLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {

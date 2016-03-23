@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.ComponentsConfig;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
@@ -155,8 +156,8 @@ public class CommonModule {
 
     @Provides
     @Singleton
-    PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate() {
-        return new PhotoPickerLayoutDelegate();
+    PhotoPickerLayoutDelegate providePhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
+        return new PhotoPickerLayoutDelegate(backStackDelegate);
     }
 
 }

@@ -24,11 +24,15 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -137,6 +141,9 @@ public class ChatFacadeInitializer implements AppInitializer {
                         conversationsDAO.save(conversation);
                     }, throwable -> Timber.d(throwable, ""));
         });
+
+        emitter.addOnAvatarChangeListener(this::onAvatarChanged);
+
         emitter.addInvitationListener((conversationId) -> {
             Timber.i("Chat invited :: chat=%s", conversationId);
             loadConversation(conversationId)
@@ -216,5 +223,15 @@ public class ChatFacadeInitializer implements AppInitializer {
         }
         usersDAO.save(existedUsers);
         return newUsers;
+    }
+
+    private void onAvatarChanged(String conversationId, String avatar) {
+        conversationsDAO.getConversation(conversationId).first()
+                .subscribeOn(Schedulers.io())
+                .filter(c -> c != null && !TextUtils.equals(c.getAvatar(), avatar))
+                .subscribe(conversation -> {
+                    conversation.setAvatar(avatar);
+                    conversationsDAO.save(conversation);
+                }, e -> Timber.d(e, "Could not save avatar to conversation"));
     }
 }

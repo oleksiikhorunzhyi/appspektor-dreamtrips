@@ -8,10 +8,10 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 
 import com.messenger.entities.DataUser;
-import com.messenger.model.ChatUser;
 import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ContactsHeaderCreator {
@@ -23,7 +23,7 @@ public class ContactsHeaderCreator {
     }
 
     //todo refactor logic in future
-    public SpannableString createHeader(List<DataUser> contacts) {
+    public SpannableString createHeader(Collection<DataUser> contacts) {
         StringBuilder sb = new StringBuilder();
         sb.append(context.getString(R.string.new_chat_chosen_contacts_header_contacts_list_start_value));
         if (!contacts.isEmpty()) {
@@ -35,8 +35,7 @@ public class ContactsHeaderCreator {
 
         List<String> userNames = new ArrayList<>();
 
-        for (int i = 0; i < contacts.size(); i++) {
-            ChatUser user = contacts.get(i);
+        for (DataUser user : contacts) {
             CharSequence name = user.getName();
             sb.append(name);
             userNames.add(name.toString());

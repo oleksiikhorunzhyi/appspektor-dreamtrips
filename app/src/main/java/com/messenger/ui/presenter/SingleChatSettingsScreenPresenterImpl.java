@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;
+import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import javax.inject.Inject;
@@ -14,7 +15,7 @@ import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
-public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPresenterImpl {
+public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPresenterImpl<ChatSettingsScreen> {
 
     @Inject
     @Named(PROFILE)

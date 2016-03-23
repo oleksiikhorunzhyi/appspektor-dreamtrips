@@ -12,7 +12,7 @@ public interface MessengerServerFacade {
 
     boolean isAuthorized();
 
-    void setPresenceStatus(boolean active);
+    boolean setPresenceStatus(boolean active);
 
     boolean isActive();
 
@@ -29,8 +29,6 @@ public interface MessengerServerFacade {
     LoaderManager getLoaderManager();
 
     PaginationManager getPaginationManager();
-
-    ContactManager getContactManager();
 
     GlobalEventEmitter getGlobalEventEmitter();
 

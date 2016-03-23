@@ -8,6 +8,7 @@ import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
@@ -49,12 +50,14 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                 type = parser.getAttributeValue("", "type");
                             }
                             String subject = parser.getAttributeValue("", "subject");
+                            String avatar = parser.getAttributeValue("", ChangeAvatarExtension.ELEMENT);
                             int unreadMessegeCount = ParserUtils.getIntegerAttribute(parser, "unread-count");
 
                             conversationBuilder = new Conversation.Builder()
                                     .id(thread)
                                     .type(type.toLowerCase())
                                     .subject(subject)
+                                    .avatar(avatar)
                                             //// TODO: 1/19/16 set status depends on status will be sent in future
                                     .status(ConversationStatus.PRESENT)
                                     .unreadMessageCount(unreadMessegeCount);

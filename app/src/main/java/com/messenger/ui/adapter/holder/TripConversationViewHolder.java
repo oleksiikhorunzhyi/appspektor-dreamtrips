@@ -15,10 +15,4 @@ public class TripConversationViewHolder extends BaseGroupConversationViewHolder 
     public TripConversationViewHolder(View itemView) {
         super(itemView);
     }
-
-    @Override
-    protected void setConversationId(String conversationId) {
-
-    }
-
 }

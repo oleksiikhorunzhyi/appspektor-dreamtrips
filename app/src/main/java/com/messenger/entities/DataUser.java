@@ -3,8 +3,9 @@ package com.messenger.entities;
 import android.net.Uri;
 import android.os.Parcel;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 
-import com.messenger.model.ChatUser;
+import com.messenger.ui.model.ChatUser;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -17,7 +18,7 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
 @TableEndpoint(name = DataUser.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
 @Table(tableName = DataUser.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
+public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, Comparable<DataUser> {
     public static final String TABLE_NAME = "Users";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
@@ -30,7 +31,8 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
     @Column String firstName;
     @Column String lastName;
     @Column boolean online;
-    @Column String userAvatarUrl = "http://www.skivecore.com/members/0/Default.jpg";
+    @Column boolean host;
+    @Column String userAvatarUrl;
     @Column Boolean friend;
 
     public DataUser() {
@@ -111,6 +113,14 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
         this.friend = friend;
     }
 
+    public boolean isHost() {
+        return host;
+    }
+
+    public void setHost(boolean host) {
+        this.host = host;
+    }
+
     public boolean isFriendSet() {
         return friend != null;
     }
@@ -174,6 +184,7 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
         dest.writeString(this.firstName);
         dest.writeString(this.lastName);
         dest.writeByte(online ? (byte) 1 : (byte) 0);
+        dest.writeByte(host ? (byte) 1 : (byte) 0);
         dest.writeString(this.userAvatarUrl);
         dest.writeValue(this.friend);
     }
@@ -184,6 +195,7 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
         this.firstName = in.readString();
         this.lastName = in.readString();
         this.online = in.readByte() != 0;
+        this.host = in.readByte() != 0;
         this.userAvatarUrl = in.readString();
         this.friend = (Boolean) in.readValue(Boolean.class.getClassLoader());
     }
@@ -197,5 +209,10 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser {
             return new DataUser[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull DataUser another) {
+        return id.compareTo(another.getId());
+    }
 }
 

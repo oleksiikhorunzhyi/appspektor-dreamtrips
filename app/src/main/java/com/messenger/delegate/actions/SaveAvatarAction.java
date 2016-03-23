@@ -27,11 +27,6 @@ public class SaveAvatarAction extends AvatarAction {
         uploadAvatar(avatarPath)
                 .flatMap(this::sendAvatar)
                 .flatMap(this::saveAvatarToDatabase)
-                .doOnError(e -> {
-                    Timber.e(e, "Group avatar - failed to update conversation avatar, setting to null");
-                    conversation.setAvatar(null);
-                    conversationsDAO.save(conversation);
-                })
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 }

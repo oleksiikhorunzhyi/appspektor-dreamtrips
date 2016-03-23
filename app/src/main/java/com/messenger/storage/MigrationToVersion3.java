@@ -3,7 +3,8 @@ package com.messenger.storage;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.messenger.entities.DataAttachment$Table;
-import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataConversation$Adapter;
+import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Adapter;
@@ -17,8 +18,16 @@ public class MigrationToVersion3 extends BaseMigration {
     public void migrate(SQLiteDatabase database) {
         database.execSQL("DELETE FROM " + DataAttachment$Table.TABLE_NAME);
         database.execSQL("DELETE FROM " + DataMessage$Table.TABLE_NAME);
-        database.execSQL("DELETE FROM " + DataConversation.TABLE_NAME);
+
         updateUserTable(database);
+        updateConversationTable(database);
+    }
+
+    private void updateConversationTable(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE " + DataConversation$Table.TABLE_NAME);
+
+        DataConversation$Adapter conversation$Adapter = new DataConversation$Adapter();
+        database.execSQL(conversation$Adapter.getCreationQuery());
     }
 
     private void updateUserTable(SQLiteDatabase database) {

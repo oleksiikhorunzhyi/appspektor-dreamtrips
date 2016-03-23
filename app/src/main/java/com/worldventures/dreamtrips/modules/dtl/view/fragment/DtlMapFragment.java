@@ -180,7 +180,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @Override
     public void centerIn(DtlLocation location) {
         LatLng latLng = new LatLng(location.getCoordinates().getLat(), location.getCoordinates().getLng());
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewUtils.DEFAULT_ZOOM));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewUtils.DEFAULT_ZOOM));
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewUtils.DEFAULT_ZOOM));
     }
 
     @Override

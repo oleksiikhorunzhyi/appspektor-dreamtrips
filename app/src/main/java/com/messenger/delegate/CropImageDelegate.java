@@ -4,6 +4,7 @@ package com.messenger.delegate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -32,6 +33,7 @@ public class CropImageDelegate {
 
     private WeakReference<Activity> activity;
     private Context context;
+    private Handler handler = new Handler();
 
     private DreamSpiceManager dreamSpiceManager;
 
@@ -100,7 +102,9 @@ public class CropImageDelegate {
 
     private void onCropFinished (String path, String errorMsg) {
         if (!TextUtils.isEmpty(path)) {
-            reportSuccess(path);
+            // TODO Improve this. Workaround for onAttachedToWindow() called after
+            // onActivityResult() after user rotated screen in crop activity
+            handler.post(() -> reportSuccess(path));
         } else {
             reportError(null, "Error during cropping: " + errorMsg);
         }

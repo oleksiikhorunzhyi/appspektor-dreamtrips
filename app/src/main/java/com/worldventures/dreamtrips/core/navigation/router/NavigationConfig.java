@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -17,6 +18,7 @@ public class NavigationConfig {
     Boolean clearBackStack = false;
     int gravity = 0x0000;
     int flags = -1;
+    Fragment targetFragment;
 
     NavigationConfig(NavigationType type) {
         navigationType = type;
@@ -60,7 +62,14 @@ public class NavigationConfig {
         return flags;
     }
 
+
+    public Fragment getTargetFragment() {
+        return targetFragment;
+    }
+
     enum NavigationType {
         ACTIVITY, FRAGMENT, DIALOG, REMOVE
     }
+
+
 }

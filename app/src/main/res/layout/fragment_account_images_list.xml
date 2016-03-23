@@ -6,52 +6,40 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
-        android:id="@+id/photo_picker"
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoOverlay="true"
-        sothree:umanoPanelHeight="@dimen/picker_panel_height"
-        sothree:umanoShadowHeight="4dp">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="visible">
 
-        <RelativeLayout
+        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+            android:id="@+id/lv_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center">
+            android:padding="@dimen/spacing_tiniest"/>
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipe_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:visibility="visible">
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-                    android:id="@+id/lv_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="@dimen/spacing_tiniest"/>
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        fab:fab_addButtonColorNormal="@color/theme_main_darker"
+        fab:fab_colorNormal="@color/theme_main"
+        fab:fab_colorPressed="@color/theme_main_darker"
+        fab:fab_icon="@drawable/ic_menu_add_item"/>
 
-            </android.support.v4.widget.SwipeRefreshLayout>
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="false"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="16dp"
-                android:layout_marginRight="16dp"
-                fab:fab_addButtonColorNormal="@color/theme_main_darker"
-                fab:fab_colorNormal="@color/theme_main"
-                fab:fab_colorPressed="@color/theme_main_darker"
-                fab:fab_icon="@drawable/ic_menu_add_item"/>
-
-        </RelativeLayout>
-    </com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout>
+    <FrameLayout
+        android:id="@+id/picker_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"/>
 
 </RelativeLayout>

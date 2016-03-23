@@ -37,11 +37,11 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
-    // App versionq
+    // App version
     def versionMajor = 1
-    def versionMinor = 8
+    def versionMinor = 9
     def versionPatch = 0
-    def versionBuild = 17  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 6  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"

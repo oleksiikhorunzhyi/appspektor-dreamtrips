@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
@@ -79,17 +80,9 @@ public class ManagerModule {
         return new PhotoUploadingManagerS3(injector);
     }
 
-    @Singleton
     @Provides
     public VideoDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
         return new VideoDownloadSpiceManager(VideoDownloadSpiceService.class);
-    }
-
-    @Provides
-    public VideoCachingDelegate provideVideoCachingDelegate(SnappyRepository snappyRepository,
-                                                            Context context,
-                                                            @ForApplication Injector injector, VideoDownloadSpiceManager spiceManger) {
-        return new VideoCachingDelegate(snappyRepository, context, injector, spiceManger);
     }
 
     @Singleton
@@ -150,5 +143,11 @@ public class ManagerModule {
     @Singleton
     ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, AttachmentDAO attachmentDAO, SnappyRepository snappyRepository) {
         return new ClearDirectoryDelegate(context, attachmentDAO, snappyRepository);
+    }
+
+    @Provides
+    @Singleton
+    MediaPickerManager provideMediaPickerManager() {
+        return new MediaPickerManager();
     }
 }

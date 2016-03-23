@@ -22,7 +22,6 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
     @InjectView(R.id.tagged_user_delete_tag)
     protected View btnDeleteTag;
 
-
     public ExistsTagView(Context context) {
         super(context);
     }

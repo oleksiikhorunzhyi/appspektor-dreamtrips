@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 
 import android.view.View;
 
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -16,7 +18,9 @@ import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 
@@ -27,9 +31,13 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     public FeedItemDetailsCell(View view) {
         super(view);
+        ButterKnife.inject(this, view);
         feedItemCommonDataHelper = new FeedItemCommonDataHelper(view.getContext());
         feedItemCommonDataHelper.attachView(view);
     }
@@ -37,7 +45,7 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-        feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get().get().getUser().getId(), false);
+        feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get().get().getUser().getId(), injectorProvider.get());
     }
 
     public void openItemDetails() {

@@ -7,6 +7,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
@@ -283,7 +284,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
             doRequest(new DownloadImageCommand(context, event.url));
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
+
         void startLoading();
 
         void finishLoading();

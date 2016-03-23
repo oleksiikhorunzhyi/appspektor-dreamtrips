@@ -40,6 +40,7 @@ public class FeedEntityManager {
                 eventBus.post(new EntityLikedEvent(feedEntity));
                 uidsInLikeRequest.remove(feedEntity.getUid());
             }, spiceException -> {
+                requestingPresenter.handleError(spiceException);
                 Timber.e(spiceException, this.getClass().getSimpleName());
                 uidsInLikeRequest.remove(feedEntity.getUid());
             });
@@ -55,6 +56,7 @@ public class FeedEntityManager {
                 eventBus.post(new EntityLikedEvent(feedEntity));
                 uidsInLikeRequest.remove(feedEntity.getUid());
             }, spiceException -> {
+                requestingPresenter.handleError(spiceException);
                 Timber.e(spiceException, this.getClass().getSimpleName());
                 uidsInLikeRequest.remove(feedEntity.getUid());
             });
@@ -81,6 +83,7 @@ public class FeedEntityManager {
     }
 
     private void handelCommentError(SpiceException spiceException, CommentEvent.Type type) {
+        requestingPresenter.handleError(spiceException);
         CommentEvent event = new CommentEvent(null, type);
         event.setSpiceException(spiceException);
         eventBus.post(event);

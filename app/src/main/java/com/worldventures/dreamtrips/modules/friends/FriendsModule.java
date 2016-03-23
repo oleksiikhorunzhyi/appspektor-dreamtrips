@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.modules.friends;
 
+import com.messenger.storage.dao.UsersDAO;
+import com.techery.spares.utils.UserStatusAdapter;
+import com.techery.spares.utils.UserStatusDaoAdapter;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendsMainPresenter;
@@ -21,6 +25,7 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragme
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module(
         injects = {
@@ -47,10 +52,16 @@ import dagger.Module;
                 RequestCell.class,
                 RequestHeaderCell.class,
                 UserSearchCell.class,
+
+                SmartAvatarView.class
         },
         complete = false,
         library = true
 )
 public class FriendsModule {
 
+        @Provides
+        UserStatusAdapter provideUserStatusAdapter(UsersDAO usersDao){
+                return new UserStatusDaoAdapter(usersDao);
+        }
 }

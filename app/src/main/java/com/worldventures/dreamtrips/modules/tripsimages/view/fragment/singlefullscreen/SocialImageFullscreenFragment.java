@@ -6,18 +6,19 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.PreviewPhotoTaggableHolderViewGroup;
+import com.worldventures.dreamtrips.modules.feed.bundle.EditEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.events.SocialViewPagerStateChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.util.FullScreenPhot
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -52,11 +54,14 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Inject
     SnappyRepository db;
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount());
+        viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injectorProvider.get());
         viewDelegate.setContentVisibilityListener(this);
     }
 
@@ -95,9 +100,16 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     }
 
     @Override
-    public void openEdit(EditPhotoBundle bundle) {
-        router.moveTo(Route.PHOTO_EDIT, NavigationConfigBuilder.forActivity()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+    public void openEdit(EditEntityBundle bundle) {
+        int containerId = R.id.container_details_floating;
+        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
+                .containerId(containerId)
+                .fragmentManager(getFragmentManager())
+                .build());
+        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
+                .containerId(containerId)
+                .backStackEnabled(false)
+                .fragmentManager(getFragmentManager())
                 .data(bundle)
                 .build());
     }

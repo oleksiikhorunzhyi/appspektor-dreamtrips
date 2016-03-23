@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.SuggestionHelpView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import butterknife.ButterKnife;
@@ -16,6 +18,8 @@ public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
 
     @InjectView(R.id.suggestion_frame_container)
     View suggestionFrameContainer;
+
+    private SuggestionHelpView suggestionHelpView;
 
     int additionalSize;
 
@@ -45,7 +49,6 @@ public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
     @OnClick(R.id.suggestion_frame_container)
     protected void onFrameClicked() {
         tagListener.onFrameClicked(this, photoTag);
-
     }
 
     @Override
@@ -68,5 +71,15 @@ public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
         MarginLayoutParams layoutParams = (MarginLayoutParams) getLayoutParams();
         layoutParams.leftMargin = layoutParams.leftMargin - getSize().getWidth() / 2 + additionalSize;
         layoutParams.topMargin = layoutParams.topMargin - getSize().getHeight() + additionalSize;
+    }
+
+    public void setSuggestionHelpView(SuggestionHelpView suggestionHelpView) {
+        this.suggestionHelpView = suggestionHelpView;
+    }
+
+    public void removeHelpView() {
+        if (suggestionHelpView == null || suggestionHelpView.getParent() == null) return;
+        //
+        ((ViewGroup) suggestionHelpView.getParent()).removeView(suggestionHelpView);
     }
 }

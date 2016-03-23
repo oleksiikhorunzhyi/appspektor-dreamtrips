@@ -8,10 +8,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
-import com.worldventures.dreamtrips.modules.video.event.CancelCachingVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DeleteCachedVideoRequestEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoProgressEvent;
-import com.worldventures.dreamtrips.modules.video.event.DownloadVideoRequestEvent;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.File;
@@ -38,21 +34,20 @@ public class VideoCachingDelegate {
         this.view = view;
     }
 
-    public void onEvent(DownloadVideoRequestEvent event) {
-        CachedEntity entity = event.getCachedVideo();
+    public void updateItem(CachedEntity entity) {
+        view.notifyItemChanged(entity);
+    }
+
+    public void downloadVideo(CachedEntity entity) {
         startCaching(entity);
     }
 
-    public void onEvent(DownloadVideoProgressEvent event) {
-        view.notifyItemChanged(event.getEntity());
+    public void deleteCachedVideo(CachedEntity entity) {
+        view.onDeleteAction(entity);
     }
 
-    public void onEvent(DeleteCachedVideoRequestEvent event) {
-        view.onDeleteAction(event.getVideoEntity());
-    }
-
-    public void onEvent(CancelCachingVideoRequestEvent event) {
-        view.onCancelCaching(event.getCacheEntity());
+    public void cancelCachingVideo(CachedEntity entity) {
+        view.onCancelCaching(entity);
     }
 
     public void onDeleteAction(CachedEntity videoEntity) {
@@ -71,7 +66,7 @@ public class VideoCachingDelegate {
         BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(entity.getUrl(),
                 new File(CachedEntity.getFilePath(context, entity.getUrl())));
 
-        DownloadVideoListener requestListener = new DownloadVideoListener(entity);
+        DownloadVideoListener requestListener = new DownloadVideoListener(entity, this);
         injector.inject(requestListener);
         videoDownloadSpiceManager.cancel(InputStream.class, entity.getUuid());
         videoDownloadSpiceManager.execute(bigBinaryRequest,
@@ -82,6 +77,7 @@ public class VideoCachingDelegate {
     }
 
     public interface View {
+
         void notifyItemChanged(CachedEntity videoEntity);
 
         void onDeleteAction(CachedEntity videoEntity);

@@ -39,11 +39,6 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     int unreadConversationCount;
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-    }
-
-    @Override
     public void restoreInstanceState(Bundle savedState) {
         super.restoreInstanceState(savedState);
         filterCircle = db.getFilterCircle();
@@ -57,6 +52,12 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
             unreadConversationCount = count;
             view.setUnreadConversationCount(count);
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshFeed();
     }
 
     @Override
@@ -119,6 +120,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     public interface View extends BaseFeedPresenter.View {
+
         void setRequestsCount(int count);
 
         void setUnreadConversationCount(int count);

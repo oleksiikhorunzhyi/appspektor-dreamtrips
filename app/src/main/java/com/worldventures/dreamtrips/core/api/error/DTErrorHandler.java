@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.core.api.error;
 
 import android.content.Context;
 
+import com.messenger.util.CrashlyticsTracker;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.R;
 
 import retrofit.ErrorHandler;
@@ -27,21 +29,31 @@ public class DTErrorHandler implements ErrorHandler {
 
     @Override
     public Throwable handleError(RetrofitError cause) {
+        DtApiException dtApiException;
         if (cause.getKind() == RetrofitError.Kind.NETWORK) {
-            return new DtApiException(context.getString(R.string.no_connection), cause);
+            dtApiException = new DtApiException(context.getString(R.string.no_connection), cause);
+            return dtApiException;
         } else {
             if (cause.getResponse() == null) {
-                return new DtApiException(context.getString(R.string.smth_went_wrong), cause);
+                dtApiException = new DtApiException(context.getString(R.string.smth_went_wrong), cause);
             } else {
-
                 try {
                     ErrorResponse errorResponse = (ErrorResponse) cause.getBodyAs(ErrorResponse.class);
-                    return new DtApiException(errorResponse, cause.getResponse().getStatus(), cause);
+                    dtApiException = new DtApiException(errorResponse, cause.getResponse().getStatus(), cause);
+                    switch (cause.getResponse().getStatus()) {
+                        case 401:
+                        case 422:
+                            break;
+                        default:
+                            CrashlyticsTracker.trackError(cause);
+                            break;
+                    }
                 } catch (Exception ex) {
-                    Timber.e(ex, "Something went wrong while parsing responseh");
-                    return new DtApiException(context.getString(R.string.smth_went_wrong), cause);
+                    Timber.e(ex, "Something went wrong while parsing response");
+                    dtApiException = new DtApiException(context.getString(R.string.smth_went_wrong), cause);
                 }
             }
         }
+        return dtApiException;
     }
 }

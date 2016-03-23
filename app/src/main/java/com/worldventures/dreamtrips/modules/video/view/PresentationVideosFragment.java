@@ -7,15 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
+import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
@@ -26,7 +28,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation_videos)
 public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseVideoFragment<T>
-        implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
 
     @InjectView(R.id.lv_items)
     protected EmptyRecyclerView recyclerView;
@@ -34,7 +36,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     protected SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.ll_empty_view)
     protected ViewGroup emptyView;
-    protected BaseArrayListAdapter<Object> adapter;
+    protected BaseDelegateAdapter<Object> adapter;
 
     RecyclerViewStateDelegate stateDelegate;
     private WeakHandler weakHandler;
@@ -60,8 +62,9 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         setupLayoutManager();
         this.recyclerView.setEmptyView(emptyView);
 
-        this.adapter = new BaseArrayListAdapter<>(getActivity(), this);
+        this.adapter = new BaseDelegateAdapter<>(getActivity(), this);
         this.adapter.registerCell(Video.class, VideoCell.class);
+        this.adapter.registerDelegate(Video.class, this);
         this.adapter.registerCell(VideoHeader.class, VideoHeaderLightCell.class);
 
         this.recyclerView.setAdapter(this.adapter);
@@ -134,5 +137,30 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     @Override
     public void setItems(List<Object> videos) {
         adapter.setItems(videos);
+    }
+
+    @Override
+    public void sendAnalytic(String action, String name) {
+        TrackingHelper.actionMembershipVideo(action, name);
+    }
+
+    @Override
+    public void onDownloadVideo(CachedEntity entity) {
+        getPresenter().downloadVideo(entity);
+    }
+
+    @Override
+    public void onDeleteVideo(CachedEntity entity) {
+        getPresenter().deleteCachedVideo(entity);
+    }
+
+    @Override
+    public void onCancelCachingVideo(CachedEntity entity) {
+        getPresenter().cancelCachingVideo(entity);
+    }
+
+    @Override
+    public void onCellClicked(Video model) {
+        // nothing to do
     }
 }

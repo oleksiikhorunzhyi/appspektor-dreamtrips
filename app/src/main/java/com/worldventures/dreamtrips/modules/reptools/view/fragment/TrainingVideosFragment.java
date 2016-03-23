@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.reptools.view.fragment;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
+import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoHeaderDelegate;
 import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
@@ -18,10 +21,28 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
 
     FilterLanguageDialogFragment dialog = new FilterLanguageDialogFragment();
 
+    private VideoHeaderDelegate videoHeaderDelegate = new VideoHeaderDelegate() {
+        @Override
+        public void onLanguageClicked() {
+            showDialog();
+        }
+
+        @Override
+        public void onCellClicked(VideoHeader model) {
+
+        }
+    };
+
     @Override
     public void onResume() {
         super.onResume();
         TrackingHelper.viewRepToolsTrainingVideoScreen();
+    }
+
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        adapter.registerDelegate(VideoHeader.class, videoHeaderDelegate);
     }
 
     @Override
@@ -47,4 +68,8 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
         }
     }
 
+    @Override
+    public void sendAnalytic(String action, String name) {
+        TrackingHelper.actionRepToolsTrainingVideo(action, name);
+    }
 }

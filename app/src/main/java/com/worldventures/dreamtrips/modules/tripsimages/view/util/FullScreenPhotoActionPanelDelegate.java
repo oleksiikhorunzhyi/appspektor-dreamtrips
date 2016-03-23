@@ -11,10 +11,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
@@ -56,7 +57,7 @@ public class FullScreenPhotoActionPanelDelegate {
     @InjectView(R.id.edit)
     protected ImageView edit;
     @InjectView(R.id.user_photo)
-    protected SimpleDraweeView civUserPhoto;
+    protected SmartAvatarView civUserPhoto;
     @InjectView(R.id.checkBox)
     protected CheckBox checkBox;
     @InjectView(R.id.iv_comment)
@@ -65,13 +66,16 @@ public class FullScreenPhotoActionPanelDelegate {
     Context context;
     User account;
     ContentVisibilityListener contentVisibilityListener;
+    private Injector injector;
+
     @State
     boolean isContentWrapperVisible = true;
 
-    public void setup(Activity activity, View rootView, User account) {
+    public void setup(Activity activity, View rootView, User account, Injector injector) {
         ButterKnife.inject(this, rootView);
         this.context = activity;
         this.account = account;
+        this.injector = injector;
 
         ivImage.setSingleTapListener(() -> {
             toggleContent();
@@ -96,6 +100,7 @@ public class FullScreenPhotoActionPanelDelegate {
         setDate(photo.getFSDate());
         setUserPhoto(photo.getFSUserPhoto());
         setLiked(photo.isLiked());
+        setUserPresence(photo.getUser());
 
         User owner = photo.getOwner();
         boolean isAccountsPhoto = owner != null && account.getId() == owner.getId();
@@ -147,6 +152,10 @@ public class FullScreenPhotoActionPanelDelegate {
         } else {
             tvLikesCount.setVisibility(View.GONE);
         }
+    }
+
+    public void setUserPresence(User user) {
+        civUserPhoto.setup(user, injector);
     }
 
     public void setDescription(String desc) {

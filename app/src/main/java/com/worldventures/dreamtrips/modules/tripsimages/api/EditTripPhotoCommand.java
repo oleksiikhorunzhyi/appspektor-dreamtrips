@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -18,5 +19,11 @@ public class EditTripPhotoCommand extends DreamTripsRequest<Photo> {
     @Override
     public Photo loadDataFromNetwork() throws Exception {
         return getService().editTripPhoto(uid, uploadTask);
+    }
+
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_failed_to_edit_image;
     }
 }

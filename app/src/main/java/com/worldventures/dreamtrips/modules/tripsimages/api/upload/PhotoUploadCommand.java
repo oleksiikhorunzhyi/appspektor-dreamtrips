@@ -20,4 +20,5 @@ public class PhotoUploadCommand extends RetrofitSpiceRequest<PhotoUploadResponse
     public PhotoUploadResponse loadDataFromNetwork() throws Exception {
         return getService().uploadPhoto(typedFile);
     }
+
 }

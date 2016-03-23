@@ -3,8 +3,7 @@ package com.worldventures.dreamtrips.modules.membership;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment.EnrollMemberFragment;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment.EnrollRestaurantFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
@@ -27,8 +26,7 @@ import dagger.Provides;
         injects = {
                 MembershipPresenter.class,
                 MembershipFragment.class,
-                EnrollMemberFragment.class,
-                EnrollRestaurantFragment.class,
+                StaticInfoFragment.EnrollFragment.class,
                 InviteFragment.class,
                 InvitePresenter.class,
                 MemberCell.class,

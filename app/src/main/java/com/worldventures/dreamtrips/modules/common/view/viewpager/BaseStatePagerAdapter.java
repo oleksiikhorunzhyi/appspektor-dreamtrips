@@ -18,13 +18,12 @@ public class BaseStatePagerAdapter<T extends FragmentItem> extends FragmentState
         super(fm);
     }
 
-    public void add(T item) {
-        fragmentItems.add(item);
+    @Override
+    public void addItems(ArrayList baseItemClasses) {
     }
 
-    @Override
-    public void addItems(List<T> items) {
-        fragmentItems.addAll(items);
+    public void add(T item) {
+        fragmentItems.add(item);
     }
 
     public void remove(int index) {

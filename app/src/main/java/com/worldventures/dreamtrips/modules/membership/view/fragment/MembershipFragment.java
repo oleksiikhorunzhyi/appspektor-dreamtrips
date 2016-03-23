@@ -9,14 +9,15 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
-
-import java.util.List;
+import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 
 import butterknife.InjectView;
 
@@ -47,14 +48,16 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         adapter = new BaseStatePagerAdapter(getChildFragmentManager());
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(this);
-        //
-        TrackingHelper.viewMembershipScreen(TrackingHelper.ACTION_MEMBERSHIP);
-    }
 
-    public void setScreens(List<FragmentItem> items) {
-        adapter.addItems(items);
+        adapter.add(new FragmentItem(Route.PRESENTATION_VIDEOS, getString(R.string.presentations)));
+        adapter.add(new FragmentItem(Route.ENROLL, getString(R.string.enroll_member)));
+        if (getPresenter().showInvite()) {
+            adapter.add(new FragmentItem(Route.INVITE, getString(R.string.invite_and_share)));
+        }
         adapter.notifyDataSetChanged();
+
         tabs.setupWithPagerBadged(pager);
+        TrackingHelper.viewMembershipScreen(TrackingHelper.ACTION_MEMBERSHIP);
     }
 
     @Override
@@ -66,6 +69,7 @@ public class MembershipFragment extends BaseFragment<MembershipPresenter> implem
         getPresenter().trackState(position);
         SoftInputUtil.hideSoftInputMethod(pager);
         eventBus.post(new ScreenChangedEvent());
+        TrackingHelper.viewMembershipScreen(position == 0 ? TrackingHelper.ACTION_MEMBERSHIP : TrackingHelper.ACTION_MEMBERSHIP_ENROLL);
     }
 
     @Override

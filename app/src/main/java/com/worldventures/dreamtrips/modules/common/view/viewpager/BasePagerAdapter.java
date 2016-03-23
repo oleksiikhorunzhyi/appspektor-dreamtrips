@@ -11,8 +11,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapter implements IRoboSpiceAdapter<T> {
-
+public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapter implements IRoboSpiceAdapter {
     protected List<T> fragmentItems = new ArrayList<>();
 
     public BasePagerAdapter(FragmentManager fm) {
@@ -20,8 +19,7 @@ public class BasePagerAdapter<T extends FragmentItem> extends FragmentPagerAdapt
     }
 
     @Override
-    public void addItems(List<T> baseItemClasses) {
-        fragmentItems.addAll(baseItemClasses);
+    public void addItems(ArrayList baseItemClasses) {
     }
 
     public void add(T item) {

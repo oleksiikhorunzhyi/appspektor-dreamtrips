@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
+import com.worldventures.dreamtrips.modules.dtl.model.leads.DtlLead;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit.http.Body;
@@ -43,4 +45,6 @@ public interface DtlApi {
     Void rate(@Path("id") String merchantId, @Field("rating") int stars,
               @Field("transaction_id") String transactionId);
 
+    @POST("/api/dtl/v2/leads")
+    Void suggestLead(@Body DtlLead lead);
 }

@@ -272,28 +272,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class CookiePolicyFragment extends StaticInfoFragment {
-        @Override
-        protected String getURL() {
-            return provider.getStaticInfoUrl(COOKIE_TITLE);
-        }
-
-        @Override
-        public void afterCreateView(View rootView) {
-            super.afterCreateView(rootView);
-            ((WebViewFragmentPresenter) getPresenter()).track(Route.COOKIE_POLICY);
-        }
-
-        @Override
-        protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_COOKIE, actionAnalyticEvent);
-        }
-    }
-
-    @Layout(R.layout.fragment_webview)
     @MenuResource(R.menu.menu_mock)
     public static class FAQFragment extends StaticInfoFragment {
-
         @Override
         protected String getURL() {
             return provider.getStaticInfoUrl(FAQ_TITLE);
@@ -309,10 +289,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         protected void sendAnalyticEvent(String actionAnalyticEvent) {
             TrackingHelper.actionFaq();
         }
-
-
     }
-
 
     @Layout(R.layout.fragment_webview)
     public static class PrivacyPolicyFragment extends StaticInfoFragment {
@@ -334,10 +311,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollMemberFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
+    public static class EnrollFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
         @Override
         protected String getURL() {
-            return provider.getEnrollMemberUrl();
+            return provider.getEnrollUrl();
         }
 
         @Override
@@ -349,33 +326,32 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         @Override
         protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionMembershipEnrollMemberScreen(actionAnalyticEvent);
+            TrackingHelper.actionMembershipEnrollScreen(actionAnalyticEvent);
         }
     }
 
+
     @Layout(R.layout.fragment_webview)
-    public static class EnrollRestaurantFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
+    public static class CookiePolicyFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getEnrollRestaurantUrl();
+            return provider.getStaticInfoUrl(COOKIE_TITLE);
         }
 
         @Override
         public void afterCreateView(View rootView) {
             super.afterCreateView(rootView);
-            webView.getSettings().setLoadWithOverviewMode(true);
-            webView.getSettings().setUseWideViewPort(true);
+            ((WebViewFragmentPresenter) getPresenter()).track(Route.COOKIE_POLICY);
         }
 
         @Override
         protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionMembershipEnrollRestaurantScreen(actionAnalyticEvent);
+            TrackingHelper.actionTermsTab(TrackingHelper.ACTION_TERMS_COOKIE, actionAnalyticEvent);
         }
     }
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollRepFragment extends StaticInfoFragment<WebViewFragmentPresenter> {
-
         @Override
         protected String getURL() {
             return provider.getEnrollRepUrl();
@@ -392,7 +368,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         protected void sendAnalyticEvent(String actionAnalyticEvent) {
             TrackingHelper.actionRepToolsEnrollment(actionAnalyticEvent);
         }
-
     }
 
     @Layout(R.layout.fragment_webview)

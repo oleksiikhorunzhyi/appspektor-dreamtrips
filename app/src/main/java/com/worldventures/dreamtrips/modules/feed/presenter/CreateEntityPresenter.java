@@ -25,15 +25,18 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import rx.Subscription;
 
 public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
     @State
     UploadTask cachedUploadTask;
+
     @Inject
     MediaPickerManager mediaPickerManager;
 
     PhotoUploadSubscriber photoUploadSubscriber;
+    private Subscription mediaSubscription;
 
     @Override
     public void takeView(V view) {
@@ -48,7 +51,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         });
         Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
         //
-        view.bind(mediaPickerManager.toObservable())
+        mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> attachment.requestId == getMediaRequestId())
                 .subscribe(mediaAttachment -> {
                     attachImages(mediaAttachment.chosenImages, mediaAttachment.type);
@@ -60,7 +63,9 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     @Override
     public void dropView() {
         super.dropView();
-        photoUploadSubscriber.unsubscribe();
+        if (!photoUploadSubscriber.isUnsubscribed()) photoUploadSubscriber.unsubscribe();
+        //
+        if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
     }
 
     @Override

@@ -30,6 +30,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscription;
+
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
 
     public static final int BUCKET_MEDIA_REQUEST_ID = BucketItemEditPresenter.class.getSimpleName().hashCode();
@@ -42,6 +44,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     private boolean savingItem = false;
 
     PhotoUploadSubscriber photoUploadSubscriber;
+    private Subscription mediaSubscription;
 
     public BucketItemEditPresenter(BucketBundle bundle) {
         super(bundle);
@@ -59,7 +62,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                 .onProgress(view::addImage)
                 .onCancel(view::deleteImage);
         //
-        view.bind(mediaPickerManager.toObservable())
+        mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID)
                 .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages, mediaAttachment.type));
     }
@@ -67,7 +70,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     @Override
     public void dropView() {
         super.dropView();
-        photoUploadSubscriber.unsubscribe();
+        if (!photoUploadSubscriber.isUnsubscribed()) photoUploadSubscriber.unsubscribe();
+        //
+        if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
     }
 
     @Override

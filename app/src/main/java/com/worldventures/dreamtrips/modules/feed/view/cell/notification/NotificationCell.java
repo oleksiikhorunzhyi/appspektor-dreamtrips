@@ -23,11 +23,15 @@ import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -104,16 +108,20 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
     private void open(FeedItem item) {
         if (item.getType() != Type.UNDEFINED)
-            openByType(getModelObject().getItem(), item.getType());
+            openByType(item.getType(), item.getAction());
         else if (item.getAction() != null)
             openByAction(getModelObject().getLinks(), item.getAction());
         else Timber.w("Can't open event model by type or action");
     }
 
-    private void openByType(FeedEntity item, Type type) {
+    private void openByType(Type type, FeedItem.Action action) {
         switch (type) {
-            case TRIP:
             case PHOTO:
+                if (action == FeedItem.Action.TAG_PHOTO) {
+                    openFullscreenPhoto();
+                    break;
+                }
+            case TRIP:
             case BUCKET_LIST_ITEM:
             case POST:
                 openDetails();
@@ -140,6 +148,23 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     private void openDetails() {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new FeedDetailsBundle(getModelObject()))
+                .build());
+    }
+
+    private void openFullscreenPhoto() {
+        ArrayList<IFullScreenObject> list = new ArrayList<>();
+        list.add((IFullScreenObject) getModelObject().getItem());
+        FullScreenImagesBundle bundle = new FullScreenImagesBundle.Builder()
+                .position(0)
+                .userId(getModelObject().getItem().getOwner().getId())
+                .type(TripImagesType.FIXED)
+                .route(Route.SOCIAL_IMAGE_FULLSCREEN)
+                .fixedList(list)
+                .build();
+
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+                .data(bundle)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .build());
     }
 

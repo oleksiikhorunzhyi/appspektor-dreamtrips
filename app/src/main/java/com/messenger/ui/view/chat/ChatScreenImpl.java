@@ -365,17 +365,4 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         //
         getPresenter().onImagesPicked(images);
     }
-
-    ////////////////////////////////////////
-    /////// Back pressure handling
-    ////////////////////////////////////////
-
-    @Override
-    public boolean onBackPressed() {
-        if (photoPickerLayoutDelegate.isPanelVisible()) {
-            photoPickerLayoutDelegate.hidePicker();
-            return true;
-        }
-        return false;
-    }
 }

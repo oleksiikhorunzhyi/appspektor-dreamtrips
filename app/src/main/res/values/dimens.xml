@@ -81,8 +81,9 @@
 
 
     ///////Post sizes
-    <dimen name="post_spacing_horizontal">16dp</dimen>
-    <dimen name="post_spacing_vertical">16dp</dimen>
+    <dimen name="post_spacing_horizontal">0dp</dimen>
+    <dimen name="post_spacing_vertical_top">0dp</dimen>
+    <dimen name="post_spacing_vertical_bottom">0dp</dimen>
 
     <dimen name="template_height">260dp</dimen>
 

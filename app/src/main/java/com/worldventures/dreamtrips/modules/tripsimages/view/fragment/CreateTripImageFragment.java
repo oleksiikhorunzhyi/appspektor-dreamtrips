@@ -15,7 +15,7 @@ import java.util.List;
 
 import icepick.State;
 
-@Layout(R.layout.layout_create_trip_image)
+@Layout(R.layout.layout_post)
 public class CreateTripImageFragment extends CreateEntityFragment<CreateTripImagePresenter> {
 
     @State

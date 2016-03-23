@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.EditEntityPresenter;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.layout_create_trip_image)
+@Layout(R.layout.layout_post)
 public class EditEntityFragment extends ActionEntityFragment<EditEntityPresenter, EditEntityBundle> {
 
     @InjectView(R.id.cancel_action)

@@ -161,6 +161,10 @@ public class DtlMerchantManager {
         filterStream.onNext(filterData);
     }
 
+    public String getCurrentQuery() {
+        return filterData.getSearchQuery();
+    }
+
     public DtlFilterData getFilterData() {
         return filterData;
     }

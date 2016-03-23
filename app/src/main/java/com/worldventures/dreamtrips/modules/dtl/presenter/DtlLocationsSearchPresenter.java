@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
@@ -37,7 +36,7 @@ public class DtlLocationsSearchPresenter extends JobPresenter<DtlLocationsSearch
     }
 
     public void onLocationSelected(DtlExternalLocation location) {
-        trackLocationSelection(dtlLocationManager.getSelectedLocation(), location);
+        trackLocationSelection(location);
         dtlLocationManager.persistLocation(location);
         dtlMerchantManager.clean();
         view.navigateToMerchants();
@@ -68,9 +67,8 @@ public class DtlLocationsSearchPresenter extends JobPresenter<DtlLocationsSearch
     /**
      * Analytic-related
      */
-    private void trackLocationSelection(DtlLocation previousLocation, DtlExternalLocation newLocation) {
-        if (previousLocation != null) TrackingHelper.dtlChangeLocation(newLocation.getId());
-        TrackingHelper.dtlSelectLocation(TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_SEARCH, newLocation.getId());
+    private void trackLocationSelection(DtlExternalLocation newLocation) {
+        TrackingHelper.searchLocation(newLocation);
     }
 
     public interface View extends RxView, ApiErrorView {

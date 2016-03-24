@@ -1,6 +1,8 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -73,34 +75,41 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
         }
         // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
         conversationStream
-                .flatMap(conversation -> participantsDAO
-                        .getParticipantsEntities(conversation.getId())
-                        .first()
-                        .flatMap(currentUsers -> chatDelegate.modifyConversation(
-                                conversation, currentUsers, newChatUsers, getView().getConversationName())))
-                .doOnNext(newConversation -> {
-                    List<DataParticipant> relationships =
-                            Queryable.from(newChatUsers).map(user ->
-                                    new DataParticipant(newConversation.getId(), user.getId(), Participant.Affiliation.MEMBER))
-                                    .toList();
-                    // we are participants too and if conversation is group then we're owner otherwise we're member
-                    if (newConversation.getType().equals(ConversationType.CHAT)) {
-                        relationships.add(new DataParticipant(newConversation.getId(), user.getId(), Participant.Affiliation.OWNER));
-                    }
-
-                    participantsDAO.save(relationships);
-                    conversationsDAO.save(newConversation);
-                })
-                .compose(bindViewIoToMainComposer())
-                .subscribe(newConversation -> {
-                    History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
-                    history.pop();
-                    history.pop();
-                    history.push(new ChatPath(newConversation.getId()));
-                    Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
-                }, e -> Timber.e(e, "Could not add chat member"));
+                .flatMap(conversation -> modifyConversation(conversation, newChatUsers, getView().getConversationName()))
+                        .doOnNext(conversationPair -> saveModifiedConversation(conversationPair.first, newChatUsers, conversationPair.second))
+                        .compose(bindViewIoToMainComposer())
+                        .map(conversationPair -> conversationPair.first)
+                        .subscribe(newConversation -> {
+                            History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
+                            history.pop();
+                            history.pop();
+                            history.push(new ChatPath(newConversation.getId()));
+                            Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
+                        }, e -> Timber.e(e, "Could not add chat member"));
     }
 
+    private Observable<Pair<DataConversation, String>> modifyConversation (DataConversation conversation, List<DataUser> newChatUsers, String newSubject) {
+        return participantsDAO.getParticipantsEntities(conversation.getId())
+                .take(1)
+                .flatMap(currentUsers ->
+                                chatDelegate.modifyConversation(conversation, currentUsers, newChatUsers, newSubject)
+                                        .map(newConversation -> new Pair<>(newConversation, conversation.getType()))
+                );
+    }
+
+    private void saveModifiedConversation(DataConversation newConversation,  List<DataUser> newChatUsers, String previousType) {
+        List<DataParticipant> relationships = Queryable.from(newChatUsers).map(user ->
+                        new DataParticipant(newConversation.getId(), user.getId(), Participant.Affiliation.MEMBER))
+                .toList();
+
+        // we are participants too and if conversation is group then we're owner otherwise we're member
+        if (TextUtils.equals(previousType, ConversationType.CHAT)) {
+            relationships.add(new DataParticipant(newConversation.getId(), user.getId(), Participant.Affiliation.OWNER));
+        }
+
+        participantsDAO.save(relationships);
+        conversationsDAO.save(newConversation);
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Menu
     ///////////////////////////////////////////////////////////////////////////

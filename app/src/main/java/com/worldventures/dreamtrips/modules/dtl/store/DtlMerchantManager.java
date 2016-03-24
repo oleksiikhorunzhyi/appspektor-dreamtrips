@@ -217,7 +217,7 @@ public class DtlMerchantManager {
             DtlLocation updatedLocation = ImmutableDtlManualLocation
                     .copyOf((DtlManualLocation) dtlLocationManager.getSelectedLocation())
                     .withLongName(sourceType == LocationSourceType.FROM_MAP
-                            ? nearestMerchant.getCity() : "")
+                            ? nearestMerchant.getCity() : null)
                     .withAnalyticsName(nearestMerchant.getAnalyticsName());
             dtlLocationManager.persistLocation(updatedLocation);
         }

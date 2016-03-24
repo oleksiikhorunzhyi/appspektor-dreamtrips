@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
@@ -12,6 +13,8 @@ public class DtlMerchantCommonDetailsPresenter<T extends DtlMerchantCommonDetail
 
     @Inject
     DtlMerchantManager dtlMerchantManager;
+    @Inject
+    DtlLocationManager dtlLocationManager;
 
     public DtlMerchantCommonDetailsPresenter(String id) {
         this.merchantId = id;

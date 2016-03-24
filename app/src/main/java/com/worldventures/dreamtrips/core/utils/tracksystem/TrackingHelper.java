@@ -957,11 +957,13 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, tabType, data);
     }
 
-    public static void trackMerchantOpenedFromSearch(DtlMerchantType dtlMerchantType, String query) {
+    public static void trackMerchantOpenedFromSearch(DtlMerchantType dtlMerchantType, String query,
+                                                     DtlLocation dtlLocation) {
         String action = dtlMerchantType == DtlMerchantType.OFFER ? DTL_ACTION_SEARCH_OFFERS :
                 DTL_ACTION_SEARCH_DINNING;
         Map data = new HashMap<>();
         data.put(DTL_QUERY, query);
+        data.put(DTL_LOCATION, dtlLocation.getAnalyticsName());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
     }
 

@@ -32,7 +32,8 @@ public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMa
     private void trackIfNeeded() {
         if (!TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery()))
             TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
-                    dtlMerchantManager.getCurrentQuery());
+                    dtlMerchantManager.getCurrentQuery(),
+                    dtlLocationManager.getCachedSelectedLocation());
     }
 
     public void onSizeReady(int height) {

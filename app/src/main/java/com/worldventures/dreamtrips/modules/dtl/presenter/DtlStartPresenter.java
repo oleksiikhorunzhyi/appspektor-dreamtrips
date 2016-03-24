@@ -86,7 +86,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
                         break;
                     }
                     //
-                    if (DtlLocationHelper.checkLocation(0.5, newLocation,
+                    if (!DtlLocationHelper.checkLocation(0.5, newLocation,
                             persistedLocation.getCoordinates().asAndroidLocation(), DistanceType.MILES))
                         dtlMerchantManager.clean();
                     //

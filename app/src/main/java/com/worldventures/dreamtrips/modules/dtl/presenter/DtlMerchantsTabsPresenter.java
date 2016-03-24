@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
@@ -31,6 +32,7 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         super.takeView(view);
         apiErrorPresenter.setView(view);
         setTabs();
+        preselectProperTab();
         //
         bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
                 .onError(apiErrorPresenter::handleError);
@@ -43,11 +45,27 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         dtlMerchantManager.applySearch(query);
     }
 
-    public void setTabs() {
+    private void setTabs() {
         view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
         view.updateSelection();
-        // TODO :: 3/16/16 deal with this pre-selection
-//        view.preselectOfferTab(dtlLocationManager.getCachedSelectedLocation().getPartnerCount() > 0);
+    }
+
+    private void preselectProperTab() {
+        if (dtlMerchantManager.merchantTabSelectionIndexWasSet()) {
+            view.preselectMerchantTabWithIndex(dtlMerchantManager.getMerchantTabSelectionIndex());
+        } else {
+            if (dtlLocationManager.isLocationExternal()) {
+                if (((DtlExternalLocation) dtlLocationManager.getSelectedLocation()).getPartnerCount() < 1) {
+                    view.preselectMerchantTabWithIndex(1);
+                    return;
+                }
+            } else {
+                if (!dtlMerchantManager.offerMerchantsPresent())
+                    view.preselectMerchantTabWithIndex(1);
+            }
+        }
+        //
+        view.setTabChangeListener();
     }
 
     public Bundle prepareArgsForTab(int position) {
@@ -69,6 +87,10 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         TrackingHelper.dtlMerchantsTab(tabName, dtlLocationManager.getCachedSelectedLocation());
     }
 
+    public void rememberUserTabSelection(int newPosition) {
+        dtlMerchantManager.setMerchantTabSelectionIndex(newPosition);
+    }
+
     public void onEventMainThread(final MerchantClickedEvent event) {
         if (!view.isTabletLandscape()) {
             view.openDetails(event.getMerchantId());
@@ -83,8 +105,15 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
 
         void openDetails(String merchantId);
 
-        void preselectOfferTab(boolean preselectOffer);
+        void preselectMerchantTabWithIndex(int tabIndex);
 
         void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
+
+        /**
+         * Do it via a separate method from presenter after we<br />
+         * pre-select tab based on vusiness logic - then it won't track pre-selection <br/>
+         * as user selection and remember it and mess things up.
+         */
+        void setTabChangeListener();
     }
 }

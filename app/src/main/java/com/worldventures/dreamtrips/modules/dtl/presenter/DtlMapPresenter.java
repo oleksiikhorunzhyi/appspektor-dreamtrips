@@ -111,7 +111,9 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
         this.merchantsStream.onNext(dtlMerchants);
         //
-        if (dtlMerchants.isEmpty()) view.informUser(R.string.dtl_no_merchants_caption);
+        if (dtlMerchants.isEmpty() &&
+                dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP)
+            view.informUser(R.string.dtl_no_merchants_caption);
         //
         if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
                 view.getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)

@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommo
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
@@ -27,6 +28,8 @@ public class DtlMerchantCell extends AbstractDelegateCell<DtlMerchant, CellDeleg
 
     @Inject
     DtlMerchantManager dtlMerchantManager;
+    @Inject
+    DtlLocationManager dtlLocationManager;
 
     DtlMerchantCommonDataInflater commonDataInflater;
     DtlMerchantInfoInflater categoryDataInflater;
@@ -61,7 +64,8 @@ public class DtlMerchantCell extends AbstractDelegateCell<DtlMerchant, CellDeleg
     private void trackIfNeeded() {
         if (!TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery()))
             TrackingHelper.trackMerchantOpenedFromSearch(getModelObject().getMerchantType(),
-                    dtlMerchantManager.getCurrentQuery());
+                    dtlMerchantManager.getCurrentQuery(),
+                    dtlLocationManager.getCachedSelectedLocation());
     }
 
     @Override

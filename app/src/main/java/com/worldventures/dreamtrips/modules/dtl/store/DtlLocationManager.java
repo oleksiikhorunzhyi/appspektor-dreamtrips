@@ -165,6 +165,7 @@ public class DtlLocationManager {
     public void persistLocation(DtlLocation location) {
         persistedLocation = location;
         db.saveDtlLocation(location);
+        db.cleanLastMapCameraPosition(); // need clean last map camera position
         locationStream.onNext(location);
     }
 

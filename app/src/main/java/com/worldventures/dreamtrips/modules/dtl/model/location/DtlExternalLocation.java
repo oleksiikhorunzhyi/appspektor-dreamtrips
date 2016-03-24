@@ -59,7 +59,8 @@ public class DtlExternalLocation implements DtlLocation, Parcelable {
         return locationSourceType;
     }
 
-    public String asAnalyticsLocation() {
+    @Override
+    public String getAnalyticsName() {
         return String.format("%s:%s:%s", longName, getLongNameFor(DtlLocationType.STATE),
                 getLongNameFor(DtlLocationType.COUNTRY));
     }

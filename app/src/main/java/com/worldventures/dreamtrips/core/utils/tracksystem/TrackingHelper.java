@@ -931,7 +931,7 @@ public class TrackingHelper {
 
     public static void searchLocation(DtlExternalLocation location) {
         Map data = new HashMap<>();
-        data.put(DTL_ATTRIBUTE_CITY_SEARCH, location.asAnalyticsLocation());
+        data.put(DTL_ATTRIBUTE_CITY_SEARCH, location.getAnalyticsName());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_SELECT_LOCATION_FROM_SEARCH,
                 data);
     }
@@ -941,9 +941,7 @@ public class TrackingHelper {
             String tabType, DtlLocation dtlLocation) {
         Map<String, Object> data = new HashMap<>(2);
 
-        if (dtlLocation instanceof DtlExternalLocation)
-            data.put(DTL_LOCATION, ((DtlExternalLocation) dtlLocation).asAnalyticsLocation());
-        else data.put(DTL_LOCATION, dtlLocation.getLongName());
+        data.put(DTL_LOCATION, dtlLocation.getAnalyticsName());
 
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:

@@ -17,6 +17,7 @@ public class SearchViewHelper {
     private static final int THROTTLE_SEARCH_DURATION = 900;
 
     private QueryChangedListener onQueryChangedListener;
+    private SearchClosedListener onSearchClosedListener;
     private SearchView searchView;
     private Subscription searchViewSubscription;
 
@@ -24,9 +25,15 @@ public class SearchViewHelper {
     }
 
     public void init(MenuItem searchItem, String defValue, QueryChangedListener listener) {
+        init(searchItem, defValue, listener, null);
+    }
+
+    public void init(MenuItem searchItem, String defValue, QueryChangedListener listener,
+                     SearchClosedListener searchClosedListener) {
+        this.onSearchClosedListener = searchClosedListener;
         this.onQueryChangedListener = listener;
         if (searchItem != null) {
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener(){
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     searchViewSubscription = RxSearchView.queryTextChangeEvents(searchView)
@@ -53,10 +60,14 @@ public class SearchViewHelper {
     public void dropHelper() {
         unsubcribe();
         onQueryChangedListener = null;
+        onSearchClosedListener = null;
     }
 
     private void onSearchViewClosed() {
         unsubcribe();
+        if (onSearchClosedListener != null) {
+            onSearchClosedListener.onSearchClosed();
+        }
         if (onQueryChangedListener != null) {
             onQueryChangedListener.onQueryChanged("");
         }
@@ -70,6 +81,10 @@ public class SearchViewHelper {
         if (onQueryChangedListener != null) {
             onQueryChangedListener.onQueryChanged(event.queryText().toString());
         }
+    }
+
+    public interface SearchClosedListener {
+        void onSearchClosed();
     }
 
     public interface QueryChangedListener {

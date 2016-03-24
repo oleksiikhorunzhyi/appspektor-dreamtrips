@@ -118,9 +118,8 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
     /**
      * Analytic-related
      */
-    private void trackLocationSelection(DtlLocation previousLocation, DtlExternalLocation newLocation) {
-        if (previousLocation != null) TrackingHelper.dtlChangeLocation(newLocation.getId());
-        TrackingHelper.dtlSelectLocation(TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_NEARBY, newLocation.getId());
+    private void trackLocationSelection(DtlExternalLocation newLocation) {
+        TrackingHelper.searchLocation(newLocation);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -146,7 +145,7 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
     }
 
     public void onLocationSelected(DtlExternalLocation location) {
-        trackLocationSelection(dtlLocationManager.getSelectedLocation(), location);
+        trackLocationSelection(location);
         dtlLocationManager.persistLocation(location);
         dtlMerchantManager.clean();
         view.navigateToMerchants();

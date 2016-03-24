@@ -307,10 +307,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         @Override
         protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionFaq();
+            //
         }
-
-
     }
 
 

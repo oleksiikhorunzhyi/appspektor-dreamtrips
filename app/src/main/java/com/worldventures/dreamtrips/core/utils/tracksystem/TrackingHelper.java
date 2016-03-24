@@ -35,7 +35,7 @@ public class TrackingHelper {
     public static final String ACTION_PHOTOS_MINE = "photos-mine";
     public static final String ACTION_ENROLL_MEMBER = "membership-enroll";
     public static final String ACTION_ENROLL_MERCHANT = "membership-enroll-merchant";
-    public static final String ACTION_FAQ = "FAQ";    
+    public static final String ACTION_FAQ = "FAQ";
     public static final String ACTION_PRIVACY = "terms-privacy";
     public static final String ACTION_COOKIE = "terms-cookie";
     public static final String ACTION_SERVICE = "terms-service";
@@ -975,7 +975,9 @@ public class TrackingHelper {
 
     public static void dtlMerchantFilter(DtlFilterData filterData) {
         Map data = new HashMap<>();
-        String price = String.format("%d-%d", filterData.getMinPrice(), filterData.getMaxPrice());
+        String price = String.format("%d-%d%s",
+                filterData.getMinPrice(), filterData.getMaxPrice(),
+                filterData.getDistanceType().getTypeNameForAnalytics());
         String distance = String.format("10-%s", Double.valueOf(filterData.getMaxDistance()).intValue());
         data.put(DTL_ATTRIBUTE_FILTER_PRICE, price);
         data.put(DTL_ATTRIBUTE_FILTER_DISTANCE, distance);

@@ -64,6 +64,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
                 TrackingHelper.service(getAccountUserId());
                 break;
             case FAQ:
+                TrackingHelper.actionFaq();
                 TrackingHelper.faq(getAccountUserId());
                 break;
             case COOKIE_POLICY:

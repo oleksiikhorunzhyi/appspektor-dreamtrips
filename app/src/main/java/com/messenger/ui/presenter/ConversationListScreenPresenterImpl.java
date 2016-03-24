@@ -38,6 +38,7 @@ import flow.History;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -64,7 +65,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     private final ConversationHelper conversationHelper;
     //
     private PublishSubject<String> filterStream;
-    private PublishSubject<String> typeStream;
+    private BehaviorSubject<String> typeStream;
     private PublishSubject<DataConversation> selectedConversationStream;
     private Subscription conversationSubscription;
 
@@ -133,11 +134,8 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     private void connectTypeStream() {
-        typeStream = PublishSubject.create();
-        typeStream.doOnNext(selectedValue -> TrackingHelper.conversationType(
-                TextUtils.equals(selectedValue, GROUP_CHATS)
-                        ? TrackingHelper.MESSENGER_VALUE_GROUPS
-                        : TrackingHelper.MESSENGER_VALUE_ALL))
+        typeStream = BehaviorSubject.create();
+        typeStream
                 .doOnNext(getViewState()::setChatType)
                 .compose(bindView()).subscribe();
     }
@@ -151,6 +149,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
                 .subscribe(TrackingHelper::setConversationCount,
                         e -> Timber.e(e, "Failed to get conv count"));
     }
+
     private void connectToFilters() {
         Observable.combineLatest(
                 typeStream.asObservable()
@@ -274,7 +273,13 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onConversationsDropdownSelected(ChatTypeItem selectedItem) {
+        String lastSelectedType = typeStream.getValue();
         typeStream.onNext(selectedItem.getType());
+
+        if (lastSelectedType != null)
+            TrackingHelper.conversationType(TextUtils.equals(selectedItem.getType(), GROUP_CHATS)
+                    ? TrackingHelper.MESSENGER_VALUE_GROUPS
+                    : TrackingHelper.MESSENGER_VALUE_ALL);
     }
 
     @Override

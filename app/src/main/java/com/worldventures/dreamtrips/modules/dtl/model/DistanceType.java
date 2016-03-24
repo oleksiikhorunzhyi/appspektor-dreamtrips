@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 public enum DistanceType {
-    MILES("ml"), KMS("km");
+    MILES("mi"), KMS("km");
 
     String analyticsTypeName;
 

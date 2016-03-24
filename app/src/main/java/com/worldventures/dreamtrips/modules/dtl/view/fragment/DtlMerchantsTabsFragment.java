@@ -168,7 +168,7 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         //
         ButterKnife.findById(toolbar, R.id.titleContainer).setOnClickListener(v ->
                 router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-                        .backStackEnabled(false)
+                        .backStackEnabled(true)
                         .containerId(R.id.dtl_container)
                         .fragmentManager(getParentFragment().getFragmentManager())
                         .build()));

@@ -83,11 +83,17 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
     }
 
     private void initToolbar() {
+        boolean hasBackStack = getParentFragment().getChildFragmentManager()
+                .findFragmentByTag(Route.DTL_MERCHANTS_HOLDER.getClazzName()) != null;
         toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
         toolbar.inflateMenu(R.menu.menu_locations);
-        if (!tabletAnalytic.isTabletLandscape())
+        if (hasBackStack) {
+            toolbar.setNavigationIcon(R.drawable.back_icon);
+            toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        } else if (!tabletAnalytic.isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-        toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+            toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+        }
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_search) {
                 navigateToSearch();

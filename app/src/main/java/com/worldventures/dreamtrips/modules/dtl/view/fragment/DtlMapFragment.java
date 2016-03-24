@@ -257,8 +257,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
             toolbar.findViewById(R.id.titleContainer).setOnClickListener(v ->
                     router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-                            .backStackEnabled(false)
-                            .clearBackStack(true)
+                            .backStackEnabled(true)
                             .containerId(R.id.dtl_container)
                             .fragmentManager(getFragmentManager())
                             .build()));

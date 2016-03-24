@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -102,11 +104,17 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
 
     @Override
     public void setTabChangeListener() {
-        bind(DtRxBindings.observePageSelections(pager))
+        DtRxBindings.observePageSelections(pager)
+                .compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.PAUSE))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(position -> currentPosition = position)
-                .doOnNext(position -> getPresenter().trackTabChange(currentPosition))
                 .subscribe(getPresenter()::rememberUserTabSelection);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPresenter().trackTabChange(currentPosition);
     }
 
     @Override

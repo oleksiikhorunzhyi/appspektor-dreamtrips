@@ -209,11 +209,16 @@ public class DtlMerchantManager {
     }
 
     private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
-                !dtlMerchants.isEmpty()) {
+        LocationSourceType sourceType = dtlLocationManager.getSelectedLocation().getLocationSourceType();
+
+        if ((sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)
+                && !dtlMerchants.isEmpty()) {
+            DtlMerchant nearestMerchant = dtlMerchants.get(0);
             DtlLocation updatedLocation = ImmutableDtlManualLocation
                     .copyOf((DtlManualLocation) dtlLocationManager.getSelectedLocation())
-                    .withLongName(dtlMerchants.get(0).getCity());
+                    .withLongName(sourceType == LocationSourceType.FROM_MAP
+                            ? nearestMerchant.getCity() : "")
+                    .withAnalyticsName(nearestMerchant.getAnalyticsName());
             dtlLocationManager.persistLocation(updatedLocation);
         }
     }

@@ -90,10 +90,11 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         //
         toolbar.inflateMenu(R.menu.menu_dtl_list);
         searchViewHelper = new SearchViewHelper();
-        searchViewHelper.init(toolbar.getMenu().findItem(R.id.action_search), lastQuery, query -> {
-            lastQuery = query;
-            getPresenter().applySearch(query);
-        });
+        searchViewHelper.init(toolbar.getMenu().findItem(R.id.action_search), lastQuery,
+                query -> {
+                    lastQuery = query;
+                    getPresenter().applySearch(query);
+                }, () -> getPresenter().trackTabChange(currentPosition));
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_map:
@@ -111,6 +112,12 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         });
         //
         initToolbar();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPresenter().trackTabChange(currentPosition);
     }
 
     @Override

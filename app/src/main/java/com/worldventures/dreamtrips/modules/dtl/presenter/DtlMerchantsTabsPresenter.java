@@ -62,7 +62,11 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     public void trackTabChange(int newPosition) {
         String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
-        TrackingHelper.dtlMerchantsTab(newTabName, dtlLocationManager.getCachedSelectedLocation());
+        trackTab(newTabName);
+    }
+
+    private void trackTab(String tabName) {
+        TrackingHelper.dtlMerchantsTab(tabName, dtlLocationManager.getCachedSelectedLocation());
     }
 
     public void onEventMainThread(final MerchantClickedEvent event) {

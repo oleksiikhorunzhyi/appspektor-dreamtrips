@@ -10,4 +10,6 @@ public interface DtlLocation {
     String getLongName();
 
     Location getCoordinates();
+
+    String getAnalyticsName();
 }

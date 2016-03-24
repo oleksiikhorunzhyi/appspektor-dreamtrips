@@ -23,4 +23,11 @@ public abstract class DtlManualLocation implements DtlLocation {
 
     @Override
     public abstract Location getCoordinates();
+
+    @Override
+    @Value.Default
+    public String getAnalyticsName() {
+        return "-:-:-";
+    }
+
 }

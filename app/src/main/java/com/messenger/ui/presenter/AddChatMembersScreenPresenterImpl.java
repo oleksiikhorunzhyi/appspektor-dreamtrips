@@ -12,6 +12,8 @@ import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
 import com.worldventures.dreamtrips.R;
@@ -27,6 +29,8 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
+
+    private static final int REQUIRED_SELECTED_USERS_FOR_SINGLE_CHAT_TO_SHOW_CHAT_NAME = 1;
 
     @Inject
     ConversationsDAO conversationsDAO;
@@ -109,5 +113,15 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void onItemSelectChange(SelectableDataUser item) {
+        super.onItemSelectChange(item);
+        conversationStream.take(1).compose(bindViewIoToMainComposer()).subscribe(conversation -> {
+            boolean isSingleChat = ConversationHelper.isSingleChat(conversation);
+            setConversationNameInputFieldVisible(isSingleChat &&
+                    selectedUsers.size() >= REQUIRED_SELECTED_USERS_FOR_SINGLE_CHAT_TO_SHOW_CHAT_NAME);
+        });
     }
 }

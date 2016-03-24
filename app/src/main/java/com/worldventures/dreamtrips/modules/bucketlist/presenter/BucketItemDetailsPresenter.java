@@ -66,7 +66,7 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
             }
             view.setPlace(BucketItemInfoUtil.getPlace(bucketItem));
             view.setupDiningView(bucketItem.getDining());
-
+            view.setGalleryEnabled(bucketItem.getPhotos() != null && !bucketItem.getPhotos().isEmpty());
         }
     }
 
@@ -111,6 +111,8 @@ public class BucketItemDetailsPresenter extends BucketDetailsBasePresenter<Bucke
         void disableMarkAsDone();
 
         void enableMarkAsDone();
+
+        void setGalleryEnabled(boolean enabled);
 
         void setupDiningView(DiningItem diningItem);
 

@@ -112,12 +112,6 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getPresenter().trackTabChange(currentPosition);
-    }
-
-    @Override
     public void setTypes(List<DtlMerchantType> types) {
         if (adapter.getCount() == 0) {
             for (DtlMerchantType type : types) {

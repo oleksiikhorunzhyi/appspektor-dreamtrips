@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -68,6 +69,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     protected TextView textViewPlace;
     @InjectView(R.id.checkBoxDone)
     protected CheckBox markAsDone;
+    @InjectView(R.id.galleryPlaceHolder)
+    protected ImageView galleryPlaceHolder;
     @InjectView(R.id.viewPagerBucketGallery)
     protected ViewPager viewPagerBucketGallery;
     @InjectView(R.id.circleIndicator)
@@ -270,6 +273,19 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
+    public void setGalleryEnabled(boolean enabled) {
+        if (enabled) {
+            viewPagerBucketGallery.setVisibility(View.VISIBLE);
+            circleIndicator.setVisibility(View.VISIBLE);
+            galleryPlaceHolder.setVisibility(View.INVISIBLE);
+        } else {
+            viewPagerBucketGallery.setVisibility(View.INVISIBLE);
+            circleIndicator.setVisibility(View.INVISIBLE);
+            galleryPlaceHolder.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
     public void setImages(List<BucketPhoto> photos) {
         BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
             @Override
@@ -281,7 +297,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
         viewPagerBucketGallery.setAdapter(adapter);
         viewPagerBucketGallery.setCurrentItem(0);
         Queryable.from(photos).forEachR(photo ->
-                        adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
+                adapter.add(new FragmentItem(Route.TRIP_IMAGES_PAGER, ""))
         );
         adapter.notifyDataSetChanged();
         circleIndicator.setViewPager(viewPagerBucketGallery);

@@ -112,12 +112,12 @@ public class DtlMerchantsListFragment
 
     @Override
     public void showProgress() {
-        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        refreshLayout.setRefreshing(false);
     }
 
     @Override

@@ -144,6 +144,8 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
         TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
         //
+        if (locationTitle == null || locationModeCaption == null) return;
+        //
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:

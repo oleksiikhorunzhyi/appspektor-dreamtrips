@@ -49,8 +49,8 @@
     <string name="dtl_check_in">Check in &amp; earn</string>
     <string name="dtl_earn">Earn</string>
     <string name="dtl_dt_points">%d DreamTrips Points</string>
-    <string name="suggest_merchant_title">Suggest Merchant</string>
-    <string name="suggest_merchant">@string/suggest_merchant_title</string>
+    <string name="suggest_merchant">Suggest Merchant</string>
+    <string name="suggest_merchant_title">DT Local Tools</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %s DreamTrips points in %s</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>

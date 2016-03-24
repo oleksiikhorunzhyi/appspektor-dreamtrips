@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -27,12 +28,15 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     @Inject
     DtlLocationManager dtlLocationManager;
 
+    private WeakHandler weakHandler;
+
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        weakHandler = new WeakHandler();
+        //
         apiErrorPresenter.setView(view);
         setTabs();
-        preselectProperTab();
         //
         bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
                 .onError(apiErrorPresenter::handleError);
@@ -47,24 +51,32 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
 
     private void setTabs() {
         view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
-        view.updateSelection();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        preselectProperTab();
     }
 
     private void preselectProperTab() {
+        int index;
         if (dtlMerchantManager.merchantTabSelectionIndexWasSet()) {
-            view.preselectMerchantTabWithIndex(dtlMerchantManager.getMerchantTabSelectionIndex());
+            index = dtlMerchantManager.getMerchantTabSelectionIndex();
         } else {
             if (dtlLocationManager.isLocationExternal()) {
-                if (((DtlExternalLocation) dtlLocationManager.getSelectedLocation()).getPartnerCount() < 1) {
-                    view.preselectMerchantTabWithIndex(1);
-                    return;
-                }
+                if (((DtlExternalLocation) dtlLocationManager.getSelectedLocation())
+                        .getPartnerCount() < 1) index = 1;
+                else index = 0;
             } else {
-                if (!dtlMerchantManager.offerMerchantsPresent())
-                    view.preselectMerchantTabWithIndex(1);
+                if (!dtlMerchantManager.offerMerchantsPresent()) index = 1;
+                else index = 0;
             }
         }
         //
+        trackTabChange(index);
+        //
+        view.preselectMerchantTabWithIndex(index);
         view.setTabChangeListener();
     }
 
@@ -78,9 +90,12 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
-                TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
-        trackTab(newTabName);
+        // we user handler to prevent double checking this event when doing that magic with backstack
+        weakHandler.postDelayed(() -> {
+            String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
+                    TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
+            trackTab(newTabName);
+        }, 100);
     }
 
     private void trackTab(String tabName) {
@@ -100,8 +115,6 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     public interface View extends RxView, ApiErrorView {
 
         void setTypes(List<DtlMerchantType> types);
-
-        void updateSelection();
 
         void openDetails(String merchantId);
 

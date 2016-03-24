@@ -105,13 +105,8 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         bind(DtRxBindings.observePageSelections(pager))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(position -> currentPosition = position)
+                .doOnNext(position -> getPresenter().trackTabChange(currentPosition))
                 .subscribe(getPresenter()::rememberUserTabSelection);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPresenter().trackTabChange(currentPosition);
     }
 
     @Override
@@ -155,11 +150,6 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
                 }
                 break;
         }
-    }
-
-    @Override
-    public void updateSelection() {
-        pager.setCurrentItem(currentPosition);
     }
 
     private void initToolbar() {

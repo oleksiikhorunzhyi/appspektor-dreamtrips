@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -102,6 +103,9 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
         this.merchantsStream.onNext(dtlMerchants);
+        //
+        if (dtlMerchants.isEmpty()) view.informUser(R.string.dtl_no_merchants_caption);
+        //
         if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
                 view.getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
             view.zoom(MapViewUtils.DEFAULT_ZOOM);

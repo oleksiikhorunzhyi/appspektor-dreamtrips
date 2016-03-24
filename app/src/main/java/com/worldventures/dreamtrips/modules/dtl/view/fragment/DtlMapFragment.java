@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapFragment;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -205,9 +206,8 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
-    public void centerIn(DtlLocation location) {
-        LatLng latLng = new LatLng(location.getCoordinates().getLat(), location.getCoordinates().getLng());
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewUtils.DEFAULT_ZOOM));
+    public void centerIn(Location location) {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.asLatLng(), MapViewUtils.DEFAULT_ZOOM));
     }
 
     @Override

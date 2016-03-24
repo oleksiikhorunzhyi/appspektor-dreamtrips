@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import android.location.Location;
 import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -26,6 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.Collections;
 import java.util.List;
@@ -87,10 +87,10 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     public void onMapLoaded() {
         mapReady = true;
         //
+        view.centerIn(getFirstCenterLocation());
         view.bind(showingLoadMerchantsButton()).subscribe(show -> view.showButtonLoadMerchants(show));
-        view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap()))
-                .subscribe(marker -> view.markerClick(marker));
-        view.centerIn(dtlLocationManager.getCachedSelectedLocation());
+        view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap())).subscribe(marker -> view.markerClick(marker));
+        //
         checkPendingMapInfo();
         view.bind(gpsLocationDelegate.getLastKnownLocation())
                 .compose(new IoToMainComposer<>())
@@ -98,14 +98,21 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
                         throwable -> view.tryHideMyLocationButton(true));
     }
 
+    protected Location getFirstCenterLocation() {
+        Location lastPosition = db.getLastMapCameraPosition();
+        Location lastSelectedLocation = dtlLocationManager.getCachedSelectedLocation().getCoordinates();
+        return lastPosition != null ? lastPosition : lastSelectedLocation;
+    }
+
     protected Observable<Boolean> showingLoadMerchantsButton() {
         return MapObservableFactory.createCameraChangeObservable(view.getMap())
                 .doOnNext(position -> view.cameraPositionChange(position))
+                .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
                 .map(position ->
                         position.zoom < MapViewUtils.DEFAULT_ZOOM ||
-                        !DtlLocationHelper.checkLocation(MAX_DISTANCE,
-                                dtlLocationManager.getCachedSelectedLocation().getCoordinates().asLatLng(),
-                                position.target, DistanceType.MILES));
+                                !DtlLocationHelper.checkLocation(MAX_DISTANCE,
+                                        dtlLocationManager.getCachedSelectedLocation().getCoordinates().asLatLng(),
+                                        position.target, DistanceType.MILES));
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -168,7 +175,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
                 .build();
         dtlLocationManager.persistLocation(mapSelectedLocation);
         //
-        Location location = new Location("");
+        android.location.Location location = new android.location.Location("");
         location.setLatitude(latLng.latitude);
         location.setLongitude(latLng.longitude);
         dtlMerchantManager.loadMerchants(location);
@@ -185,7 +192,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
         void prepareInfoWindow(int height);
 
-        void centerIn(DtlLocation location);
+        void centerIn(Location location);
 
         void renderPins();
 

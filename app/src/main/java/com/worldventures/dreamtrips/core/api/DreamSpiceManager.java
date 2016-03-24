@@ -295,7 +295,9 @@ public class DreamSpiceManager extends SpiceManager {
         }
 
         private String getDetailedMessage(RetrofitError error) {
-            String body = getBody(error.getResponse());
+            Response response = error.getResponse();
+            if (response == null) return null;
+            String body = getBody(response);
             if (TextUtils.isEmpty(body)) return null;
             try {
                 JSONObject parent = new JSONObject(body);

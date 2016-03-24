@@ -110,7 +110,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
-            getPresenter().saveItem(true);
+            onSaveItem();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -118,6 +118,11 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     @Optional
     @OnClick(R.id.done)
     void onDone() {
+        onSaveItem();
+    }
+
+    private void onSaveItem() {
+        hideMediaPicker();
         getPresenter().saveItem(true);
     }
 

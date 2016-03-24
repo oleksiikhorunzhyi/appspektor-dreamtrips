@@ -246,6 +246,7 @@ public class DtlMerchantManager {
     public void clean() {
         if (merchants != null) merchants.clear();
         db.clearMerchantData();
+        clearMerchantTabSelectionIndex();
     }
 
     /**
@@ -267,4 +268,35 @@ public class DtlMerchantManager {
         return Queryable.from(getMerchants()).firstOrDefault(merchant -> merchant.getId().equals(id));
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Merchant tab user selection
+    ///////////////////////////////////////////////////////////////////////////
+    // since this is a major business requirement this tab selection by user becomes
+    // not view logic but a business requierement. Seems ok to store it here
+
+    private Integer merchantTabSelectionIndex = null;
+
+    public boolean merchantTabSelectionIndexWasSet() {
+        return merchantTabSelectionIndex != null;
+    }
+
+    public void setMerchantTabSelectionIndex(int tabIndex) {
+        merchantTabSelectionIndex = tabIndex;
+    }
+
+    public Integer getMerchantTabSelectionIndex() {
+        return merchantTabSelectionIndex;
+    }
+
+    public void clearMerchantTabSelectionIndex() {
+        merchantTabSelectionIndex = null;
+    }
+
+    public boolean offerMerchantsPresent() {
+        if (lastResult != null) {
+            return !Observable.from(lastResult.second).distinct(dtlMerchant ->
+                    dtlMerchant.getMerchantType() == DtlMerchantType.OFFER).toList().toBlocking().first().isEmpty();
+        }
+        return true;
+    }
 }

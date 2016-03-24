@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.transfromer.ListFilter;
 import com.worldventures.dreamtrips.core.rx.transfromer.ListSorter;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
@@ -179,5 +180,18 @@ public class DtlLocationManager {
             locationStream.onNext(persistedLocation);
         }
         return persistedLocation;
+    }
+
+    // TODO :: 3/24/16 migrate to usage of methods below throughout DTL
+    public boolean isLocationExternal() {
+        return getSelectedLocation().getLocationSourceType() == LocationSourceType.EXTERNAL;
+    }
+
+    public boolean isLocationFromMap() {
+        return getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP;
+    }
+
+    public boolean isLocationNearMe() {
+        return getSelectedLocation().getLocationSourceType() == LocationSourceType.NEAR_ME;
     }
 }

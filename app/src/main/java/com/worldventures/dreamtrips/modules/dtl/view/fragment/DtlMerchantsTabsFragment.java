@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -15,6 +14,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.rx.viewbinding.DtRxBindings;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
+import rx.android.schedulers.AndroidSchedulers;
 
 @Layout(R.layout.fragment_dtl_merchants_tabs)
 public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPresenter>
@@ -72,21 +73,6 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         pager.setAdapter(adapter);
         pager.setPagingEnabled(false);
         pager.setOffscreenPageLimit(1);
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentPosition = position;
-                getPresenter().trackTabChange(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
         //
         toolbar.inflateMenu(R.menu.menu_dtl_list);
         searchViewHelper = new SearchViewHelper();
@@ -115,6 +101,14 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
     }
 
     @Override
+    public void setTabChangeListener() {
+        bind(DtRxBindings.observePageSelections(pager))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(position -> currentPosition = position)
+                .subscribe(getPresenter()::rememberUserTabSelection);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         getPresenter().trackTabChange(currentPosition);
@@ -132,9 +126,8 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
     }
 
     @Override
-    public void preselectOfferTab(boolean preselectOffer) {
-        if (preselectOffer) tabStrip.getTabAt(0).select();
-        else tabStrip.getTabAt(1).select();
+    public void preselectMerchantTabWithIndex(int tabIndex) {
+        tabStrip.getTabAt(tabIndex).select();
     }
 
     @Override

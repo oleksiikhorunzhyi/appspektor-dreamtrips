@@ -141,10 +141,20 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     }
 
     private void trackConversations() {
+        conversationsDAO.conversationsCount()
+                .take(1)
+                .compose(bindView())
+                .subscribe(count -> {
+                    if (count == 0) waitForSyncAndTrack();
+                    else TrackingHelper.setConversationCount(count);
+                });
+    }
+
+    private void waitForSyncAndTrack(){
         connectionStatusStream
                 .filter(status -> status == ConnectionStatus.CONNECTED)
                 .flatMap(status -> conversationsDAO.conversationsCount())
-                .first()
+                .take(1)
                 .compose(bindView())
                 .subscribe(TrackingHelper::setConversationCount,
                         e -> Timber.e(e, "Failed to get conv count"));

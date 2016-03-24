@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.store;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.text.TextUtils;
 import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -123,7 +122,7 @@ public class DtlMerchantManager {
     }
 
     private void trackMerchantSearch(List<DtlMerchant> merchants, String query) {
-        if (!TextUtils.isEmpty(query)) TrackingHelper.dtlMerchantSearch(query, merchants.size());
+      //  if (!TextUtils.isEmpty(query)) TrackingHelper.dtlMerchantSearch(query, merchants.size());
     }
 
     public void initFilterData() {

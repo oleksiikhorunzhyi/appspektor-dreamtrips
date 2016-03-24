@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
+import com.worldventures.dreamtrips.modules.gcm.model.NewUnsupportedMessage;
 
 import java.io.IOException;
 
@@ -56,6 +57,12 @@ public class MessengerNotificationFactory extends NotificationFactory {
                 data.alertWrapper.alert.locArgs.get(2));
     }
 
+    public Notification createUnsupportedMessage(NewUnsupportedMessage unsupportedMessage){
+        return createUnsupportedMessageNotification(
+                unsupportedMessage.conversationId, unsupportedMessage.notificationsCount)
+                .build();
+    }
+
     /**
      * Shows a push notification with ability to open conversation
      *
@@ -91,6 +98,14 @@ public class MessengerNotificationFactory extends NotificationFactory {
                 subscriber.onError(e);
             }
         });
+    }
+
+    private NotificationCompat.Builder createUnsupportedMessageNotification(String conversationId, int unreadConversations) {
+        PendingIntent intent = createMessengerIntent(conversationId, false);
+        return super.createNotification()
+                .setContentText(context.getString(R.string.push_unsupported_message))
+                .setContentIntent(intent)
+                .setNumber(unreadConversations);
     }
 
     private Bitmap provideResizedBitmap(String url) throws IOException{

@@ -188,18 +188,19 @@ public class DtlMerchantManager {
     }
 
     public Observable<Job<List<DtlMerchant>>> connectMerchantsWithCache() {
-        Job<List<DtlMerchant>> progressStatus = new Job.Builder<List<DtlMerchant>>()
-                .status(Job.JobStatus.PROGRESS)
-                .create();
-        Observable<Job<List<DtlMerchant>>> observable = getMerchantsExecutor.connect()
-                .skipWhile(job -> job.status == Job.JobStatus.PROGRESS);
-        if (lastResult == null) {
-            return observable.startWith(progressStatus);
+        Observable<Job<List<DtlMerchant>>> observable = getMerchantsExecutor.connectWithCache();
+        if (lastResult != null) {
+            observable = observable.flatMap(job -> {
+                Observable<Job<List<DtlMerchant>>> result = Observable.just(job);
+                if (job.status == Job.JobStatus.PROGRESS) {
+                    return result.startWith(new Job.Builder<List<DtlMerchant>>()
+                            .status(Job.JobStatus.SUCCESS)
+                            .value(lastResult.second).create());
+                }
+                return result;
+            });
         }
-        return observable
-                .startWith(
-                        new Job.Builder<List<DtlMerchant>>().status(Job.JobStatus.SUCCESS).value(lastResult.second).create(),
-                        progressStatus);
+        return observable;
     }
 
     private void cacheAndPersistMerchants(List<DtlMerchant> dtlMerchants) {

@@ -7,6 +7,7 @@
     <string name="dtl_near_me_caption">Near me</string>
     <string name="dtl_nearby_caption">Nearby</string>
     <string name="dtl_autodetect_location">Auto-detect my location</string>
+    <string name="dtl_no_merchants_caption">There are no merchants here</string>
     <string name="dtl_load_merchants_here_button_caption">Redo merchant search</string>
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>

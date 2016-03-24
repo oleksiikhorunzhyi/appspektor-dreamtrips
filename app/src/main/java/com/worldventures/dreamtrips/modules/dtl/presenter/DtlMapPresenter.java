@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -83,15 +84,14 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     public void onMapLoaded() {
         mapReady = true;
         //
-        view.bind(subscribeToCameraChange()).subscribe(show -> view.showButtonLoadMerchants(show));
+        view.bind(showingLoadMerchantsButton()).subscribe(show -> view.showButtonLoadMerchants(show));
         view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap()))
                 .subscribe(marker -> view.markerClick(marker));
         view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         checkPendingMapInfo();
     }
 
-    protected Observable<Boolean> subscribeToCameraChange() {
-        // TODO :: 3/22/16 bad signature and content of method. Needs re-writing
+    protected Observable<Boolean> showingLoadMerchantsButton() {
         return MapObservableFactory.createCameraChangeObservable(view.getMap())
                 .doOnNext(position -> view.cameraPositionChange(position))
                 .map(position ->
@@ -103,6 +103,9 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
         this.merchantsStream.onNext(dtlMerchants);
+        //
+        if (dtlMerchants.isEmpty()) view.informUser(R.string.dtl_no_merchants_caption);
+        //
         if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
                 view.getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
             view.zoom(MapViewUtils.DEFAULT_ZOOM);
@@ -121,13 +124,14 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     private void showPins(List<DtlMerchant> filtered) {
-        if (view != null) {
-            view.clearMap();
-            Queryable.from(filtered).forEachR(dtlMerchant ->
-                    view.addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
-                            dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
-            view.renderPins();
-        }
+        if (view == null) return;
+        //
+        view.clearMap();
+        Queryable.from(filtered).forEachR(dtlMerchant ->
+                view.addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
+                        dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
+        view.renderPins();
+
     }
 
     private void checkPendingMapInfo() {
@@ -149,7 +153,6 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         DtlLocation mapSelectedLocation = ImmutableDtlManualLocation.builder()
                 .locationSourceType(LocationSourceType.FROM_MAP)
                 .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(latLng.latitude, latLng.longitude))
-//                .longName(null) // TODO :: 3/22/16
                 .build();
         dtlLocationManager.persistLocation(mapSelectedLocation);
         //
@@ -160,6 +163,8 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     public interface View extends RxView {
+        void addLocationMarker(LatLng location);
+
         void addPin(String id, LatLng latLng, DtlMerchantType type);
 
         void clearMap();

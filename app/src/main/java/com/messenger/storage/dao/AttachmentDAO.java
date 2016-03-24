@@ -65,7 +65,7 @@ public class AttachmentDAO extends BaseDAO {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * " +
                         "FROM " + DataAttachment.TABLE_NAME + " as a " +
-                        "LEFT JOIN " + DataMessage$Table.TABLE_NAME + " m " +
+                        "JOIN " + DataMessage$Table.TABLE_NAME + " m " +
                         "ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID + " " +
 
                         "WHERE m." + DataMessage$Table.STATUS + "= ? " )

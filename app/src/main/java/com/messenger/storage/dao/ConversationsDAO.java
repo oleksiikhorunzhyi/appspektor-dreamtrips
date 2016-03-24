@@ -28,11 +28,12 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Collections;
 import java.util.List;
 
-import dagger.Lazy;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -43,11 +44,11 @@ public class ConversationsDAO extends BaseDAO {
     public static final String GROUP_CONVERSATION_USER_COUNT_COLUMN = "groupUserCount";
     public static final String LAST_MESSAGE_AUTHOR_COLUMN = "authorName";
 
-    private Lazy<DataUser> currentUser;
+    private SessionHolder<UserSession> appSessionHolder;
 
-    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, Lazy<DataUser> currentUser) {
+    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder<UserSession> appSessionHolder) {
         super(context, rxContentResolver);
-        this.currentUser = currentUser;
+        this.appSessionHolder = appSessionHolder;
     }
 
     @Deprecated
@@ -138,6 +139,8 @@ public class ConversationsDAO extends BaseDAO {
     }
 
     public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type, String searchQuery) {
+        String currentUserId = appSessionHolder.get().get().getUser().getUsername(); // username is id for messenger
+
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
@@ -213,7 +216,7 @@ public class ConversationsDAO extends BaseDAO {
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());
 
-        String[] args = new String[]{currentUser.get().getId()};
+        String[] args = new String[]{currentUserId};
         queryBuilder.withSelectionArgs(args);
         return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI, DataTranslation.CONTENT_URI);
     }

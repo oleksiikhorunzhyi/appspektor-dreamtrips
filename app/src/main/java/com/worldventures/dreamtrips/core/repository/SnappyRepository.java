@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
@@ -73,6 +75,7 @@ public class SnappyRepository {
     public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
     public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
     public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
+    public static final String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
     public static final String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
     public static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
@@ -557,6 +560,18 @@ public class SnappyRepository {
 
     public void clearMerchantData() {
         clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
+    }
+
+    public void saveLastMapCameraPosition(Location location){
+        act(db -> db.put(DTL_LAST_MAP_POSITION, location));
+    }
+
+    public Location getLastMapCameraPosition(){
+        return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
+    }
+
+    public void cleanLastMapCameraPosition(){
+        clearAllForKey(DTL_LAST_MAP_POSITION);
     }
 
     public void saveLastSelectedOffersOnlyToogle(boolean state){

@@ -176,6 +176,11 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
+    public void tryHideMyLocationButton(boolean hide) {
+        googleMap.setMyLocationEnabled(!hide);
+    }
+
+    @Override
     protected void onMapLoaded() {
         clusterManager = new ClusterManager<>(getActivity(), googleMap);
         clusterManager.setRenderer(new DtClusterRenderer(getActivity().getApplicationContext(), googleMap, clusterManager));
@@ -203,7 +208,6 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     public void centerIn(DtlLocation location) {
         LatLng latLng = new LatLng(location.getCoordinates().getLat(), location.getCoordinates().getLng());
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewUtils.DEFAULT_ZOOM));
-//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapViewUtils.DEFAULT_ZOOM));
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -43,6 +44,8 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
+    @Inject
+    LocationDelegate gpsLocationDelegate;
     @Inject
     SnappyRepository db;
     //
@@ -89,6 +92,10 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
                 .subscribe(marker -> view.markerClick(marker));
         view.centerIn(dtlLocationManager.getCachedSelectedLocation());
         checkPendingMapInfo();
+        view.bind(gpsLocationDelegate.getLastKnownLocation())
+                .compose(new IoToMainComposer<>())
+                .subscribe(location -> view.tryHideMyLocationButton(false),
+                        throwable -> view.tryHideMyLocationButton(true));
     }
 
     protected Observable<Boolean> showingLoadMerchantsButton() {
@@ -109,6 +116,9 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
                 view.getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
             view.zoom(MapViewUtils.DEFAULT_ZOOM);
+        //
+        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() != LocationSourceType.NEAR_ME)
+            view.addLocationMarker(dtlLocationManager.getSelectedLocation().getCoordinates().asLatLng());
     }
 
     public void onMarkerClick(String merchantId) {
@@ -190,5 +200,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         void zoom(float zoom);
 
         void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
+
+        void tryHideMyLocationButton(boolean hide);
     }
 }

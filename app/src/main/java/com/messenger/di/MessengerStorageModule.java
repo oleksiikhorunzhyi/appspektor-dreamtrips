@@ -15,12 +15,10 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 
@@ -49,8 +47,9 @@ public class MessengerStorageModule {
 
     @Provides
     @Singleton
-    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, Lazy<DataUser> currentUser) {
-        return new ConversationsDAO(context, rxContentResolver, currentUser);
+    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context,
+                                             SessionHolder<UserSession> appSessionHolder) {
+        return new ConversationsDAO(context, rxContentResolver, appSessionHolder);
     }
 
     @Provides

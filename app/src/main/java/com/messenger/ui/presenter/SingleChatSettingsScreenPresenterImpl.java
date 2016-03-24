@@ -1,6 +1,5 @@
 package com.messenger.ui.presenter;
 
-
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -32,9 +31,9 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
     @Override
     public void onConversationAvatarClick() {
         participantsObservable
-                .flatMap(users -> Observable.from(users))
+                .flatMap(Observable::from)
                 .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
-                .first()
-                .subscribe(user ->  profileCrosser.crossToProfile(user));
+                .take(1)
+                .subscribe(profileCrosser::crossToProfile);
     }
 }

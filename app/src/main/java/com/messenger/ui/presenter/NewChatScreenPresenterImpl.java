@@ -8,6 +8,7 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
 import com.worldventures.dreamtrips.R;
@@ -24,6 +25,8 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
+
+    private static final int REQUIRED_SELECTED_USERS_TO_SHOW_CHAT_NAME = 2;
 
     @Inject
     UsersDAO usersDAO;
@@ -85,5 +88,11 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public void onItemSelectChange(SelectableDataUser item) {
+        super.onItemSelectChange(item);
+        setConversationNameInputFieldVisible(selectedUsers.size() >= REQUIRED_SELECTED_USERS_TO_SHOW_CHAT_NAME);
     }
 }

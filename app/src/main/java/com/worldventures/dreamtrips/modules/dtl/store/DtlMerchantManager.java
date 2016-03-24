@@ -214,10 +214,11 @@ public class DtlMerchantManager {
         if ((sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)
                 && !dtlMerchants.isEmpty()) {
             DtlMerchant nearestMerchant = dtlMerchants.get(0);
+            DtlManualLocation oldLocation = (DtlManualLocation) dtlLocationManager.getSelectedLocation();
             DtlLocation updatedLocation = ImmutableDtlManualLocation
-                    .copyOf((DtlManualLocation) dtlLocationManager.getSelectedLocation())
+                    .copyOf(oldLocation)
                     .withLongName(sourceType == LocationSourceType.FROM_MAP
-                            ? nearestMerchant.getCity() : null)
+                            ? nearestMerchant.getCity() : oldLocation.getLongName())
                     .withAnalyticsName(nearestMerchant.getAnalyticsName());
             dtlLocationManager.persistLocation(updatedLocation);
         }

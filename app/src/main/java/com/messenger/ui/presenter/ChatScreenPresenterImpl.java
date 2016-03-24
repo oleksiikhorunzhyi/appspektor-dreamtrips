@@ -58,7 +58,6 @@ import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -233,7 +232,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void closeChat() {
-        chatObservable.first().subscribeOn(Schedulers.io()).subscribe(Chat::close);
+        chatObservable.take(1).subscribeOn(Schedulers.io()).subscribe(Chat::close);
     }
     ///////////////////////////////////////////////////
     ////// Streams
@@ -280,7 +279,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .autoConnect();
 
         source.compose(new NonNullFilter<>())
-                .first()
+                .take(1)
                 .subscribe(conversationUsersPair -> {
                     if (ConversationHelper.isSingleChat(conversationUsersPair.first))
                         TrackingHelper.openSingleConversation();
@@ -299,7 +298,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void connectToChatStream() {
         chatObservable = conversationObservable
-                .first()
+                .take(1)
                 .flatMap(conversationListWithParticipants ->
                         createChat(messengerServerFacade.getChatManager(), conversationListWithParticipants.first, conversationListWithParticipants.second)
                                 .subscribeOn(Schedulers.io()))
@@ -351,7 +350,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void loadInitialData() {
         conversationObservable
-                .first()
+                .take(1)
                 .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .compose(new IoToMainComposer<>())
                 .subscribe(conversation -> {
@@ -450,7 +449,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         getView().showLoading();
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
 
-        conversationObservable.first()
+        conversationObservable.take(1)
                 .compose(bindViewIoToMainComposer())
                 .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .subscribe(conversation -> {
@@ -502,7 +501,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onNextPageReached() {
         conversationObservable
-                .first()
+                .take(1)
                 .filter(conversation -> !loading)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(conversation -> loadNextPage(),
@@ -521,7 +520,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindVisibility())
                 .throttleFirst(START_TYPING_DELAY, TimeUnit.MILLISECONDS)
                 .filter(textViewTextChangeEvent -> !typing)
-                .flatMap(textViewTextChangeEvent -> chatObservable.first())
+                .flatMap(textViewTextChangeEvent -> chatObservable.take(1))
                 .subscribe(chat -> {
                     typing = true;
                     chat.setCurrentState(ChatState.COMPOSING);
@@ -534,7 +533,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindVisibility())
                 .skip(1)
                 .debounce(STOP_TYPING_DELAY, TimeUnit.MILLISECONDS)
-                .flatMap(textViewTextChangeEvent -> chatObservable.first())
+                .flatMap(textViewTextChangeEvent -> chatObservable.take(1))
                 .subscribe(chat -> {
                     typing = false;
                     chat.setCurrentState(ChatState.PAUSE);
@@ -551,10 +550,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             return;
         }
 
-        chatObservable.first()
+        chatObservable.take(1)
                 .flatMap(chat -> chat.sendReadStatus(message.getId()).flatMap(this::markMessagesAsRead))
                 .doOnNext(m -> Timber.i("Message marked as read %s", m))
-                .flatMap(msg -> conversationObservable.first())
+                .flatMap(msg -> conversationObservable.take(1))
                 .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .subscribe(dataConversation -> {
                     int unreadMessageCount = dataConversation.getUnreadMessageCount() - 1;
@@ -703,7 +702,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 }, e -> Timber.w("Unable to get last conversation"));
 
         conversationObservable
-                .first()
+                .take(1)
                 .compose(bindVisibilityIoToMainComposer())
                 .map(conversationWithParticipants -> conversationWithParticipants.first)
                 .subscribe(conversation -> {
@@ -728,7 +727,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             case R.id.action_settings:
                 conversationObservable
                         .map(dataConversationStringPair -> dataConversationStringPair.first)
-                        .first()
+                        .take(1)
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
                             if (ConversationHelper.isTripChat(conversation)) {
@@ -863,7 +862,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         message.setMessageBody(messageBodyCreator.provideForAttachment(AttachmentHolder
                 .newImageAttachment(dataAttachment.getUrl())));
         //
-        chatObservable.first()
+        chatObservable.take(1)
                 .flatMap(chat -> chat.send(message))
                 .subscribe(msg -> {
                 }, throwable -> Timber.w("Unable to send message with attachment"));
@@ -934,7 +933,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void submitOneChatAction(Action1<Chat> action1) {
-        chatObservable.first()
+        chatObservable.take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(action1, e -> Timber.w("Unable to submitOneChatAction"));

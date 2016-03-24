@@ -82,8 +82,8 @@ public class BucketPhotoCell extends AbstractDelegateCell<BucketPhoto, BucketPho
                 .positiveText(R.string.delete_photo_positiove)
                 .negativeText(R.string.delete_photo_negative)
                 .onPositive((materialDialog, dialogAction) -> cellDelegate.deletePhotoRequest(getModelObject()))
-                .onNegative((materialDialog, dialogAction) -> materialDialog.dismiss());
-
+                .onNegative((materialDialog, dialogAction) -> materialDialog.dismiss())
+                .show();
     }
 
 }

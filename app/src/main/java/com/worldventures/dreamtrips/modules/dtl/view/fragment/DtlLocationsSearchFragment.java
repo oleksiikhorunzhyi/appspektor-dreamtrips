@@ -34,7 +34,6 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 @Layout(R.layout.fragment_dtl_locations_search)
 @MenuResource(R.menu.menu_locations_search)
@@ -92,7 +91,6 @@ public class DtlLocationsSearchFragment extends RxBaseFragment<DtlLocationsSearc
             // line below is magic - prevents empty string to be sent as query during screen creation
             searchView.setQuery("", false);
             bind(RxSearchView.queryTextChanges(searchView).skip(1))
-                    .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(charSequence -> Observable.just(charSequence.toString()))
                     .subscribe(getPresenter()::search);
             //

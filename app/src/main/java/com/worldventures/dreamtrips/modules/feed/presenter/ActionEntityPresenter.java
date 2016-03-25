@@ -121,8 +121,10 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {
-        ((Photo) feedEntity).getPhotoTags().addAll(cachedAddedPhotoTags);
-        ((Photo) feedEntity).getPhotoTags().removeAll(cachedRemovedPhotoTags);
+        Photo photo = (Photo) feedEntity;
+        photo.getPhotoTags().addAll(cachedAddedPhotoTags);
+        photo.getPhotoTags().removeAll(cachedRemovedPhotoTags);
+        photo.setPhotoTagsCount(photo.getPhotoTags().size());
 
         closeView();
     }

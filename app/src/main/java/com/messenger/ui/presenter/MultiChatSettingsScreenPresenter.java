@@ -80,10 +80,12 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
                     }
                 })
                 .onSuccess(action -> {
+                    conversationAvatarDelegate.clearReplays();
                     getView().setConversation(action.getResult());
                     getView().invalidateToolbarMenu();
                 })
                 .onFail((state, error) -> {
+                    conversationAvatarDelegate.clearReplays();
                     getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
 
                 });

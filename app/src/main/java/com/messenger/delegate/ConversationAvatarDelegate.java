@@ -40,6 +40,10 @@ public class ConversationAvatarDelegate {
         actionPipe = janet.createPipe(AvatarAction.class, Schedulers.io());
     }
 
+    public void clearReplays() {
+        actionPipe.clearReplays();
+    }
+
     public Observable<ActionState<AvatarAction>> listenToAvatarUpdates(String conversationId) {
         return actionPipe.observeWithReplay()
                 .filter(state -> TextUtils.equals(state.action.getConversation().getId(), conversationId))

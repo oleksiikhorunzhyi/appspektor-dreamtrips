@@ -68,7 +68,7 @@ android {
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
-        buildConfigField 'String', 'S3Api', '"https://s3-us-west-2.amazonaws.com/dtappstg-config/"'
+        buildConfigField 'String', 'S3Api', '"https://s3-us-west-2.amazonaws.com/dtappstg-config"'
         buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
         buildConfigField 'String', 'API_VERSION', '"2"'
         buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'

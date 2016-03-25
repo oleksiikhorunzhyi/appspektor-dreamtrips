@@ -20,6 +20,7 @@ public class DtlInitializer implements AppInitializer {
     public void initialize(Injector injector) {
         injector.inject(this);
         db.cleanLastSelectedOffersOnlyToggle();
+        db.cleanLastMapCameraPosition();
         locationManager.cleanLocation();
     }
 }

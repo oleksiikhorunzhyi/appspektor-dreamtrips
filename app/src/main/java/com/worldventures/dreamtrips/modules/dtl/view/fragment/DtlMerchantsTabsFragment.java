@@ -108,6 +108,7 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
                 .compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.PAUSE))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(position -> currentPosition = position)
+                .doOnNext(position -> getPresenter().trackTabChange(currentPosition))
                 .subscribe(getPresenter()::rememberUserTabSelection);
     }
 

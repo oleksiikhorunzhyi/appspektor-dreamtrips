@@ -84,11 +84,18 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     public void setPhotoTags(List<PhotoTag> photoTags) {
-        this.photoTags = photoTags;
+        if (photoTags != null) {
+            this.photoTags = photoTags;
+            this.photoTagsCount = photoTags.size();
+        }
     }
 
     public int getPhotoTagsCount() {
         return photoTagsCount;
+    }
+
+    public void setPhotoTagsCount(int photoTagsCount) {
+        this.photoTagsCount = photoTagsCount;
     }
 
     @Override

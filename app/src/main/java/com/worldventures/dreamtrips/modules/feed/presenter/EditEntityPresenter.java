@@ -84,7 +84,9 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
         switch (type) {
             case PHOTO:
                 isViewShown = true;
-                someTagSets = !((Photo) entity).getPhotoTags().isEmpty() || !cachedAddedPhotoTags.isEmpty();
+                ArrayList<PhotoTag> tempAdded = new ArrayList<>(((Photo) entity).getPhotoTags());
+                tempAdded.removeAll(cachedRemovedPhotoTags);
+                someTagSets = !tempAdded.isEmpty() || !cachedAddedPhotoTags.isEmpty();
                 break;
             default:
                 isViewShown = false;

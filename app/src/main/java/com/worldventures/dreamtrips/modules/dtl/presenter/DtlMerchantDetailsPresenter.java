@@ -93,7 +93,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
             photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
             db.cleanDtlTransaction(merchant.getId(), dtlTransaction);
             view.openTransaction(merchant, dtlTransaction);
-            TrackingHelper.dtlCheckin(merchant.getId());
+            TrackingHelper.dtlEarnView();
         } else {
             view.disableCheckinButton();
             view.bind(locationDelegate
@@ -132,7 +132,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
         //
         view.setTransaction(dtlTransaction);
         //
-        TrackingHelper.dtlEarnView();
+        TrackingHelper.dtlCheckin(merchant.getId());
     }
 
     public void onEstimationClick() {

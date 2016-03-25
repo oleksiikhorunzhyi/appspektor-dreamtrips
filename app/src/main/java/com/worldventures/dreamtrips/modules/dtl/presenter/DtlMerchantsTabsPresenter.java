@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -21,6 +20,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import icepick.State;
+import timber.log.Timber;
+
 public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPresenter.View> {
 
     @Inject
@@ -28,13 +30,13 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     @Inject
     DtlLocationManager dtlLocationManager;
 
-    private WeakHandler weakHandler;
+    // this flag is used so that we don't track event when fragment is resumes to be destroyed
+    @State
+    boolean citiesWasOpened = false;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        weakHandler = new WeakHandler();
-        //
         apiErrorPresenter.setView(view);
         setTabs();
         //
@@ -45,6 +47,13 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
                 .subscribe(view::updateToolbarTitle);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        preselectProperTab();
+        citiesWasOpened = false;
+    }
+
     public void applySearch(String query) {
         dtlMerchantManager.applySearch(query);
     }
@@ -53,10 +62,8 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        preselectProperTab();
+    public void movingToCities() {
+        citiesWasOpened = true;
     }
 
     private void preselectProperTab() {
@@ -90,15 +97,15 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        // we user handler to prevent double checking this event when doing that magic with backstack
-        weakHandler.postDelayed(() -> {
-            String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
-                    TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
-            trackTab(newTabName);
-        }, 100);
+        if (citiesWasOpened) return;
+
+        String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
+                TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
+        trackTab(newTabName);
     }
 
     private void trackTab(String tabName) {
+        Timber.d("Track tab %s", this);
         TrackingHelper.dtlMerchantsTab(tabName, dtlLocationManager.getCachedSelectedLocation());
     }
 

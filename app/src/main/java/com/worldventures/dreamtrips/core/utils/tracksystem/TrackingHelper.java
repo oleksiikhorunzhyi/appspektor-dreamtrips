@@ -975,10 +975,11 @@ public class TrackingHelper {
 
     public static void dtlMerchantFilter(DtlFilterData filterData) {
         Map data = new HashMap<>();
-        String price = String.format("%d-%d%s",
-                filterData.getMinPrice(), filterData.getMaxPrice(),
+        String price = String.format("%d-%d",
+                filterData.getMinPrice(), filterData.getMaxPrice());
+        String distance = String.format("10-%s%s",
+                Double.valueOf(filterData.getMaxDistance()).intValue(),
                 filterData.getDistanceType().getTypeNameForAnalytics());
-        String distance = String.format("10-%s", Double.valueOf(filterData.getMaxDistance()).intValue());
         data.put(DTL_ATTRIBUTE_FILTER_PRICE, price);
         data.put(DTL_ATTRIBUTE_FILTER_DISTANCE, distance);
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);

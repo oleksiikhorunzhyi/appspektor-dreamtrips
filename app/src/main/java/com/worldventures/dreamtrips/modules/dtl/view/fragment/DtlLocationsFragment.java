@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.google.android.gms.common.api.Status;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -29,12 +30,12 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_locations)
@@ -80,6 +81,8 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         adapter.registerDelegate(DtlExternalLocation.class, this);
         //
         recyclerView.setAdapter(adapter);
+        //
+        bindNearMeButton();
     }
 
     private void initToolbar() {
@@ -112,9 +115,10 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         }
     }
 
-    @OnClick(R.id.autoDetectNearMe)
-    public void nearMeClicked() {
-        getPresenter().loadNearMeRequested();
+    private void bindNearMeButton() {
+        bind(RxView.clicks(autoDetectNearMe))
+                .throttleFirst(3L, TimeUnit.SECONDS)
+                .subscribe(aVoid -> getPresenter().loadNearMeRequested());
     }
 
     @Override

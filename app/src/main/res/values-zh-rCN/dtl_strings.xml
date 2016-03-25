@@ -5,6 +5,11 @@
     <string name="dtl_locations_try_search">我们无法找到一个靠近您的城市。 请试试我们的城市搜索</string>
     <string name="dtl_merchant_tab_offers">优惠</string>
     <string name="dtl_merchant_tab_dining">餐饮</string>
+    <string name="dtl_near_me_caption">靠近我</string>
+    <string name="dtl_nearby_caption">附近</string>
+    <string name="dtl_autodetect_location">自动检测我的位置</string>
+    <string name="dtl_no_merchants_caption">这里没有商家</string>
+    <string name="dtl_load_merchants_here_button_caption">重做商家搜索</string>
     <string name="dtl_place_list_empty_text">没有所选类型的地方</string>
     <string name="dtl_points_estimation_calculate_button_caption">计算</string>
     <string name="dtl_points_estimation_input_hint">输入金额</string>
@@ -50,6 +55,8 @@
     <string name="dtl_details_share_title_earned" formatted="false">我已经在 %s赚取 %s DreamTrips点数</string>
     <string name="dtl_wait_for_receipt">请稍候…上传收据</string>
     <string name="dtl_wait_for_earn">请稍候…赚取点数</string>
+    <string name="dtl_wait_for_offers">搜索附近的优惠。</string>
+    <string name="dtl_wait_for_dinings">搜索附近的商家。</string>
     <string name="dtl_estimator_explanation">点数计算是基于在商家的最低消费量和一周的哪一天</string>
     <string name="dtl_photo_upload_error">上传错误。如果问题仍然存在，请联系会员服务</string>
     <string name="dtl_merchant_success">成功</string>
@@ -64,6 +71,7 @@
     <string name="km">公里</string>
     <string name="mi">英里</string>
     <string name="dtl_coming_soon_offers">更多优惠即将到来</string>
+    <string name="dtl_show_offers_only">只显示优惠</string>
     <string name="dtl_details_share_title_without_points">我发现%s在使用DreamTrips app</string>
     <string name="details_collapsed_text_caption">显示更多</string>
     <string name="details_expanded_text_caption">显示更少</string>

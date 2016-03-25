@@ -113,7 +113,8 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         dtlMerchantManager.setMerchantTabSelectionIndex(newPosition);
     }
 
-    public void onEventMainThread(final MerchantClickedEvent event) {
+    public void onEvent(final MerchantClickedEvent event) {
+        eventBus.cancelEventDelivery(event);
         if (!view.isTabletLandscape()) {
             view.openDetails(event.getMerchantId());
         }

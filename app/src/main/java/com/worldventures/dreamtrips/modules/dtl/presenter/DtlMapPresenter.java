@@ -60,7 +60,10 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         super.takeView(view);
         toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
         //
-        bindJobObservable(dtlMerchantManager.connectMerchantsWithCache()).onSuccess(this::onMerchantsLoaded);
+        bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
+                .onProgress(() -> view.showProgress(true))
+                .onError(throwable -> view.showProgress(false))
+                .onSuccess(this::onMerchantsLoaded);
         bindFilteredStream();
         bindLocationStream();
     }
@@ -117,6 +120,10 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
         this.merchantsStream.onNext(dtlMerchants);
+        //
+        view.showProgress(false);
+        view.showButtonLoadMerchants(false);
+
         //
         if (dtlMerchants.isEmpty() &&
                 dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP)
@@ -182,6 +189,8 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     public interface View extends RxView {
+        void showProgress(boolean show);
+
         void addLocationMarker(LatLng location);
 
         void addPin(String id, LatLng latLng, DtlMerchantType type);

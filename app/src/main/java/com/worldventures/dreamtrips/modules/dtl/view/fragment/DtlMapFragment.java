@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -52,7 +53,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @InjectView(R.id.sw_filter)
     SwitchCompat swHideDinings;
     @InjectView(R.id.redo_merchants)
-    Button loadMerchants;
+    View loadMerchants;
 
     SearchViewHelper searchViewHelper;
     //
@@ -141,6 +142,17 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     @Override
+    public void showProgress(boolean show) {
+        int textResId = show ? R.string.loading : R.string.dtl_load_merchants_here_button_caption;
+        int visibility = show ? View.VISIBLE : View.GONE;
+        //
+        ButterKnife.findById(loadMerchants, R.id.redo_merchants_progress).setVisibility(visibility);
+        ButterKnife.<TextView>findById(loadMerchants, R.id.redo_merchants_text).setText(textResId);
+        //
+        loadMerchants.setEnabled(!show);
+    }
+
+    @Override
     public GoogleMap getMap() {
         return googleMap;
     }
@@ -158,6 +170,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void showButtonLoadMerchants(boolean show) {
+        loadMerchants.setEnabled(show);
         loadMerchants.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 

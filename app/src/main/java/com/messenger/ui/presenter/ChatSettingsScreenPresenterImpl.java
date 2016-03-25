@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import rx.Observable;
-import rx.observables.ConnectableObservable;
 
 public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScreen> extends MessengerPresenterImpl<C,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
@@ -81,12 +80,11 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     }
 
     private void connectToConversation() {
-        ConnectableObservable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantObservable =
+        Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantObservable =
                 conversationsDAO.getConversationWithParticipants(conversationId)
                 .compose(new NonNullFilter<>())
                 .take(1)
-                .compose(bindViewIoToMainComposer())
-                .publish();
+                .compose(bindViewIoToMainComposer());
 
         conversationObservable = conversationWithParticipantObservable
                 .map(conversationWithParticipant -> conversationWithParticipant.first)
@@ -100,8 +98,6 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
         conversationWithParticipantObservable
                 .subscribe(conversation -> onConversationLoaded(conversation.first, conversation.second));
-
-        conversationWithParticipantObservable.connect();
     }
 
     @Override

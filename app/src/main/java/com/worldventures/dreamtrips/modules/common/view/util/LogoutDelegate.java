@@ -53,7 +53,7 @@ public class LogoutDelegate {
 
         String token = snappyRepository.getGcmRegToken();
         if (token != null) {
-            dreamSpiceManager.execute(new UnsubscribeDeviceCommand(token),
+            dreamSpiceManager.clearExecute(new UnsubscribeDeviceCommand(token),
                     aVoid -> deleteTokenInGcm(),
                     spiceException -> {
                         Timber.e(spiceException, "Unsubscribe failed");

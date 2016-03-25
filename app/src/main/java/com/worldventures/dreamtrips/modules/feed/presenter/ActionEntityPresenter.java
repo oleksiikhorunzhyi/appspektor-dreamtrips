@@ -81,8 +81,12 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     }
 
     public void onTagSelected(ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
-        cachedAddedPhotoTags = photoTags;
-        cachedRemovedPhotoTags = removedTags;
+        cachedAddedPhotoTags.removeAll(photoTags);
+        cachedAddedPhotoTags.addAll(photoTags);
+        cachedAddedPhotoTags.removeAll(removedTags);
+
+        cachedRemovedPhotoTags.removeAll(removedTags);
+        cachedRemovedPhotoTags.addAll(removedTags);
     }
 
     public abstract Location getLocation();

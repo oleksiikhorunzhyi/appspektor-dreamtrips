@@ -80,6 +80,9 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
             recyclerViewRecent.setAdapter(adapterRecent);
         }
 
+        this.refreshLayout.setOnRefreshListener(this);
+        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+
         setUpRecyclerViews();
     }
 

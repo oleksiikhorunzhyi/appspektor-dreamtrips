@@ -33,8 +33,11 @@ public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresent
                 .getCoordinates().asAndroidLocation());
     }
 
-    public void onEventMainThread(final MerchantClickedEvent event) {
-        if (view.isTabletLandscape()) view.showDetails(event.getMerchantId());
+    public void onEvent(final MerchantClickedEvent event) {
+        if (view.isTabletLandscape()){
+            eventBus.cancelEventDelivery(event);
+            view.showDetails(event.getMerchantId());
+        }
     }
 
     public interface View extends Presenter.View {

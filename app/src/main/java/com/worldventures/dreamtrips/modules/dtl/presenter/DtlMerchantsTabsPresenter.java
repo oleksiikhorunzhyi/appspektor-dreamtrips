@@ -114,8 +114,8 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     }
 
     public void onEvent(final MerchantClickedEvent event) {
-        eventBus.cancelEventDelivery(event);
         if (!view.isTabletLandscape()) {
+            eventBus.cancelEventDelivery(event);
             view.openDetails(event.getMerchantId());
         }
     }

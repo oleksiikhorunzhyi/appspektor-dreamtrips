@@ -122,7 +122,7 @@ public class DtlMerchantManager {
     }
 
     private void trackMerchantSearch(List<DtlMerchant> merchants, String query) {
-      //  if (!TextUtils.isEmpty(query)) TrackingHelper.dtlMerchantSearch(query, merchants.size());
+        //  if (!TextUtils.isEmpty(query)) TrackingHelper.dtlMerchantSearch(query, merchants.size());
     }
 
     public void initFilterData() {
@@ -189,17 +189,15 @@ public class DtlMerchantManager {
 
     public Observable<Job<List<DtlMerchant>>> connectMerchantsWithCache() {
         Observable<Job<List<DtlMerchant>>> observable = getMerchantsExecutor.connectWithCache();
-        if (lastResult != null) {
-            observable = observable.flatMap(job -> {
-                Observable<Job<List<DtlMerchant>>> result = Observable.just(job);
-                if (job.status == Job.JobStatus.PROGRESS) {
-                    return result.startWith(new Job.Builder<List<DtlMerchant>>()
-                            .status(Job.JobStatus.SUCCESS)
-                            .value(lastResult.second).create());
-                }
-                return result;
-            });
-        }
+        observable = observable.flatMap(job -> {
+            Observable<Job<List<DtlMerchant>>> result = Observable.just(job);
+            if (job.status == Job.JobStatus.PROGRESS && lastResult != null) {
+                return result.startWith(new Job.Builder<List<DtlMerchant>>()
+                        .status(Job.JobStatus.SUCCESS)
+                        .value(lastResult.second).create());
+            }
+            return result;
+        });
         return observable;
     }
 

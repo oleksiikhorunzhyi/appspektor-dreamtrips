@@ -294,7 +294,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
-        if (dtlLocation == null) return; // for safety reasons
+        if (dtlLocation == null || toolbar == null) return; // for safety reasons
         //
         TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
         TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);

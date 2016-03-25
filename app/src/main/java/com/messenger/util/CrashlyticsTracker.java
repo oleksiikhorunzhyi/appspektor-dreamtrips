@@ -1,12 +1,11 @@
 package com.messenger.util;
 
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
@@ -23,7 +22,7 @@ public final class CrashlyticsTracker {
         Crashlytics.log("url: " + throwable.getResponse().getUrl());
         Crashlytics.log("status: " + throwable.getResponse().getStatus());
         Crashlytics.log("reason: " + throwable.getResponse().getReason());
-        Crashlytics.log("headers: " + StringUtils.join(throwable.getResponse().getHeaders()));
+        Crashlytics.log("headers: " + TextUtils.join(", ", throwable.getResponse().getHeaders()));
         Crashlytics.log("body: " + throwable.getBody());
         Crashlytics.logException(new DtApiException(getErrorMessageForCrashlytics(throwable),
                 (ErrorResponse) throwable.getBodyAs(ErrorResponse.class), throwable.getResponse().getStatus()));

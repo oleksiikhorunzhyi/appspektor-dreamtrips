@@ -41,6 +41,12 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     }
 
     @Override
+    public void cancel() {
+        pickerContainer.setOnHierarchyChangeListener(null);
+        super.cancel();
+    }
+
+    @Override
     protected int getPostButtonText() {
         return R.string.post;
     }

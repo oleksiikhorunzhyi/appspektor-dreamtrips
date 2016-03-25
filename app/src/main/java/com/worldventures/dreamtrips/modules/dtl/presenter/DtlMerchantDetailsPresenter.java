@@ -93,6 +93,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
             photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
             db.cleanDtlTransaction(merchant.getId(), dtlTransaction);
             view.openTransaction(merchant, dtlTransaction);
+            TrackingHelper.dtlCheckin(merchant.getId());
         } else {
             view.disableCheckinButton();
             view.bind(locationDelegate
@@ -131,7 +132,7 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
         //
         view.setTransaction(dtlTransaction);
         //
-        TrackingHelper.dtlCheckin(merchant.getId());
+        TrackingHelper.dtlEarnView();
     }
 
     public void onEstimationClick() {
@@ -172,13 +173,6 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
      */
     public void trackPointEstimator() {
         TrackingHelper.dtlPointsEstimationView();
-    }
-
-    /**
-     * Analytic-related
-     */
-    public void trackEarnFlowView() {
-        TrackingHelper.dtlEarnView();
     }
 
     public void routeToMerchantRequested(@Nullable final Intent intent) {

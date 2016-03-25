@@ -270,7 +270,6 @@ public class DtlMerchantDetailsFragment
         router.moveTo(Route.DTL_TRANSACTION_SUCCEED, NavigationConfigBuilder.forDialog()
                 .data(new MerchantIdBundle(dtlMerchant.getId()))
                 .build());
-        getPresenter().trackEarnFlowView();
     }
 
     @Override

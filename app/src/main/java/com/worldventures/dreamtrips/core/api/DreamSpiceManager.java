@@ -106,6 +106,20 @@ public class DreamSpiceManager extends SpiceManager {
         });
     }
 
+    public <T> void clearExecute(final SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
+        super.execute(request, new RequestListener<T>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                failureListener.handleError(spiceException);
+            }
+
+            @Override
+            public void onRequestSuccess(T t) {
+                successListener.onRequestSuccess(t);
+            }
+        });
+    }
+
     public <T> void execute(final SpiceRequest<T> request, String cacheKey, long cacheExpiryDuration,
                             SuccessListener<T> successListener, FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));

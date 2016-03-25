@@ -44,6 +44,7 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         //
         view.bind(gpsLocationDelegate.requestLocationUpdate()
                 .compose(new IoToMainComposer<>()))
+                .doOnSubscribe(view::showProgress)
                 .subscribe(this::proceedNavigation, this::onLocationError);
     }
 

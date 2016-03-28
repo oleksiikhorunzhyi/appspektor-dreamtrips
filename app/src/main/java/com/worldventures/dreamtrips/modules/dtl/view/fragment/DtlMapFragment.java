@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -302,17 +300,19 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                             .build()));
         } else {
             toolbar.findViewById(R.id.spinnerStyledTitle).setVisibility(View.GONE);
+            toolbar.findViewById(R.id.locationModeCaption).setVisibility(View.GONE);
         }
     }
 
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
-        if (dtlLocation == null || toolbar == null) return; // for safety reasons
+        if (dtlLocation == null || toolbar == null || // for safety reasons
+                isTabletLandscape()) return; // no showing in landscape
         //
         TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
         TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
         //
-        if (locationTitle == null || locationModeCaption == null) return;
+        if (locationTitle == null || locationModeCaption == null) return; // for safety reasons on samsung
         //
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:

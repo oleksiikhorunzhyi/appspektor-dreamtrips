@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.text.TextUtils;
+
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -55,6 +57,8 @@ public class DtlLocationsSearchPresenter extends JobPresenter<DtlLocationsSearch
     public void onSearchFinished(List<DtlExternalLocation> locations) {
         view.hideProgress();
         view.setItems(locations);
+        if (TextUtils.isEmpty(dtlLocationManager.getQuery()) && !locations.isEmpty())
+            view.showDefaultCaption(false);
     }
 
     public void onSearchError(Throwable e) { // TODO :: 3/16/16 TEMPORARY NOT TO BULK USER WITH ERRORS

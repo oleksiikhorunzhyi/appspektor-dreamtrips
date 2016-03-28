@@ -77,6 +77,10 @@ public class DtlLocationManager {
     private String query;
     private List<DtlExternalLocation> searchLocations;
 
+    public String getQuery() {
+        return query;
+    }
+
     public void searchLocations(String query) {
         this.query = query;
         // don't do anything if users enter 'local-search' query and searchLocations is still null

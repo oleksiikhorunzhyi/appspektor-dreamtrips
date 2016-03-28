@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.support.v4.app.Fragment;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.messenger.util.CroppingUtils;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -26,7 +27,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
-import com.worldventures.dreamtrips.util.CopyFileTask;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
@@ -36,7 +36,6 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import icepick.State;
-import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
 import rx.Subscription;
 
@@ -44,6 +43,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     public static final int AVATAR_MEDIA_REQUEST_ID = 155322;
     public static final int COVER_MEDIA_REQUEST_ID = 155323;
+
+    public static final int DEFAULT_RATIO_X = 3;
+    public static final int DEFAULT_RATIO_Y = 1;
 
     @Inject
     RootComponentsProvider rootComponentsProvider;
@@ -265,7 +267,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         if (image != null) {
             String filePath = image.getFilePathOriginal();
             if (ValidationUtils.isUrl(filePath)) {
-                cacheFacebookImage(filePath, path -> Crop.prepare(path).startFrom((Fragment) view));
+                cacheFacebookImage(filePath, path -> startCropActivity(path, path));
             } else {
                 executeCrop(filePath);
             }
@@ -279,9 +281,13 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
      */
     private void executeCrop(String originalFilePath) {
         File originalFile = new File(originalFilePath);
-        doRequest(new CopyFileTask(originalFile,
-                        originalFile.getParentFile() + "/" + TEMP_PHOTO_FILE_PREFIX + originalFile.getName()),
-                s -> Crop.prepare(s).startFrom((Fragment) view));
+        String temporaryFile = originalFile.getParentFile() + "/" + TEMP_PHOTO_FILE_PREFIX + originalFile.getName();
+        startCropActivity(originalFilePath, temporaryFile);
+    }
+
+    private void startCropActivity(String originalPath, String targetPath){
+        Fragment fragment = ((Fragment) view);
+        CroppingUtils.startCropping(fragment.getContext(), fragment, originalPath, targetPath, DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
     }
 
     public void onEvent(OnPhotoClickEvent e) {

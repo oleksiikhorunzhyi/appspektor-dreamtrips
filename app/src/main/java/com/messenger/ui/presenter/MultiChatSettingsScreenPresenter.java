@@ -44,7 +44,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
 
         Observable.combineLatest(
             cropImageDelegate.getCroppedImagesStream(),
-            conversationObservable.first(),
+            conversationObservable.take(1),
             (image, conversation) -> new Pair<>(conversation, image))
             .compose(bindView())
             .subscribe(pair -> {

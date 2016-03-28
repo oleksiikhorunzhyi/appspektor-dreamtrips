@@ -2,9 +2,11 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.messenger.util.CroppingUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -18,8 +20,6 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
-
-import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_account)
 @MenuResource(R.menu.menu_empty)
@@ -88,7 +88,10 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
+        if (CroppingUtils.isCroppingResult(requestCode, resultCode)) {
+            Pair<String, Throwable> resultPair = CroppingUtils.obtainResults(requestCode, resultCode, data);
+            getPresenter().onCoverCropped(resultPair.first, String.valueOf(resultPair.second));
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

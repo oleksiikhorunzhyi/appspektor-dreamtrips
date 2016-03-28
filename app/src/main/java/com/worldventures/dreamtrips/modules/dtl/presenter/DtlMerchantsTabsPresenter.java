@@ -20,19 +20,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.State;
-import timber.log.Timber;
-
 public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPresenter.View> {
 
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
-
-    // this flag is used so that we don't track event when fragment is resumes to be destroyed
-    @State
-    boolean citiesWasOpened = false;
 
     @Override
     public void takeView(View view) {
@@ -51,7 +44,6 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     public void onResume() {
         super.onResume();
         preselectProperTab();
-        citiesWasOpened = false;
     }
 
     public void applySearch(String query) {
@@ -60,10 +52,6 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
 
     private void setTabs() {
         view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
-    }
-
-    public void movingToCities() {
-        citiesWasOpened = true;
     }
 
     private void preselectProperTab() {
@@ -97,16 +85,13 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        if (citiesWasOpened) return;
-
         String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
         trackTab(newTabName);
     }
 
     private void trackTab(String tabName) {
-        Timber.d("Track tab %s", this);
-        TrackingHelper.dtlMerchantsTab(tabName, dtlLocationManager.getCachedSelectedLocation());
+        dtlMerchantManager.trackTabChange(tabName, dtlLocationManager.getCachedSelectedLocation());
     }
 
     public void rememberUserTabSelection(int newPosition) {

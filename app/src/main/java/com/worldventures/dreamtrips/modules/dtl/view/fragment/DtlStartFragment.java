@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.app.Activity;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -60,12 +62,12 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
         navigateTo(Route.DTL_MERCHANTS_HOLDER);
     }
 
+    // TODO :: NOTE: needed commitAllowingStateLoss here so dropped Router's usage
     private void navigateTo(Route route) {
-        router.moveTo(route, NavigationConfigBuilder.forFragment()
-                .fragmentManager(getChildFragmentManager())
-                .backStackEnabled(false)
-                .containerId(R.id.dtl_container)
-                .build());
+        Fragment fragment = Fragment.instantiate(getActivity(), route.getClazzName());
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.dtl_container, fragment, route.getClazzName());
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override

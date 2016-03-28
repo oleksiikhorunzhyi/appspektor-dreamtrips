@@ -91,11 +91,13 @@ public class DtlMerchantManager {
     }
 
     private Observable<LatLng> combineLocationObservable() {
-        return locationDelegate.getLastKnownLocation()
-                .timeout(200, TimeUnit.MILLISECONDS)
+        return locationDelegate.getLastKnownLocationOrEmpty()
                 .onErrorResumeNext(Observable.empty())
-                .defaultIfEmpty(dtlLocationManager.getCachedSelectedLocation()
-                        .getCoordinates().asAndroidLocation())
+                .switchIfEmpty(locationDelegate.requestLocationUpdate()
+                        .take(1)
+                        .timeout(1000L, TimeUnit.MILLISECONDS)
+                        .onErrorReturn(throwable -> dtlLocationManager.getCachedSelectedLocation()
+                                .getCoordinates().asAndroidLocation()))
                 .map(location -> DtlLocationHelper.selectAcceptableLocation(location,
                         dtlLocationManager.getCachedSelectedLocation()));
     }

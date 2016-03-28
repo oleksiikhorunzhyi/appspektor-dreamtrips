@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.flow.path.StyledPath;
@@ -189,6 +189,12 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
 
     private void onSubjectEntered(String subject) {
         getPresenter().applyNewChatSubject(subject);
+    }
+
+    @Override
+    public void showEmptySubjectDialog() {
+        Toast.makeText(getContext(), R.string.chat_settings_error_empty_subject,
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

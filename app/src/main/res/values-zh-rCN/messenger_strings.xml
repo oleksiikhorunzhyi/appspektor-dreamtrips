@@ -87,4 +87,5 @@
         <![CDATA[要查看附件，请更新到DreamTrips应用程序的最新版本到<a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">这里</a>]]></string>
     <string name="translate_from">已翻译</string>
     <string name="translate_error">翻译错误</string>
+    <string name="chat_settings_error_empty_subject">請輸入對話名稱</string>
 </resources>

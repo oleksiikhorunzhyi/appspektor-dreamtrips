@@ -97,8 +97,12 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         checkPendingMapInfo();
         view.bind(gpsLocationDelegate.getLastKnownLocation())
                 .compose(new IoToMainComposer<>())
-                .subscribe(location -> view.tryHideMyLocationButton(false),
-                        throwable -> view.tryHideMyLocationButton(true));
+                .subscribe(location -> tryHideMyLocationButton(false),
+                        throwable -> tryHideMyLocationButton(true));
+    }
+
+    protected void tryHideMyLocationButton(boolean hide){
+        if(view != null) view.tryHideMyLocationButton(hide);
     }
 
     protected Location getFirstCenterLocation() {

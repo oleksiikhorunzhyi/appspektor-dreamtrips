@@ -34,7 +34,7 @@ public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresent
     }
 
     public void onEvent(final MerchantClickedEvent event) {
-        if (view.isTabletLandscape()){
+        if (view.isTabletLandscape() && view.isFragmentResumed()) {
             eventBus.cancelEventDelivery(event);
             view.showDetails(event.getMerchantId());
         }
@@ -43,5 +43,7 @@ public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresent
     public interface View extends Presenter.View {
 
         void showDetails(String id);
+
+        boolean isFragmentResumed();
     }
 }

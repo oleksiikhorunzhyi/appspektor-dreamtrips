@@ -6,6 +6,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
@@ -198,6 +199,11 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     @Override
     public void applyNewChatSubject(String subject) {
+        if (TextUtils.isEmpty(subject)) {
+            getView().showEmptySubjectDialog();
+            return;
+        }
+
         Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
                 .createMultiUserChatObservable(conversationId, facade.getUsername())
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))

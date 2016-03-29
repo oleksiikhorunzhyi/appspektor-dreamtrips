@@ -107,8 +107,9 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
     protected Location getFirstCenterLocation() {
         Location lastPosition = db.getLastMapCameraPosition();
-        Location lastSelectedLocation = dtlLocationManager.getCachedSelectedLocation().getCoordinates();
-        return lastPosition != null ? lastPosition : lastSelectedLocation;
+        DtlLocation lastSelectedLocation = dtlLocationManager.getCachedSelectedLocation();
+        return lastPosition != null ? lastPosition : (lastSelectedLocation != null ?
+                lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
     }
 
     protected Observable<Boolean> showingLoadMerchantsButton() {

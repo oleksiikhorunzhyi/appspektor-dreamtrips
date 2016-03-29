@@ -156,6 +156,8 @@ public class DtlMerchantDetailsPresenter extends DtlMerchantCommonDetailsPresent
      * Analytic-related
      */
     public void trackScreen() {
+        if (merchant == null) return;
+        //
         String merchantTypeAction = merchant.hasNoOffers() ?
                 TrackingHelper.DTL_ACTION_DINING_VIEW : TrackingHelper.DTL_ACTION_OFFER_VIEW;
         TrackingHelper.dtlMerchantView(merchantTypeAction, merchant.getId());

@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,7 +53,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @InjectView(R.id.sw_filter)
     SwitchCompat swHideDinings;
     @InjectView(R.id.redo_merchants)
-    View loadMerchants;
+    View loadMerchantsRoot;
 
     SearchViewHelper searchViewHelper;
     //
@@ -124,7 +125,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                 .position(location));
     }
 
-    @OnClick(R.id.redo_merchants)
+    @OnClick(R.id.redo_merchants_button)
     public void onMechantsRedoClick() {
         getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
     }
@@ -145,10 +146,11 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         int textResId = show ? R.string.loading : R.string.dtl_load_merchants_here_button_caption;
         int visibility = show ? View.VISIBLE : View.GONE;
         //
-        ButterKnife.findById(loadMerchants, R.id.redo_merchants_progress).setVisibility(visibility);
-        ButterKnife.<TextView>findById(loadMerchants, R.id.redo_merchants_text).setText(textResId);
+        Button loadMerchantsBtn = ButterKnife.<Button>findById(loadMerchantsRoot, R.id.redo_merchants_button);
+        ButterKnife.findById(loadMerchantsRoot, R.id.redo_merchants_progress).setVisibility(visibility);
         //
-        loadMerchants.setEnabled(!show);
+        loadMerchantsBtn.setText(textResId);
+        loadMerchantsBtn.setEnabled(!show);
     }
 
     @Override
@@ -169,8 +171,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void showButtonLoadMerchants(boolean show) {
-        loadMerchants.setEnabled(show);
-        loadMerchants.setVisibility(show ? View.VISIBLE : View.GONE);
+        loadMerchantsRoot.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override

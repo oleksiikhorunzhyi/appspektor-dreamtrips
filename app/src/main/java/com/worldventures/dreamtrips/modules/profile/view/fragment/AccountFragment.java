@@ -90,6 +90,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (CroppingUtils.isCroppingResult(requestCode, resultCode)) {
             Pair<String, Throwable> resultPair = CroppingUtils.obtainResults(requestCode, resultCode, data);
+            if (resultPair == null) return;
             getPresenter().onCoverCropped(resultPair.first, String.valueOf(resultPair.second));
         } else {
             super.onActivityResult(requestCode, resultCode, data);

@@ -99,6 +99,8 @@ public class CropImageDelegate {
         if (!CroppingUtils.isCroppingResult(requestCode, resultCode)) return false;
 
         Pair<String, Throwable> resultPair = CroppingUtils.obtainResults(requestCode, resultCode, data);
+        if (resultPair == null) return true;
+
         onCropFinished(resultPair.first, String.valueOf(resultPair.second));
         return true;
     }

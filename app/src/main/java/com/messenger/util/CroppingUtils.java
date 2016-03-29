@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 
+import com.worldventures.dreamtrips.R;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -17,28 +19,40 @@ import java.io.File;
 public class CroppingUtils {
 
     public static void startCropping(Activity activity, String fileFrom, String fileTo, int ratioX, int ratioY){
-        obtainBasicUCrop(fileFrom, fileTo)
+        obtainBasicUCrop(activity, fileFrom, fileTo)
                 .withAspectRatio(ratioX, ratioY)
                 .start(activity);
     }
 
     public static void startCropping(Context context, Fragment fragment, String fileFrom, String fileTo, int ratioX, int ratioY){
-        obtainBasicUCrop(fileFrom, fileTo)
+        obtainBasicUCrop(context, fileFrom, fileTo)
                 .withAspectRatio(ratioX, ratioY)
                 .start(context, fragment);
     }
 
     public static void startCropping(Activity activity, String fileFrom, String fileTo){
-        obtainBasicUCrop(fileFrom, fileTo).start(activity);
+        obtainBasicUCrop(activity, fileFrom, fileTo).start(activity);
     }
 
-    private static UCrop obtainBasicUCrop(String fileFrom, String fileTo){
+    private static UCrop obtainBasicUCrop(Context context, String fileFrom, String fileTo){
         UCrop.Options options = new UCrop.Options();
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+
+        options.setToolbarColor(obtainColor(R.color.theme_main, context));
+        options.setActiveWidgetColor(obtainColor(R.color.cropping_selected_button, context));
+        options.setStatusBarColor(obtainColor(R.color.accent, context));
 
         Uri from = Uri.fromFile(new File(fileFrom));
         Uri to = Uri.fromFile(new File(fileTo));
         return UCrop.of(from, to).withOptions(options);
+    }
+
+    private static int obtainColor(int id, Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return context.getColor(id);
+        } else {
+            return context.getResources().getColor(id);
+        }
     }
 
     public static boolean isCroppingResult(int requestCode, int resultCode){

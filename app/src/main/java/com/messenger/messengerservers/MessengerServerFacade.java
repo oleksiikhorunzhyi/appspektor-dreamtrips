@@ -2,7 +2,6 @@ package com.messenger.messengerservers;
 
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
-import com.messenger.messengerservers.model.User;
 
 public interface MessengerServerFacade {
 

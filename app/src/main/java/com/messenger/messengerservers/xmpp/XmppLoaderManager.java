@@ -4,7 +4,7 @@ import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.loaders.ParticipantsLoader;
 import com.messenger.messengerservers.model.Conversation;
-import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.messengerservers.xmpp.loaders.XmppContactLoader;
 import com.messenger.messengerservers.xmpp.loaders.XmppConversationLoader;
 import com.messenger.messengerservers.xmpp.loaders.XmppParticipantsLoader;
@@ -19,7 +19,7 @@ public class XmppLoaderManager implements LoaderManager {
     }
 
     @Override
-    public Loader<User> createContactLoader() {
+    public Loader<MessengerUser> createContactLoader() {
         return new XmppContactLoader(facade, null);
     }
 

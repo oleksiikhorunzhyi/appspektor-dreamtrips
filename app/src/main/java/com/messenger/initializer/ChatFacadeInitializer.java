@@ -19,20 +19,16 @@ import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -181,10 +177,10 @@ public class ChatFacadeInitializer implements AppInitializer {
         });
     }
 
-    private User createUser(Participant participant, boolean isOnline) {
-        User user = new User(participant.getUserId());
-        user.setOnline(isOnline);
-        return user;
+    private MessengerUser createUser(Participant participant, boolean isOnline) {
+        MessengerUser messengerUser = new MessengerUser(participant.getUserId());
+        messengerUser.setOnline(isOnline);
+        return messengerUser;
     }
 
     private Observable<List<DataUser>> loadConversation(String conversationId) {
@@ -206,9 +202,9 @@ public class ChatFacadeInitializer implements AppInitializer {
         participantsDAO.save(participants);
     }
 
-    private List<User> filterNotExistedUsersAndUpdateExisted(List<JoinedEvent> joinedEvents) {
+    private List<MessengerUser> filterNotExistedUsersAndUpdateExisted(List<JoinedEvent> joinedEvents) {
         List<DataUser> existedUsers = new ArrayList<>(joinedEvents.size());
-        List<User> newUsers = new ArrayList<>(joinedEvents.size());
+        List<MessengerUser> newMessengerUsers = new ArrayList<>(joinedEvents.size());
 
         for (JoinedEvent e: joinedEvents) {
             Participant participant = e.getParticipant();
@@ -218,11 +214,11 @@ public class ChatFacadeInitializer implements AppInitializer {
                 existedUsers.add(cachedUser);
             }
             else {
-                newUsers.add(createUser(participant, joinedEvents.isEmpty()));
+                newMessengerUsers.add(createUser(participant, joinedEvents.isEmpty()));
             }
         }
         usersDAO.save(existedUsers);
-        return newUsers;
+        return newMessengerUsers;
     }
 
     private void onAvatarChanged(String conversationId, String avatar) {

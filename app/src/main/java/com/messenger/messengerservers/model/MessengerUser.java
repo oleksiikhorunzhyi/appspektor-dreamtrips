@@ -1,11 +1,11 @@
 package com.messenger.messengerservers.model;
 
-public class User {
+public class MessengerUser {
     private boolean online;
     private final String name;
     private String type;
 
-    public User(String name) {
+    public MessengerUser(String name) {
         this.name = name;
     }
 
@@ -39,9 +39,9 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
+        MessengerUser messengerUser = (MessengerUser) o;
 
-        return name != null ? name.equals(user.name) : user.name == null;
+        return name != null ? name.equals(messengerUser.name) : messengerUser.name == null;
 
     }
 

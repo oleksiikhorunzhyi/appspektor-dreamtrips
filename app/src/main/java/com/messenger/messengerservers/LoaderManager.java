@@ -4,11 +4,11 @@ package com.messenger.messengerservers;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.loaders.ParticipantsLoader;
 import com.messenger.messengerservers.model.Conversation;
-import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.model.MessengerUser;
 
 public interface LoaderManager {
 
-    Loader<User> createContactLoader();
+    Loader<MessengerUser> createContactLoader();
 
     Loader<Conversation> createConversationLoader();
 

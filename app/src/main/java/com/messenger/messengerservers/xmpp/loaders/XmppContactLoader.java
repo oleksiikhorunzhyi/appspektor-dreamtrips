@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.constant.UserType;
 import com.messenger.messengerservers.loaders.AsyncLoader;
-import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 
 import timber.log.Timber;
 
-public class XmppContactLoader extends AsyncLoader<User> {
+public class XmppContactLoader extends AsyncLoader<MessengerUser> {
     private final XmppServerFacade facade;
 
     public XmppContactLoader(XmppServerFacade facade, @Nullable ExecutorService executorService) {
@@ -30,7 +30,7 @@ public class XmppContactLoader extends AsyncLoader<User> {
     }
 
     @Override
-    protected List<User> loadEntities() {
+    protected List<MessengerUser> loadEntities() {
         // TODO encapsulate roster and use proxy instead
         Roster roster = Roster.getInstanceFor(facade.getConnection());
         if (!roster.isLoaded()) {
@@ -41,7 +41,7 @@ public class XmppContactLoader extends AsyncLoader<User> {
             }
         }
         Collection<RosterEntry> entries = roster.getEntries();
-        ArrayList<User> users = new ArrayList<>(entries.size());
+        ArrayList<MessengerUser> messengerUsers = new ArrayList<>(entries.size());
 
         for (RosterEntry entry : entries) {
             if (entry.getType() != RosterPacket.ItemType.both) {
@@ -49,13 +49,13 @@ public class XmppContactLoader extends AsyncLoader<User> {
             }
 
             String userName = entry.getUser();
-            User user = new User(JidCreatorHelper.obtainId(userName));
+            MessengerUser messengerUser = new MessengerUser(JidCreatorHelper.obtainId(userName));
             boolean online = roster.getPresence(userName).getType().equals(Presence.Type.available);
-            user.setOnline(online);
-            user.setType(UserType.FRIEND);
-            users.add(user);
+            messengerUser.setOnline(online);
+            messengerUser.setType(UserType.FRIEND);
+            messengerUsers.add(messengerUser);
         }
 
-        return users;
+        return messengerUsers;
     }
 }

@@ -13,7 +13,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
@@ -36,7 +35,7 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
     ActivityResultDelegate activityResultDelegate;
     //
     @InjectView(R.id.progressBar)
-    ProgressBar progressBar; // TODO :: 3/19/16 use to indicate progress - otherwise looks strange
+    ProgressBar progressBar;
 
     @Override
     public void locationResolutionRequired(Status status) {

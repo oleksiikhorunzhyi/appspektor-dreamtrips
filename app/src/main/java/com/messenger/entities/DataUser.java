@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 
+import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.ui.model.ChatUser;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -38,9 +39,9 @@ public class DataUser extends BaseProviderModel<DataUser> implements ChatUser, C
     public DataUser() {
     }
 
-    public DataUser(com.messenger.messengerservers.model.User user) {
-        this(user.getName());
-        setOnline(user.isOnline());
+    public DataUser(MessengerUser messengerUser) {
+        this(messengerUser.getName());
+        setOnline(messengerUser.isOnline());
     }
 
     public DataUser(String userId) {

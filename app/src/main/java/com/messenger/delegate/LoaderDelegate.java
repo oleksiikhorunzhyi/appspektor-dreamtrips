@@ -10,13 +10,12 @@ import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,11 +62,11 @@ public class LoaderDelegate {
     }
 
     public Observable<Void> loadConversations() {
-        Observable<List<User>> loader = Observable.<List<User>>create(subscriber -> {
+        Observable<List<MessengerUser>> loader = Observable.<List<MessengerUser>>create(subscriber -> {
             Loader<Conversation> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
-            conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<Conversation, User>(subscriber) {
+            conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<Conversation, MessengerUser>(subscriber) {
                 @Override
-                protected List<User> process(List<Conversation> data) {
+                protected List<MessengerUser> process(List<Conversation> data) {
                     final long syncTime = System.currentTimeMillis();
                     List<DataConversation> convs = from(data).map(DataConversation::new).toList();
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
@@ -96,12 +95,12 @@ public class LoaderDelegate {
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
 
-                    List<User> users = data.isEmpty() ? Collections.emptyList() : from(relationships)
-                            .map((elem, idx) -> new User(elem.getUserId()))
+                    List<MessengerUser> messengerUsers = data.isEmpty() ? Collections.emptyList() : from(relationships)
+                            .map((elem, idx) -> new MessengerUser(elem.getUserId()))
                             .distinct()
                             .toList();
-                    Timber.d("ConversationLoader %s", users);
-                    return users;
+                    Timber.d("ConversationLoader %s", messengerUsers);
+                    return messengerUsers;
 
                 }
             });
@@ -122,11 +121,11 @@ public class LoaderDelegate {
     }
 
     public Observable<List<DataUser>> loadContacts() {
-        Observable<List<User>> loader = Observable.<List<User>>create(subscriber -> {
-            Loader<User> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
-            contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<User, User>(subscriber) {
+        Observable<List<MessengerUser>> loader = Observable.<List<MessengerUser>>create(subscriber -> {
+            Loader<MessengerUser> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
+            contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<MessengerUser, MessengerUser>(subscriber) {
                 @Override
-                protected List<User> process(List<User> entities) {
+                protected List<MessengerUser> process(List<MessengerUser> entities) {
                     usersDAO.deleteFriends();
                     Timber.d("ContactLoader %s", entities);
                     return entities;
@@ -141,7 +140,7 @@ public class LoaderDelegate {
         return userProcessor.connectToUserProvider(messengerServerFacade.getLoaderManager().createParticipantsLoader()
                 .load(conversationId)
                 .doOnNext(participants -> participantsDAO.save(from(participants).map(DataParticipant::new).toList()))
-                .map(participants -> from(participants).map(p -> new User(p.getUserId())).toList()))
+                .map(participants -> from(participants).map(p -> new MessengerUser(p.getUserId())).toList()))
                 .doOnNext(usersDAO::save);
     }
 

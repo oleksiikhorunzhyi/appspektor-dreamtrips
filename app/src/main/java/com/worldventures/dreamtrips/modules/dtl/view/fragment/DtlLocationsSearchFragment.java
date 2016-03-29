@@ -122,11 +122,13 @@ public class DtlLocationsSearchFragment extends RxBaseFragment<DtlLocationsSearc
 
     @Override
     public void navigateToNearby() {
-        router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-                .containerId(R.id.dtl_container)
-                .fragmentManager(getFragmentManager())
-                .backStackEnabled(false)
-                .build());
+        getFragmentManager().popBackStack();
+//        router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+//                .containerId(R.id.dtl_container)
+//                .fragmentManager(getFragmentManager())
+//                .data(new DtlLocationsBundle())
+//                .backStackEnabled(false)
+//                .build());
     }
 
     @Override

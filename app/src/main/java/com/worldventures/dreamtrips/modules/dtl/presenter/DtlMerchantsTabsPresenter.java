@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -33,9 +34,12 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         apiErrorPresenter.setView(view);
         setTabs();
         //
+        if (!view.isTabletLandscape())
+            bindJob(dtlMerchantManager.getMerchantsExecutor)
+                    .onSuccess(this::tryRetirectToLocation);
+        //
         bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
                 .onError(apiErrorPresenter::handleError);
-        //
         view.bind(dtlLocationManager.getLocationStream()).compose(new IoToMainComposer<>())
                 .subscribe(view::updateToolbarTitle);
     }
@@ -44,6 +48,10 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     public void onResume() {
         super.onResume();
         preselectProperTab();
+    }
+
+    private void tryRetirectToLocation(List<DtlMerchant> merchants) {
+        if (merchants.isEmpty()) view.openLocationsWhenEmpty();
     }
 
     public void applySearch(String query) {
@@ -110,6 +118,8 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         void setTypes(List<DtlMerchantType> types);
 
         void openDetails(String merchantId);
+
+        void openLocationsWhenEmpty();
 
         void preselectMerchantTabWithIndex(int tabIndex);
 

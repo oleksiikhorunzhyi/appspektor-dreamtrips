@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlLocationsBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 
 import javax.inject.Inject;
@@ -53,19 +55,23 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
 
     @Override
     public void openDtlLocationsScreen() {
-        navigateTo(Route.DTL_LOCATIONS);
+        // TODO :: NOTE: needed commitAllowingStateLoss here so dropped Router's usage
+        Bundle args = new Bundle();
+        args.putParcelable(ComponentPresenter.EXTRA_DATA, new DtlLocationsBundle());
+        //
+        Fragment fragment = Fragment.instantiate(getActivity(), Route.DTL_LOCATIONS.getClazzName());
+        fragment.setArguments(args);
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.dtl_container, fragment, Route.DTL_LOCATIONS.getClazzName());
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
     public void openMerchants() {
-        navigateTo(Route.DTL_MERCHANTS_HOLDER);
-    }
-
-    // TODO :: NOTE: needed commitAllowingStateLoss here so dropped Router's usage
-    private void navigateTo(Route route) {
-        Fragment fragment = Fragment.instantiate(getActivity(), route.getClazzName());
+        // TODO :: NOTE: needed commitAllowingStateLoss here so dropped Router's usage
+        Fragment fragment = Fragment.instantiate(getActivity(), Route.DTL_MERCHANTS_HOLDER.getClazzName());
         FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.dtl_container, fragment, route.getClazzName());
+        fragmentTransaction.replace(R.id.dtl_container, fragment, Route.DTL_MERCHANTS_HOLDER.getClazzName());
         fragmentTransaction.commitAllowingStateLoss();
     }
 

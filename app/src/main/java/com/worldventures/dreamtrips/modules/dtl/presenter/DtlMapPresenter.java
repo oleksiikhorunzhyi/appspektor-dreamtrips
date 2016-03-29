@@ -101,7 +101,7 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
                         throwable -> tryHideMyLocationButton(true));
     }
 
-    protected void tryHideMyLocationButton(boolean hide){
+    protected void tryHideMyLocationButton(boolean hide) {
         if(view != null) view.tryHideMyLocationButton(hide);
     }
 

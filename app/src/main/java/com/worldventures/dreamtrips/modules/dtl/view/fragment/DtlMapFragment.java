@@ -278,7 +278,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void onDestroyView() {
-        searchViewHelper.dropHelper();
+        if (searchViewHelper != null) searchViewHelper.dropHelper();
         //
         if (clusterManager != null) {
             clusterManager.setOnClusterClickListener(null);

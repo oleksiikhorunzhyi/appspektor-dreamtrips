@@ -44,7 +44,6 @@ import dagger.Module;
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,
                 SingleChatSettingsScreenPresenterImpl.class,
-                MultiChatSettingsScreenPresenter.class,
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,
 

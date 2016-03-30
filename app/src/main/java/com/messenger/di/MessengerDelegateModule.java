@@ -132,12 +132,6 @@ public class MessengerDelegateModule {
 
     @Provides
     @Singleton
-    CropImageDelegate provideCropImageDelegate(DreamSpiceManager dreamSpiceManager) {
-        return new CropImageDelegate(dreamSpiceManager);
-    }
-
-    @Provides
-    @Singleton
     ConversationAvatarDelegate provideConversationAvatarDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {
         return new ConversationAvatarDelegate(photoUploadingManager, messengerServerFacade, conversationsDAO);
     }

@@ -10,6 +10,7 @@ import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.actions.AvatarAction;
 import com.messenger.entities.DataConversation;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -31,8 +32,8 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     @Inject
     ConversationAvatarDelegate conversationAvatarDelegate;
 
-    public MultiChatSettingsScreenPresenter(Context context, String conversationId) {
-        super(context, conversationId);
+    public MultiChatSettingsScreenPresenter(Context context, Injector injector, String conversationId) {
+        super(context, injector, conversationId);
     }
 
     @Override
@@ -43,20 +44,20 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
 
         Observable.combineLatest(
-            cropImageDelegate.getCroppedImagesStream(),
-            conversationObservable.take(1),
-            (image, conversation) -> new Pair<>(conversation, image))
-            .compose(bindView())
-            .subscribe(pair -> {
-                DataConversation conversation = pair.first;
-                Notification<File> notification = pair.second;
-                if (notification.isOnNext()) {
-                    onAvatarCropped(conversation, notification.getValue());
-                } else if (notification.isOnError()) {
-                    Timber.w(notification.getThrowable(), "Could not crop image");
-                    getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-                }
-            });
+                cropImageDelegate.getCroppedImagesStream(),
+                conversationObservable.take(1),
+                (image, conversation) -> new Pair<>(conversation, image))
+                .compose(bindView())
+                .subscribe(pair -> {
+                    DataConversation conversation = pair.first;
+                    Notification<File> notification = pair.second;
+                    if (notification.isOnNext()) {
+                        onAvatarCropped(conversation, notification.getValue());
+                    } else if (notification.isOnError()) {
+                        Timber.w(notification.getThrowable(), "Could not crop image");
+                        getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+                    }
+                });
 
         conversationAvatarDelegate.listenToAvatarUpdates(conversationId)
                 .compose(bindView())
@@ -73,7 +74,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         return new ActionStateSubscriber<AvatarAction>()
                 .beforeEach(state -> {
                     if (state.status == ActionState.Status.START
-                        || state.status == ActionState.Status.PROGRESS) {
+                            || state.status == ActionState.Status.PROGRESS) {
                         getView().showChangingAvatarProgressBar();
                     } else {
                         getView().hideChangingAvatarProgressBar();

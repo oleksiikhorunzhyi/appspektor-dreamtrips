@@ -43,11 +43,12 @@ public class CropImageDelegate {
     private int ratioX = RATIO_X_DEFAULT;
     private int ratioY = RATIO_Y_DEFAULT;
 
-    public CropImageDelegate(DreamSpiceManager dreamSpiceManager) {
+    public CropImageDelegate(Activity activity, DreamSpiceManager dreamSpiceManager) {
         this.dreamSpiceManager = dreamSpiceManager;
+        init(activity);
     }
 
-    public void init(Activity activity) {
+    private void init(Activity activity) {
         this.activity = new WeakReference<>(activity);
         context = activity.getApplicationContext();
         if (!dreamSpiceManager.isStarted()) {

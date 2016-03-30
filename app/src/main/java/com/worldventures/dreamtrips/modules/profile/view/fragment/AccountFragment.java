@@ -1,12 +1,9 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.messenger.util.CroppingUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -83,17 +80,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
             } else {
                 badgeView.setVisibility(View.INVISIBLE);
             }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (CroppingUtils.isCroppingResult(requestCode, resultCode)) {
-            Pair<String, Throwable> resultPair = CroppingUtils.obtainResults(requestCode, resultCode, data);
-            if (resultPair == null) return;
-            getPresenter().onCoverCropped(resultPair.first, String.valueOf(resultPair.second));
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

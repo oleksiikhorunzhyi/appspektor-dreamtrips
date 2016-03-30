@@ -1,4 +1,4 @@
-package com.messenger.flow.path;
+package com.worldventures.dreamtrips.core.flow.path;
 
 public abstract class StyledPath extends MasterDetailPath {
 

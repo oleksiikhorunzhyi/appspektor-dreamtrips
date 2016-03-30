@@ -1,4 +1,4 @@
-package com.messenger.flow.path;
+package com.worldventures.dreamtrips.core.flow.path;
 
 import flow.path.Path;
 

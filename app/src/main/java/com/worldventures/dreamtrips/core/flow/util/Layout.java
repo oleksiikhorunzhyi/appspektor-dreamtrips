@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.messenger.flow.util;
+package com.worldventures.dreamtrips.core.flow.util;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

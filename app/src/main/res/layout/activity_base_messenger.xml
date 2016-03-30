@@ -18,7 +18,7 @@
         sothree:umanoParallaxOffset="0dp"
         sothree:umanoShadowHeight="4dp">
 
-        <com.messenger.flow.container.FramePathContainerView
+        <com.worldventures.dreamtrips.core.flow.container.FramePathContainerView
             android:id="@+id/root_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

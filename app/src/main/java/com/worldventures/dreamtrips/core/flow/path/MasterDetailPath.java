@@ -1,4 +1,6 @@
-package com.messenger.flow.path;
+package com.worldventures.dreamtrips.core.flow.path;
+
+import com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot;
 
 import flow.path.Path;
 
@@ -8,7 +10,7 @@ import flow.path.Path;
  * <p>
  * Not a lot of thought has been put into making a decent master / detail modeling here. Rather
  * this is an excuse to show off using Flow to build a responsive layout. See {@link
- * com.messenger.flow.container.TabletMasterDetailRoot}.
+ * TabletMasterDetailRoot}.
  */
 public abstract class MasterDetailPath extends Path {
   /**

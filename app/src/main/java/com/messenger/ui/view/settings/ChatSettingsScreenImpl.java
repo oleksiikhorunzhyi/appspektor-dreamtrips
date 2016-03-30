@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.flow.path.StyledPath;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.view.layout.MessengerPathLayout;

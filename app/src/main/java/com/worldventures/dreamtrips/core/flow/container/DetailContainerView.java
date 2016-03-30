@@ -1,10 +1,10 @@
-package com.messenger.flow.container;
+package com.worldventures.dreamtrips.core.flow.container;
 
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.messenger.flow.path.MasterDetailPath;
-import com.messenger.flow.util.Layout;
+import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
+import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.R;
 
 import flow.path.Path;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.messenger.flow.container;
+package com.worldventures.dreamtrips.core.flow.container;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -25,9 +25,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.flow.path.PathView;
-import com.messenger.flow.util.Layout;
-import com.messenger.flow.util.Utils;
+import com.worldventures.dreamtrips.core.flow.path.PathView;
+import com.worldventures.dreamtrips.core.flow.util.Layout;
+import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.messenger.ui.view.layout.MessengerInjectingLayout;
 import com.techery.spares.module.Injector;
 

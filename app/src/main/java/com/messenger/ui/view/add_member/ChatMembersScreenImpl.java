@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.adapter.cell.CheckableUserCell;
 import com.messenger.ui.adapter.cell.HeaderCell;
 import com.messenger.ui.anim.WeightSlideAnimator;
@@ -27,6 +26,7 @@ import com.messenger.ui.widget.SelectionListenerEditText;
 import com.messenger.util.ScrollStatePersister;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 
 import java.util.List;
 

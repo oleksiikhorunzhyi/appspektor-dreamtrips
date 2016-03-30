@@ -1,4 +1,4 @@
-package com.messenger.flow.util;
+package com.worldventures.dreamtrips.core.flow.util;
 
 import android.app.Activity;
 import android.content.Intent;

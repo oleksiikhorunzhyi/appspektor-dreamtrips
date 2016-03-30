@@ -4,6 +4,10 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.crashlytics.android.Crashlytics;
+
+import timber.log.Timber;
+
 public class MapViewUtils {
 
     public static final int MAP_ANIMATION_DURATION = 400;
@@ -17,7 +21,14 @@ public class MapViewUtils {
      * @param relativeDirections - array with RelativeLayout rules for adjusting button inside map
      */
     public static void setLocationButtonGravity(View mapView, int margin, int... relativeDirections) {
-        View locationButton = ((View) mapView.findViewById(1).getParent()).findViewById(2);
+        View locationButton;
+        try {
+            locationButton = ((View) mapView.findViewById(1).getParent()).findViewById(2);
+        } catch (NullPointerException e) {
+            Crashlytics.logException(e);
+            Timber.e(e, "Could not change gravity of \'Show my location\' button on map");
+            return;
+        }
 
         if (locationButton != null && locationButton.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
             RelativeLayout.LayoutParams params = createParamsFromDirections(relativeDirections);

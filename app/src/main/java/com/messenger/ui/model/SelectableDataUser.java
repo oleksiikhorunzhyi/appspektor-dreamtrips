@@ -5,13 +5,15 @@ import com.messenger.entities.DataUser;
 public class SelectableDataUser {
     private DataUser dataUser;
     private boolean selected;
+    private boolean isSelectionEnabled;
 
     public SelectableDataUser() {
     }
 
-    public SelectableDataUser(DataUser dataUser, boolean selected) {
+    public SelectableDataUser(DataUser dataUser, boolean selected, boolean isSelectionEnabled) {
         this.selected = selected;
         this.dataUser = dataUser;
+        this.isSelectionEnabled = isSelectionEnabled;
     }
 
     public DataUser getDataUser() {
@@ -28,5 +30,9 @@ public class SelectableDataUser {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isSelectionEnabled() {
+        return isSelectionEnabled;
     }
 }

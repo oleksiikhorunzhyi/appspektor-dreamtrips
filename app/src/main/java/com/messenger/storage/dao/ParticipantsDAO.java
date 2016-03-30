@@ -73,20 +73,6 @@ public class ParticipantsDAO extends BaseDAO {
                 .compose(DaoTransformers.toDataUsers());
     }
 
-    public Observable<List<DataUser>> getNewParticipantsCandidates(String conversationId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM Users " +
-                        "where (" + DataUser$Table._ID + " not in (" + participantsSelection(DataUser$Table._ID) + "))" +
-                        "and (" + DataUser$Table.FRIEND + " = 1)"
-                )
-                .withSelectionArgs(new String[]{conversationId})
-                .withSortOrder(userOrder())
-                .build();
-
-        return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .compose(DaoTransformers.toDataUsers());
-    }
-
     @NonNull
     private static String participantsSelection(String projection) {
         return "SELECT " + projection + " FROM Users u " +

@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
@@ -22,15 +21,12 @@ import flow.Flow;
 import flow.History;
 import rx.Observable;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
     private static final int REQUIRED_SELECTED_USERS_TO_SHOW_CHAT_NAME = 2;
 
-    @Inject
-    UsersDAO usersDAO;
     @Inject
     StartChatDelegate startChatDelegate;
 
@@ -50,24 +46,17 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     }
 
     @Override
-    protected Observable<List<DataUser>> createContactListObservable() {
-        return usersDAO
-                .getFriends(user.getId())
-                .subscribeOn(Schedulers.io());
-    }
-
-    @Override
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
 
-                if (selectedUsers == null || selectedUsers.isEmpty()) {
+                if (futureParticipants == null || futureParticipants.isEmpty()) {
                     Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
-                if (!isConnectionPresent() && selectedUsers.size() != 1) {
+                if (!isConnectionPresent() && futureParticipants.size() != 1) {
                     showAbsentConnectionMessage(getContext());
                     return true;
                 }
@@ -86,10 +75,10 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
                 item.setEnabled(false);
 
-                if (selectedUsers.size() == 1) {
-                    startChatDelegate.startSingleChat(selectedUsers.get(0), onNextAction, errorAction);
+                if (futureParticipants.size() == 1) {
+                    startChatDelegate.startSingleChat(futureParticipants.get(0), onNextAction, errorAction);
                 } else {
-                    startChatDelegate.startNewGroupChat(user.getId(), new ArrayList<>(selectedUsers),
+                    startChatDelegate.startNewGroupChat(user.getId(), new ArrayList<>(futureParticipants),
                             getView().getConversationName(), onNextAction, errorAction);
                 }
 
@@ -101,6 +90,11 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     @Override
     public void onItemSelectChange(SelectableDataUser item) {
         super.onItemSelectChange(item);
-        setConversationNameInputFieldVisible(selectedUsers.size() >= REQUIRED_SELECTED_USERS_TO_SHOW_CHAT_NAME);
+        setConversationNameInputFieldVisible(futureParticipants.size() >= REQUIRED_SELECTED_USERS_TO_SHOW_CHAT_NAME);
+    }
+
+    @Override
+    protected Observable<List<DataUser>> getExistingParticipants() {
+        return Observable.just(new ArrayList<>());
     }
 }

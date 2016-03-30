@@ -2,16 +2,21 @@ package com.messenger.ui.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.storage.dao.UsersDAO;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
@@ -31,6 +36,7 @@ import javax.inject.Named;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
+import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
@@ -50,9 +56,11 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     ChatDelegate chatDelegate;
     @Inject
     UserSectionHelper userSectionHelper;
+    @Inject
+    UsersDAO usersDAO;
 
     private final RxSearchHelper<DataUser> searchHelper = new RxSearchHelper<>();
-    protected final List<DataUser> selectedUsers = new CopyOnWriteArrayList<>();
+    protected final List<DataUser> futureParticipants = new CopyOnWriteArrayList<>();
     @Nullable
     private CharSequence textInChosenContactsEditText;
 
@@ -81,7 +89,13 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         dreamSpiceManager.shouldStop();
     }
 
-    protected abstract Observable<List<DataUser>> createContactListObservable();
+    protected Observable<List<DataUser>> createContactListObservable() {
+        return usersDAO
+                .getFriends(user.getId())
+                .subscribeOn(Schedulers.io());
+    }
+
+    protected abstract Observable<List<DataUser>> getExistingParticipants();
 
     protected void connectToContacts() {
         ConnectableObservable<CharSequence> chosenObservable = getView().getSearchQueryObservable()
@@ -97,14 +111,24 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                 .filter(this::availableFilter)
                 .map(this::prepareSearchQuery);
 
-        searchHelper.search(createContactListObservable(), filterObservable,
-                (user, searchFilter) -> searchHelper.contains(user.getDisplayedName(), searchFilter))
-                .compose(userSectionHelper.prepareItemInCheckableList(selectedUsers))
-                .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(itemWithUserCount -> addListItems(itemWithUserCount.first));
+        getExistingAndFutureParticipants()
+            .compose(bindView())
+            .flatMap(participantsAndSelectedUsersPair ->
+            searchHelper.search(createContactListObservable(), filterObservable,
+                    (user, searchFilter) -> searchHelper.contains(user.getDisplayedName(), searchFilter))
+                    .compose(userSectionHelper.prepareItemInCheckableList(
+                            participantsAndSelectedUsersPair.first, participantsAndSelectedUsersPair.second))
+                    .compose(bindView())
+                    .observeOn(AndroidSchedulers.mainThread())
+        )
+        .subscribe(itemWithUserCount -> addListItems(itemWithUserCount.first));
 
         chosenObservable.connect();
+    }
+
+    @NonNull
+    private Observable<Pair<List<DataUser>, List<DataUser>>> getExistingAndFutureParticipants() {
+        return Observable.zip(getExistingParticipants(), Observable.just(futureParticipants), Pair::new);
     }
 
     private String prepareSearchQuery(CharSequence text) {
@@ -125,7 +149,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
-        state.setSelectedContacts(selectedUsers);
+        state.setSelectedContacts(futureParticipants);
         state.setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
         super.onSaveInstanceState(bundle);
     }
@@ -141,7 +165,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         ChatMembersScreen screen = getView();
 
         List<DataUser> selectedUsersFromViewState = viewState.getSelectedContacts();
-        selectedUsers.addAll(selectedUsersFromViewState);
+        futureParticipants.addAll(selectedUsersFromViewState);
         selectedUsersFromViewState.clear();
         refreshSelectedContactsHeader();
 
@@ -157,28 +181,35 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                 break;
         }
 
-        int conversationNameVisibility = selectedUsers.size() > 1 ? View.VISIBLE : View.GONE;
+        int conversationNameVisibility = futureParticipants.size() > 1 ? View.VISIBLE : View.GONE;
         getView().setConversationNameEditTextVisibility(conversationNameVisibility);
     }
 
     @Override
     public void onItemSelectChange(SelectableDataUser item) {
         if (item.isSelected()) {
-            selectedUsers.add(item.getDataUser());
+            futureParticipants.add(item.getDataUser());
         } else {
-            selectedUsers.remove(item.getDataUser());
+            futureParticipants.remove(item.getDataUser());
         }
         refreshSelectedContactsHeader();
     }
 
     private void refreshSelectedContactsHeader() {
-        SpannableString spannableString = contactsHeaderCreator.createHeader(selectedUsers);
-        textInChosenContactsEditText = spannableString;
-        getView().setSelectedUsersHeaderText(spannableString);
+        getExistingAndFutureParticipants().compose(bindView()).subscribe(pair -> {
+            List<DataUser> existingParticipants = pair.first;
+            List<DataUser> futureParticipants = pair.second;
+            List<DataUser> existingAndFutureParticipants = Queryable.from(existingParticipants)
+                    .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
+                    .concat(futureParticipants).toList();
+            SpannableString spannableString = contactsHeaderCreator.createHeader(existingAndFutureParticipants);
+            textInChosenContactsEditText = spannableString;
+            getView().setSelectedUsersHeaderText(spannableString);
+        });
     }
 
     private void removeLastUserIfExist() {
-        if (!selectedUsers.isEmpty()) selectedUsers.remove(selectedUsers.size() - 1);
+        if (!futureParticipants.isEmpty()) futureParticipants.remove(futureParticipants.size() - 1);
         refreshSelectedContactsHeader();
     }
 

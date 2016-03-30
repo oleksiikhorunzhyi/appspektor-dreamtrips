@@ -19,7 +19,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.adapter_post_event)
+@Layout(R.layout.adapter_item_feed_post_event)
 public class PostFeedItemDetailsCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @InjectView(R.id.post)

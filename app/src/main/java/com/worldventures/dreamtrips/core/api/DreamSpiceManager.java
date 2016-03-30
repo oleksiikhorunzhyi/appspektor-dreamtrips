@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
@@ -234,9 +233,6 @@ public class DreamSpiceManager extends SpiceManager {
         userSession.setLastUpdate(System.currentTimeMillis());
 
         List<Feature> features = session.getPermissions();
-        // TODO remote legacy features factory when server is ready
-        List<Feature> legacyFeatures = new LegacyFeatureFactory(sessionUser).create();
-        if (features != null) features.addAll(legacyFeatures);
         userSession.setFeatures(features);
 
         if (sessionUser != null & sessionToken != null) {

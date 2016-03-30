@@ -1,37 +1,26 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel {
+import java.io.Serializable;
+
+public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Serializable {
 
     private String originalPath;
     private String thumbnailPath;
     private boolean checked;
+    private long dateTaken;
 
     public PhotoGalleryModel(String originalPath) {
+        this(originalPath, 0);
+    }
+
+    public PhotoGalleryModel(String originalPath, long dateTaken) {
         this.originalPath = originalPath;
         this.thumbnailPath = "file://" + this.originalPath;
+        this.dateTaken = dateTaken;
     }
-
-    protected PhotoGalleryModel(Parcel in) {
-        originalPath = in.readString();
-        thumbnailPath = in.readString();
-        checked = in.readByte() != 0;
-    }
-
-    public static final Creator<PhotoGalleryModel> CREATOR = new Creator<PhotoGalleryModel>() {
-        @Override
-        public PhotoGalleryModel createFromParcel(Parcel in) {
-            return new PhotoGalleryModel(in);
-        }
-
-        @Override
-        public PhotoGalleryModel[] newArray(int size) {
-            return new PhotoGalleryModel[size];
-        }
-    };
 
     @Override
     public String getOriginalPath() {
@@ -51,6 +40,10 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel {
     @Override
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public long getDateTaken() {
+        return dateTaken;
     }
 
     @Override
@@ -76,8 +69,28 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(originalPath);
-        dest.writeString(thumbnailPath);
-        dest.writeByte((byte) (checked ? 1 : 0));
+        dest.writeString(this.originalPath);
+        dest.writeString(this.thumbnailPath);
+        dest.writeByte(checked ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.dateTaken);
     }
+
+    protected PhotoGalleryModel(Parcel in) {
+        this.originalPath = in.readString();
+        this.thumbnailPath = in.readString();
+        this.checked = in.readByte() != 0;
+        this.dateTaken = in.readLong();
+    }
+
+    public static final Creator<PhotoGalleryModel> CREATOR = new Creator<PhotoGalleryModel>() {
+        @Override
+        public PhotoGalleryModel createFromParcel(Parcel source) {
+            return new PhotoGalleryModel(source);
+        }
+
+        @Override
+        public PhotoGalleryModel[] newArray(int size) {
+            return new PhotoGalleryModel[size];
+        }
+    };
 }

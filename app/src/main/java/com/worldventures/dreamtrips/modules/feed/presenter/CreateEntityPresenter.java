@@ -4,10 +4,10 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
@@ -86,7 +86,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         invalidateDynamicViews();
     }
 
-
     @Override
     protected boolean isChanged() {
         return !TextUtils.isEmpty(cachedText)
@@ -156,13 +155,13 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         cachedUploadTask.setLatitude((float) location.getLat());
     }
 
-    public void attachImages(List<ChosenImage> photos, int requestType) {
+    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
         if (photos.size() == 0 || (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED
-                && photos.get(0).getFileThumbnail().equals(cachedUploadTask.getFilePath()))) {
+                && photos.get(0).getThumbnailPath().equals(cachedUploadTask.getFilePath()))) {
             return;
         }
 
-        String fileThumbnail = photos.get(0).getFileThumbnail();
+        String fileThumbnail = photos.get(0).getThumbnailPath();
         imageSelected(Uri.parse(fileThumbnail).toString(), requestType);
     }
 

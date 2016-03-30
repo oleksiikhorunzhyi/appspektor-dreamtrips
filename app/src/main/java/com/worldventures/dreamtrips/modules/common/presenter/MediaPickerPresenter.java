@@ -5,9 +5,11 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,7 +47,9 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
     }
 
     public void attachImages(List<ChosenImage> chosenImages, int type) {
-        mediaPickerManager.attach(new MediaAttachment(chosenImages, type, requestId));
+        List<PhotoGalleryModel> images = new ArrayList<>();
+        Queryable.from(chosenImages).forEachR(image -> images.add(new PhotoGalleryModel(image.getFilePathOriginal())));
+        mediaPickerManager.attach(new MediaAttachment(images, type, requestId));
     }
 
     public interface View extends Presenter.View {

@@ -3,16 +3,14 @@ package com.worldventures.dreamtrips.modules.feed.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateEntityBundle implements Parcelable {
 
-    private List<ChosenImage> images;
+    private List<PhotoGalleryModel> images;
     private int imageType;
 
     private boolean showPickerImmediately;
@@ -22,12 +20,12 @@ public class CreateEntityBundle implements Parcelable {
         this.images = new ArrayList<>();
     }
 
-    public CreateEntityBundle(List<ChosenImage> images, int imageType) {
+    public CreateEntityBundle(List<PhotoGalleryModel> images, int imageType) {
         this.images = images;
         this.imageType = imageType;
     }
 
-    public List<ChosenImage> getImages() {
+    public List<PhotoGalleryModel> getImages() {
         return images == null ? new ArrayList<>() : images;
     }
 
@@ -50,27 +48,13 @@ public class CreateEntityBundle implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        List<TempImage> tempImages = new ArrayList<>();
-        Queryable.from(images).forEachR(image -> {
-            TempImage tempImage = new TempImage();
-            tempImage.filePathOriginal = image.getFilePathOriginal();
-            tempImage.fileThumbnail = image.getFileThumbnail();
-            tempImage.fileThumbnailSmall = image.getFileThumbnailSmall();
-        });
-        dest.writeList(tempImages);
+        dest.writeList(images);
         dest.writeInt(this.imageType);
     }
 
     protected CreateEntityBundle(Parcel in) {
-        List<TempImage> tempImages = new ArrayList<>();
-        in.readList(tempImages, List.class.getClassLoader());
         this.images = new ArrayList<>();
-        Queryable.from(tempImages).forEachR(tempImage -> {
-            ChosenImage image = new ChosenImage();
-            image.setFilePathOriginal(tempImage.filePathOriginal);
-            image.setFileThumbnail(tempImage.fileThumbnail);
-            image.setFileThumbnailSmall(tempImage.fileThumbnailSmall);
-        });
+        in.readList(images, PhotoGalleryModel.class.getClassLoader());
         this.imageType = in.readInt();
     }
 
@@ -84,9 +68,4 @@ public class CreateEntityBundle implements Parcelable {
         }
     };
 
-    class TempImage implements Serializable {
-        public String filePathOriginal;
-        public String fileThumbnail;
-        public String fileThumbnailSmall;
-    }
 }

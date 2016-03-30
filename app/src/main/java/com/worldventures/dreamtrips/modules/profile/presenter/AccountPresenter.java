@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 
 import android.support.v4.app.Fragment;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -12,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -239,7 +239,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     private void imageSelected(MediaAttachment mediaAttachment) {
-        ChosenImage image = mediaAttachment.chosenImages.get(0);
+        PhotoGalleryModel image = mediaAttachment.chosenImages.get(0);
         switch (mediaAttachment.requestId) {
             case AVATAR_MEDIA_REQUEST_ID:
                 onAvatarChosen(image);
@@ -250,9 +250,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
-    public void onAvatarChosen(ChosenImage image) {
+    public void onAvatarChosen(PhotoGalleryModel image) {
         if (image != null) {
-            String filePath = image.getFilePathOriginal();
+            String filePath = image.getOriginalPath();
             if (ValidationUtils.isUrl(filePath)) {
                 cacheFacebookImage(filePath, this::uploadAvatar);
             } else {
@@ -261,9 +261,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
-    public void onCoverChosen(ChosenImage image) {
+    public void onCoverChosen(PhotoGalleryModel image) {
         if (image != null) {
-            String filePath = image.getFilePathOriginal();
+            String filePath = image.getOriginalPath();
             if (ValidationUtils.isUrl(filePath)) {
                 cacheFacebookImage(filePath, path -> Crop.prepare(path).startFrom((Fragment) view));
             } else {

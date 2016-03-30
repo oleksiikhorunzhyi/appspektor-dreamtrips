@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class CreateFeedPostPresenter extends CreateEntityPresenter<CreateFeedPos
     }
 
     @Override
-    public void attachImages(List<ChosenImage> photos, int requestType) {
+    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
         super.attachImages(photos, requestType);
         if (photos.size() != 0) view.disableImagePicker();
     }

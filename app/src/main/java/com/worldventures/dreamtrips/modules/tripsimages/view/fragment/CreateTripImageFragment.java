@@ -3,10 +3,10 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 import android.os.Bundle;
 import android.view.View;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 
@@ -43,7 +43,7 @@ public class CreateTripImageFragment extends CreateEntityFragment<CreateTripImag
         return getArgs() != null ? getArgs().getImageType() : -1;
     }
 
-    private List<ChosenImage> getImages() {
+    private List<PhotoGalleryModel> getImages() {
         return getArgs() != null ? getArgs().getImages() : new ArrayList<>();
     }
 

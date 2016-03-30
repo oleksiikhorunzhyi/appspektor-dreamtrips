@@ -10,46 +10,32 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 
 import butterknife.InjectView;
 
-@Layout(R.layout.adapter_item_photo_pick)
-public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, CellDelegate<PhotoGalleryModel>> {
+@Layout(R.layout.adapter_item_suggestion_photo)
+public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoGalleryModel, CellDelegate<PhotoGalleryModel>> {
 
     @InjectView(R.id.iv_photo)
     SimpleDraweeView photo;
     @InjectView(R.id.pick)
     ImageView pick;
+    @InjectView(R.id.darkened_view)
+    View darkenedView;
 
-    public PhotoGalleryCell(View view) {
+    public SuggestionPhotoCell(View view) {
         super(view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
         setImage(Uri.parse(getModelObject().getThumbnailPath()), photo);
-
-        itemView.setOnClickListener(v -> {
-            getModelObject().setChecked(!getModelObject().isChecked());
-            //
-            if (cellDelegate != null) {
-                cellDelegate.onCellClicked(getModelObject());
-            } else {
-                getEventBus().post(new PhotoPickedEvent(getModelObject()));
-            }
-        });
-
-        updatePickState();
-    }
-
-    private void updatePickState() {
-        if (getModelObject().isChecked()) {
-            pick.setImageResource(R.drawable.add_photo_icon_selected);
-        } else {
-            pick.setImageResource(R.drawable.add_photo_icon);
-        }
+        //
+        pick.setVisibility(getModelObject().isChecked() ? View.VISIBLE : View.GONE);
+        darkenedView.setVisibility(getModelObject().isChecked() ? View.VISIBLE : View.GONE);
+        //
+        itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
     }
 
     @Override

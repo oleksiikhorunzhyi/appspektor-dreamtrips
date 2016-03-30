@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
@@ -18,6 +17,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -155,7 +155,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     /////// Photo picking
     ////////////////////////////////////////
 
-    public void attachImages(List<ChosenImage> chosenImages, int type) {
+    public void attachImages(List<PhotoGalleryModel> chosenImages, int type) {
         if (chosenImages.size() == 0) {
             return;
         }
@@ -163,7 +163,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         saveItem(false);
 
         Queryable.from(chosenImages).forEachR(choseImage ->
-                imageSelected(Uri.parse(choseImage.getFileThumbnail()), type));
+                imageSelected(Uri.parse(choseImage.getThumbnailPath()), type));
     }
 
     private void imageSelected(Uri uri, int requestType) {

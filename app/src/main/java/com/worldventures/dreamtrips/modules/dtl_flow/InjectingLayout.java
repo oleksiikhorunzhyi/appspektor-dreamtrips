@@ -1,12 +1,10 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.layout;
+package com.worldventures.dreamtrips.modules.dtl_flow;
 
 import android.content.Context;
 import android.util.AttributeSet;
 
 import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.modules.dtl_flow.presenter.FlowPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.screen.FlowScreen;
 
 public abstract class InjectingLayout<V extends FlowScreen, P extends FlowPresenter<V, ?>>
         extends BaseViewStateLinearLayout<V, P> implements FlowScreen {

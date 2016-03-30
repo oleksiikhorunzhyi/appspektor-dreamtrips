@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common;
 
-import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
@@ -40,6 +39,8 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFra
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -81,6 +82,7 @@ import dagger.Provides;
                 DownloadVideoListener.class,
                 PresentationVideosPresenter.class,
                 MessengerActivity.class,
+                DtlActivity.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,
@@ -125,7 +127,7 @@ public class CommonModule {
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
         featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlModule.DTL));
-        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
+        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(DtlActivityModule.DTLFLOW));
         featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         activeComponents.add(VideoModule.MEMBERSHIP);

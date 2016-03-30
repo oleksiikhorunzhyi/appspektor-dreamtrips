@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.dtl.DtlModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.friends.FriendsModule;
@@ -133,6 +134,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new DtlModule());
         modules.add(new SettingsModule());
         modules.add(new MessengerActivityModule());
+        modules.add(new DtlActivityModule());
         return modules;
     }
 

@@ -47,22 +47,21 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
     protected NavigationDrawerPresenter navigationDrawerPresenter;
     @Inject
     protected ActivityRouter activityRouter;
-
+    //
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
     @InjectView(R.id.drawer_layout)
     protected NavigationDrawerViewImpl navDrawer;
     @InjectView(R.id.root_container)
     protected PathContainerView container;
-
+    //
     private FlowActivityHelper flowActivityHelper;
-
     private WeakHandler weakHandler = new WeakHandler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        //
         initNavDrawer();
         initFlow();
         //
@@ -124,7 +123,6 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
         if (flowActivityHelper != null) service = flowActivityHelper.getSystemService(name);
         if (service == null) service = super.getSystemService(name);
         return service;
-
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -137,7 +135,6 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
         navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
         navigationDrawerPresenter.setOnLogout(this::logout);
     }
-
 
     private void itemSelected(ComponentDescription component) {
         activityRouter.openMainWithComponent(component.getKey());
@@ -188,7 +185,6 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
     private void initFlow() {
         // Init flow
         History defaultHistory = provideDefaultHistory();
-
         if (Flow.get(this) == null) {
             flowActivityHelper = new FlowActivityHelper(this, this,
                     defaultHistory, new GsonParceler(gson));
@@ -213,5 +209,4 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
     }
 
     protected abstract History provideDefaultHistory();
-
 }

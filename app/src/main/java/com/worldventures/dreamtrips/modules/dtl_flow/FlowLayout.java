@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.layout;
+package com.worldventures.dreamtrips.modules.dtl_flow;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
@@ -6,13 +6,11 @@ import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 
 import com.crashlytics.android.Crashlytics;
-import com.worldventures.dreamtrips.modules.dtl_flow.presenter.FlowPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.screen.FlowScreen;
 
 import timber.log.Timber;
 
-public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V, ?>>
-        extends InjectingLayout<V, P> implements FlowScreen {
+public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V, ?>, T extends StyledPath>
+        extends PathLayout<V, P, T> implements FlowScreen {
 
     public FlowLayout(Context context) {
         super(context);

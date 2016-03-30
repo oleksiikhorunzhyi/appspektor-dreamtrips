@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.screen;
+package com.worldventures.dreamtrips.modules.dtl_flow;
 
 import android.support.annotation.StringRes;
 

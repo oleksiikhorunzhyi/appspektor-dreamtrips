@@ -25,11 +25,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
-import com.messenger.ui.view.layout.MessengerInjectingLayout;
-import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.modules.dtl_flow.InjectingLayout;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -78,9 +78,9 @@ public class SimplePathContainer extends PathContainer {
         newView =
                 LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, containerView, false);
 
-        if (newView instanceof MessengerInjectingLayout
+        if (newView instanceof InjectingLayout
                 && context instanceof Injector) {
-            ((MessengerInjectingLayout) newView).setInjector((Injector) context);
+            ((InjectingLayout) newView).setInjector((Injector) context);
         }
 
         if (newView instanceof PathView)

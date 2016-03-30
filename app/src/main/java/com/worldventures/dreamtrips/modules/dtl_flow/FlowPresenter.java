@@ -1,13 +1,12 @@
-package com.worldventures.dreamtrips.modules.dtl_flow.presenter;
+package com.worldventures.dreamtrips.modules.dtl_flow;
 
 import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
-import com.worldventures.dreamtrips.modules.dtl_flow.screen.FlowScreen;
 
-public abstract interface FlowPresenter<V extends FlowScreen, S extends Parcelable>
+public interface FlowPresenter<V extends FlowScreen, S extends Parcelable>
         extends ViewStateMvpPresenter<V, S> {
 
     int getToolbarMenuRes();

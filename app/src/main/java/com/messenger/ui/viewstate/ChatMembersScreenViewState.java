@@ -23,7 +23,7 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
     }
 
     public void setSelectedContacts(Collection<DataUser> selectedContacts) {
-        this.selectedContacts.addAll(selectedContacts);
+        this.selectedContacts = new ArrayList<>(selectedContacts);
     }
 
     public String getSearchFilter() {

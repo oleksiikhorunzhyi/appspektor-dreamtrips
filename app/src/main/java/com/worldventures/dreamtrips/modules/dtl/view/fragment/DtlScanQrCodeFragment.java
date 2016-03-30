@@ -37,6 +37,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import timber.log.Timber;
 
@@ -88,7 +89,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
     }
 
     @OnShowRationale(Manifest.permission.CAMERA)
-    void showRationaleForCamera() {
+    void showRationaleForCamera(PermissionRequest request) {
         Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
     }
 

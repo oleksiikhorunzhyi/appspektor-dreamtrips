@@ -50,7 +50,8 @@
     <string name="dtl_check_in">入住并赚取</string>
     <string name="dtl_earn">赚取</string>
     <string name="dtl_dt_points">%d DreamTrips点数</string>
-    <string name="suggest_merchant_title">推荐商家</string>
+    <string name="suggest_merchant">推荐商家</string>
+    <string name="suggest_merchant_title">DT Local 工具</string>
     <string name="dtl_details_share_title">我要在%s 赚取Dreamtrips点数</string>
     <string name="dtl_details_share_title_earned" formatted="false">我已经在 %s赚取 %s DreamTrips点数</string>
     <string name="dtl_wait_for_receipt">请稍候…上传收据</string>

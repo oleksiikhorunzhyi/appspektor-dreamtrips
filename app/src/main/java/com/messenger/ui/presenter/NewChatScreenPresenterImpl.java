@@ -23,6 +23,7 @@ import flow.History;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
 
@@ -71,18 +72,25 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                     return true;
                 }
 
-                Action1<DataConversation> action1 = conversation -> {
+                Action1<DataConversation> onNextAction = conversation -> {
                     History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
                     history.pop();
                     history.push(new ChatPath(conversation.getId()));
                     Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
                 };
 
+                Action1<Throwable> errorAction = throwable -> {
+                    Timber.e(throwable, "Error while creating chat");
+                    item.setEnabled(true);
+                };
+
+                item.setEnabled(false);
+
                 if (selectedUsers.size() == 1) {
-                    startChatDelegate.startSingleChat(selectedUsers.get(0), action1);
+                    startChatDelegate.startSingleChat(selectedUsers.get(0), onNextAction, errorAction);
                 } else {
                     startChatDelegate.startNewGroupChat(user.getId(), new ArrayList<>(selectedUsers),
-                            getView().getConversationName(), action1);
+                            getView().getConversationName(), onNextAction, errorAction);
                 }
 
                 return true;

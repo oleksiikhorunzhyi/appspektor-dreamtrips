@@ -61,7 +61,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                 .subscribeOn(Schedulers.io());
     }
 
-    private void tryCreateChat() {
+    private void tryCreateChat(MenuItem doneButtonItem) {
         List<DataUser> newChatUsers = selectedUsers;
         if (newChatUsers == null || newChatUsers.isEmpty()) {
             Toast.makeText(getContext(), R.string.new_chat_toast_no_users_selected_error,
@@ -73,6 +73,9 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
             showAbsentConnectionMessage(getContext());
             return;
         }
+
+        doneButtonItem.setEnabled(false);
+
         // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
         conversationStream
                 .flatMap(conversation -> modifyConversation(conversation, newChatUsers, getView().getConversationName()))
@@ -85,7 +88,10 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
                             history.pop();
                             history.push(new ChatPath(newConversation.getId()));
                             Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
-                        }, e -> Timber.e(e, "Could not add chat member"));
+                        }, e -> {
+                            doneButtonItem.setEnabled(true);
+                            Timber.e(e, "Could not add chat member");
+                        });
     }
 
     private Observable<Pair<DataConversation, String>> modifyConversation (DataConversation conversation, List<DataUser> newChatUsers, String newSubject) {
@@ -118,7 +124,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                tryCreateChat();
+                tryCreateChat(item);
                 return true;
         }
         return false;

@@ -10,7 +10,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoCellDelegate;
 
@@ -60,7 +59,7 @@ public class BucketPhotoCell extends AbstractDelegateCell<BucketPhoto, BucketPho
                     .itemsCallback((dialog, v, which, text) -> {
                         switch (which) {
                             case 0:
-                                getEventBus().post(new BucketPhotoAsCoverRequestEvent(getModelObject()));
+                                cellDelegate.choosePhoto(getModelObject());
                                 break;
                             case 1:
                                 showDeleteDialog(view.getContext());

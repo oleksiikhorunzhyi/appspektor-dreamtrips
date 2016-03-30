@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -153,15 +152,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
     }
 
-    public void onEvent(BucketPhotoAsCoverRequestEvent event) {
-        if (bucketItem.getPhotos().contains(event.getPhoto())) {
-            eventBus.cancelEventDelivery(event);
-            saveCover(event.getPhoto().getFSId());
-        }
-    }
-
-    private void saveCover(String coverID) {
-        getBucketItemManager().updateBucketItemCoverId(bucketItem, coverID, this);
+    public void saveCover(BucketPhoto photo) {
+        getBucketItemManager().updateBucketItemCoverId(bucketItem, photo.getFSId(), this);
     }
 
     protected BucketItemManager getBucketItemManager() {

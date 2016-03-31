@@ -26,11 +26,11 @@ public abstract class PathLayout<V extends FlowScreen, P extends FlowPresenter<V
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
     }
 
     protected void onPrepared() {
         // safe method to init UI with path provided
+        ButterKnife.inject(this);
     }
 
     @Override

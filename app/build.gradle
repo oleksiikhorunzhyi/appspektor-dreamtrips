@@ -133,7 +133,7 @@ android {
             //
             manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
             //
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
+            buildConfigField 'String', 'DreamTripsApi', '"https://dtapp.worldventures.biz"'
             buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com/config"'
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
         }

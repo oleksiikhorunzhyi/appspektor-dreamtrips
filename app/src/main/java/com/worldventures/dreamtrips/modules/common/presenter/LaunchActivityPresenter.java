@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.events.AppConfigUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
@@ -163,13 +161,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     private void done() {
         if (DreamSpiceManager.isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
-            if (userSession.getFeatures() == null ||
-                    userSession.getFeatures().isEmpty()) {
-                List<Feature> legacyFeatures = new LegacyFeatureFactory(userSession.getUser()).create();
-                userSession.setFeatures(legacyFeatures);
-                appSessionHolder.put(userSession);
-            }
-
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
             MessengerConnector.getInstance().connect();

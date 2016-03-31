@@ -20,7 +20,7 @@ public class Feature {
     }
 
     public static final String TRIPS = "trips";
-    public static final String REP_TOOLS = "rep_tools";
+    public static final String REP_TOOLS = "repTools";
     public static final String SOCIAL = "social";
     public static final String DTL = "discover";
     public static final String REP_SUGGEST_MERCHANT = "repSuggestMerchant";

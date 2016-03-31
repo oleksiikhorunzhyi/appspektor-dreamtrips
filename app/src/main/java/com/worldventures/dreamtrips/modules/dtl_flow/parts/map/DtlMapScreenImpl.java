@@ -26,6 +26,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
+import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -117,7 +118,19 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     protected void initToolbar() {
-        // TODO init toolbar
+//        if (!tabletAnalytic.isTabletLandscape() || !bundle.isSlave()) {
+//            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+//            toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+//            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v ->
+//                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+//                            .backStackEnabled(true)
+//                            .data(new DtlLocationsBundle())
+//                            .containerId(R.id.dtl_container)
+//                            .fragmentManager(getFragmentManager())
+//                            .build()));
+//        } else { // TODO init toolbar in landscape mode
+        ButterKnife.findById(toolbar, R.id.spinnerStyledTitle).setVisibility(View.GONE);
+        ButterKnife.findById(toolbar, R.id.locationModeCaption).setVisibility(View.GONE);
     }
 
     private void checkMapAvailable() {

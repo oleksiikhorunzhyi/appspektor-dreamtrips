@@ -206,6 +206,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             return;
         }
         if (component.getKey().equals(DtlActivityModule.DTLFLOW)) {
+            closeLeftDrawer();
             DtlActivity.startDtl(this);
             return;
         }

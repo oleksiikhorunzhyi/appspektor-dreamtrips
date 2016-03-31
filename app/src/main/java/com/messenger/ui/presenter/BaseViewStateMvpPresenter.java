@@ -19,6 +19,10 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
 
     @State S state;
 
+    @Override public S getViewState() {
+        return state;
+    }
+
     @Override public void onSaveInstanceState(Bundle bundle) {
         Icepick.saveInstanceState(this, bundle);
     }
@@ -53,14 +57,6 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
         return input -> input.compose(RxLifecycle.bindView(((View) getView())));
     }
 
-    @Override public S getViewState() {
-        return state;
-    }
-
-    ///////////////////////////////////////////////////
-    /////// Helpers
-    //////////////////////////////////////////////////
-
     protected <T> Observable.Transformer<T, T> bindVisibilityIoToMainComposer() {
         return input -> input
                 .compose(new IoToMainComposer<>())
@@ -72,5 +68,4 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
                 .compose(new IoToMainComposer<>())
                 .compose(RxLifecycle.bindView((View) getView()));
     }
-
 }

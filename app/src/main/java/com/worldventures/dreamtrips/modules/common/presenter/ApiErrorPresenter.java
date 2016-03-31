@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
@@ -29,6 +30,7 @@ public class ApiErrorPresenter {
     public void handleError(Throwable exception) {
         Timber.e(exception, this.getClass().getName() + " handled caught exception");
         if (!hasView()) {
+            Crashlytics.logException(exception);
             Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
             return;
         }
@@ -59,14 +61,15 @@ public class ApiErrorPresenter {
     }
 
     private void logError(ErrorResponse errorResponse) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Fields failed: ");
+        StringBuilder stringBuilder = new StringBuilder("Fields failed: ");
+        //
         Queryable.from(errorResponse.getErrors()).forEachR(entry -> {
-            stringBuilder.append("\n");
-            stringBuilder.append(entry.field);
-            stringBuilder.append(" : ");
-            stringBuilder.append(TextUtils.join(",", entry.errors));
+            stringBuilder.append("\n")
+                    .append(entry.field)
+                    .append(" : ")
+                    .append(TextUtils.join(",", entry.errors));
         });
+        //
         Timber.e(stringBuilder.toString());
     }
 }

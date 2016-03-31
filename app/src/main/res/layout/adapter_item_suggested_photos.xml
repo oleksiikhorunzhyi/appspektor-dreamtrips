@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp">
+    android:layout_marginTop="@dimen/spacing_small"
+    android:layout_marginLeft="@dimen/suggested_cell_spacing"
+    android:layout_marginRight="@dimen/suggested_cell_spacing"
+    android:layout_marginBottom="@dimen/spacing_small"
+    app:cardCornerRadius="0dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -64,8 +69,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentRight="true"
-            android:layout_margin="12dp"
-            android:padding="4dp"
+            android:layout_margin="@dimen/spacing_medium"
+            android:padding="@dimen/spacing_tiny"
             android:src="@drawable/close"/>
 
         <android.support.v7.widget.RecyclerView
@@ -79,9 +84,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/suggested_photos"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            android:layout_marginLeft="@dimen/spacing_medium"
+            android:layout_marginRight="@dimen/spacing_medium"
             android:text="@string/share_recent_photos"
             android:textColor="@color/white"
             android:visibility="gone"/>

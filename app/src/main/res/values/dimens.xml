@@ -33,6 +33,9 @@
     <dimen name="font_small">12sp</dimen>
     <dimen name="font_tiny">8sp</dimen>
 
+    <!-- suggested photos feed space -->
+    <dimen name="suggested_cell_spacing">0dp</dimen>
+
     <!-- dimen for trip items -->
     <dimen name="tripImageHeight">180dp</dimen>
     <dimen name="tripImagePanelMargin">10dp</dimen>

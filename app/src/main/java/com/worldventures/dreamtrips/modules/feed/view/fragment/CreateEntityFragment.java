@@ -7,18 +7,26 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.State;
 
 public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle>
         implements CreateEntityPresenter.View {
 
     @InjectView(R.id.picker_container)
     ViewGroup pickerContainer;
+
+    @State
+    boolean imageFromArgsAlreadyAttached;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -38,6 +46,8 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
                 backStackDelegate.setListener(() -> onBack());
             }
         });
+        //
+        attachImages();
     }
 
     @Override
@@ -100,5 +110,20 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
                 .build());
+    }
+
+    protected void attachImages() {
+        if (!imageFromArgsAlreadyAttached) {
+            getPresenter().attachImages(getImages(), getImagesType());
+            imageFromArgsAlreadyAttached = true;
+        }
+    }
+
+    private int getImagesType() {
+        return getArgs() != null ? getArgs().getImageType() : -1;
+    }
+
+    private List<PhotoGalleryModel> getImages() {
+        return getArgs() != null ? getArgs().getImages() : new ArrayList<>();
     }
 }

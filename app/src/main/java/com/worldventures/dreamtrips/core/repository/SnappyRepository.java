@@ -181,7 +181,7 @@ public class SnappyRepository {
     /**
      * Method is intended to delete all records for given keys.
      *
-     * @param key keys array to be deleted.
+     * @param keys keys array to be deleted.
      */
     public void clearAllForKeys(String... keys) {
         Queryable.from(keys).forEachR(key -> {

@@ -150,7 +150,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .build());
     }
 
-    private void openSharePhoto() {
+    private void openSharePhoto(CreateEntityBundle bundle) {
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
                 .containerId(R.id.container_details_floating)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -159,7 +159,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
-                .data(new CreateEntityBundle(true))
+                .data(bundle)
                 .build());
     }
 
@@ -198,7 +198,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Optional
     @OnClick(R.id.share_photo)
     protected void onSharePhotoClick() {
-        openSharePhoto();
+        openSharePhoto(new CreateEntityBundle(true));
     }
 
     @Override
@@ -208,7 +208,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public void onAttachClicked(List<PhotoGalleryModel> pickedItems) {
-
+        openSharePhoto(new CreateEntityBundle(pickedItems, PickImageDelegate.PICK_PICTURE));
+        getPresenter().removeSuggestedPhotos();
     }
 
     @Override

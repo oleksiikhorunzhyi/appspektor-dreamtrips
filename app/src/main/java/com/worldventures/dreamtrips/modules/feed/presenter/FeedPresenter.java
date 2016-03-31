@@ -30,6 +30,8 @@ import rx.Subscription;
 
 public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
 
+    public static final int SUGGESTED_PHOTOS_COUNT = 15;
+
     @Inject
     SnappyRepository db;
     //
@@ -80,7 +82,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
                 long lastSuggestedTime = db.getLastSuggestedPhotosSyncTime();
                 List<PhotoGalleryModel> suggestedPhotos = Queryable.from(photos)
                         .filter(photo -> photo.getDateTaken() > lastSuggestedTime)
-                        .take(15)
+                        .take(SUGGESTED_PHOTOS_COUNT)
                         .toList();
                 view.refreshFeedItems(feedItems, suggestedPhotos, !noMoreFeeds);
             } else {

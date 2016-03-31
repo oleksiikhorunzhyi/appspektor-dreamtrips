@@ -90,7 +90,7 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     }
 
     protected void bindFilteredStream() {
-        final Observable<List<DtlMerchant>> merchantsStream = Observable.combineLatest(this.merchantsStream, prepareFilterToogle(), (dtlMerchants, hideDinings) ->
+        final Observable<List<DtlMerchant>> merchantsStream = Observable.combineLatest(this.merchantsStream, prepareFilterToggle(), (dtlMerchants, hideDinings) ->
                 Observable.from(dtlMerchants)
                         .filter(merchant -> !(hideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
                         .toList().toBlocking().firstOrDefault(Collections.emptyList()));
@@ -103,7 +103,7 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
                 .subscribe(getView()::updateToolbarTitle);
     }
 
-    private Observable<Boolean> prepareFilterToogle() {
+    private Observable<Boolean> prepareFilterToggle() {
         return toggleStream
                 .doOnSubscribe(() -> getView().hideDinings(db.getLastSelectedOffersOnlyToggle()))// set initial value before emitting switching
                 .doOnNext(st -> db.saveLastSelectedOffersOnlyToogle(st));

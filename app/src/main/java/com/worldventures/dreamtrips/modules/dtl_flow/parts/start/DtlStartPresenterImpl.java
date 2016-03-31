@@ -121,8 +121,7 @@ public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, Vie
             return;
         } else {
             if (e instanceof LocationDelegate.LocationException)
-//                getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-                getView().informUser("TURN ON YOUR GPS!!!"); // TODO :: 3/31/16 replace after activity delegate for this implemented
+                getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
             else onLocationResolutionDenied();
         }
     }

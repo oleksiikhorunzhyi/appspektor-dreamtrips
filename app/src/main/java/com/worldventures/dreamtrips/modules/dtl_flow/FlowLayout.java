@@ -15,10 +15,15 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
+import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V, ?>, T extends StyledPath>
         extends PathLayout<V, P, T> implements FlowScreen, ApiErrorView {
+
+    @Inject
+    protected ActivityResultDelegate activityResultDelegate;
 
     public FlowLayout(Context context) {
         super(context);
@@ -30,6 +35,7 @@ public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V
 
     @Override
     protected void onPrepared() {
+        injector.inject(this);
         super.onPrepared();
         setOrientation(LinearLayout.VERTICAL);
     }

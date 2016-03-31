@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.start;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
@@ -12,26 +14,32 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import timber.log.Timber;
 
 public class DtlStartScreenImpl extends FlowLayout<DtlStartScreen, DtlStartPresenter, DtlStartPath>
-        implements DtlStartScreen {
+        implements DtlStartScreen, ActivityResultDelegate.ActivityResultListener {
 
     private static final int REQUEST_CHECK_SETTINGS = 48151623;
-
-    @Inject
-    ActivityResultDelegate activityResultDelegate;
     //
     @InjectView(R.id.progressBar)
     ProgressBar progressBar;
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        injector.inject(this);
+        activityResultDelegate.addListener(this);
+    }
+
+    @Override
     public void locationResolutionRequired(Status status) {
-        try {
-            status.startResolutionForResult((Activity) getContext(), REQUEST_CHECK_SETTINGS);
+        AppCompatActivity appCompatActivity = getActivity();
+        if (appCompatActivity == null) {
+            Timber.i("AppCompatActivity is null");
+            return;
+        } try {
+            status.startResolutionForResult(appCompatActivity, REQUEST_CHECK_SETTINGS);
         } catch (IntentSender.SendIntentException e) {
             Crashlytics.logException(e);
             Timber.e(e, "Error opening settings activity.");
@@ -48,7 +56,8 @@ public class DtlStartScreenImpl extends FlowLayout<DtlStartScreen, DtlStartPrese
         progressBar.setVisibility(GONE);
     }
 
-    public void activityResult(int requestCode, int resultCode) { // TODO :: 3/31/16
+    @Override
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
@@ -60,8 +69,15 @@ public class DtlStartScreenImpl extends FlowLayout<DtlStartScreen, DtlStartPrese
                     getPresenter().onLocationResolutionDenied();
                     break;
             }
-            activityResultDelegate.clear();
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        activityResultDelegate.removeListener(this);
+        super.onDetachedFromWindow();
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -1,14 +1,18 @@
 package com.worldventures.dreamtrips.modules.dtl_flow;
 
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import com.crashlytics.android.Crashlytics;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
 import timber.log.Timber;
@@ -28,6 +32,18 @@ public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V
     protected void onPrepared() {
         super.onPrepared();
         setOrientation(LinearLayout.VERTICAL);
+    }
+
+    @Nullable
+    protected AppCompatActivity getActivity() {
+        Context context = getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof AppCompatActivity) {
+                return (AppCompatActivity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
     }
 
     @Override

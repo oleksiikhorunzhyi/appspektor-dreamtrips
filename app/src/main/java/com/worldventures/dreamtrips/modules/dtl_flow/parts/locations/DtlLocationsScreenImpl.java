@@ -21,9 +21,9 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
@@ -109,7 +109,7 @@ public class DtlLocationsScreenImpl
             toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         } else if (!isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-            toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+            toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
         }
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_search) {

@@ -146,6 +146,12 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
         }
     }
 
+    public void openLeftDrawer() {
+        if (!ViewUtils.isLandscapeOrientation(this)) {
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
+    }
+
     private void logout() {
         new MaterialDialog.Builder(this)
                 .title(getString(R.string.logout_dialog_title))

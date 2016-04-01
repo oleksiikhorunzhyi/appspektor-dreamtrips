@@ -63,6 +63,10 @@ public class LocationDelegate {
                 .switchIfEmpty(requestLocationUpdate());
     }
 
+    public Observable<Location> getLastKnownLocationOrEmpty() {
+        return reactiveLocationProvider.getLastKnownLocation();
+    }
+
     public Observable<Location> requestLocationUpdate() {
         return checkSettings().flatMap(this::settingsResultObtained);
     }

@@ -58,13 +58,15 @@ public class DtlMerchantListPresenter extends JobPresenter<DtlMerchantListPresen
     }
 
     protected void showProgress() {
-        int messageRes = typePredicate.getMerchantType() == DtlMerchantType.OFFER ? R.string.dtl_wait_for_offers : R.string.dtl_wait_for_dinings;
+        int messageRes = typePredicate.getMerchantType() == DtlMerchantType.OFFER ?
+                R.string.dtl_wait_for_offers : R.string.dtl_wait_for_dinings;
         view.showMessage(messageRes);
         view.showProgress();
     }
 
     protected void hideProgress() {
-        int messageRes = typePredicate.getMerchantType() == DtlMerchantType.OFFER ? R.string.dtl_coming_soon_offers : R.string.dtl_place_list_empty_text;
+        int messageRes = typePredicate.getMerchantType() == DtlMerchantType.OFFER ?
+                R.string.dtl_coming_soon_offers : R.string.dtl_place_list_empty_text;
         view.showMessage(messageRes);
         view.hideProgress();
     }

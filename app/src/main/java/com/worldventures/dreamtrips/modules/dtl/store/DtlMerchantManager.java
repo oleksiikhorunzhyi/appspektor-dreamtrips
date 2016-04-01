@@ -10,6 +10,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -43,6 +44,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 import techery.io.library.Job;
 import techery.io.library.Job1Executor;
+import timber.log.Timber;
 
 public class DtlMerchantManager {
 
@@ -74,6 +76,7 @@ public class DtlMerchantManager {
         injector.inject(this);
         this.filterStream = PublishSubject.create();
         initFilterData();
+        initAnalytics();
     }
 
     private Observable<List<DtlMerchant>> loadAndProcessMerchants(String ll) {
@@ -88,11 +91,13 @@ public class DtlMerchantManager {
     }
 
     private Observable<LatLng> combineLocationObservable() {
-        return locationDelegate.getLastKnownLocation()
-                .timeout(200, TimeUnit.MILLISECONDS)
+        return locationDelegate.getLastKnownLocationOrEmpty()
                 .onErrorResumeNext(Observable.empty())
-                .defaultIfEmpty(dtlLocationManager.getCachedSelectedLocation()
-                        .getCoordinates().asAndroidLocation())
+                .switchIfEmpty(locationDelegate.requestLocationUpdate()
+                        .take(1)
+                        .timeout(1000L, TimeUnit.MILLISECONDS)
+                        .onErrorReturn(throwable -> dtlLocationManager.getCachedSelectedLocation()
+                                .getCoordinates().asAndroidLocation()))
                 .map(location -> DtlLocationHelper.selectAcceptableLocation(location,
                         dtlLocationManager.getCachedSelectedLocation()));
     }
@@ -297,4 +302,30 @@ public class DtlMerchantManager {
         }
         return true;
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Analytics related
+    ///////////////////////////////////////////////////////////////////////////
+
+    private static final int THROTTLE_TIMEOUT = 700;
+
+    private PublishSubject<Pair<String, DtlLocation>> merchantTabStream = PublishSubject.create();
+
+    private void initAnalytics() {
+        merchantTabStream
+                .asObservable()
+                .throttleLast(THROTTLE_TIMEOUT, TimeUnit.MILLISECONDS)
+                .compose(new IoToMainComposer<>())
+                .subscribe(stringDtlLocationPair -> {
+                    Timber.d("Tracking tab change %s", stringDtlLocationPair.first, this);
+                    TrackingHelper.dtlMerchantsTab(stringDtlLocationPair.first,
+                            stringDtlLocationPair.second);
+                });
+    }
+
+    public void trackTabChange(String tabName, DtlLocation dtlLocation) {
+        merchantTabStream.onNext(new Pair<>(tabName, dtlLocation));
+    }
+
 }

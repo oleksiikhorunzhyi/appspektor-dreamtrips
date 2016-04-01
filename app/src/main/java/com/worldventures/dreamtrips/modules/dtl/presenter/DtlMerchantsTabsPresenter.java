@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -20,9 +21,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.State;
-import timber.log.Timber;
-
 public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPresenter.View> {
 
     @Inject
@@ -30,19 +28,18 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     @Inject
     DtlLocationManager dtlLocationManager;
 
-    // this flag is used so that we don't track event when fragment is resumes to be destroyed
-    @State
-    boolean citiesWasOpened = false;
-
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
         setTabs();
         //
+        if (!view.isTabletLandscape())
+            bindJob(dtlMerchantManager.getMerchantsExecutor)
+                    .onSuccess(this::tryRetirectToLocation);
+        //
         bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
                 .onError(apiErrorPresenter::handleError);
-        //
         view.bind(dtlLocationManager.getLocationStream()).compose(new IoToMainComposer<>())
                 .subscribe(view::updateToolbarTitle);
     }
@@ -51,7 +48,10 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     public void onResume() {
         super.onResume();
         preselectProperTab();
-        citiesWasOpened = false;
+    }
+
+    private void tryRetirectToLocation(List<DtlMerchant> merchants) {
+        if (merchants.isEmpty()) view.openLocationsWhenEmpty();
     }
 
     public void applySearch(String query) {
@@ -60,10 +60,6 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
 
     private void setTabs() {
         view.setTypes(DtlMerchantManager.MERCHANT_TYPES);
-    }
-
-    public void movingToCities() {
-        citiesWasOpened = true;
     }
 
     private void preselectProperTab() {
@@ -97,16 +93,13 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
      * Analytics-related
      */
     public void trackTabChange(int newPosition) {
-        if (citiesWasOpened) return;
-
         String newTabName = DtlMerchantManager.MERCHANT_TYPES.get(newPosition).equals(DtlMerchantType.OFFER) ?
                 TrackingHelper.DTL_ACTION_OFFERS_TAB : TrackingHelper.DTL_ACTION_DINING_TAB;
         trackTab(newTabName);
     }
 
     private void trackTab(String tabName) {
-        Timber.d("Track tab %s", this);
-        TrackingHelper.dtlMerchantsTab(tabName, dtlLocationManager.getCachedSelectedLocation());
+        dtlMerchantManager.trackTabChange(tabName, dtlLocationManager.getCachedSelectedLocation());
     }
 
     public void rememberUserTabSelection(int newPosition) {
@@ -125,6 +118,8 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         void setTypes(List<DtlMerchantType> types);
 
         void openDetails(String merchantId);
+
+        void openLocationsWhenEmpty();
 
         void preselectMerchantTabWithIndex(int tabIndex);
 

@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +25,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlLocationsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
@@ -53,7 +53,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     @InjectView(R.id.sw_filter)
     SwitchCompat swHideDinings;
     @InjectView(R.id.redo_merchants)
-    View loadMerchants;
+    View loadMerchantsRoot;
 
     SearchViewHelper searchViewHelper;
     //
@@ -125,7 +125,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
                 .position(location));
     }
 
-    @OnClick(R.id.redo_merchants)
+    @OnClick(R.id.redo_merchants_button)
     public void onMechantsRedoClick() {
         getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
     }
@@ -146,10 +146,11 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         int textResId = show ? R.string.loading : R.string.dtl_load_merchants_here_button_caption;
         int visibility = show ? View.VISIBLE : View.GONE;
         //
-        ButterKnife.findById(loadMerchants, R.id.redo_merchants_progress).setVisibility(visibility);
-        ButterKnife.<TextView>findById(loadMerchants, R.id.redo_merchants_text).setText(textResId);
+        Button loadMerchantsBtn = ButterKnife.<Button>findById(loadMerchantsRoot, R.id.redo_merchants_button);
+        ButterKnife.findById(loadMerchantsRoot, R.id.redo_merchants_progress).setVisibility(visibility);
         //
-        loadMerchants.setEnabled(!show);
+        loadMerchantsBtn.setText(textResId);
+        loadMerchantsBtn.setEnabled(!show);
     }
 
     @Override
@@ -170,8 +171,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void showButtonLoadMerchants(boolean show) {
-        loadMerchants.setEnabled(show);
-        loadMerchants.setVisibility(show ? View.VISIBLE : View.GONE);
+        loadMerchantsRoot.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -280,7 +280,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
 
     @Override
     public void onDestroyView() {
-        searchViewHelper.dropHelper();
+        if (searchViewHelper != null) searchViewHelper.dropHelper();
         //
         if (clusterManager != null) {
             clusterManager.setOnClusterClickListener(null);
@@ -297,22 +297,25 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
             toolbar.findViewById(R.id.titleContainer).setOnClickListener(v ->
                     router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
                             .backStackEnabled(true)
+                            .data(new DtlLocationsBundle())
                             .containerId(R.id.dtl_container)
                             .fragmentManager(getFragmentManager())
                             .build()));
         } else {
             toolbar.findViewById(R.id.spinnerStyledTitle).setVisibility(View.GONE);
+            toolbar.findViewById(R.id.locationModeCaption).setVisibility(View.GONE);
         }
     }
 
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
-        if (dtlLocation == null || toolbar == null) return; // for safety reasons
+        if (dtlLocation == null || toolbar == null || // for safety reasons
+                isTabletLandscape()) return; // no showing in landscape
         //
         TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
         TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
         //
-        if (locationTitle == null || locationModeCaption == null) return;
+        if (locationTitle == null || locationModeCaption == null) return; // for safety reasons on samsung
         //
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:

@@ -22,9 +22,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlLocationsBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
@@ -36,11 +37,12 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
+import icepick.State;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_locations)
 @MenuResource(R.menu.menu_locations)
-public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
+public class DtlLocationsFragment extends RxBaseFragmentWithArgs<DtlLocationsPresenter, DtlLocationsBundle>
         implements DtlLocationsPresenter.View, CellDelegate<DtlExternalLocation> {
 
     private static final int REQUEST_CHECK_SETTINGS = 1480;
@@ -55,12 +57,17 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
     RecyclerView recyclerView;
     @InjectView(R.id.progress)
     View progressView;
+    @InjectView(R.id.emptyMerchantsCaption)
+    View emptyMerchantsCaption;
     @InjectView(R.id.autoDetectNearMe)
     Button autoDetectNearMe;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     //
     BaseDelegateAdapter adapter;
+    //
+    @State
+    boolean shouldShowEmptyMerchantsCaption = false;
 
     @Override
     protected DtlLocationsPresenter createPresenter(Bundle savedInstanceState) {
@@ -72,9 +79,14 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         super.afterCreateView(rootView);
         initToolbar();
         //
+        //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
+        if (getArgs().shouldShowEmptyMerchantsCaption || shouldShowEmptyMerchantsCaption) {
+            this.shouldShowEmptyMerchantsCaption = true;
+            emptyMerchantsCaption.setVisibility(View.VISIBLE);
+        }
         //
         adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlExternalLocation.class, DtlLocationCell.class);
@@ -174,7 +186,7 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         router.moveTo(Route.DTL_LOCATIONS_SEARCH, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_container)
                 .fragmentManager(getFragmentManager())
-                .backStackEnabled(false)
+                .backStackEnabled(true)
                 .build());
     }
 

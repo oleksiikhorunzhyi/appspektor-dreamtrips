@@ -42,14 +42,19 @@ public class DtlStartPresenter extends Presenter<DtlStartPresenter.View> {
         if (initialized) return;
         initialized = true;
         //
+        bindLocationObtaining();
+    }
+
+    private void bindLocationObtaining() {
         view.bind(gpsLocationDelegate.requestLocationUpdate()
+                .take(1)
                 .compose(new IoToMainComposer<>()))
                 .doOnSubscribe(view::showProgress)
                 .subscribe(this::proceedNavigation, this::onLocationError);
     }
 
     public void onLocationResolutionGranted() {
-        gpsLocationDelegate.requestLocationUpdate();
+        bindLocationObtaining();
     }
 
     public void onLocationResolutionDenied() {

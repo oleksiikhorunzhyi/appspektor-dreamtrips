@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlLocationsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
@@ -130,7 +131,7 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
 
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
-        if (dtlLocation == null) return; // for safety reasons
+        if (dtlLocation == null || toolbar == null) return; // for safety reasons
         //
         TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
         TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
@@ -162,10 +163,10 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
         //
         ButterKnife.findById(toolbar, R.id.titleContainer).setOnClickListener(v -> {
-            getPresenter().movingToCities();
             router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(true)
                     .containerId(R.id.dtl_container)
+                    .data(new DtlLocationsBundle())
                     .fragmentManager(getParentFragment().getFragmentManager())
                     .build());
         });
@@ -176,6 +177,16 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         router.moveTo(Route.DTL_MERCHANT_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new DtlMerchantDetailsBundle(merchantId, false))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .build());
+    }
+
+    @Override
+    public void openLocationsWhenEmpty() {
+        router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(true)
+                .data(new DtlLocationsBundle(true))
+                .containerId(R.id.dtl_container)
+                .fragmentManager(getParentFragment().getFragmentManager())
                 .build());
     }
 

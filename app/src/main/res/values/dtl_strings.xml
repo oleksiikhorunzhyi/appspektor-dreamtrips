@@ -10,6 +10,7 @@
     <string name="dtl_no_merchants_caption">There are no merchants here</string>
     <string name="dtl_load_merchants_here_button_caption">Redo merchant search</string>
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
+    <string name="dtl_location_no_merchants_caption">There are no merchants near you.\n Please enter new city or</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
     <string name="dtl_points_estimation_input_hint">Enter amount</string>
     <string name="dtl_header">Point Estimator</string>
@@ -49,8 +50,8 @@
     <string name="dtl_check_in">Check in &amp; earn</string>
     <string name="dtl_earn">Earn</string>
     <string name="dtl_dt_points">%d DreamTrips Points</string>
-    <string name="suggest_merchant_title">Suggest Merchant</string>
-    <string name="suggest_merchant">@string/suggest_merchant_title</string>
+    <string name="suggest_merchant">Suggest Merchant</string>
+    <string name="suggest_merchant_title">DT Local Tools</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %s DreamTrips points in %s</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>

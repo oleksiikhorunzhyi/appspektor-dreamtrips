@@ -124,6 +124,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
 
     @Override
     public void onDestroy() {
+        navigationDrawerPresenter.detach();
         flowActivityHelper = null;
         super.onDestroy();
     }

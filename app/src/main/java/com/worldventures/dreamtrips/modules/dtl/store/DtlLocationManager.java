@@ -77,6 +77,10 @@ public class DtlLocationManager {
     private String query;
     private List<DtlExternalLocation> searchLocations;
 
+    public String getQuery() {
+        return query;
+    }
+
     public void searchLocations(String query) {
         this.query = query;
         // don't do anything if users enter 'local-search' query and searchLocations is still null
@@ -185,14 +189,14 @@ public class DtlLocationManager {
 
     // TODO :: 3/24/16 migrate to usage of methods below throughout DTL
     public boolean isLocationExternal() {
-        return getSelectedLocation().getLocationSourceType() == LocationSourceType.EXTERNAL;
+        return getCachedSelectedLocation().getLocationSourceType() == LocationSourceType.EXTERNAL;
     }
 
     public boolean isLocationFromMap() {
-        return getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP;
+        return getCachedSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP;
     }
 
     public boolean isLocationNearMe() {
-        return getSelectedLocation().getLocationSourceType() == LocationSourceType.NEAR_ME;
+        return getCachedSelectedLocation().getLocationSourceType() == LocationSourceType.NEAR_ME;
     }
 }

@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.rx.goro.GoroObservable;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -72,9 +71,6 @@ public class RetryLoginComposer<T> implements Observable.Transformer<T, T> {
         userSession.setLastUpdate(System.currentTimeMillis());
 
         List<Feature> features = session.getPermissions();
-        // TODO remote legacy features factory when server is ready
-        List<Feature> legacyFeatures = new LegacyFeatureFactory(sessionUser).create();
-        if (features != null) features.addAll(legacyFeatures);
         userSession.setFeatures(features);
 
         appSessionHolder.put(userSession);

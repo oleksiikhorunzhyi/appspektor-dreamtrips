@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.app.Activity;
 import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -11,9 +13,10 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
+import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlLocationsBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlStartPresenter;
 
 import javax.inject.Inject;
@@ -34,7 +37,7 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
     ActivityResultDelegate activityResultDelegate;
     //
     @InjectView(R.id.progressBar)
-    ProgressBar progressBar; // TODO :: 3/19/16 use to indicate progress - otherwise looks strange
+    ProgressBar progressBar;
 
     @Override
     public void locationResolutionRequired(Status status) {
@@ -52,20 +55,24 @@ public class DtlStartFragment extends RxBaseFragment<DtlStartPresenter> implemen
 
     @Override
     public void openDtlLocationsScreen() {
-        navigateTo(Route.DTL_LOCATIONS);
+        // TODO :: NOTE: needed commitAllowingStateLoss here so dropped Router's usage
+        Bundle args = new Bundle();
+        args.putParcelable(ComponentPresenter.EXTRA_DATA, new DtlLocationsBundle());
+        //
+        Fragment fragment = Fragment.instantiate(getActivity(), Route.DTL_LOCATIONS.getClazzName());
+        fragment.setArguments(args);
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.dtl_container, fragment, Route.DTL_LOCATIONS.getClazzName());
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override
     public void openMerchants() {
-        navigateTo(Route.DTL_MERCHANTS_HOLDER);
-    }
-
-    private void navigateTo(Route route) {
-        router.moveTo(route, NavigationConfigBuilder.forFragment()
-                .fragmentManager(getChildFragmentManager())
-                .backStackEnabled(false)
-                .containerId(R.id.dtl_container)
-                .build());
+        // TODO :: NOTE: needed commitAllowingStateLoss here so dropped Router's usage
+        Fragment fragment = Fragment.instantiate(getActivity(), Route.DTL_MERCHANTS_HOLDER.getClazzName());
+        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.dtl_container, fragment, Route.DTL_MERCHANTS_HOLDER.getClazzName());
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override

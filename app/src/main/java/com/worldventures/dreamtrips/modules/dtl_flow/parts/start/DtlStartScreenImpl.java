@@ -12,6 +12,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
 
 import butterknife.InjectView;
@@ -20,8 +21,6 @@ import timber.log.Timber;
 public class DtlStartScreenImpl extends FlowLayout<DtlStartScreen, DtlStartPresenter, DtlStartPath>
         implements DtlStartScreen, ActivityResultDelegate.ActivityResultListener {
 
-    private static final int REQUEST_CHECK_SETTINGS = 48151623;
-    //
     @InjectView(R.id.progressBar)
     ProgressBar progressBar;
 
@@ -39,7 +38,7 @@ public class DtlStartScreenImpl extends FlowLayout<DtlStartScreen, DtlStartPrese
             Timber.i("AppCompatActivity is null");
             return;
         } try {
-            status.startResolutionForResult(appCompatActivity, REQUEST_CHECK_SETTINGS);
+            status.startResolutionForResult(appCompatActivity, DtlActivity.GPS_LOCATION_RESOLUTION_REQUEST);
         } catch (IntentSender.SendIntentException e) {
             Crashlytics.logException(e);
             Timber.e(e, "Error opening settings activity.");
@@ -58,7 +57,7 @@ public class DtlStartScreenImpl extends FlowLayout<DtlStartScreen, DtlStartPrese
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
+        if (requestCode == DtlActivity.GPS_LOCATION_RESOLUTION_REQUEST) {
             switch (resultCode) {
                 case Activity.RESULT_OK:
                     // All required changes were successfully made

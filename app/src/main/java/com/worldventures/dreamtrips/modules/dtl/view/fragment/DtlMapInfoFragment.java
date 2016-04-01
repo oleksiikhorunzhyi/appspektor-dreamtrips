@@ -1,16 +1,15 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
+import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
@@ -24,7 +23,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.fragment_dtl_map_info)
 public class DtlMapInfoFragment
-        extends BaseFragmentWithArgs<DtlMapInfoPresenter, DtlMerchantDetailsBundle>
+        extends RxBaseFragmentWithArgs<DtlMapInfoPresenter, DtlMerchantDetailsBundle>
         implements DtlMapInfoPresenter.View {
 
     DtlMerchantCommonDataInflater commonDataInflater;
@@ -47,21 +46,12 @@ public class DtlMapInfoFragment
     }
 
     private void observeSize(final View rootView) {
-        ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int ownHeight = rootView.getHeight();
-                getPresenter().onSizeReady(ownHeight);
-                //
-                ViewTreeObserver observer = rootView.getViewTreeObserver();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    observer.removeOnGlobalLayoutListener(this);
-                } else {
-                    observer.removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
+        bind(RxView.globalLayouts(rootView))
+                .take(1)
+                .subscribe(aVoid -> {
+                    int ownHeight = rootView.getHeight();
+                    getPresenter().onSizeReady(ownHeight);
+                });
     }
 
     @Override

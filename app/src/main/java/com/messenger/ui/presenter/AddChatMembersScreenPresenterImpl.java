@@ -122,6 +122,11 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
         return false;
     }
 
+    protected Observable<Boolean> getChatNameShouldBeVisibleObservable() {
+        return conversationStream.compose(bindViewIoToMainComposer())
+                .take(1).map(ConversationHelper::isSingleChat);
+    }
+
     @Override
     protected Observable<List<DataUser>> getExistingParticipants() {
         return participantsStream;

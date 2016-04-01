@@ -87,10 +87,8 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
         return false;
     }
 
-    @Override
-    public void onItemSelectChange(SelectableDataUser item) {
-        super.onItemSelectChange(item);
-        setConversationNameInputFieldVisible(futureParticipants.size() >= REQUIRED_SELECTED_USERS_TO_SHOW_CHAT_NAME);
+    protected Observable<Boolean> getChatNameShouldBeVisibleObservable() {
+        return Observable.just(futureParticipants.size() >= REQUIRED_SELECTED_USERS_TO_SHOW_CHAT_NAME);
     }
 
     @Override

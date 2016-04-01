@@ -95,8 +95,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                 .subscribeOn(Schedulers.io());
     }
 
-    protected abstract Observable<List<DataUser>> getExistingParticipants();
-
     protected void connectToContacts() {
         ConnectableObservable<CharSequence> chosenObservable = getView().getSearchQueryObservable()
                 .compose(bindView())
@@ -168,6 +166,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         futureParticipants.addAll(selectedUsersFromViewState);
         selectedUsersFromViewState.clear();
         refreshSelectedContactsHeader();
+        getChatNameShouldBeVisibleObservable().subscribe(visible ->
+                getView().setConversationNameEditTextVisibility(visible ? View.VISIBLE : View.GONE)
+        );
 
         switch (viewState.getLoadingState()) {
             case LOADING:
@@ -180,9 +181,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                 screen.showError(viewState.getError());
                 break;
         }
-
-        int conversationNameVisibility = futureParticipants.size() > 1 ? View.VISIBLE : View.GONE;
-        getView().setConversationNameEditTextVisibility(conversationNameVisibility);
     }
 
     @Override
@@ -193,6 +191,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
             futureParticipants.remove(item.getDataUser());
         }
         refreshSelectedContactsHeader();
+        getChatNameShouldBeVisibleObservable().subscribe(this::setConversationNameInputFieldVisible);
     }
 
     private void refreshSelectedContactsHeader() {
@@ -230,4 +229,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public int getToolbarMenuRes() {
         return R.menu.new_chat;
     }
+
+    protected abstract Observable<List<DataUser>> getExistingParticipants();
+
+    protected abstract Observable<Boolean> getChatNameShouldBeVisibleObservable();
+
 }

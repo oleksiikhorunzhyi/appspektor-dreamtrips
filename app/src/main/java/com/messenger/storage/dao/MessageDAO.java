@@ -42,11 +42,7 @@ public class MessageDAO extends BaseDAO {
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
-                .map(cursor -> {
-                    DataMessage res = SqlUtils.convertToModel(false, DataMessage.class, cursor);
-                    cursor.close();
-                    return res;
-                });
+                .compose(DaoTransformers.toDataMessage());
     }
 
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
@@ -93,11 +89,7 @@ public class MessageDAO extends BaseDAO {
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
-                .map(cursor -> {
-                    DataMessage res = SqlUtils.convertToModel(false, DataMessage.class, cursor);
-                    cursor.close();
-                    return res;
-                });
+                .compose(DaoTransformers.toDataMessage());
     }
 
     public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
@@ -127,28 +119,6 @@ public class MessageDAO extends BaseDAO {
                         "WHERE " + DataMessage$Table.CONVERSATIONID + " = ? "
                         + "AND " + DataMessage$Table.FROMID + " <> ? "
                         + "AND " + DataMessage$Table.STATUS + " = ? ")
-                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
-                .build();
-
-        return query(q, DataMessage.CONTENT_URI)
-                .map(cursor -> {
-                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
-                    cursor.close();
-                    return res;
-                });
-    }
-
-    /**
-     * @return observable, which emits int values which includes first unread message
-     */
-    public Observable<Integer> countFromFirstUnreadMessage(String conversationId, String userId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT COUNT(_id) FROM " + DataMessage.TABLE_NAME + " " +
-                        "WHERE " + DataMessage$Table.CONVERSATIONID + " = ? "
-                        + "AND " + DataMessage$Table.DATE + " >=  " +
-                        "( SELECT MIN(" + DataMessage$Table.DATE + ") FROM " + DataMessage.TABLE_NAME + " "
-                        + "WHERE " + DataMessage$Table.FROMID + " <> ? "
-                        + "AND " + DataMessage$Table.STATUS + " = ? )")
                 .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
                 .build();
 

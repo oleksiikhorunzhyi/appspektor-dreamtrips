@@ -82,9 +82,14 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         friendsView.addOnScrollListener(new OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+
                 int itemCount = recyclerView.getLayoutManager().getItemCount();
-                int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
                 getPresenter().onScrolled(itemCount, lastVisibleItemPosition);
+
+                boolean enableSwipeToRefresh = layoutManager.findFirstCompletelyVisibleItemPosition() == 0;
+                refreshLayout.setEnabled(enableSwipeToRefresh);
             }
         });
         adapter = new BaseArrayListAdapter<>(getContext(), this);

@@ -6,7 +6,6 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataTranslation$Adapter;
 import com.messenger.entities.DataTranslation$Table;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,11 +25,7 @@ public class TranslationsDAO extends BaseDAO{
                 .withSelectionArgs(new String[] {id})
                 .build();
         return query(q, DataTranslation.CONTENT_URI)
-                .map(cursor -> {
-                    DataTranslation dataTranslation = SqlUtils.convertToModel(false, DataTranslation.class, cursor);
-                    cursor.close();
-                    return dataTranslation;
-                });
+                .compose(DaoTransformers.toDataTranslation());
     }
 
     public void save(List<DataTranslation> dataTranslations){

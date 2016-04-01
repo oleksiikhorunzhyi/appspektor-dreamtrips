@@ -1,6 +1,7 @@
 package com.messenger.storage.dao;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
@@ -49,17 +50,19 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .map(cursor -> {
-                    final DataUser$Adapter adapter = new DataUser$Adapter();
-                    final int affiliationColumn = cursor.getColumnIndex(DataParticipant$Table.AFFILIATION);
-                    List<Pair<DataUser, String>> result = new ArrayList<>(cursor.getCount());
-                    while (cursor.moveToNext()) {
-                        DataUser user = adapter.loadFromCursor(cursor);
-                        result.add(new Pair<>(user, cursor.getString(affiliationColumn)));
-                    }
-                    cursor.close();
-                    return result;
-                });
+                .map(this::convertToListUserWithAffiliation);
+    }
+
+    private List<Pair<DataUser, String>> convertToListUserWithAffiliation(Cursor cursor) {
+        final DataUser$Adapter adapter = new DataUser$Adapter();
+        final int affiliationColumn = cursor.getColumnIndex(DataParticipant$Table.AFFILIATION);
+        List<Pair<DataUser, String>> result = new ArrayList<>(cursor.getCount());
+        while (cursor.moveToNext()) {
+            DataUser user = adapter.loadFromCursor(cursor);
+            result.add(new Pair<>(user, cursor.getString(affiliationColumn)));
+        }
+        cursor.close();
+        return result;
     }
 
     public Observable<List<DataUser>> getParticipantsEntities(String conversationId) {

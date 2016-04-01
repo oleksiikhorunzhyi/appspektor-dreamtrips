@@ -841,11 +841,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void connectToPendingAttachments() {
         attachmentDAO.getPendingAttachments(conversationId)
-                .flatMap(cursor -> {
-                    List<DataAttachment> attachments = SqlUtils.convertToList(DataAttachment.class, cursor);
-                    cursor.close();
-                    return Observable.from(attachments);
-                })
+                .flatMap(Observable::from)
                 .compose(bindViewIoToMainComposer())
                 .flatMap(attachmentDelegate::bindToPendingAttachment)
                 .subscribe(this::onAttachmentUploaded, e -> Timber.e("Image uploading failed"));

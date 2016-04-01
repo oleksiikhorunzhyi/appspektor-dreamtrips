@@ -21,7 +21,7 @@ public interface ChatMembersScreen extends MessengerScreen {
 
     void setAdapterItems(List<Object> items);
 
-    void setSelectedUsersHeaderText(CharSequence text);
+    void setSelectedUsersHeaderText(CharSequence selectedContactsCount, CharSequence selectedContactsList);
 
     void setConversationNameEditTextVisibility(int visibility);
 

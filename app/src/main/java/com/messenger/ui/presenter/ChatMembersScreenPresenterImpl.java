@@ -201,9 +201,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
             List<DataUser> existingAndFutureParticipants = Queryable.from(existingParticipants)
                     .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
                     .concat(futureParticipants).toList();
-            SpannableString spannableString = contactsHeaderCreator.createHeader(existingAndFutureParticipants);
-            textInChosenContactsEditText = spannableString;
-            getView().setSelectedUsersHeaderText(spannableString);
+            Pair<String, SpannableString> headerTextPair = contactsHeaderCreator.createHeader(existingAndFutureParticipants);
+            textInChosenContactsEditText = headerTextPair.second;
+            getView().setSelectedUsersHeaderText(headerTextPair.first, headerTextPair.second);
         });
     }
 

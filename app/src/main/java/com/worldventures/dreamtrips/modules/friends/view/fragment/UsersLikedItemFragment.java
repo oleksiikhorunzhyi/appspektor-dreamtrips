@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
 import com.worldventures.dreamtrips.modules.friends.presenter.UsersLikedItemPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserCellDelegate;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_likes)
 public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle>
-        implements UsersLikedItemPresenter.View {
+        implements UsersLikedItemPresenter.View, UserCellDelegate {
 
     @InjectView(R.id.title)
     TextView header;
@@ -33,8 +34,8 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         adapter.registerCell(User.class, UserCell.class);
+        adapter.registerDelegate(User.class, this);
     }
-
 
     @Override
     public void onResume() {
@@ -59,5 +60,20 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
     @Override
     protected LinearLayoutManager createLayoutManager() {
         return new LinearLayoutManager(getActivity());
+    }
+
+    @Override
+    public void acceptRequest(User user) {
+        getPresenter().acceptRequest(user);
+    }
+
+    @Override
+    public void addUserRequest(User user) {
+        getPresenter().addUserRequest(user);
+    }
+
+    @Override
+    public void onCellClicked(User model) {
+
     }
 }

@@ -5,16 +5,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.friends.events.AcceptAllRequestsEvent;
 import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.RequestHeaderCellDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_friend_header)
-public class RequestHeaderCell extends AbstractCell<RequestHeaderModel> {
+public class RequestHeaderCell extends AbstractDelegateCell<RequestHeaderModel, RequestHeaderCellDelegate> {
 
     public static final int MIN_REQUEST_COUNT_FOR_ADVANCED_VIEW = 2;
     @InjectView(R.id.header)
@@ -38,11 +38,10 @@ public class RequestHeaderCell extends AbstractCell<RequestHeaderModel> {
 
     @Override
     public void prepareForReuse() {
-
     }
 
     @OnClick(R.id.accept_all_btn)
     void onAcceptAll() {
-        getEventBus().post(new AcceptAllRequestsEvent());
+        cellDelegate.acceptAllRequests();
     }
 }

@@ -9,7 +9,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -31,10 +30,10 @@ public class DtlLocationsSearchPresenterImpl extends FlowPresenterImpl<DtlLocati
     @Inject
     DtlMerchantManager dtlMerchantManager;
 
-    public DtlLocationsSearchPresenterImpl(Context context, Injector injector, ApiErrorView apiErrorView) {
+    public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
-        apiErrorPresenter.setView(apiErrorView);
+        apiErrorPresenter.setView(getView());
     }
 
     @Override

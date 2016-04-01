@@ -149,6 +149,6 @@ public class DtlLocationsSearchScreenImpl
 
     @Override
     public DtlLocationsSearchPresenter createPresenter() {
-        return new DtlLocationsSearchPresenterImpl(getContext(), injector, this);
+        return new DtlLocationsSearchPresenterImpl(getContext(), injector);
     }
 }

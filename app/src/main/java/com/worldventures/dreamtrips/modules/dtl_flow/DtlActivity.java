@@ -17,6 +17,8 @@ import flow.History;
 @Layout(R.layout.activity_dtl)
 public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresenter.View>> {
 
+    public static final int GPS_LOCATION_RESOLUTION_REQUEST = 48151623;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

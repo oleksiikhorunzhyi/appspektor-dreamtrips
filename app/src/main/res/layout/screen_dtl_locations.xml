@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/dtl_cities_background"
-              android:orientation="vertical"
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsScreenImpl
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dtl_cities_background"
+    android:orientation="vertical"
     >
 
     <android.support.design.widget.AppBarLayout
@@ -35,11 +36,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"
         android:gravity="center"
-        android:text="There are no merchants near you. Please enter new city or"
+        android:text="@string/dtl_location_no_merchants_caption"
         android:textColor="@color/dtl_cities_text_color"
         android:textSize="@dimen/font_extra_large"
         android:visibility="gone"
@@ -70,4 +71,4 @@
             tools:visibility="gone"
             />
     </FrameLayout>
-</LinearLayout>
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsScreenImpl>

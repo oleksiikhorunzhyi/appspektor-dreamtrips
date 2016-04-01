@@ -14,14 +14,14 @@ import com.crashlytics.android.Crashlytics;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V, ?>, T extends StyledPath>
-        extends PathLayout<V, P, T> implements FlowScreen, ApiErrorView {
+        extends PathLayout<V, P, T> implements FlowScreen {
 
     @Inject
     protected ActivityResultDelegate activityResultDelegate;
@@ -64,6 +64,10 @@ public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V
 
     public void hideSoftInput() {
         SoftInputUtil.hideSoftInputMethod(this);
+    }
+
+    protected boolean isTabletLandscape() {
+        return ViewUtils.isTablet(getContext()) && ViewUtils.isLandscapeOrientation(getContext());
     }
 
     @Override

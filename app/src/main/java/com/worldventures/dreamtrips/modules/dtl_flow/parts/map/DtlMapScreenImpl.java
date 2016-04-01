@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -9,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -40,6 +43,7 @@ import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import icepick.Icepick;
 import icepick.State;
 
 public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath>
@@ -69,6 +73,8 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
     private GoogleMap googleMap;
+
+    private Bundle mapBundle;
 
     public DtlMapScreenImpl(Context context) {
         super(context);
@@ -114,13 +120,15 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     protected void prepareView() {
         initToolbar();
         //
+        MapViewUtils.setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
+        //
         swHideDinings.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().onCheckHideDinings(isChecked));
     }
 
     protected void initToolbar() {
 //        if (!tabletAnalytic.isTabletLandscape() || !bundle.isSlave()) {
 //            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-//            toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+//            toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
 //            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v ->
 //                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
 //                            .backStackEnabled(true)
@@ -139,7 +147,7 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
             noGoogleContainer.setVisibility(View.VISIBLE);
         } else {
             MapsInitializer.initialize(getContext());
-            //mapView.onCreate(mapBundle); // TODO Implement saveState
+            mapView.onCreate(null); // TODO Implement saveState
         }
     }
 
@@ -326,4 +334,5 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     private boolean isGooglePlayServicesAvailable() {
         return GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext()) != ConnectionResult.SUCCESS;
     }
+
 }

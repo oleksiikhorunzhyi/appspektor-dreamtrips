@@ -177,11 +177,11 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
         getView().centerIn(getFirstCenterLocation());
         //
         showingLoadMerchantsButton()
-                .compose(bindViewIoToMainComposer())
+                //.compose(bindViewIoToMainComposer())
                 .subscribe(show -> getView().showButtonLoadMerchants(show));
         //
         MapObservableFactory.createMarkerClickObservable(getView().getMap())
-                .compose(bindViewIoToMainComposer())
+                //.compose(bindViewIoToMainComposer())
                 .subscribe(marker -> getView().markerClick(marker));
         //
         checkPendingMapInfo();

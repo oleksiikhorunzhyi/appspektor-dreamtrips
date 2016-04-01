@@ -34,14 +34,9 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
         super(context);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Activity related
-    ///////////////////////////////////////////////////////////////////////////
-
-
     @Override
-    public void attachView(ChatMembersScreen view) {
-        super.attachView(view);
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
         getView().setTitle(R.string.new_chat_title);
     }
 

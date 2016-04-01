@@ -79,6 +79,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="@dimen/new_chat_content_header_size"
+                        android:maxLines="3"
                         android:layout_toRightOf="@+id/new_chat_chosen_contacts_count_editText"
                         android:paddingLeft="@dimen/new_chat_name_chosen_contacts_left_margin"
                         android:inputType="textMultiLine|textFilter|textNoSuggestions"

@@ -7,12 +7,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.adapter.cell.CheckableUserCell;
 import com.messenger.ui.adapter.cell.HeaderCell;
@@ -117,7 +119,7 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
-        searchQueryObservable = RxTextView.textChanges(chosenContactsListEditText);
+        searchQueryObservable = RxTextView.afterTextChangeEvents(chosenContactsListEditText).map(event -> event.editable());
         chosenContactsListEditText.setSelectionListener((s, a)
                 -> chosenContactsListEditText.setSelection(chosenContactsListEditText.getText().length()));
         conversationNameAnimator =

@@ -7,7 +7,6 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
-import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataUser;
@@ -23,22 +22,24 @@ public class ContactsHeaderCreator {
         this.context = context;
     }
 
-    public Pair<String, SpannableString> createHeader(Collection<DataUser> contacts) {
-        String selectedContactsCountString;
+    public ContactsHeaderInfo createHeader(Collection<DataUser> contacts, String searchQuery) {
+        String selectedContactsFormattedCount;
         if (contacts.isEmpty()) {
-            selectedContactsCountString = context.getString(R.string.new_chat_chosen_contacts_header_empty);
+            selectedContactsFormattedCount = context.getString(R.string.new_chat_chosen_contacts_header_empty);
         } else {
             String addString = context.getString(R.string.new_chat_chosen_contacts_header_contacts_list_start_value);
-            selectedContactsCountString = String.format("%s: (%d)", addString, contacts.size());
+            selectedContactsFormattedCount = String.format("%s: (%d)", addString, contacts.size());
         }
 
         String[] userNames = Queryable.from(contacts).map(DataUser::getName).toArray(String.class);
-        String userNamesString = TextUtils.join(", ", userNames);
-        if (!TextUtils.isEmpty(userNamesString)) userNamesString += ", "; // add coma even to latest user
-        SpannableString contactsListSpannableString = new SpannableString(userNamesString);
+        String contactsList = TextUtils.join(", ", userNames);
+        if (userNames.length > 0) contactsList += ", "; // add coma even to latest user
+        String contactsListWithSearchQuery = contactsList;
+        if (!TextUtils.isEmpty(searchQuery)) contactsListWithSearchQuery += searchQuery;
+        SpannableString contactsListSpannableString = new SpannableString(contactsListWithSearchQuery);
         int previousUsernameIndex = 0;
         for (String userName : userNames) {
-            int userNameIndexStart = userNamesString.indexOf(userName, previousUsernameIndex);
+            int userNameIndexStart = contactsListWithSearchQuery.indexOf(userName, previousUsernameIndex);
             int userNameIndexEnd = userNameIndexStart + userName.length();
             previousUsernameIndex = userNameIndexEnd;
             assignUnderlinedSpan(contactsListSpannableString, userNameIndexStart, userNameIndexEnd);
@@ -46,7 +47,13 @@ public class ContactsHeaderCreator {
             assignBlueSpan(contactsListSpannableString, userNameIndexStart, coloredSpanEnd);
         }
 
-        return new Pair<>(selectedContactsCountString, contactsListSpannableString);
+        if (!TextUtils.isEmpty(searchQuery)) {
+            int searchQuerySpanStartIndex = contactsListWithSearchQuery.indexOf(searchQuery, previousUsernameIndex);
+            int searchQuerySpanEnd = searchQuerySpanStartIndex + searchQuery.length();
+            assignBlueSpan(contactsListSpannableString, searchQuerySpanStartIndex, searchQuerySpanEnd);
+        }
+
+        return new ContactsHeaderInfo(selectedContactsFormattedCount, contactsList, contactsListSpannableString);
     }
 
     private void assignUnderlinedSpan(SpannableString spannableString, int start, int end) {
@@ -56,5 +63,30 @@ public class ContactsHeaderCreator {
     private void assignBlueSpan(SpannableString spannableString, int start, int end) {
         int spannableColor = ContextCompat.getColor(context, R.color.contact_list_header_selected_contacts);
         spannableString.setSpan(new ForegroundColorSpan(spannableColor), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    public static class ContactsHeaderInfo {
+        String selectedContactsFormattedCount;
+        String contactsList;
+        Spannable contactsListWithSearchQuery;
+
+        public ContactsHeaderInfo(String selectedContactsFormattedCount, String contactsList,
+                                  Spannable contactsListWithSearchQuery) {
+            this.selectedContactsFormattedCount = selectedContactsFormattedCount;
+            this.contactsList = contactsList;
+            this.contactsListWithSearchQuery = contactsListWithSearchQuery;
+        }
+
+        public String getSelectedContactsFormattedCount() {
+            return selectedContactsFormattedCount;
+        }
+
+        public String getContactsList() {
+            return contactsList;
+        }
+
+        public Spannable getContactsListWithSearchQuery() {
+            return contactsListWithSearchQuery;
+        }
     }
 }

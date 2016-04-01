@@ -46,8 +46,8 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     }
 
     @Override
-    public void attachView(ChatMembersScreen view) {
-        super.attachView(view);
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
         getView().setTitle(R.string.chat_add_new_members_title);
         conversationStream.take(1).compose(bindViewIoToMainComposer()).subscribe(conversation -> {
             boolean isSingleChat = ConversationHelper.isSingleChat(conversation);

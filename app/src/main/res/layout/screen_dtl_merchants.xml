@@ -35,8 +35,12 @@
                 android:layout_height="match_parent"
                 android:fadingEdgeLength="0dp"
                 android:overScrollMode="never"
-                android:padding="@dimen/spacing_tiniest"
+                android:paddingLeft="12dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:paddingRight="12dp"
                 android:visibility="visible"
+                tools:listitem="@layout/adapter_item_dtl_merchant_new"
                 />
         </android.support.v4.widget.SwipeRefreshLayout>
 

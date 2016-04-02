@@ -23,7 +23,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellNew;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
 
@@ -73,7 +73,7 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //
         baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
-        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantCell.class);
+        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantCellNew.class);
         baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
         //
         selectionManager = new SingleSelectionManager(recyclerView);

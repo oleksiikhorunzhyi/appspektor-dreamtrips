@@ -152,6 +152,10 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
         }
     }
 
+    public void openRightDrawer() {
+//        drawerLayout.openDrawer(GravityCompat.END);
+    }
+
     private void logout() {
         new MaterialDialog.Builder(this)
                 .title(getString(R.string.logout_dialog_title))

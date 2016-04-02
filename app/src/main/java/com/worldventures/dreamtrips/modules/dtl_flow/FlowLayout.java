@@ -66,7 +66,8 @@ public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V
         SoftInputUtil.hideSoftInputMethod(this);
     }
 
-    protected boolean isTabletLandscape() {
+    @Override
+    public boolean isTabletLandscape() {
         return ViewUtils.isTablet(getContext()) && ViewUtils.isLandscapeOrientation(getContext());
     }
 

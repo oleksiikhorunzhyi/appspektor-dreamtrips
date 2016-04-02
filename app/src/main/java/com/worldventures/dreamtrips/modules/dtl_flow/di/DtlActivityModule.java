@@ -39,7 +39,7 @@ public class DtlActivityModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideDtlComponent() {
-        return new ComponentDescription(DTLFLOW, R.string.dtl, R.string.dtl, R.drawable.ic_dtl,
+        return new ComponentDescription(DTLFLOW, R.string.dtl_withflow, R.string.dtl_withflow, R.drawable.ic_dtl,
                 true, null);
     }
 }

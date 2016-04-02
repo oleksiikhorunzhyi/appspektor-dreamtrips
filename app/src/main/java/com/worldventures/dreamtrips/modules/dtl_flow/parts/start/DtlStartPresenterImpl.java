@@ -24,6 +24,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchant
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
+import flow.path.Path;
 
 public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, ViewState.EMPTY>
         implements DtlStartPresenter {
@@ -73,7 +75,7 @@ public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, Vie
     public void proceedNavigation(@Nullable Location newLocation) {
         DtlLocation persistedLocation = dtlLocationManager.getSelectedLocation();
         if (persistedLocation == null) {
-            if (newLocation == null) Flow.get(getContext()).set(new DtlLocationsPath());
+            if (newLocation == null) navigatePath(new DtlLocationsPath());
             else {
                 DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
                         .locationSourceType(LocationSourceType.NEAR_ME)
@@ -81,7 +83,7 @@ public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, Vie
                         .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
                         .build();
                 dtlLocationManager.persistLocation(dtlLocation);
-                Flow.get(getContext()).set(new DtlMerchantsPath());
+                navigatePath(new DtlMerchantsPath());
             }
         } else {
             switch (persistedLocation.getLocationSourceType()) {
@@ -89,7 +91,7 @@ public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, Vie
                     if (newLocation == null) { // we had location before, but not now - and we need it
                         dtlLocationManager.cleanLocation();
                         dtlMerchantManager.clean();
-                        Flow.get(getContext()).set(new DtlLocationsPath());
+                        navigatePath(new DtlLocationsPath());
                         break;
                     }
                     //
@@ -97,18 +99,23 @@ public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, Vie
                             persistedLocation.getCoordinates().asAndroidLocation(), DistanceType.MILES))
                         dtlMerchantManager.clean();
                     //
-                    Flow.get(getContext()).set(new DtlMerchantsPath());
+                    navigatePath(new DtlMerchantsPath());
                     break;
                 case FROM_MAP:
-                    Flow.get(getContext()).set(new DtlMerchantsPath());
+                    navigatePath(new DtlMerchantsPath());
                     break;
                 case EXTERNAL:
                     TrackingHelper.dtlLocationLoaded(
                             ((DtlExternalLocation) dtlLocationManager.getSelectedLocation()).getId());
-                    Flow.get(getContext()).set(new DtlMerchantsPath());
+                    navigatePath(new DtlMerchantsPath());
                     break;
             }
         }
+    }
+
+    private void navigatePath(Path path) {
+        History history = History.single(path);
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     /**

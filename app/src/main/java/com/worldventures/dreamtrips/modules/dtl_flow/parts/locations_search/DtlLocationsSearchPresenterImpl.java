@@ -20,6 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import techery.io.library.JobSubscriber;
 
 public class DtlLocationsSearchPresenterImpl extends FlowPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
@@ -77,7 +78,8 @@ public class DtlLocationsSearchPresenterImpl extends FlowPresenterImpl<DtlLocati
         trackLocationSelection(location);
         dtlLocationManager.persistLocation(location);
         dtlMerchantManager.clean();
-        Flow.get(getContext()).set(new DtlMerchantsPath());
+        History history = History.single(new DtlMerchantsPath());
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     public void onSearchError(Throwable e) {

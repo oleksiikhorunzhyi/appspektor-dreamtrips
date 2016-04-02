@@ -100,5 +100,4 @@ public class DtlModule {
         return new ComponentDescription(DTL, R.string.dtl, R.string.dtl, R.drawable.ic_dtl, true,
                 DtlStartFragment.class);
     }
-
 }

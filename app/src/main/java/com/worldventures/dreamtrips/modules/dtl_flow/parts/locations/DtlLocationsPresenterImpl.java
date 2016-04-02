@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import icepick.State;
 import rx.Subscription;
 import techery.io.library.JobSubscriber;
@@ -106,7 +107,7 @@ public class DtlLocationsPresenterImpl extends FlowPresenterImpl<DtlLocationsScr
                         .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                         .build();
                 dtlLocationManager.persistLocation(dtlLocation);
-                Flow.get(getContext()).set(new DtlMerchantsPath());
+                navigateToMerchants();
                 break;
         }
     }
@@ -163,7 +164,12 @@ public class DtlLocationsPresenterImpl extends FlowPresenterImpl<DtlLocationsScr
         trackLocationSelection(location);
         dtlLocationManager.persistLocation(location);
         dtlMerchantManager.clean();
-        Flow.get(getContext()).set(new DtlMerchantsPath());
+        navigateToMerchants();
+    }
+
+    private void navigateToMerchants() {
+        History history = History.single(new DtlMerchantsPath());
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     /**

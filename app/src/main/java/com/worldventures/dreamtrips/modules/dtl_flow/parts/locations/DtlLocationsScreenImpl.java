@@ -38,7 +38,6 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import flow.Flow;
-import icepick.State;
 import timber.log.Timber;
 
 public class DtlLocationsScreenImpl
@@ -65,8 +64,8 @@ public class DtlLocationsScreenImpl
     //
     BaseDelegateAdapter adapter;
     //
-    @State
-    boolean shouldShowEmptyMerchantsCaption = false;
+//    @State
+//    boolean shouldShowEmptyMerchantsCaption = false;
 
     @Override
     protected void onAttachedToWindow() {
@@ -83,10 +82,10 @@ public class DtlLocationsScreenImpl
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
-//        if (getArgs().shouldShowEmptyMerchantsCaption || shouldShowEmptyMerchantsCaption) {
+        if (getPath().isShowNoMerchantsCaption()) {
 //            this.shouldShowEmptyMerchantsCaption = true;
-//            emptyMerchantsCaption.setVisibility(View.VISIBLE);
-//        } // TODO :: 4/1/16 temporary
+            emptyMerchantsCaption.setVisibility(View.VISIBLE);
+        } // TODO :: 4/1/16 temporary
         //
         adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlExternalLocation.class, DtlLocationCell.class);
@@ -98,9 +97,7 @@ public class DtlLocationsScreenImpl
     }
 
     private void initToolbar() {
-//        boolean hasBackStack = getParentFragment().getChildFragmentManager()
-//                .findFragmentByTag(Route.DTL_MERCHANTS_HOLDER.getClazzName()) != null;
-        boolean hasBackStack = false; // TODO :: 4/1/16 temporary
+        boolean hasBackStack = Flow.get(this).getHistory().size() > 1; // TODO FIXME: 4/3/16 history size is updated after navigation done. At this moment is 1, though actually 2
         //
         toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
         toolbar.inflateMenu(R.menu.menu_locations);

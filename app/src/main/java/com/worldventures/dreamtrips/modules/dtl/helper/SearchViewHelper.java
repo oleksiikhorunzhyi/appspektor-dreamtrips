@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.MenuItem;
@@ -29,7 +30,7 @@ public class SearchViewHelper {
     }
 
     public void init(MenuItem searchItem, String defValue, QueryChangedListener listener,
-                     SearchClosedListener searchClosedListener) {
+                     @Nullable SearchClosedListener searchClosedListener) {
         this.onSearchClosedListener = searchClosedListener;
         this.onQueryChangedListener = listener;
         if (searchItem != null) {

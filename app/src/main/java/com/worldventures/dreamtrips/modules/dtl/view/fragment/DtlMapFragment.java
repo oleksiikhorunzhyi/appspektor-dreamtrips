@@ -251,6 +251,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
     }
 
     private void navigateBack() {
+        hideInfoIfShown();
         getFragmentManager().popBackStack();
     }
 
@@ -275,7 +276,7 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         int centerY = ownHeight / 2;
         int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;
-        animateToMarker(selectedLocation, offset);
+        if (selectedLocation != null) animateToMarker(selectedLocation, offset);
     }
 
     @Override
@@ -294,13 +295,15 @@ public class DtlMapFragment extends MapFragment<DtlMapPresenter> implements DtlM
         if (!tabletAnalytic.isTabletLandscape() || !bundle.isSlave()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
-            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v ->
-                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-                            .backStackEnabled(true)
-                            .data(new DtlLocationsBundle())
-                            .containerId(R.id.dtl_container)
-                            .fragmentManager(getFragmentManager())
-                            .build()));
+            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> {
+                hideInfoIfShown();
+                router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                        .backStackEnabled(true)
+                        .data(new DtlLocationsBundle())
+                        .containerId(R.id.dtl_container)
+                        .fragmentManager(getFragmentManager())
+                        .build());
+            });
         } else {
             toolbar.findViewById(R.id.spinnerStyledTitle).setVisibility(View.GONE);
             toolbar.findViewById(R.id.locationModeCaption).setVisibility(View.GONE);

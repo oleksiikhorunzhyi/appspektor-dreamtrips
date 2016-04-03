@@ -128,7 +128,6 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         //
         view.showProgress(false);
         view.showButtonLoadMerchants(false);
-
         //
         if (dtlMerchants.isEmpty() &&
                 dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP)

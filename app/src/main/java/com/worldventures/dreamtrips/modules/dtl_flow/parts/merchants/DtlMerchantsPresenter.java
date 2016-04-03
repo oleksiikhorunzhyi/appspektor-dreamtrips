@@ -9,4 +9,6 @@ public interface DtlMerchantsPresenter extends FlowPresenter<DtlMerchantsScreen,
     void applySearch(String query);
 
     void merchantClicked(DtlMerchant merchant);
+
+    void onCheckHideDinings(boolean checked);
 }

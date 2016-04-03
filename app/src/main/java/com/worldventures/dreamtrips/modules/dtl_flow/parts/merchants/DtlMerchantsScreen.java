@@ -21,4 +21,6 @@ public interface DtlMerchantsScreen extends FlowScreen {
     void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
 
     void openRightDrawer();
+
+    void toggleDiningFilterSwitch(boolean checked);
 }

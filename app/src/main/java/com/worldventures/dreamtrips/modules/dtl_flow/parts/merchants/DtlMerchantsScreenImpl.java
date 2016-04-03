@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -47,6 +48,8 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
     //
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
+    @InjectView(R.id.filterDiningsSwitch)
+    SwitchCompat filterDiningsSwitch;
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
@@ -102,6 +105,8 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
                     getPresenter().applySearch(query);
                 }, null);
         toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
+        filterDiningsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
+                getPresenter().onCheckHideDinings(isChecked));
         initToolbar();
     }
 
@@ -174,6 +179,11 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
     @Override
     public void hideProgress() {
         refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void toggleDiningFilterSwitch(boolean checked) {
+        filterDiningsSwitch.setChecked(checked);
     }
 
     @Override

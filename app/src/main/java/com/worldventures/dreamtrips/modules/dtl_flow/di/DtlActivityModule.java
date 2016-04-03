@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl_flow.di;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations_search.DtlLocationsSearchPresenterImpl;
@@ -29,6 +31,8 @@ import dagger.Provides;
                 DtlStartScreenImpl.class,
                 DtlMerchantsPresenterImpl.class,
                 DtlMerchantsScreenImpl.class,
+                DtlDetailsPresenterImpl.class,
+                DtlDetailsScreenImpl.class,
                 ActivityPresenter.class,
         },
         complete = false, library = true

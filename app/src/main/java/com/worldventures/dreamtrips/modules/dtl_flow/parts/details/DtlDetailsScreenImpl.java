@@ -1,14 +1,14 @@
-package com.worldventures.dreamtrips.modules.dtl.view.fragment;
+package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,30 +24,27 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
-import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommonDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantManyImagesDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantDetailsPresenter;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 
 import javax.inject.Inject;
@@ -57,10 +54,8 @@ import butterknife.OnClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
 
-@Layout(R.layout.fragment_dtl_merchant_details)
-public class DtlMerchantDetailsFragment
-        extends RxBaseFragmentWithArgs<DtlMerchantDetailsPresenter, DtlMerchantDetailsBundle>
-        implements DtlMerchantDetailsPresenter.View {
+public class DtlDetailsScreenImpl extends FlowLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlDetailsPath>
+        implements DtlDetailsScreen {
 
     private static final int REQUEST_CHECK_SETTINGS = 1489;
     private final static float MERCHANT_MAP_ZOOM = 15f;
@@ -72,7 +67,7 @@ public class DtlMerchantDetailsFragment
     @Inject
     ActivityResultDelegate activityResultDelegate;
     @Inject
-    BackStackDelegate backStackDelegate;
+    Router router;
     //
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
@@ -108,47 +103,29 @@ public class DtlMerchantDetailsFragment
     SupportMapFragment destinationMap;
 
     @Override
-    protected DtlMerchantDetailsPresenter createPresenter(Bundle savedInstanceState) {
-        return new DtlMerchantDetailsPresenter(getArgs().getId());
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        helper = new DtlMerchantHelper(activity);
-        commonDataInflater = new DtlMerchantManyImagesDataInflater(helper, getChildFragmentManager());
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        helper = new DtlMerchantHelper(getContext());
+        commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
         merchantInfoInflater = new DtlMerchantInfoInflater(helper);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        backStackDelegate.setListener(this::onBackPressed);
-        activityResult(activityResultDelegate.getRequestCode(),
-                activityResultDelegate.getResultCode(), activityResultDelegate.getData());
-    }
-
-    @Override
-    public void onPause() {
-        backStackDelegate.clearListener();
-        super.onPause();
-    }
-
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-        if (!tabletAnalytic.isTabletLandscape()) {
+    protected void onPrepared() {
+        super.onPrepared();
+        //
+        if (!isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         } else {
             toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
         }
-        commonDataInflater.setView(rootView);
-        merchantInfoInflater.setView(rootView);
+        commonDataInflater.setView(this);
+        merchantInfoInflater.setView(this);
         //
         legalTextView.setSimpleListener((view, collapsed) -> {
-            if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));}
-        );
+            if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
+        });
         //
         getPresenter().trackScreen();
     }
@@ -202,7 +179,7 @@ public class DtlMerchantDetailsFragment
                     if (contact.type.equals(ImageTextItem.Type.ADDRESS)) {
                         getPresenter().routeToMerchantRequested(contact.intent);
                     } else {
-                        startActivity(contact.intent);
+                        getContext().startActivity(contact.intent);
                     }
                 });
             additionalContainer.addView(contactView);
@@ -214,7 +191,7 @@ public class DtlMerchantDetailsFragment
         mapOptions.liteMode(true);
         //
         destinationMap = SupportMapFragment.newInstance(mapOptions);
-        getChildFragmentManager()
+        getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.merchant_details_map, destinationMap)
                 .commit();
@@ -225,8 +202,8 @@ public class DtlMerchantDetailsFragment
             googleMap.setPadding(0, 0, 0, padding);
             LatLng pos = new LatLng(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
             googleMap.addMarker(new MarkerOptions()
-                            .position(pos)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))
+                    .position(pos)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin))
             );
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, MERCHANT_MAP_ZOOM));
         });
@@ -237,7 +214,7 @@ public class DtlMerchantDetailsFragment
         getPresenter().trackPointEstimator();
         router.moveTo(Route.DTL_POINTS_ESTIMATION, NavigationConfigBuilder.forDialog()
                 .data(data)
-                .fragmentManager(getChildFragmentManager())
+                .fragmentManager(getActivity().getSupportFragmentManager())
                 .build());
     }
 
@@ -253,7 +230,7 @@ public class DtlMerchantDetailsFragment
         router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.dtl_landscape_slave_container)
                 .backStackEnabled(false)
-                .fragmentManager(getFragmentManager())
+                .fragmentManager(getActivity().getSupportFragmentManager())
                 .data(new DtlMapBundle(true))
                 .build());
     }
@@ -283,7 +260,7 @@ public class DtlMerchantDetailsFragment
         new ShareDialog(getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            shareBundle.setText(getString(merchant.hasOffer(DtlOffer.TYPE_POINTS) ?
+            shareBundle.setText(getContext().getString(merchant.hasOffer(DtlOffer.TYPE_POINTS) ?
                             R.string.dtl_details_share_title :
                             R.string.dtl_details_share_title_without_points,
                     merchant.getDisplayName()));
@@ -344,20 +321,13 @@ public class DtlMerchantDetailsFragment
         earn.setEnabled(false);
     }
 
-    private boolean onBackPressed() {
-        if (isTabletLandscape() && getArgs().isSlave()) {
-            getPresenter().onBackPressed();
-        } else getActivity().finish();
-        return true;
-    }
-
     @Override
     public void showMerchantMap(@Nullable Intent intent) {
-        if (intent != null) startActivity(intent);
+        if (intent != null) getContext().startActivity(intent);
     }
 
     @Override
-    public void resolutionRequired(Status status) {
+    public void locationResolutionRequired(Status status) {
         try {
             status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
         } catch (IntentSender.SendIntentException th) {
@@ -365,23 +335,29 @@ public class DtlMerchantDetailsFragment
         }
     }
 
-    public void activityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        // All required changes were successfully made
-                        getPresenter().onCheckInClicked();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        // The user was asked to change settings, but chose not to
-                        getPresenter().locationNotGranted();
-                        break;
-                    default:
-                        break;
-                }
-                activityResultDelegate.clear();
-                break;
-        }
+    // TODO :: 4/3/16 need onBackPressedDelegate
+//    private boolean onBackPressed() {
+//        if (isTabletLandscape() && getArgs().isSlave()) {
+//            getPresenter().onBackPressed();
+//        } else getActivity().finish();
+//        return true;
+//    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Boilerplate stuff
+    ///////////////////////////////////////////////////////////////////////////
+
+
+    @Override
+    public DtlDetailsPresenter createPresenter() {
+        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId());
+    }
+
+    public DtlDetailsScreenImpl(Context context) {
+        super(context);
+    }
+
+    public DtlDetailsScreenImpl(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 }

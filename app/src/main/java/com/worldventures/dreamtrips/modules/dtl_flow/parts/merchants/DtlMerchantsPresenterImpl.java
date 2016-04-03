@@ -40,6 +40,7 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        apiErrorPresenter.setView(getView());
         bindMerchantManager();
         dtlMerchantManager.loadMerchants(
                 dtlLocationManager.getSelectedLocation().getCoordinates().asAndroidLocation());
@@ -104,6 +105,12 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {
         getView().toggleSelection(event.getDtlMerchant());
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        apiErrorPresenter.dropView();
+        super.onDetachedFromWindow();
     }
 
     @Override

@@ -7,13 +7,10 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -113,17 +110,13 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     }
 
     protected void attachImages() {
-        if (!imageFromArgsAlreadyAttached) {
-            getPresenter().attachImages(getImages(), getImagesType());
+        if (!imageFromArgsAlreadyAttached && getMediaAttachment() != null) {
+            getPresenter().attachImages(getMediaAttachment());
             imageFromArgsAlreadyAttached = true;
         }
     }
 
-    private int getImagesType() {
-        return getArgs() != null ? getArgs().getImageType() : -1;
-    }
-
-    private List<PhotoGalleryModel> getImages() {
-        return getArgs() != null ? getArgs().getImages() : new ArrayList<>();
+    private MediaAttachment getMediaAttachment() {
+        return getArgs() != null && getArgs().getMediaAttachment() != null ? getArgs().getMediaAttachment() : null;
     }
 }

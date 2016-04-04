@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
@@ -40,7 +41,7 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
     @Override
     public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
         hidePhotoPicker();
-        openCreatePhoto(new CreateEntityBundle(photos, requestType));
+        openCreatePhoto(new CreateEntityBundle(new MediaAttachment(photos, requestType)));
     }
 
     private void showPhotoPicker() {

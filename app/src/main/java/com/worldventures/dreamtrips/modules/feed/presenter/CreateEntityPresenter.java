@@ -7,7 +7,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBund
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import java.util.Calendar;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -53,9 +52,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         //
         mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> attachment.requestId == getMediaRequestId())
-                .subscribe(mediaAttachment -> {
-                    attachImages(mediaAttachment.chosenImages, mediaAttachment.type);
-                });
+                .subscribe(this::attachImages);
     }
 
     public abstract int getMediaRequestId();
@@ -155,14 +152,15 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         cachedUploadTask.setLatitude((float) location.getLat());
     }
 
-    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
-        if (photos.size() == 0 || (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED
-                && photos.get(0).getThumbnailPath().equals(cachedUploadTask.getFilePath()))) {
+    public void attachImages(MediaAttachment mediaAttachment) {
+        if (mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0 ||
+                (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED
+                && mediaAttachment.chosenImages.get(0).getThumbnailPath().equals(cachedUploadTask.getFilePath()))) {
             return;
         }
 
-        String fileThumbnail = photos.get(0).getThumbnailPath();
-        imageSelected(Uri.parse(fileThumbnail).toString(), requestType);
+        String fileThumbnail = mediaAttachment.chosenImages.get(0).getThumbnailPath();
+        imageSelected(Uri.parse(fileThumbnail).toString(), mediaAttachment.type);
     }
 
     private void imageSelected(String filePath, int requestType) {

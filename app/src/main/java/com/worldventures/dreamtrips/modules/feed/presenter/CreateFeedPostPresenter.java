@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
-
-import java.util.List;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 
 public class CreateFeedPostPresenter extends CreateEntityPresenter<CreateFeedPostPresenter.View> {
 
@@ -25,9 +23,9 @@ public class CreateFeedPostPresenter extends CreateEntityPresenter<CreateFeedPos
     }
 
     @Override
-    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
-        super.attachImages(photos, requestType);
-        if (photos.size() != 0) view.disableImagePicker();
+    public void attachImages(MediaAttachment mediaAttachment) {
+        super.attachImages(mediaAttachment);
+        if (mediaAttachment.chosenImages != null && mediaAttachment.chosenImages.size() != 0) view.disableImagePicker();
     }
 
     public interface View extends CreateEntityPresenter.View {

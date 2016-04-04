@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/attached_photo"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"/>
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:background="@color/black_semi_transparent"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/cancel_action"
+        android:layout_width="@dimen/size_small"
+        android:layout_height="@dimen/size_small"
+        android:layout_gravity="end"
+        android:layout_margin="@dimen/spacing_small"
+        android:src="@drawable/ic_action_cancel"/>
+
+    <view
+        android:id="@+id/fab_progress"
+        class="mbanje.kurt.fabbutton.FabButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:color="@color/bucket_blue"
+        android:enabled="false"
+        android:indeterminate="false"
+        android:max="100"
+        android:src="@drawable/ic_upload_cloud"
+        android:visibility="gone"
+        app:fbb_autoStart="true"
+        app:fbb_endBitmap="@drawable/ic_upload_cloud"
+        app:fbb_progressColor="#ffffff"
+        app:fbb_showEndBitmap="true"/>
+
+</FrameLayout>

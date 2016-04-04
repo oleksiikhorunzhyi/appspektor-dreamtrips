@@ -20,6 +20,7 @@ import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.util.ContactsHeaderCreator;
+import com.messenger.util.StringUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -35,6 +36,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
@@ -92,50 +94,37 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     protected Observable<List<DataUser>> createContactListObservable() {
         return usersDAO
                 .getFriends(user.getId())
+                .compose(bindView())
                 .subscribeOn(Schedulers.io());
     }
 
     protected void connectToContacts() {
-        ConnectableObservable<CharSequence> selectedContactsWithSearchObservable = getView().getSearchQueryObservable()
-                .compose(bindView())
-                .publish();
+        Observable<CharSequence> selectedContactsWithSearchQuery = getView().getSearchQueryObservable();
 
-        selectedContactsWithSearchObservable
-                .compose(bindView())
-                .subscribe(contactsWithSearchQuery -> {
-                    if (searchFilterAvailable(contactsWithSearchQuery)) {
-                        CharSequence query = prepareSearchQuery(contactsWithSearchQuery);
-                        if (!TextUtils.equals(currentSearchFilter, query)) {
-                            currentSearchFilter = query.toString();
-                            refreshSelectedContactsHeader();
-                        }
-                    } else {
-                        removeLastUserIfExist();
-                    }
-                });
+        selectedContactsWithSearchQuery.subscribe(this::processSelectedContactsHeaderChange);
 
-        Observable<CharSequence> filterObservable = selectedContactsWithSearchObservable
+        Observable<CharSequence> searchQueryObservable = selectedContactsWithSearchQuery
                 .compose(bindView())
                 .filter(this::searchFilterAvailable)
                 .map(this::prepareSearchQuery);
 
         getExistingAndFutureParticipants()
-            .compose(bindView())
-            .flatMap(participantsAndSelectedUsersPair ->
-            searchHelper.search(createContactListObservable(), filterObservable,
-                    (user, searchFilter) -> searchHelper.contains(user.getDisplayedName(), searchFilter))
+                .compose(bindView())
+                .flatMap(existingAndFutureParticipantsPair ->
+                    searchHelper.search(createContactListObservable(), searchQueryObservable,
+                            (user, filter) -> StringUtils.containsIgnoreCase(user.getDisplayedName(), filter))
                     .compose(userSectionHelper.prepareItemInCheckableList(
-                            participantsAndSelectedUsersPair.first, participantsAndSelectedUsersPair.second))
-                    .compose(bindView())
-                    .observeOn(AndroidSchedulers.mainThread()))
-        .subscribe(itemWithUserCount -> addListItems(itemWithUserCount.first));
-
-        selectedContactsWithSearchObservable.connect();
+                             existingAndFutureParticipantsPair.first,
+                             existingAndFutureParticipantsPair.second))
+                    .map(pair -> pair.first))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::addListItems);
     }
 
     @NonNull
     private Observable<Pair<List<DataUser>, List<DataUser>>> getExistingAndFutureParticipants() {
-        return Observable.zip(getExistingParticipants(), Observable.just(futureParticipants), Pair::new);
+        return Observable.zip(getExistingParticipants(), Observable.just(futureParticipants), Pair::new)
+                .compose(bindView());
     }
 
     private CharSequence prepareSearchQuery(CharSequence textInChosenContactsEditTextWithSearchQuery) {
@@ -206,6 +195,18 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         getChatNameShouldBeVisibleObservable().subscribe(this::setConversationNameInputFieldVisible);
     }
 
+    private void processSelectedContactsHeaderChange(CharSequence contactsWithSearchQuery) {
+        if (searchFilterAvailable(contactsWithSearchQuery)) {
+            CharSequence query = prepareSearchQuery(contactsWithSearchQuery);
+            if (!TextUtils.equals(currentSearchFilter, query)) {
+                currentSearchFilter = query.toString();
+                refreshSelectedContactsHeader();
+            }
+        } else {
+            removeLastUserIfExist();
+        }
+    }
+
     private void refreshSelectedContactsHeader() {
         getExistingAndFutureParticipants().compose(bindView()).subscribe(pair -> {
             List<DataUser> existingParticipants = pair.first;
@@ -217,7 +218,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                     .createHeader(existingAndFutureParticipants, currentSearchFilter);
             lastChosenContacts = headerInfo.getContactsList();
             getView().setSelectedUsersHeaderText(headerInfo.getSelectedContactsFormattedCount(), headerInfo.getContactsListWithSearchQuery());
-        });
+        }, e -> Timber.e(e, "Could not get participants"));
     }
 
     private boolean removeLastUserIfExist() {

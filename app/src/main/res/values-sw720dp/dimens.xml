@@ -21,4 +21,5 @@
     <dimen name="picker_panel_height">256dp</dimen>
     <dimen name="picker_photo_spacing">2dp</dimen>
 
+    <dimen name="suggested_size">120dp</dimen>
 </resources>

@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.net.Uri;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -17,11 +19,13 @@ import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +56,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     RecyclerView suggestedList;
     @InjectView(R.id.btn_attach)
     Button btnAttach;
+    @InjectView(R.id.card_view_wrapper)
+    CardView cardViewWrapper;
 
     private BaseDelegateAdapter suggestionAdapter;
     private List<PhotoGalleryModel> pickedItems = new ArrayList<>();
@@ -84,9 +90,18 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
             suggestionAdapter.registerDelegate(PhotoGalleryModel.class, this);
             suggestedList.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             suggestedList.setAdapter(suggestionAdapter);
+            suggestedList.addItemDecoration(new SuggestedPhotosListDecorator());
         }
         //
         suggestionAdapter.setItems(getModelObject().chosenImages);
+        //
+        if (ViewUtils.isTablet(itemView.getContext())) {
+            cardViewWrapper.setCardElevation(4);
+            int m = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small);
+            ((ViewGroup.MarginLayoutParams) cardViewWrapper.getLayoutParams()).setMargins(m, m, m, m);
+        } else {
+            cardViewWrapper.setCardElevation(0);
+        }
     }
 
     @Override

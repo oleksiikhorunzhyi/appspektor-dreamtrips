@@ -31,6 +31,7 @@
     <dimen name="picker_photo_spacing">2dp</dimen>
 
     <!-- suggested photos feed space -->
-    <dimen name="suggested_cell_spacing">8dp</dimen>
+    <dimen name="suggested_cell_spacing_between_elements">4dp</dimen>
+    <dimen name="suggested_size">100dp</dimen>
 
 </resources>

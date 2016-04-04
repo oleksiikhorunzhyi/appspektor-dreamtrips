@@ -23,8 +23,6 @@ public interface DtlMapScreen extends FlowScreen {
 
     void clearMap();
 
-    void showMerchantInfo(String merchantId);
-
     void prepareInfoWindow(int height);
 
     void centerIn(Location location);

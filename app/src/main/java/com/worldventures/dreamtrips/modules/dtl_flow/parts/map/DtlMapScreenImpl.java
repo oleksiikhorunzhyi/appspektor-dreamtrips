@@ -9,6 +9,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
@@ -43,6 +45,8 @@ import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
+import flow.Flow;
 import icepick.Icepick;
 import icepick.State;
 
@@ -100,6 +104,7 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         inflateToolbarMenu(toolbar);
+        //
         checkMapAvailable();
         prepareMap();
         prepareView();
@@ -146,8 +151,9 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
             mapView.setVisibility(View.GONE);
             noGoogleContainer.setVisibility(View.VISIBLE);
         } else {
+            mapView.onCreate(null);
+            mapView.onResume();
             MapsInitializer.initialize(getContext());
-            mapView.onCreate(null); // TODO Implement saveState
         }
     }
 
@@ -193,11 +199,6 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     @Override
     public void clearMap() {
         clusterManager.clearItems();
-    }
-
-    @Override
-    public void showMerchantInfo(String merchantId) {
-        // TODO :: show info window
     }
 
     @Override
@@ -324,11 +325,14 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     private void onMapTouched() {
-        // hideInfoIfShown() // TODO :: hide info window
+        hideInfoIfShown();
+    }
+
+    private void hideInfoIfShown() {
     }
 
     protected void onMarkerFocused() {
-        //eventBus.post(new DtlShowMapInfoEvent()); // TODO eventBus???
+        EventBus.getDefault().post(new DtlShowMapInfoEvent()); // TODO eventBus???
     }
 
     private boolean isGooglePlayServicesAvailable() {

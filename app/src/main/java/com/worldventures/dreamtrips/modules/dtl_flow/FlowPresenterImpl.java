@@ -2,14 +2,25 @@ package com.worldventures.dreamtrips.modules.dtl_flow;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
+import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
+
+import javax.inject.Inject;
+
+import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 public abstract class FlowPresenterImpl<V extends FlowScreen, S extends Parcelable>
         extends BaseViewStateMvpPresenter<V, S> implements FlowPresenter<V, S> {
+
+    @Inject
+    @Global
+    protected EventBus eventBus;
 
     protected ApiErrorPresenter apiErrorPresenter;
 
@@ -47,8 +58,19 @@ public abstract class FlowPresenterImpl<V extends FlowScreen, S extends Parcelab
     }
 
     @Override
+    @CallSuper
+    public void onAttachedToWindow() {
+        try {
+            eventBus.registerSticky(this);
+        } catch (Exception ignored) {
+            Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
+        }
+    }
+
+    @Override
+    @CallSuper
     public void onDetachedFromWindow() {
         apiErrorPresenter.dropView();
-        super.onDetachedFromWindow();
+        if (EventBus.getDefault().isRegistered(this)) eventBus.unregister(this);
     }
 }

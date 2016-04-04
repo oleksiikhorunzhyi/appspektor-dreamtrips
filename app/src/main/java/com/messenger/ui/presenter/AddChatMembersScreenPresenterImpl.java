@@ -41,8 +41,10 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
 
     public AddChatMembersScreenPresenterImpl(Context context, String conversationId) {
         super(context);
-        conversationStream = conversationsDAO.getConversation(conversationId).take(1).replay().autoConnect();
-        participantsStream = participantsDAO.getParticipantsEntities(conversationId).take(1).replay().autoConnect();
+        conversationStream = conversationsDAO.getConversation(conversationId)
+                .take(1).replay().autoConnect();
+        participantsStream = participantsDAO.getParticipantsEntities(conversationId)
+                .take(1).replay().autoConnect();
     }
 
     @Override

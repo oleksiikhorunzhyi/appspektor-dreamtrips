@@ -295,6 +295,13 @@
         </item>
     </style>
 
+    <style name="NewChatMembersEditText">
+        <item name="android:textColor">@color/new_chat_header_text_color</item>
+        <item name="android:textSize">@dimen/new_chat_name_chosen_contacts_text_size</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="BaseMessengerChatInfoSettingsContainer">
         <item name="android:layout_marginTop">@dimen/chat_settings_chat_info_vertical_margin</item>
         <item name="android:layout_marginBottom">@dimen/chat_settings_chat_info_vertical_margin

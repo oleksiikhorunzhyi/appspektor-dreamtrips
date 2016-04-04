@@ -37,6 +37,9 @@ public class CheckableUserCell extends UserCell<SelectableDataUser, CheckableUse
 
     void onSelectChanged() {
         SelectableDataUser model = getModelObject();
+        if (!model.isSelectionEnabled()) {
+            return;
+        }
         boolean selected = !model.isSelected();
         model.setSelected(selected);
         tickImageView.setSelected(selected);

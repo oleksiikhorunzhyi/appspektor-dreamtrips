@@ -192,6 +192,7 @@
     <dimen name="new_chat_name_conversation_name_text_size">12sp</dimen>
     <dimen name="new_chat_name_conversation_name_left_margin">14dp</dimen>
     <dimen name="new_chat_name_chosen_contacts_text_size">12sp</dimen>
+    <dimen name="new_chat_name_chosen_contacts_left_margin">3dp</dimen>
     <dimen name="new_chat_list_item_contact_text_size">16sp</dimen>
     <dimen name="new_chat_list_item_contact_name_left_margin">10dp</dimen>
     <dimen name="new_chat_list_item_section_name_text_size">12sp</dimen>

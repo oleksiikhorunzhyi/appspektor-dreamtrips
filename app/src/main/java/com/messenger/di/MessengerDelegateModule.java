@@ -5,6 +5,7 @@ import android.content.Context;
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ConversationAvatarDelegate;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
@@ -22,7 +23,6 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
@@ -128,6 +128,11 @@ public class MessengerDelegateModule {
     @Provides
     PhotoPickerDelegate providePhotoPickerDelegate(@Global EventBus eventBus) {
         return new PhotoPickerDelegate(eventBus);
+    }
+
+    @Provides
+    UserProcessor provideUserProcessor(UsersDAO usersDAO, DreamSpiceManager dreamSpiceManager) {
+        return new UserProcessor(usersDAO, dreamSpiceManager);
     }
 
     @Provides

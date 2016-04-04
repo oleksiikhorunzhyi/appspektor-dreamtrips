@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations_search.DtlL
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations_search.DtlLocationsSearchScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPresenterImpl;
@@ -27,6 +29,8 @@ import dagger.Provides;
                 DtlLocationsPresenterImpl.class,
                 DtlMapPresenterImpl.class,
                 DtlMapScreenImpl.class,
+                DtlMapInfoPresenterImpl.class,
+                DtlMapInfoScreenImpl.class,
                 DtlStartPresenterImpl.class,
                 DtlStartScreenImpl.class,
                 DtlMerchantsPresenterImpl.class,

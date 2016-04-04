@@ -1,5 +1,6 @@
 package com.messenger.initializer;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -27,6 +28,7 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
@@ -63,6 +65,9 @@ public class ChatFacadeInitializer implements AppInitializer {
     Lazy<DataUser> currentUser;
     //
     @Inject
+    @ForApplication
+    Context context;
+    @Inject
     DreamSpiceManager spiceManager;
     //
     private UserProcessor userProcessor;
@@ -72,6 +77,7 @@ public class ChatFacadeInitializer implements AppInitializer {
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
+        spiceManager.start(context);
         userProcessor = new UserProcessor(usersDAO, spiceManager);
         loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
                 conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
@@ -84,17 +90,10 @@ public class ChatFacadeInitializer implements AppInitializer {
         emitter.addGlobalMessageListener(new GlobalMessageListener() {
             @Override
             public void onReceiveMessage(Message message) {
-                long time = System.currentTimeMillis();
-                message.setDate(time);
-                message.setStatus(MessageStatus.SENT);
-
-                DataMessage dataMessage = new DataMessage(message);
-                dataMessage.setSyncTime(time);
-                List<DataAttachment> attachments = DataAttachment.fromMessage(message);
-                if (!attachments.isEmpty()) attachmentDAO.save(attachments);
-                messageDAO.save(dataMessage);
-                conversationsDAO.incrementUnreadField(message.getConversationId());
-                conversationsDAO.updateDate(message.getConversationId(), time);
+                conversationsDAO
+                        .getConversation(message.getConversationId())
+                        .take(1)
+                        .subscribe(conversation -> receivedMessage(message, conversation));
             }
 
             @Override
@@ -142,8 +141,9 @@ public class ChatFacadeInitializer implements AppInitializer {
 
         emitter.addInvitationListener((conversationId) -> {
             Timber.i("Chat invited :: chat=%s", conversationId);
-            loadConversation(conversationId)
-                    .subscribe(dataUsers -> {}, throwable -> Timber.d(throwable, ""));
+            createConversationAndLoadUsers(conversationId)
+                    .subscribe(dataUsers -> {
+                    }, throwable -> Timber.d(throwable, ""));
         });
 
         emitter.createChatJoinedObservable()
@@ -177,23 +177,55 @@ public class ChatFacadeInitializer implements AppInitializer {
         });
     }
 
+    private void receivedMessage(Message message, DataConversation conversationFromBD) {
+        if (conversationFromBD == null) {
+            String conversationId = message.getConversationId();
+            createConversation(conversationId)
+                    .flatMap(conv -> {
+                        saveReceivedMessage(message);
+                        return loaderDelegate.loadParticipants(conversationId);
+                    }).subscribe(dataUsers -> {}, error -> Timber.d(error, ""));
+        } else {
+            saveReceivedMessage(message);
+        }
+    }
+
+    private void saveReceivedMessage(Message message) {
+        long time = System.currentTimeMillis();
+        message.setDate(time);
+        message.setStatus(MessageStatus.SENT);
+
+        DataMessage dataMessage = new DataMessage(message);
+        dataMessage.setSyncTime(time);
+        List<DataAttachment> attachments = DataAttachment.fromMessage(message);
+        if (!attachments.isEmpty()) attachmentDAO.save(attachments);
+        messageDAO.save(dataMessage);
+        conversationsDAO.incrementUnreadField(message.getConversationId());
+    }
+
     private MessengerUser createUser(Participant participant, boolean isOnline) {
         MessengerUser messengerUser = new MessengerUser(participant.getUserId());
         messengerUser.setOnline(isOnline);
         return messengerUser;
     }
 
-    private Observable<List<DataUser>> loadConversation(String conversationId) {
+    private Observable<List<DataUser>> createConversationAndLoadUsers(String conversationId) {
+        return createConversation(conversationId)
+                .flatMap(conversation -> loaderDelegate.loadParticipants(conversationId));
+    }
+
+    private Observable<DataConversation> createConversation(String conversationId){
         return Observable.just(conversationId)
-                .flatMap(convId -> {
-                    conversationsDAO.save(new DataConversation.Builder()
+                .map(convId -> {
+                    DataConversation conversation = new DataConversation.Builder()
                             .id(convId)
                             .lastActiveDate(System.currentTimeMillis())
                             .status(ConversationStatus.PRESENT)
                             .type(conversationIdHelper.obtainType(convId, currentUser.get().getId()))
-                            .build()
-                    );
-                    return loaderDelegate.loadParticipants(conversationId);
+                            .build();
+
+                    conversationsDAO.save(conversation);
+                    return conversation;
                 });
     }
 

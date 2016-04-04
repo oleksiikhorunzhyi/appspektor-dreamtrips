@@ -24,6 +24,8 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
+import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -33,6 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import flow.Flow;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -177,11 +180,11 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
         getView().centerIn(getFirstCenterLocation());
         //
         showingLoadMerchantsButton()
-                //.compose(bindViewIoToMainComposer())
+                .compose(bindView())
                 .subscribe(show -> getView().showButtonLoadMerchants(show));
         //
         MapObservableFactory.createMarkerClickObservable(getView().getMap())
-                //.compose(bindViewIoToMainComposer())
+                .compose(bindView())
                 .subscribe(marker -> getView().markerClick(marker));
         //
         checkPendingMapInfo();
@@ -203,7 +206,7 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
 
     @Override
     public void onMarkerClick(String merchantId) {
-        getView().showMerchantInfo(merchantId);
+        Flow.get(getContext()).set(new DtlMapInfoPath(merchantId));
     }
 
     @Override

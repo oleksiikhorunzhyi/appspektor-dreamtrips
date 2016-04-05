@@ -43,11 +43,9 @@ public class ChatFacadeInitializer implements AppInitializer {
             }
         });
 
-        emitter.addOnSubjectChangesListener((conversationId, subject) ->
-                chatFacadeManager.onSubjectChanged(conversationId, subject));
+        emitter.addOnSubjectChangesListener(chatFacadeManager::onSubjectChanged);
 
-        emitter.addOnAvatarChangeListener((conversationId, subject) ->
-                chatFacadeManager.onAvatarChanged(conversationId, subject));
+        emitter.addOnAvatarChangeListener(chatFacadeManager::onAvatarChanged);
 
         emitter.addInvitationListener((conversationId) -> {
             Timber.i("Chat invited :: chat=%s", conversationId);
@@ -56,8 +54,7 @@ public class ChatFacadeInitializer implements AppInitializer {
 
         chatFacadeManager.processJoinedEvents(emitter.createChatJoinedObservable());
 
-        emitter.addOnChatLeftListener((conversationId, userId, leave) ->
-                chatFacadeManager.onChatLeft(conversationId, userId, leave));
+        emitter.addOnChatLeftListener(chatFacadeManager::onChatLeft);
     }
 
 }

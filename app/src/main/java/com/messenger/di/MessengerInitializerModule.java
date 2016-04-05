@@ -5,6 +5,7 @@ import android.content.Context;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.initializer.MessengerInitializer;
 import com.messenger.initializer.PresenceListenerInitializer;
+import com.messenger.initializer.RosterListenerInitializer;
 import com.messenger.initializer.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -14,7 +15,11 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                MessengerInitializer.class
+                MessengerInitializer.class,
+                RosterListenerInitializer.class,
+                StorageInitializer.class,
+                PresenceListenerInitializer.class,
+                ChatFacadeInitializer.class,
         },
         complete = false, library = true
 )
@@ -40,4 +45,8 @@ public class MessengerInitializerModule {
         return new PresenceListenerInitializer();
     }
 
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideRosterInitializer() {
+        return new RosterListenerInitializer();
+    }
 }

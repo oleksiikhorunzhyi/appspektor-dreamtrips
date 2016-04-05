@@ -12,6 +12,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 
 import java.util.ArrayList;
@@ -55,7 +56,6 @@ public class XmppContactLoader extends AsyncLoader<MessengerUser> {
             messengerUser.setType(UserType.FRIEND);
             messengerUsers.add(messengerUser);
         }
-
         return messengerUsers;
     }
 }

@@ -31,12 +31,6 @@ import dagger.Provides;
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
                 DtlInitializer.class,
-                //
-                StorageInitializer.class,
-                //
-                MessengerInitializer.class,
-                //
-                PresenceListenerInitializer.class
 
         },
         includes = {

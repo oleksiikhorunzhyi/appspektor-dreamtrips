@@ -2,13 +2,11 @@ package com.messenger.storage.dao;
 
 import android.content.Context;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Adapter;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.builder.ConditionQueryBuilder;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
@@ -50,19 +48,6 @@ public class UsersDAO extends BaseDAO {
 
     public void deleteFriends() {
         new Update<>(DataUser.class).set(Condition.column(DataUser$Table.FRIEND).is(false)).queryClose();
-    }
-
-    public void markUserAsFriend(List<String> ids, boolean isFriend) {
-        if (ids.isEmpty()) return;
-        //
-        String first = ids.get(0);
-        String[] other = Queryable.from(ids).skip(1).toArray(String.class);
-
-        new Update<>(DataUser.class)
-                .set(Condition.column(DataUser$Table.FRIEND).eq(isFriend))
-                .where(new ConditionQueryBuilder<>(DataUser.class, Condition.column(DataUser$Table._ID).in(first, other)))
-                .queryClose();
-        getContext().getContentResolver().notifyChange(DataUser.CONTENT_URI, null);
     }
 
     public void save(List<DataUser> users) {

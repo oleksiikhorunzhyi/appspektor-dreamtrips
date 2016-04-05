@@ -7,7 +7,7 @@ import com.techery.spares.module.Injector;
 
 import javax.inject.Inject;
 
-public class PresenceListenerInitializer implements AppInitializer {
+public class RosterListenerInitializer implements AppInitializer {
 
     @Inject
     MessengerServerFacade messengerServerFacade;
@@ -17,6 +17,8 @@ public class PresenceListenerInitializer implements AppInitializer {
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-        messengerServerFacade.getGlobalEventEmitter().addPresenceListener(userDelegate::presenceChanged);
+        messengerServerFacade.getGlobalEventEmitter().addFriendAddedListener(userDelegate::friendsAdded);
+        messengerServerFacade.getGlobalEventEmitter().addFriendRemovedListener(userDelegate::friendsRemoved);
     }
+
 }

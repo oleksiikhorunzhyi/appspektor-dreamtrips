@@ -11,10 +11,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.CellDelegate;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
@@ -38,6 +40,7 @@ import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import flow.Flow;
 import icepick.State;
+import rx.Observable;
 
 public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
         implements DtlMerchantsScreen, CellDelegate<DtlMerchant> {
@@ -105,8 +108,6 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
                     getPresenter().applySearch(query);
                 }, null);
         toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
-        filterDiningsSwitch.setOnCheckedChangeListener((buttonView, isChecked) ->
-                getPresenter().onCheckHideDinings(isChecked));
         initToolbar();
     }
 
@@ -169,6 +170,12 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
         //
         baseDelegateAdapter.setItems(merchants);
 //        stateDelegate.restoreStateIfNeeded();
+    }
+
+    @Override
+    public Observable<Boolean> getToggleObservable() {
+        return RxCompoundButton.checkedChanges(filterDiningsSwitch)
+                .compose(RxLifecycle.bindView(this));
     }
 
     @Override

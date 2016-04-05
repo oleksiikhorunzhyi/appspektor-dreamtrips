@@ -11,6 +11,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import rx.Observable;
+
 public interface DtlMapScreen extends FlowScreen {
 
     GoogleMap getMap();
@@ -44,4 +46,6 @@ public interface DtlMapScreen extends FlowScreen {
     void tryHideMyLocationButton(boolean hide);
 
     void animateTo(LatLng coordinates, int offset);
+
+    Observable<Boolean> getToggleObservable();
 }

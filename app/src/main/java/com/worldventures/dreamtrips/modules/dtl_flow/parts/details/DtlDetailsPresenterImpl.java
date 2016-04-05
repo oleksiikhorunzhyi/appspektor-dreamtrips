@@ -65,6 +65,8 @@ public class DtlDetailsPresenterImpl extends FlowPresenterImpl<DtlDetailsScreen,
             boolean canSuggest = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
             getView().setSuggestMerchantButtonAvailable(canSuggest);
         }
+        //
+        getView().setMerchant(merchant);
     }
 
     private void processTransaction() {

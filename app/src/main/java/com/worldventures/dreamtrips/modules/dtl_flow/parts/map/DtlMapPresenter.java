@@ -10,8 +10,6 @@ public interface DtlMapPresenter extends FlowPresenter<DtlMapScreen, ViewState.E
 
     void applySearch(String query);
 
-    void onCheckHideDinings(boolean checked);
-
     void onSearchClick();
 
     void onMarkerClick(String merchantId);

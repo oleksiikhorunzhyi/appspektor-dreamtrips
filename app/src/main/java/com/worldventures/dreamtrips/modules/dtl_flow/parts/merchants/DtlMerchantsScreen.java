@@ -8,6 +8,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.FlowScreen;
 
 import java.util.List;
 
+import rx.Observable;
+
 public interface DtlMerchantsScreen extends FlowScreen {
 
     void setItems(List<DtlMerchant> dtlMerchants);
@@ -23,4 +25,6 @@ public interface DtlMerchantsScreen extends FlowScreen {
     void openRightDrawer();
 
     void toggleDiningFilterSwitch(boolean checked);
+
+    Observable<Boolean> getToggleObservable();
 }

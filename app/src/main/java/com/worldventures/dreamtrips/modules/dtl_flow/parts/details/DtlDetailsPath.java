@@ -25,6 +25,6 @@ public class DtlDetailsPath extends StyledPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return WITH_DRAWER;
+        return WITHOUT_DRAWER;
     }
 }

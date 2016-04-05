@@ -26,6 +26,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
@@ -45,6 +47,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import icepick.State;
+import rx.Observable;
 
 public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath>
         implements DtlMapScreen {
@@ -84,7 +87,6 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
         super(context, attrs);
     }
 
-
     @Override
     public DtlMapPresenter createPresenter() {
         return new DtlMapPresenterImpl(getContext(), injector);
@@ -110,8 +112,6 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
         initToolbar();
         //
         MapViewUtils.setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
-        //
-        swHideDinings.setOnCheckedChangeListener((buttonView, isChecked) -> getPresenter().onCheckHideDinings(isChecked));
     }
 
     protected void initToolbar() {
@@ -134,6 +134,12 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
             mapView.onResume();
             MapsInitializer.initialize(getContext());
         }
+    }
+
+    @Override
+    public Observable<Boolean> getToggleObservable() {
+        return RxCompoundButton.checkedChanges(swHideDinings)
+                .compose(RxLifecycle.bindView(this));
     }
 
     protected void prepareMap() {

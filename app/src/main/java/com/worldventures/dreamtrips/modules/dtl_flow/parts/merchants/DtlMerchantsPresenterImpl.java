@@ -8,6 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -24,10 +25,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import de.greenrobot.event.EventBus;
 import flow.Flow;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
 
@@ -42,7 +42,6 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
     DtlLocationManager dtlLocationManager;
     //
     private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
-    private BehaviorSubject<Boolean> toggleStream;
 
     public DtlMerchantsPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -53,9 +52,11 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         apiErrorPresenter.setView(getView());
-        toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
+        getView().toggleDiningFilterSwitch(db.getLastSelectedOffersOnlyToggle());
+        //
         bindMerchantManager();
         bindFilteredStream();
+        //
         dtlMerchantManager.loadMerchants(
                 dtlLocationManager.getSelectedLocation().getCoordinates().asAndroidLocation());
         //
@@ -79,7 +80,7 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
         final Observable<List<DtlMerchant>> merchantsStream =
                 Observable.combineLatest(this.merchantsStream, prepareFilterToogle(),
                         this::filterMerchantsByType);
-        merchantsStream.asObservable().compose(bindViewIoToMainComposer())
+        merchantsStream.asObservable().compose(bindView())
                 .subscribe(getView()::setItems);
     }
 
@@ -100,14 +101,9 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
     }
 
     private Observable<Boolean> prepareFilterToogle() {
-        return toggleStream.asObservable()
-                .compose(bindView())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                // set initial value before emitting switching
-                .doOnSubscribe(() ->
-                        getView().toggleDiningFilterSwitch(db.getLastSelectedOffersOnlyToggle()))
-                .doOnNext(st -> db.saveLastSelectedOffersOnlyToogle(st));
+        return getView().getToggleObservable()
+                .startWith(db.getLastSelectedOffersOnlyToggle())
+                .doOnNext(checked -> db.saveLastSelectedOffersOnlyToogle(checked));
     }
 
     @Override
@@ -137,15 +133,9 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
             TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
                     dtlMerchantManager.getCurrentQuery(),
                     dtlLocationManager.getCachedSelectedLocation());
-//        if (getView().isTabletLandscape())
-//            getEventBus().post(new MerchantClickedEvent(merchant.getId())); // TODO :: 4/2/16 eventBus vs CellDelegate here
-//        else Flow.get(getContext()).set(new DtlDetailsPath(merchant.getId()));
-        Flow.get(getContext()).set(new DtlDetailsPath(merchant.getId()));
-    }
-
-    @Override
-    public void onCheckHideDinings(boolean checked) {
-        toggleStream.onNext(checked);
+        if (getView().isTabletLandscape())
+            EventBus.getDefault().post(new MerchantClickedEvent(merchant.getId()));
+        else Flow.get(getContext()).set(new DtlDetailsPath(merchant.getId()));
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {

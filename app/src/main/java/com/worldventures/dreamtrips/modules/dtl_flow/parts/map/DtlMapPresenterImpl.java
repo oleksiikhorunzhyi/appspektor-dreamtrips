@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 
 import android.content.Context;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
@@ -12,7 +10,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -25,7 +22,6 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
-import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -37,7 +33,6 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
 
@@ -61,7 +56,6 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
     private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
-    private BehaviorSubject<Boolean> toggleStream;
 
     public DtlMapPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -76,7 +70,7 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
+        getView().hideDinings(db.getLastSelectedOffersOnlyToggle());
         //
         bindFilteredStream();
         bindLocationStream();
@@ -92,11 +86,16 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     }
 
     protected void bindFilteredStream() {
-        final Observable<List<DtlMerchant>> merchantsStream = Observable.combineLatest(this.merchantsStream, prepareFilterToggle(), (dtlMerchants, hideDinings) ->
-                Observable.from(dtlMerchants)
-                        .filter(merchant -> !(hideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
-                        .toList().toBlocking().firstOrDefault(Collections.emptyList()));
-        merchantsStream.compose(bindViewIoToMainComposer()).subscribe(this::showPins);
+        final Observable<List<DtlMerchant>> merchantsStream =
+                Observable.combineLatest(this.merchantsStream, prepareFilterToogle(),
+                        this::filterMerchantsByType);
+        merchantsStream.compose(bindView()).subscribe(this::showPins);
+    }
+
+    private List<DtlMerchant> filterMerchantsByType(List<DtlMerchant> merchants, boolean hideDinings) {
+        return Observable.from(merchants)
+                .filter(merchant -> !(hideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
+                .toList().toBlocking().firstOrDefault(Collections.emptyList());
     }
 
     private void bindLocationStream() {
@@ -105,10 +104,10 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
                 .subscribe(getView()::updateToolbarTitle);
     }
 
-    private Observable<Boolean> prepareFilterToggle() {
-        return toggleStream
-                .doOnSubscribe(() -> getView().hideDinings(db.getLastSelectedOffersOnlyToggle()))// set initial value before emitting switching
-                .doOnNext(st -> db.saveLastSelectedOffersOnlyToogle(st));
+    private Observable<Boolean> prepareFilterToogle() {
+        return getView().getToggleObservable()
+                .startWith(db.getLastSelectedOffersOnlyToggle())
+                .doOnNext(checked -> db.saveLastSelectedOffersOnlyToogle(checked));
     }
 
     protected void tryHideMyLocationButton(boolean hide) {
@@ -169,7 +168,6 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
                 getView().addPin(dtlMerchant.getId(), new LatLng(dtlMerchant.getCoordinates().getLat(),
                         dtlMerchant.getCoordinates().getLng()), dtlMerchant.getMerchantType()));
         getView().renderPins();
-
     }
 
     @Override
@@ -189,7 +187,7 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
         //
         checkPendingMapInfo();
         gpsLocationDelegate.getLastKnownLocation()
-                .compose(bindViewIoToMainComposer())
+                .compose(bindView())
                 .subscribe(location -> tryHideMyLocationButton(false),
                         throwable -> tryHideMyLocationButton(true));
     }
@@ -197,11 +195,6 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     @Override
     public void applySearch(String query) {
         dtlMerchantManager.applySearch(query);
-    }
-
-    @Override
-    public void onCheckHideDinings(boolean checked) {
-        toggleStream.onNext(checked);
     }
 
     @Override

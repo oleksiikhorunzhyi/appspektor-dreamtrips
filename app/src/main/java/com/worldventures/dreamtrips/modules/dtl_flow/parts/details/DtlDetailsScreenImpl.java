@@ -105,14 +105,16 @@ public class DtlDetailsScreenImpl extends FlowLayout<DtlDetailsScreen, DtlDetail
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        helper = new DtlMerchantHelper(getContext());
-        commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
-        merchantInfoInflater = new DtlMerchantInfoInflater(helper);
+        //
+        getPresenter().trackScreen();
     }
 
     @Override
     protected void onPrepared() {
         super.onPrepared();
+        helper = new DtlMerchantHelper(getContext());
+        commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
+        merchantInfoInflater = new DtlMerchantInfoInflater(helper);
         //
         if (!isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -126,8 +128,6 @@ public class DtlDetailsScreenImpl extends FlowLayout<DtlDetailsScreen, DtlDetail
         legalTextView.setSimpleListener((view, collapsed) -> {
             if (!collapsed) scrollViewRoot.post(() -> scrollViewRoot.fullScroll(View.FOCUS_DOWN));
         });
-        //
-        getPresenter().trackScreen();
     }
 
     @Override

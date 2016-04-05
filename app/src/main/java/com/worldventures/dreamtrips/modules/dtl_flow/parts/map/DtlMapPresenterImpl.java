@@ -78,7 +78,6 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
         super.onAttachedToWindow();
         toggleStream = BehaviorSubject.create(db.getLastSelectedOffersOnlyToggle());
         //
-        connectMerchants();
         bindFilteredStream();
         bindLocationStream();
     }
@@ -176,6 +175,7 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     @Override
     public void onMapLoaded() {
         mapReady = true;
+        connectMerchants();
         //
         getView().centerIn(getFirstCenterLocation());
         //
@@ -202,6 +202,11 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     @Override
     public void onCheckHideDinings(boolean checked) {
         toggleStream.onNext(checked);
+    }
+
+    @Override
+    public void onSearchClick() {
+        // TODO :: show locations screen
     }
 
     @Override

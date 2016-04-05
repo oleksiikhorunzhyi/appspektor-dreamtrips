@@ -12,6 +12,8 @@ public interface DtlMapPresenter extends FlowPresenter<DtlMapScreen, ViewState.E
 
     void onCheckHideDinings(boolean checked);
 
+    void onSearchClick();
+
     void onMarkerClick(String merchantId);
 
     void onLoadMerchantsClick(LatLng cameraPosition);

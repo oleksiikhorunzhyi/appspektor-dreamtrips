@@ -3,13 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -29,13 +27,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
@@ -46,8 +44,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import flow.Flow;
-import icepick.Icepick;
 import icepick.State;
 
 public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath>
@@ -110,18 +106,6 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
         prepareView();
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        if (mapView != null) {
-            mapView.removeAllViews();
-        }
-        if (googleMap != null) {
-            googleMap.clear();
-            googleMap.setOnMarkerClickListener(null);
-        }
-        super.onDetachedFromWindow();
-    }
-
     protected void prepareView() {
         initToolbar();
         //
@@ -131,19 +115,14 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     protected void initToolbar() {
-//        if (!tabletAnalytic.isTabletLandscape() || !bundle.isSlave()) {
-//            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-//            toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
-//            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v ->
-//                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-//                            .backStackEnabled(true)
-//                            .data(new DtlLocationsBundle())
-//                            .containerId(R.id.dtl_container)
-//                            .fragmentManager(getFragmentManager())
-//                            .build()));
-//        } else { // TODO init toolbar in landscape mode
-        ButterKnife.findById(toolbar, R.id.spinnerStyledTitle).setVisibility(View.GONE);
-        ButterKnife.findById(toolbar, R.id.locationModeCaption).setVisibility(View.GONE);
+        if (!isTabletLandscape() || !bundle.isSlave()) {
+            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
+            toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
+            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> getPresenter().onSearchClick());
+        } else {
+            ButterKnife.findById(toolbar, R.id.spinnerStyledTitle).setVisibility(View.GONE);
+            ButterKnife.findById(toolbar, R.id.locationModeCaption).setVisibility(View.GONE);
+        }
     }
 
     private void checkMapAvailable() {
@@ -329,10 +308,11 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     private void hideInfoIfShown() {
+
     }
 
     protected void onMarkerFocused() {
-        EventBus.getDefault().post(new DtlShowMapInfoEvent()); // TODO eventBus???
+        EventBus.getDefault().post(new DtlShowMapInfoEvent());
     }
 
     private boolean isGooglePlayServicesAvailable() {

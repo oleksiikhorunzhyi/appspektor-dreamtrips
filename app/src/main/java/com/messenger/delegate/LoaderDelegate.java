@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import timber.log.Timber;
@@ -41,6 +43,7 @@ public class LoaderDelegate {
     private final UsersDAO usersDAO;
     private final AttachmentDAO attachmentDAO;
 
+    @Inject
     public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
                           ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
                           MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {

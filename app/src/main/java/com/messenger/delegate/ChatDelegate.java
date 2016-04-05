@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.ConversationIdHelper;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
@@ -21,6 +22,8 @@ import rx.Observable;
 public class ChatDelegate {
     private final String currentUserId;
     private final MessengerServerFacade messengerServerFacade;
+
+    private final ConversationIdHelper conversationIdHelper = new ConversationIdHelper();
 
     public ChatDelegate(String currentUserId, MessengerServerFacade messengerServerFacade) {
         this.currentUserId = currentUserId;
@@ -73,6 +76,20 @@ public class ChatDelegate {
         }
 
         return setMultiUserChatData(conversation, newChatUserIds, subject);
+    }
+
+    public Observable<DataConversation> createConversation(String conversationId, String currentUserId){
+        return Observable.just(conversationId)
+                .map(convId -> {
+                    DataConversation conversation = new DataConversation.Builder()
+                            .id(convId)
+                            .lastActiveDate(System.currentTimeMillis())
+                            .status(ConversationStatus.PRESENT)
+                            .type(conversationIdHelper.obtainType(convId, currentUserId))
+                            .build();
+
+                    return conversation;
+                });
     }
 
     public DataConversation getExistingSingleConversation(String participantId) {

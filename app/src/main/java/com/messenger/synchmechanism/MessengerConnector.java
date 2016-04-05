@@ -5,6 +5,7 @@ import android.content.Context;
 import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
+import com.messenger.delegate.LoaderDelegate;
 import com.messenger.delegate.UserProcessor;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
@@ -47,18 +48,13 @@ public class MessengerConnector {
 
     private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                                SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-                               DreamSpiceManager spiceManager,
-                               ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                               MessageDAO messageDAO, AttachmentDAO attachmentDAO, UsersDAO usersDAO,
-                               EventBusWrapper eventBusWrapper) {
+                               DreamSpiceManager spiceManager, LoaderDelegate loaderDelegate, EventBusWrapper eventBusWrapper) {
 
         this.applicationContext = applicationContext;
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.spiceManager = spiceManager;
-        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(messengerServerFacade,
-                new UserProcessor(usersDAO, spiceManager),
-                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
+        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(loaderDelegate);
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
 
         messengerServerFacade.addAuthorizationListener(authListener);
@@ -79,11 +75,10 @@ public class MessengerConnector {
 
     public static void init(Context applicationContext, ActivityWatcher activityWatcher,
                             SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-                            DreamSpiceManager spiceManager, ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                            MessageDAO messageDAO, AttachmentDAO attachmentDAO, UsersDAO usersDAO, EventBusWrapper eventBusWrapper) {
+                            DreamSpiceManager spiceManager, LoaderDelegate loaderDelegate, EventBusWrapper eventBusWrapper) {
 
         INSTANCE = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
-                spiceManager, conversationsDAO, participantsDAO, messageDAO, attachmentDAO, usersDAO, eventBusWrapper);
+                spiceManager, loaderDelegate, eventBusWrapper);
     }
 
     public Observable<ConnectionStatus> status() {

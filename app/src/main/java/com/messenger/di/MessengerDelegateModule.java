@@ -9,6 +9,7 @@ import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.StartChatDelegate;
+import com.messenger.delegate.UserProcessor;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.UnhandledMessageWatcher;
@@ -22,8 +23,10 @@ import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.delegate.CropImageDelegate;
+import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
+import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
@@ -52,6 +55,17 @@ public class MessengerDelegateModule {
     @Provides
     ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade) {
         return new ChatDelegate(user.getId(), messengerServerFacade);
+    }
+
+    @Provides
+    UserProcessor provideUserProcessor (@ForApplication Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
+        requester.start(context);
+        return new UserProcessor(usersDAO, requester);
+    }
+
+    @Provides
+    ChatFacadeManager provideChatFacadeManager(@ForApplication Injector injector) {
+        return new ChatFacadeManager(injector);
     }
 
     @Provides

@@ -75,7 +75,7 @@ public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, Vie
     public void proceedNavigation(@Nullable Location newLocation) {
         DtlLocation persistedLocation = dtlLocationManager.getSelectedLocation();
         if (persistedLocation == null) {
-            if (newLocation == null) navigatePath(new DtlLocationsPath());
+            if (newLocation == null) navigatePath(DtlLocationsPath.getDefault());
             else {
                 DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
                         .locationSourceType(LocationSourceType.NEAR_ME)
@@ -91,7 +91,7 @@ public class DtlStartPresenterImpl extends FlowPresenterImpl<DtlStartScreen, Vie
                     if (newLocation == null) { // we had location before, but not now - and we need it
                         dtlLocationManager.cleanLocation();
                         dtlMerchantManager.clean();
-                        navigatePath(new DtlLocationsPath());
+                        navigatePath(DtlLocationsPath.getDefault());
                         break;
                     }
                     //

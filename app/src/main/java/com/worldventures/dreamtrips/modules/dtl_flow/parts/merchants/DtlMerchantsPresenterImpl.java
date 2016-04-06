@@ -120,7 +120,11 @@ public class DtlMerchantsPresenterImpl extends FlowPresenterImpl<DtlMerchantsScr
     }
 
     private void tryRetirectToLocation(List<DtlMerchant> merchants) {
-        if (merchants.isEmpty()) Flow.get(getContext()).set(new DtlLocationsPath(true));
+        if (merchants.isEmpty())
+            Flow.get(getContext()).set(DtlLocationsPath.builder()
+                    .allowUserGoBack(true)
+                    .showNoMerchantsCaption(true)
+                    .build());
     }
 
     public void applySearch(String query) {

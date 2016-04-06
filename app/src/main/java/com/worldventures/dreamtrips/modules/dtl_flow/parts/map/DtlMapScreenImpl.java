@@ -118,7 +118,7 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
         if (!isTabletLandscape() || !bundle.isSlave()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
-            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> getPresenter().onSearchClick());
+            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> getPresenter().goToLocations());
         } else {
             ButterKnife.findById(toolbar, R.id.spinnerStyledTitle).setVisibility(View.GONE);
             ButterKnife.findById(toolbar, R.id.locationModeCaption).setVisibility(View.GONE);

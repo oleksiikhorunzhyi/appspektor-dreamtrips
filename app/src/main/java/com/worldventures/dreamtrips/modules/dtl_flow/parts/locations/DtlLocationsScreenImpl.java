@@ -79,13 +79,11 @@ public class DtlLocationsScreenImpl
         //
         initToolbar();
         //
+        if (getPath().isShowNoMerchantsCaption()) emptyMerchantsCaption.setVisibility(View.VISIBLE);
+        //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
-        if (getPath().isShowNoMerchantsCaption()) {
-//            this.shouldShowEmptyMerchantsCaption = true;
-            emptyMerchantsCaption.setVisibility(View.VISIBLE);
-        } // TODO :: 4/1/16 temporary
         //
         adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injectorProvider.get());
         adapter.registerCell(DtlExternalLocation.class, DtlLocationCell.class);
@@ -97,13 +95,11 @@ public class DtlLocationsScreenImpl
     }
 
     private void initToolbar() {
-        boolean hasBackStack = Flow.get(this).getHistory().size() > 1; // TODO FIXME: 4/3/16 history size is updated after navigation done. At this moment is 1, though actually 2
-        //
         toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
         toolbar.inflateMenu(R.menu.menu_locations);
-        if (hasBackStack) {
+        if (getPath().isAllowUserGoBack()) {
             toolbar.setNavigationIcon(R.drawable.back_icon);
-            toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+            toolbar.setNavigationOnClickListener(v -> Flow.get(this).goBack());
         } else if (!isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());

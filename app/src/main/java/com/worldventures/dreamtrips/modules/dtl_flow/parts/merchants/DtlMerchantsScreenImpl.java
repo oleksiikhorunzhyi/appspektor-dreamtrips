@@ -150,7 +150,9 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
         }
         //
         ButterKnife.findById(toolbar, R.id.titleContainer).setOnClickListener(v ->
-                Flow.get(getContext()).set(new DtlLocationsPath()));
+                Flow.get(getContext()).set(DtlLocationsPath.builder()
+                        .allowUserGoBack(true)
+                        .build()));
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
@@ -198,8 +199,8 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     }
 
     @Override
-    public void onSearchClick() {
-        // TODO :: show locations screen
+    public void goToLocations() {
+        Flow.get(getContext()).set(DtlLocationsPath.builder().allowUserGoBack(true).build());
     }
 
     @Override

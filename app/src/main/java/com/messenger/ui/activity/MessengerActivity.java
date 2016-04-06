@@ -20,6 +20,7 @@ import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
+import com.messenger.util.PickLocationDelegate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -58,6 +59,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected NavigationDrawerPresenter navigationDrawerPresenter;
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    @Inject
+    PickLocationDelegate pickLocationDelegate;
     @Inject
     CropImageDelegate cropImageDelegate;
     @Inject
@@ -130,9 +133,9 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!cropImageDelegate.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+        if (pickLocationDelegate.onActivityResult(requestCode, resultCode, data)) return;
+        if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

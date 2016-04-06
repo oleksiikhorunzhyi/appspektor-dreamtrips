@@ -64,6 +64,10 @@
     <string name="chat_contextual_translate_message">Translate</string>
     <string name="chat_contextual_revert_translate_message">Show original</string>
     <string name="chat_contextual_start_chat_format">Message %s</string>
+    <string name="chat_share_dialog_location">Share location</string>
+    <string name="chat_share_dialog_image">Share image</string>
+    <string name="chat_share_dialog_cancel">Cancel</string>
+    <string name="chat_could_not_share_location">Could not share location</string>
 
     <!---->
     <!--Chat Settings -->

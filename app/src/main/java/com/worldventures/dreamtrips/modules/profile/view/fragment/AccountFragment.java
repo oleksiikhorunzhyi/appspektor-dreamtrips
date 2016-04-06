@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -18,8 +17,6 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
-
-import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_account)
 @MenuResource(R.menu.menu_empty)
@@ -83,13 +80,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
             } else {
                 badgeView.setVisibility(View.INVISIBLE);
             }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

@@ -15,7 +15,6 @@ import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
-import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -108,7 +107,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @NonNull
     @Override
     public ChatSettingsScreenPresenter<GroupChatSettingsScreen> createPresenter() {
-        return new MultiChatSettingsScreenPresenter(getContext(), getPath().getConversationId());
+        return new MultiChatSettingsScreenPresenter(getContext(), injector, getPath().getConversationId());
     }
 
     @Override

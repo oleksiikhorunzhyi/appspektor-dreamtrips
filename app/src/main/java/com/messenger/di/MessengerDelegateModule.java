@@ -131,11 +131,6 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    UserProcessor provideUserProcessor(UsersDAO usersDAO, DreamSpiceManager dreamSpiceManager) {
-        return new UserProcessor(usersDAO, dreamSpiceManager);
-    }
-
-    @Provides
     @Singleton
     CropImageDelegate provideCropImageDelegate(DreamSpiceManager dreamSpiceManager) {
         return new CropImageDelegate(dreamSpiceManager);

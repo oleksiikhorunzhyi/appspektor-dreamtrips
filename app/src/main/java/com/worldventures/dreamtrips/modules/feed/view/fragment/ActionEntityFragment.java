@@ -3,16 +3,16 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -21,14 +21,17 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
@@ -43,44 +46,33 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import mbanje.kurt.fabbutton.CircleImageView;
-import mbanje.kurt.fabbutton.FabButton;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, EditPhotoTagsFragment.Callback, LocationFragment.Callback {
+        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, EditPhotoTagsFragment.Callback,
+        LocationFragment.Callback, PhotoPostCreationDelegate {
 
     @Inject
     BackStackDelegate backStackDelegate;
-
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
 
     @InjectView(R.id.avatar)
     protected SmartAvatarView avatar;
-    @InjectView(R.id.attached_photo)
-    protected SimpleDraweeView attachedPhoto;
     @InjectView(R.id.name)
     protected TextView name;
     @InjectView(R.id.post)
     protected KeyCallbackEditText post;
     @InjectView(R.id.post_button)
     protected Button postButton;
-    @InjectView(R.id.fab_progress)
-    protected FabButton fabProgress;
-    @InjectView(R.id.fabbutton_circle)
-    protected CircleImageView circleView;
-    @InjectView(R.id.shadow)
-    protected View shadow;
-    @InjectView(R.id.image_container)
-    protected FrameLayout imageContainer;
     @InjectView(R.id.image)
     protected ImageView image;
-    @InjectView(R.id.tag_btn)
-    protected TextView tagBtn;
     @InjectView(R.id.location)
     protected ImageView locationBtn;
+    @InjectView(R.id.photos)
+    protected RecyclerView photosList;
 
+    BaseDelegateAdapter adapter;
     SweetAlertDialog dialog;
 
     private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
@@ -95,6 +87,13 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         postButton.setText(getPostButtonText());
+        //
+        adapter = new BaseDelegateAdapter(getContext(), this);
+        adapter.registerCell(UploadTask.class, PhotoPostCreationCell.class);
+        adapter.registerDelegate(UploadTask.class, this);
+        photosList.setLayoutManager(new LinearLayoutManager(getContext()));
+        photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
+        photosList.setAdapter(adapter);
     }
 
     @Override
@@ -121,26 +120,10 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         updateLocationButtonState();
     }
 
-    public void attachPhoto(Uri uri) {
-        if (uri != null) {
-            PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController());
-            attachedPhoto.setController(controller);
-            post.setHint(R.string.photo_hint);
-            imageContainer.setVisibility(View.VISIBLE);
-            image.setImageResource(R.drawable.ic_post_add_image_selected);
-            locationBtn.setVisibility(View.VISIBLE);
-            updateLocationButtonState();
-        } else {
-            attachedPhoto.setController(null);
-            post.setHint(R.string.post_hint);
-            imageContainer.setVisibility(View.GONE);
-            image.setImageResource(R.drawable.ic_post_add_image_normal);
-            locationBtn.setVisibility(View.GONE);
-            updateLocationButtonState(false);
-        }
-
-        updateLocationButtonState();
-        getPresenter().invalidateAddTagBtn();
+    @Override
+    public void attachPhotos(List<UploadTask> images) {
+        adapter.addItems(images);
+        adapter.notifyDataSetChanged();
     }
 
     private void updateLocationButtonState() {
@@ -260,12 +243,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
     }
 
-    @OnClick(R.id.tag_btn)
-    void onTagClicked() {
-        getPresenter().onTagClicked();
-    }
-
-    @Override
     public void showPhotoTagView(EditPhotoTagsBundle.PhotoEntity photoEntity, List<PhotoTag> photoTags) {
         router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder
                 .forFragment()
@@ -278,21 +255,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     }
 
     @Override
-    public void redrawTagButton(boolean isViewShown, boolean someTagSets) {
-        if (!someTagSets) {
-            tagBtn.setText(R.string.tag_people);
-            tagBtn.setSelected(false);
-        } else {
-            tagBtn.setText(R.string.empty);
-            tagBtn.setSelected(true);
-        }
-        tagBtn.setVisibility(isViewShown ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
     public void onTagSelected(ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags) {
         getPresenter().onTagSelected(addedTags, removedTags);
-        getPresenter().invalidateAddTagBtn();
     }
 
     @Override
@@ -310,6 +274,31 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     @Override
     public void onLocationDone(Location location) {
         getPresenter().updateLocation(location);
+    }
+
+    //////////////////////////////////////////
+    // Cell callbacks
+    //////////////////////////////////////////
+
+    @Override
+    public void onCellClicked(UploadTask model) {
+        // nothing to do
+    }
+
+    @Override
+    public void onTagClicked(UploadTask uploadTask) {
+        //TODO handler tag clicked
+//        showPhotoTagView();
+    }
+
+    @Override
+    public void onProgressClicked(UploadTask uploadTask) {
+        // nothing to do
+    }
+
+    @Override
+    public void onRemoveClicked(UploadTask uploadTask) {
+
     }
 
     protected abstract int getPostButtonText();

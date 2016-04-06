@@ -17,11 +17,6 @@ public class CreateTripImageFragment extends CreateEntityFragment<CreateTripImag
     }
 
     @Override
-    protected void onPhotoCancel() {
-        showMediaPicker();
-    }
-
-    @Override
     protected Route getRoute() {
         return Route.PHOTO_CREATE;
     }

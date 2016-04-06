@@ -8,12 +8,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 import icepick.State;
 
 public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle>
@@ -54,43 +54,26 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     }
 
     @Override
+    public void updateItem(int position) {
+        adapter.notifyItemChanged(position);
+    }
+
+    @Override
     protected int getPostButtonText() {
         return R.string.post;
     }
 
     @Override
-    public void showProgress() {
-        shadow.setVisibility(View.VISIBLE);
-        fabProgress.setVisibility(View.VISIBLE);
-        fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-        fabProgress.setIndeterminate(true);
-        fabProgress.showProgress(true);
-        int color = getResources().getColor(R.color.bucket_blue);
-        circleView.setColor(color);
+    public void onProgressClicked(UploadTask uploadTask) {
+        super.onProgressClicked(uploadTask);
+        getPresenter().startUpload(uploadTask);
     }
 
     @Override
-    public void hideProgress() {
-        fabProgress.setVisibility(View.GONE);
-        shadow.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void imageError() {
-        fabProgress.showProgress(false);
-        fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-        int color = getResources().getColor(R.color.bucket_red);
-        circleView.setColor(color);
-    }
-
-    @OnClick(R.id.cancel_action)
-    protected void onPhotoCancel() {
-        getPresenter().cancelClicked();
-    }
-
-    @OnClick(R.id.fab_progress)
-    void onProgressClick() {
-        getPresenter().onProgressClicked();
+    public void onRemoveClicked(UploadTask uploadTask) {
+        super.onRemoveClicked(uploadTask);
+        int position = getPresenter().removeImage(uploadTask);
+        if (position != -1) adapter.notifyItemRemoved(position);
     }
 
     protected void showMediaPicker() {
@@ -98,7 +81,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .data(new PickerBundle(getPresenter().getMediaRequestId()))
+                .data(new PickerBundle(getPresenter().getMediaRequestId(), 15))
                 .build());
     }
 

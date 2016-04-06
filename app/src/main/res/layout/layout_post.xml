@@ -2,7 +2,6 @@
 <FrameLayout
     android:id="@+id/space"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -79,83 +78,33 @@
                 android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/spacing_small"
                 android:src="@drawable/ic_close_gray"/>
-
-
         </RelativeLayout>
 
-        <ScrollView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/container_user"
-            android:fillViewport="true">
+            android:layout_above="@+id/container_post">
 
-            <RelativeLayout
+            <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
+                android:id="@+id/post"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="@string/post_hint"
+                android:imeOptions="actionDone"
+                android:paddingBottom="@dimen/spacing_normal"
+                android:paddingLeft="@dimen/spacing_medium"
+                android:paddingRight="@dimen/spacing_medium"
+                android:paddingTop="@dimen/spacing_normal"/>
 
-                <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
-                    android:id="@+id/post"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="top"
-                    android:hint="@string/post_hint"
-                    android:imeOptions="actionDone"
-                    android:paddingBottom="@dimen/spacing_normal"
-                    android:paddingLeft="@dimen/spacing_medium"
-                    android:paddingRight="@dimen/spacing_medium"
-                    android:paddingTop="@dimen/spacing_normal"/>
-
-                <FrameLayout
-                    android:id="@+id/image_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/post"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/spacing_normal">
-
-                    <com.facebook.drawee.view.SimpleDraweeView
-                        android:id="@+id/attached_photo"
-                        android:layout_width="match_parent"
-                        android:layout_height="350dp"/>
-
-                    <View
-                        android:id="@+id/shadow"
-                        android:layout_width="match_parent"
-                        android:layout_height="350dp"
-                        android:background="@color/black_semi_transparent"
-                        android:visibility="gone"/>
-
-                    <ImageView
-                        android:id="@+id/cancel_action"
-                        android:layout_width="@dimen/size_small"
-                        android:layout_height="@dimen/size_small"
-                        android:layout_gravity="end"
-                        android:layout_margin="@dimen/spacing_small"
-                        android:src="@drawable/ic_action_cancel"/>
-
-                    <view
-                        android:id="@+id/fab_progress"
-                        class="mbanje.kurt.fabbutton.FabButton"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_gravity="center"
-                        android:color="@color/bucket_blue"
-                        android:enabled="false"
-                        android:indeterminate="false"
-                        android:max="100"
-                        android:src="@drawable/ic_upload_cloud"
-                        android:visibility="gone"
-                        app:fbb_autoStart="true"
-                        app:fbb_endBitmap="@drawable/ic_upload_cloud"
-                        app:fbb_progressColor="#ffffff"
-                        app:fbb_showEndBitmap="true"/>
-
-                </FrameLayout>
-
-            </RelativeLayout>
-        </ScrollView>
-
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/photos"
+                android:layout_below="@+id/post"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </RelativeLayout>
 
         <include
             android:id="@+id/divider"
@@ -163,19 +112,6 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_above="@+id/container_post"/>
-
-        <TextView
-            android:id="@+id/tag_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/container_post"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/spacing_small"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:drawableLeft="@drawable/ic_tag"
-            android:drawablePadding="@dimen/spacing_small"
-            android:text="@string/tag_people"
-            android:textColor="@android:color/white"/>
 
         <LinearLayout
             android:id="@+id/container_post"
@@ -235,9 +171,7 @@
                     android:textColor="@color/grey"
                     android:textSize="@dimen/font_normal"/>
             </RelativeLayout>
-
         </LinearLayout>
-
     </RelativeLayout>
 
     <FrameLayout

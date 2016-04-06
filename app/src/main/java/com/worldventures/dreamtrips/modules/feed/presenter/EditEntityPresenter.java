@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.net.Uri;
-
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.api.EditPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
@@ -10,7 +8,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
@@ -61,14 +58,10 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     public void takeView(View view) {
         super.takeView(view);
         if (type == Type.PHOTO) {
-            view.attachPhoto(Uri.parse(((Photo) entity).getFSImage().getUrl()));
+            //TODO attachPhotos
+//            view.attachPhoto(Uri.parse(((Photo) entity).getFSImage().getUrl()));
         }
         invalidateDynamicViews();
-    }
-
-    @Override
-    protected EditPhotoTagsBundle.PhotoEntity getImageForTagging() {
-        return new EditPhotoTagsBundle.PhotoEntity(((Photo) entity).getImages().getUrl(), null);
     }
 
     @Override
@@ -76,26 +69,6 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
         return !IMMUTABLE_DESCRIPTION.equals(cachedText)
                 || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty()
                 || !IMMUTABLE_LOCATION.equals(cachedLocation);
-    }
-
-    public void invalidateAddTagBtn() {
-        boolean isViewShown;
-        boolean someTagSets;
-        switch (type) {
-            case PHOTO:
-                isViewShown = true;
-                ArrayList<PhotoTag> tempAdded = new ArrayList<>(((Photo) entity).getPhotoTags());
-                tempAdded.removeAll(cachedRemovedPhotoTags);
-                someTagSets = !tempAdded.isEmpty() || !cachedAddedPhotoTags.isEmpty();
-                break;
-            default:
-                isViewShown = false;
-                someTagSets = false;
-                break;
-        }
-        if (view != null) {
-            view.redrawTagButton(isViewShown, someTagSets);
-        }
     }
 
     @Override

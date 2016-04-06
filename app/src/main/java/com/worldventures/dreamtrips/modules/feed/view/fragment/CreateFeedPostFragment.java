@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresenter;
+
+import java.util.List;
 
 import butterknife.OnClick;
 import icepick.State;
@@ -38,13 +40,6 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
     }
 
     @Override
-    public void attachPhoto(Uri uri) {
-        hideMediaPicker();
-        //
-        super.attachPhoto(uri);
-    }
-
-    @Override
     public void enableImagePicker() {
         pickerDisabled = false;
         updatePickerState();
@@ -66,8 +61,10 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
         showMediaPicker();
     }
 
-    @OnClick(R.id.cancel_action)
-    protected void onPhotoCancel() {
-        getPresenter().removeImage();
+    @Override
+    public void attachPhotos(List<UploadTask> images) {
+        hideMediaPicker();
+        //
+        super.attachPhotos(images);
     }
 }

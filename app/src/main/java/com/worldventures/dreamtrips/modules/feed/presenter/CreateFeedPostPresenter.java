@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 
+import java.util.ArrayList;
+
 public class CreateFeedPostPresenter extends CreateEntityPresenter<CreateFeedPostPresenter.View> {
 
     public CreateFeedPostPresenter() {
@@ -9,11 +11,10 @@ public class CreateFeedPostPresenter extends CreateEntityPresenter<CreateFeedPos
     }
 
     public void removeImage() {
-        cachedUploadTask = null;
         cachedRemovedPhotoTags.clear();
         cachedAddedPhotoTags.clear();
         invalidateDynamicViews();
-        view.attachPhoto(null);
+        view.attachPhotos(new ArrayList<>());
         view.enableImagePicker();
     }
 

@@ -133,7 +133,8 @@ public class DtlLocationManager {
     private Observable.Transformer<List<DtlExternalLocation>, List<DtlExternalLocation>> prepareLocations() {
         Comparator<DtlExternalLocation> comparator = DtlExternalLocation.provideComparator(query);
         return observable -> observable
-                .compose(new ListFilter<>(dtlLocation -> dtlLocation.getLongName().toLowerCase().contains(query)))
+                .compose(new ListFilter<>(dtlLocation ->
+                        dtlLocation.getLongName().toLowerCase().contains(query.toLowerCase())))
                 .compose(new ListSorter<>(comparator::compare));
     }
 

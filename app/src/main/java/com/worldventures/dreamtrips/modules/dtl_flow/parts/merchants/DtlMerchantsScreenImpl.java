@@ -63,8 +63,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     BaseDelegateAdapter<DtlMerchant> baseDelegateAdapter;
     SearchViewHelper searchViewHelper;
     //
-//    RecyclerViewStateDelegate stateDelegate; // TODO :: 4/2/16 deal with this state delegate stuff?
-    //
     SelectionManager selectionManager;
     //
     @State
@@ -88,11 +86,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
         refreshLayout.setEnabled(false);
-        //
-//        stateDelegate = new RecyclerViewStateDelegate();
-//        stateDelegate.setRecyclerView(recyclerView);
-//        stateDelegate.onCreate(savedInstanceState);
-//        stateDelegate.saveStateIfNeeded(outState);
         //
         toolbar.inflateMenu(getPresenter().getToolbarMenuRes());
         searchViewHelper = new SearchViewHelper();
@@ -161,11 +154,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
     @Override
     public void setItems(List<DtlMerchant> merchants) {
-//        if (merchants != null && !merchants.isEmpty()) hideProgress();
         hideProgress();
-        //
         baseDelegateAdapter.setItems(merchants);
-//        stateDelegate.restoreStateIfNeeded();
     }
 
     @Override
@@ -197,7 +187,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
     @Override
     protected void onDetachedFromWindow() {
-//        stateDelegate.onDestroyView();
         searchViewHelper.dropHelper();
         selectionManager.release();
         super.onDetachedFromWindow();
@@ -224,7 +213,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     ///////////////////////////////////////////////////////////////////////////
     // Boilerplate stuff
     ///////////////////////////////////////////////////////////////////////////
-
 
     @Override
     public DtlMerchantsPresenter createPresenter() {

@@ -35,6 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestionPhotoCell;
@@ -132,6 +133,7 @@ import de.greenrobot.event.EventBus;
                 SuggestionPhotoCell.class,
 
                 PhotoPostCreationCell.class,
+                PostCreationTextCell.class,
 
         },
         complete = false,

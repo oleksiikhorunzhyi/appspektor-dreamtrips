@@ -10,6 +10,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 
 import butterknife.InjectView;
@@ -18,7 +19,7 @@ import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_photo_post)
-public class PhotoPostCreationCell extends AbstractDelegateCell<UploadTask, PhotoPostCreationDelegate> {
+public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
 
     @InjectView(R.id.shadow)
     View shadow;
@@ -99,8 +100,16 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<UploadTask, Phot
 
     }
 
-    public void invalidateAddTagBtn() {
-        //TODO invalidate TAG
+    private void invalidateAddTagBtn() {
         tagButton.setVisibility(getModelObject().getStatus() == UploadTask.Status.COMPLETED ? View.VISIBLE : View.GONE);
+
+        if (getModelObject().getCombinedTags().isEmpty()) {
+            tagButton.setText(R.string.tag_people);
+            tagButton.setSelected(false);
+        } else {
+            tagButton.setText(R.string.empty);
+            tagButton.setSelected(true);
+        }
+
     }
 }

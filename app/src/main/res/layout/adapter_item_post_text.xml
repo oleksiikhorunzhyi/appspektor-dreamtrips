@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
+        android:id="@+id/post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="@string/post_hint"
+        android:imeOptions="actionDone"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_medium"
+        android:paddingRight="@dimen/spacing_medium"
+        android:paddingTop="@dimen/spacing_normal"/>
+
+</LinearLayout>

@@ -5,7 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.List;
@@ -14,8 +13,10 @@ public class EditPhotoTagsBundle implements Parcelable {
 
     private PhotoEntity photo;
     private List<PhotoTag> photoTags;
+    private long requestId;
 
-    public EditPhotoTagsBundle(PhotoEntity photo, List<PhotoTag> photoTags) {
+    public EditPhotoTagsBundle(long requestId, PhotoEntity photo, List<PhotoTag> photoTags) {
+        this.requestId = requestId;
         this.photo = photo;
         this.photoTags = photoTags;
     }
@@ -52,6 +53,10 @@ public class EditPhotoTagsBundle implements Parcelable {
         return photoTags;
     }
 
+
+    public long getRequestId() {
+        return requestId;
+    }
 
     public static class PhotoEntity implements Parcelable {
         String url;

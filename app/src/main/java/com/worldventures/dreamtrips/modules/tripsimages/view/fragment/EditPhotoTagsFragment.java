@@ -95,7 +95,7 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
             taggableImageHolder.getLocallyAddedTags().addAll(getArgs().getPhotoTags());
             taggableImageHolder.getLocallyAddedTags().removeAll(taggableImageHolder.getLocallyDeletedTags());
 
-            ((Callback) getTargetFragment()).onTagSelected(taggableImageHolder.getLocallyAddedTags(), taggableImageHolder.getLocallyDeletedTags());
+            ((Callback) getTargetFragment()).onTagSelected(getArgs().getRequestId(), taggableImageHolder.getLocallyAddedTags(), taggableImageHolder.getLocallyDeletedTags());
         }
     }
 
@@ -110,7 +110,7 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
     }
 
     public interface Callback {
-        void onTagSelected(ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags);
+        void onTagSelected(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags);
     }
 
 }

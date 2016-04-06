@@ -1,15 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.api.AddPhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
@@ -21,10 +17,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     @State
     String cachedText = "";
-    @State
-    ArrayList<PhotoTag> cachedAddedPhotoTags = new ArrayList<>();
-    @State
-    ArrayList<PhotoTag> cachedRemovedPhotoTags = new ArrayList<>();
 
     @Override
     public void takeView(V view) {
@@ -62,23 +54,12 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     public abstract void post();
 
-    protected List<PhotoTag> getCombinedTags() {
-        return new ArrayList<>(cachedAddedPhotoTags);
-    }
-
-    public void onTagSelected(ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
-        cachedAddedPhotoTags.removeAll(photoTags);
-        cachedAddedPhotoTags.addAll(photoTags);
-        cachedAddedPhotoTags.removeAll(removedTags);
-
-        cachedRemovedPhotoTags.removeAll(removedTags);
-        cachedRemovedPhotoTags.addAll(removedTags);
-    }
+    public abstract void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags);
 
     public abstract Location getLocation();
 
     protected void pushTags(FeedEntity feedEntity) {
-        cachedAddedPhotoTags.removeAll(((Photo) feedEntity).getPhotoTags());
+    /* todo   cachedAddedPhotoTags.removeAll(((Photo) feedEntity).getPhotoTags());
         if (cachedAddedPhotoTags.size() > 0) {
             doRequest(new AddPhotoTagsCommand(feedEntity.getUid(), cachedAddedPhotoTags), aVoid -> {
                 if (cachedRemovedPhotoTags.size() > 0) {
@@ -91,15 +72,15 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
             postRemovedPhotoTags(feedEntity);
         } else {
             processTagUploadSuccess(feedEntity);
-        }
+        }*/
     }
 
     private void postRemovedPhotoTags(FeedEntity feedEntity) {
-        List<Integer> userIds = Queryable.from(cachedRemovedPhotoTags)
+     /*todo   List<Integer> userIds = Queryable.from(cachedRemovedPhotoTags)
                 .concat(((Photo) feedEntity).getPhotoTags()).map(photo -> photo.getUser().getId()).toList();
         doRequest(new DeletePhotoTagsCommand(feedEntity.getUid(), userIds), bVoid -> {
             processTagUploadSuccess(feedEntity);
-        });
+        });*/
     }
 
     protected void processPostSuccess(FeedEntity feedEntity) {
@@ -111,11 +92,11 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {
-        Photo photo = (Photo) feedEntity;
+      /* TODO Photo photo = (Photo) feedEntity;
         photo.getPhotoTags().addAll(cachedAddedPhotoTags);
         photo.getPhotoTags().removeAll(cachedRemovedPhotoTags);
         photo.setPhotoTagsCount(photo.getPhotoTags().size());
-
+      */
         closeView();
     }
 
@@ -130,7 +111,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     public interface View extends RxView {
 
-        void attachPhotos(List<UploadTask> images);
+        void attachPhotos(List<PhotoCreationItem> images);
 
         void setName(String userName);
 

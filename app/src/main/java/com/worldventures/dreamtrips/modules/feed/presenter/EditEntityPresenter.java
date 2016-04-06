@@ -67,19 +67,11 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
     @Override
     protected boolean isChanged() {
         return !IMMUTABLE_DESCRIPTION.equals(cachedText)
-                || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty()
+              //todo  || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty()
                 || !IMMUTABLE_LOCATION.equals(cachedLocation);
     }
 
-    @Override
-    protected List<PhotoTag> getCombinedTags() {
-        ArrayList<PhotoTag> originPhotoTags = new ArrayList<>(((Photo) entity).getPhotoTags());
-        originPhotoTags.removeAll(cachedRemovedPhotoTags);
 
-        List<PhotoTag> combinedTags = super.getCombinedTags();
-        combinedTags.addAll(originPhotoTags);
-        return combinedTags;
-    }
 
     @Override
     public Location getLocation() {
@@ -110,6 +102,11 @@ public class EditEntityPresenter extends ActionEntityPresenter<ActionEntityPrese
                 updatePost();
                 break;
         }
+    }
+
+    @Override
+    public void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
+        //todo
     }
 
     private void updatePost() {

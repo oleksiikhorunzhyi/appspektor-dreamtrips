@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
 import butterknife.InjectView;
@@ -19,19 +19,17 @@ import icepick.State;
 public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle>
         implements CreateEntityPresenter.View {
 
-    @InjectView(R.id.picker_container)
-    ViewGroup pickerContainer;
-
+    @State
+    boolean pickerDisabled;
     @State
     boolean imageFromArgsAlreadyAttached;
+
+    @InjectView(R.id.picker_container)
+    ViewGroup pickerContainer;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        post.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) hideMediaPicker();
-            else name.requestFocus();
-        });
         pickerContainer.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
             @Override
             public void onChildViewAdded(View parent, View child) {
@@ -64,16 +62,42 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     }
 
     @Override
-    public void onProgressClicked(UploadTask uploadTask) {
-        super.onProgressClicked(uploadTask);
-        getPresenter().startUpload(uploadTask);
+    public void onProgressClicked(PhotoCreationItem item) {
+        super.onProgressClicked(item);
+        getPresenter().startUpload(item);
     }
 
     @Override
-    public void onRemoveClicked(UploadTask uploadTask) {
+    public void onRemoveClicked(PhotoCreationItem uploadTask) {
         super.onRemoveClicked(uploadTask);
-        int position = getPresenter().removeImage(uploadTask);
-        if (position != -1) adapter.notifyItemRemoved(position);
+        boolean removed = getPresenter().removeImage(uploadTask);
+        if (removed) {
+            adapter.remove(uploadTask);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void enableImagePicker() {
+        pickerDisabled = false;
+        updatePickerState();
+    }
+
+    @Override
+    public void disableImagePicker() {
+        pickerDisabled = true;
+        updatePickerState();
+    }
+
+    @Override
+    protected void onTitleFocusChanged(boolean hasFocus) {
+        super.onTitleFocusChanged(hasFocus);
+        if (hasFocus) hideMediaPicker();
+        else name.requestFocus();
+    }
+
+    protected void updatePickerState() {
+        image.setEnabled(!pickerDisabled);
     }
 
     protected void showMediaPicker() {

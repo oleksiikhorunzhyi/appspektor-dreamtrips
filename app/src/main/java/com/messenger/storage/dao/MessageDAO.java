@@ -15,9 +15,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
-
 
 import java.util.Collections;
 import java.util.List;
@@ -83,9 +81,11 @@ public class MessageDAO extends BaseDAO {
                         " WHERE " + DataMessage$Table.CONVERSATIONID + " =?" +
                         " AND " + DataMessage$Table.FROMID + " <>?" +
                         " AND " + DataMessage$Table.SYNCTIME + " >=?" +
+                        " ABD " + DataMessage$Table.STATUS + "<>" + MessageStatus.READ +
                         " ORDER BY " + DataMessage$Table.DATE + " DESC " +
                         " LIMIT 1")
-                .withSelectionArgs(new String[]{conversationId, currentUserId, Long.toString(syncTime)})
+                .withSelectionArgs(new String[]{conversationId, currentUserId,
+                        Long.toString(syncTime)})
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)

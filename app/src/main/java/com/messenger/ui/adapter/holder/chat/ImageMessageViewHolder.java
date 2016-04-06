@@ -4,15 +4,13 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 
 import butterknife.InjectView;
 
@@ -72,19 +70,18 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
 
         applyLoadingStatusUi();
 
-        ImageRequest imageRequest = ImageRequestBuilder
-                .newBuilderWithResourceId(imagePostView.getId())
-                .setSource(uri)
-                .build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(imageRequest)
+        int width = itemView.getResources().getDimensionPixelSize(R.dimen.chat_image_width);
+        int height = itemView.getResources().getDimensionPixelSize(R.dimen.chat_image_height);
+
+        DraweeController controller = GraphicUtils.provideFrescoResizingControllerBuilder(uri,
+                imagePostView.getController(), width, height)
                 .setControllerListener(getLoadingListener())
-                .setOldController(imagePostView.getController())
                 .build();
+
         imagePostView.setController(controller);
     }
 
-    public void setOnImageClickListener (View.OnClickListener clickListener) {
+    public void setOnImageClickListener(View.OnClickListener clickListener) {
         imagePostView.setOnClickListener(clickListener);
     }
 

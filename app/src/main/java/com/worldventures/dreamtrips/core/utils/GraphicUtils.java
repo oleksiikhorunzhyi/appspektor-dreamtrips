@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -25,17 +26,25 @@ public class GraphicUtils {
         return provideFrescoResizingController(uri, oldController, size, size);
     }
 
-    public static PipelineDraweeController provideFrescoResizingController(Uri uri,
-                                                                           DraweeController oldController,
-                                                                           int width, int height) {
+    public static PipelineDraweeControllerBuilder provideFrescoResizingControllerBuilder(Uri uri,
+                                                                                         DraweeController oldController,
+                                                                                         int width, int height) {
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setResizeOptions(new ResizeOptions(width, height))
                 .setAutoRotateEnabled(true)
                 .build();
 
-        return (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+        return Fresco.newDraweeControllerBuilder()
                 .setOldController(oldController)
-                .setImageRequest(request)
-                .build();
+                .setImageRequest(request);
+    }
+
+
+    public static PipelineDraweeController provideFrescoResizingController(Uri uri,
+                                                                           DraweeController oldController,
+                                                                           int width, int height) {
+        return (PipelineDraweeController)
+                provideFrescoResizingControllerBuilder(uri, oldController, width, height)
+                        .build();
     }
 }

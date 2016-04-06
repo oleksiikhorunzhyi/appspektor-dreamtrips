@@ -247,6 +247,9 @@
     <dimen name="chat_settings_group_chat_info_text_size">12sp</dimen>
     <dimen name="chat_settings_group_chat_info_horizontal_padding">10dp</dimen>
 
+    <dimen name="chat_image_height">120dp</dimen>
+    <dimen name="chat_image_width">186dp</dimen>
+
     <!-- Messenger misc -->
     <dimen name="messenger_swappable_action_button_text_size">13sp</dimen>
     <dimen name="messenger_swappable_action_button_padding">16dp</dimen>

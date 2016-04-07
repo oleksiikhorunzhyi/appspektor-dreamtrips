@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 
 import android.content.Context;
+import android.view.MenuItem;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
@@ -19,10 +20,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -38,7 +38,7 @@ import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
 
 @SuppressWarnings("ConstantConditions")
-public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewState.EMPTY> implements DtlMapPresenter {
+public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewState.EMPTY> implements DtlMapPresenter {
 
     public static final int MAX_DISTANCE = 50;
 
@@ -61,11 +61,6 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
     public DtlMapPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
-    }
-
-    @Override
-    public int getToolbarMenuRes() {
-        return R.menu.menu_dtl_map;
     }
 
     @Override
@@ -127,9 +122,9 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
                 .doOnNext(position -> getView().cameraPositionChange(position))
                 .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
                 .map(position -> position.zoom < MapViewUtils.DEFAULT_ZOOM ||
-                                !DtlLocationHelper.checkLocation(MAX_DISTANCE,
-                                        dtlLocationManager.getCachedSelectedLocation().getCoordinates().asLatLng(),
-                                        position.target, DistanceType.MILES));
+                        !DtlLocationHelper.checkLocation(MAX_DISTANCE,
+                                dtlLocationManager.getCachedSelectedLocation().getCoordinates().asLatLng(),
+                                position.target, DistanceType.MILES));
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -146,6 +141,21 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
         //
         if (dtlLocationManager.getSelectedLocation().getLocationSourceType() != LocationSourceType.NEAR_ME)
             getView().addLocationMarker(dtlLocationManager.getSelectedLocation().getCoordinates().asLatLng());
+    }
+
+    @Override
+    public int getToolbarMenuRes() {
+        return R.menu.menu_dtl_map;
+    }
+
+    @Override
+    public boolean onToolbarMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_list:
+                Flow.get(getContext()).goBack();
+                return true;
+        }
+        return super.onToolbarMenuItemClick(item);
     }
 
     private void checkPendingMapInfo() {
@@ -205,7 +215,7 @@ public class DtlMapPresenterImpl extends FlowPresenterImpl<DtlMapScreen, ViewSta
 
     @Override
     public void onMarkerClick(String merchantId) {
-        Flow.get(getContext()).set(new DtlMapInfoPath(merchantId));
+        getView().showPinInfo(merchantId);
     }
 
     @Override

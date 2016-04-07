@@ -21,15 +21,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
-import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
-import com.worldventures.dreamtrips.modules.dtl_flow.InjectingLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -75,16 +76,15 @@ public class SimplePathContainer extends PathContainer {
         View newView;
         pathContext = PathContext.create(oldPath, to, contextFactory);
         int layout = getLayout(to);
-        newView =
-                LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, containerView, false);
+        newView = LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, null);
 
-        if (newView instanceof InjectingLayout
-                && context instanceof Injector) {
-            ((InjectingLayout) newView).setInjector((Injector) context);
+        if (newView instanceof InjectorHolder && context instanceof Injector) {
+            ((InjectorHolder) newView).setInjector((Injector) context);
         }
 
-        if (newView instanceof PathView)
+        if (newView instanceof PathView) {
             ((PathView) newView).setPath(to);
+        }
 
         View fromView = null;
         if (traversalState.fromPath() != null) {
@@ -119,15 +119,9 @@ public class SimplePathContainer extends PathContainer {
 
     protected int getLayout(Path path) {
         Class pathType = path.getClass();
-        Integer layoutResId = PATH_LAYOUT_CACHE.get(pathType);
+        @LayoutRes Integer layoutResId = PATH_LAYOUT_CACHE.get(pathType);
         if (layoutResId == null) {
-            Layout layout = (Layout) pathType.getAnnotation(Layout.class);
-            if (layout == null) {
-                throw new IllegalArgumentException(
-                        String.format("@%s annotation not found on class %s", Layout.class.getSimpleName(),
-                                pathType.getName()));
-            }
-            layoutResId = layout.value();
+            layoutResId = FlowUtil.layoutFrom(pathType);
             PATH_LAYOUT_CACHE.put(pathType, layoutResId);
         }
         return layoutResId;

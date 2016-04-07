@@ -11,12 +11,16 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEve
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 
 import javax.inject.Inject;
 
-public class DtlMapInfoPresenterImpl extends FlowPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
+import flow.Flow;
+
+public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
     @Inject
     DtlMerchantManager dtlMerchantManager;
@@ -36,7 +40,6 @@ public class DtlMapInfoPresenterImpl extends FlowPresenterImpl<DtlMapInfoScreen,
         super.onAttachedToWindow();
         //
         getView().setMerchant(merchant);
-        getView().visibleLayout(false);
     }
 
     public void onEvent(DtlShowMapInfoEvent event) {
@@ -48,7 +51,7 @@ public class DtlMapInfoPresenterImpl extends FlowPresenterImpl<DtlMapInfoScreen,
     public void onMarkerClick() {
         eventBus.post(new ToggleMerchantSelectionEvent(merchant));
         trackIfNeeded();
-        //getView().showDetails(merchant.getId()); TODO : move to detail screen
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId()));
     }
 
     private void trackIfNeeded() {

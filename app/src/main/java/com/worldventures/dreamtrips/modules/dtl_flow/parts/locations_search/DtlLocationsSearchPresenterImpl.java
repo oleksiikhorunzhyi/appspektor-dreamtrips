@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import flow.Flow;
 import flow.History;
 import techery.io.library.JobSubscriber;
 
-public class DtlLocationsSearchPresenterImpl extends FlowPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
+public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
         implements DtlLocationsSearchPresenter {
 
     @Inject

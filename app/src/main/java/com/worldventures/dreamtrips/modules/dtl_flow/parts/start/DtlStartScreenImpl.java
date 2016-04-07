@@ -13,12 +13,12 @@ import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class DtlStartScreenImpl extends FlowLayout<DtlStartScreen, DtlStartPresenter, DtlStartPath>
+public class DtlStartScreenImpl extends DtlLayout<DtlStartScreen, DtlStartPresenter, DtlStartPath>
         implements DtlStartScreen, ActivityResultDelegate.ActivityResultListener {
 
     @InjectView(R.id.progressBar)

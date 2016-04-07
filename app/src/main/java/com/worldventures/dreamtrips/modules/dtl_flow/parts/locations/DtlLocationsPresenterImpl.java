@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
@@ -30,7 +30,7 @@ import icepick.State;
 import rx.Subscription;
 import techery.io.library.JobSubscriber;
 
-public class DtlLocationsPresenterImpl extends FlowPresenterImpl<DtlLocationsScreen, ViewState.EMPTY>
+public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScreen, ViewState.EMPTY>
         implements DtlLocationsPresenter {
 
     @Inject

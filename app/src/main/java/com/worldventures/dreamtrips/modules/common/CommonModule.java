@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common;
 
+import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.techery.spares.module.Injector;
@@ -126,6 +127,7 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
+        featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
         featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlModule.DTL));
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(DtlActivityModule.DTLFLOW));
         featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));

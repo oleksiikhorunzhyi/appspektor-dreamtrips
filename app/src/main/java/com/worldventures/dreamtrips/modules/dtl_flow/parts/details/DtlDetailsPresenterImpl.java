@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 import java.util.Calendar;
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-public class DtlDetailsPresenterImpl extends FlowPresenterImpl<DtlDetailsScreen, ViewState.EMPTY>
+public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, ViewState.EMPTY>
         implements DtlDetailsPresenter {
 
     @Inject

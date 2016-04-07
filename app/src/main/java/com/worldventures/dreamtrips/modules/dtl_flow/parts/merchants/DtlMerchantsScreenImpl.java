@@ -27,8 +27,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellNew;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
 import java.util.List;
 
@@ -38,11 +37,10 @@ import javax.inject.Provider;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import flow.Flow;
 import icepick.State;
 import rx.Observable;
 
-public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
+public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
         implements DtlMerchantsScreen, CellDelegate<DtlMerchant> {
 
     @Inject
@@ -73,9 +71,8 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
     String lastQuery;
 
     @Override
-    protected void onPrepared() {
-        super.onPrepared();
-//        stateDelegate.setRecyclerView(recyclerView);
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //
         baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
@@ -91,12 +88,9 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
         refreshLayout.setEnabled(false);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+        //
 //        stateDelegate = new RecyclerViewStateDelegate();
+//        stateDelegate.setRecyclerView(recyclerView);
 //        stateDelegate.onCreate(savedInstanceState);
 //        stateDelegate.saveStateIfNeeded(outState);
         //
@@ -144,15 +138,15 @@ public class DtlMerchantsScreenImpl extends FlowLayout<DtlMerchantsScreen, DtlMe
     }
 
     private void initToolbar() {
+        // TODO move to delegate
         if (!isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
         }
         //
         ButterKnife.findById(toolbar, R.id.titleContainer).setOnClickListener(v ->
-                Flow.get(getContext()).set(DtlLocationsPath.builder()
-                        .allowUserGoBack(true)
-                        .build()));
+                getPresenter().onToolbarTitleClicked()
+        );
     }
 
     @Override

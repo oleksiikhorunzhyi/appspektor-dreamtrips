@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantCommo
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantSingleImageDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
-public class DtlMapInfoScreenImpl extends FlowLayout<DtlMapInfoScreen, DtlMapInfoPresenter, DtlMapInfoPath>
+public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfoPresenter, DtlMapInfoPath>
         implements DtlMapInfoScreen {
 
     DtlMerchantCommonDataInflater commonDataInflater;
@@ -28,25 +28,25 @@ public class DtlMapInfoScreenImpl extends FlowLayout<DtlMapInfoScreen, DtlMapInf
     }
 
     @Override
-    protected void onPrepared() {
-        super.onPrepared();
-        injector.inject(this);
+    public DtlMapInfoPresenter createPresenter() {
+        return new DtlMapInfoPresenterImpl(getContext(), injector, getPath().getId());
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected void onPostAttachToWindowView() {
         DtlMerchantHelper helper = new DtlMerchantHelper(getContext());
         commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
         categoryDataInflater = new DtlMerchantInfoInflater(helper);
         commonDataInflater.setView(this);
         categoryDataInflater.setView(this);
         observeSize(this);
+        setOnClickListener(v -> getPresenter().onMarkerClick());
     }
 
     private void observeSize(final View view) {
         RxView.globalLayouts(view)
                 .compose(RxLifecycle.bindView(view))
+                .filter(aVoid -> view.getHeight() > 0)
                 .take(1)
                 .subscribe(aVoid -> getPresenter().onSizeReady(view.getHeight()));
     }
@@ -60,10 +60,5 @@ public class DtlMapInfoScreenImpl extends FlowLayout<DtlMapInfoScreen, DtlMapInf
     public void setMerchant(DtlMerchant merchant) {
         commonDataInflater.apply(merchant);
         categoryDataInflater.apply(merchant);
-    }
-
-    @Override
-    public DtlMapInfoPresenter createPresenter() {
-        return new DtlMapInfoPresenterImpl(getContext(), injector, getPath().getId());
     }
 }

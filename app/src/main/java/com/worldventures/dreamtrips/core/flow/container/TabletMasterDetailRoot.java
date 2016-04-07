@@ -6,8 +6,9 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.FullScreenPath;
+import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 
 import flow.Flow;
 import flow.path.Path;
@@ -16,8 +17,7 @@ import flow.path.PathContainerView;
 /**
  * This view is shown only in landscape orientation on tablets
  */
-public class TabletMasterDetailRoot extends LinearLayout
-        implements PathContainerView {
+public class TabletMasterDetailRoot extends LinearLayout implements PathContainerView {
     private FramePathContainerView masterContainer;
     private FramePathContainerView detailContainer;
 
@@ -53,7 +53,6 @@ public class TabletMasterDetailRoot extends LinearLayout
 
     @Override
     public void dispatch(final Flow.Traversal traversal, Flow.TraversalCallback callback) {
-
         class CountdownCallback implements Flow.TraversalCallback {
             final Flow.TraversalCallback wrapped;
             int countDown = 2;
@@ -71,9 +70,14 @@ public class TabletMasterDetailRoot extends LinearLayout
                 }
             }
         }
-
         disabled = true;
         callback = new CountdownCallback(callback);
+        //
+        Object path = traversal.destination.top();
+        boolean fullScreenMaster = (path instanceof FullScreenPath && ((FullScreenPath) path).isFullScreen())
+                && (path instanceof MasterDetailPath && ((MasterDetailPath) path).isMaster());
+        detailContainer.setVisibility(fullScreenMaster ? GONE : VISIBLE);
+        //
         detailContainer.dispatch(traversal, callback);
         masterContainer.dispatch(traversal, callback);
     }

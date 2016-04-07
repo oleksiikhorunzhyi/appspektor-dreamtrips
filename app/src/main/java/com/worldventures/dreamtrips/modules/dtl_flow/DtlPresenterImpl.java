@@ -15,8 +15,8 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-public abstract class FlowPresenterImpl<V extends FlowScreen, S extends Parcelable>
-        extends BaseViewStateMvpPresenter<V, S> implements FlowPresenter<V, S> {
+public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable>
+        extends BaseViewStateMvpPresenter<V, S> implements DtlPresenter<V, S> {
 
     @Inject
     @Global
@@ -26,7 +26,7 @@ public abstract class FlowPresenterImpl<V extends FlowScreen, S extends Parcelab
 
     protected Context context;
 
-    public FlowPresenterImpl(Context context) {
+    public DtlPresenterImpl(Context context) {
         this.context = context;
         apiErrorPresenter = new ApiErrorPresenter();
     }

@@ -44,7 +44,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 
 import javax.inject.Inject;
@@ -54,7 +54,7 @@ import butterknife.OnClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
 
-public class DtlDetailsScreenImpl extends FlowLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlDetailsPath>
+public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
         implements DtlDetailsScreen {
 
     private static final int REQUEST_CHECK_SETTINGS = 1489;
@@ -103,6 +103,11 @@ public class DtlDetailsScreenImpl extends FlowLayout<DtlDetailsScreen, DtlDetail
     SupportMapFragment destinationMap;
 
     @Override
+    public DtlDetailsPresenter createPresenter() {
+        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId());
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         //
@@ -110,18 +115,14 @@ public class DtlDetailsScreenImpl extends FlowLayout<DtlDetailsScreen, DtlDetail
     }
 
     @Override
-    protected void onPrepared() {
-        super.onPrepared();
+    protected void onPostAttachToWindowView() {
         helper = new DtlMerchantHelper(getContext());
         commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
         merchantInfoInflater = new DtlMerchantInfoInflater(helper);
         //
-        if (!isTabletLandscape()) {
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
-        } else {
-            toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
-        }
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+        //
         commonDataInflater.setView(this);
         merchantInfoInflater.setView(this);
         //
@@ -346,12 +347,6 @@ public class DtlDetailsScreenImpl extends FlowLayout<DtlDetailsScreen, DtlDetail
     ///////////////////////////////////////////////////////////////////////////
     // Boilerplate stuff
     ///////////////////////////////////////////////////////////////////////////
-
-
-    @Override
-    public DtlDetailsPresenter createPresenter() {
-        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId());
-    }
 
     public DtlDetailsScreenImpl(Context context) {
         super(context);

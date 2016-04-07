@@ -4,13 +4,13 @@ import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 import java.util.List;
 
 import rx.Observable;
 
-public interface DtlMerchantsScreen extends FlowScreen {
+public interface DtlMerchantsScreen extends DtlScreen {
 
     void setItems(List<DtlMerchant> dtlMerchants);
 

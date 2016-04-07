@@ -8,9 +8,9 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
-public interface DtlDetailsScreen extends FlowScreen {
+public interface DtlDetailsScreen extends DtlScreen {
 
     void showEstimationDialog(PointsEstimationDialogBundle data);
 

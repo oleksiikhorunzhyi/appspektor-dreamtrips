@@ -8,37 +8,62 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 
 import com.crashlytics.android.Crashlytics;
+import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
+import com.techery.spares.module.Injector;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
+import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import flow.path.Path;
 import timber.log.Timber;
 
-public abstract class FlowLayout<V extends FlowScreen, P extends FlowPresenter<V, ?>, T extends StyledPath>
-        extends PathLayout<V, P, T> implements FlowScreen {
+public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?>, T extends DtlPath>
+        extends BaseViewStateLinearLayout<V, P> implements DtlScreen, InjectorHolder, PathView<T> {
 
+    protected Injector injector;
     @Inject
     protected ActivityResultDelegate activityResultDelegate;
 
-    public FlowLayout(Context context) {
+    public DtlLayout(Context context) {
         super(context);
     }
 
-    public FlowLayout(Context context, AttributeSet attrs) {
+    public DtlLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    protected void onPrepared() {
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        setOrientation(VERTICAL);
+        ButterKnife.inject(this);
+    }
+
+    @Override
+    public void setInjector(Injector injector) {
+        this.injector = injector;
         injector.inject(this);
-        super.onPrepared();
-        setOrientation(LinearLayout.VERTICAL);
+    }
+
+    @Deprecated
+    @Override
+    public void setPath(T path) {
+        // it's so sad we don't have mortar
+        // so have to postpone view manipulation
+        // till every set* method is called
+    }
+
+    @Override
+    public T getPath() {
+        return Path.get(getContext());
     }
 
     @Nullable

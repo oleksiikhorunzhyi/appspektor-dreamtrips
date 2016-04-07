@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ import butterknife.InjectView;
 import rx.Observable;
 
 public class DtlLocationsSearchScreenImpl
-        extends FlowLayout<DtlLocationsSearchScreen, DtlLocationsSearchPresenter, DtlLocationsSearchPath>
+        extends DtlLayout<DtlLocationsSearchScreen, DtlLocationsSearchPresenter, DtlLocationsSearchPath>
         implements DtlLocationsSearchScreen, CellDelegate<DtlExternalLocation> {
 
     @Inject
@@ -52,8 +52,7 @@ public class DtlLocationsSearchScreenImpl
     MenuItem searchItem;
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected void onPostAttachToWindowView() {
         initToolbar();
         //
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

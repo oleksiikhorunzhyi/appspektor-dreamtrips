@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.locations;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
-import com.worldventures.dreamtrips.modules.dtl_flow.StyledPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 
 /**
  * Path class for screen of selecting location. Constructor is hidden, use {@link Builder} class.
@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.StyledPath;
  * - both false by default
  */
 @Layout(R.layout.screen_dtl_locations)
-public class DtlLocationsPath extends StyledPath {
+public class DtlLocationsPath extends DtlMasterPath {
 
     private final boolean showNoMerchantsCaption;
     private final boolean allowUserGoBack;
@@ -64,5 +64,10 @@ public class DtlLocationsPath extends StyledPath {
             return new DtlLocationsPath(Builder.this.showNoMerchantsCaption,
                     Builder.this.allowUserGoBack);
         }
+    }
+
+    @Override
+    public boolean isFullScreen() {
+        return true;
     }
 }

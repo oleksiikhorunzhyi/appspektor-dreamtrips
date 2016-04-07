@@ -8,12 +8,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowScreen;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import rx.Observable;
 
-public interface DtlMapScreen extends FlowScreen {
+public interface DtlMapScreen extends DtlScreen {
 
     GoogleMap getMap();
 
@@ -48,4 +48,6 @@ public interface DtlMapScreen extends FlowScreen {
     void animateTo(LatLng coordinates, int offset);
 
     Observable<Boolean> getToggleObservable();
+
+    void showPinInfo(String merchantId);
 }

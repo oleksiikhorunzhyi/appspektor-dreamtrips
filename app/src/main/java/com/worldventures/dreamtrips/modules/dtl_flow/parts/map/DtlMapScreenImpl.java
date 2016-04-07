@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -35,7 +36,10 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
@@ -46,10 +50,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import flow.path.Path;
+import flow.path.PathContext;
 import icepick.State;
 import rx.Observable;
 
-public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath>
+public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, DtlMapPath>
         implements DtlMapScreen {
 
     protected static final int CAMERA_DURATION = 1000;
@@ -72,11 +78,11 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     String lastQuery;
     //
     private SearchViewHelper searchViewHelper;
-    private DtlMapBundle bundle;
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
     private GoogleMap googleMap;
 
+    private DtlMapBundle bundle;
     private Bundle mapBundle;
 
     public DtlMapScreenImpl(Context context) {
@@ -93,14 +99,7 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     @Override
-    protected void onPrepared() {
-        ButterKnife.inject(this);
-        injector.inject(this);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected void onPostAttachToWindowView() {
         inflateToolbarMenu(toolbar);
         //
         checkMapAvailable();
@@ -115,13 +114,13 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     protected void initToolbar() {
-        if (!isTabletLandscape() || !bundle.isSlave()) {
+        if (isTabletLandscape()) {
+            ButterKnife.findById(toolbar, R.id.spinnerStyledTitle).setVisibility(View.GONE);
+            ButterKnife.findById(toolbar, R.id.locationModeCaption).setVisibility(View.GONE);
+        } else {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
             toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> getPresenter().goToLocations());
-        } else {
-            ButterKnife.findById(toolbar, R.id.spinnerStyledTitle).setVisibility(View.GONE);
-            ButterKnife.findById(toolbar, R.id.locationModeCaption).setVisibility(View.GONE);
         }
     }
 
@@ -227,6 +226,16 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     @Override
+    public void showPinInfo(String merchantId) {
+        infoContainer.removeAllViews();
+        PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchantId), Path.contextFactory());
+        DtlMapInfoScreenImpl infoView = (DtlMapInfoScreenImpl) LayoutInflater.from(getContext()).cloneInContext(newContext)
+                .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
+        infoView.setInjector(injector);
+        infoContainer.addView(infoView);
+    }
+
+    @Override
     public void showButtonLoadMerchants(boolean show) {
         loadMerchantsRoot.setVisibility(show ? View.VISIBLE : View.GONE);
     }
@@ -293,6 +302,7 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
         clusterManager.setRenderer(new DtClusterRenderer(getContext().getApplicationContext(), googleMap, clusterManager));
         //
         clusterManager.setOnClusterItemClickListener(dtlClusterItem -> {
+            selectedLocation = dtlClusterItem.getPosition();
             getPresenter().onMarkerClick(dtlClusterItem.getId());
             return true;
         });
@@ -314,7 +324,7 @@ public class DtlMapScreenImpl extends FlowLayout<DtlMapScreen, DtlMapPresenter, 
     }
 
     private void hideInfoIfShown() {
-
+        infoContainer.removeAllViews();
     }
 
     protected void onMarkerFocused() {

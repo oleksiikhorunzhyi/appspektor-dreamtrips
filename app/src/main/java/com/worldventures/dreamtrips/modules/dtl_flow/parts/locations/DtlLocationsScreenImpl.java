@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
-import com.worldventures.dreamtrips.modules.dtl_flow.FlowLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations_search.DtlLocationsSearchPath;
 
 import java.util.List;
@@ -41,7 +41,7 @@ import flow.Flow;
 import timber.log.Timber;
 
 public class DtlLocationsScreenImpl
-        extends FlowLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath>
+        extends DtlLayout<DtlLocationsScreen, DtlLocationsPresenter, DtlLocationsPath>
         implements DtlLocationsScreen, ActivityResultDelegate.ActivityResultListener,
         CellDelegate<DtlExternalLocation> {
 
@@ -67,16 +67,9 @@ public class DtlLocationsScreenImpl
 //    @State
 //    boolean shouldShowEmptyMerchantsCaption = false;
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        activityResultDelegate.addListener(this);
-    }
 
     @Override
-    protected void onPrepared() {
-        super.onPrepared();
-        //
+    protected void onPostAttachToWindowView() {
         initToolbar();
         //
         if (getPath().isShowNoMerchantsCaption()) emptyMerchantsCaption.setVisibility(View.VISIBLE);
@@ -92,6 +85,8 @@ public class DtlLocationsScreenImpl
         recyclerView.setAdapter(adapter);
         //
         bindNearMeButton();
+        //
+        activityResultDelegate.addListener(this);
     }
 
     private void initToolbar() {

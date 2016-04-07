@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl_flow;
 
-import flow.path.Path;
+import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 
-public abstract class StyledPath extends Path {
+public abstract class DtlPath extends MasterDetailPath {
 
     public PathAttrs getAttrs() {
         return WITHOUT_DRAWER;

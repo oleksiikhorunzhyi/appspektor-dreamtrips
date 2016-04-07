@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.flow.path;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot;
+import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 import flow.path.Path;
 
@@ -13,13 +15,22 @@ import flow.path.Path;
  * TabletMasterDetailRoot}.
  */
 public abstract class MasterDetailPath extends Path {
-  /**
-   * Returns the screen that shows the master list for this type of screen.
-   * If this screen is the master, returns self.
-   */
-  public abstract MasterDetailPath getMaster();
+    /**
+     * Returns the screen that shows the master list for this type of screen.
+     * If this screen is the master, returns self.
+     */
+    public abstract MasterDetailPath getMaster();
 
-  public final boolean isMaster() {
-    return equals(getMaster());
-  }
+    public final boolean isMaster() {
+        return equals(getMaster());
+    }
+
+    public Path getEmpty() {
+        return EmptyPath.INSTANCE;
+    }
+
+    @Layout(R.layout.screen_empty)
+    public static class EmptyPath extends Path {
+        public static final EmptyPath INSTANCE = new EmptyPath();
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
@@ -15,6 +16,8 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataParticipant$Table;
+import com.messenger.entities.DataTranslation;
+import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.ConversationStatus;
@@ -25,11 +28,12 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Collections;
 import java.util.List;
 
-import dagger.Lazy;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -40,11 +44,11 @@ public class ConversationsDAO extends BaseDAO {
     public static final String GROUP_CONVERSATION_USER_COUNT_COLUMN = "groupUserCount";
     public static final String LAST_MESSAGE_AUTHOR_COLUMN = "authorName";
 
-    private Lazy<DataUser> currentUser;
+    private SessionHolder<UserSession> appSessionHolder;
 
-    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, Lazy<DataUser> currentUser) {
+    public ConversationsDAO(Context context, RxContentResolver rxContentResolver, SessionHolder<UserSession> appSessionHolder) {
         super(context, rxContentResolver);
-        this.currentUser = currentUser;
+        this.appSessionHolder = appSessionHolder;
     }
 
     @Deprecated
@@ -62,11 +66,60 @@ public class ConversationsDAO extends BaseDAO {
                 .build();
         return query(q, DataConversation.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
+                .compose(DaoTransformers.toDataConversation());
+    }
+
+    public Observable<Integer> conversationsCount() {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT COUNT(_id) FROM " + DataConversation.TABLE_NAME + " " +
+                        "WHERE " + DataConversation$Table.STATUS + " =  ?"
+                )
+                .withSelectionArgs(new String[]{ConversationStatus.PRESENT})
+                .build();
+
+        return query(q, null)
                 .map(cursor -> {
-                    DataConversation conversation = SqlUtils.convertToModel(false, DataConversation.class, cursor);
+                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
                     cursor.close();
-                    return conversation;
+                    return res;
                 });
+    }
+
+    public Observable<Pair<DataConversation, List<DataUser>>> getConversationWithParticipants(String conversationId) {
+        //TODO: rename DataUser#_ID field to userId, because we don't use cursor with DataUser in list
+        String stringQuery = "SELECT c.*, u.*" +
+                "FROM " + DataConversation.TABLE_NAME + " c " +
+
+                "JOIN " + DataParticipant.TABLE_NAME + " p " +
+                "ON p." + DataParticipant$Table.CONVERSATIONID + "= c." + DataConversation$Table._ID + " " +
+
+                "JOIN " + DataUser$Table.TABLE_NAME + " u " +
+                "ON p." + DataParticipant$Table.USERID + "=u." + DataUser$Table._ID + " " +
+
+                "WHERE c." + DataConversation$Table._ID + "=? " +
+                "ORDER BY u." + DataUser$Table._ID;
+
+        RxContentResolver.Query query = new RxContentResolver.Query.Builder(null)
+                .withSelection(stringQuery)
+                .withSelectionArgs(new String[] {conversationId})
+                .build();
+        return query(query, DataConversation.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI)
+                .subscribeOn(Schedulers.io())
+                .map(cursor -> convertConversationWithParticipantFromCursor(cursor, conversationId));
+    }
+
+    @Nullable
+    private Pair<DataConversation, List<DataUser>> convertConversationWithParticipantFromCursor(Cursor cursor, String conversationId) {
+        if (cursor.getCount() == 0) {
+            cursor.close();
+            return null;
+        }
+        DataConversation conversation = SqlUtils.convertToModel(false, DataConversation.class, cursor);
+        // TODO: 3/21/16 because _id exist in conversation and user table, see todo in #getConversationWithParticipants(String)
+        conversation.setId(conversationId);
+        List<DataUser> users = SqlUtils.convertToList(DataUser.class, cursor);
+        cursor.close();
+        return new Pair<>(conversation, users);
     }
 
     public void save(List<DataConversation> conversations) {
@@ -86,6 +139,8 @@ public class ConversationsDAO extends BaseDAO {
     }
 
     public Observable<Cursor> selectConversationsList(@Nullable @ConversationType.Type String type, String searchQuery) {
+        String currentUserId = appSessionHolder.get().get().getUser().getUsername(); // username is id for messenger
+
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
@@ -99,8 +154,12 @@ public class ConversationsDAO extends BaseDAO {
                 "IFNULL(uu." + DataUser$Table.FIRSTNAME  + ",'') || ' ' || IFNULL(uu." + DataUser$Table.LASTNAME + ",'') "+
                                                 "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
+                "t." + DataTranslation$Table.TRANSLATESTATUS + " as  " + DataTranslation$Table.TRANSLATESTATUS + ", " +
+                "t." + DataTranslation$Table.TRANSLATION + " as  " + DataTranslation$Table.TRANSLATION + ", " +
 
-                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
+
+                "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') " +
+                                                    "as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
                 "COUNT(uuu." + DataUser$Table._ID + ") as " + GROUP_CONVERSATION_USER_COUNT_COLUMN + " " +
 
                 "FROM " + DataConversation.TABLE_NAME + " c " +
@@ -113,13 +172,16 @@ public class ConversationsDAO extends BaseDAO {
                 "LEFT JOIN " + DataUser.TABLE_NAME + " u " +
                 "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
 
-                "LEFT JOIN " + DataParticipant.TABLE_NAME + " p " +
+                "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
 
                 "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                 "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
 
-                "LEFT JOIN " + DataUser.TABLE_NAME + " uuu " +
+                "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
+                "ON t." + DataTranslation$Table._ID + "=m." + DataMessage$Table._ID + " " +
+
+                "JOIN " + DataUser.TABLE_NAME + " uuu " +
                 "ON p." + DataParticipant$Table.USERID + "=uuu." + DataUser$Table._ID + " " +
 
                 "LEFT JOIN " + DataUser.TABLE_NAME + " uu " +
@@ -154,9 +216,9 @@ public class ConversationsDAO extends BaseDAO {
         RxContentResolver.Query.Builder queryBuilder = new RxContentResolver.Query.Builder(null)
                 .withSelection(query.toString());
 
-        String[] args = new String[]{currentUser.get().getId()};
+        String[] args = new String[]{currentUserId};
         queryBuilder.withSelectionArgs(args);
-        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI);
+        return query(queryBuilder.build(), DataConversation.CONTENT_URI, DataMessage.CONTENT_URI, DataParticipant.CONTENT_URI, DataUser.CONTENT_URI, DataTranslation.CONTENT_URI);
     }
 
     public int updateDate(String conversationId, long date) {

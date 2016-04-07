@@ -92,7 +92,7 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
             Comment comment = commentList.isEmpty() ? null : Queryable.from(commentList).lastOrDefault();
             if (comment != null) {
                 commentCellHelper.showContainer();
-                commentCellHelper.set(comment);
+                commentCellHelper.set(comment, injectorProvider.get());
             } else {
                 commentCellHelper.hideContainer();
             }

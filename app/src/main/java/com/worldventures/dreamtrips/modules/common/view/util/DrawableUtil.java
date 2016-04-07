@@ -23,6 +23,8 @@ public class DrawableUtil {
     public static final int THUMBNAIL_BIG = 1;
     private static final int FULL_HD_WIDTH = 1920;
 
+    public static final String CACHE_DIR = "dreamtrips_cache_images";
+
     private Context context;
 
     public DrawableUtil(Context context) {
@@ -84,9 +86,7 @@ public class DrawableUtil {
             bitmap = BitmapFactory.decodeFile(fileImage, options);
 
             File original = new File(fileImage);
-            File file = new File(
-                    (original.getParent() + File.separator + original.getName()
-                            .replace(".", "_fact_" + scale + ".")));
+            File file = new File(getImagesCacheDir(), original.getName());
             stream = new FileOutputStream(file);
             if (rotate != 0) {
                 Matrix matrix = new Matrix();
@@ -111,5 +111,18 @@ public class DrawableUtil {
                 Timber.e(e.getMessage());
             }
         }
+    }
+
+    public void removeCacheImages() {
+        File[] cachedFiles = getImagesCacheDir().listFiles();
+        for (File cachedFile : cachedFiles) {
+            cachedFile.delete();
+        }
+    }
+
+    public File getImagesCacheDir() {
+        File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
+        cacheDir.mkdir();
+        return cacheDir;
     }
 }

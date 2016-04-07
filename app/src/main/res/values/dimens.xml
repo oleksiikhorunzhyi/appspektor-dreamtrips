@@ -81,8 +81,9 @@
 
 
     ///////Post sizes
-    <dimen name="post_spacing_horizontal">16dp</dimen>
-    <dimen name="post_spacing_vertical">16dp</dimen>
+    <dimen name="post_spacing_horizontal">0dp</dimen>
+    <dimen name="post_spacing_vertical_top">0dp</dimen>
+    <dimen name="post_spacing_vertical_bottom">0dp</dimen>
 
     <dimen name="template_height">260dp</dimen>
 
@@ -132,10 +133,8 @@
     <dimen name="dtlCalculationResultTextSize">24sp</dimen>
 
     <!-- dimen for dtl suggest merchant screen -->
-    <dimen name="suggest_merchant_layout_padding">16dp</dimen>
     <dimen name="suggest_merchant_input_text_size">16sp</dimen>
     <dimen name="suggest_merchant_default_vertical_margin">8dp</dimen>
-    <dimen name="suggest_merchant_default_vertical_margin_big">16dp</dimen>
     <dimen name="suggest_merchant_pickers_left_margin">50dp</dimen>
 
     <dimen name="perks_margin">-12dp</dimen>
@@ -208,6 +207,8 @@
     <dimen name="chat_list_row_margin">4dp</dimen>
     <dimen name="chat_list_date_entry_text_size">10sp</dimen>
     <dimen name="chat_list_username_text_size">10sp</dimen>
+    <dimen name="chat_list_translation_status_size">10sp</dimen>
+    <dimen name="chat_list_translation_margin">26dp</dimen>
     <dimen name="chat_list_username_bottom_margin">4dp</dimen>
     <dimen name="chat_list_message_text_size">15sp</dimen>
     <dimen name="chat_message_edittext_text_size">@dimen/chat_list_message_text_size</dimen>
@@ -245,6 +246,9 @@
     <dimen name="chat_settings_group_chat_info_top_margin">30dp</dimen>
     <dimen name="chat_settings_group_chat_info_text_size">12sp</dimen>
     <dimen name="chat_settings_group_chat_info_horizontal_padding">10dp</dimen>
+
+    <dimen name="chat_image_height">120dp</dimen>
+    <dimen name="chat_image_width">186dp</dimen>
 
     <!-- Messenger misc -->
     <dimen name="messenger_swappable_action_button_text_size">13sp</dimen>

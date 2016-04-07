@@ -19,7 +19,7 @@ public class DtlTransactionRouteCreator implements RouteCreator<DtlTransaction> 
             return Route.DTL_SCAN_RECEIPT;
         } else if (!dtlTransaction.isVerified()) {
             return Route.DTL_VERIFY;
-        } else if (!dtlTransaction.merchantCodeScanned() ||
+        } else if (!dtlTransaction.isMerchantCodeScanned() ||
                 dtlTransaction.getDtlTransactionResult() == null) {
             return Route.DTL_SCAN_QR;
         } else {

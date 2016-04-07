@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
 import com.messenger.api.ShortProfilesBody;
+import com.messenger.api.TranslateTextBody;
+import com.messenger.api.TranslatedText;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
@@ -383,10 +385,13 @@ public interface DreamTripsApi {
     @PATCH("/api/user/settings")
     Void updateSettings(@Body SettingsHolder settingsHolder);
 
-
     @GET("/api/feedbacks/reasons")
     ArrayList<FeedbackType> getFeedbackReasons();
 
     @POST("/api/feedbacks")
     Void sendFeedback(@Body FeedbackBody feedbackBody);
+
+    @POST("/api/translate")
+    TranslatedText translateText(@Body TranslateTextBody body);
+
 }

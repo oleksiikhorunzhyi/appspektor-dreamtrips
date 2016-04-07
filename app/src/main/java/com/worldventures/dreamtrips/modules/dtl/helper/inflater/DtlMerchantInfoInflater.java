@@ -46,13 +46,13 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
                     merchant.getDistance(),
                     res.getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
         } else distance.setVisibility(View.GONE);
-
+        //
         String categoriesString = helper.getCategories(merchant);
         if (!TextUtils.isEmpty(categoriesString)) {
             categories.setVisibility(View.VISIBLE);
             categories.setText(categoriesString);
         } else categories.setVisibility(View.GONE);
-
+        //
         if (merchant.hasOffer(DtlOffer.TYPE_POINTS) &&
                 merchant.getOperationDays() != null && !merchant.getOperationDays().isEmpty()) {
             operationalTime.setVisibility(View.VISIBLE);

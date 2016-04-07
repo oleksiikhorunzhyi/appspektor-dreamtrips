@@ -1,6 +1,7 @@
 package com.messenger.ui.view.settings;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -10,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.flow.path.StyledPath;
@@ -28,8 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public abstract class ChatSettingsScreenImpl<P extends StyledPath>
-        extends MessengerPathLayout<ChatSettingsScreen, ChatSettingsScreenPresenter, P>
+public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P extends StyledPath>
+        extends MessengerPathLayout<S, ChatSettingsScreenPresenter<S>, P>
         implements ChatSettingsScreen {
 
     @InjectView(R.id.chat_settings_content_view)
@@ -191,12 +192,23 @@ public abstract class ChatSettingsScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public void setConversation(DataConversation conversation) {
+    public void showEmptySubjectDialog() {
+        Toast.makeText(getContext(), R.string.chat_settings_error_empty_subject,
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setConversation(@NonNull DataConversation conversation) {
     }
 
     @Override
     public void prepareViewForOwner(boolean isOwner) {
         if (!isOwner) return;
         leaveChatButton.setVisibility(GONE);
+    }
+
+    @Override
+    public void invalidateToolbarMenu() {
+        inflateToolbarMenu(toolbar);
     }
 }

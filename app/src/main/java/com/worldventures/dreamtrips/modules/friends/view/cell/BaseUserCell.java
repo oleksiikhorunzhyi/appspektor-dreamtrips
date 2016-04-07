@@ -6,7 +6,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -15,11 +16,13 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.friends.bundle.MutualFriendsBundle;
 import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.view.util.MutualFriendsUtil;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -33,9 +36,12 @@ public abstract class BaseUserCell extends AbstractCell<User> {
     FragmentManager fragmentManager;
     @Inject
     Router router;
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     @InjectView(R.id.sdv_avatar)
-    SimpleDraweeView sdvAvatar;
+    SmartAvatarView sdvAvatar;
     @InjectView(R.id.tv_name)
     TextView tvName;
     @InjectView(R.id.tv_mutual)
@@ -56,6 +62,7 @@ public abstract class BaseUserCell extends AbstractCell<User> {
     @Override
     protected void syncUIStateWithModel() {
         sdvAvatar.setImageURI(Uri.parse(getModelObject().getAvatar().getThumb()));
+        sdvAvatar.setup(getModelObject(), injectorProvider.get());
         sdvAvatar.invalidate(); // workaround for samsung devices
         tvName.setText(getModelObject().getFullName());
 

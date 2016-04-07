@@ -9,11 +9,12 @@ import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Adapter;
 import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataTranslation;
+import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import java.util.Collections;
@@ -24,6 +25,8 @@ import rx.Observable;
 public class MessageDAO extends BaseDAO {
 
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
+    public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
+
 
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -33,15 +36,11 @@ public class MessageDAO extends BaseDAO {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
                         "WHERE " + DataMessage$Table._ID + "=?")
-                .withSelectionArgs(new String[] {messageId})
+                .withSelectionArgs(new String[]{messageId})
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
-                .map(cursor -> {
-                    DataMessage res = SqlUtils.convertToModel(false, DataMessage.class, cursor);
-                    cursor.close();
-                    return res;
-                });
+                .compose(DaoTransformers.toDataMessage());
     }
 
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
@@ -52,22 +51,28 @@ public class MessageDAO extends BaseDAO {
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
-                        "a." +  DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
-                        "a." +  DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
-                        "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + " " +
+                        "a." + DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
+                        "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
+                        "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + ", " +
+
+                        "t." + DataTranslation$Table._ID + " as " + TRANSLATION_ID + ", " +
+                        "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "+
+                        "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + " "+
 
                         "FROM " + DataMessage.TABLE_NAME + " m " +
                         "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
                         "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
                         "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
+                        "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
+                        "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " " +
 
                         "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
-                        "AND m." + DataMessage$Table.SYNCTIME +" >=? " +
+                        "AND m." + DataMessage$Table.SYNCTIME + " >=? " +
                         "ORDER BY m." + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)}).build();
 
-        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI);
+        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI, DataTranslation.CONTENT_URI);
     }
 
     public Observable<DataMessage> findNewestUnreadMessage(String conversationId, String currentUserId, long syncTime) {
@@ -75,18 +80,16 @@ public class MessageDAO extends BaseDAO {
                 .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME +
                         " WHERE " + DataMessage$Table.CONVERSATIONID + " =?" +
                         " AND " + DataMessage$Table.FROMID + " <>?" +
-                        " AND " + DataMessage$Table.SYNCTIME +" >=?" +
-                        " ORDER BY " + DataMessage$Table.DATE + " DESC "+
+                        " AND " + DataMessage$Table.SYNCTIME + " >=?" +
+                        " ABD " + DataMessage$Table.STATUS + "<>" + MessageStatus.READ +
+                        " ORDER BY " + DataMessage$Table.DATE + " DESC " +
                         " LIMIT 1")
-                .withSelectionArgs(new String[]{conversationId, currentUserId, Long.toString(syncTime)})
+                .withSelectionArgs(new String[]{conversationId, currentUserId,
+                        Long.toString(syncTime)})
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
-                .map(cursor -> {
-                    DataMessage res = SqlUtils.convertToModel(false, DataMessage.class, cursor);
-                    cursor.close();
-                    return res;
-                });
+                .compose(DaoTransformers.toDataMessage());
     }
 
     public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
@@ -127,29 +130,6 @@ public class MessageDAO extends BaseDAO {
                 });
     }
 
-    /**
-     *
-     * @return observable, which emits int values which includes first unread message
-     */
-    public Observable<Integer> countFromFirstUnreadMessage(String conversationId, String userId){
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT COUNT(_id) FROM " + DataMessage.TABLE_NAME + " " +
-                        "WHERE " + DataMessage$Table.CONVERSATIONID + " = ? "
-                        + "AND " + DataMessage$Table.DATE + " >=  " +
-                        "( SELECT MIN(" + DataMessage$Table.DATE + ") FROM " + DataMessage.TABLE_NAME + " "
-                        + "WHERE " + DataMessage$Table.FROMID + " <> ? "
-                        + "AND " + DataMessage$Table.STATUS + " = ? )")
-                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
-                .build();
-
-        return query(q, DataMessage.CONTENT_URI)
-                .map(cursor -> {
-                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
-                    cursor.close();
-                    return res;
-                });
-    }
-
     public void save(List<DataMessage> messages) {
         bulkInsert(messages, new DataMessage$Adapter(), DataMessage.CONTENT_URI);
     }
@@ -159,7 +139,7 @@ public class MessageDAO extends BaseDAO {
         save(Collections.singletonList(message));
     }
 
-    public void deleteMessageById(String messageId){
+    public void deleteMessageById(String messageId) {
         new Delete().from(DataMessage.class).byIds(messageId).query();
     }
 
@@ -168,6 +148,6 @@ public class MessageDAO extends BaseDAO {
         contentValues.put(DataMessage$Table.STATUS, messageStatus);
         contentValues.put(DataMessage$Table.DATE, time);
         contentValues.put(DataMessage$Table.SYNCTIME, time);
-        getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID +"=?", new String[] {msgId});
+        getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID + "=?", new String[]{msgId});
     }
 }

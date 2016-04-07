@@ -12,7 +12,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/spacing_normal">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
             android:id="@+id/notification_avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"

@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
             android:id="@+id/sdv_avatar"
             android:layout_width="45dp"
             android:layout_height="45dp"

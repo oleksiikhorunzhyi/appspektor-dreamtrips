@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.feed.bundle.PostBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.feed.view.util.NestedLinearLayoutManager;
@@ -32,7 +32,6 @@ import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -158,8 +157,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     }
 
     private void openPost() {
-        showPostContainer();
-
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -168,8 +165,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     }
 
     private void openSharePhoto() {
-        showPostContainer();
-
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
                 .containerId(R.id.container_details_floating)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -178,7 +173,7 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
-                .data(new PostBundle(null, PostBundle.PHOTO))
+                .data(new CreateEntityBundle(true))
                 .build());
 
     }
@@ -187,11 +182,6 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
                 .data(new FriendGlobalSearchBundle(""))
                 .build());
-    }
-
-    protected void showPostContainer() {
-        View container = ButterKnife.findById(getActivity(), R.id.container_details_floating);
-        if (container != null) container.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.share_post)
@@ -227,4 +217,3 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     }
 
 }
-

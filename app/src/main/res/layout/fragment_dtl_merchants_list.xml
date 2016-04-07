@@ -39,8 +39,8 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/dtlPlaceListEmptyViewMargin"
             android:gravity="center"
-            android:text="@string/dtl_place_list_empty_text"
             android:textSize="@dimen/dtlPlaceListEmptyViewTextSize"
+            tools:text="@string/dtl_place_list_empty_text"
             />
     </FrameLayout>
 

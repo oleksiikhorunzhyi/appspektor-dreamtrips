@@ -8,15 +8,17 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 
@@ -45,8 +47,9 @@ public class MessengerStorageModule {
 
     @Provides
     @Singleton
-    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context, Lazy<DataUser> currentUser) {
-        return new ConversationsDAO(context, rxContentResolver, currentUser);
+    ConversationsDAO provideConversationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context,
+                                             SessionHolder<UserSession> appSessionHolder) {
+        return new ConversationsDAO(context, rxContentResolver, appSessionHolder);
     }
 
     @Provides
@@ -63,13 +66,21 @@ public class MessengerStorageModule {
 
     @Provides
     @Singleton
-    MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+    MessageDAO provideMessageDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
+                                 @ForApplication Context context) {
         return new MessageDAO(rxContentResolver, context);
     }
 
     @Provides
     @Singleton
-    AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+    AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
+                                       @ForApplication Context context) {
         return new AttachmentDAO(context, rxContentResolver);
+    }
+
+    @Provides
+    @Singleton
+    TranslationsDAO provideTranslationsDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
+        return new TranslationsDAO(rxContentResolver, context);
     }
 }

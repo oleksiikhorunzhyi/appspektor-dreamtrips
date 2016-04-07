@@ -8,14 +8,16 @@ import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
+import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
@@ -27,25 +29,23 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
 public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideosPresenter>
-        implements ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
 
     @Optional
     @InjectView(R.id.recyclerViewFeatured)
     protected RecyclerView recyclerViewFeatured;
-
     @Optional
     @InjectView(R.id.recyclerViewRecent)
     protected RecyclerView recyclerViewRecent;
-
     @Optional
     @InjectView(R.id.recyclerViewAll)
     protected RecyclerView recyclerViewAll;
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
-    private BaseArrayListAdapter<Object> adapterFeatured;
-    private BaseArrayListAdapter<Object> adapterRecent;
-    private BaseArrayListAdapter<Object> adapterAll;
+    private BaseDelegateAdapter<Object> adapterFeatured;
+    private BaseDelegateAdapter<Object> adapterRecent;
+    private BaseDelegateAdapter<Object> adapterAll;
 
     private WeakHandler weakHandler;
 
@@ -60,22 +60,28 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
         super.afterCreateView(rootView);
 
         if (recyclerViewAll != null) {
-            adapterAll = new BaseArrayListAdapter<>(getActivity(), this);
+            adapterAll = new BaseDelegateAdapter<>(getActivity(), this);
             adapterAll.registerCell(Video.class, Video360Cell.class);
+            adapterAll.registerDelegate(Video.class, this);
             adapterAll.registerCell(VideoHeader.class, VideoHeaderCell.class);
 
             recyclerViewAll.setAdapter(adapterAll);
         }
 
         if (recyclerViewRecent != null) {
-            adapterFeatured = new BaseArrayListAdapter<>(getActivity(), this);
-            adapterRecent = new BaseArrayListAdapter<>(getActivity(), this);
+            adapterFeatured = new BaseDelegateAdapter<>(getActivity(), this);
+            adapterRecent = new BaseDelegateAdapter<>(getActivity(), this);
 
             adapterFeatured.registerCell(Video.class, Video360Cell.class);
             adapterRecent.registerCell(Video.class, Video360SmallCell.class);
+            adapterFeatured.registerDelegate(Video.class, this);
+            adapterRecent.registerDelegate(Video.class, this);
             recyclerViewFeatured.setAdapter(adapterFeatured);
             recyclerViewRecent.setAdapter(adapterRecent);
         }
+
+        this.refreshLayout.setOnRefreshListener(this);
+        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         setUpRecyclerViews();
     }
@@ -95,7 +101,6 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
-
     }
 
     @Override
@@ -157,5 +162,30 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             recyclerViewAll.setLayoutManager(linearLayoutManager);
         }
+    }
+
+    @Override
+    public void sendAnalytic(String action, String name) {
+        TrackingHelper.actionMembershipVideo(action, name);
+    }
+
+    @Override
+    public void onDownloadVideo(CachedEntity entity) {
+        getPresenter().downloadVideo(entity);
+    }
+
+    @Override
+    public void onDeleteVideo(CachedEntity entity) {
+        getPresenter().deleteCachedVideo(entity);
+    }
+
+    @Override
+    public void onCancelCachingVideo(CachedEntity entity) {
+        getPresenter().cancelCachingVideo(entity);
+    }
+
+    @Override
+    public void onCellClicked(Video model) {
+
     }
 }

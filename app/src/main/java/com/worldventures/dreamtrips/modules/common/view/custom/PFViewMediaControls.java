@@ -204,7 +204,7 @@ public class PFViewMediaControls extends RelativeLayout {
         setClickable(true);
     }
 
-    private void setPfPlaybackPosition(float playbackPosition){
+    private void setPfPlaybackPosition(float playbackPosition) {
         pfAsset.setPLaybackTime(playbackPosition);
     }
 
@@ -243,10 +243,10 @@ public class PFViewMediaControls extends RelativeLayout {
         setPfPlaybackPosition(pfAsset.getPlaybackTime() + STEP_VIDEO_POSITION_ON_BACKWARD_FORWARD_HOLD);
     }
 
-    private void onHoldStart(){
+    private void onHoldStart() {
     }
 
-    private void onHoldEnd(int count){
+    private void onHoldEnd(int count) {
     }
 
     private void onCardBoardModeChange(boolean useCardBoard) {
@@ -310,6 +310,7 @@ public class PFViewMediaControls extends RelativeLayout {
                 }
                 break;
             case STOPPED:
+            case PAUSED:
             case COMPLETE:
                 toggleBtnPlayPause.setOnCheckedChangeListener(null);
                 toggleBtnPlayPause.setChecked(false);

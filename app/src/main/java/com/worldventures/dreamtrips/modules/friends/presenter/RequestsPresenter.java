@@ -128,16 +128,16 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void onEvent(CancelRequestEvent event) {
-        deleteRequest(event.getUser(), event.getPosition());
+        deleteRequest(event.getUser(), event.getPosition(), DeleteRequestCommand.Action.CANCEL);
     }
 
     public void onEvent(HideRequestEvent event) {
-        deleteRequest(event.getUser(), event.getPosition());
+        deleteRequest(event.getUser(), event.getPosition(), DeleteRequestCommand.Action.HIDE);
     }
 
-    private void deleteRequest(User user, int position) {
+    private void deleteRequest(User user, int position, DeleteRequestCommand.Action action) {
         view.startLoading();
-        doRequest(new DeleteRequestCommand(user.getId()),
+        doRequest(new DeleteRequestCommand(user.getId(), action),
                 object -> onSuccess(user),
                 this::onError);
     }

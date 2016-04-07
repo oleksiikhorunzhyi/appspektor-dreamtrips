@@ -1,13 +1,19 @@
 package com.messenger.di;
 
+import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
+import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
+import com.messenger.ui.util.avatar.ChangeAvatarDelegateImpl;
 import com.messenger.ui.view.chat.ChatScreenImpl;
 import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
+import com.messenger.ui.view.settings.GroupChatSettingsScreenImpl;
+import com.messenger.ui.view.settings.TripChatSettingsScreenImpl;
 import com.messenger.ui.widget.MessengerPhotoPickerLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
 import dagger.Module;
 import dagger.Provides;
@@ -21,6 +27,8 @@ import dagger.Provides;
                 ChatScreenPresenterImpl.class,
                 MessengerActivityPresenter.class,
                 MessengerPhotoPickerLayout.class,
+                GroupChatSettingsScreenImpl.class,
+                TripChatSettingsScreenImpl.class,
 },
         complete = false, library = true
 )public class MessengerActivityModule {
@@ -30,5 +38,10 @@ import dagger.Provides;
     ComponentDescription provideMessengerComponent() {
         return new ComponentDescription(MESSENGER, R.string.messenger, R.string.messenger, R.drawable.ic_messenger,
                 true, null);
+    }
+
+    @Provides
+    ChangeAvatarDelegate provideChangeAvatarDelegate(PhotoPickerDelegate photoPickerDelegate, PhotoPickerLayoutDelegate photoPickerLayoutDelegate) {
+        return new ChangeAvatarDelegateImpl(photoPickerDelegate, photoPickerLayoutDelegate);
     }
 }

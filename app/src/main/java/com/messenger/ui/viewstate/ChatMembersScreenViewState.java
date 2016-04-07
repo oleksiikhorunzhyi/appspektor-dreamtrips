@@ -3,15 +3,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.messenger.entities.DataUser;
-import com.messenger.model.ChatUser;
+import com.messenger.ui.model.ChatUser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
 
     public ChatMembersScreenViewState() {
-
     }
 
     private List<DataUser> selectedContacts = new ArrayList<>();
@@ -22,8 +22,8 @@ public class ChatMembersScreenViewState extends LceViewState<List<ChatUser>> {
         return selectedContacts;
     }
 
-    public void setSelectedContacts(List<DataUser> selectedContacts) {
-        this.selectedContacts = selectedContacts;
+    public void setSelectedContacts(Collection<DataUser> selectedContacts) {
+        this.selectedContacts = new ArrayList<>(selectedContacts);
     }
 
     public String getSearchFilter() {

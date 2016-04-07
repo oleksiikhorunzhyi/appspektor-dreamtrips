@@ -1,118 +1,93 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <!-- messenger-->
-
-    <string name="messenger">消息</string>
+    <string name="messenger">信使</string>
     <string name="chat">聊天</string>
-
-    <!---->
-    <!--Conversation List -->
-    <!---->
     <string name="conversation_list_title">對話</string>
-
-    <string name="conversation_list_spinner_item_all_chats">所有對話</string>
-    <string name="conversation_list_spinner_item_group_chats">群組對話</string>
-
-    <string name="conversation_list_search_hint">對話搜索</string>
-    <string name="conversation_list_search_edittext_hint">搜尋群組或人物</string>
-    <string name="conversation_list_item_last_message_text_format_you">你： %s</string>
-    <string name="conversation_list_item_last_message_image_format_you">您發送圖片</string>
-    <string name="conversation_list_item_last_message_image">發送圖片</string>
-
+    <string name="conversation_list_spinner_item_all_chats">所有聊天</string>
+    <string name="conversation_list_spinner_item_group_chats">群聊</string>
+    <string name="conversation_list_search_hint">搜索會話…</string>
+    <string name="conversation_list_search_edittext_hint">搜索團隊和人員</string>
+    <string name="conversation_list_item_last_message_text_format_you">您： %1$s</string>
+    <string name="conversation_list_item_last_message_image_format_you">您發送了照片</string>
+    <string name="conversation_list_item_last_message_image">發送的照片</string>
+    <string name="conversation_list_last_message_date_format_today" translatable="false">h:mm aa</string>
     <string name="conversation_list_last_message_date_format_yesterday">昨天</string>
-
-    <string name="conversation_list_abandoned">關閉</string>
+    <string name="conversation_list_last_message_date_format_more_than_one_day_ago" translatable="false">MMM, dd</string>
+    <string name="conversation_list_abandoned">現在停業</string>
     <string name="conversation_list_swipe_button_delete">刪除</string>
-    <!-- TODO Approve this dialog text -->
-    <string name="conversation_list_delete_dialog_message">你確定要刪除對話嗎？</string>
+    <string name="conversation_list_delete_dialog_message">您確定要刪除此對話嗎？</string>
     <string name="conversation_list_delete_dialog_pos_button">刪除</string>
     <string name="conversation_list_swipe_button_more">更多</string>
     <string-array name="conversation_list_more_actions">
-        <item>標記未讀</item>
+        <item>標記為未讀</item>
         <item>關閉通知</item>
         <item>取消</item>
     </string-array>
-
-
-    <!---->
-    <!--New chat-->
-    <!---->
-    <string name="new_chat_title">新對話</string>
-    <string name="new_chat_toast_no_users_selected_error">首先請選擇使用者</string>
-    <string name="new_multi_user_chat_not_supported">無法創建對話群組</string>
-    <string name="new_chat_error_loading_contacts">無法載入聯絡資料</string>
-    <string name="new_chat_new_conversation_title_hint">設定你的對話名稱</string>
-    <string name="new_chat_chosen_contacts_header_empty">"添加："</string>
+    <string name="new_chat_title">新聊天室</string>
+    <string name="new_chat_toast_no_users_selected_error">請首先選擇一些用戶</string>
+    <string name="new_multi_user_chat_not_supported">不支持創建群聊</string>
+    <string name="new_chat_error_loading_contacts">無法加載通訊錄</string>
+    <string name="new_chat_new_conversation_title_hint">設置談話名稱</string>
+    <string name="new_chat_chosen_contacts_header_empty">"添加： "</string>
     <string name="new_chat_chosen_contacts_header_contacts_list_start_value">添加</string>
-    <string name="new_chat_list_item_section_close_friends">親密朋友</string>
+    <string name="new_chat_list_item_section_close_friends">密友</string>
     <string name="menu_done">完成</string>
-
-    <!---->
-    <!--Chat -->
-    <!---->
     <string name="chat_subtitle_format_single_chat_online">線上</string>
-    <string name="chat_subtitle_format_single_chat_offline">離線</string>
-    <string name="chat_subtitle_format_group_chat_format">%1$d 會員, %2$d 上線</string>
-    <string name="chat_subtitle_format_group_chat_offline">目前無人在線上</string>
-    <string name="chat_message_edittext_hint">你的訊息</string>
-    <string name="chat_message_send_button_text">寄送</string>
-    <string name="chat_error_loading">無法載入歷史聊天訊息</string>
-    <string name="chat_unread_messages_textview_format">你有%d 未讀訊息</string>
-    <string name="chat_more_typing_users_hint_format">和%d 更多</string>
+    <string name="chat_subtitle_format_single_chat_offline">當前離線</string>
+    <string name="chat_subtitle_format_group_chat_format">%1$d成員，%2$d線上</string>
+    <string name="chat_subtitle_format_group_chat_offline">沒有用戶在線</string>
+    <string name="chat_message_edittext_hint">您的信息</string>
+    <string name="chat_message_send_button_text">發送</string>
+    <string name="chat_error_loading">無法加載聊天記錄</string>
+    <string name="chat_unread_messages_textview_format">您有%1$d未讀郵件</string>
+    <string name="chat_more_typing_users_hint_format">和另外%1$d</string>
     <string name="chat_list_date_entry_today">今天</string>
     <string name="chat_list_date_entry_yesterday">昨天</string>
-    <string name="chat_contextual_copy_message">復制</string>
-    <string name="chat_contextual_start_chat_format">信息 %s</string>
-
-    <!---->
-    <!--Chat Settings -->
-    <!---->
-    <string name="chat_settings_single_chat">聊天設定</string>
-    <string name="chat_settings_group_chat">群組聊天設定</string>
-    <string name="chat_settings_error_loading">無法載入聊天設定</string>
+    <string name="chat_contextual_copy_message">複製</string>
+    <string name="chat_contextual_translate_message">翻譯</string>
+    <string name="chat_contextual_revert_translate_message">顯示最初的</string>
+    <string name="chat_contextual_start_chat_format">信息%1$s</string>
+    <string name="chat_settings_single_chat">聊天設置</string>
+    <string name="chat_settings_group_chat">群聊設置</string>
+    <string name="chat_settings_error_loading">無法加載聊天設置</string>
     <string name="chat_settings_single_chat_online">線上</string>
-    <string name="chat_settings_single_chat_offline">離線</string>
-    <string name="chat_settings_group_chat_description">%1$d 會員，%2$d 上線</string>
+    <string name="chat_settings_single_chat_offline">當前離線</string>
+    <string name="chat_settings_group_chat_description">%1$d成員，%2$d線上</string>
     <string name="chat_settings_row_notifications">通知</string>
-    <string name="chat_settings_row_shared_content">分享訊息</string>
-    <string name="chat_settings_row_members_format">會員(%d)</string>
-    <string name="chat_settings_row_assign_new_admin">指定新任管理員</string>
-    <string name="chat_settings_row_clear_history">清除記錄</string>
-    <string name="chat_settings_row_leave_chat">離開對話</string>
-    <string name="chat_settings_row_delete_chat">刪除對話</string>
-    <string name="chat_settings_group_chat_info_text_format">此對話是由%1$s 在%2$s 創建</string>
-    <string name="chat_settings_menu_settings">設定</string>
-    <string name="chat_settings_menu_edit_chat_name">編輯對話名稱</string>
-    <string name="chat_settings_leave_group_chat">你確定要離開 對話嗎</string>
-    <string name="chat_settings_leave_group_chat_format">你確定要離開%1$s 對話嗎</string>
-    <string name="chat_settings_error_change_subject">你無法在離線時更改主題</string>
-    <!---->
-    <!--Add new members -->
-    <!---->
+    <string name="chat_settings_row_shared_content">共享內容</string>
+    <string name="chat_settings_row_members_format">會員（ %1$d ）</string>
+    <string name="chat_settings_row_assign_new_admin">指派新的管理員</string>
+    <string name="chat_settings_row_clear_history">清除歷史記錄</string>
+    <string name="chat_settings_row_leave_chat">離開聊天</string>
+    <string name="chat_settings_row_delete_chat">刪除聊天</string>
+    <string name="chat_settings_group_chat_info_text_format">該聊天由%1$s在%2$s創建</string>
+    <string name="chat_settings_menu_settings">設置</string>
+    <string name="chat_settings_menu_edit_chat_name">編輯聊天名</string>
+    <string name="chat_settings_menu_edit_change_chat_image">更改聊天圖像</string>
+    <string name="chat_settings_menu_edit_remove_chat_image">刪除聊天圖像</string>
+    <string name="chat_settings_leave_group_chat">您確定您想退出這個聊天嗎？</string>
+    <string name="chat_settings_leave_group_chat_format">您確定您想退出%1$s聊天嗎？</string>
+    <string name="chat_settings_error_change_subject">沒有網絡連接，您不能更改主題</string>
+    <string name="chat_settings_error_changing_avatar_subject">沒有網絡連接，您不能更改聊天化身</string>
     <string name="chat_add_new_members_title">添加新成員</string>
-    <!---->
-    <!--Edit chat members -->
-    <!---->
-    <string name="edit_chat_members_title">會員(%d)</string>
-    <string name="edit_chat_members_search_hint">搜索會員</string>
+    <string name="edit_chat_members_title">會員（ %1$d ）</string>
+    <string name="edit_chat_members_search_hint">搜索會員…</string>
     <string name="edit_chat_members_row_button_delete">刪除</string>
-    <!-- TODO Approve this dialog text -->
-    <string name="edit_chat_dialog_confirm_user_deletion_message">你要在此對話窗中將此人刪除嗎？</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_message">您想從聊天室刪除此用戶？</string>
     <string name="edit_chat_dialog_confirm_user_deletion_button_delete">刪除</string>
-    <string name="edit_chat_members_admin_section">管理人</string>
-    <!---->
-    <!--Messenger misc -->
-    <!---->
+    <string name="edit_chat_members_admin_section">管理員</string>
+    <string name="edit_chat_members_host_section">目的地支持</string>
     <string name="subject">主題</string>
-    <string name="change_subject">輸入對話名稱</string>
-    <string name="sent_photo">發送圖片</string>
+    <string name="change_subject">輸入聊天名稱</string>
+    <string name="sent_photo">發送照片</string>
     <string name="unread_conversation">對話</string>
-
-    <string name="disconnected_overlay_disconnected_message">失去訊號</string>
-    <string name="disconnected_overlay_connecting_message">連線中</string>
-
-    <string name="warning_no_internet_connection">無法連線</string>
-
-    <string name="chat_update_proposition"><![CDATA[為查看附件，請升級至DreamTrips App最新版本 <a href="https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips">點擊此處</a>]]></string>
-    <!-- messenger ends-->
+    <string name="disconnected_overlay_disconnected_message">失去連接</string>
+    <string name="disconnected_overlay_connecting_message">正在連接…</string>
+    <string name="warning_no_internet_connection">互聯網連接不存在</string>
+    <string name="push_unsupported_message">為查看附件，請升級至DreamTrips App最新版本</string>
+    <string name="chat_update_proposition">
+        <![CDATA[要查看附件，更新到DreamTrips應用程序的最新版本<a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">於此</a>]]></string>
+    <string name="translate_from">已翻譯</string>
+    <string name="translate_error">翻譯錯誤</string>
+    <string name="chat_settings_error_empty_subject">请输入对话名称</string>
 </resources>

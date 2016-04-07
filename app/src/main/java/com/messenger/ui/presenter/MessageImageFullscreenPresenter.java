@@ -22,8 +22,10 @@ public class MessageImageFullscreenPresenter extends FullScreenPresenter<PhotoAt
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        String dateLabel = timestampFormatter.getMessageDateDividerTimestamp(photo.getDate().getTime());
-        view.setDateLabel(dateLabel);
+        if (photo.getDate() != null) {
+            String dateLabel = timestampFormatter.getMessageDateDividerTimestamp(photo.getDate().getTime());
+            view.setDateLabel(dateLabel);
+        }
     }
 
     public interface View extends FullScreenPresenter.View {

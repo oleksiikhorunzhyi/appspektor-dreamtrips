@@ -3,10 +3,12 @@ package com.worldventures.dreamtrips.modules.common.view.adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.HandlerThread;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.view.util.Filterable;
@@ -64,25 +66,34 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
             flushFilter();
         } else {
             filterHandler.post(() -> {
-                String queryLowerCased = this.query.toLowerCase();
-                List<BaseItemClass> filtered = Queryable.from(cachedItems).filter(item -> item.containsQuery(queryLowerCased)).toList();
-                mainHandler.post(() -> {
-                    items.clear();
-                    items.addAll(filtered);
-                    if (comparator != null) Collections.sort(items, comparator);
-                    notifyDataSetChanged();
-                });
+                try {
+                    List<BaseItemClass> filtered  = Queryable.from(cachedItems).filter(element -> element.containsQuery(this.query.toLowerCase())).toList();
+
+                    mainHandler.post(() -> {
+                        items.clear();
+                        items.addAll(filtered);
+                        if (comparator != null) Collections.sort(items, comparator);
+                        notifyDataSetChanged();
+                    });
+                } catch (Exception ex) {
+                    //TODO remove it when issue from Fabric (#277) will be fixed
+                    ArrayMap<String, Object> params = new ArrayMap<>(2);
+                    params.put("query string", this.query);
+                    params.put("items", items == null ? "null pointer" : String.valueOf(items.size()));
+
+                    CrashlyticsTracker.trackErrorWithParams(ex, params);
+                }
             });
         }
     }
 
     public void setFilteredItems(List<BaseItemClass> filteredItems) {
         if (cachedItems.isEmpty()) cachedItems.addAll(items);
-           mainHandler.post(() -> {
-               items.clear();
-               items.addAll(filteredItems);
-               notifyDataSetChanged();
-           });
+        mainHandler.post(() -> {
+            items.clear();
+            items.addAll(filteredItems);
+            notifyDataSetChanged();
+        });
     }
 
     public void sort(Comparator comparator) {
@@ -126,15 +137,6 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         if (query == null) super.addItem(location, item);
         else {
             filterHandler.post(() -> cachedItems.add(location, item));
-            setFilter(query);
-        }
-    }
-
-    @Override
-    public void addItems(ArrayList<BaseItemClass> items) {
-        if (query == null) super.addItems(items);
-        else {
-            filterHandler.post(() -> cachedItems.addAll(items));
             setFilter(query);
         }
     }

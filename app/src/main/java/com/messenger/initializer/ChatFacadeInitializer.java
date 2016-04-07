@@ -19,7 +19,7 @@ import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -137,6 +137,9 @@ public class ChatFacadeInitializer implements AppInitializer {
                         conversationsDAO.save(conversation);
                     }, throwable -> Timber.d(throwable, ""));
         });
+
+        emitter.addOnAvatarChangeListener(this::onAvatarChanged);
+
         emitter.addInvitationListener((conversationId) -> {
             Timber.i("Chat invited :: chat=%s", conversationId);
             loadConversation(conversationId)
@@ -174,10 +177,10 @@ public class ChatFacadeInitializer implements AppInitializer {
         });
     }
 
-    private User createUser(Participant participant, boolean isOnline) {
-        User user = new User(participant.getUserId());
-        user.setOnline(isOnline);
-        return user;
+    private MessengerUser createUser(Participant participant, boolean isOnline) {
+        MessengerUser messengerUser = new MessengerUser(participant.getUserId());
+        messengerUser.setOnline(isOnline);
+        return messengerUser;
     }
 
     private Observable<List<DataUser>> loadConversation(String conversationId) {
@@ -199,9 +202,9 @@ public class ChatFacadeInitializer implements AppInitializer {
         participantsDAO.save(participants);
     }
 
-    private List<User> filterNotExistedUsersAndUpdateExisted(List<JoinedEvent> joinedEvents) {
+    private List<MessengerUser> filterNotExistedUsersAndUpdateExisted(List<JoinedEvent> joinedEvents) {
         List<DataUser> existedUsers = new ArrayList<>(joinedEvents.size());
-        List<User> newUsers = new ArrayList<>(joinedEvents.size());
+        List<MessengerUser> newMessengerUsers = new ArrayList<>(joinedEvents.size());
 
         for (JoinedEvent e: joinedEvents) {
             Participant participant = e.getParticipant();
@@ -211,10 +214,20 @@ public class ChatFacadeInitializer implements AppInitializer {
                 existedUsers.add(cachedUser);
             }
             else {
-                newUsers.add(createUser(participant, joinedEvents.isEmpty()));
+                newMessengerUsers.add(createUser(participant, joinedEvents.isEmpty()));
             }
         }
         usersDAO.save(existedUsers);
-        return newUsers;
+        return newMessengerUsers;
+    }
+
+    private void onAvatarChanged(String conversationId, String avatar) {
+        conversationsDAO.getConversation(conversationId).first()
+                .subscribeOn(Schedulers.io())
+                .filter(c -> c != null && !TextUtils.equals(c.getAvatar(), avatar))
+                .subscribe(conversation -> {
+                    conversation.setAvatar(avatar);
+                    conversationsDAO.save(conversation);
+                }, e -> Timber.d(e, "Could not save avatar to conversation"));
     }
 }

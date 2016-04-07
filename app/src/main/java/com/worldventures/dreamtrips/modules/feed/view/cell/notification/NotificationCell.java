@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -19,15 +21,21 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -38,7 +46,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
     @Optional
     @InjectView(R.id.notification_avatar)
-    SimpleDraweeView notificationAvatar;
+    SmartAvatarView notificationAvatar;
     @Optional
     @InjectView(R.id.notification_owner)
     TextView notificationOwner;
@@ -62,6 +70,10 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     @Inject
     SessionHolder<UserSession> appSessionHolder;
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
     public NotificationCell(View view) {
         super(view);
     }
@@ -72,6 +84,7 @@ public class NotificationCell extends AbstractCell<FeedItem> {
         String thumb = user.getAvatar().getThumb();
 
         notificationAvatar.setImageURI(Uri.parse(thumb));
+        notificationAvatar.setup(user, injectorProvider.get());
         notificationOwner.setText(user.getFullName());
         int accountId = appSessionHolder.get().get().getUser().getId();
         notificationText.setText(Html.fromHtml(getModelObject().infoText(itemView.getResources(), accountId)));
@@ -95,16 +108,20 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
     private void open(FeedItem item) {
         if (item.getType() != Type.UNDEFINED)
-            openByType(getModelObject().getItem(), item.getType());
+            openByType(item.getType(), item.getAction());
         else if (item.getAction() != null)
             openByAction(getModelObject().getLinks(), item.getAction());
         else Timber.w("Can't open event model by type or action");
     }
 
-    private void openByType(FeedEntity item, Type type) {
+    private void openByType(Type type, FeedItem.Action action) {
         switch (type) {
-            case TRIP:
             case PHOTO:
+                if (action == FeedItem.Action.TAG_PHOTO) {
+                    openFullscreenPhoto();
+                    break;
+                }
+            case TRIP:
             case BUCKET_LIST_ITEM:
             case POST:
                 openDetails();
@@ -131,6 +148,23 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     private void openDetails() {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new FeedDetailsBundle(getModelObject()))
+                .build());
+    }
+
+    private void openFullscreenPhoto() {
+        ArrayList<IFullScreenObject> list = new ArrayList<>();
+        list.add((IFullScreenObject) getModelObject().getItem());
+        FullScreenImagesBundle bundle = new FullScreenImagesBundle.Builder()
+                .position(0)
+                .userId(getModelObject().getItem().getOwner().getId())
+                .type(TripImagesType.FIXED)
+                .route(Route.SOCIAL_IMAGE_FULLSCREEN)
+                .fixedList(list)
+                .build();
+
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, NavigationConfigBuilder.forActivity()
+                .data(bundle)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .build());
     }
 

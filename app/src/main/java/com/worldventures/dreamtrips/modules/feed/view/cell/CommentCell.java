@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -32,6 +34,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -65,6 +68,9 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     SessionHolder<UserSession> appSessionHolder;
     @Inject @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
 
     private CommentCellHelper commentCellHelper;
 
@@ -76,7 +82,7 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
 
     @Override
     protected void syncUIStateWithModel() {
-        commentCellHelper.set(getModelObject());
+        commentCellHelper.set(getModelObject(), injectorProvider.get());
         User owner = getModelObject().getOwner();
 
         if (edit != null)

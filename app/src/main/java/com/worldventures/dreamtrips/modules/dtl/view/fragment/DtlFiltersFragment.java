@@ -10,7 +10,6 @@ import com.appyvet.rangebar.RangeBar;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
@@ -21,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlFiltersPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -54,8 +54,8 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), this);
         baseDelegateAdapter.registerCell(SelectableHeaderItem.class, DtlFilterAttributeHeaderCell.class);
         baseDelegateAdapter.registerCell(DtlMerchantAttribute.class, DtlFilterAttributeCell.class);
-        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, filterHeaderClickDelegate);
-        baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, filterItemClickDelegate);
+        baseDelegateAdapter.registerDelegate(SelectableHeaderItem.class, model -> selectionManager.setSelectionForAll(((SelectableHeaderItem) model).isSelected()));
+        baseDelegateAdapter.registerDelegate(DtlMerchantAttribute.class, model -> drawHeaderSelection());
         //
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -87,19 +87,6 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
         return new DtlFiltersPresenter();
     }
 
-    private CellDelegate<SelectableHeaderItem> filterHeaderClickDelegate = new CellDelegate<SelectableHeaderItem>() {
-        @Override
-        public void onCellClicked(SelectableHeaderItem model) {
-            selectionManager.setSelectionForAll(model.isSelected());
-        }
-    };
-
-    private CellDelegate<DtlMerchantAttribute> filterItemClickDelegate = new CellDelegate<DtlMerchantAttribute>() {
-        @Override
-        public void onCellClicked(DtlMerchantAttribute model) {
-            drawHeaderSelection();
-        }
-    };
 
     private void drawHeaderSelection() {
         final int amenityViewTypeId = baseDelegateAdapter.getClassItemViewType(DtlMerchantAttribute.class);
@@ -122,7 +109,7 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
 
     @Override
     public void syncUi(DtlFilterData filterData) {
-        rangeBarDistance.setRangePinsByValue(10f, filterData.getMaxDistance());
+        rangeBarDistance.setRangePinsByValue(10f, (float) filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
         distanceCaption.setText(getString(R.string.dtl_distance,
                 getString(filterData.getDistanceType() == DistanceType.MILES ?
@@ -145,9 +132,9 @@ public class DtlFiltersFragment extends RxBaseFragment<DtlFiltersPresenter>
 
     @Override
     public DtlFilterParameters getFilterParameters() {
-        return DtlFilterParameters.Builder.create()
-                .price(Integer.valueOf(rangeBarPrice.getLeftValue()),
-                        Integer.valueOf(rangeBarPrice.getRightValue()))
+        return ImmutableDtlFilterParameters.builder()
+                .minPrice(Integer.valueOf(rangeBarPrice.getLeftValue()))
+                .maxPrice(Integer.valueOf(rangeBarPrice.getRightValue()))
                 .maxDistance(Integer.valueOf(rangeBarDistance.getRightValue()))
                 .selectedAmenities(obtainSelectedAmenities())
                 .build();

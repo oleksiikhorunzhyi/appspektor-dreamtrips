@@ -1,16 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.app.Activity;
+import android.content.IntentSender;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
+import com.google.android.gms.common.api.Status;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
+import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -21,45 +22,52 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlLocationsBundle;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlLocationsPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
+import icepick.State;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_dtl_locations)
 @MenuResource(R.menu.menu_locations)
-public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
-        implements DtlLocationsPresenter.View, CellDelegate<DtlLocation> {
+public class DtlLocationsFragment extends RxBaseFragmentWithArgs<DtlLocationsPresenter, DtlLocationsBundle>
+        implements DtlLocationsPresenter.View, CellDelegate<DtlExternalLocation> {
+
+    private static final int REQUEST_CHECK_SETTINGS = 1480;
 
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
-    //
-    BaseDelegateAdapter adapter;
+    @Inject
+    ActivityResultDelegate activityResultDelegate;
     //
     @InjectView(R.id.locationsList)
     RecyclerView recyclerView;
-    @InjectView(R.id.empty_view)
-    View emptyView;
-    @InjectView(R.id.obtaining_gps_location_progress_caption)
-    TextView gpsProgressCaption;
-    @InjectView(R.id.obtaining_locations_progress_caption)
-    TextView locationsProgressCaption;
     @InjectView(R.id.progress)
     View progressView;
+    @InjectView(R.id.emptyMerchantsCaption)
+    View emptyMerchantsCaption;
+    @InjectView(R.id.autoDetectNearMe)
+    Button autoDetectNearMe;
     @InjectView(R.id.toolbar_actionbar)
     Toolbar toolbar;
     //
-    SearchView searchView;
-    MenuItem searchItem;
+    BaseDelegateAdapter adapter;
+    //
+    @State
+    boolean shouldShowEmptyMerchantsCaption = false;
 
     @Override
     protected DtlLocationsPresenter createPresenter(Bundle savedInstanceState) {
@@ -71,84 +79,82 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
         super.afterCreateView(rootView);
         initToolbar();
         //
+        //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
                 .getDrawable(R.drawable.list_divider), true));
+        if (getArgs().shouldShowEmptyMerchantsCaption || shouldShowEmptyMerchantsCaption) {
+            this.shouldShowEmptyMerchantsCaption = true;
+            emptyMerchantsCaption.setVisibility(View.VISIBLE);
+        }
         //
-        adapter = new BaseDelegateAdapter<DtlLocation>(getActivity(), injectorProvider.get());
-        adapter.registerCell(DtlLocation.class, DtlLocationCell.class);
-        adapter.registerDelegate(DtlLocation.class, this);
+        adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injectorProvider.get());
+        adapter.registerCell(DtlExternalLocation.class, DtlLocationCell.class);
+        adapter.registerDelegate(DtlExternalLocation.class, this);
         //
         recyclerView.setAdapter(adapter);
+        //
+        bindNearMeButton();
     }
 
     private void initToolbar() {
+        boolean hasBackStack = getParentFragment().getChildFragmentManager()
+                .findFragmentByTag(Route.DTL_MERCHANTS_HOLDER.getClazzName()) != null;
         toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
         toolbar.inflateMenu(R.menu.menu_locations);
-        if (!tabletAnalytic.isTabletLandscape())
+        if (hasBackStack) {
+            toolbar.setNavigationIcon(R.drawable.back_icon);
+            toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        } else if (!tabletAnalytic.isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-        toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+            toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
+        }
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_search) {
+                navigateToSearch();
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        });
     }
 
-    private void configureSearch() {
-        searchItem = toolbar.getMenu().findItem(R.id.action_search);
-        if (searchItem != null) {
-            MenuItemCompat.setOnActionExpandListener(searchItem, searchViewExpandListener);
-            searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            searchView.setQueryHint(getString(R.string.dtl_locations_search_caption));
-            searchView.setOnQueryTextListener(searchViewQueryListener);
+    @Override
+    public void locationResolutionRequired(Status status) {
+        try {
+            status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
+        } catch (IntentSender.SendIntentException th) {
+            Timber.e(th, "Error opening settings activity.");
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        configureSearch();
+    private void bindNearMeButton() {
+        bind(RxView.clicks(autoDetectNearMe))
+                .throttleFirst(3L, TimeUnit.SECONDS)
+                .subscribe(aVoid -> getPresenter().loadNearMeRequested());
     }
 
     @Override
-    public void onPause() {
-        MenuItemCompat.setOnActionExpandListener(searchItem, null);
-        searchView.setOnQueryTextListener(null);
-        super.onPause();
-    }
-
-    @Override
-    public void onCellClicked(DtlLocation model) {
+    public void onCellClicked(DtlExternalLocation model) {
         tryHideSoftInput();
         getPresenter().onLocationSelected(model);
     }
 
     @Override
-    public void setItems(List<DtlLocation> dtlLocations) {
-        progressView.setVisibility(View.GONE);
+    public void setItems(List<DtlExternalLocation> dtlExternalLocations) {
+        hideProgress();
         //
         adapter.clear();
-        adapter.addItems(dtlLocations);
+        adapter.addItems(dtlExternalLocations);
     }
 
     @Override
-    public void showGpsObtainingProgress() {
-        progressView.setVisibility(View.VISIBLE);
-        gpsProgressCaption.setVisibility(View.VISIBLE);
-        locationsProgressCaption.setVisibility(View.GONE);
-        emptyView.setVisibility(View.GONE);
+    public void hideNearMeButton() {
+        autoDetectNearMe.setVisibility(View.GONE);
     }
 
     @Override
-    public void showLocationsObtainingProgress() {
+    public void showProgress() {
         progressView.setVisibility(View.VISIBLE);
-        gpsProgressCaption.setVisibility(View.GONE);
-        locationsProgressCaption.setVisibility(View.VISIBLE);
-        emptyView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showEmptyProgress() {
-        progressView.setVisibility(View.VISIBLE);
-        gpsProgressCaption.setVisibility(View.GONE);
-        locationsProgressCaption.setVisibility(View.GONE);
-        emptyView.setVisibility(View.GONE);
     }
 
     @Override
@@ -164,16 +170,6 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
     @Override
     public void onApiCallFailed() {
         progressView.setVisibility(View.GONE);
-        emptyView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (searchView != null) {
-            searchView.setOnCloseListener(null);
-            searchView.setOnQueryTextListener(null);
-        }
-        super.onDestroyView();
     }
 
     @Override
@@ -186,47 +182,33 @@ public class DtlLocationsFragment extends RxBaseFragment<DtlLocationsPresenter>
                 .build());
     }
 
-    @Override
-    public void showSearch() {
-        if (searchItem != null) {
-            MenuItemCompat.expandActionView(searchItem);
-            searchView.setIconified(false);
-            hideProgress();
-            emptyView.setVisibility(View.VISIBLE);
+    public void navigateToSearch() {
+        router.moveTo(Route.DTL_LOCATIONS_SEARCH, NavigationConfigBuilder.forFragment()
+                .containerId(R.id.dtl_container)
+                .fragmentManager(getFragmentManager())
+                .backStackEnabled(true)
+                .build());
+    }
+
+    public void activityResult(int requestCode, int resultCode) {
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    // All required changes were successfully made
+                    getPresenter().onLocationResolutionGranted();
+                    break;
+                case Activity.RESULT_CANCELED:
+                    // The user was asked to change settings, but chose not to
+                    getPresenter().onLocationResolutionDenied();
+                    break;
+            }
+            activityResultDelegate.clear();
         }
     }
 
     @Override
-    public void setEmptyViewVisibility(boolean visible) {
-        emptyView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    public void onResume() {
+        super.onResume();
+        activityResult(activityResultDelegate.getRequestCode(), activityResultDelegate.getResultCode());
     }
-
-    private MenuItemCompat.OnActionExpandListener searchViewExpandListener =
-            new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    getPresenter().searchOpened();
-                    return true;
-                }
-
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    getPresenter().searchClosed();
-                    return true;
-                }
-            };
-
-    private SearchView.OnQueryTextListener searchViewQueryListener =
-            new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    getPresenter().search(newText.toLowerCase());
-                    return false;
-                }
-            };
 }

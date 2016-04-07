@@ -14,7 +14,7 @@ public class AdobeTracker extends ITracker {
 
     private static final String DEFAULT_PREFIX = "dta:";
 
-    private static final String CHANNEL_KEY = "CHANNEL";
+    private static final String CHANNEL_KEY = "channel";
     private static final String CHANNEL_VALUE = "App:Dreamtrips";
 
     @Override

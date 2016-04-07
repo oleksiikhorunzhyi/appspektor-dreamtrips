@@ -1,29 +1,32 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
-import android.text.TextUtils;
 
-import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.error.DtApiException;
+import com.google.android.gms.common.api.Status;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import rx.Subscription;
 
-public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.View>
-        implements LocationDelegate.LocationListener {
+public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.View> {
 
     @Inject
     DtlLocationManager dtlLocationManager;
@@ -32,180 +35,149 @@ public class DtlLocationsPresenter extends JobPresenter<DtlLocationsPresenter.Vi
     @Inject
     LocationDelegate gpsLocationDelegate;
     //
-    ArrayList<DtlLocation> dtlLocations = new ArrayList<>();
     @State
-    Status status = Status.NEARBY;
+    ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
     @State
-    String query;
-    @State
-    Location userGpsLocation;
+    ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
+    //
+    private Subscription locationRequestNoFallback;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        connectLocationsExecutor();
-        connectLocationsSearchExecutor();
-        //
         apiErrorPresenter.setView(view);
-        gpsLocationDelegate.attachListener(this);
         //
-        if (status.equals(Status.NEARBY)) {
-            if (dtlLocations.isEmpty()) {
-                if (userGpsLocation == null) {
-                    gpsLocationDelegate.tryRequestLocation();
-                    view.showGpsObtainingProgress();
-                }
-            } else {
-                view.hideProgress();
-                setItems(dtlLocations);
-            }
-        } else {
-            view.hideProgress();
+        tryHideNearMeButton();
+        //
+        connectNearbyLocationsExecutor();
+        //
+        locationRequestNoFallback = view.bind(gpsLocationDelegate.requestLocationUpdate())
+                .compose(new IoToMainComposer<>())
+                .timeout(15, TimeUnit.SECONDS)
+                .subscribe(this::onLocationObtained, throwable -> {});
+    }
+    
+    public void onLocationResolutionGranted() {
+        if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+            locationRequestNoFallback.unsubscribe();
+        //
+        gpsLocationDelegate.requestLocationUpdate()
+                .compose(new IoToMainComposer<>())
+                .subscribe(this::onLocationObtained, this::onLocationError);
+    }
+
+    public void onLocationResolutionDenied() {
+        view.hideProgress();
+    }
+
+    public void loadNearMeRequested() {
+        screenMode = ScreenMode.AUTO_NEAR_ME;
+        //
+        if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+            locationRequestNoFallback.unsubscribe();
+        //
+        view.bind(gpsLocationDelegate.requestLocationUpdate())
+                .compose(new IoToMainComposer<>())
+                .subscribe(this::onLocationObtained, this::onLocationError);
+        view.showProgress();
+    }
+
+    public void onLocationObtained(Location location) {
+        switch (screenMode) {
+            case NEARBY_LOCATIONS:
+                dtlLocationManager.loadNearbyLocations(location);
+                break;
+            case AUTO_NEAR_ME:
+                DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
+                        .locationSourceType(LocationSourceType.NEAR_ME)
+                        .longName(context.getString(R.string.dtl_near_me_caption))
+                        .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
+                        .build();
+                dtlLocationManager.persistLocation(dtlLocation);
+                view.navigateToMerchants();
+                break;
         }
     }
 
-    @Override
-    public void dropView() {
-        gpsLocationDelegate.detachListener(this);
-        super.dropView();
+    private void tryHideNearMeButton() {
+        if (dtlLocationManager.getSelectedLocation() != null &&
+                dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.NEAR_ME)
+            view.hideNearMeButton();
     }
 
-    private void setItems(List<DtlLocation> locations) {
-        if (status == Status.NEARBY)
-            view.setEmptyViewVisibility(locations.isEmpty());
-        else if (TextUtils.isEmpty(query))
-            view.setEmptyViewVisibility(dtlLocations.isEmpty());
-        else view.setEmptyViewVisibility(false);
-        //
-        view.setItems(locations);
+    /**
+     * Check if given error's cause is insufficient GPS resolution or usual throwable and act accordingly
+     * @param e exception that {@link LocationDelegate} subscription returned
+     */
+    private void onLocationError(Throwable e) {
+        if (e instanceof LocationDelegate.LocationException)
+            view.locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
+        else onLocationResolutionDenied();
     }
 
     /**
      * Analytic-related
      */
-    private void trackLocationSelection(DtlLocation previousLocation, DtlLocation newLocation) {
-        if (previousLocation != null)
-            TrackingHelper.dtlChangeLocation(newLocation.getId());
-        String locationSelectType = status.equals(Status.NEARBY) ?
-                TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_NEARBY : TrackingHelper.DTL_ACTION_SELECT_LOCATION_FROM_SEARCH;
-        TrackingHelper.dtlSelectLocation(locationSelectType, newLocation.getId());
+    private void trackLocationSelection(DtlExternalLocation newLocation) {
+        TrackingHelper.searchLocation(newLocation);
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Nearby stuff
     ///////////////////////////////////////////////////////////////////////////
 
-    private void connectLocationsExecutor() {
+    private void connectNearbyLocationsExecutor() {
         bindJobCached(dtlLocationManager.nearbyLocationExecutor)
-                .onProgress(view::showLocationsObtainingProgress)
-                .onError(this::onLocationsFailed)
+                .onProgress(view::showProgress)
+                .onError(apiErrorPresenter::handleError)
                 .onSuccess(this::onLocationsLoaded);
     }
 
-    @Override
-    public void onLocationObtained(Location location) {
-        if (location != null) {
-            userGpsLocation = location;
-            dtlLocationManager.loadNearbyLocations(userGpsLocation);
-        } else {
-            view.hideProgress();
-            view.showSearch();
-        }
-    }
-
-    public void onLocationsLoaded(List<DtlLocation> locations) {
-        if (locations.isEmpty()) view.showSearch();
-        else if (dtlLocationManager.getSelectedLocation() == null)
-            selectNearest(locations, userGpsLocation);
-        else showLoadedLocations(locations);
-    }
-
-    public void onLocationsFailed(Throwable exception) {
-        apiErrorPresenter.handleError(exception);
-    }
-
-    private void showLoadedLocations(List<DtlLocation> locations) {
+    public void onLocationsLoaded(List<DtlExternalLocation> locations) {
         view.hideProgress();
-        dtlLocations.clear();
-        dtlLocations.addAll(locations);
-        setItems(dtlLocations);
+        showLoadedLocations(locations);
     }
 
-    private void selectNearest(List<DtlLocation> dtlLocations, Location currentGpsLocation) {
-        DtlLocation dtlLocation = Queryable.from(dtlLocations)
-                .min(new DtlLocation.DtlNearestComparator(currentGpsLocation));
-        onLocationSelected(dtlLocation);
+    private void showLoadedLocations(List<DtlExternalLocation> locations) {
+        dtlNearbyLocations.clear();
+        dtlNearbyLocations.addAll(locations);
+        view.setItems(locations);
     }
 
-    public void onLocationSelected(DtlLocation location) {
-        trackLocationSelection(dtlLocationManager.getSelectedLocation(), location);
+    public void onLocationSelected(DtlExternalLocation location) {
+        trackLocationSelection(location);
         dtlLocationManager.persistLocation(location);
         dtlMerchantManager.clean();
         view.navigateToMerchants();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Search stuff
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void connectLocationsSearchExecutor() {
-        bindJobCached(dtlLocationManager.searchLocationExecutor)
-                .onProgress(this::onSearchStarted)
-                .onError(this::onSearchError)
-                .onSuccess(this::onSearchFinished);
-        //
-        if (status == Status.SEARCH) dtlLocationManager.searchLocations(query);
-    }
-
-    public void searchOpened() {
-        status = Status.SEARCH;
-        setItems(Collections.EMPTY_LIST);
-    }
-
-    public void searchClosed() {
-        status = Status.NEARBY;
-        view.hideProgress();
-        setItems(dtlLocations);
-    }
-
-    public void search(String query) {
-        this.query = query;
-        dtlLocationManager.searchLocations(query);
-    }
-
-    public void onSearchStarted() {
-        view.showEmptyProgress();
-    }
-
-    public void onSearchFinished(List<DtlLocation> locations) {
-        view.hideProgress();
-        setItems(locations);
-    }
-
-    public void onSearchError(Throwable e) {
-        if (e instanceof DtApiException) apiErrorPresenter.handleError(e);
-    }
-
     public interface View extends RxView, ApiErrorView {
 
-        void setItems(List<DtlLocation> dtlLocations);
+        void locationResolutionRequired(Status status);
 
-        void showGpsObtainingProgress();
+        void setItems(List<DtlExternalLocation> dtlExternalLocations);
 
-        void showLocationsObtainingProgress();
+        void hideNearMeButton();
 
-        void showEmptyProgress();
+        void showProgress();
 
         void hideProgress();
 
-        void showSearch();
-
         void navigateToMerchants();
-
-        void setEmptyViewVisibility(boolean visible);
     }
 
-    public enum Status {
-        SEARCH, NEARBY
+    /**
+     * Represents view state of presenter+view - to be used for screen restoration, e.g. after rotate.
+     */
+    public enum ScreenMode {
+        /**
+         * System tried to pre-load some locations based on device's current GPS location.<br />
+         * Default for current screen.
+         */
+        NEARBY_LOCATIONS,
+        /**
+         * User explicitly requested to load merchants by device's GPS location.
+         */
+        AUTO_NEAR_ME,
     }
 }

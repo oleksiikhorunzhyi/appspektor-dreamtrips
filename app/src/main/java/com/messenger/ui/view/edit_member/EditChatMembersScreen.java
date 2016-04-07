@@ -1,9 +1,11 @@
 package com.messenger.ui.view.edit_member;
 
-import android.database.Cursor;
-
 import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
+
+import java.util.List;
+
+import rx.Observable;
 
 public interface EditChatMembersScreen extends MessengerScreen {
 
@@ -15,13 +17,13 @@ public interface EditChatMembersScreen extends MessengerScreen {
 
     void setTitle(String title);
 
-    void setAdapterWithInfo(DataUser user, boolean isOwner);
-
-    void setMembers(Cursor cursor);
-
-    void setMembers(Cursor cursor, String query, String queryColumn);
+    void setAdapterData(List<Object> item);
 
     void invalidateAllSwipedLayouts();
 
     void showDeletionConfirmationDialog(DataUser user);
+
+    void restoreSearchQuery(String query);
+
+    Observable<CharSequence> getSearchObservable();
 }

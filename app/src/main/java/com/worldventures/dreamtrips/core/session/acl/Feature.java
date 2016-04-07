@@ -15,14 +15,15 @@ public class Feature {
     }
 
     @Retention(SOURCE)
-    @StringDef({TRIPS, REP_TOOLS, SOCIAL, DTL, REP_SUGGEST_MERCHANT})
+    @StringDef({TRIPS, REP_TOOLS, SOCIAL, DTL, REP_SUGGEST_MERCHANT, BOOK_TRAVEL})
     public @interface FeatureName {
     }
 
     public static final String TRIPS = "trips";
-    public static final String REP_TOOLS = "rep_tools";
+    public static final String REP_TOOLS = "repTools";
     public static final String SOCIAL = "social";
     public static final String DTL = "discover";
     public static final String REP_SUGGEST_MERCHANT = "repSuggestMerchant";
+    public static final String BOOK_TRAVEL = "bookTravel";
 
 }

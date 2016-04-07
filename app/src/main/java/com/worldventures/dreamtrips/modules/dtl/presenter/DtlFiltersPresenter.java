@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
-import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -14,19 +11,15 @@ import javax.inject.Inject;
 public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> {
 
     @Inject
-    LocationDelegate locationDelegate;
-    @Inject
-    DtlFilterDelegate dtlFilterDelegate;
-    @Inject
     DtlMerchantManager dtlMerchantManager;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         //
-        view.attachFilterData(dtlFilterDelegate.getFilterData());
+        view.attachFilterData(dtlMerchantManager.getFilterData());
         //
-        bindJobCached(dtlMerchantManager.getMerchantsExecutor)
+        bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
                 .onSuccess(dtlMerchants -> attachAmenities());
     }
 
@@ -34,13 +27,11 @@ public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> 
      * Request filter parameters that are currently applied. To use in view to update itself
      */
     public void requestActualFilterData() {
-        view.syncUi(dtlFilterDelegate.getFilterData());
+        view.syncUi(dtlMerchantManager.getFilterData());
     }
 
     private void attachAmenities() {
-        dtlFilterDelegate.obtainAmenities();
-        dtlFilterDelegate.selectAll();
-        view.attachFilterData(dtlFilterDelegate.getFilterData());
+        view.attachFilterData(dtlMerchantManager.getFilterData());
     }
 
     /**
@@ -48,15 +39,14 @@ public class DtlFiltersPresenter extends JobPresenter<DtlFiltersPresenter.View> 
      * @param data new filter parameters
      */
     public void apply() {
-        dtlFilterDelegate.applyNewFilter(view.getFilterParameters());
-        TrackingHelper.dtlMerchantFilter(dtlFilterDelegate.getFilterData());
+        dtlMerchantManager.applyFilter(view.getFilterParameters());
     }
 
     /**
      * Reset filter parameters to default
      */
     public void resetAll() {
-        dtlFilterDelegate.reset();
+        dtlMerchantManager.reset();
     }
 
     public interface View extends RxView {

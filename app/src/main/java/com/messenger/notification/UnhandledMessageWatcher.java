@@ -139,7 +139,7 @@ public class UnhandledMessageWatcher {
     private void showNotification(Activity activity, NotificationData data) {
         InAppMessengerNotificationView view;
         if (data.isGroup) {
-            view = createGroupChatCrouton(activity, data.conversation.getId(), data.title, data.messageText);
+            view = createGroupChatCrouton(activity, data.conversation, data.title, data.messageText);
         } else {
             view = createSingleChatCrouton(activity, data.participants.get(0).getAvatarUrl(), data.title, data.messageText);
         }
@@ -207,9 +207,9 @@ public class UnhandledMessageWatcher {
         return view;
     }
 
-    private InAppMessengerNotificationView createGroupChatCrouton(Context context, String conversationId, String title, String text) {
+    private InAppMessengerNotificationView createGroupChatCrouton(Context context, DataConversation conversation, String title, String text) {
         InAppNotificationViewGroup view = new InAppNotificationViewGroup(context);
-        view.setConversationId(conversationId);
+        view.setConversation(conversation);
         view.setTitle(title);
         view.setText(text);
         return view;

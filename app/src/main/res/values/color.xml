@@ -52,7 +52,6 @@
     <color name="dtl_cities_text_color">#929292</color>
     <color name="dtl_badge_color">#8896a6b6</color>
 
-    <color name="suggest_merchant_background">#EAEAEA</color>
     <color name="suggest_merchant_hint_text">#7e000000</color>
     <color name="suggest_merchant_input_text">#db000000</color>
 
@@ -142,6 +141,10 @@
 
     <color name="in_app_notification_title_text_color">#dd000000</color>
     <color name="in_app_notification_subtitle_text_color">#8A000000</color>
+
+    <!-- Translation -->
+    <color name="translation_state_error">#EC6A6A</color>
+    <color name="translation_state_translated">#53B5FE</color>
 
     <!--end messenger-->
 </resources>

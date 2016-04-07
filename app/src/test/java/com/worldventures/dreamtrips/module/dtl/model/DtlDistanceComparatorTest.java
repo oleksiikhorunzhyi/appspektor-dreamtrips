@@ -32,7 +32,7 @@ public class DtlDistanceComparatorTest {
 
         int result = DtlMerchant.DISTANCE_COMPARATOR.compare(dtlMerchantFirst, dtlMerchantSecond);
 
-        assertThat(result).isGreaterThanOrEqualTo(-1);
+        assertThat(result).isGreaterThanOrEqualTo(1);
     }
 
     @Test

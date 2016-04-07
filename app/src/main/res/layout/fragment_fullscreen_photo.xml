@@ -36,8 +36,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_tag"
         android:layout_gravity="right"
-        android:layout_marginRight="@dimen/spacing_medium"
-        android:layout_marginTop="64dp"/>
+        android:layout_marginRight="@dimen/spacing_normal"
+        android:layout_marginTop="@dimen/spacing_normal"/>
 
     <LinearLayout
         android:id="@+id/ll_global_content_wrapper"
@@ -60,10 +60,9 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
                 android:layout_weight="1"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
-                <com.facebook.drawee.view.SimpleDraweeView
+                <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
                     android:id="@+id/user_photo"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
@@ -85,7 +84,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:maxLines="3"
-                        android:text="fasdfsadf"
                         android:textColor="@color/white"
                         android:textSize="18dp"
                         tools:text="Hello"
@@ -96,7 +94,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
-                        android:text="fasdfsdaf"
                         tools:text="Hello"
                         android:textColor="@color/grey"
                         android:drawableLeft="@drawable/ic_feed_location_small"

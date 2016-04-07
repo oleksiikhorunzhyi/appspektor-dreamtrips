@@ -7,17 +7,17 @@ import android.view.MenuItem;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding.support.v7.widget.SearchViewQueryTextEvent;
 import com.worldventures.dreamtrips.R;
-
-import java.util.concurrent.TimeUnit;
+import com.worldventures.dreamtrips.core.rx.transfromer.DelayedComposer;
 
 import rx.Subscription;
 import timber.log.Timber;
 
 public class SearchViewHelper {
 
-    private static final int DEBOUNCE_INTERVAL_LENGTH = 900; // milliseconds
+    private static final int THROTTLE_SEARCH_DURATION = 900;
 
     private QueryChangedListener onQueryChangedListener;
+    private SearchClosedListener onSearchClosedListener;
     private SearchView searchView;
     private Subscription searchViewSubscription;
 
@@ -25,13 +25,20 @@ public class SearchViewHelper {
     }
 
     public void init(MenuItem searchItem, String defValue, QueryChangedListener listener) {
+        init(searchItem, defValue, listener, null);
+    }
+
+    public void init(MenuItem searchItem, String defValue, QueryChangedListener listener,
+                     SearchClosedListener searchClosedListener) {
+        this.onSearchClosedListener = searchClosedListener;
         this.onQueryChangedListener = listener;
         if (searchItem != null) {
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener(){
+            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     searchViewSubscription = RxSearchView.queryTextChangeEvents(searchView)
-                            .debounce(DEBOUNCE_INTERVAL_LENGTH, TimeUnit.MILLISECONDS)
+                            .compose(new DelayedComposer<>(THROTTLE_SEARCH_DURATION))
+                            .distinctUntilChanged()
                             .subscribe(SearchViewHelper.this::onQueryTextChange, e ->
                                     Timber.e("Fail while search", e));
                     return true;
@@ -43,7 +50,7 @@ public class SearchViewHelper {
                     return true;
                 }
             });
-
+            //
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setQueryHint(searchView.getResources().getString(R.string.search));
             searchView.post(() -> searchView.setQuery(defValue, true));
@@ -53,12 +60,16 @@ public class SearchViewHelper {
     public void dropHelper() {
         unsubcribe();
         onQueryChangedListener = null;
+        onSearchClosedListener = null;
     }
 
     private void onSearchViewClosed() {
         unsubcribe();
+        if (onSearchClosedListener != null) {
+            onSearchClosedListener.onSearchClosed();
+        }
         if (onQueryChangedListener != null) {
-            onQueryChangedListener.onQueryChanged(null);
+            onQueryChangedListener.onQueryChanged("");
         }
     }
 
@@ -70,6 +81,10 @@ public class SearchViewHelper {
         if (onQueryChangedListener != null) {
             onQueryChangedListener.onQueryChanged(event.queryText().toString());
         }
+    }
+
+    public interface SearchClosedListener {
+        void onSearchClosed();
     }
 
     public interface QueryChangedListener {

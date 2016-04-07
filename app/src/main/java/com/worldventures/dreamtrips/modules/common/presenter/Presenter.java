@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
@@ -44,8 +43,6 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     protected FeatureManager featureManager;
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
-    @Inject
-    protected VideoDownloadSpiceManager videoDownloadSpiceManager;
     @Inject
     protected PhotoUploadingManager photoUploadingManager;
     @Inject
@@ -84,7 +81,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         try {
             eventBus.registerSticky(this, priorityEventBus);
         } catch (Exception ignored) {
-            Timber.v(ignored, "Problem on registering sticky");
+            Timber.v("EventBus :: Problem on registering sticky - no \'onEvent' method found in " + getClass().getName());
         }
     }
 
@@ -127,17 +124,11 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         if (!dreamSpiceManager.isStarted()) {
             dreamSpiceManager.start(context);
         }
-        if (!videoDownloadSpiceManager.isStarted()) {
-            videoDownloadSpiceManager.start(context);
-        }
     }
 
     private void stopSpiceManagers() {
         if (dreamSpiceManager.isStarted()) {
             dreamSpiceManager.shouldStop();
-        }
-        if (videoDownloadSpiceManager.isStarted()) {
-            videoDownloadSpiceManager.shouldStop();
         }
     }
 
@@ -180,11 +171,13 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         if (apiErrorPresenter.hasView()) {
             apiErrorPresenter.handleError(error);
         } else if (error != null && !TextUtils.isEmpty(error.getMessage())) {
-            if (!error.getMessage().contains("cancelled")) //hotfix, as robospice doesn't mark spice exception
+            if (!error.getMessage().contains("cancelled")) { //hotfix, as robospice doesn't mark spice exception
                 view.informUser(error.getMessage());
+            }
         } else {
             view.informUser(R.string.smth_went_wrong);
         }
+
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -199,9 +192,9 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         return getAccount().getUsername();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // View binding
-    ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+// View binding
+///////////////////////////////////////////////////////////////////////////
 
     public interface View extends TabletAnalytic {
         void informUser(int stringId);

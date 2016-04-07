@@ -2,85 +2,38 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 
-import java.util.ArrayList;
+import org.immutables.value.Value;
+
+import java.util.Collections;
 import java.util.List;
 
-public class DtlFilterParameters {
+@Value.Immutable
+// TODO : current MAX_DISTANCE assumes miles - wrong
+public abstract class DtlFilterParameters {
 
     public static final int MIN_PRICE = 1;
     public static final int MAX_PRICE = 5;
-    public static final int MAX_DISTANCE = 50;
-    // TODO : current MAX_DISTANCE assumes miles - wrong
+    public static final double MAX_DISTANCE = 50;
 
-    private int minPrice;
-    private int maxPrice;
-    //
-    private int maxDistance;
-    //
-    private List<DtlMerchantAttribute> selectedAmenities = new ArrayList<>();
-
-    private DtlFilterParameters() {
-    }
-
-    public static DtlFilterParameters createDefault() {
-        DtlFilterParameters filter = new DtlFilterParameters();
-        filter.minPrice = MIN_PRICE;
-        filter.maxPrice = MAX_PRICE;
-        filter.maxDistance = MAX_DISTANCE;
-        return filter;
-    }
-
+    @Value.Default
     public int getMinPrice() {
-        return minPrice;
+        return MIN_PRICE;
     }
 
+    @Value.Default
     public int getMaxPrice() {
-        return maxPrice;
+        return MAX_PRICE;
     }
 
-    public int getMaxDistance() {
-        return maxDistance;
+    @Value.Default
+    public double getMaxDistance() {
+        return MAX_DISTANCE;
     }
 
+
+    @Value.Default
     public List<DtlMerchantAttribute> getSelectedAmenities() {
-        return selectedAmenities;
+        return Collections.emptyList();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Builder
-    ///////////////////////////////////////////////////////////////////////////
-
-    public static class Builder {
-
-        private DtlFilterParameters filter;
-
-        private Builder() {
-        }
-
-        public static DtlFilterParameters.Builder create() {
-            DtlFilterParameters.Builder builder = new DtlFilterParameters.Builder();
-            builder.filter = createDefault();
-            return builder;
-        }
-
-        public DtlFilterParameters.Builder selectedAmenities(List<DtlMerchantAttribute> amenities) {
-            filter.selectedAmenities = amenities;
-            return this;
-        }
-
-        public DtlFilterParameters.Builder price(int minPrice, int maxPrice) {
-            filter.minPrice = minPrice;
-            filter.maxPrice = maxPrice;
-            return this;
-        }
-
-        public DtlFilterParameters.Builder maxDistance(int maxDistance) {
-            filter.maxDistance = maxDistance;
-            return this;
-        }
-
-        public DtlFilterParameters build() {
-            return filter;
-        }
-    }
 }

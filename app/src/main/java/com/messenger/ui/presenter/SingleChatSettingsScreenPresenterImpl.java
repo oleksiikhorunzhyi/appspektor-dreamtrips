@@ -1,10 +1,10 @@
 package com.messenger.ui.presenter;
 
-
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;
+import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ import rx.Observable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
 
-public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPresenterImpl {
+public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPresenterImpl<ChatSettingsScreen> {
 
     @Inject
     @Named(PROFILE)
@@ -31,9 +31,9 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
     @Override
     public void onConversationAvatarClick() {
         participantsObservable
-                .flatMap(users -> Observable.from(users))
+                .flatMap(Observable::from)
                 .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
-                .first()
-                .subscribe(user ->  profileCrosser.crossToProfile(user));
+                .take(1)
+                .subscribe(profileCrosser::crossToProfile);
     }
 }

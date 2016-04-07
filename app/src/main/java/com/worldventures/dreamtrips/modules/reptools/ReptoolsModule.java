@@ -6,12 +6,10 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryListPresenter;
-import com.worldventures.dreamtrips.modules.reptools.presenter.SuggestRestaurantPresenter;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.SuccessStoryCell;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.RepToolsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryListFragment;
-import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuggestRestaurantFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,8 +23,6 @@ import dagger.Provides;
                 SuccessStoryDetailsPresenter.class,
                 RepToolsFragment.class,
                 RepToolsPresenter.class,
-                SuggestRestaurantFragment.class,
-                SuggestRestaurantPresenter.class
         },
         complete = false,
         library = true

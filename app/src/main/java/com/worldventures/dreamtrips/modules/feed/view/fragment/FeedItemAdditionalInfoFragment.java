@@ -7,12 +7,15 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
@@ -22,6 +25,7 @@ import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -36,12 +40,16 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
     DecimalFormat df = new DecimalFormat("#0.00");
 
     @InjectView(R.id.user_cover)
     SimpleDraweeView userCover;
     @InjectView(R.id.user_photo)
-    SimpleDraweeView userPhoto;
+    SmartAvatarView userPhoto;
     @InjectView(R.id.user_name)
     TextView userName;
     @InjectView(R.id.company_name)
@@ -64,6 +72,7 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
     @Override
     public void setupView(User user) {
         userPhoto.setImageURI(Uri.parse(user.getAvatar().getThumb()));
+        userPhoto.setup(user, injectorProvider.get());
         userCover.setImageURI(Uri.parse(user.getBackgroundPhotoUrl()));
         userName.setText(user.getFullName());
         companyName.setText(user.getCompany());

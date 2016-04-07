@@ -31,13 +31,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.utils.AnimationUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.PFViewMediaControls;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
 @Layout(R.layout.activity_360)
-public class Player360Activity extends BaseActivity implements PFAssetObserver {
+public class Player360Activity extends ActivityWithPresenter<VideoPlayerPresenter> implements PFAssetObserver, VideoPlayerPresenter.View {
 
     public static final String EXTRA_URL = "EXTRA_URL";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
@@ -55,14 +56,13 @@ public class Player360Activity extends BaseActivity implements PFAssetObserver {
     @InjectView(R.id.topBar)
     protected View topBarHolder;
 
-    /**
-     * Creation and initialization of the Activity.
-     * Initializes variables, listeners, and starts request of a movie list.
-     *
-     * @param savedInstanceState a saved instance of the Bundle
-     */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected VideoPlayerPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new VideoPlayerPresenter();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
@@ -98,7 +98,7 @@ public class Player360Activity extends BaseActivity implements PFAssetObserver {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         try {
             if (pfAsset != null) {
                 pfAsset.release();
@@ -115,7 +115,7 @@ public class Player360Activity extends BaseActivity implements PFAssetObserver {
     @Override
     protected void onResume() {
         super.onResume();
-        if (pfAsset.getStatus().equals(PFAssetStatus.PAUSED)) {
+        if (PFAssetStatus.PAUSED.equals(pfAsset.getStatus())) {
             pfAsset.play();
         }
     }
@@ -125,6 +125,13 @@ public class Player360Activity extends BaseActivity implements PFAssetObserver {
         super.onConfigurationChanged(newConfig);
         if (pfView != null) {
             pfView.handleOrientationChange();
+        }
+    }
+
+    @Override
+    public void onHeadphonesUnPlugged() {
+        if (pfAsset != null && PFAssetStatus.PLAYING.equals(pfAsset.getStatus())) {
+            pfAsset.pause();
         }
     }
 

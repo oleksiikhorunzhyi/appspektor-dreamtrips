@@ -153,7 +153,7 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
     }
 
     public void openRightDrawer() {
-//        drawerLayout.openDrawer(GravityCompat.END);
+        drawerLayout.openDrawer(GravityCompat.END);
     }
 
     private void logout() {

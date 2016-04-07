@@ -107,6 +107,18 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         prepareView();
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        if (mapView != null) {
+            mapView.removeAllViews();
+        }
+        if (googleMap != null) {
+            googleMap.clear();
+            googleMap.setOnMarkerClickListener(null);
+        }
+        super.onDetachedFromWindow();
+    }
+
     protected void prepareView() {
         initToolbar();
         //
@@ -120,7 +132,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
             toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
-            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> getPresenter().goToLocations());
+            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> getPresenter().onLocationCaptionClick());
         }
     }
 

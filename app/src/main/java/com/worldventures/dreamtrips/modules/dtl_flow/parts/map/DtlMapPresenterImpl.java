@@ -209,7 +209,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     @Override
-    public void goToLocations() {
+    public void onLocationCaptionClick() {
         Flow.get(getContext()).set(DtlLocationsPath.builder().allowUserGoBack(true).build());
     }
 

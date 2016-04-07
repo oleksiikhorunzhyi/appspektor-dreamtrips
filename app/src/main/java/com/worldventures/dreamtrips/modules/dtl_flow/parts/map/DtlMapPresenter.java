@@ -10,7 +10,7 @@ public interface DtlMapPresenter extends DtlPresenter<DtlMapScreen, ViewState.EM
 
     void applySearch(String query);
 
-    void goToLocations();
+    void onLocationCaptionClick();
 
     void onMarkerClick(String merchantId);
 

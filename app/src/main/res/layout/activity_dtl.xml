@@ -23,4 +23,13 @@
         app:layout="@layout/fragment_navigation_drawer"
         tools:layout="@layout/fragment_navigation_drawer"
         />
+
+    <com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterViewImpl
+        android:id="@+id/drawer_filter_layout"
+        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        >
+
+    </com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterViewImpl>
 </android.support.v4.widget.DrawerLayout>

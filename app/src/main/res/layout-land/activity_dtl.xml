@@ -25,5 +25,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
+
     </LinearLayout>
+
+    <com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterViewImpl
+        android:id="@+id/drawer_filter_layout"
+        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        />
 </android.support.v4.widget.DrawerLayout>

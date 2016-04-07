@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.initializer;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.backends.okhttp.OkHttpImagePipelineConfigFactory;
@@ -24,6 +25,7 @@ public class FrescoInitializer implements AppInitializer {
         SimpleProgressiveJpegConfig jpegConfig = new SimpleProgressiveJpegConfig();
         ImagePipelineConfig config = OkHttpImagePipelineConfigFactory.newBuilder(context, new OkHttpClient())
                 .setProgressiveJpegConfig(jpegConfig)
+                .setBitmapsConfig(Bitmap.Config.RGB_565)
                 .setResizeAndRotateEnabledForNetwork(true)
                 .build();
 

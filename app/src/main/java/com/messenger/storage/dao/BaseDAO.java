@@ -51,7 +51,6 @@ class BaseDAO {
             adapter.bindToContentValues(values, t);
             db.insertWithOnConflict(adapter.getTableName(), null, values,
                     ConflictAction.getSQLiteDatabaseAlgorithmInt(adapter.getInsertOnConflictAction()));
-            Timber.d("Insert %s : %s", adapter.getTableName(), t);
             values.clear();
         }
         contentResolver.notifyChange(uri, null);

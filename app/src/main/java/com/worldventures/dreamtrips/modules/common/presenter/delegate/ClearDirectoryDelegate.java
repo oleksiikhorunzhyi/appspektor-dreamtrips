@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.common.presenter.delegate;
 import android.content.Context;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.storage.dao.AttachmentDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -17,17 +17,17 @@ import timber.log.Timber;
 public class ClearDirectoryDelegate {
 
     private final Context context;
-    private final AttachmentDAO attachmentDAO;
+    private final PhotoDAO photoDAO;
     private final SnappyRepository snappyRepository;
 
-    public ClearDirectoryDelegate(Context context, AttachmentDAO attachmentDAO, SnappyRepository snappyRepository) {
+    public ClearDirectoryDelegate(Context context, PhotoDAO photoDAO, SnappyRepository snappyRepository) {
         this.context = context;
-        this.attachmentDAO = attachmentDAO;
+        this.photoDAO = photoDAO;
         this.snappyRepository = snappyRepository;
     }
 
     public void clearTemporaryDirectory(){
-        attachmentDAO.getErrorAtachments().subscribe(dataAttachments -> {
+        photoDAO.getErrorAttachments().subscribe(dataAttachments -> {
             List<String> exceptFilePaths = Queryable.from(dataAttachments).map(elem -> elem.getUrl()).toList();
 
             snappyRepository.removeAllUploadTasks();

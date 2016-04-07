@@ -8,6 +8,7 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.RxContentResolver;
@@ -76,6 +77,13 @@ public class MessengerStorageModule {
     AttachmentDAO provideAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
                                        @ForApplication Context context) {
         return new AttachmentDAO(context, rxContentResolver);
+    }
+
+    @Provides
+    @Singleton
+    PhotoDAO providePhotoDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver,
+                                       @ForApplication Context context) {
+        return new PhotoDAO(context, rxContentResolver);
     }
 
     @Provides

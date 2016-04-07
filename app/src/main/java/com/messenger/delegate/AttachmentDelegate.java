@@ -5,6 +5,7 @@ import com.messenger.delegate.command.SendImageAttachmentCommand;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.techery.spares.session.SessionHolder;
@@ -36,13 +37,15 @@ public class AttachmentDelegate {
         this.readSendImagePipe = sendImagePipe.asReadOnly();
     }
 
-    public void retry(DataConversation conversation, DataMessage message, DataAttachment attachment) {
-        sendImagePipe.send(new SendImageAttachmentCommand(conversation, attachment.getUrl(), message, attachment));
+    public void retry(DataConversation conversation, DataMessage message, DataAttachment dataAttachment, DataPhotoAttachment photoAttachment) {
+        sendImagePipe.send(new SendImageAttachmentCommand(conversation, photoAttachment.getUrl(), message, dataAttachment, photoAttachment));
     }
 
     public void send(DataConversation conversation, String filePath) {
         DataMessage emptyMessage = createEmptyMessage(conversation.getId());
-        sendImagePipe.send(new SendImageAttachmentCommand(conversation, filePath, emptyMessage, createDataAttachment(emptyMessage)));
+        DataAttachment attachment = createDataAttachment(emptyMessage);
+        DataPhotoAttachment dataPhotoAttachment = createDataPhotoAttachment(attachment);
+        sendImagePipe.send(new SendImageAttachmentCommand(conversation, filePath, emptyMessage, attachment, dataPhotoAttachment));
     }
 
     public ReadOnlyActionPipe<SendImageAttachmentCommand> getReadSendImagePipe() {
@@ -65,6 +68,12 @@ public class AttachmentDelegate {
                 .conversationId(message.getConversationId())
                 .messageId(message.getId())
                 .type(AttachmentType.IMAGE)
+                .build();
+    }
+
+    private DataPhotoAttachment createDataPhotoAttachment(DataAttachment dataAttachment) {
+        return new DataPhotoAttachment.Builder()
+                .id(dataAttachment.getId())
                 .build();
     }
 

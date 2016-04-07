@@ -20,6 +20,7 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ChatState;
@@ -36,6 +37,7 @@ import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.storage.helper.AttachmentHelper;
@@ -138,7 +140,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
     protected AttachmentHelper attachmentHelper;
-   
+
     protected String conversationId;
 
     @Inject
@@ -149,6 +151,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     MessageDAO messageDAO;
     @Inject
     AttachmentDAO attachmentDAO;
+    @Inject
+    PhotoDAO photoDAO;
     @Inject
     TranslationsDAO translationsDAO;
 
@@ -192,7 +196,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
-        attachmentHelper = new AttachmentHelper(attachmentDAO, messageDAO, usersDAO);
+        attachmentHelper = new AttachmentHelper(photoDAO, messageDAO, usersDAO);
         contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO, translationsDAO);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
@@ -609,19 +613,23 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void retrySendMessage(DataMessage message) {
-        attachmentDAO.getAttachmentByMessageId(message.getId())
-                .first()
+        String messageId = message.getId();
+
+        Observable.zip(attachmentDAO.getAttachmentByMessageId(messageId).take(1),
+                        photoDAO.getAttachmentByMessageId(messageId).take(1),
+                        (dataAttachment, dataPhotoAttachment) -> new Pair<>(dataAttachment, dataPhotoAttachment))
                 .compose(bindView())
-                .subscribe(attachment -> {
-                    if (attachment != null) retrySendAttachment(message, attachment);
+                .subscribe(attachments -> {
+                    DataAttachment attachment = attachments.first;
+                    if (attachment != null) retrySendAttachment(message, attachment, attachments.second);
                     else retrySendTextMessage(message);
                 });
     }
 
-    private void retrySendTextMessage(DataMessage dataMessasge) {
+    private void retrySendTextMessage(DataMessage dataMessage) {
         submitOneChatAction(chat -> {
-                        Message message = dataMessasge.toChatMessage();
-                        message.setMessageBody(messageBodyCreator.provideForText(dataMessasge.getText()));
+                        Message message = dataMessage.toChatMessage();
+                        message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
                         chat.send(message).subscribe();
         });
     }
@@ -865,9 +873,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Photo uploading
     ///////////////////////////////////////////////////////////////////////////
 
-    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
+    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment, DataPhotoAttachment photoAttachment) {
         conversationObservable.take(1)
-                .subscribe(pair -> attachmentDelegate.retry(pair.first, message, dataAttachment),
+                .subscribe(pair -> attachmentDelegate.retry(pair.first, message, dataAttachment, photoAttachment),
                         throwable -> Timber.e(throwable, ""));
     }
 

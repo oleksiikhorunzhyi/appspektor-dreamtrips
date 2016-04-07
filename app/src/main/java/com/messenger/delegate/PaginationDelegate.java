@@ -1,19 +1,17 @@
 package com.messenger.delegate;
 
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
-import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.PhotoDAO;
+import com.messenger.util.DecomposeMessagesHelper;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import rx.Observable;
@@ -28,15 +26,17 @@ public class PaginationDelegate {
     private final MessengerServerFacade messengerServerFacade;
     private final MessageDAO messageDAO;
     private final AttachmentDAO attachmentDAO;
+    private final PhotoDAO photoDAO;
 
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private PagePagination<Message> messagePagePagination;
 
-    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
+    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO, PhotoDAO photoDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.messageDAO = messageDAO;
         this.attachmentDAO = attachmentDAO;
+        this.photoDAO = photoDAO;
     }
 
     public void setPageSize(int pageSize) {
@@ -55,13 +55,13 @@ public class PaginationDelegate {
                 Observable.just(messages)
                 .subscribeOn(Schedulers.io())
                 .map(serverMessages -> {
-                    List<DataMessage> msgs = from(serverMessages).map(DataMessage::new).toList();
-                    List<DataAttachment> attachments = getDataAttachment(serverMessages);
-                    from(msgs).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
-                    return new Pair<>(msgs, attachments);
-                }).subscribe(listListPair -> {
-                            messageDAO.save(listListPair.first);
-                            attachmentDAO.save(listListPair.second);
+                    DecomposeMessagesHelper.DecomposedMessagesResult decomposedMessagesResult =  DecomposeMessagesHelper.decomposeMessages(serverMessages);
+                    from(decomposedMessagesResult.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
+                    return decomposedMessagesResult;
+                }).subscribe(result -> {
+                            messageDAO.save(result.messages);
+                            attachmentDAO.save(result.attachments);
+                            photoDAO.save(result.photoAttachments);
                         }));
 
         messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
@@ -78,14 +78,6 @@ public class PaginationDelegate {
             }
         });
         messagePagePagination.loadPage(page, before);
-    }
-
-    private List<DataAttachment> getDataAttachment(List<Message> messages) {
-        List<DataAttachment> result = new LinkedList<>();
-        for (Message m : messages) {
-            result.addAll(DataAttachment.fromMessage(m));
-        }
-        return result;
     }
 
     public void stopPaginate(){

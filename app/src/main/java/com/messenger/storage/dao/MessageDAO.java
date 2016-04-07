@@ -9,6 +9,8 @@ import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Adapter;
 import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataPhotoAttachment;
+import com.messenger.entities.DataPhotoAttachment$Table;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
@@ -43,6 +45,20 @@ public class MessageDAO extends BaseDAO {
                 .compose(DaoTransformers.toDataMessage());
     }
 
+    public Observable<DataMessage> getMessageByAttachmentId(String attachmentId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT m.* " +
+                        "FROM " + DataMessage$Table.TABLE_NAME + " m " +
+                        "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
+                        "ON a." + DataAttachment$Table.MESSAGEID + "= m." + DataMessage$Table._ID + " " +
+                        "WHERE a." + DataAttachment$Table._ID + "=?")
+                .withSelectionArgs(new String[]{attachmentId})
+                .build();
+
+        return query(q, DataMessage.CONTENT_URI)
+                .compose(DaoTransformers.toDataMessage());
+    }
+
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, " +
@@ -53,7 +69,8 @@ public class MessageDAO extends BaseDAO {
 
                         "a." + DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
                         "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
-                        "a." + DataAttachment$Table.URL + " as " + DataAttachment$Table.URL + ", " +
+
+                        "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", " +
 
                         "t." + DataTranslation$Table._ID + " as " + TRANSLATION_ID + ", " +
                         "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "+
@@ -64,6 +81,8 @@ public class MessageDAO extends BaseDAO {
                         "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
                         "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
+                        "LEFT JOIN " + DataPhotoAttachment.TABLE_NAME + " p " +
+                        "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table._ID + " " +
                         "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
                         "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " " +
 

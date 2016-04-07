@@ -1,8 +1,6 @@
 package com.messenger.delegate;
 
-import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -15,13 +13,14 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.util.DecomposeMessagesHelper;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,11 +41,12 @@ public class LoaderDelegate {
     private final MessageDAO messageDAO;
     private final UsersDAO usersDAO;
     private final AttachmentDAO attachmentDAO;
+    private final PhotoDAO photoDAO;
 
     @Inject
     public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
                           ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                          MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
+                          MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO, PhotoDAO photoDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.userProcessor = userProcessor;
         this.conversationsDAO = conversationsDAO;
@@ -54,7 +54,7 @@ public class LoaderDelegate {
         this.messageDAO = messageDAO;
         this.usersDAO = usersDAO;
         this.attachmentDAO = attachmentDAO;
-
+        this.photoDAO = photoDAO;
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
@@ -74,10 +74,9 @@ public class LoaderDelegate {
                     List<DataConversation> convs = from(data).map(DataConversation::new).toList();
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
 
-                    List<DataMessage> messages = from(data)
-                            .filter(c -> c.getLastMessage() != null)
-                            .map(c -> new DataMessage(c.getLastMessage())).notNulls().toList();
-                    from(messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
+                    List<Message> serverMessages = from(data).map(conv -> conv.getLastMessage()).notNulls().toList();
+                    DecomposeMessagesHelper.DecomposedMessagesResult decomposedMessagesResult = DecomposeMessagesHelper.decomposeMessages(serverMessages);
+                    from(decomposedMessagesResult.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
                     List<DataParticipant> relationships = new ArrayList<>();
                     if (!data.isEmpty()) {
@@ -89,12 +88,11 @@ public class LoaderDelegate {
                         from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
                     }
 
-                    List<DataAttachment> attachments = getDataAttachments(data);
-
                     conversationsDAO.save(convs);
                     conversationsDAO.deleteBySyncTime(syncTime);
-                    attachmentDAO.save(attachments);
-                    messageDAO.save(messages);
+                    attachmentDAO.save(decomposedMessagesResult.attachments);
+                    photoDAO.save(decomposedMessagesResult.photoAttachments);
+                    messageDAO.save(decomposedMessagesResult.messages);
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
 
@@ -111,16 +109,6 @@ public class LoaderDelegate {
         });
         return userProcessor.connectToUserProvider(loader)
                 .map(var -> (Void) null);
-    }
-
-    private List<DataAttachment> getDataAttachments(List<Conversation> conversations) {
-        List<DataAttachment> attachments = new LinkedList<>();
-        for (Conversation c : conversations) {
-            Message message = c.getLastMessage();
-            if (message != null) attachments.addAll(DataAttachment.fromMessage(message));
-        }
-
-        return attachments;
     }
 
     public Observable<List<DataUser>> loadContacts() {

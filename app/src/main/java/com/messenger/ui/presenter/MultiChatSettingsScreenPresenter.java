@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Notification;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> {
@@ -62,10 +63,11 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
 
         conversationAvatarDelegate.getReadChangeAvatarCommandActionPipe()
                 .observe()
-                .compose(bindViewAndObserveToMain())
+                .compose(bindView())
                 .compose(new ActionStateToActionTransformer<>())
                 .map(ChangeAvatarCommand::getConversation)
                 .filter(conversation -> TextUtils.equals(conversation.getId(), conversationId))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onChangeAvatarSuccess, this::onChangeAvatarFailed);
     }
 

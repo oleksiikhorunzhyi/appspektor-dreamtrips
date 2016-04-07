@@ -14,8 +14,6 @@ import rx.Observable;
 
 @CommandAction
 public class SetAvatarUploadCommand extends ChangeAvatarCommand {
-    private static final int COMMAND_UPLOAD_ID = 0x99942;
-
     @Inject UploaderyManager uploaderyManager;
 
     private final String imagePath;
@@ -28,8 +26,7 @@ public class SetAvatarUploadCommand extends ChangeAvatarCommand {
     @Override
     protected void run(CommandCallback<DataConversation> callback) {
         uploaderyManager.getUploadImagePipe()
-                .createObservable(new SimpleUploaderyCommand(imagePath, COMMAND_UPLOAD_ID))
-                .filter(state -> state.action.getCommandId() == COMMAND_UPLOAD_ID)
+                .createObservable(new SimpleUploaderyCommand(imagePath))
                 .doOnNext(state -> handleUploadingState(state, callback))
                 .compose(new ActionStateToActionTransformer<>())
                 .flatMap(this::sendCommandResult)

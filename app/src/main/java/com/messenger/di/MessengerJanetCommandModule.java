@@ -8,6 +8,7 @@ import com.messenger.delegate.command.SetAvatarUploadCommand;
 import dagger.Module;
 
 @Module(injects = {
+        SendImageAttachmentCommand.class,
         ChangeAvatarCommand.class,
         RemoveAvatarCommand.class,
         SetAvatarUploadCommand.class},

@@ -22,7 +22,7 @@ public class ChatSettingsViewState extends LceViewState<Parcelable> {
     }
 
     public enum UploadingState {
-        UPLOADING, ERROR, uploadingState, UPLOADED
+        UPLOADING, ERROR, UPLOADED
     }
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable

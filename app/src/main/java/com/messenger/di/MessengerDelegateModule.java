@@ -2,7 +2,6 @@ package com.messenger.di;
 
 import android.content.Context;
 
-import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.MessageBodyCreator;
@@ -21,14 +20,12 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
@@ -99,11 +96,6 @@ public class MessengerDelegateModule {
             AttachmentDAO attachmentDAO,
             OpenedConversationTracker openedConversationTracker) {
         return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker,  conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
-    }
-
-    @Provides
-    AttachmentDelegate provideAttachmentDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
-        return new AttachmentDelegate(photoUploadingManager, messageDAO, attachmentDAO);
     }
 
     @Provides

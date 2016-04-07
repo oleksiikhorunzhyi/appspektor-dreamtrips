@@ -73,10 +73,4 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
                 .compose(new IoToMainComposer<>())
                 .compose(RxLifecycle.bindView((View) getView()));
     }
-
-    protected <T> Observable.Transformer<T, T> bindViewAndObserveToMain() {
-        return input -> input
-                .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
 }

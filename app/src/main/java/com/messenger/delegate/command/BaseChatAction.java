@@ -32,7 +32,7 @@ public abstract class BaseChatAction<Result> extends CommandActionBase<Result> {
               .createMultiUserChatObservable(conversation.getId(), messengerServerFacade.getUsername());
     }
 
-    protected Chat createChat() {
+    protected Chat getChat() {
         if (ConversationHelper.isSingleChat(conversation)) {
             return messengerServerFacade.getChatManager().createSingleUserChat(null, conversation.getId());
         } else {

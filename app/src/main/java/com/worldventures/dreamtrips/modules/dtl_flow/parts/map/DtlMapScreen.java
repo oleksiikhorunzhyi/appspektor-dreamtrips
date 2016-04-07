@@ -50,4 +50,6 @@ public interface DtlMapScreen extends DtlScreen {
     Observable<Boolean> getToggleObservable();
 
     void showPinInfo(String merchantId);
+
+    void openFilter();
 }

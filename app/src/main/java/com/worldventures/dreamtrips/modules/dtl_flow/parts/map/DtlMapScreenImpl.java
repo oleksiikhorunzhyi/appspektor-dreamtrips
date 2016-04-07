@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +30,6 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -81,9 +79,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
     private GoogleMap googleMap;
-
-    private DtlMapBundle bundle;
-    private Bundle mapBundle;
 
     public DtlMapScreenImpl(Context context) {
         super(context);
@@ -245,6 +240,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
                 .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
         infoView.setInjector(injector);
         infoContainer.addView(infoView);
+    }
+
+    @Override
+    public void openFilter() {
+        ((FlowActivity)getActivity()).openRightDrawer();
     }
 
     @Override

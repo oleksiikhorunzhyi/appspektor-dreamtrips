@@ -2,12 +2,28 @@ package com.messenger.ui.viewstate;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 public class ChatSettingsViewState extends LceViewState<Parcelable> {
+
+    private UploadingState uploadAvatar;
 
     public ChatSettingsViewState() {
     }
 
+
+    @Nullable
+    public UploadingState getUploadAvatar() {
+        return uploadAvatar;
+    }
+
+    public void setUploadAvatar(@Nullable UploadingState uploadAvatar) {
+        this.uploadAvatar = uploadAvatar;
+    }
+
+    public enum UploadingState {
+        UPLOADING, ERROR, uploadingState, UPLOADED
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////

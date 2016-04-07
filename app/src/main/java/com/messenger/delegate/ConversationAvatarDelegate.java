@@ -1,60 +1,35 @@
 package com.messenger.delegate;
 
-import android.text.TextUtils;
-
-import com.messenger.delegate.actions.AvatarAction;
-import com.messenger.delegate.actions.RemoveAvatarAction;
-import com.messenger.delegate.actions.SaveAvatarAction;
+import com.messenger.delegate.command.ChangeAvatarCommand;
+import com.messenger.delegate.command.RemoveAvatarCommand;
+import com.messenger.delegate.command.SetAvatarUploadCommand;
 import com.messenger.entities.DataConversation;
-import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.storage.dao.ConversationsDAO;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.ActionState;
-import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.techery.janet.ReadOnlyActionPipe;
 
+@Singleton
 public class ConversationAvatarDelegate {
+    private final ActionPipe<ChangeAvatarCommand> changeAvatarCommandActionPipe;
+    private final ReadOnlyActionPipe<ChangeAvatarCommand> readChangeAvatarCommandActionPipe;
 
-    private PhotoUploadingManagerS3 photoUploadingManager;
-    private MessengerServerFacade messengerServerFacade;
-    private ConversationsDAO conversationsDAO;
-
-    private Janet janet;
-    private ActionPipe<AvatarAction> actionPipe;
-
-    public ConversationAvatarDelegate(PhotoUploadingManagerS3 photoUploadingManager,
-                                      MessengerServerFacade messengerServerFacade,
-                                      ConversationsDAO conversationsDAO) {
-        this.photoUploadingManager = photoUploadingManager;
-        this.messengerServerFacade = messengerServerFacade;
-        this.conversationsDAO = conversationsDAO;
-
-        janet = new Janet.Builder()
-                .addService(new CommandActionService())
-                .build();
-        actionPipe = janet.createPipe(AvatarAction.class, Schedulers.io());
+    @Inject ConversationAvatarDelegate(Janet janet) {
+        this.changeAvatarCommandActionPipe = janet.createPipe(ChangeAvatarCommand.class);
+        this.readChangeAvatarCommandActionPipe = changeAvatarCommandActionPipe.asReadOnly();
     }
 
-    public void clearReplays() {
-        actionPipe.clearReplays();
-    }
-
-    public Observable<ActionState<AvatarAction>> listenToAvatarUpdates(String conversationId) {
-        return actionPipe.observeWithReplay()
-                .filter(state -> TextUtils.equals(state.action.getConversation().getId(), conversationId))
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public void saveAvatar(DataConversation conversation, String avatarPath) {
-        actionPipe.send(new SaveAvatarAction(conversation, avatarPath, photoUploadingManager, messengerServerFacade, conversationsDAO));
-    }
+    public void setAvatarToConversation(DataConversation conversation, String photoPath) {
+        changeAvatarCommandActionPipe.send(new SetAvatarUploadCommand(conversation, photoPath));}
 
     public void removeAvatar(DataConversation conversation) {
-        actionPipe.send(new RemoveAvatarAction(conversation, photoUploadingManager, messengerServerFacade, conversationsDAO));
+        changeAvatarCommandActionPipe.send(new RemoveAvatarCommand(conversation));
+    }
+
+    public ReadOnlyActionPipe<ChangeAvatarCommand> getReadChangeAvatarCommandActionPipe() {
+        return readChangeAvatarCommandActionPipe;
     }
 }

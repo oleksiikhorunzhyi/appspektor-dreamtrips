@@ -18,8 +18,6 @@ package com.worldventures.dreamtrips.core.flow.container;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
@@ -27,21 +25,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.flow.animation.AnimatorFactory;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.util.Utils;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
+import com.worldventures.dreamtrips.modules.dtl_flow.animation.DtlAnimatorRegistrar;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import flow.Flow;
+import flow.Flow.Direction;
 import flow.path.Path;
 import flow.path.PathContainer;
 import flow.path.PathContext;
 import flow.path.PathContextFactory;
-
-import static flow.Flow.Direction.REPLACE;
 
 /**
  * Provides basic right-to-left transitions. Saves and restores view state.
@@ -51,6 +50,7 @@ public class SimplePathContainer extends PathContainer {
     private static final Map<Class, Integer> PATH_LAYOUT_CACHE = new LinkedHashMap<>();
     private final PathContextFactory contextFactory;
     private Context context;
+    private DtlAnimatorRegistrar animatorRegistrar = new DtlAnimatorRegistrar();
 
     public SimplePathContainer(Context context, int tagKey, PathContextFactory contextFactory) {
         super(tagKey);
@@ -60,7 +60,7 @@ public class SimplePathContainer extends PathContainer {
 
     @Override
     protected void performTraversal(final ViewGroup containerView,
-                                    final TraversalState traversalState, final Flow.Direction direction,
+                                    final TraversalState traversalState, final Direction direction,
                                     final Flow.TraversalCallback callback) {
 
         final PathContext pathContext;
@@ -70,51 +70,58 @@ public class SimplePathContainer extends PathContainer {
         } else {
             oldPath = PathContext.root(containerView.getContext());
         }
-
+        //
         Path to = traversalState.toPath();
-
+        //
         View newView;
         pathContext = PathContext.create(oldPath, to, contextFactory);
         int layout = getLayout(to);
-        newView = LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, null);
-
-        if (newView instanceof InjectorHolder && context instanceof Injector) {
+        newView =
+                LayoutInflater.from(pathContext).cloneInContext(pathContext).inflate(layout, containerView, false);
+        //
+        if (newView instanceof InjectorHolder
+                && context instanceof Injector) {
             ((InjectorHolder) newView).setInjector((Injector) context);
         }
-
-        if (newView instanceof PathView) {
+        //
+        if (newView instanceof PathView)
             ((PathView) newView).setPath(to);
-        }
-
-        View fromView = null;
+        //
+        final View fromView;
         if (traversalState.fromPath() != null) {
             fromView = containerView.getChildAt(0);
             traversalState.saveViewState(fromView);
-        }
+        } else fromView = null;
         traversalState.restoreViewState(newView);
-
-        if (fromView == null || direction == REPLACE) {
+        //
+        if (fromView == null) {
             containerView.removeAllViews();
             containerView.addView(newView);
             oldPath.destroyNotIn(pathContext, contextFactory);
             callback.onTraversalCompleted();
-        } else {
-            containerView.addView(newView);
-            final View finalFromView = fromView;
-            Utils.waitForMeasure(newView, new Utils.OnMeasuredCallback() {
-                @Override
-                public void onMeasured(View view, int width, int height) {
-                    runAnimation(containerView, finalFromView, view, direction, new Flow.TraversalCallback() {
-                        @Override
-                        public void onTraversalCompleted() {
-                            containerView.removeView(finalFromView);
-                            oldPath.destroyNotIn(pathContext, contextFactory);
-                            callback.onTraversalCompleted();
-                        }
-                    });
+            return;
+        }
+        //
+        containerView.addView(newView);
+        Utils.waitForMeasure(newView, ((view, width, height) -> {
+            if (animatorRegistrar == null) {
+                containerView.removeView(fromView);
+                oldPath.destroyNotIn(pathContext, contextFactory);
+                callback.onTraversalCompleted();
+                return;
+            }
+            //
+            AnimatorFactory factory = animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to);
+            Animator animator = factory.createAnimator(fromView, newView, direction, containerView);
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override public void onAnimationEnd(Animator animation) {
+                    containerView.removeView(fromView);
+                    oldPath.destroyNotIn(pathContext, contextFactory);
+                    callback.onTraversalCompleted();
                 }
             });
-        }
+            animator.start();
+        }));
     }
 
     protected int getLayout(Path path) {
@@ -125,31 +132,5 @@ public class SimplePathContainer extends PathContainer {
             PATH_LAYOUT_CACHE.put(pathType, layoutResId);
         }
         return layoutResId;
-    }
-
-    private void runAnimation(final ViewGroup container, final View from, final View to,
-                              Flow.Direction direction, final Flow.TraversalCallback callback) {
-        Animator animator = createSegue(from, to, direction);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                container.removeView(from);
-                callback.onTraversalCompleted();
-            }
-        });
-        animator.start();
-    }
-
-    private Animator createSegue(View from, View to, Flow.Direction direction) {
-        boolean backward = direction == Flow.Direction.BACKWARD;
-        int fromTranslation = backward ? from.getWidth() : -from.getWidth();
-        int toTranslation = backward ? -to.getWidth() : to.getWidth();
-
-        AnimatorSet set = new AnimatorSet();
-
-        set.play(ObjectAnimator.ofFloat(from, View.TRANSLATION_X, fromTranslation));
-        set.play(ObjectAnimator.ofFloat(to, View.TRANSLATION_X, toTranslation, 0));
-
-        return set;
     }
 }

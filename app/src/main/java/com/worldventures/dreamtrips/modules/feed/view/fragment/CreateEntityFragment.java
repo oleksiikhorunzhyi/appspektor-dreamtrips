@@ -53,7 +53,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
 
     @Override
     public void updateItem(int position) {
-        adapter.notifyItemChanged(position);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -105,7 +105,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .data(new PickerBundle(getPresenter().getMediaRequestId(), 15))
+                .data(new PickerBundle(getPresenter().getMediaRequestId(), getPresenter().getRemainingPhotosCount()))
                 .build());
     }
 

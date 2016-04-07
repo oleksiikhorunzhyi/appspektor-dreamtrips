@@ -42,7 +42,6 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.EditEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
@@ -80,7 +79,6 @@ import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
@@ -100,7 +98,6 @@ import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 public enum Route {
     LOGIN(LoginFragment.class),
     WEB_STATIC(StaticInfoFragment.class),
-    CREATE_PHOTO(CreatePhotoFragment.class),
     DETAILED_TRIP(TripDetailsFragment.class),
     PICK_FB_ALBUM(FacebookAlbumFragment.class),
     PICK_FB_PHOTO(FacebookPhotoFragment.class),
@@ -152,7 +149,6 @@ public enum Route {
     POST_CREATE(CreateFeedPostFragment.class),
     PHOTO_CREATE(CreateTripImageFragment.class),
     ADD_LOCATION(LocationFragment.class),
-    ENTITY_EDIT(EditEntityFragment.class),
     PHOTO_EDIT(PhotoEditFragment.class),
     EDIT_PHOTO_TAG_FRAGMENT(EditPhotoTagsFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),

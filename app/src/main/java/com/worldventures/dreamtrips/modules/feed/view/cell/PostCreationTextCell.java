@@ -33,6 +33,7 @@ public class PostCreationTextCell extends AbstractDelegateCell<String, PostCreat
 
     @Override
     protected void syncUIStateWithModel() {
+        post.setText(getModelObject());
         post.addTextChangedListener(textWatcher);
         post.setOnKeyPreImeListener((keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_BACK) {

@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.PreviewPhotoTaggabl
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoParentPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreatePhotoPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.InspireMePresenter;
@@ -30,11 +28,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.Mem
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.SocialImageFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.TripImageFullscreenPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.YouShouldBeHerePhotoFullscreenPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.cell.PhotoUploadCell;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreatePhotoFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenTripImageFragment;
@@ -55,7 +51,6 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                CreatePhotoActivity.class,
                 TripImagesTabsPresenter.class,
                 TripImagesListPresenter.class,
                 InspireMePresenter.class,
@@ -63,8 +58,6 @@ import dagger.Provides;
                 MembersImagesPresenter.class,
                 YSBHPresenter.class,
                 FullScreenPhotoFragment.class,
-                CreatePhotoParentPresenter.class,
-                CreatePhotoPresenter.class,
                 TripImagePresenter.class,
 
                 FullScreenPresenter.class,
@@ -78,7 +71,6 @@ import dagger.Provides;
                 PhotoEditFragment.class,
                 PhotoEditPresenter.class,
                 FullScreenTripImageFragment.class,
-                CreatePhotoFragment.class,
                 PhotoCell.class,
                 PhotoUploadCell.class,
 

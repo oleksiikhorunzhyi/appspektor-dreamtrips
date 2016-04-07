@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.net.Uri;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -10,6 +11,7 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
 
@@ -31,10 +33,20 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     CircleImageView circleView;
     @InjectView(R.id.tag_btn)
     TextView tagButton;
+    @InjectView(R.id.photo_title)
+    EditText photoTitle;
 
     public PhotoPostCreationCell(View view) {
         super(view);
     }
+
+    private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            super.onTextChanged(s, start, before, count);
+            getModelObject().setTitle(s.toString().trim());
+        }
+    };
 
     @Override
     protected void syncUIStateWithModel() {
@@ -54,6 +66,9 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
         //
         attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(
                 Uri.parse(getModelObject().getFilePath()), attachedPhoto.getController()));
+        //
+        photoTitle.setText(getModelObject().getTitle());
+        photoTitle.addTextChangedListener(textWatcher);
     }
 
     private void showProgress() {
@@ -110,6 +125,5 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
             tagButton.setText(R.string.empty);
             tagButton.setSelected(true);
         }
-
     }
 }

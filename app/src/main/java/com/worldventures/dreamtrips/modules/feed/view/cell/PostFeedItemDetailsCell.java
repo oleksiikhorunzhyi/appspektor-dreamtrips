@@ -51,16 +51,17 @@ public class PostFeedItemDetailsCell extends FeedItemDetailsCell<PostFeedItem> {
     protected void onEdit() {
         super.onEdit();
         int containerId = R.id.container_details_floating;
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
-                .containerId(containerId)
-                .fragmentManager(fragmentManager)
-                .build());
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
-                .containerId(containerId)
-                .backStackEnabled(false)
-                .fragmentManager(fragmentManager)
-                .data(new EditEntityBundle(getModelObject().getItem(), FeedEntityHolder.Type.POST))
-                .build());
+        // TODO edit post
+//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
+//                .containerId(containerId)
+//                .fragmentManager(fragmentManager)
+//                .build());
+//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
+//                .containerId(containerId)
+//                .backStackEnabled(false)
+//                .fragmentManager(fragmentManager)
+//                .data(new EditEntityBundle(getModelObject().getItem(), FeedEntityHolder.Type.POST))
+//                .build());
     }
 
     @Override

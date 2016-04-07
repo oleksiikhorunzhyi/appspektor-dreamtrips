@@ -73,6 +73,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         } else {
             processTagUploadSuccess(feedEntity);
         }*/
+        processTagUploadSuccess(feedEntity);
     }
 
     private void postRemovedPhotoTags(FeedEntity feedEntity) {

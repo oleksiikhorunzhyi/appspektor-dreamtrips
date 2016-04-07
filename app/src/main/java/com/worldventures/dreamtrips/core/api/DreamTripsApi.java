@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.PhotoUploadResponse;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
@@ -18,6 +17,8 @@ import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
+import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -132,6 +133,13 @@ public interface DreamTripsApi {
 
     @PUT("/api/photos/{uid}")
     Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
+
+    //TODO ENDPOINT
+    @POST("tralala")
+    ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
+
+    @POST("tralala")
+    Void createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
     /* *** END PHOTOS *****************************/
 
     @GET("/api/success_stories")

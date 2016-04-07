@@ -19,6 +19,8 @@ public class PhotoCreationItem implements Parcelable {
     @NotNull
     String filePath;
     @NotNull
+    String originUrl;
+    @NotNull
     String location;
     @NotNull
     UploadTask.Status status;
@@ -30,6 +32,7 @@ public class PhotoCreationItem implements Parcelable {
     ArrayList<PhotoTag> cachedRemovedPhotoTags = new ArrayList<>();
     @NotNull
     String mediaAttachmentType;
+    String title;
 
     public PhotoCreationItem() {
     }
@@ -48,6 +51,15 @@ public class PhotoCreationItem implements Parcelable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    @NotNull
+    public String getOriginUrl() {
+        return originUrl;
+    }
+
+    public void setOriginUrl(@NotNull String originUrl) {
+        this.originUrl = originUrl;
     }
 
     public String getLocation() {
@@ -98,6 +110,13 @@ public class PhotoCreationItem implements Parcelable {
         return combinedTags;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @Override
     public int describeContents() {
@@ -113,6 +132,7 @@ public class PhotoCreationItem implements Parcelable {
         dest.writeTypedList(basePhotoTags);
         dest.writeTypedList(cachedAddedPhotoTags);
         dest.writeTypedList(cachedRemovedPhotoTags);
+        dest.writeString(title);
     }
 
     protected PhotoCreationItem(Parcel in) {
@@ -124,6 +144,7 @@ public class PhotoCreationItem implements Parcelable {
         this.basePhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
         this.cachedAddedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
         this.cachedRemovedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
+        this.title = in.readString();
     }
 
     public static final Creator<PhotoCreationItem> CREATOR = new Creator<PhotoCreationItem>() {
@@ -152,7 +173,9 @@ public class PhotoCreationItem implements Parcelable {
         uploadTask.setFilePath(getFilePath());
         uploadTask.setLocationName(getLocation());
         uploadTask.setStatus(getStatus());
+        uploadTask.setOriginUrl(getOriginUrl());
         uploadTask.setType(mediaAttachmentType);
+        uploadTask.setTitle(title);
         return uploadTask;
     }
 }

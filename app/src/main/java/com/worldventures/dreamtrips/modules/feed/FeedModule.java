@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
-import com.worldventures.dreamtrips.modules.feed.presenter.EditEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
@@ -49,7 +48,6 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.EditEntityFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsFragment;
@@ -123,8 +121,6 @@ import de.greenrobot.event.EventBus;
                 CreateFeedPostPresenter.class,
                 CreateEntityFragment.class,
                 CreateEntityPresenter.class,
-                EditEntityFragment.class,
-                EditEntityPresenter.class,
 
                 LocationFragment.class,
                 LocationPresenter.class,

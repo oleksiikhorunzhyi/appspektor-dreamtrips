@@ -102,16 +102,17 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @Override
     public void openEdit(EditEntityBundle bundle) {
         int containerId = R.id.container_details_floating;
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
-                .containerId(containerId)
-                .fragmentManager(getFragmentManager())
-                .build());
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
-                .containerId(containerId)
-                .backStackEnabled(false)
-                .fragmentManager(getFragmentManager())
-                .data(bundle)
-                .build());
+        // TODO edit photo
+//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
+//                .containerId(containerId)
+//                .fragmentManager(getFragmentManager())
+//                .build());
+//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
+//                .containerId(containerId)
+//                .backStackEnabled(false)
+//                .fragmentManager(getFragmentManager())
+//                .data(bundle)
+//                .build());
     }
 
     @Override

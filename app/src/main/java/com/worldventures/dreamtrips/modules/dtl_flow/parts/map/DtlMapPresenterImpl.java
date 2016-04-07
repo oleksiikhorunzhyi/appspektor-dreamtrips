@@ -154,6 +154,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             case R.id.action_list:
                 Flow.get(getContext()).goBack();
                 return true;
+            case R.id.action_dtl_filter :
+                getView().openFilter();
+                return true;
         }
         return super.onToolbarMenuItemClick(item);
     }
@@ -210,7 +213,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
     @Override
     public void onLocationCaptionClick() {
-        Flow.get(getContext()).set(DtlLocationsPath.builder().allowUserGoBack(true).build());
+        Flow.get(getContext()).set(DtlLocationsPath.builder()
+                .allowUserGoBack(true)
+                .build());
     }
 
     @Override

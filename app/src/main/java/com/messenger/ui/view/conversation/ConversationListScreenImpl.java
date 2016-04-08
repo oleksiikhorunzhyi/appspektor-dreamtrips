@@ -89,7 +89,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     @NonNull
     @Override
     public ConversationListScreenPresenter createPresenter() {
-        return new ConversationListScreenPresenterImpl(getContext());
+        return new ConversationListScreenPresenterImpl(getContext(), injector);
     }
 
     @Override

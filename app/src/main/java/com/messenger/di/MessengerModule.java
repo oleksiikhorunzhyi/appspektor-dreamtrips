@@ -32,16 +32,6 @@ import dagger.Module;
                 CloseGroupConversationViewHolder.class,
 
                 ChatFacadeInitializer.class,
-                ChatLeavingDelegate.class,
-
-//                presenters
-                ChatMembersScreenPresenterImpl.class,
-                NewChatScreenPresenterImpl.class,
-                AddChatMembersScreenPresenterImpl.class,
-                SingleChatSettingsScreenPresenterImpl.class,
-                MultiChatSettingsScreenPresenter.class,
-                ConversationListScreenPresenterImpl.class,
-                EditChatMembersScreenPresenterImpl.class,
 
                 // adapters
                 SwipeableContactsAdapter.class,

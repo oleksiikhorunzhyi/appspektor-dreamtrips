@@ -59,10 +59,10 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     private final ProfileCrosser profileCrosser;
     private final ContactsHeaderCreator contactsHeaderCreator;
 
-    public ChatMembersScreenPresenterImpl(Context context) {
+    public ChatMembersScreenPresenterImpl(Context context, Injector injector) {
         super(context);
 
-        ((Injector) context.getApplicationContext()).inject(this);
+       injector.inject(this);
 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);
@@ -183,6 +183,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     }
 
     protected void addListItems(List<Object> items) {
+        if (getView() == null) return;
         getViewState().setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
         getView().setAdapterItems(items);
         getView().showContent();

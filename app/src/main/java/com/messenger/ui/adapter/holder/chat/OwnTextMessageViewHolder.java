@@ -23,7 +23,7 @@ public class OwnTextMessageViewHolder extends TextMessageViewHolder implements M
         switch (view.getId()) {
             case R.id.iv_message_error:
                 if (onRepeatMessageSend != null) {
-                    onRepeatMessageSend.onRepeatMessageSend(message.getId());
+                    onRepeatMessageSend.onRepeatMessageSend(message);
                     viewSwitcher.showNext();
                 }
                 break;

@@ -186,9 +186,13 @@ public class ApiModule {
     }
 
     @Provides
-    OkHttpClient provideOkHttpClient(Context context) {
+    CookieManager provideCookieManager(Context context) {
+        return new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
+    }
+
+    @Provides
+    OkHttpClient provideOkHttpClient(CookieManager cookieManager) {
         OkHttpClient okHttpClient = new OkHttpClient();
-        CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
         okHttpClient.setCookieHandler(cookieManager);
         //Currently `api/{uid}/likes` (10k+ms)
         okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);

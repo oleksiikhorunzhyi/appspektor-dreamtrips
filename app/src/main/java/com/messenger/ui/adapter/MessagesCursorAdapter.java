@@ -401,7 +401,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     public interface OnRepeatMessageSend {
-        void onRepeatMessageSend(String messageId);
+        void onRepeatMessageSend(DataMessage message);
     }
 
     public interface OnMessageClickListener {

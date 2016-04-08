@@ -2,7 +2,6 @@ package com.messenger.ui.presenter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -31,7 +30,6 @@ import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
-import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.AttachmentDAO;
@@ -205,7 +203,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         loadInitialData();
 
         connectToPhotoPicker();
-        connectToPendingAttachments();
     }
 
     @Override
@@ -602,30 +599,22 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     @Override
-    public void retrySendMessage(String messageId) {
-        attachmentDAO.getAttachmentByMessageId(messageId)
+    public void retrySendMessage(DataMessage message) {
+        attachmentDAO.getAttachmentByMessageId(message.getId())
                 .first()
                 .compose(bindView())
                 .subscribe(attachment -> {
-                    if (attachment != null) {
-                        if (Utils.isFileUri(Uri.parse(attachment.getUrl())))
-                            retryUploadAttachment(messageId);
-                        else retrySendAttachment(attachment);
-                    } else retrySendTextMessage(messageId);
+                    if (attachment != null) retrySendAttachment(message, attachment);
+                    else retrySendTextMessage(message);
                 });
     }
 
-    private void retrySendTextMessage(String messageId) {
-        submitOneChatAction(chat -> messageDAO.getMessage(messageId)
-                .first()
-                .map(dataMessage -> {
-                    Message message = dataMessage.toChatMessage();
-                    message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
-                    return message;
-                })
-                .flatMap(chat::send)
-                .subscribeOn(Schedulers.io())
-                .subscribe());
+    private void retrySendTextMessage(DataMessage dataMessasge) {
+        submitOneChatAction(chat -> {
+                        Message message = dataMessasge.toChatMessage();
+                        message.setMessageBody(messageBodyCreator.provideForText(dataMessasge.getText()));
+                        chat.send(message).subscribe();
+        });
     }
 
     @Override
@@ -807,8 +796,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .first()
                 .map(photo -> photos.get(0).getFileThumbnail())
                 .map(filePath -> UploadingFileManager.copyFileIfNeed(filePath, context))
-                .compose(new IoToMainComposer<>())
-                .subscribe(this::uploadAttachment);
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::uploadAttachment, throwable -> Timber.e(throwable, ""));
+    }
+
+    private void uploadAttachment(String filePath) {
+        conversationObservable
+                .take(1)
+                .subscribe(pair -> attachmentDelegate.send(pair.first, filePath),
+                        throwable ->Timber.d(throwable, ""));
     }
 
     private void disconnectFromPhotoPicker() {
@@ -819,49 +815,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Photo uploading
     ///////////////////////////////////////////////////////////////////////////
 
-    private void uploadAttachment(String filePath) {
-        attachmentDelegate
-                .prepareMessageWithAttachment(user.getId(), conversationId, filePath)
-                .subscribe();
-    }
-
-    private void retrySendAttachment(DataAttachment dataAttachment) {
-        onAttachmentUploaded(dataAttachment);
-    }
-
-    private void retryUploadAttachment(String messageId) {
-        attachmentDAO.getAttachmentByMessageId(messageId)
-                .first()
-                .doOnNext(dataAttachment -> {
-                    attachmentDAO.deleteAttachment(dataAttachment);
-                    messageDAO.deleteMessageById(dataAttachment.getMessageId());
-                })
-                .subscribe(dataAttachment -> uploadAttachment(dataAttachment.getUrl()));
-    }
-
-    private void connectToPendingAttachments() {
-        attachmentDAO.getPendingAttachments(conversationId)
-                .flatMap(Observable::from)
-                .compose(bindViewIoToMainComposer())
-                .flatMap(attachmentDelegate::bindToPendingAttachment)
-                .subscribe(this::onAttachmentUploaded, e -> Timber.e("Image uploading failed"));
-    }
-
-    private void onAttachmentUploaded(DataAttachment dataAttachment) {
-        messageDAO.getMessage(dataAttachment.getMessageId())
-                .first()
-                .subscribe(dataMessage -> sendMessageWithAttachment(dataMessage, dataAttachment));
-    }
-
-    private void sendMessageWithAttachment(DataMessage dataMessage, DataAttachment dataAttachment) {
-        Message message = dataMessage.toChatMessage();
-        message.setMessageBody(messageBodyCreator.provideForAttachment(AttachmentHolder
-                .newImageAttachment(dataAttachment.getUrl())));
-        //
-        chatObservable.take(1)
-                .flatMap(chat -> chat.send(message))
-                .subscribe(msg -> {
-                }, throwable -> Timber.w("Unable to send message with attachment"));
+    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
+        conversationObservable.take(1)
+                .subscribe(pair -> attachmentDelegate.retry(pair.first, message, dataAttachment),
+                        throwable -> Timber.e(throwable, ""));
     }
 
     ///////////////////////////////////////////////////////////////////////////

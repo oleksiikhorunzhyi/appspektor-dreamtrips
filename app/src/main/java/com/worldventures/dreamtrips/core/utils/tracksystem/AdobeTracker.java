@@ -12,6 +12,11 @@ import java.util.Map;
 
 public class AdobeTracker extends ITracker {
 
+    private static final String DEFAULT_PREFIX = "dta:";
+
+    private static final String CHANNEL_KEY = "channel";
+    private static final String CHANNEL_VALUE = "App:Dreamtrips";
+
     @Override
     public void onCreate(BaseActivity activity) {
         Config.setDebugLogging(BuildConfig.DEBUG);
@@ -32,6 +37,13 @@ public class AdobeTracker extends ITracker {
     public void trackEvent(String category, String action, Map<String, Object> data) {
         if (data == null) data = new HashMap<>();
         if (headerData != null) data.putAll(headerData);
-        Analytics.trackAction(action, data);
+
+        data.put(CHANNEL_KEY, CHANNEL_VALUE);
+
+        Analytics.trackAction(prepareAction(action), data);
+    }
+
+    private String prepareAction(String action) {
+        return DEFAULT_PREFIX + action;
     }
 }

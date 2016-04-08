@@ -15,7 +15,7 @@ import java.util.List;
 
 import butterknife.OnClick;
 
-public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<SingleSettingsPath> {
+public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSettingsScreen, SingleSettingsPath> {
 
     public SingleChatSettingsScreenImpl(Context context) {
         super(context);
@@ -40,7 +40,7 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<SingleS
     }
 
     @Override
-    public void setConversation(DataConversation conversation) {
+    public void setConversation(@NonNull DataConversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_single_chat);
     }
@@ -66,6 +66,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<SingleS
     @NonNull
     @Override
     public ChatSettingsScreenPresenter createPresenter() {
-        return new SingleChatSettingsScreenPresenterImpl(getContext(), getPath().getConversationId());
+        return new SingleChatSettingsScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 }

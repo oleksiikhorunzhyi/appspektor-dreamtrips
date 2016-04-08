@@ -2,6 +2,7 @@ package com.messenger.messengerservers;
 
 import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.listeners.OnAvatarChangedListener;
 import com.messenger.messengerservers.listeners.OnChatCreatedListener;
 import com.messenger.messengerservers.listeners.OnChatJoinedListener;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
@@ -29,6 +30,7 @@ public abstract class GlobalEventEmitter {
     protected List<InvitationListener> invitationListeners = new CopyOnWriteArrayList<>();
     protected List<UnhandledMessageListener> unhandledMessageListeners = new CopyOnWriteArrayList<>();
     protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
+    protected List<OnAvatarChangedListener> onAvatarChangedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatCreatedListener> onChatCreatedListeners = new CopyOnWriteArrayList<>();
@@ -113,6 +115,20 @@ public abstract class GlobalEventEmitter {
     protected void notifyOnSubjectChanges(String conversationId, String subject) {
         for (OnSubjectChangedListener listener : onSubjectChangedListeners) {
             listener.onSubjectChanged(conversationId, subject);
+        }
+    }
+
+    public void addOnAvatarChangeListener(OnAvatarChangedListener listener) {
+        onAvatarChangedListeners.add(listener);
+    }
+
+    public void removeOnAvatarChangeListener(OnAvatarChangedListener listener) {
+        onAvatarChangedListeners.remove(listener);
+    }
+
+    protected void notifyOnAvatarStateChangedListener(String conversationId, String avatar) {
+        for (OnAvatarChangedListener listener : onAvatarChangedListeners) {
+            listener.onAvatarChangedListener(conversationId, avatar);
         }
     }
 

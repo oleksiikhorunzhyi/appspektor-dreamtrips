@@ -54,8 +54,7 @@ public class RxContentResolver {
                         unsubscribeFromContentUpdates(contentObserver[0]);
                 })
                 .onBackpressureLatest()
-                .flatMap(aVoid -> fetchCursor(query))
-                .compose(new CursorSweeper());
+                .flatMap(aVoid -> fetchCursor(query));
     }
 
     private Observable<Cursor> fetchCursor(Query query) {
@@ -196,19 +195,6 @@ public class RxContentResolver {
 
         private RxFetchCursorException(String message, Exception ex) {
             super(message, ex);
-        }
-    }
-
-    public static class CursorSweeper implements Observable.Transformer<Cursor, Cursor> {
-        @Override
-        public Observable<Cursor> call(Observable<Cursor> cursorObservable) {
-            Cursor[] cursors = {null};
-            return cursorObservable
-                    .doOnNext(cursor -> cursors[0] = cursor)
-                    .doOnUnsubscribe(() -> {
-                        Cursor cursor = cursors[0];
-                        if (cursor != null && !cursor.isClosed()) cursor.close();
-                    });
         }
     }
 }

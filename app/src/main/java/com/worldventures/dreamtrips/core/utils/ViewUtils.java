@@ -6,8 +6,10 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.View;
+import android.view.Window;
 
 public class ViewUtils {
 
@@ -32,6 +34,13 @@ public class ViewUtils {
         display.getSize(size);
         int height = size.y;
         return height;
+    }
+
+    public static int getRootViewHeight(Activity activity) {
+        int screenHeight = activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT).getHeight();
+        int toolbarHeight = ((AppCompatActivity) activity).getSupportActionBar() != null ?
+                ((AppCompatActivity) activity).getSupportActionBar().getHeight() : 0;
+        return screenHeight - toolbarHeight;
     }
 
     public static int getStatusBarHeight(Activity activity) {

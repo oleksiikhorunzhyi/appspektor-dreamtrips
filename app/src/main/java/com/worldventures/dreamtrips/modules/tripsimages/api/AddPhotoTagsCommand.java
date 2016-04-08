@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Command;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
@@ -22,5 +22,10 @@ public class AddPhotoTagsCommand extends Command<ArrayList<PhotoTag>> {
     @Override
     public ArrayList<PhotoTag> loadDataFromNetwork() throws Exception {
         return getService().addPhotoTags(photoId, new AddPhotoTag(tags));
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_tag_people;
     }
 }

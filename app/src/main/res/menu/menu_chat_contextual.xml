@@ -5,6 +5,14 @@
         android:id="@+id/action_copy_message"
         android:title="@string/chat_contextual_copy_message"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_translate"
+        android:title="@string/chat_contextual_translate_message"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_revert_translate"
+        android:title="@string/chat_contextual_revert_translate_message"
+        app:showAsAction="never"/>
     <!-- title created dynamically in this item -->
     <item
         android:id="@+id/action_start_chat"

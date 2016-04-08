@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 
 import butterknife.InjectView;
 
-
 public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFeedFragment<T, UserBundle>
         implements ProfilePresenter.View {
 
@@ -135,8 +134,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
 
     @Override
     public void openPost() {
-        showPostContainer();
-
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())

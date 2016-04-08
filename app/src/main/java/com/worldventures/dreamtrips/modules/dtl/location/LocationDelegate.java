@@ -16,6 +16,7 @@ import java.util.List;
 
 import pl.charmas.android.reactivelocation.ReactiveLocationProvider;
 import rx.Observable;
+import timber.log.Timber;
 
 public class LocationDelegate {
 
@@ -32,9 +33,16 @@ public class LocationDelegate {
         this.permissionView = permissionView;
     }
 
-    public void tryRequestLocation() {
-        if (permissionView == null) return;
+    public void dropPermissionView() {
+        this.permissionView = null;
+    }
 
+    public void tryRequestLocation() {
+        if (permissionView == null) {
+            Timber.e("permissionView can not be null at this point! Check your setup!");
+            return;
+        }
+        //
         permissionView.checkPermissions();
     }
 
@@ -53,6 +61,10 @@ public class LocationDelegate {
     public Observable<Location> getLastKnownLocation() {
         return reactiveLocationProvider.getLastKnownLocation()
                 .switchIfEmpty(requestLocationUpdate());
+    }
+
+    public Observable<Location> getLastKnownLocationOrEmpty() {
+        return reactiveLocationProvider.getLastKnownLocation();
     }
 
     public Observable<Location> requestLocationUpdate() {
@@ -96,5 +108,4 @@ public class LocationDelegate {
     public interface LocationListener {
         void onLocationObtained(Location location);
     }
-
 }

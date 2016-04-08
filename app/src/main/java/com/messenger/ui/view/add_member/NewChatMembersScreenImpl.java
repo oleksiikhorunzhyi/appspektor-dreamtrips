@@ -18,6 +18,6 @@ public class NewChatMembersScreenImpl extends ChatMembersScreenImpl<NewChatPath>
 
     @Override
     public ChatMembersScreenPresenter createPresenter() {
-        return new NewChatScreenPresenterImpl(getContext());
+        return new NewChatScreenPresenterImpl(getContext(), injector);
     }
 }

@@ -2,14 +2,15 @@
 <resources>
     <string name="dtl_locations_title">Select location</string>
     <string name="dtl_locations_try_search">We could not locate a City close to you.\nTry our city search</string>
-    <string name="dtl_locations_search_caption">Search City</string>
-    <string name="dtl_locations_or_caption">OR</string>
-    <string name="dtl_locations_select_nearby_cities">Select from nearby</string>
-    <string name="dtl_locations_select_popular">Discover popular</string>
     <string name="dtl_merchant_tab_offers">Offers</string>
     <string name="dtl_merchant_tab_dining">Dining</string>
+    <string name="dtl_near_me_caption">Near me</string>
+    <string name="dtl_nearby_caption">Nearby</string>
+    <string name="dtl_autodetect_location">Auto-detect my location</string>
+    <string name="dtl_no_merchants_caption">There are no merchants here</string>
+    <string name="dtl_load_merchants_here_button_caption">Redo merchant search</string>
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
-    <string name="dtl_points_estimation_explanation">Points calculation explanation goes here</string>
+    <string name="dtl_location_no_merchants_caption">There are no merchants near you.\n Please enter new city or</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
     <string name="dtl_points_estimation_input_hint">Enter amount</string>
     <string name="dtl_header">Point Estimator</string>
@@ -18,7 +19,6 @@
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance, %s</string>
-    <string name="dtl_receipt_hint">Enter amount</string>
     <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
     <string name="dtl_receipt_scan">Capture Receipt</string>
     <string name="dtl_receipt_rescan">Recapture</string>
@@ -37,10 +37,9 @@
     <string name="dtl_barcode_title">Scan QR Code</string>
     <string name="dtl_barcode_merchant">Scan Merchant Code</string>
     <string name="dtl_enter_amount">Enter Amount</string>
-    <string name="barcode_hint">Center the QR Code and wait it is scanned</string>
     <string name="dtl_congrats">Congratulations!</string>
     <string name="dtl_you_earned">You have earned</string>
-    <string name="dtl_total">Total DreamTrip Points:</string>
+    <string name="dtl_total">Total DreamTrips Points:</string>
     <string name="rate_hint">Please, rate this experience</string>
     <string name="dtl_success_title">Congratulations</string>
     <string name="dtl_amount_invalid">Amount is invalid</string>
@@ -50,39 +49,15 @@
     <string name="dtl_verify_earn_hint">You could earn </string>
     <string name="dtl_check_in">Check in &amp; earn</string>
     <string name="dtl_earn">Earn</string>
-    <string name="dtl_spent_amount">$ %s</string>
-    <string name="dtl_dt_points">%d DreamTrip Points</string>
-    <string name="suggest_merchant_title">Suggest Merchant</string>
-    <string name="suggest_merchant_restaurant_name_hint">Restaurant Name</string>
-    <string name="suggest_merchant_restaurant_city_hint">City</string>
-    <string name="suggest_merchant_success_snack">Successfully posted!</string>
-    <string name="suggest_merchant_contact_name_hint">Contact Name</string>
-    <string name="suggest_merchant_phone_number_hint">Phone</string>
-    <string name="suggest_merchant_contact_email_hint">Email</string>
-    <string name="suggest_merchant_best_time_contact_caption">Best time for contact</string>
-    <string name="suggest_merchant_best_time_contact_switcher">Between</string>
-    <string name="suggest_merchant_best_time_contact_from_caption">From:</string>
-    <string name="suggest_merchant_best_time_contact_to_caption">To:</string>
-    <string name="suggest_merchant_rate_experience_caption">Rate your experience</string>
-    <string name="suggest_merchant_food_caption">Food</string>
-    <string name="suggest_merchant_service_caption">Service</string>
-    <string name="suggest_merchant_cleanliness_caption">Cleanliness</string>
-    <string name="suggest_merchant_uniqueness_caption">Uniqueness</string>
-    <string name="suggest_merchant">Suggest merchant</string>
-    <string name="suggest_merchant_additional_info_caption">Additional information</string>
-    <string name="suggest_merchant_additional_info_symbols_entered_format">%1$d / %2$s</string>
-    <string name="suggest_merchant_submit_button_caption">Submit</string>
-    <string name="suggest_merchant_additional_info_length_error">Input too long!</string>
-    <string name="suggest_merchant_to_date_overlap_error">\'To\' field cannot be earlier than \'From\'!</string>
-    <string name="suggest_merchant_to_date_past_error">\'From\' field cannot be in the past!</string>
-    <string name="suggest_merchant_contact_time_past_error_format">\'%s\' field cannot be in the past!</string>
-    <string name="suggest_merchant_rating_error_format">\'%s\' rating must be set!</string>
+    <string name="dtl_dt_points">%d DreamTrips Points</string>
+    <string name="suggest_merchant">Suggest Merchant</string>
+    <string name="suggest_merchant_title">DT Local Tools</string>
     <string name="dtl_details_share_title">I\'m going to earn DreamTrips points in %s</string>
     <string name="dtl_details_share_title_earned" formatted="false">I\'ve earned %s DreamTrips points in %s</string>
-    <string name="dtl_wait_for_location">Wait… Obtaining current location</string>
-    <string name="dtl_wait_for_cities">Wait… Obtaining nearest cities</string>
     <string name="dtl_wait_for_receipt">Wait… Uploading receipt</string>
     <string name="dtl_wait_for_earn">Wait… Earning points</string>
+    <string name="dtl_wait_for_offers">Searching for nearby offers.</string>
+    <string name="dtl_wait_for_dinings">Searching for nearby merchants.</string>
     <string name="dtl_estimator_explanation">Points are calculated based on minimum amount spent at merchant and day of the week</string>
     <string name="dtl_photo_upload_error">Upload error. If problem persists please contact Member Services</string>
     <string name="dtl_merchant_success">Success</string>
@@ -91,18 +66,15 @@
     <string name="presentation">Presentation</string>
     <string name="dtl_open_now">Open now</string>
     <string name="dtl_closed">Closed now</string>
-    <string name="miles">kms/&lt;b>miles&lt;/b></string>
-    <string name="kms">&lt;b>kms&lt;/b>/miles</string>
-    <string name="wrong_qr">Invalid Merchant code or Incorrect Location. If problem persists contact Member Services.</string>
     <string name="directions">Directions</string>
     <string name="checked_in">You have successfully checked in</string>
     <string name="point_estimator">Point estimator</string>
     <string name="km">km</string>
     <string name="mi">mi</string>
     <string name="dtl_coming_soon_offers">Offers coming soon</string>
+    <string name="dtl_show_offers_only">Show offers only</string>
     <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
-    <string name="rep_suggest_restaurant">Suggest Restaurant</string>
-    <string name="distance_caption_format" formatted="false">%1$.1f %2$s</string>
+    <string name="distance_caption_format" formatted="false" translatable="false">%1$.1f %2$s</string>
     <string name="details_collapsed_text_caption">Show More</string>
     <string name="details_expanded_text_caption">Show Less</string>
 </resources>

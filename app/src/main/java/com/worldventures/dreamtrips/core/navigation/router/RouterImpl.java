@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 
+import com.crashlytics.android.Crashlytics;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.DialogFragmentNavigator;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -66,14 +67,15 @@ public class RouterImpl implements Router {
             try {
                 fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             } catch (IllegalStateException e) {
-                Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
+                Crashlytics.logException(e);
+                Timber.e(e, "TransitionManager error"); //for avoid application crash when called at runtime
             }
         }
         FragmentCompass fragmentCompass = new FragmentCompass(activity);
         fragmentCompass.setContainerId(config.getContainerId());
         fragmentCompass.setFragmentManager(fragmentManager);
         fragmentCompass.setBackStackEnabled(config.isBackStackEnabled());
-        fragmentCompass.replace(route, getArgs(config));
+        fragmentCompass.replace(route, getArgs(config), config.getTargetFragment());
     }
 
     private void showDialog(Route route, NavigationConfig config) {

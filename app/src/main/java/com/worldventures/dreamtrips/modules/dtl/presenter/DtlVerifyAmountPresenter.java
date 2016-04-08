@@ -5,20 +5,20 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
 public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter.View> {
 
-    private final String merchantId;
-
     @Inject
-    SnappyRepository snapper;
+    SnappyRepository db;
     @Inject
     DtlMerchantManager dtlMerchantManager;
+    //
+    private final String merchantId;
     private DtlMerchant dtlMerchant;
-
     private DtlTransaction dtlTransaction;
 
     public DtlVerifyAmountPresenter(String merchantId) {
@@ -34,32 +34,34 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlTransaction = snapper.getDtlTransaction(merchantId);
+        dtlTransaction = db.getDtlTransaction(merchantId);
         view.attachTransaction(dtlTransaction, dtlMerchant.getDefaultCurrency());
         view.attachDtPoints(Double.valueOf(dtlTransaction.getPoints()).intValue());
     }
 
     public void rescan() {
         photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
-        dtlTransaction.setUploadTask(null);
-
-        snapper.saveDtlTransaction(merchantId, dtlTransaction);
-
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withUploadTask(null);
+        db.saveDtlTransaction(merchantId, dtlTransaction);
+        //
         view.openScanReceipt(dtlTransaction);
     }
 
     public void scanQr() {
-        dtlTransaction.setVerified(true);
-
-        snapper.saveDtlTransaction(merchantId, dtlTransaction);
-
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withIsVerified(true);
+        //
+        db.saveDtlTransaction(merchantId, dtlTransaction);
+        //
         view.openScanQr(dtlTransaction);
     }
 
     public interface View extends Presenter.View {
-        void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency);
 
         void attachDtPoints(int count);
+
+        void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency);
 
         void openScanReceipt(DtlTransaction dtlTransaction);
 

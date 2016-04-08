@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -27,5 +28,10 @@ public class NotificationsQuery extends Query<ArrayList<ParentFeedItem>> {
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
         String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
         return getService().getNotifications(LIMIT, before);
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_failed_to_load_notifications;
     }
 }

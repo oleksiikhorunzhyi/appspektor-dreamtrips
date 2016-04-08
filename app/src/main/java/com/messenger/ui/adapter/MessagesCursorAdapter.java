@@ -18,6 +18,7 @@ import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
+import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -44,6 +45,7 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     private static final int VIEW_TYPE_USER_IMAGE_MESSAGE = 4;
 
     private final DataUser user;
+    private final String userLocale;
     private final ChatTimestampFormatter timestampFormatter;
     private DataConversation conversation;
 
@@ -59,9 +61,11 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     private boolean needMarkUnreadMessages;
 
-    public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user, @Nullable Cursor cursor) {
+    public MessagesCursorAdapter(@NonNull Context context, @NonNull DataUser user,
+                                 @NonNull String userLocale, @Nullable Cursor cursor) {
         super(cursor);
         this.user = user;
+        this.userLocale = userLocale;
         this.timestampFormatter = new ChatTimestampFormatter(context);
     }
 
@@ -111,12 +115,19 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
         holder.setSelected(position == manualTimestampPosition);
         holder.setBubbleBackground();
         holder.updateMessageStatusUi(needMarkUnreadMessages);
-        holder.getMessageView().setOnLongClickListener(view -> {
+        View.OnLongClickListener onLongClickListener = view -> {
             if (messageLongClickListener != null) {
                 messageLongClickListener.onMessageLongClick(message);
             }
             return true;
-        });
+        };
+        holder.getMessageView().setOnLongClickListener(onLongClickListener);
+        //TODO tweak for user message. fix it later
+        if (holder instanceof UserTextMessageViewHolder) {
+            ((UserTextMessageViewHolder) holder).getMessageTextView()
+                    .setOnLongClickListener(onLongClickListener);
+        }
+
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -130,6 +141,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
     }
 
     private void bindUserTextMessageHolder(UserTextMessageViewHolder holder, Cursor cursor) {
+        boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
+        DataTranslation dataTranslation = translationExist? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
+        holder.setTranslation(dataTranslation, userLocale);
+        //
         bindMessageHolder(holder, cursor);
         bindTextMessageHolder(holder, cursor);
         bindUserMessageHolder(holder, cursor);
@@ -183,9 +198,10 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
 
     public void bindUserMessageHolder(MessageHolder.UserMessageHolder holder, Cursor cursor) {
         DataUser userFrom = SqlUtils.convertToModel(true, DataUser.class, cursor);
-        holder.setAuthor(userFrom);
 
+        holder.setAuthor(userFrom);
         holder.setAvatarClickListener(avatarClickListener);
+
         holder.updateAvatar();
         holder.updateName(conversation);
     }
@@ -289,14 +305,21 @@ public class MessagesCursorAdapter extends CursorRecyclerViewAdapter<MessageHold
             holder.dateTextView.setVisibility(View.GONE);
             return;
         }
-        holder.getMessageView().setOnClickListener(view -> {
+
+        View.OnClickListener listener = view -> {
             if (messageClickListener != null) {
                 messageClickListener.onMessageClick(message);
             }
             if (clickableTimestamp) {
                 showManualTimestampForPosition(position);
             }
-        });
+        };
+
+        holder.getMessageView().setOnClickListener(listener);
+        //TODO tweak for user message. fix it later
+        if (holder instanceof UserTextMessageViewHolder) {
+            ((UserTextMessageViewHolder) holder).getMessageTextView().setOnClickListener(listener);
+        }
 
         TextView dateTextView = holder.dateTextView;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();

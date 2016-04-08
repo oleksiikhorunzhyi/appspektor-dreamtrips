@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/dtl_cities_background"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/dtl_cities_background"
+              android:orientation="vertical"
     >
 
     <android.support.design.widget.AppBarLayout
@@ -18,10 +20,36 @@
             />
     </android.support.design.widget.AppBarLayout>
 
+    <Button
+        android:id="@+id/autoDetectNearMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:text="@string/dtl_autodetect_location"
+        />
+
+    <TextView
+        android:id="@+id/emptyMerchantsCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:text="@string/dtl_location_no_merchants_caption"
+        android:textColor="@color/dtl_cities_text_color"
+        android:textSize="@dimen/font_extra_large"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/appbar">
+        >
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/locationsList"
@@ -33,56 +61,13 @@
             android:padding="@dimen/spacing_tiniest"
             />
 
-        <LinearLayout
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="@dimen/spacing_large"
-                android:paddingTop="@dimen/spacing_large"
-                android:text="@string/dtl_locations_try_search"
-                android:textColor="@color/dtl_cities_text_color"
-                android:textSize="@dimen/font_normal"
-                />
-        </LinearLayout>
-
-        <LinearLayout
+        <ProgressBar
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="vertical"
-            >
-
-            <TextView
-                android:id="@+id/obtaining_gps_location_progress_caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_normal"
-                android:text="@string/dtl_wait_for_location"
-                />
-
-            <TextView
-                android:id="@+id/obtaining_locations_progress_caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/spacing_normal"
-                android:text="@string/dtl_wait_for_cities"
-                />
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                />
-        </LinearLayout>
+            android:visibility="gone"
+            tools:visibility="gone"
+            />
     </FrameLayout>
-</RelativeLayout>
+</LinearLayout>

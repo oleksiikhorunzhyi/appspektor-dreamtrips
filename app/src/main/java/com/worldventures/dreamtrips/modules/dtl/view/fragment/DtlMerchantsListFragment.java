@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
@@ -98,7 +99,7 @@ public class DtlMerchantsListFragment
 
     @Override
     public void onCellClicked(DtlMerchant model) {
-        // TODO
+        // TODO think how to use CellDelegate here
     }
 
     @Override
@@ -111,23 +112,23 @@ public class DtlMerchantsListFragment
 
     @Override
     public void showProgress() {
-        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(true));
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        if (refreshLayout != null) refreshLayout.post(() -> refreshLayout.setRefreshing(false));
+        refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void showMessage(@StringRes int textResourceId) {
+        emptyTextView.setText(textResourceId);
     }
 
     @Override
     public void toggleSelection(DtlMerchant DtlMerchant) {
         int index = baseDelegateAdapter.getItems().indexOf(DtlMerchant);
         if (index != -1) selectionManager.toggleSelection(index);
-    }
-
-    @Override
-    public void setComingSoon() {
-        emptyTextView.setText(R.string.dtl_coming_soon_offers);
     }
 
     @Override

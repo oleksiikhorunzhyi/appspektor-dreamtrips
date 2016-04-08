@@ -22,6 +22,16 @@ public class MessengerPhotoPickerLayout extends PhotoPickerLayout {
     }
 
     @Override
+    public void setPanelHeight(int val) {
+        super.setPanelHeight(val);
+
+        if (getPanelState() != PanelState.EXPANDED && getHeight() > 0) {
+            smoothToBottom();
+            invalidate();
+        }
+    }
+
+    @Override
     protected void onVisibilityChanged(View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
         if (changedView == getDraggableView() && visibility == View.INVISIBLE) {

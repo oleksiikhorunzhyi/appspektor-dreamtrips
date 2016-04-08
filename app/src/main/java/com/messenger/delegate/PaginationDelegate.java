@@ -22,25 +22,25 @@ import rx.schedulers.Schedulers;
 import static com.innahema.collections.query.queriables.Queryable.from;
 
 public class PaginationDelegate {
+
+    public static final int DEFAULT_PAGE_SIZE = 20;
+
     private final MessengerServerFacade messengerServerFacade;
     private final MessageDAO messageDAO;
     private final AttachmentDAO attachmentDAO;
-    private final int pageSize;
+
+    private int pageSize = DEFAULT_PAGE_SIZE;
 
     private PagePagination<Message> messagePagePagination;
 
-    public interface PageLoadedListener {
-        void onPageLoaded(int loadedPage, List<Message> loadedMessage);
-    }
-
-    public interface PageErrorListener {
-        void onPageError();
-    }
-
-    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO, int pageSize) {
+    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.messageDAO = messageDAO;
         this.attachmentDAO = attachmentDAO;
+    }
+
+    public void setPageSize(int pageSize) {
+        stopPaginate();
         this.pageSize = pageSize;
     }
 
@@ -59,12 +59,11 @@ public class PaginationDelegate {
                     List<DataAttachment> attachments = getDataAttachment(serverMessages);
                     from(msgs).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
                     return new Pair<>(msgs, attachments);
-                })
-                .subscribe(listListPair -> {
-                    messageDAO.save(listListPair.first);
-                    attachmentDAO.save(listListPair.second);
-                }))
-        ;
+                }).subscribe(listListPair -> {
+                            messageDAO.save(listListPair.first);
+                            attachmentDAO.save(listListPair.second);
+                        }));
+
         messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
             @Override
             public void onLoaded(List<Message> entities) {
@@ -96,4 +95,11 @@ public class PaginationDelegate {
         messagePagePagination = null;
     }
 
+    public interface PageLoadedListener {
+        void onPageLoaded(int loadedPage, List<Message> loadedMessage);
+    }
+
+    public interface PageErrorListener {
+        void onPageError();
+    }
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -112,7 +113,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     }
 
     private void loadLikes() {
-        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 1), this::onLikersLoaded);
+        doRequest(new GetUsersLikedEntityQuery(feedEntity.getUid(), 1, 2), this::onLikersLoaded);
     }
 
     public void setDraftComment(String comment) {
@@ -253,7 +254,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     private void onLikersLoaded(List<User> users) {
         if (users != null && !users.isEmpty()) {
-            feedEntity.setFirstLikerName(users.get(0).getFullName());
+            User userWhoLiked = Queryable.from(users).firstOrDefault(user -> user.getId() != getAccount().getId());
+            feedEntity.setFirstLikerName(userWhoLiked != null ? userWhoLiked.getFullName() : null);
         } else {
             feedEntity.setFirstLikerName(null);
         }

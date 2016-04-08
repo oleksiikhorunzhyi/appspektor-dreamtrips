@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
@@ -9,12 +10,85 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <include layout="@layout/include_dtl_places_toolbar"/>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/fragment_map_with_info"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/filterToggleContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:minHeight="48dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/dtl_show_offers_only"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/sw_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_margin="8dp"
+                android:checked="false"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/fragment_map_with_info"/>
+
+            <FrameLayout
+                android:id="@+id/redo_merchants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_margin="16dp"
+                android:minHeight="48dp"
+                android:visibility="gone"
+                tools:visibility="visible"
+                >
+
+                <Button
+                    android:id="@+id/redo_merchants_button"
+                    style="@style/DtlButtonTheme"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dtl_load_merchants_here_button_caption"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    tools:visibility="visible"/>
+
+                <ProgressBar
+                    android:id="@+id/redo_merchants_progress"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_gravity="center_vertical|start"
+                    android:visibility="gone"
+                    android:theme="@style/Theme.DreamTripsTheme.Progress.White"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    tools:visibility="visible"
+                    />
+
+            </FrameLayout>
+
+        </FrameLayout>
+    </LinearLayout>
 </LinearLayout>

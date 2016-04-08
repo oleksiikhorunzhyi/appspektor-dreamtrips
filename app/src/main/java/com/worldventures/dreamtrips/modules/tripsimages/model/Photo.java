@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +46,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     public List<String> getTags() {
-        return tags == null ? Collections.emptyList() : tags;
+        if (tags == null) tags = new ArrayList<>();
+        return tags;
     }
 
     public void setTags(List<String> tags) {
@@ -79,15 +79,23 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     }
 
     public List<PhotoTag> getPhotoTags() {
-        return photoTags == null ? Collections.emptyList() : photoTags;
+        if (photoTags == null) photoTags = new ArrayList<>();
+        return photoTags;
     }
 
     public void setPhotoTags(List<PhotoTag> photoTags) {
-        this.photoTags = photoTags;
+        if (photoTags != null) {
+            this.photoTags = photoTags;
+            this.photoTagsCount = photoTags.size();
+        }
     }
 
     public int getPhotoTagsCount() {
         return photoTagsCount;
+    }
+
+    public void setPhotoTagsCount(int photoTagsCount) {
+        this.photoTagsCount = photoTagsCount;
     }
 
     @Override
@@ -178,6 +186,10 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     @Override
     public User getUser() {
         return owner;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     ///////////////////////////////////////////////////////////////////////////

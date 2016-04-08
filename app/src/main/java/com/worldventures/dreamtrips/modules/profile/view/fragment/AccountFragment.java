@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -12,18 +11,14 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 
-import javax.inject.Inject;
-
-import butterknife.InjectView;
 import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_account)
@@ -31,20 +26,10 @@ import io.techery.scalablecropp.library.Crop;
 public class AccountFragment extends ProfileFragment<AccountPresenter>
         implements AccountPresenter.View {
 
-    public static final int AVATAR_CALLBACK = 1;
-    public static final int COVER_CALLBACK = 2;
-
-    @Inject
-    BackStackDelegate backStackDelegate;
-
-    @InjectView(R.id.photo_picker)
-    PhotoPickerLayout photoPickerLayout;
-
     @Override
     protected AccountPresenter createPresenter(Bundle savedInstanceState) {
         return new AccountPresenter();
     }
-
 
     @Override
     public void afterCreateView(View rootView) {
@@ -52,10 +37,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         profileToolbarTitle.setVisibility(View.INVISIBLE);
         profileToolbarUserStatus.setVisibility(View.INVISIBLE);
         profileToolbar.inflateMenu(R.menu.profile_fragment);
-
-        inject(photoPickerLayout);
-        photoPickerLayout.setup(getChildFragmentManager(), false);
-        photoPickerLayout.hidePanel();
 
         profileToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
@@ -69,19 +50,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void onResume() {
         super.onResume();
-        backStackDelegate.setListener(this::onBackPressed);
         TrackingHelper.viewMyProfileScreen();
-        //
-        photoPickerLayout.updatePickerDelegate();
-        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImage(chosenImages));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        backStackDelegate.setListener(null);
-        //
-        photoPickerLayout.setOnDoneClickListener(null);
     }
 
     @Override
@@ -92,16 +61,14 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     @Override
     public void openAvatarPicker() {
         if (isVisibleOnScreen()) {
-            getPresenter().setCallbackType(AVATAR_CALLBACK);
-            photoPickerLayout.showPanel();
+            getPresenter().onAvatarClicked();
         }
     }
 
     @Override
     public void openCoverPicker() {
         if (isVisibleOnScreen()) {
-            getPresenter().setCallbackType(COVER_CALLBACK);
-            photoPickerLayout.showPanel();
+            getPresenter().onCoverClicked();
         }
     }
 
@@ -125,7 +92,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
 
     private void showLogoutDialog() {
         new MaterialDialog.Builder(getActivity())
@@ -158,19 +124,20 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     @Override
-    public void hidePhotoPicker() {
-        photoPickerLayout.hidePanel();
+    public void showMediaPicker(int requestId) {
+        router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.picker_container)
+                .data(new PickerBundle(requestId))
+                .build());
     }
 
-    private boolean onBackPressed() {
-        if (photoPickerLayout.isShowsFacebookAlbumFragment()) {
-            return false;
-        }
-        if (photoPickerLayout.isPanelVisible()) {
-            photoPickerLayout.hidePanel();
-            return true;
-        }
-
-        return false;
+    @Override
+    public void hideMediaPicker() {
+        router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.picker_container)
+                .build());
     }
 }

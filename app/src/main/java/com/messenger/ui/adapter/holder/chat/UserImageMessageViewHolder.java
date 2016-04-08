@@ -91,6 +91,12 @@ public class UserImageMessageViewHolder extends ImageMessageViewHolder
             new UserMessageHolderDelegate(avatarImageView, nameTextView);
 
     @Override
+    public void setPreviousMessageFromTheSameUser(boolean previousMessageFromTheSameUser) {
+        super.setPreviousMessageFromTheSameUser(previousMessageFromTheSameUser);
+        someoneMessageHolderHelper.setIsPreviousMessageFromTheSameUser(previousMessageFromTheSameUser);
+    }
+
+    @Override
     public void setAuthor(DataUser user) {
         someoneMessageHolderHelper.setAuthor(user);
     }

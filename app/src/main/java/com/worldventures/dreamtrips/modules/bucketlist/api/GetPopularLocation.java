@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
@@ -35,5 +36,10 @@ public class GetPopularLocation extends DreamTripsRequest<ArrayList<PopularBucke
         }
 
         return list;
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_load_popular_bl;
     }
 }

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 
@@ -15,5 +16,10 @@ public class GetFeedEntityQuery extends Query<FeedEntityHolder> {
     @Override
     public FeedEntityHolder loadDataFromNetwork() throws Exception {
         return getService().getFeedEntity(uid);
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_load_item_details;
     }
 }

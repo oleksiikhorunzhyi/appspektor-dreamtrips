@@ -49,7 +49,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     public TaggableImageViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         delegate = new PhotoTaggableHolderViewDelegate(this);
-
     }
 
     public void setup(Injector injector, Photo photo) {
@@ -77,7 +76,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     public boolean isSetuped() {
         return setuped;
     }
-
 
     public void hide() {
         removeUncompletedViews();
@@ -119,7 +117,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         view.setTagListener(createTagListener(view));
         addTagView(view, photoTag);
     }
-
 
     protected <T extends TagView> void addTagView(T view, PhotoTag photoTag) {
         addTagView(view, photoTag, -1);
@@ -209,6 +206,4 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     public boolean isTabletLandscape() {
         return false;
     }
-
-
 }

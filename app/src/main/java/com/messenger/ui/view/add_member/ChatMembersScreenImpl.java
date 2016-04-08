@@ -1,38 +1,38 @@
 package com.messenger.ui.view.add_member;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.messenger.entities.DataUser;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.messenger.flow.path.StyledPath;
-import com.messenger.ui.adapter.CheckableContactsCursorAdapter;
+import com.messenger.ui.adapter.cell.CheckableUserCell;
+import com.messenger.ui.adapter.cell.HeaderCell;
 import com.messenger.ui.anim.WeightSlideAnimator;
+import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.presenter.ChatMembersScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.recyclerview.Header;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.SelectionListenerEditText;
 import com.messenger.util.ScrollStatePersister;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
 
 public abstract class ChatMembersScreenImpl<P extends StyledPath>
         extends MessengerPathLayout<ChatMembersScreen, ChatMembersScreenPresenter, P>
@@ -59,11 +59,12 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
 
     private ToolbarPresenter toolbarPresenter;
 
-    private CheckableContactsCursorAdapter adapter;
+    private BaseDelegateAdapter<Object> adapter;
     private LinearLayoutManager linearLayoutManager;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private WeightSlideAnimator conversationNameAnimator;
+    private Observable<CharSequence> searchQueryObservable;
 
     public ChatMembersScreenImpl(Context context) {
         super(context);
@@ -85,59 +86,36 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         inflateToolbarMenu(toolbar);
     }
 
-    @SuppressWarnings("Deprecated")
+    private BaseDelegateAdapter<Object> createAdapter() {
+        BaseDelegateAdapter<Object> adapter = new BaseDelegateAdapter<>(getContext(), injector);
+        adapter.registerCell(SelectableDataUser.class, CheckableUserCell.class);
+        adapter.registerCell(Header.class, HeaderCell.class);
+        adapter.registerDelegate(SelectableDataUser.class, new CheckableUserCell.Delegate() {
+            @Override
+            public void onCellClicked(SelectableDataUser model) {
+                getPresenter().openUserProfile(model.getDataUser());
+            }
+
+            @Override
+            public void onItemSelectChanged(SelectableDataUser item) {
+                getPresenter().onItemSelectChange(item);
+            }
+        });
+        return adapter;
+    }
+
     private void initUi() {
         ButterKnife.inject(this, this);
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
 
-        adapter = new CheckableContactsCursorAdapter(getContext(), null);
-        adapter.setAvatarClickListener(user -> getPresenter().openUserProfile(user));
-        adapter.setSelectionListener((selectedUsers) -> {
-            setSelectedContacts(selectedUsers);
-            getPresenter().onSelectedUsersStateChanged(selectedUsers);
-        });
-
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new VerticalDivider(getResources()
-                .getDrawable(R.drawable.divider_list)));
+        recyclerView.setAdapter(adapter = createAdapter());
+        recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
-        final String chosenContactsEditTextStartValue
-                = getContext().getString(R.string.new_chat_chosen_contacts_header_empty);
-        resetChoseContactsEditText();
-        chosenContactsEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                if (charSequence.length() >= chosenContactsEditTextStartValue.length()
-                        && getPresenter() != null) {
-                    getPresenter().onTextChangedInChosenContactsEditText(charSequence.toString());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.length() <= chosenContactsEditTextStartValue.length()) {
-                    if (editable.length() < chosenContactsEditTextStartValue.length()) {
-                        resetChoseContactsEditText();
-                    }
-                    return;
-                }
-                int spannableColor = getContext()
-                        .getResources().getColor(R.color.contact_list_header_selected_contacts);
-                editable.setSpan(new UnderlineSpan(), editable.length() - 1,
-                        editable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                editable.setSpan(new ForegroundColorSpan(spannableColor),
-                        editable.length() - 1,
-                        editable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        });
+        searchQueryObservable = RxTextView.textChanges(chosenContactsEditText);
         chosenContactsEditText.setSelectionListener((s, a)
                 -> chosenContactsEditText.setSelection(chosenContactsEditText.getText().length()));
         conversationNameAnimator =
@@ -157,13 +135,6 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     @Override
     public void slideOutConversationNameEditText() {
         conversationNameAnimator.slideOut();
-    }
-
-    private void resetChoseContactsEditText() {
-        String chosenContactsEditTextStartValue = getContext()
-                .getString(R.string.new_chat_chosen_contacts_header_empty);
-        chosenContactsEditText.setText(chosenContactsEditTextStartValue);
-        chosenContactsEditText.setSelection(chosenContactsEditTextStartValue.length());
     }
 
     @Override
@@ -193,19 +164,13 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public void setContacts(Cursor data) {
-        adapter.changeCursor(data);
+    public void setAdapterItems(List<Object> item) {
+        adapter.setItems(item);
     }
 
     @Override
-    public void setContacts(Cursor cursor, String query, String queryColumn) {
-        adapter.changeCursor(cursor, query, queryColumn);
-    }
-
-    @Override
-    public void setSelectedContacts(List<DataUser> selectedContacts) {
-        adapter.setSelectedContacts(selectedContacts);
-        adapter.notifyDataSetChanged();
+    public Observable<CharSequence> getSearchQueryObservable() {
+        return searchQueryObservable;
     }
 
     @Override

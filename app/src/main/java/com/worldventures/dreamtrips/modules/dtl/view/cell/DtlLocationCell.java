@@ -6,18 +6,17 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocationType;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dtl_location)
-public class DtlLocationCell extends AbstractDelegateCell<DtlLocation, CellDelegate<DtlLocation>> {
+public class DtlLocationCell extends AbstractDelegateCell<DtlExternalLocation, CellDelegate<DtlExternalLocation>> {
 
     @InjectView(R.id.city_state)
     TextView city;
@@ -32,7 +31,7 @@ public class DtlLocationCell extends AbstractDelegateCell<DtlLocation, CellDeleg
         sb.append(getModelObject().getLongName());
         Queryable.from(getModelObject().getLocatedIn())
                 .filter(temp -> temp.getType() != DtlLocationType.METRO)
-                .sort(DtlLocation.CATEGORY_COMPARATOR)
+                .sort(DtlExternalLocation.CATEGORY_COMPARATOR)
                 .forEachR(tempLocation -> {
                     sb.append(", ");
                     sb.append(tempLocation.getLongName());

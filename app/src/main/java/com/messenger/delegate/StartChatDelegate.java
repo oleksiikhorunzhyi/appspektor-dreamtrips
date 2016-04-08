@@ -54,9 +54,17 @@ public class StartChatDelegate {
     }
 
     public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction) {
+        startSingleChat(user, crossingAction, null);
+    }
+
+    public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction,
+                                @Nullable Action1<Throwable> errorAction) {
+        if (errorAction == null) {
+            errorAction = throwable -> Timber.e(throwable, "Error");
+        }
         startSingleChatObservable(user)
                 .compose(new IoToMainComposer<>())
-                .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
+                .subscribe(crossingAction, errorAction);
     }
 
     private Observable<DataConversation> startSingleChatObservable(DataUser participant) {
@@ -73,9 +81,12 @@ public class StartChatDelegate {
                 });
     }
 
-    public void startNewGroupChat(String ownerId,
-                                  List<DataUser> participant,
-                                  @Nullable String subject, @NotNull Action1<DataConversation> crossingAction) {
+    public void startNewGroupChat(String ownerId, List<DataUser> participant,
+                                  @Nullable String subject, @NotNull Action1<DataConversation> crossingAction,
+                                  @Nullable Action1<Throwable> errorAction) {
+        if (errorAction == null) {
+            errorAction = throwable -> Timber.d(throwable, "Error");
+        }
         chatDelegate.createNewConversation(participant, subject)
                 .doOnNext(conversation -> {
                     conversation.setOwnerId(ownerId);
@@ -88,7 +99,7 @@ public class StartChatDelegate {
                     conversationsDAO.save(Collections.singletonList(conversation));
                 })
                 .compose(new IoToMainComposer<>())
-                .subscribe(crossingAction, throwable -> Timber.d(throwable, "Error"));
+                .subscribe(crossingAction, errorAction);
     }
 
 }

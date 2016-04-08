@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import org.intellij.lang.annotations.MagicConstant;
@@ -21,7 +23,6 @@ import java.util.Map;
 public class TrackingHelper {
 
     private static final String KEY_ADOBE_TRACKER = "adobe_tracker";
-    private static final String KEY_GOOGLE_TRACKER = "google_tracker";
     private static final String KEY_APPTENTIVE_TRACKER = "apptentive_tracker";
 
     public static final String CATEGORY_NAV_MENU = "nav_menu";
@@ -32,8 +33,9 @@ public class TrackingHelper {
     public static final String ACTION_PHOTOS_YSBH = "photos-ysbh";
     public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
     public static final String ACTION_PHOTOS_MINE = "photos-mine";
-    public static final String ACTION_ENROLL = "membership-enroll";
-    public static final String ACTION_FAQ = "faq";
+    public static final String ACTION_ENROLL_MEMBER = "membership-enroll";
+    public static final String ACTION_ENROLL_MERCHANT = "membership-enroll-merchant";
+    public static final String ACTION_FAQ = "FAQ";
     public static final String ACTION_PRIVACY = "terms-privacy";
     public static final String ACTION_COOKIE = "terms-cookie";
     public static final String ACTION_SERVICE = "terms-service";
@@ -91,7 +93,6 @@ public class TrackingHelper {
         trackers = new HashMap<>(3);
         trackers.put(KEY_ADOBE_TRACKER, new AdobeTracker());
         trackers.put(KEY_APPTENTIVE_TRACKER, new ApptentiveTracker());
-        trackers.put(KEY_GOOGLE_TRACKER, new GoogleTracker());
     }
 
     private TrackingHelper() {
@@ -144,7 +145,6 @@ public class TrackingHelper {
     ///////////////////////////////////////////////////////////////////////////
 
     private static void trackMemberAction(String category, String action, Map<String, Object> data) {
-        trackers.get(KEY_GOOGLE_TRACKER).trackEvent(category, action, data);
         trackers.get(KEY_APPTENTIVE_TRACKER).trackEvent(category, action, data);
     }
 
@@ -163,7 +163,7 @@ public class TrackingHelper {
 
 
     ///////////////////////////////////////////////////////////////////////////
-    // Tracking actions
+    // Tracking actions deprecated
     ///////////////////////////////////////////////////////////////////////////
 
     public static void login(String userId) {
@@ -252,8 +252,12 @@ public class TrackingHelper {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_PHOTOS_MINE);
     }
 
-    public static void enroll(String memberId) {
-        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL);
+    public static void enrollMember(String memberId) {
+        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MEMBER);
+    }
+
+    public static void enrollMerchant(String memberId) {
+        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
     }
 
     public static void profile(String memberId) {
@@ -299,7 +303,7 @@ public class TrackingHelper {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_OTA);
     }
 
-    public static void repEnroll(String memberId) {
+    public static void enrollRep(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_ENROLL);
     }
 
@@ -397,7 +401,7 @@ public class TrackingHelper {
     public static final String ACTION_360_VIDEOS = "360_videos";
     public static final String ACTION_MEMBERSHIP = "membership";
     public static final String ACTION_MEMBERSHIP_ENROLL = "membership-enroll";
-    public static final String ACTION_LOGOUT = "logout";
+    public static final String ACTION_LOGOUT = "Logout";
     public static final String ACTION_TERMS_PRIVACY = "terms-privacy";
     public static final String ACTION_TERMS_SERVICE = "terms_service";
     public static final String ACTION_TERMS_COOKIE = "terms-cookie";
@@ -405,6 +409,11 @@ public class TrackingHelper {
     public static final String ACTION_REP_TOOLS_TRAINING_VIDEO = "rep_tools:training_video";
     public static final String ACTION_REP_TOOLS_REP_ENROLLMENT = "rep_tools:rep_enrollment";
     public static final String ACTION_REP_TOOLS_INVITE_SHARE = "rep_tools:invite_share";
+    public static final String ACTION_FEEDBACK = "Send Feedback";
+    public static final String ACTION_TERMS = "Terms and Conditions";
+    public static final String ACTION_SETTINGS = "Settings";
+    public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
+    public static final String ACTION_SETTINGS_NOTIFICATIONS = "Settings:Notifications";
 
     // ---------------- DreamTrips attributes
     public static final String ATTRIBUTE_LOGIN = "login";
@@ -436,8 +445,9 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_SHARE = "share";
     public static final String ATTRIBUTE_DOWNLOAD = "download";
     public static final String ATTRIBUTE_MARK_AS_DONE = "mark_as_done";
+    public static final String ATTRIBUTE_REASON = "feedbackreason";
+    public static final String ATTRIBUTE_TERMS = "optinoptout";
     public static final String ATTRIBUTE_COMPLETE = "complete";
-    public static final String ATTRIBUTE_LOGOUT = "logout";
     public static final String ATTRIBUTE_FAVORITE = "favorite";
     public static final String ATTRIBUTE_DINING = "dining";
     public static final String ATTRIBUTE_ACTIVITIES = "activities";
@@ -470,14 +480,18 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_SCAN = "scan";
     public static final String ATTRIBUTE_COMPLETED = "completed";
 
+    // ---------------- DTL new Actions
+    public static final String DTL_ACTION_SELECT_LOCATION_FROM_SEARCH = "Local:City Search";
+    public static final String DTL_ACTION_OFFERS_TAB = "Local:Offers";
+    public static final String DTL_ACTION_DINING_TAB = "Local:Dining";
+    public static final String DTL_ACTION_SEARCH_DINNING = "Local:Dining:Restaurant Search";
+    public static final String DTL_ACTION_SEARCH_OFFERS = "Local:Offers:Restaurant Search";
+    public static final String DTL_ACTION_FILTER_PLACES = "Local:Refine Search";
+
     // ---------------- DTL actions
     public static final String DTL_ACTION_LOCATION_LOADED = "local";
     public static final String DTL_ACTION_SELECT_LOCATION_FROM_NEARBY = "local.nearby";
-    public static final String DTL_ACTION_SELECT_LOCATION_FROM_SEARCH = "local.search.place";
-    public static final String DTL_ACTION_OFFERS_TAB = "local.offers";
-    public static final String DTL_ACTION_DINING_TAB = "local.dining";
     public static final String DTL_ACTION_SEARCH_PLACES = "local.search";
-    public static final String DTL_ACTION_FILTER_PLACES = "local.filter";
     public static final String DTL_ACTION_CHANGE_CITY = "local.change";
     public static final String DTL_ACTION_MAP_VIEW = "local.map";
     public static final String DTL_ACTION_OFFER_VIEW = "local.offers.view";
@@ -495,6 +509,8 @@ public class TrackingHelper {
     public static final String DTL_ACTION_SHARE = "local.share";
 
     // ---------------- DTL attributes
+    public static final String DTL_ATTRIBUTE_CITY_SEARCH = "dtlcitysearch";
+    public static final String DTL_QUERY = "searchquery";
     public static final String DTL_ATTRIBUTE_LOCATION = "place_id";
     public static final String DTL_ATTRIBUTE_SHARE = "share_id";
     public static final String DTL_ATTRIBUTE_MERCHANT = "merchant_id";
@@ -503,8 +519,69 @@ public class TrackingHelper {
     public static final String DTL_ATTRIBUTE_COORDINATES = "coordinates_id";
     public static final String DTL_ATTRIBUTE_SCAN_QR = "scan_id";
     public static final String DTL_ATTRIBUTE_CAPTURE = "capture_id";
-    public static final String DTL_ATTRIBUTE_FILTER = "filter_id";
+    public static final String DTL_ATTRIBUTE_FILTER_PRICE = "dtlprice";
+    public static final String DTL_ATTRIBUTE_FILTER_DISTANCE = "dtldistance";
     public static final String DTL_ATTRIBUTE_SEARCH_RESULTS = "results_id";
+    public static final String DTL_LOCATION = "dtllocation";
+    public static final String DTL_LOCATION_METHOD = "locationmethod";
+
+    // ---------------- Messenger actions
+    public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
+    public static final String MESSENGER_ACTION_VIEW_CONVERSATION = "Messenger:View Conversation";
+    public static final String MESSENGER_ACTION_ADD_FRIEND_TO_CHAT = "Messenger:Add Friends to Chat";
+    public static final String MESSENGER_ACTION_CONVERSATION_FILTER = "Messenger:Conversation Filter";
+    public static final String MESSENGER_ACTION_CONVERSATION_SORT = "Messenger:Conversation Type";
+    public static final String MESSENGER_ACTION_GROUP_CHAT_SETINGS = "Messenger:Group Chat Settings";
+    public static final String MESSENGER_ACTION_LEAVE = "Messenger:Leave Group Chat";
+
+    // ---------------- Messenger attributes
+    public static final String MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS = "numberconvo";
+    public static final String MESSENGER_ATTRIBUTE_CONVERSATION_TYPE = "convotype";
+    public static final String MESSENGER_ATTRIBUTE_CONVERSATION_SORT_TYPE = "chatsort";
+
+    public static final String MESSENGER_VALUE_INDIVIDUAL = "Individual";
+    public static final String MESSENGER_VALUE_GROUP = "Group-%d";
+
+    public static final String MESSENGER_VALUE_ALL = "All Chats";
+    public static final String MESSENGER_VALUE_GROUPS = "Group Chats";
+
+    // Action/ViewState=Messenger:Inbox
+    public static void setConversationCount(int count) {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_INBOX, MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS, count);
+    }
+
+    public static void openSingleConversation() {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_VIEW_CONVERSATION,
+                MESSENGER_ATTRIBUTE_CONVERSATION_TYPE, MESSENGER_VALUE_INDIVIDUAL);
+    }
+
+    public static void openGroupConversation(int count) {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_VIEW_CONVERSATION,
+                MESSENGER_ATTRIBUTE_CONVERSATION_TYPE,
+                String.format(MESSENGER_VALUE_GROUP, count));
+    }
+
+    public static void addPeopleToChat() {
+        sendActionToAdobeTracker(MESSENGER_ACTION_ADD_FRIEND_TO_CHAT);
+    }
+
+    public static void conversationType(
+            @MagicConstant(stringValues = {MESSENGER_VALUE_GROUPS, MESSENGER_VALUE_ALL}) String value) {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_CONVERSATION_SORT,
+                MESSENGER_ATTRIBUTE_CONVERSATION_SORT_TYPE, value);
+    }
+
+    public static void leaveConversation() {
+        sendActionToAdobeTracker(MESSENGER_ACTION_LEAVE);
+    }
+
+    public static void groupSettingsOpened() {
+        sendActionToAdobeTracker(MESSENGER_ACTION_GROUP_CHAT_SETINGS);
+    }
+
+    public static void conversationSearchSelected() {
+        sendActionToAdobeTracker(MESSENGER_ACTION_CONVERSATION_FILTER);
+    }
 
     // ---------------- Tracking helper methods
 
@@ -516,6 +593,16 @@ public class TrackingHelper {
 
     private static void sendSimpleAttributetoAdobeTracker(String action, String attribute) {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, prepareAttributeMap(attribute));
+    }
+
+    private static void sendSimpleAttributetoAdobeTracker(String action, String attribute, Object value) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(attribute, value);
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
+    }
+
+    private static void sendActionToAdobeTracker(String action) {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, null);
     }
 
     public static String resolveSharingType(@ShareType String type) {
@@ -655,6 +742,29 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
     }
 
+    public static void sendFeedback(int reason) {
+        Map data = new HashMap<>();
+        data.put(ATTRIBUTE_REASON, String.valueOf(reason));
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_FEEDBACK, data);
+    }
+
+    public static void termsConditionsAction(boolean accepted) {
+        Map data = new HashMap<>();
+        data.put(ATTRIBUTE_TERMS, accepted ? "Opt In" : "Opt Out");
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_TERMS, data);
+    }
+
+    public static void settings() {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_SETTINGS, null);
+    }
+
+    public static void settingsDetailed(SettingsGroup.Type type) {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null,
+                type == SettingsGroup.Type.GENERAL
+                        ? ACTION_SETTINGS_GENERAL
+                        : ACTION_SETTINGS_NOTIFICATIONS, null);
+    }
+
     public static void actionTripVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
                                        String eventType, String videoName) {
         Map<String, Object> data = new HashMap<>();
@@ -670,9 +780,14 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_LIST);
     }
 
-    public static void actionMembershipEnrollScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
+    public static void actionMembershipEnrollMemberScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
             ATTRIBUTE_LOADING_ERROR}) String eventType) {
         sendSimpleAttributetoAdobeTracker(ACTION_MEMBERSHIP_ENROLL, eventType);
+    }
+
+    public static void actionMembershipEnrollMerchantScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
+            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+        sendSimpleAttributetoAdobeTracker(DTL_ACTION_MERCHANT_VIEW, eventType);
     }
 
     public static void actionMembershipVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
@@ -726,7 +841,7 @@ public class TrackingHelper {
     }
 
     public static void logout() {
-        sendSimpleAttributetoAdobeTracker(ACTION_LOGOUT, ATTRIBUTE_LOGOUT);
+        sendSimpleAttributetoAdobeTracker(ACTION_LOGOUT, null);
         trackers.get(KEY_ADOBE_TRACKER).setHeaderData(null);
     }
 
@@ -787,9 +902,8 @@ public class TrackingHelper {
 
     // ---------------- FAQ
 
-    public static void actionFaq(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-            ATTRIBUTE_LOADING_ERROR}) String eventType) {
-        sendSimpleAttributetoAdobeTracker(ACTION_FAQ, eventType);
+    public static void actionFaq() {
+        sendSimpleAttributetoAdobeTracker(ACTION_FAQ, null);
     }
 
     // ---------------- Terms
@@ -815,9 +929,42 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
     }
 
-    public static void dtlMerchantsTab(@MagicConstant(stringValues = {DTL_ACTION_OFFERS_TAB, DTL_ACTION_DINING_TAB})
-                                       String tabType) {
-        sendSimpleAttributetoAdobeTracker(tabType, ATTRIBUTE_LIST);
+    public static void searchLocation(DtlExternalLocation location) {
+        Map data = new HashMap<>();
+        data.put(DTL_ATTRIBUTE_CITY_SEARCH, location.getAnalyticsName());
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_SELECT_LOCATION_FROM_SEARCH,
+                data);
+    }
+
+    public static void dtlMerchantsTab(
+            @MagicConstant(stringValues = {DTL_ACTION_OFFERS_TAB, DTL_ACTION_DINING_TAB})
+            String tabType, DtlLocation dtlLocation) {
+        Map<String, Object> data = new HashMap<>(2);
+
+        data.put(DTL_LOCATION, dtlLocation.getAnalyticsName());
+
+        switch (dtlLocation.getLocationSourceType()) {
+            case NEAR_ME:
+                data.put(DTL_LOCATION_METHOD, "Near me");
+                break;
+            case EXTERNAL:
+                data.put(DTL_LOCATION_METHOD, "Search");
+                break;
+            case FROM_MAP:
+                data.put(DTL_LOCATION_METHOD, "Map");
+                break;
+        }
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, tabType, data);
+    }
+
+    public static void trackMerchantOpenedFromSearch(DtlMerchantType dtlMerchantType, String query,
+                                                     DtlLocation dtlLocation) {
+        String action = dtlMerchantType == DtlMerchantType.OFFER ? DTL_ACTION_SEARCH_OFFERS :
+                DTL_ACTION_SEARCH_DINNING;
+        Map data = new HashMap<>();
+        data.put(DTL_QUERY, query);
+        data.put(DTL_LOCATION, dtlLocation.getAnalyticsName());
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
     }
 
     public static void dtlMerchantSearch(String query, int resultsNumber) {
@@ -827,20 +974,14 @@ public class TrackingHelper {
     }
 
     public static void dtlMerchantFilter(DtlFilterData filterData) {
-        Map data = prepareAttributeMap(ATTRIBUTE_LIST);
-        StringBuilder stringBuilder = new StringBuilder()
-                .append(filterData.getMinPrice()).append(":")
-                .append(filterData.getMaxPrice()).append(":");
-        //
-        stringBuilder.append(filterData.getMaxDistance())
-                .append(":").append(filterData.getDistanceType().getTypeNameForAnalytics())
-                .append(":");
-        //
-        if (filterData.getSelectedAmenities() != null && !filterData.getSelectedAmenities().isEmpty())
-            stringBuilder.append(Queryable.from(filterData.getSelectedAmenities())
-                    .joinStrings(":", DtlMerchantAttribute::getName));
-        //
-        data.put(DTL_ATTRIBUTE_FILTER, stringBuilder.toString());
+        Map data = new HashMap<>();
+        String price = String.format("%d-%d",
+                filterData.getMinPrice(), filterData.getMaxPrice());
+        String distance = String.format("10-%s%s",
+                Double.valueOf(filterData.getMaxDistance()).intValue(),
+                filterData.getDistanceType().getTypeNameForAnalytics());
+        data.put(DTL_ATTRIBUTE_FILTER_PRICE, price);
+        data.put(DTL_ATTRIBUTE_FILTER_DISTANCE, distance);
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);
     }
 
@@ -877,12 +1018,12 @@ public class TrackingHelper {
         Map data = prepareAttributeMap(ATTRIBUTE_MERCHANT);
         if (place != null) {
             data.put(DTL_ATTRIBUTE_MERCHANT, new StringBuilder()
-                    .append(place.getId())
-                    .append(place.getDisplayName())
-                    .append(":")
-                    .append(place.getCity())
-                    .append(":")
-                    .append(place.getState()).toString()
+                            .append(place.getId())
+                            .append(place.getDisplayName())
+                            .append(":")
+                            .append(place.getCity())
+                            .append(":")
+                            .append(place.getState()).toString()
             );
         }
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_MERCHANT, data);

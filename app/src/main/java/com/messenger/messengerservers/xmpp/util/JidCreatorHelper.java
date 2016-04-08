@@ -3,7 +3,7 @@ package com.messenger.messengerservers.xmpp.util;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.model.User;
+import com.messenger.messengerservers.model.MessengerUser;
 
 import java.util.UUID;
 
@@ -25,8 +25,8 @@ public final class JidCreatorHelper {
     }
 
     @Deprecated
-    public static User obtainUser(String jid) {
-        return new User(obtainId(jid));
+    public static MessengerUser obtainUser(String jid) {
+        return new MessengerUser(obtainId(jid));
     }
 
     public static String obtainId(@NonNull String jid) {

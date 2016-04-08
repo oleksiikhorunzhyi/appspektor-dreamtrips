@@ -18,19 +18,19 @@ import icepick.State;
 
 public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
 
-    private final String merchantId;
-    private DtlMerchant dtlMerchant;
-    private DtlTransaction dtlTransaction;
-
     @Inject
-    SnappyRepository snapper;
+    SnappyRepository db;
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlJobManager jobManager;
-
+    //
     @State
     int stars;
+    //
+    private final String merchantId;
+    private DtlMerchant dtlMerchant;
+    private DtlTransaction dtlTransaction;
 
     public DtlTransactionSucceedPresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -51,17 +51,18 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     }
 
     public void done() {
-        if (stars != 0)
-            jobManager.rateExecutor
-                    .createJobWith(merchantId, stars, dtlTransaction.getDtlTransactionResult().getId())
+        if (stars != 0) {
+            jobManager.rateExecutor.createJobWith(merchantId, stars,
+                    dtlTransaction.getDtlTransactionResult().getId())
                     .subscribe();
+        }
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlTransaction = snapper.getDtlTransaction(merchantId);
+        dtlTransaction = db.getDtlTransaction(merchantId);
         view.setCongratulations(dtlTransaction.getDtlTransactionResult());
         bindApiJob();
     }

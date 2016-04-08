@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.infopages;
 
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -30,10 +31,21 @@ public class StaticPageProvider {
         else return "";
     }
 
-    public String getEnrollUrl() {
-        String enrollUrlFromServer = getConfig().getEnrollMemeberURL(appSessionHolder.get().get().getUsername());
+    public String getEnrollMemberUrl() {
+        String enrollUrlFromServer = getConfig().getEnrollMemberURL(appSessionHolder.get().get().getUsername());
         String additionalParams = "utm_medium=MobileApp&utm_source=MobileApp&utm_campaign=MobileApp";
         return enrollUrlFromServer + "&" + additionalParams;
+    }
+
+    public String getEnrollMerchantUrl() {
+        StringBuilder builder = new StringBuilder(BuildConfig.DreamTripsApi);
+        builder
+                .append("/gateway/dtl/enroll_merchant")
+                .append("?username=").append(appSessionHolder.get().get().getUsername())
+                .append("&sso=").append(appSessionHolder.get().get().getLegacyApiToken())
+                .append("&locale=").append(appSessionHolder.get().get().getUser().getLocale())
+        ;
+        return builder.toString();
     }
 
     public String getEnrollRepUrl() {

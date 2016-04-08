@@ -15,7 +15,7 @@ public class ReorderBucketItemCommand extends Command<JsonObject> {
     }
 
     @Override
-    public JsonObject loadDataFromNetwork() {
+    public JsonObject loadDataFromNetwork(){
         return getService().changeOrder(uid, bucketOrderModel);
     }
 }

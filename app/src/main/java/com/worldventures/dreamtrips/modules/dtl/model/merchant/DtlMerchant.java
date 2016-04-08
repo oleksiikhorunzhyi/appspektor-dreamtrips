@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
@@ -88,6 +89,17 @@ public class DtlMerchant implements Parcelable {
 
     public String getCountry() {
         return country;
+    }
+
+    public String getAnalyticsName() {
+        return String.format("%s:%s:%s",
+                adoptForAnalytics(getCity()),
+                adoptForAnalytics(getState()),
+                adoptForAnalytics(getCountry()));
+    }
+
+    private String adoptForAnalytics(String string) {
+        return TextUtils.isEmpty(string) ? "-" : string;
     }
 
     public String getZip() {
@@ -249,7 +261,7 @@ public class DtlMerchant implements Parcelable {
         return displayName + " " + distance;
     }
 
-    public static Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
+    public static final Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
         @Override
         public int compare(DtlMerchant lhs, DtlMerchant rhs) {
             if (lhs.distance == rhs.distance) return 0;

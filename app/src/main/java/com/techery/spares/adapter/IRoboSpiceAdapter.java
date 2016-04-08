@@ -1,6 +1,6 @@
 package com.techery.spares.adapter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface IRoboSpiceAdapter<T> {
 
@@ -8,7 +8,7 @@ public interface IRoboSpiceAdapter<T> {
 
     void clear();
 
-    void addItems(ArrayList<T> baseItemClasses);
+    void addItems(List<T> baseItemClasses);
 
     void notifyDataSetChanged();
 }

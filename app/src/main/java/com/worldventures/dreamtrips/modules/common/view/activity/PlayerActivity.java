@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -18,9 +18,8 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.widget.media.AndroidMediaController;
 import tv.danmaku.ijk.media.widget.media.IjkVideoView;
 
-
 @Layout(R.layout.player_activity_simple)
-public class PlayerActivity extends ActivityWithPresenter<ActivityPresenter> {
+public class PlayerActivity extends ActivityWithPresenter<VideoPlayerPresenter> implements VideoPlayerPresenter.View {
 
     @InjectView(R.id.myVideo)
     protected IjkVideoView videoView;
@@ -33,8 +32,8 @@ public class PlayerActivity extends ActivityWithPresenter<ActivityPresenter> {
     Uri uri;
 
     @Override
-    protected ActivityPresenter createPresentationModel(Bundle savedInstanceState) {
-        return new ActivityPresenter();
+    protected VideoPlayerPresenter createPresentationModel(Bundle savedInstanceState) {
+        return new VideoPlayerPresenter();
     }
 
     @Override
@@ -62,6 +61,32 @@ public class PlayerActivity extends ActivityWithPresenter<ActivityPresenter> {
         playVideo();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (mBackPressed || !videoView.isBackgroundPlayEnabled()) {
+            videoView.stopPlayback();
+            videoView.release(true);
+            videoView.stopBackgroundPlay();
+        } else {
+            videoView.enterBackground();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        mBackPressed = true;
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onHeadphonesUnPlugged() {
+        if (videoView.isPlaying()) {
+            videoView.pause();
+        }
+    }
+
     @OnClick(R.id.retry)
     void onRetry() {
         playVideo();
@@ -76,26 +101,5 @@ public class PlayerActivity extends ActivityWithPresenter<ActivityPresenter> {
             Timber.e("Null Data Source\n");
             finish();
         }
-
     }
-
-    @Override
-    public void onBackPressed() {
-        mBackPressed = true;
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (mBackPressed || !videoView.isBackgroundPlayEnabled()) {
-            videoView.stopPlayback();
-            videoView.release(true);
-            videoView.stopBackgroundPlay();
-        } else {
-            videoView.enterBackground();
-        }
-    }
-
 }

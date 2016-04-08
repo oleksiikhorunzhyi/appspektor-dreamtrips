@@ -1,15 +1,19 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
-import android.database.Cursor;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ProfileCrosser;
+import com.messenger.delegate.RxSearchHelper;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.storage.dao.UsersDAO;
+import com.messenger.ui.model.SelectableDataUser;
+import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
 import com.messenger.util.ContactsHeaderCreator;
@@ -19,15 +23,16 @@ import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observables.ConnectableObservable;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
-
-
 
 public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterImpl<ChatMembersScreen, ChatMembersScreenViewState>
         implements ChatMembersScreenPresenter {
@@ -43,21 +48,21 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     DreamSpiceManager dreamSpiceManager;
     @Inject
     ChatDelegate chatDelegate;
+    @Inject
+    UserSectionHelper userSectionHelper;
 
-    protected Observable<Cursor> cursorObservable;
+    private final RxSearchHelper<DataUser> searchHelper = new RxSearchHelper<>();
+    protected final List<DataUser> selectedUsers = new CopyOnWriteArrayList<>();
+    @Nullable
+    private CharSequence textInChosenContactsEditText;
 
-    private String textInChosenContactsEditText;
+    private final ProfileCrosser profileCrosser;
+    private final ContactsHeaderCreator contactsHeaderCreator;
 
-    final private ProfileCrosser profileCrosser;
-    final private ContactsHeaderCreator contactsHeaderCreator;
-
-    public ChatMembersScreenPresenterImpl(Context context) {
+    public ChatMembersScreenPresenterImpl(Context context, Injector injector) {
         super(context);
 
-        ((Injector) (context.getApplicationContext())).inject(this);
-
-        textInChosenContactsEditText = context
-                .getString(R.string.new_chat_chosen_contacts_header_empty);
+       injector.inject(this);
 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);
@@ -67,6 +72,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public void attachView(ChatMembersScreen view) {
         super.attachView(view);
         dreamSpiceManager.start(getContext());
+        connectToContacts();
     }
 
     @Override
@@ -75,11 +81,53 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         dreamSpiceManager.shouldStop();
     }
 
+    protected abstract Observable<List<DataUser>> createContactListObservable();
+
+    protected void connectToContacts() {
+        ConnectableObservable<CharSequence> chosenObservable = getView().getSearchQueryObservable()
+                .compose(bindView())
+                .publish();
+
+        chosenObservable
+                .filter(text -> !availableFilter(text))
+                .subscribe(sequence -> removeLastUserIfExist());
+
+        Observable<CharSequence> filterObservable = chosenObservable
+                .compose(bindView())
+                .filter(this::availableFilter)
+                .map(this::prepareSearchQuery);
+
+        searchHelper.search(createContactListObservable(), filterObservable,
+                (user, searchFilter) -> searchHelper.contains(user.getDisplayedName(), searchFilter))
+                .compose(userSectionHelper.prepareItemInCheckableList(selectedUsers))
+                .compose(bindView())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(itemWithUserCount -> addListItems(itemWithUserCount.first));
+
+        chosenObservable.connect();
+    }
+
+    private String prepareSearchQuery(CharSequence text) {
+        String str = text.toString();
+        return TextUtils.isEmpty(textInChosenContactsEditText) ? "" : str.substring(textInChosenContactsEditText.length());
+    }
+
+    private boolean availableFilter(CharSequence text) {
+        return TextUtils.isEmpty(textInChosenContactsEditText) || textInChosenContactsEditText.length() <= text.length();
+    }
+
     @Override
     public void onNewViewState() {
         state = new ChatMembersScreenViewState();
         state.setLoadingState(ChatMembersScreenViewState.LoadingState.LOADING);
         applyViewState();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        state.setSelectedContacts(selectedUsers);
+        state.setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
+        super.onSaveInstanceState(bundle);
     }
 
     @Override
@@ -91,7 +139,11 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public void applyViewState() {
         ChatMembersScreenViewState viewState = getViewState();
         ChatMembersScreen screen = getView();
-        List<DataUser> selectedContacts = viewState.getSelectedContacts();
+
+        List<DataUser> selectedUsersFromViewState = viewState.getSelectedContacts();
+        selectedUsers.addAll(selectedUsersFromViewState);
+        selectedUsersFromViewState.clear();
+        refreshSelectedContactsHeader();
 
         switch (viewState.getLoadingState()) {
             case LOADING:
@@ -105,65 +157,43 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                 break;
         }
 
-        if (selectedContacts != null) {
-            screen.setSelectedContacts(selectedContacts);
-            refreshSelectedContactsHeader();
-        }
-        int conversationNameVisibility = getViewState()
-                .isChatNameEditTextVisible() ? View.VISIBLE : View.GONE;
+        int conversationNameVisibility = selectedUsers.size() > 1 ? View.VISIBLE : View.GONE;
         getView().setConversationNameEditTextVisibility(conversationNameVisibility);
     }
 
     @Override
-    public void onSelectedUsersStateChanged(List<DataUser> selectedContacts) {
-        getViewState().setSelectedContacts(selectedContacts);
+    public void onItemSelectChange(SelectableDataUser item) {
+        if (item.isSelected()) {
+            selectedUsers.add(item.getDataUser());
+        } else {
+            selectedUsers.remove(item.getDataUser());
+        }
         refreshSelectedContactsHeader();
     }
 
     private void refreshSelectedContactsHeader() {
-        List<DataUser> selectedContacts = getViewState().getSelectedContacts();
-        SpannableString spannableString = contactsHeaderCreator.createHeader(selectedContacts);
-        textInChosenContactsEditText = spannableString.toString();
+        SpannableString spannableString = contactsHeaderCreator.createHeader(selectedUsers);
+        textInChosenContactsEditText = spannableString;
         getView().setSelectedUsersHeaderText(spannableString);
     }
 
-    @Override
-    public void onTextChangedInChosenContactsEditText(String text) {
-        int textInChosenContactsLength = textInChosenContactsEditText.length();
-        int textLength = text.length();
-
-        if (textInChosenContactsLength > textLength) {
-            List<DataUser> selectedContacts = getViewState().getSelectedContacts();
-            if (selectedContacts != null && !selectedContacts.isEmpty()) {
-                selectedContacts.remove(selectedContacts.size() - 1);
-                getView().setSelectedContacts(selectedContacts);
-                onSelectedUsersStateChanged(selectedContacts);
-            }
-            return;
-        }
-        String searchQuery = text.substring(textInChosenContactsLength, textLength);
-        getViewState().setSearchFilter(searchQuery);
-
-        cursorObservable.subscribe(cursor ->
-                getView().setContacts(cursor, searchQuery, UsersDAO.USER_DISPLAY_NAME));
+    private void removeLastUserIfExist() {
+        if (!selectedUsers.isEmpty()) selectedUsers.remove(selectedUsers.size() - 1);
+        refreshSelectedContactsHeader();
     }
 
-    protected void showContacts(Cursor cursor) {
-        if (!isViewAttached()) return;
-
+    protected void addListItems(List<Object> items) {
+        if (getView() == null) return;
         getViewState().setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
-        getView().setContacts(cursor);
+        getView().setAdapterItems(items);
         getView().showContent();
     }
 
-    protected void slideInConversationNameEditText() {
-        getView().slideInConversationNameEditText();
-        getViewState().setChatNameEditTextVisible(true);
-    }
-
-    protected void slideOutConversationNameEditText() {
-        getView().slideOutConversationNameEditText();
-        getViewState().setChatNameEditTextVisible(false);
+    @SuppressWarnings("all")
+    protected void setConversationNameInputFieldVisible(boolean show) {
+        ChatMembersScreen view = getView();
+        if (show) view.slideInConversationNameEditText();
+        else view.slideOutConversationNameEditText();
     }
 
     @Override

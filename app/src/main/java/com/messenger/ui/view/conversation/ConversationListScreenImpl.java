@@ -35,6 +35,7 @@ import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -88,7 +89,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     @NonNull
     @Override
     public ConversationListScreenPresenter createPresenter() {
-        return new ConversationListScreenPresenterImpl(getContext());
+        return new ConversationListScreenPresenterImpl(getContext(), injector);
     }
 
     @Override
@@ -160,9 +161,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
     }
 
     private void setAdapters() {
-        ConversationListScreenPresenter presenter = getPresenter();
-
-        adapter = new ConversationsCursorAdapter(getContext(), presenter.getUser());
+        adapter = new ConversationsCursorAdapter();
         adapter.setSwipeButtonsListener(this);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
@@ -249,6 +248,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
             MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
+                    TrackingHelper.conversationSearchSelected();
                     return true;
                 }
 

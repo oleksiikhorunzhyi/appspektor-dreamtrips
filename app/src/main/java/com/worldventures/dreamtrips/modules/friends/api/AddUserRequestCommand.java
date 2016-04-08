@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Command;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -18,5 +19,10 @@ public class AddUserRequestCommand extends Command<JSONObject> {
     @Override
     public JSONObject loadDataFromNetwork() throws Exception {
         return getService().addFriend(userId, circle.getId());
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_failed_to_send_friend_request;
     }
 }

@@ -1,18 +1,17 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.text.TextUtils;
+import android.support.v4.util.Pair;
 
 import com.messenger.delegate.ProfileCrosser;
+import com.messenger.delegate.RxSearchHelper;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.UsersDAO;
+import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -25,13 +24,15 @@ import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import flow.Flow;
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observables.ConnectableObservable;
 import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
@@ -54,19 +55,18 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Inject
     ActivityWatcher activityWatcher;
+    @Inject
+    UserSectionHelper userSectionHelper;
 
+    private final RxSearchHelper<Pair<DataUser, String>> rxSearchHelper = new RxSearchHelper<>();
     private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
     private Observable<DataConversation> conversationObservable;
-    private Observable<Cursor> membersCursorObservable;
 
-    private PublishSubject<Void> adapterInitializer = PublishSubject.create();
-    private Observable<Void> adapterInitializeObservable;
-
-    public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
+    public EditChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
-        ((Injector) context.getApplicationContext()).inject(this);
+        injector.inject(this);
 
         this.conversationId = conversationId;
 
@@ -83,8 +83,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         connectConversation();
         connectParticipants();
 
-        adapterInitializeObservable = adapterInitializer.replay(1).autoConnect();
-
         activityWatcher.addOnStartStopListener(startStopAppListener);
     }
 
@@ -98,22 +96,48 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private void connectConversation() {
         conversationObservable = conversationsDAO.getConversation(conversationId)
                 .compose(new NonNullFilter<>())
-                .compose(bindViewIoToMainComposer())
                 .replay(1)
                 .autoConnect();
     }
 
     private void connectParticipants() {
-        membersCursorObservable = participantsDAO.getParticipants(conversationId)
-                .compose(bindViewIoToMainComposer())
-                .replay(1)
-                .autoConnect();
+        ConnectableObservable<List<Pair<DataUser, String>>> membersObservable =
+                participantsDAO.getParticipants(conversationId).publish();
 
-        membersCursorObservable.subscribe(cursor -> {
-            getViewState().setLoadingState(LceViewState.LoadingState.CONTENT);
-            showContent();
-        });
+        ConnectableObservable<CharSequence> searchObservable =
+                getView().getSearchObservable().publish();
+
+        searchObservable
+                .compose(bindView())
+                .subscribe(filterQuery ->
+                getViewState().setSearchFilter(filterQuery.toString()));
+
+        membersObservable
+                .compose(bindView())
+                .filter(pairs -> pairs.size() <= 1)
+                .subscribe(pairs -> Flow.get(getContext()).set(ConversationsPath.MASTER_PATH),
+                        throwable -> Timber.d(throwable, ""));
+
+        rxSearchHelper.search(membersObservable, searchObservable,
+                (pair, searchFilter) -> rxSearchHelper.contains(pair.first.getDisplayedName(), searchFilter))
+                .compose(userSectionHelper.groupTransformer(conversationObservable))
+                .compose(bindView())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(itemsWithUserCount ->
+                        adapterDataPrepared(itemsWithUserCount.first, itemsWithUserCount.second),
+                        throwable -> Timber.d(throwable, ""));
+
+        membersObservable.connect();
+        searchObservable.connect();
     }
+
+    private void adapterDataPrepared(List<Object> items, int userCount) {
+        EditChatMembersScreen view = getView();
+        view.showContent();
+        view.setAdapterData(items);
+        view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), userCount));
+    }
+
 
     ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
         @Override
@@ -125,20 +149,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
             if (getView() != null) getView().invalidateAllSwipedLayouts();
         }
     };
-
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        //if presenter is recreated and view has previous state with LOADING status,
-        //in applyViewState method all observables will be null cause onAttachedToWindow method calls after one
-        getViewState().setLoadingState(LceViewState.LoadingState.LOADING);
-        super.onSaveInstanceState(bundle);
-    }
-
-    @Override
-    public void onSearchFilterSelected(String search) {
-        getViewState().setSearchFilter(search);
-        applyViewState();
-    }
 
     @Override
     public void onNewViewState() {
@@ -153,34 +163,18 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         EditChatMembersScreen view = getView();
 
         assert view != null;
+        view.restoreSearchQuery(editChatMembersViewState.getSearchFilter());
         switch (editChatMembersViewState.getLoadingState()) {
             case LOADING:
                 view.showLoading();
                 break;
             case CONTENT:
-                showContent();
+                view.showContent();
                 break;
             case ERROR:
                 view.showError(editChatMembersViewState.getError());
                 break;
         }
-    }
-
-    private void showContent() {
-        Observable.zip(adapterInitializeObservable, membersCursorObservable, (aVoid, cursor) -> cursor)
-                .compose(bindVisibilityIoToMainComposer())
-                .subscribe(cursor -> {
-                    // cause admin of group chat is also participant
-                    if (cursor.getCount() <= 1) {
-                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
-                        return;
-                    }
-
-                    EditChatMembersScreen view = getView();
-                    view.showContent();
-                    view.setMembers(cursor, getViewState().getSearchFilter(), UsersDAO.USER_DISPLAY_NAME);
-                    view.setTitle(String.format(getContext().getString(R.string.edit_chat_members_title), cursor.getCount()));
-                });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -217,23 +211,5 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Override
     public void onUserClicked(DataUser user) {
         profileCrosser.crossToProfile(user);
-    }
-
-    @Override
-    public void requireAdapterInfo() {
-        conversationObservable
-                .distinctUntilChanged()
-                .subscribe(conversation -> {
-                    getView().setAdapterWithInfo(user, isOwner(conversation));
-                    adapterInitializer.onNext(null);
-                });
-    }
-
-    ////////////////////////////////////////////////////////
-    ////   Helpers
-    ////////////////////////////////////////////////////////
-
-    private boolean isOwner(DataConversation conversation) {
-        return TextUtils.equals(user.getId(), conversation.getOwnerId());
     }
 }

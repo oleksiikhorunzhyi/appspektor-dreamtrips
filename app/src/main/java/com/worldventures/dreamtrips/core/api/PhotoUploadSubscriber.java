@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.core.api;
 
-import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
 
@@ -17,12 +15,6 @@ public class PhotoUploadSubscriber extends Subscriber<UploadTask> {
     private Action1<UploadTask> afterEach;
 
     public PhotoUploadSubscriber() {
-    }
-
-    public static PhotoUploadSubscriber bind(RxView view, Observable<UploadTask> uploadsObservable) {
-        PhotoUploadSubscriber subscriber = new PhotoUploadSubscriber();
-        view.bind(uploadsObservable).subscribe(subscriber);
-        return subscriber;
     }
 
     public PhotoUploadSubscriber onSuccess(Action1<UploadTask> onSuccess) {
@@ -55,7 +47,8 @@ public class PhotoUploadSubscriber extends Subscriber<UploadTask> {
         return this;
     }
 
-    @Override public void onNext(UploadTask uploadTask) {
+    @Override
+    public void onNext(UploadTask uploadTask) {
         if (beforeEach != null) beforeEach.call(uploadTask);
         //
         switch (uploadTask.getStatus()) {
@@ -75,7 +68,9 @@ public class PhotoUploadSubscriber extends Subscriber<UploadTask> {
         if (afterEach != null) afterEach.call(uploadTask);
     }
 
-    @Override public void onCompleted() { }
+    @Override
+    public void onCompleted() {
+    }
 
     @Override
     public void onError(Throwable e) { // TODO ???

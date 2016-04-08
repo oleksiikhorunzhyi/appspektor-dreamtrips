@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -34,4 +35,9 @@ public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
         return data;
     }
 
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.string_failed_to_load_trips;
+    }
 }

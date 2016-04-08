@@ -1,11 +1,24 @@
+
 buildscript {
+
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
     }
 
+    def androidPluginVersion = "1.5.0"
+    def buildScriptPropertiesFile = rootProject.file('./buildscript.properties')
+    Properties buildscriptProperties = new Properties()
+    if (buildScriptPropertiesFile.exists()) {
+        buildscriptProperties.load(new FileInputStream(buildScriptPropertiesFile))
+        if (!buildscriptProperties.androidPluginVersion.asType(java.lang.String).isEmpty()) {
+            androidPluginVersion = buildscriptProperties.androidPluginVersion
+            logger.lifecycle("androidPluginVersion :: version used: ${androidPluginVersion}")
+        }
+    }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-beta6'
+        classpath "com.android.tools.build:gradle:${androidPluginVersion}"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
         //

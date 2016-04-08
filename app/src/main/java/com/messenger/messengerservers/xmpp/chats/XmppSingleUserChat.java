@@ -3,100 +3,47 @@ package com.messenger.messengerservers.xmpp.chats;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.SingleUserChat;
-import com.messenger.messengerservers.listeners.AuthorizeListener;
-import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
+import org.jivesoftware.smack.packet.Message.Type;
 
-import rx.Observable;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
-
-public class XmppSingleUserChat extends SingleUserChat {
-    private final String companionId;
-    private String roomId;
+public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
 
     @Nullable
     private Chat chat;
-    private AbstractXMPPConnection connection;
-    private final XmppServerFacade facade;
-
-    private AuthorizeListener authorizeListener = new AuthorizeListener() {
-        @Override
-        public void onSuccess() {
-            super.onSuccess();
-            setConnection(facade.getConnection());
-        }
-    };
+    private final String companionId;
 
     public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String roomId) {
-        this.facade = facade;
+        super(facade, roomId);
         this.companionId = companionId;
-        this.roomId = roomId;
+        connectToFacade();
+    }
 
-
-        synchronized (this.facade) {
-            if (facade.isAuthorized()) {
-                setConnection(facade.getConnection());
-            }
-            facade.addAuthorizationListener(authorizeListener);
+    @Override
+    protected boolean trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException {
+        if (chat != null) {
+            chat.sendMessage(message);
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void setCurrentState(@ChatState.State String state) {
-        Observable.just(state)
-                .subscribeOn(Schedulers.io())
-                .compose(new ChatStateTransformer(message -> {
-                    if (chat != null) {
-                        chat.sendMessage(message);
-                        return true;
-                    }
-                    return false;
-                }))
-                .subscribe(message -> {}, throwable -> Timber.e(throwable, "setCurrentState %s", state));
-    }
-
-    @Override
-    public Observable<Message> send(Message message) {
-        return Observable.just(message)
-                .doOnNext(msg -> msg.setConversationId(roomId))
-                .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(), smackMsg -> {
-                    if (chat != null) {
-                        chat.sendMessage(smackMsg);
-                        return true;
-                    }
-                    return false;
-                }));
-
-    }
-
-    @Override
-    public Observable<String> sendReadStatus(String messageId) {
-        return Observable.just(messageId)
-                .compose(new StatusMessageTransformer(new StatusMessagePacket(messageId, Status.DISPLAYED,
-                        JidCreatorHelper.obtainUserJid(companionId), org.jivesoftware.smack.packet.Message.Type.chat),
-                        stanza -> {
-                            if (connection != null) {
-                                connection.sendStanza(stanza);
-                                return true;
-                            }
-                            return false;
-                        }));
+    protected StatusMessagePacket createStatusMessage(String messageId) {
+        return new StatusMessagePacket(messageId, Status.DISPLAYED,
+                JidCreatorHelper.obtainUserJid(companionId), Type.chat);
     }
 
     public void setConnection(@NonNull AbstractXMPPConnection connection) {
-        this.connection = connection;
-
-        String userJid = connection.getUser().split("/")[0];
+        String userJid = facade.getUsername();
         String companionJid = null;
 
         if (companionId != null) {
@@ -108,21 +55,14 @@ public class XmppSingleUserChat extends SingleUserChat {
         }
 
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
-        Chat existingChat = chatManager.getThreadChat(roomId);
+        chat = chatManager.getThreadChat(roomId);
 
-        if (existingChat == null) {
+        if (chat == null) {
             if (companionJid == null) {
                 companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(roomId, userJid);
             }
             chat = chatManager.createChat(companionJid, roomId, null);
-        } else {
-            chat = existingChat;
         }
     }
 
-    @Override
-    public void close() {
-        super.close();
-        facade.removeAuthorizationListener(authorizeListener);
-    }
 }

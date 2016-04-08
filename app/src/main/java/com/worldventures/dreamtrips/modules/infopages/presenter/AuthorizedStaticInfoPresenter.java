@@ -17,15 +17,10 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
     }
 
     @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        loadUrl();
-    }
-
-    public void loadUrl() {
+    public void load() {
         UserSession userSession = appSessionHolder.get().get();
         if (userSession.getLastUpdate() > System.currentTimeMillis() - TimeUnit.MINUTES.toMillis(LIFE_DURATION)) {
-            view.load(getLocalizedUrl());
+            super.load();
         } else {
             dreamSpiceManager.login(new RequestListener() {
                 @Override
@@ -35,7 +30,7 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
 
                 @Override
                 public void onRequestSuccess(Object o) {
-                    view.reload(getLocalizedUrl());
+                    reload();
                 }
             });
         }

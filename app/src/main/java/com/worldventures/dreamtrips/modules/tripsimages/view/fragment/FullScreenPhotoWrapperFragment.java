@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.TripImagesListPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +38,7 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_full_screen_photo_wrapper)
 public class FullScreenPhotoWrapperFragment
         extends RxBaseFragmentWithArgs<TripImagesListPresenter, FullScreenImagesBundle>
-        implements TripImagesListPresenter.View {
+        implements MembersImagesPresenter.View {
 
     @InjectView(R.id.pager)
     protected ViewPager pager;
@@ -124,7 +126,7 @@ public class FullScreenPhotoWrapperFragment
             }
 
             @Override
-            public void addItems(ArrayList baseItemClasses) {
+            public void addItems(List baseItemClasses) {
                 addToAdapter(baseItemClasses);
             }
         };
@@ -204,5 +206,12 @@ public class FullScreenPhotoWrapperFragment
             pager.setAdapter(adapter);
             pager.setCurrentItem(Math.min(currentItem, adapter.getCount() - 1));
         }
+    }
+
+    @Override
+    public void attachImages(List<ChosenImage> photos, int requestType) {
+        /**
+         * Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
+         */
     }
 }

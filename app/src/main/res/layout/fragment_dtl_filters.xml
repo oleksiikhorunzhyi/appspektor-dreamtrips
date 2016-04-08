@@ -112,7 +112,7 @@
             android:layout_gravity="bottom|end"
             android:paddingRight="20dp"
             android:paddingTop="15dp"
-            android:text="50"
+            android:text="50+"
             android:textColor="@color/black"
             android:textSize="14sp"
             tools:ignore="HardcodedText"

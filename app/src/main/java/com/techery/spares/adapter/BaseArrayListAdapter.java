@@ -106,10 +106,12 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
         return this.items.get(position);
     }
 
-    public void addItems(List<BaseItemClass> result) {
-        if (result != null) {
-            this.items.addAll(result);
-            this.notifyDataSetChanged();
+    @Override
+    public void addItems(List<BaseItemClass> items) {
+        if (items != null) {
+            int insertedAt = this.items.size();
+            this.items.addAll(items);
+            this.notifyItemRangeInserted(insertedAt, items.size());
         }
     }
 
@@ -160,14 +162,6 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     public void clear() {
         this.items.clear();
         notifyDataSetChanged();
-    }
-
-    @Override
-    public void addItems(ArrayList<BaseItemClass> items) {
-        if (items != null) {
-            this.items.addAll(items);
-            this.notifyItemRangeInserted(items.size(), items.size());
-        }
     }
 
     public void setItems(List<BaseItemClass> baseItemClasses) {

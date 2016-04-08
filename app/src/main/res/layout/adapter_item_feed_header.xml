@@ -9,7 +9,7 @@
               android:id="@+id/feed_item_header"
               tools:showIn="@layout/adapter_item_feed_trip_event">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
         android:id="@+id/feed_header_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"

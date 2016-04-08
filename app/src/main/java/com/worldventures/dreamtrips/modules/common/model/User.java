@@ -19,11 +19,11 @@ import java.util.List;
 
 public class User extends BaseEntity implements Parcelable {
 
-    public static final String RBS_SUBSCTIPTION = "RBS"; //rep
-    public static final String DTM_SUBSCTIPTION = "DTM"; //member
-    public static final String DTS_SUBSCTIPTION = "DTS"; //standard
-    public static final String DTG_SUBSCTIPTION = "DTG"; //gold
-    public static final String DTP_SUBSCRIPTION = "DTP"; //platinum
+    private static final String RBS_SUBSCRIPTION = "RBS";   //rep
+    private static final String DTM_SUBSCRIPTION = "DTM";   //member
+    private static final String DTS_SUBSCRIPTION = "DTS";   //standard
+    private static final String DTG_SUBSCRIPTION = "DTG";   //gold
+    private static final String DTP_SUBSCRIPTION = "DTP";   //platinum
 
     private String username;
     private String email;
@@ -33,6 +33,7 @@ public class User extends BaseEntity implements Parcelable {
     private String lastName;
     private String location;
     private String locale;
+    private List<String> badges;
     private Date birthDate;
     private Date enrollDate;
 
@@ -199,24 +200,16 @@ public class User extends BaseEntity implements Parcelable {
         return Queryable.from(new String[]{getFirstName(), getLastName()}).notNulls().joinStrings(" ");
     }
 
-    public boolean isMember() {
-        return contains(DTG_SUBSCTIPTION, DTP_SUBSCRIPTION, DTM_SUBSCTIPTION, DTS_SUBSCTIPTION);
-    }
-
     public boolean isPlatinum() {
         return contains(DTP_SUBSCRIPTION);
     }
 
     public boolean isGold() {
-        return contains(DTG_SUBSCTIPTION);
+        return contains(DTG_SUBSCRIPTION);
     }
 
     public boolean isGeneral() {
-        return contains(DTM_SUBSCTIPTION, DTS_SUBSCTIPTION);
-    }
-
-    public boolean isRep() {
-        return contains(RBS_SUBSCTIPTION);
+        return contains(DTM_SUBSCRIPTION, DTS_SUBSCRIPTION);
     }
 
     private boolean contains(String... keys) {
@@ -227,7 +220,6 @@ public class User extends BaseEntity implements Parcelable {
                 }
             }
         }
-
         return false;
     }
 
@@ -248,6 +240,14 @@ public class User extends BaseEntity implements Parcelable {
 
     public void unfriend() {
         relationship = Relationship.NONE;
+    }
+
+    public List<String> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<String> badges) {
+        this.badges = badges;
     }
 
 
@@ -404,6 +404,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.mutualFriends, 0);
         dest.writeList(this.circles);
+        dest.writeStringList(this.badges);
     }
 
     protected User(Parcel in) {
@@ -433,6 +434,8 @@ public class User extends BaseEntity implements Parcelable {
         this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
         circles = new ArrayList<>();
         in.readList(circles, Circle.class.getClassLoader());
+        badges = new ArrayList<>();
+        in.readStringList(badges);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {

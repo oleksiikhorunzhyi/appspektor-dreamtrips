@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.settings.view.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.settings.api.UpdateSettingsCommand;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
@@ -44,6 +45,12 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
             immutableSettingsList = cloneList(this.settingsList);
         //
         view.setSettings(settingsList);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TrackingHelper.settingsDetailed(group.getType());
     }
 
     private ArrayList<Setting> cloneList(List<Setting> settingsList) {

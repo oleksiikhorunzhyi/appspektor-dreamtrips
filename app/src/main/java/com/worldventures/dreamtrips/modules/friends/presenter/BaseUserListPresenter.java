@@ -147,17 +147,17 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public void onEvent(CancelRequestEvent event) {
-        deleteRequest(event.getUser());
+        deleteRequest(event.getUser(), DeleteRequestCommand.Action.CANCEL);
     }
 
     public void onEvent(HideRequestEvent event) {
-        deleteRequest(event.getUser());
+        deleteRequest(event.getUser(), DeleteRequestCommand.Action.HIDE);
     }
 
-    private void deleteRequest(User user) {
+    private void deleteRequest(User user, DeleteRequestCommand.Action action) {
         if (view.isVisibleOnScreen()) {
             view.startLoading();
-            doRequest(new DeleteRequestCommand(user.getId()),
+            doRequest(new DeleteRequestCommand(user.getId(), action),
                     object -> {
                         user.setRelationship(User.Relationship.NONE);
                         userActionSucceed(user);

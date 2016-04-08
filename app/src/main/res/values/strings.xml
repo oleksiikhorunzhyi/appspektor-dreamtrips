@@ -26,7 +26,7 @@
     <string name="trips">DreamTrips</string>
     <string name="drawer_open">Menu Opened</string>
     <string name="drawer_close">Menu Closed</string>
-    <string name="empty"></string>
+    <string name="empty" translatable="false"></string>
     <string name="logout_dialog_title">Logout</string>
     <string name="logout_dialog_message">Are you sure you want to Log Out?</string>
     <string name="logout_dialog_positive_btn">Logout</string>
@@ -283,7 +283,7 @@
     <string name="profile_more">More</string>
     <string name="profile_platinum">Platinum member</string>
     <string name="profile_golden">Gold member</string>
-    <string name="profile_dt_points">&lt;b>%d&lt;/b> DT Points</string>
+    <string name="profile_dt_points">&lt;b>%s&lt;/b> DT Points</string>
     <string name="profile_rovia_bucks">&lt;b>%s&lt;/b> Rovia Bucks</string>
     <string name="bucket_delete_dialog">Are you sure you want to delete this bucket list item?</string>
 
@@ -510,7 +510,7 @@
     <string name="message_can_not_be_empty">Message can\'t be empty</string>
     <string name="feedback_has_been_sent">Your feedback is sent. Thank you</string>
     <string name="feedback_send_btn">Send</string>
-    <string name="feedback_select_category">Choose Reason</string>
+    <string name="feedback_select_category">Choose Category</string>
 
     <string name="years_ago">%d years ago</string>
     <string name="invitation_template">Select template</string>
@@ -534,5 +534,93 @@
 
     <string name="save_changes_before_proceed">Do you want to save changes before you proceed?</string>
     <string name="discard">Discard</string>
+
+    <string name="error_fail_to_load_success_stories">Failed to load success stories</string>
+    <string name="error_fail_to_like_success_story">Failed to like success story</string>
+    <string name="error_fail_to_unlike_success_story">Failed to unlike success story</string>
+    <string name="error_fail_to_load_settings">Failed to load setting</string>
+    <string name="error_fail_to_update_settings">Failed to update settings</string>
+    <string name="error_fail_to_load_bl">Failed to load Bucket List</string>
+    <string name="error_fail_to_delete_bl">Failed to delete Bucket List Item</string>
+    <string name="error_fail_to_create_bl">Failed to create Bucket List Item</string>
+    <string name="error_fail_to_edit_bl">Failed to edit Bucket List Item</string>
+    <string name="error_fail_to_load_categories">Failed to load categories</string>
+    <string name="error_fail_to_load_suggestions">Failed to load suggestions</string>
+    <string name="error_fail_to_load_popular_bl">Failed to load popular Bucket List Items</string>
+    <string name="error_fail_to_add_bl_item">Failed to add item</string>
+    <string name="error_fail_to_upload_bl_photo">Failed to upload photo</string>
+    <string name="error_fail_to_delete_bl_photo">Failed to delete photo</string>
+    <string name="error_fail_to_load_circles">Failed to load circles</string>
+    <string name="error_fail_to_load_feed">Failed to load feed</string>
+    <string name="error_fail_to_load_item_details">Failed to load item details</string>
+    <string name="error_fail_to_create_post">Failed to create post</string>
+    <string name="error_fail_to_update_post">Failed to update post</string>
+    <string name="error_fail_to_delete_post">Failed to delete post</string>
+    <string name="error_fail_to_load_comments">Failed to load comments</string>
+    <string name="error_fail_to_post_comment">Failed to post comment</string>
+    <string name="error_fail_to_delete_comment">Failed to delete comment</string>
+    <string name="error_fail_to_edit_comment">Failed to edit comment</string>
+    <string name="error_fail_to_load_flag_reason">Failed to load flag reasons</string>
+    <string name="error_fail_to_flag_item">Failed to flag item</string>
+    <string name="error_fail_to_accept_friend_requests">Failed to accept friend requests</string>
+    <string name="error_fail_to_accept_friend_request">Failed to accept friend request</string>
+    <string name="error_fail_to_reject_friend_request">Failed to reject friend request</string>
+    <string name="error_fail_to_hide_friend_request">Failed hide friend request</string>
+    <string name="error_fail_to_cancel_friend_request">Failed to cancel friend request</string>
+    <string name="error_failed_to_send_friend_request">Failed to send friend request</string>
+    <string name="error_failed_to_load_friend_requests">Failed to load friend requests</string>
+    <string name="error_failed_to_load_friends">Failed to load friends</string>
+    <string name="error_failed_to_unfriend_user">Failed to unfriend user</string>
+    <string name="error_failed_to_add_user_to_circle">Failed to add user to circle</string>
+    <string name="error_failed_to_remove_user_from_circle">Failed to remove user from circle</string>
+    <string name="error_failed_to_load_people_who_liked">Failed to load people who liked</string>
+    <string name="error_failed_to_load_mutual_friends">Failed to load mutual friends</string>
+    <string name="error_failed_to_load_notifications">Failed to load notifications</string>
+    <string name="error_failed_to_accept_terms_and_conditions">Failed to accept terms and conditions</string>
+    <string name="error_failed_to_load_my_images">Failed to load my images</string>
+    <string name="error_failed_to_load_member_images">Failed to load member images</string>
+    <string name="error_failed_to_load_ysbh_images">Failed to load you should be here images</string>
+    <string name="error_failed_to_load_inspire_images">Failed to load inspire me images</string>
+    <string name="error_failed_to_create_image">Failed to create image</string>
+    <string name="error_failed_to_edit_image">Failed to edit image</string>
+    <string name="error_failed_to_delete_image">Failed to delete image</string>
+    <string name="string_failed_to_load_trips">Failed to load trips</string>
+    <string name="error_failed_to_load_activities">Failed to load activities</string>
+    <string name="error_failed_to_load_users">Failed to load users</string>
+    <string name="error_failed_to_load_feedback_reasons">Failed to load feedback reasons</string>
+    <string name="error_fail_to_tag_people">Failed to tag people"</string>
+    <string name="error_fail_to_delete_tag">Failed to delete tag</string>
+    <string name="error_fail_to_load_feedback_reasons">Failed to load feedback reasons</string>
+    <string name="error_fail_to_send_feedback">Failed to send feedback</string>
+    <string name="error_fail_to_upload_image">Failed to upload image</string>
+    <string name="error_fail_to_load_timeline">Failed to load timeline</string>
+    <string name="error_fail_to_download_video">Failed to download video</string>
+    <string name="error_fail_to_get_invitations">Failed to get invitations</string>
+    <string name="error_fail_to_create_invitation">Failed to create invitation</string>
+    <string name="error_fail_to_send_invitation">Failed to send invitation</string>
+    <string name="error_fail_to_invitation_templates">Failed to get invitation templates</string>
+    <string name="error_fail_to_fill_template">Failed to fill template</string>
+    <string name="error_fail_to_get_preview_for_template">Failed to get preview for template</string>
+    <string name="error_fail_to_locales">Failed to get locales</string>
+    <string name="error_fail_to_login">Failed to login</string>
+    <string name="error_fail_to_load_profile_info">Failed to load profile info</string>
+    <string name="error_fail_to_update_avatar">Failed to update avatar</string>
+    <string name="error_fail_to_update_cover_photo">Failed to update cover photo</string>
+    <string name="error_fail_to_load_videos">Failed to load videos</string>
+    <string name="error_fail_to_like_item">Failed to like item</string>
+    <string name="error_fail_to_unlike_item">Failed to unlike item</string>
+    <string name="error_fail_to_mark_notification">Failed to mark notification</string>
+    <string name="error_fail_to_mark_notifications">Failed to mark notifications</string>
+    <string name="tag_people">Tag people</string>
+
+    <string name="say_something">Say something to the world</string>
+
+    <string name="update">Update</string>
+    <string name="add_location">Add location</string>
+    <string name="find_your_location">Find your location</string>
+
+    <string name="who_is_this">Who is this?</string>
+    <string name="dream_trips_points">DreamTrip points:</string>
+    <string name="rovia_bucks">Rovia Bucks:</string>
 
 </resources>

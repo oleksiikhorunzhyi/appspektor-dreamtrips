@@ -40,21 +40,25 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
 
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
-        router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
-                .data(new FriendGlobalSearchBundle("" + search.getQuery()))
-                .build());
+        openFriendSearch((adapter.getCount() == 0 && search.getQuery() != null) ? search.getQuery().toString() : "");
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_friend:
-                onGlobalSearchClicked();
+                openFriendSearch("");
                 TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_ADD_FRIENDS);
                 TrackingHelper.tapFeedButton(TrackingHelper.ATTRIBUTE_SEARCH_FRIENDS);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openFriendSearch(String query){
+        router.moveTo(Route.FRIEND_SEARCH, NavigationConfigBuilder.forActivity()
+                .data(new FriendGlobalSearchBundle(query))
+                .build());
     }
 
     @Override

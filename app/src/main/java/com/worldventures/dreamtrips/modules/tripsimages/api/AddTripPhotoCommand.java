@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.tripsimages.model.ImageUploadTask;
@@ -19,4 +20,10 @@ public class AddTripPhotoCommand extends DreamTripsRequest<Photo> {
     public Photo loadDataFromNetwork() throws Exception {
         return getService().uploadTripPhoto(uploadTask2);
     }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_failed_to_create_image;
+    }
 }
+

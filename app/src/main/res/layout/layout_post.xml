@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     android:id="@+id/space"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,233 +10,240 @@
     android:background="@color/black_semi_transparent"
     android:clickable="true">
 
-    <com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
-        android:id="@+id/photo_picker"
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout
+        android:id="@+id/post_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoOverlay="true"
-        sothree:umanoPanelHeight="@dimen/picker_panel_height"
-        sothree:umanoShadowHeight="4dp">
+        android:layout_marginBottom="@dimen/post_spacing_vertical_bottom"
+        android:layout_marginLeft="@dimen/post_spacing_horizontal"
+        android:layout_marginRight="@dimen/post_spacing_horizontal"
+        android:layout_marginTop="@dimen/post_spacing_vertical_top"
+        android:background="@drawable/background_post"
+        android:clickable="true"
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/post_container"
+            android:id="@+id/container_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true">
+
+            <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/size_large"
+                android:layout_height="@dimen/size_large"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="@dimen/spacing_normal"
+                fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+                fresco:placeholderImageScaleType="centerInside"
+                fresco:roundAsCircle="true"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/avatar"
+                android:layout_toRightOf="@+id/avatar"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_small">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_tiny"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@color/black"
+                    tools:text="Jason Gordon"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_post_public"
+                    android:drawablePadding="@dimen/spacing_tiniest"
+                    android:drawableStart="@drawable/ic_post_public"
+                    android:gravity="center_vertical"
+                    android:text="@string/post_visibility_public"
+                    android:textColor="@color/bucket_detailed_text_color"/>
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/spacing_small"
+                android:src="@drawable/ic_close_gray"/>
+
+
+        </RelativeLayout>
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/picker"
-            android:layout_marginBottom="@dimen/spacing_medium"
-            android:layout_marginLeft="@dimen/post_spacing_horizontal"
-            android:layout_marginRight="@dimen/post_spacing_horizontal"
-            android:layout_marginTop="@dimen/post_spacing_vertical"
-            android:background="@drawable/background_post"
-            android:clickable="true"
+            android:layout_below="@+id/container_user"
+            android:fillViewport="true">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
+                    android:id="@+id/post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:hint="@string/post_hint"
+                    android:imeOptions="actionDone"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:paddingLeft="@dimen/spacing_medium"
+                    android:paddingRight="@dimen/spacing_medium"
+                    android:paddingTop="@dimen/spacing_normal"/>
+
+                <FrameLayout
+                    android:id="@+id/image_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/post"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/spacing_normal">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/attached_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="350dp"/>
+
+                    <View
+                        android:id="@+id/shadow"
+                        android:layout_width="match_parent"
+                        android:layout_height="350dp"
+                        android:background="@color/black_semi_transparent"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/cancel_action"
+                        android:layout_width="@dimen/size_small"
+                        android:layout_height="@dimen/size_small"
+                        android:layout_gravity="end"
+                        android:layout_margin="@dimen/spacing_small"
+                        android:src="@drawable/ic_action_cancel"/>
+
+                    <view
+                        android:id="@+id/fab_progress"
+                        class="mbanje.kurt.fabbutton.FabButton"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center"
+                        android:color="@color/bucket_blue"
+                        android:enabled="false"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:src="@drawable/ic_upload_cloud"
+                        android:visibility="gone"
+                        app:fbb_autoStart="true"
+                        app:fbb_endBitmap="@drawable/ic_upload_cloud"
+                        app:fbb_progressColor="#ffffff"
+                        app:fbb_showEndBitmap="true"/>
+
+                </FrameLayout>
+
+            </RelativeLayout>
+        </ScrollView>
+
+
+        <include
+            android:id="@+id/divider"
+            layout="@layout/include_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_above="@+id/container_post"/>
+
+        <TextView
+            android:id="@+id/tag_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/container_post"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:drawableLeft="@drawable/ic_tag"
+            android:drawablePadding="@dimen/spacing_small"
+            android:text="@string/tag_people"
+            android:textColor="@android:color/white"/>
+
+        <LinearLayout
+            android:id="@+id/container_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/container_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true">
+                android:background="@drawable/background_post_panel"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small">
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/avatar"
-                    android:layout_width="@dimen/size_large"
-                    android:layout_height="@dimen/size_large"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_margin="@dimen/spacing_normal"
-                    fresco:placeholderImage="@drawable/ic_avatar_placeholder"
-                    fresco:placeholderImageScaleType="centerInside"
-                    fresco:roundAsCircle="true"/>
-
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/avatar"
-                    android:layout_toRightOf="@+id/avatar"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/spacing_small"
-                    android:paddingTop="@dimen/spacing_small">
-
-                    <TextView
-                        android:id="@+id/name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/spacing_tiny"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:textColor="@color/black"
-                        tools:text="Jason Gordon"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_post_public"
-                        android:drawablePadding="@dimen/spacing_tiniest"
-                        android:drawableStart="@drawable/ic_post_public"
-                        android:gravity="center_vertical"
-                        android:text="@string/post_visibility_public"
-                        android:textColor="@color/bucket_detailed_text_color"/>
-                </LinearLayout>
+                    android:padding="@dimen/spacing_small"
+                    android:src="@drawable/ic_post_add_image_normal"/>
 
                 <ImageView
-                    android:id="@+id/close"
+                    android:id="@+id/location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/image"
+                    android:padding="@dimen/spacing_small"
+                    android:src="@drawable/ic_location_states"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+
+                <ImageView
+                    android:id="@+id/more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/image"
+                    android:layout_toRightOf="@+id/image"
+                    android:padding="@dimen/spacing_small"
+                    android:src="@drawable/ic_post_more_normal"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/post_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_margin="@dimen/spacing_small"
-                    android:src="@drawable/ic_close_gray"/>
-
-
+                    android:layout_centerVertical="true"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/post"
+                    android:textAllCaps="true"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/font_normal"/>
             </RelativeLayout>
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/container_user"
-                android:fillViewport="true">
+        </LinearLayout>
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+    </RelativeLayout>
 
-                    <com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText
-                        android:id="@+id/post"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:gravity="top"
-                        android:hint="@string/post_hint"
-                        android:imeOptions="actionDone"
-                        android:paddingBottom="@dimen/spacing_normal"
-                        android:paddingLeft="@dimen/spacing_medium"
-                        android:paddingRight="@dimen/spacing_medium"
-                        android:paddingTop="@dimen/spacing_normal"/>
+    <FrameLayout
+        android:id="@+id/picker_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"/>
 
-                    <FrameLayout
-                        android:id="@+id/image_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/post"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/spacing_normal">
-
-                        <com.facebook.drawee.view.SimpleDraweeView
-                            android:id="@+id/attached_photo"
-                            android:layout_width="match_parent"
-                            android:layout_height="350dp"/>
-
-                        <View
-                            android:id="@+id/shadow"
-                            android:layout_width="match_parent"
-                            android:layout_height="350dp"
-                            android:background="@color/black_semi_transparent"
-                            android:visibility="gone"/>
-
-                        <ImageView
-                            android:id="@+id/cancel_action"
-                            android:layout_width="@dimen/size_small"
-                            android:layout_height="@dimen/size_small"
-                            android:layout_gravity="end"
-                            android:layout_margin="@dimen/spacing_small"
-                            android:src="@drawable/ic_action_cancel"/>
-
-                        <view
-                            android:id="@+id/fab_progress"
-                            class="mbanje.kurt.fabbutton.FabButton"
-                            android:layout_width="64dp"
-                            android:layout_height="64dp"
-                            android:layout_gravity="center"
-                            android:color="@color/bucket_blue"
-                            android:enabled="false"
-                            android:indeterminate="false"
-                            android:max="100"
-                            android:src="@drawable/ic_upload_cloud"
-                            android:visibility="gone"
-                            app:fbb_autoStart="true"
-                            app:fbb_endBitmap="@drawable/ic_upload_cloud"
-                            app:fbb_progressColor="#ffffff"
-                            app:fbb_showEndBitmap="true"/>
-
-                    </FrameLayout>
-
-                </RelativeLayout>
-            </ScrollView>
-
-
-            <include
-                android:id="@+id/divider"
-                layout="@layout/include_divider"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_above="@+id/container_post"/>
-
-            <LinearLayout
-                android:id="@+id/container_post"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/background_post_panel"
-                    android:clickable="true"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_small">
-
-                    <ImageView
-                        android:id="@+id/location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:padding="@dimen/spacing_small"
-                        android:src="@drawable/ic_post_location_off"/>
-
-                    <ImageView
-                        android:id="@+id/image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/location"
-                        android:layout_toRightOf="@+id/location"
-                        android:padding="@dimen/spacing_small"
-                        android:src="@drawable/ic_post_add_image_normal"/>
-
-                    <ImageView
-                        android:id="@+id/more"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/image"
-                        android:layout_toRightOf="@+id/image"
-                        android:padding="@dimen/spacing_small"
-                        android:src="@drawable/ic_post_more_normal"
-                        android:visibility="gone"/>
-
-                    <Button
-                        android:id="@+id/post_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:text="@string/post"
-                        android:textAllCaps="true"
-                        android:textColor="@color/grey"
-                        android:textSize="@dimen/font_normal"/>
-                </RelativeLayout>
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout>
-
-</RelativeLayout>
+</FrameLayout>

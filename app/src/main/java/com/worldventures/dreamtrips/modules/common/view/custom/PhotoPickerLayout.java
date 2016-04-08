@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -63,6 +66,8 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
     private PhotoPickerListener photoPickerListener;
 
+    private View transparentView;
+
     public PhotoPickerLayout(Context context) {
         this(context, null);
     }
@@ -82,6 +87,19 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @Override
     public Parcelable onSaveInstanceState() {
         return Icepick.saveInstanceState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && transparentView != null) {
+            Rect rect = new Rect();
+            transparentView.getLocalVisibleRect(rect);
+            rect.bottom = rect.bottom - getPanelHeight();
+            boolean isTransparentClicked = getPanelState() != PanelState.EXPANDED
+                    && rect.contains((int) ev.getX(), (int) ev.getY());
+            if (isTransparentClicked) return false;
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -266,6 +284,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public interface OnDoneClickListener {
+
         void onDone(List<ChosenImage> chosenImages, int type);
     }
 
@@ -275,6 +294,10 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
 
     public void setPhotoPickerListener(PhotoPickerListener photoPickerListener) {
         this.photoPickerListener = photoPickerListener;
+    }
+
+    public void setTransparentView(View transparentView) {
+        this.transparentView = transparentView;
     }
 
     public interface PhotoPickerListener {

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -21,5 +22,10 @@ public class GetUsersLikedEntityQuery extends Query<ArrayList<User>> {
     @Override
     public ArrayList<User> loadDataFromNetwork() throws Exception {
         return getService().getUsersWhoLikedEntity(uid, page, perPage);
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_failed_to_load_people_who_liked;
     }
 }

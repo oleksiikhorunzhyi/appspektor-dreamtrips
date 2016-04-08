@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
-import com.worldventures.dreamtrips.modules.bucketlist.view.custom.IBucketPhotoView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import java.util.List;
@@ -27,9 +26,9 @@ public interface BucketItemEditPresenterView extends BucketDetailsBasePresenter.
 
     String getDescription();
 
-    void hidePhotoPicker();
+    void hideMediaPicker();
 
-    void showPhotoPicker();
+    void showMediaPicker();
 
     void showLoading();
 

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
@@ -26,5 +27,10 @@ public class GetInspireMePhotosQuery extends Query<ArrayList<IFullScreenObject>>
         ArrayList<IFullScreenObject> result = new ArrayList<>();
         result.addAll(inspirations);
         return result;
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_failed_to_load_inspire_images;
     }
 }

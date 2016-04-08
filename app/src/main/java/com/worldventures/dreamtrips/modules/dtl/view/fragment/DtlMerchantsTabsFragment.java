@@ -1,25 +1,28 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.rx.viewbinding.DtRxBindings;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
+import com.worldventures.dreamtrips.modules.dtl.bundle.DtlLocationsBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
@@ -29,9 +32,11 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsTabsPresen
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import icepick.State;
+import rx.android.schedulers.AndroidSchedulers;
 
 @Layout(R.layout.fragment_dtl_merchants_tabs)
 public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPresenter>
@@ -71,29 +76,14 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         pager.setAdapter(adapter);
         pager.setPagingEnabled(false);
         pager.setOffscreenPageLimit(1);
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentPosition = position;
-                getPresenter().trackTabChange(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
         //
         toolbar.inflateMenu(R.menu.menu_dtl_list);
-        MenuItem searchItem = toolbar.getMenu().findItem(R.id.action_search);
         searchViewHelper = new SearchViewHelper();
-        searchViewHelper.init(searchItem, lastQuery, query -> {
-            lastQuery = query;
-            getPresenter().applySearch(query);
-        });
+        searchViewHelper.init(toolbar.getMenu().findItem(R.id.action_search), lastQuery,
+                query -> {
+                    lastQuery = query;
+                    getPresenter().applySearch(query);
+                }, () -> getPresenter().trackTabChange(currentPosition));
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_map:
@@ -109,6 +99,18 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
             }
             return super.onOptionsItemSelected(item);
         });
+        //
+        initToolbar();
+    }
+
+    @Override
+    public void setTabChangeListener() {
+        DtRxBindings.observePageSelections(pager)
+                .compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.PAUSE))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(position -> currentPosition = position)
+                .doOnNext(position -> getPresenter().trackTabChange(currentPosition))
+                .subscribe(getPresenter()::rememberUserTabSelection);
     }
 
     @Override
@@ -123,32 +125,51 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
     }
 
     @Override
-    public void preselectOfferTab(boolean preselectOffer) {
-        if (preselectOffer) tabStrip.getTabAt(0).select();
-        else tabStrip.getTabAt(1).select();
+    public void preselectMerchantTabWithIndex(int tabIndex) {
+        tabStrip.getTabAt(tabIndex).select();
     }
 
     @Override
-    public void updateSelection() {
-        pager.setCurrentItem(currentPosition);
+    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
+        if (dtlLocation == null || toolbar == null) return; // for safety reasons
+        //
+        TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
+        TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
+        //
+        if (locationTitle == null || locationModeCaption == null) return;
+        //
+        switch (dtlLocation.getLocationSourceType()) {
+            case NEAR_ME:
+            case EXTERNAL:
+                locationTitle.setText(dtlLocation.getLongName());
+                locationModeCaption.setVisibility(View.GONE);
+                break;
+            case FROM_MAP:
+                if (dtlLocation.getLongName() == null) {
+                    locationModeCaption.setVisibility(View.GONE);
+                    locationTitle.setText(R.string.dtl_nearby_caption);
+                } else {
+                    locationModeCaption.setVisibility(View.VISIBLE);
+                    locationTitle.setText(dtlLocation.getLongName());
+                }
+                break;
+        }
     }
 
-    @Override
-    public void initToolbar(DtlLocation location) {
+    private void initToolbar() {
         if (!tabletAnalytic.isTabletLandscape()) {
             toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
         }
         toolbar.setNavigationOnClickListener(view -> ((MainActivity) getActivity()).openLeftDrawer());
-        View title = toolbar.findViewById(R.id.spinnerStyledTitle);
-        if (title != null) {
-            title.setOnClickListener(v ->
-                    router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
-                            .backStackEnabled(false)
-                            .containerId(R.id.dtl_container)
-                            .fragmentManager(getParentFragment().getFragmentManager())
-                            .build()));
-            ((TextView) title).setText(location.getLongName());
-        }
+        //
+        ButterKnife.findById(toolbar, R.id.titleContainer).setOnClickListener(v -> {
+            router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(true)
+                    .containerId(R.id.dtl_container)
+                    .data(new DtlLocationsBundle())
+                    .fragmentManager(getParentFragment().getFragmentManager())
+                    .build());
+        });
     }
 
     @Override
@@ -156,6 +177,16 @@ public class DtlMerchantsTabsFragment extends RxBaseFragment<DtlMerchantsTabsPre
         router.moveTo(Route.DTL_MERCHANT_DETAILS, NavigationConfigBuilder.forActivity()
                 .data(new DtlMerchantDetailsBundle(merchantId, false))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .build());
+    }
+
+    @Override
+    public void openLocationsWhenEmpty() {
+        router.moveTo(Route.DTL_LOCATIONS, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(true)
+                .data(new DtlLocationsBundle(true))
+                .containerId(R.id.dtl_container)
+                .fragmentManager(getParentFragment().getFragmentManager())
                 .build());
     }
 

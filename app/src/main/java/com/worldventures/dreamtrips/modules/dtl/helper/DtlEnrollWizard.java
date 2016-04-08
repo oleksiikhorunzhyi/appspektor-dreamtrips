@@ -21,16 +21,18 @@ public class DtlEnrollWizard {
         this.routeCreator = routeCreator;
     }
 
-    public void clearAndProceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle) {
+    public void clearAndProceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction,
+                                MerchantIdBundle bundle) {
         showNext(fragmentManager, dtlTransaction, bundle, true);
     }
 
-    public void proceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle) {
+    public void proceed(FragmentManager fragmentManager, DtlTransaction dtlTransaction,
+                        MerchantIdBundle bundle) {
         showNext(fragmentManager, dtlTransaction, bundle, false);
     }
 
-    private void showNext(FragmentManager fragmentManager, DtlTransaction dtlTransaction, MerchantIdBundle bundle,
-                          boolean clearBackStack) {
+    private void showNext(FragmentManager fragmentManager, DtlTransaction dtlTransaction,
+                          MerchantIdBundle bundle, boolean clearBackStack) {
         Route route = routeCreator.createRoute(dtlTransaction);
         router.moveTo(route,
                 NavigationConfigBuilder.forFragment()
@@ -40,7 +42,6 @@ public class DtlEnrollWizard {
                         .clearBackStack(clearBackStack)
                         .fragmentManager(fragmentManager)
                         .build());
-
     }
 
     public void finish(Activity activity) {

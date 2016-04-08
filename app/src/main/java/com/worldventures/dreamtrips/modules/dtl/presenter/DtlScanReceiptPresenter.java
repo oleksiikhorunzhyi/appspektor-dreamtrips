@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -28,17 +29,17 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
     public static final int REQUESTER_ID = -3;
 
-    private final String merchantId;
-    //
-    @State
-    String amount;
     @Inject
-    SnappyRepository snapper;
+    SnappyRepository db;
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlJobManager jobManager;
     //
+    @State
+    String amount;
+    //
+    private final String merchantId;
     private DtlMerchant dtlMerchant;
     private DtlTransaction dtlTransaction;
 
@@ -56,7 +57,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlTransaction = snapper.getDtlTransaction(merchantId);
+        dtlTransaction = db.getDtlTransaction(merchantId);
         //
         if (dtlTransaction.getUploadTask() != null) {
             view.hideScanButton();
@@ -94,7 +95,8 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     public void verify() {
-        dtlTransaction.setBillTotal(Double.parseDouble(amount));
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withBillTotal(Double.parseDouble(amount));
         TrackingHelper.dtlVerifyAmountUser(amount);
         //
         jobManager.estimatePointsExecutor.createJobWith(merchantId, dtlTransaction.getBillTotal(),
@@ -104,9 +106,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     private void attachDtPoints(Double points) {
         TrackingHelper.dtlVerifyAmountSuccess();
         //
-        dtlTransaction.setPoints(points);
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withPoints(points);
         //
-        snapper.saveDtlTransaction(merchantId, dtlTransaction);
+        db.saveDtlTransaction(merchantId, dtlTransaction);
         view.openVerify(dtlTransaction);
     }
 
@@ -144,8 +147,9 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
         TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
         uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
         //
-        dtlTransaction.setUploadTask(uploadTask);
-        snapper.saveDtlTransaction(merchantId, dtlTransaction);
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withUploadTask(uploadTask);
+        db.saveDtlTransaction(merchantId, dtlTransaction);
         //
         checkVerification();
     }

@@ -44,7 +44,7 @@
             android:textColor="@color/theme_main_darker"
             android:textSize="@dimen/font_normal"
             android:textStyle="bold"
-            tools:text="+12"/>
+            tools:text="+12pt"/>
 
     </LinearLayout>
 

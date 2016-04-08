@@ -1,8 +1,12 @@
 package com.messenger.ui.adapter.holder;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.widget.AvatarView;
 import com.worldventures.dreamtrips.R;
 
@@ -17,15 +21,9 @@ public class OneToOneConversationViewHolder extends BaseConversationViewHolder {
         super(itemView);
     }
 
-
     public void bindUserProperties(String username, String avatarUrl, boolean online) {
         avatarView.setOnline(online);
         avatarView.setImageURI(avatarUrl != null ? Uri.parse(avatarUrl) : null);
         nameTextView.setText(username);
-    }
-
-    @Override
-    protected void setConversationId(String conversationId) {
-
     }
 }

@@ -1,14 +1,12 @@
 package com.messenger.storage.dao;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Adapter;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.util.RxContentResolver;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.builder.ConditionQueryBuilder;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -18,10 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class UsersDAO extends BaseDAO {
-    public static final String USER_DISPLAY_NAME = "displayName";
 
     public UsersDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -38,22 +34,18 @@ public class UsersDAO extends BaseDAO {
                 .withSelectionArgs(new String[]{String.valueOf(id)})
                 .build();
         return query(q, DataUser.CONTENT_URI)
-                .map(c -> {
-                    DataUser user = SqlUtils.convertToModel(false, DataUser.class, c);
-                    c.close();
-                    return user;
-                });
+                .compose(DaoTransformers.toDataUser());
     }
 
-    public Observable<Cursor> getFriends(String currentUserId) {
+    public Observable<List<DataUser>> getFriends(String currentUserId) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT *, " + DataUser$Table.FIRSTNAME + "|| ' ' ||" +  DataUser$Table.LASTNAME + " as " + USER_DISPLAY_NAME + " " +
-                        "FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table._ID +  "<>?" + " AND " + DataUser$Table.FRIEND + "=?")
+                .withSelection("SELECT * FROM " + DataUser.TABLE_NAME + " " +
+                        "WHERE " + DataUser$Table._ID +  "<>?" + " AND " + DataUser$Table.FRIEND + "=?")
                 .withSelectionArgs(new String[]{currentUserId, String.valueOf(1)})
                 .withSortOrder("ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, DataUser.CONTENT_URI)
-                .subscribeOn(Schedulers.io());
+                .compose(DaoTransformers.toDataUsers());
     }
 
     public void deleteFriends() {

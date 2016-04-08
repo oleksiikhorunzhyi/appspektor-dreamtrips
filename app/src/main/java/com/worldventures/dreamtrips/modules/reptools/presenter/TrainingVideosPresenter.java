@@ -3,15 +3,12 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
-import com.worldventures.dreamtrips.modules.video.event.MemberVideoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
-import com.worldventures.dreamtrips.modules.video.event.LanguageClickedEvent;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
 
@@ -53,20 +50,28 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
                 if (videoLocale == null) videoLocale = getCurrentLocale(locales, Locale.US);
 
                 if (videoLocale != null)
-                    videoLanguage = Queryable.from(videoLocale.getLanguage()).firstOrDefault();
-
+                    videoLanguage = getCurrentLanguage(videoLocale.getLanguage());
             }
-
             setHeaderLocale();
             view.setLocales(locales, videoLocale);
         }
-
         loadVideos();
     }
 
     private VideoLocale getCurrentLocale(ArrayList<VideoLocale> locales, Locale locale) {
         return Queryable.from(locales).firstOrDefault(tempLocale ->
                 tempLocale.getCountry().equalsIgnoreCase(locale.getCountry()));
+    }
+
+    private VideoLanguage getCurrentLanguage(VideoLanguage[] videoLanguages) {
+        VideoLanguage videoLanguage = Queryable.from(videoLanguages).firstOrDefault(v ->
+                v.getLocaleName().equalsIgnoreCase(getLocalName()));
+        return videoLanguage == null ? videoLanguages[0] : videoLanguage;
+    }
+
+    private String getLocalName() {
+        Locale currentLocale = context.getResources().getConfiguration().locale;
+        return String.format("%s-%s", currentLocale.getLanguage(), currentLocale.getCountry()).toLowerCase();
     }
 
     public void onLanguageSelected(VideoLocale videoLocale, VideoLanguage videoLanguage) {
@@ -100,14 +105,6 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
         currentItems.addAll(videos);
     }
 
-    public void onEvent(LanguageClickedEvent event) {
-        view.showDialog();
-    }
-
-    public void onEvent(MemberVideoAnalyticEvent event) {
-        TrackingHelper.actionRepToolsTrainingVideo(event.getActionAttribute(), event.getVideoName());
-    }
-
     @Override
     protected MemberVideosRequest getMemberVideosRequest() {
         if (videoLocale != null && videoLanguage != null)
@@ -117,6 +114,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     }
 
     public interface View extends PresentationVideosPresenter.View {
+
         void setLocales(ArrayList<VideoLocale> locales, VideoLocale defaultValue);
 
         void showDialog();

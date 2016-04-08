@@ -1,8 +1,11 @@
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
+//
+apply from: 'helper-methods.gradle'
 
 repositories {
     jcenter()
@@ -22,41 +25,66 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
-    // App versionq
+    // App version
     def versionMajor = 1
-    def versionMinor = 8
+    def versionMinor = 9
     def versionPatch = 0
-    def versionBuild = 17  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 22  // bump for dogfood builds, public betas, etc.
+    //
+    // flavor codes
+    String DEV_CODE = "dev"
+    String EXTERNAL_CODE = "external"
+    String[] BUILD_CODES = [DEV_CODE, EXTERNAL_CODE]
+    //
+    String DTL_CODE = "dtl"
+    String MESSENGER_CODE = "messenger"
+    String SOCIAL_CODE = "social"
+    String STABLE_CODE = "stable"
+    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE]
+    //
+    String STAGE_CODE = "stage"
+    String PERF_CODE = "perf"
+    String PROD_CODE = "prod"
+    String[] CONFIG_CODES = [STAGE_CODE, PERF_CODE, PROD_CODE]
+    //
+    def APP_ID_BASE = "com.worldventures.dreamtrips"
+    def APP_VERSION_NAME_BASE = "${versionMajor}.${versionMinor}.${versionPatch}"
+    //
+    def ALLOW_BUILD_LOG = true
+    def BUILD_LOG_TAG = "BUILD_LOG"
 
     defaultConfig {
-        applicationId "com.worldventures.dreamtrips"
-
+        applicationId APP_ID_BASE
+        //
         archivesBaseName = "DreamTrips"
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
-
+        versionName APP_VERSION_NAME_BASE
+        //
         minSdkVersion 15
         targetSdkVersion 22
-
+        //
         multiDexEnabled true
-
+        //
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
-        buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com"'
-        buildConfigField 'String', 'GoogleTrackingID', '"UA-41142403-2"'
+        buildConfigField 'String', 'S3Api', '"https://s3-us-west-2.amazonaws.com/dtappstg-config"'
         buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
         buildConfigField 'String', 'API_VERSION', '"2"'
-
+        buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+        resValue "string", "facebook_app_id", "761062457321921"
+        //
         buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
         buildConfigField 'String', 'COGNITO_ROLE_UNAUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolUnauth_DefaultRole"'
         buildConfigField 'String', 'COGNITO_ROLE_AUTH', '"arn:aws:iam::503446126408:role/Cognito_dtapp_prod_poolAuth_DefaultRole"'
         buildConfigField 'String', 'BUCKET_NAME', '"dtappprd"'
         buildConfigField 'String', 'BUCKET_ROOT_PATH', '"dtuploads/"'
-        buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
-        buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
         buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
 
+        buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
+        buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
+        ext.enableCrashlytics = true
+        //
         buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
         buildConfigField 'String', 'versionMinor', "\"${versionMinor}\""
         buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
@@ -67,123 +95,126 @@ android {
 
         manifestPlaceholders = [:]
         manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
-
+        manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
     }
 
-    flavorDimensions "config", "build"
+    flavorDimensions "build", "stream", "config"
 
     productFlavors {
+        // possible "build"-dimension flavors:
         dev {
-            flavorDimension "build"
-
-            minSdkVersion 23 // temporary, until new build gradle merged - to decrease build time
-            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
-
+            dimension "build"
+            minSdkVersion 23
             ext.enableCrashlytics = false
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtappstage.worldventures.biz/"'
-
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
-            buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'true'
-        }
-        stage { // the same as dev except minSdk
-            flavorDimension "build"
-
-            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dev" + "-${versionBuild}"
-
-            ext.enableCrashlytics = false
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtappstage.worldventures.biz/"'
-
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
-        external {
-            flavorDimension "build"
-            // don't setup minSdkVersion to inherit the one from the "flavors" dimension
-            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
-            //
-            ext.enableCrashlytics = true
-            buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
-        }
-        dtl {
-            flavorDimension "config"
+        external { dimension "build" }
 
-            applicationId "com.worldventures.dreamtrips.dtl"
-            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-dtl" + "-${versionBuild}"
-
-            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
-
-            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
-
-            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            resValue "string", "facebook_app_id", "761062457321921"
-        }
-        social {
-            flavorDimension "config"
-
-            applicationId "com.worldventures.dreamtrips.stage"
-            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-stage" + "-${versionBuild}"
-
-            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
-
-            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
-
-            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            resValue "string", "facebook_app_id", "761062457321921"
-        }
+        // possible "stream"-dimension flavors:
+        dtl { dimension "stream" }
         messenger {
-            flavorDimension "config"
-
-            applicationId "com.worldventures.dreamtrips.messenger"
-            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-messenger" + "-${versionBuild}"
-
-            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
-
-            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
-
-            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+            dimension "stream"
             buildConfigField 'String', 'HOCKEY_APP_ID', '"d1ada40641214b4e9728a832c2d78d5c"'
-            resValue "string", "facebook_app_id", "761062457321921"
+        }
+        social { dimension "stream" }
+        stable { dimension "stream" }
 
-            //buildConfigField 'String', 'MESSENGER_API_URL', '"support2.sonrisa.hu"' // tmp test server
+        // possible "config"-dimension flavors:
+        stage {
+            dimension "config"
+            buildConfigField 'String', 'DreamTripsApi', '"http://ec2-54-191-135-142.us-west-2.compute.amazonaws.com"'
         }
         perf {
-            flavorDimension "config"
-            // the same as stage except API endpoint
-            applicationIdSuffix ".perf"
-            versionName = "${versionMajor}.${versionMinor}.${versionPatch}-perf" + "-${versionBuild}"
-
-            manifestPlaceholders.put 'surveyApiToken', "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz/"'
-
-            buildConfigField 'String', 'S3Api', '"http://dtapp.s3.amazonaws.com"'
-
-            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"e25cd69fc32f855a3aab0f85f9ee8e58"'
-            resValue "string", "facebook_app_id", "761062457321921"
+            dimension "config"
+            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz"'
         }
         prod {
-            flavorDimension "config"
-
-            manifestPlaceholders.put 'surveyApiToken', "48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"
-
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp.worldventures.biz"'
-
-            buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
-            buildConfigField 'long', 'API_TIMEOUT_SEC', '60'
-
-            buildConfigField 'String', 'HOCKEY_APP_ID', '"4fc6063859b3388635cb834dbb004324"'
-            resValue "string", "facebook_app_id", "761062457321921"
-
+            dimension "config"
+            //
+            manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
+            //
+            buildConfigField 'String', 'DreamTripsApi', '"https://dtapp.worldventures.biz"'
+            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com/config"'
+            buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
             buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp.worldventures.biz"'
         }
-
     }
+
+    variantFilter { variant ->
+        variant.ignore = true
+        //
+        String build = variant.flavors.get(0).name.toLowerCase() // dev / external
+        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / stable
+        String config  = variant.flavors.get(2).name.toLowerCase() // stage / perf / prod
+        //
+        if (variant.buildType.name.equals("debug") && config.equals(STAGE_CODE)) {
+            variant.ignore = false
+            return
+        }
+        //
+        if (variant.buildType.name.equals("release")) {
+            if (build.equals(EXTERNAL_CODE) && containsAnyOf(config, STAGE_CODE, PERF_CODE)) {
+                variant.ignore = false
+            }
+            if (build.equals(EXTERNAL_CODE) && stream.equals(STABLE_CODE) && config.equals(PROD_CODE)) {
+                variant.ignore = false
+            }
+        }
+    }
+
+    // TODO : move to external method later
+    android.applicationVariants.all { variant ->
+
+        ///////////////////////////////////////////////////////////////////////////
+        // appId constructor
+        ///////////////////////////////////////////////////////////////////////////
+
+        String flavorName = variant.flavorName.toLowerCase()
+        String buildSuffix, streamSuffix, configSuffix
+        //
+        buildSuffix = oneOfSubstrings(flavorName, BUILD_CODES)
+        streamSuffix = oneOfSubstrings(flavorName, STREAM_CODES)
+        configSuffix = oneOfSubstrings(flavorName, CONFIG_CODES)
+        //
+        if (streamSuffix.equals(STABLE_CODE) && configSuffix.equals(PROD_CODE)) {
+            writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
+                    "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
+                            "appId = ${APP_ID_BASE}\n" +
+                            "versionName = ${APP_VERSION_NAME_BASE}"
+            )
+            return
+        }
+        //
+        String generatedAppId = APP_ID_BASE
+        //
+        if (buildSuffix.equals(DEV_CODE)) generatedAppId += ".${buildSuffix}"
+        if (!streamSuffix.equals(STABLE_CODE)) generatedAppId += ".${streamSuffix}"
+        if (!configSuffix.equals(PROD_CODE)) generatedAppId += ".${configSuffix}"
+        //
+        variant.mergedFlavor.setApplicationId generatedAppId
+
+        ///////////////////////////////////////////////////////////////////////////
+        // Version name constructor
+        ///////////////////////////////////////////////////////////////////////////
+
+        String versionName = APP_VERSION_NAME_BASE
+        //
+        if (buildSuffix.equals(DEV_CODE)) versionName += "-${buildSuffix}"
+        if (!streamSuffix.equals(STABLE_CODE)) versionName += "-${streamSuffix}"
+        if (!configSuffix.equals(PROD_CODE)) {
+            versionName += "-${configSuffix}"
+            versionName += "-${versionBuild}"
+        }
+        //
+        variant.mergedFlavor.setVersionName versionName
+        //
+        writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
+                "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
+                "appId = ${generatedAppId}\n" +
+                "versionName = ${versionName}"
+        )
+    }
+
     signingConfigs {
         debug {
             storeFile rootProject.file('debug.keystore')
@@ -200,11 +231,13 @@ android {
             }
         }
     }
+
     buildTypes {
         debug {
             debuggable true
             signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
         }
         release {
             minifyEnabled true
@@ -248,6 +281,8 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // Data storage, flow
+    compile 'com.github.techery.janet:janet:0.0.16'
+    compile 'com.github.techery.janet:command-service:0.0.16'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
@@ -261,15 +296,15 @@ dependencies {
     compile 'io.techery:ijkmediaplayer:0.4.0@aar'
     compile 'io.techery:ijkmediawidget:0.4.0@aar'
     // 3rd services
+    compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
+    compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-analytics:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.google.android.gms:play-services-location:8.4.0'
     compile 'com.google.android.gms:play-services-vision:8.4.0'
-
+    //
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
     compile 'com.instabug.library:instabugsupport:1.7.1'
-    compile 'net.hockeyapp.android:HockeySDK:3.6.2'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
     compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
         transitive = true;
@@ -284,7 +319,7 @@ dependencies {
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
     compile 'io.reactivex:rxjava:1.1.1'
     compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.3.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
     compile 'com.trello:rxlifecycle:0.4.0'
     compile 'com.trello:rxlifecycle-components:0.4.0'
     compile 'io.reactivex:rxjava-debug:1.0.3'
@@ -313,15 +348,15 @@ dependencies {
     compile 'com.eowise:recyclerview-stickyheaders:0.5.2@aar'
     compile 'mbanje.kurt:fabbutton:1.2.1'
     compile 'com.github.man4ik:poly-picker:fce2e41f009b2c9b1287ee1000431710939e22e6'
-    compile 'com.github.techery:AndroidImageZoomCrop:1.0.7'
+    compile 'com.github.techery:AndroidImageZoomCrop:d58486a237'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
     compile 'com.github.techery:ProperRatingBar:v0.0.3'
     compile 'com.sothree.slidinguppanel:library:3.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     // Util
-    compile 'com.github.hotchemi:permissionsdispatcher:1.2.1@aar'
-    apt 'com.github.hotchemi:permissionsdispatcher-processor:1.2.1'
+    compile "com.github.hotchemi:permissionsdispatcher:2.0.8"
+    apt "com.github.hotchemi:permissionsdispatcher-processor:2.0.8"
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.intellij:annotations:12.0'
@@ -335,12 +370,13 @@ dependencies {
     compile 'frankiesardo:icepick:3.1.0'
     apt 'frankiesardo:icepick-processor:3.1.0'
 
-    externalCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
-    devCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
-    stageCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     compile 'com.github.pwittchen:networkevents:2.1.2'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
+    apt 'org.immutables:value:2.1.10'
+    provided 'org.immutables:value:2.1.10'
+    provided 'org.immutables:builder:2.1.10'
 
     // Messenger
     compile 'com.github.almozavr.flow:flow:0b702cdab7c639f94e37c792f0dbd7f4bf89a713'
@@ -349,9 +385,6 @@ dependencies {
     compile 'com.hannesdorfmann.mosby:mvp-common:2.0.0'
     compile 'com.hannesdorfmann.mosby:viewstate:2.0.0'
 
-    compile 'frankiesardo:icepick:3.1.0'
-    provided 'frankiesardo:icepick-processor:3.1.0'
-
     compile "com.raizlabs.android:DBFlow-Core:2.2.1"
     compile "com.raizlabs.android:DBFlow:2.2.1"
     apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
@@ -359,41 +392,9 @@ dependencies {
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.6'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.6'
 
-    compile 'com.apptentive:apptentive-android:2.0.1'
-
     // Testing
-
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.assertj:assertj-core:1.7.1'
-}
-
-apply plugin: "de.felixschulze.gradle.hockeyapp"
-
-hockeyapp {
-    variantToApiToken = [
-            stageDebug  : 'ba6b9a28a53947f287f62fdaed6086ad',
-            stageRelease: 'c0cccff726ec45f28237523fa3918769',
-            perfDebug   : 'a4bdfbd09db6462d9e6b41e84124d0f7',
-            prodRelease : '7bfe2802eb7947968190f0a0d1555fe2',
-    ]
-    variantToApplicationId = [
-            stageDebug  : '48de37eaf46ec363d392ae15ae521df6',
-            stageRelease: 'e25cd69fc32f855a3aab0f85f9ee8e58',
-            perfDebug   : '48de37eaf46ec363d392ae15ae521df6',
-            prodRelease : '4fc6063859b3388635cb834dbb004324',
-    ]
-    variantToStatus = [
-            stageDebug  : '2',
-            stageRelease: '2',
-            perfDebug   : '2',
-            prodRelease : '1'
-    ]
-    notes = rootProject.hasProperty('releaseNotes') ? rootProject.releaseNotes : ''
-    notesType = 1
-    releaseType = 0
-    notify = 0
-    repositoryUrl = 'https://github.com/techery/DreamTrips-Android'
-    teamCityLog = rootProject.hasProperty('teamCity')
 }

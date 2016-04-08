@@ -15,7 +15,9 @@ public class UnreadConversationObservable {
     public UnreadConversationObservable(ConversationsDAO conversationsDAO) {
         observable = conversationsDAO.getUnreadConversationsCount()
                 .distinctUntilChanged()
-                .compose(new IoToMainComposer<>());
+                .compose(new IoToMainComposer<>())
+                .replay(1)
+                .autoConnect();
     }
 
     public Subscription subscribe(Action1<Integer> action) {

@@ -29,17 +29,19 @@ public class LocaleHelper {
         return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()});
     }
 
+    public String getAccountLocaleFormatted(User user) {
+        Locale userLocale = getAccountLocale(user);
+        Locale locale = userLocale == null ? getDefaultLocale() : userLocale;
+        return android.text.TextUtils.join("-", new String[]{locale.getLanguage(), locale.getCountry()})
+                .toLowerCase();
+    }
+
     public Locale getAccountLocale(User user) {
         if (user.getLocale() == null) return null;
         //
         // check mapped locale first
-        AvailableLocale mappedLocale = null;
-        if (localesStorage.get().isPresent()) {
-            ArrayList<AvailableLocale> availableLocales = localesStorage.get().get();
-            mappedLocale = Queryable.from(availableLocales).firstOrDefault(l ->
-                            l.getLocale().toLowerCase().equals(user.getLocale().toLowerCase())
-            );
-        }
+        AvailableLocale mappedLocale = obtainAvailableLocale(user.getLocale());
+
         String language;
         String country;
         if (mappedLocale == null) {
@@ -52,6 +54,17 @@ public class LocaleHelper {
         }
 
         return new Locale(language, country);
+    }
+
+    private AvailableLocale obtainAvailableLocale(String localeName){
+        AvailableLocale mappedLocale = null;
+        if (localesStorage.get().isPresent()) {
+            ArrayList<AvailableLocale> availableLocales = localesStorage.get().get();
+            mappedLocale = Queryable.from(availableLocales).firstOrDefault(l ->
+                            l.getLocale().toLowerCase().equals(localeName.toLowerCase())
+            );
+        }
+        return mappedLocale;
     }
 
 }

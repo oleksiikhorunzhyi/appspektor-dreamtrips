@@ -19,11 +19,13 @@ public class PhotoPickerDelegate {
 
     public static final int REQUESTER_ID = -3;
 
-    @Inject
-    @Global
-    EventBus eventBus;
+    private EventBus eventBus;
 
     private PublishSubject<List<ChosenImage>> stream = PublishSubject.create();
+
+    public PhotoPickerDelegate(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     public void onEvent(AttachPhotoEvent event) {
         if (event.getRequestType() != -1) {

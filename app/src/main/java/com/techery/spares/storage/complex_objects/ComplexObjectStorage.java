@@ -1,19 +1,28 @@
 package com.techery.spares.storage.complex_objects;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.techery.spares.storage.ObjectStorage;
 import com.techery.spares.storage.preferences.ObjectPreferenceStorage;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
+import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 
 public class ComplexObjectStorage<T> implements ObjectStorage<T> {
 
-    private final Gson gson = new Gson();
+    private final Gson gson;
     private final ObjectStorage<String> storage;
     private final Class<T> typeClass;
     private final Type type;
     private Optional<T> cachedInstance = Optional.absent();
+
+    {
+        gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new DateTimeDeserializer())
+                .create();
+    }
 
     public ComplexObjectStorage(SimpleKeyValueStorage storage, String key, Class<T> objectClass) {
         this(new ObjectPreferenceStorage(storage, key), objectClass);

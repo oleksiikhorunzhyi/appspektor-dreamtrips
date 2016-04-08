@@ -8,22 +8,20 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
-import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
-import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -34,31 +32,36 @@ import com.worldventures.dreamtrips.util.ValidationUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
+import rx.Subscription;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
+
+    public static final int AVATAR_MEDIA_REQUEST_ID = 155322;
+    public static final int COVER_MEDIA_REQUEST_ID = 155323;
 
     @Inject
     RootComponentsProvider rootComponentsProvider;
     @Inject
     LogoutDelegate logoutDelegate;
+    @Inject
+    MediaPickerManager mediaPickerManager;
+
+    private Subscription mediaSubscription;
 
     private String coverTempFilePath;
 
     @State
     boolean shouldReload;
     @State
-    int callbackType;
+    int mediaRequestId;
 
     public static final String TEMP_PHOTO_FILE_PREFIX = "temp_copy_of_";
-
-    int REQUESTER_ID = 3745742;
 
     public AccountPresenter() {
         super();
@@ -128,6 +131,23 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
+        //
+        mediaSubscription = mediaPickerManager.toObservable()
+                .filter(attachment -> (attachment.requestId == AVATAR_MEDIA_REQUEST_ID
+                        || attachment.requestId == COVER_MEDIA_REQUEST_ID)  && attachment.chosenImages.size() > 0)
+                .subscribe(mediaAttachment -> {
+                    if (view != null) {
+                        view.hideMediaPicker();
+                        //
+                        imageSelected(mediaAttachment);
+                    }
+                });
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
     }
 
     @Override
@@ -204,51 +224,29 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     /////// Photo picking
     ////////////////////////////////////////
 
-    public void onEvent(AttachPhotoEvent event) {
-        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
-            pickImage(event.getRequestType());
+    public void onAvatarClicked() {
+        this.mediaRequestId = AVATAR_MEDIA_REQUEST_ID;
+        view.showMediaPicker(mediaRequestId);
     }
 
-    public void setCallbackType(int callbackType) {
-        this.callbackType = callbackType;
-    }
-
-    public void pickImage(int requestType) {
-        eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
-    }
-
-    public void onEvent(ImagePickedEvent event) {
-        if (view.isVisibleOnScreen() && event.getRequesterID() == REQUESTER_ID) {
-            eventBus.cancelEventDelivery(event);
-            eventBus.removeStickyEvent(ImagePickedEvent.class);
-            imageSelected(event.getImages()[0]);
-        }
-    }
-
-    public void attachImage(List<ChosenImage> chosenImages) {
-        if (chosenImages.size() == 0) {
-            return;
-        }
-
-        view.hidePhotoPicker();
-
-        imageSelected(chosenImages.get(0));
+    public void onCoverClicked() {
+        this.mediaRequestId = COVER_MEDIA_REQUEST_ID;
+        view.showMediaPicker(mediaRequestId);
     }
 
     public void onEventMainThread(HeaderCountChangedEvent event) {
         view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
     }
 
-    private void imageSelected(ChosenImage chosenImage) {
-        if (view != null) {
-            switch (callbackType) {
-                case AccountFragment.AVATAR_CALLBACK:
-                    onAvatarChosen(chosenImage);
-                    break;
-                case AccountFragment.COVER_CALLBACK:
-                    onCoverChosen(chosenImage);
-                    break;
-            }
+    private void imageSelected(MediaAttachment mediaAttachment) {
+        ChosenImage image = mediaAttachment.chosenImages.get(0);
+        switch (mediaAttachment.requestId) {
+            case AVATAR_MEDIA_REQUEST_ID:
+                onAvatarChosen(image);
+                break;
+            case COVER_MEDIA_REQUEST_ID:
+                onCoverChosen(image);
+                break;
         }
     }
 
@@ -304,7 +302,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
         void inject(Object object);
 
-        void hidePhotoPicker();
+        void showMediaPicker(int requestId);
+
+        void hideMediaPicker();
     }
 
 }

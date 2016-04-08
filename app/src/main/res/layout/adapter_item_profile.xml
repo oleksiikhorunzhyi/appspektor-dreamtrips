@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:gravity="center_horizontal"
-    >
+    android:gravity="center_horizontal">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +34,6 @@
                 android:text="@string/profile_add_friend"
                 android:textSize="@dimen/font_small"
                 android:visibility="gone"/>
-
 
             <TextView
                 android:id="@+id/post"
@@ -129,8 +127,7 @@
 
         <include
             android:id="@+id/friend_request"
-            layout="@layout/layout_friend_request"
-            />
+            layout="@layout/layout_friend_request" />
 
         <View
             android:layout_width="match_parent"
@@ -138,8 +135,7 @@
             android:background="@drawable/ic_profile_divider"
             android:contentDescription="@string/empty"/>
 
-        <include layout="@layout/layout_profile_info"
-            />
+        <include layout="@layout/layout_profile_info" />
 
         <View
             android:layout_width="match_parent"

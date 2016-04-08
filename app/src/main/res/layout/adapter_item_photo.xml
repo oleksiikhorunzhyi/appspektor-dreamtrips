@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     custom:side_priority="width">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
         android:id="@+id/imageViewPhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

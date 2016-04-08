@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.session.acl.LegacyFeatureFactory;
 import com.worldventures.dreamtrips.core.utils.events.AppConfigUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
@@ -32,6 +30,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
@@ -58,21 +57,18 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     @Inject
     LocalesHolder localeStorage;
-
     @Inject
     DtlLocationManager dtlLocationManager;
-
     @Inject
     StaticPageHolder staticPageHolder;
-
     @Inject
     SnappyRepository snappyRepository;
-
     @Inject
     Router router;
-
     @Inject
     ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
+    @Inject
+    DrawableUtil drawableUtil;
 
     private boolean requestInProgress = false;
 
@@ -80,14 +76,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     public void takeView(View view) {
         super.takeView(view);
         clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
+        drawableUtil.removeCacheImages();
         busWrapper = getGreenRobotBusWrapper(eventBus);
         networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
         networkEvents.register();
 
         startPreloadChain();
-
-        // we should clean dtl location when app was relaunched
-        dtlLocationManager.cleanLocation();
     }
 
     @Override
@@ -167,13 +161,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     private void done() {
         if (DreamSpiceManager.isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
-            if (userSession.getFeatures() == null ||
-                    userSession.getFeatures().isEmpty()) {
-                List<Feature> legacyFeatures = new LegacyFeatureFactory(userSession.getUser()).create();
-                userSession.setFeatures(legacyFeatures);
-                appSessionHolder.put(userSession);
-            }
-
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
             MessengerConnector.getInstance().connect();

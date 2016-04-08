@@ -2,6 +2,7 @@ package com.messenger.ui.presenter;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,21 +12,20 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.MultiUserChat;
-import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
-import com.messenger.storage.helper.ParticipantsDaoHelper;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.util.List;
 
@@ -35,15 +35,14 @@ import flow.Flow;
 import flow.History;
 import rx.Observable;
 
-public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenterImpl<ChatSettingsScreen,
-        ChatSettingsViewState> implements ChatSettingsScreenPresenter {
+public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScreen> extends MessengerPresenterImpl<C,
+        ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
 
     protected String conversationId;
     protected Observable<DataConversation> conversationObservable;
     protected Observable<List<DataUser>> participantsObservable;
 
     protected final ChatLeavingDelegate chatLeavingDelegate;
-    protected final ParticipantsDaoHelper participantsDaoHelper;
 
     @Inject
     DataUser user;
@@ -52,17 +51,13 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Inject
     ConversationsDAO conversationsDAO;
-    @Inject
-    ParticipantsDAO participantsDAO;
 
-    public ChatSettingsScreenPresenterImpl(Context context, String conversationId) {
+    public ChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
 
-        Injector injector = (Injector) context.getApplicationContext();
         injector.inject(this);
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
-        participantsDaoHelper = new ParticipantsDaoHelper(participantsDAO);
 
         this.conversationId = conversationId;
     }
@@ -84,29 +79,24 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
     }
 
     private void connectToConversation() {
-        conversationObservable = conversationsDAO
-                .getConversation(conversationId)
+        Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantObservable =
+                conversationsDAO.getConversationWithParticipants(conversationId)
                 .compose(new NonNullFilter<>())
-                .first()
-                .compose(bindViewIoToMainComposer())
+                .take(1)
+                .compose(bindViewIoToMainComposer());
+
+        conversationObservable = conversationWithParticipantObservable
+                .map(conversationWithParticipant -> conversationWithParticipant.first)
                 .replay(1)
                 .autoConnect();
 
-        conversationObservable.subscribe(conversation -> {
-            connectToParticipants(conversation);
+        participantsObservable = conversationWithParticipantObservable
+                .map(conversationWithParticipant -> conversationWithParticipant.second)
+                .replay(1)
+                .autoConnect();
 
-            ChatSettingsScreen screen = getView();
-            screen.prepareViewForOwner(isUserOwner(conversation));
-            screen.setConversation(conversation);
-        });
-    }
-
-    private void connectToParticipants(DataConversation conversation) {
-        participantsObservable = participantsDaoHelper.obtainParticipantsStream(conversation, user)
-                                            .compose(bindViewIoToMainComposer());
-
-        participantsObservable.subscribe(users ->
-                getView().setParticipants(conversation, users));
+        conversationWithParticipantObservable
+                .subscribe(conversation -> onConversationLoaded(conversation.first, conversation.second));
     }
 
     @Override
@@ -125,6 +115,13 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
                 getView().showError(getViewState().getError());
                 break;
         }
+    }
+
+    protected void onConversationLoaded(DataConversation conversation, List<DataUser> participants) {
+        ChatSettingsScreen screen = getView();
+        screen.prepareViewForOwner(isUserOwner(conversation));
+        screen.setConversation(conversation);
+        screen.setParticipants(conversation, participants);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -147,6 +144,7 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onLeaveChatClicked() {
+        TrackingHelper.leaveConversation();
         conversationObservable.subscribe(conversation -> chatLeavingDelegate.leave(conversation));
     }
 
@@ -199,6 +197,11 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void applyNewChatSubject(String subject) {
+        if (TextUtils.isEmpty(subject)) {
+            getView().showEmptySubjectDialog();
+            return;
+        }
+
         Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
                 .createMultiUserChatObservable(conversationId, facade.getUsername())
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
@@ -231,8 +234,21 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     @Override
     public void onToolbarMenuPrepared(Menu menu) {
-        conversationObservable.subscribe(conversation ->
-                menu.findItem(R.id.action_overflow).setVisible(!isSingleChat(conversation) && isUserOwner(conversation)));
+        conversationObservable.subscribe(conversation -> {
+                boolean isMultiUserChat = !ConversationHelper.isSingleChat(conversation);
+                if (!isMultiUserChat || (isMultiUserChat && !isUserOwner(conversation))) {
+                    menu.findItem(R.id.action_overflow).setVisible(false);
+                    return;
+                }
+                if (ConversationHelper.isTripChat(conversation)) {
+                    menu.findItem(R.id.action_change_chat_avatar).setVisible(false);
+                    menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
+                }
+                if (TextUtils.isEmpty(conversation.getAvatar())) {
+                    menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
+                }
+            });
+
     }
 
     @Override
@@ -254,9 +270,5 @@ public abstract class ChatSettingsScreenPresenterImpl extends MessengerPresenter
 
     private boolean isUserOwner(DataConversation conversation) {
         return TextUtils.equals(conversation.getOwnerId(), user.getId());
-    }
-
-    private boolean isSingleChat(DataConversation conversation) {
-        return TextUtils.equals(conversation.getType(), ConversationType.CHAT);
     }
 }

@@ -2,7 +2,6 @@ package com.messenger.messengerservers;
 
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
-import com.messenger.messengerservers.model.User;
 
 public interface MessengerServerFacade {
 
@@ -12,7 +11,7 @@ public interface MessengerServerFacade {
 
     boolean isAuthorized();
 
-    void setPresenceStatus(boolean active);
+    boolean setPresenceStatus(boolean active);
 
     boolean isActive();
 
@@ -29,8 +28,6 @@ public interface MessengerServerFacade {
     LoaderManager getLoaderManager();
 
     PaginationManager getPaginationManager();
-
-    ContactManager getContactManager();
 
     GlobalEventEmitter getGlobalEventEmitter();
 

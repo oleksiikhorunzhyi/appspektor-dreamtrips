@@ -5,7 +5,4 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 public interface TagActionListener {
 
     void onTagDeleted(PhotoTag tag);
-
-
-
 }

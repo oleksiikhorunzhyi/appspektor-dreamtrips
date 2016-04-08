@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.support.annotation.StringRes;
-import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
@@ -18,6 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
@@ -25,18 +25,17 @@ import javax.inject.Inject;
 
 public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
-    private final String merchantId;
-    private DtlMerchant dtlMerchant;
-    private TransferObserver transferObserver;
-
-    DtlTransaction dtlTransaction;
-
     @Inject
-    SnappyRepository snapper;
+    SnappyRepository db;
     @Inject
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlJobManager jobManager;
+    //
+    private final String merchantId;
+    private DtlMerchant dtlMerchant;
+    private TransferObserver transferObserver;
+    private DtlTransaction dtlTransaction;
 
     public DtlScanQrCodePresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -53,11 +52,10 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         super.takeView(view);
         apiErrorPresenter.setView(view);
         //
-        dtlTransaction = snapper.getDtlTransaction(dtlMerchant.getId());
+        dtlTransaction = db.getDtlTransaction(dtlMerchant.getId());
         view.setMerchant(dtlMerchant);
         //
-        if (dtlTransaction.merchantCodeScanned())
-            checkReceiptUploading();
+        if (dtlTransaction.isMerchantCodeScanned()) checkReceiptUploading();
         //
         bindApiJob();
     }
@@ -69,41 +67,44 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                 .onSuccess(this::processTransactionResult);
     }
 
-    public void codeScanned(String content) {
-        TrackingHelper.dtlScanMerchant(content);
-        dtlTransaction.setCode(content);
-        snapper.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+    public void codeScanned(String scannedQr) {
+        TrackingHelper.dtlScanMerchant(scannedQr);
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withMerchantToken(scannedQr);
+        db.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
         //
         checkReceiptUploading();
     }
 
     public void photoUploadFailed() {
-        snapper.cleanDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+        db.cleanDtlTransaction(dtlMerchant.getId(), dtlTransaction);
         //
-        if (view != null)
-            view.openScanReceipt(dtlTransaction);
+        if (view != null) view.openScanReceipt(dtlTransaction);
     }
 
     private void onReceiptUploaded() {
-        dtlTransaction.setReceiptPhotoUrl(photoUploadingManagerS3.
-                getResultUrl(dtlTransaction.getUploadTask()));
-        jobManager.earnPointsExecutor.createJobWith(dtlMerchant.getId(), dtlMerchant.getDefaultCurrency().getCode(),
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(dtlTransaction.getUploadTask()));
+        jobManager.earnPointsExecutor.createJobWith(dtlMerchant.getId(),
+                dtlMerchant.getDefaultCurrency().getCode(),
                 dtlTransaction).subscribe();
     }
 
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
-        dtlTransaction.setCode(null);
-        snapper.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withMerchantToken(null);
+        db.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
     }
 
     private void processTransactionResult(DtlTransactionResult result) {
         TrackingHelper.dtlPointsEarned(Double.valueOf(result.getEarnedPoints()).intValue());
         view.hideProgress();
         //
-        dtlTransaction.setDtlTransactionResult(result);
-        snapper.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                .withDtlTransactionResult(result);
+        db.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
         //
         eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
         view.finish();

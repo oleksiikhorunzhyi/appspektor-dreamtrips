@@ -31,6 +31,10 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onCopyMessageTextToClipboard(DataMessage message);
 
+    void onTranslateMessage(DataMessage message);
+
+    void onRevertTranslate(DataMessage message);
+
     void onStartNewChatForMessageOwner(DataMessage message);
 }
 

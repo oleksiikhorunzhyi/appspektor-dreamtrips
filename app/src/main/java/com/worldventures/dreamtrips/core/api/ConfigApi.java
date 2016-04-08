@@ -5,6 +5,6 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import retrofit.http.GET;
 
 public interface ConfigApi {
-    @GET("/config/settings_v4.json")
+    @GET("/settings_v4.json")
     public AppConfig getConfig();
 }

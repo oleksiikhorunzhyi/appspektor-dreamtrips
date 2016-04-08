@@ -19,4 +19,5 @@ public class GetShortProfilesQuery extends Query<ArrayList<User>> {
     public ArrayList<User> loadDataFromNetwork() throws Exception {
         return getService().getShortProfiles(new ShortProfilesBody(usernames));
     }
+
 }

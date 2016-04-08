@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.common.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 
 import java.util.ArrayList;
 
@@ -15,5 +15,10 @@ public class GetLocaleQuery extends Query<ArrayList<AvailableLocale>> {
     @Override
     public ArrayList<AvailableLocale> loadDataFromNetwork() throws Exception {
         return getService().getLocales();
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_locales;
     }
 }

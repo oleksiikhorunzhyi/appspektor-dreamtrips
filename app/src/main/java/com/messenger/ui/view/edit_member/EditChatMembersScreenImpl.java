@@ -1,7 +1,6 @@
 package com.messenger.ui.view.edit_member;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -11,25 +10,34 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.adapter.ActionButtonsContactsCursorAdapter;
+import com.messenger.ui.adapter.SwipeableContactsAdapter;
+import com.messenger.ui.adapter.cell.HeaderCell;
+import com.messenger.ui.adapter.cell.SwipeableUserCell;
 import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
+import com.messenger.ui.model.SwipeDataUser;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenter;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.recyclerview.Header;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
 
 public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembersScreen,
         EditChatMembersScreenPresenter, EditChatPath> implements EditChatMembersScreen {
@@ -48,13 +56,13 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     private ToolbarPresenter toolbarPresenter;
 
-    private SearchView searchView;
-    private String savedSearchFilter;
-
-    private ActionButtonsContactsCursorAdapter adapter;
+    private SwipeableContactsAdapter<Object> adapter;
     private LinearLayoutManager linearLayoutManager;
     private SwipeableAdapterManager swipeableAdapterManager = new SwipeableAdapterManager();
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
+    private Observable<CharSequence> searchObservable;
+    private MenuItem searchItem;
+    private SearchView searchView;
 
     public EditChatMembersScreenImpl(Context context) {
         super(context);
@@ -71,21 +79,32 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected void onPostAttachToWindowView() {
+        super.onPostAttachToWindowView();
         if (inflateToolbarMenu(toolbar)) {
             prepareOptionsMenu(toolbar.getMenu());
         }
-        getPresenter().requireAdapterInfo();
+        setAdapterWithInfo();
     }
 
-    public void setAdapterWithInfo(DataUser user, boolean isOwner) {
+    private void setAdapterWithInfo() {
         Context context = getContext();
         EditChatMembersScreenPresenter presenter = getPresenter();
 
-        adapter = new ActionButtonsContactsCursorAdapter(context, user, isOwner, swipeableAdapterManager);
-        adapter.setDeleteRequestListener(presenter::onDeleteUserFromChat);
-        adapter.setUserClickListener(presenter::onUserClicked);
+        adapter = new SwipeableContactsAdapter<>(context, injector);
+        adapter.registerCell(SwipeDataUser.class, SwipeableUserCell.class);
+        adapter.registerCell(Header.class, HeaderCell.class);
+        adapter.registerDelegate(SwipeDataUser.class, new SwipeableUserCell.Delegate() {
+            @Override
+            public void onDeleteUserRequired(SwipeDataUser swipeDataUser) {
+                presenter.onDeleteUserFromChat(swipeDataUser.user);
+            }
+
+            @Override
+            public void onCellClicked(SwipeDataUser swipeDataUser) {
+                presenter.onUserClicked(swipeDataUser.user);
+            }
+        });
 
         recyclerView.setSaveEnabled(true);
         recyclerView.setLayoutManager(linearLayoutManager = new LinearLayoutManager(context));
@@ -97,7 +116,6 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
 
     private void initUi() {
         ButterKnife.inject(this);
-        //
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
         toolbarPresenter.setTitle(null);
@@ -135,14 +153,8 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     @Override
-    public void setMembers(Cursor cursor) {
-        adapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void setMembers(Cursor cursor, String query, String queryColumn) {
-        this.savedSearchFilter = query;
-        adapter.changeCursor(cursor, query, queryColumn);
+    public void setAdapterData(List<Object> items) {
+        adapter.setItems(items);
     }
 
     @Override
@@ -165,47 +177,31 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     }
 
     public void prepareOptionsMenu(Menu menu) {
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
         if (searchItem != null) {
-            MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-                @Override
-                public boolean onMenuItemActionExpand(MenuItem item) {
-                    return true;
-                }
-
-                @Override
-                public boolean onMenuItemActionCollapse(MenuItem item) {
-                    getPresenter().onSearchFilterSelected(null);
-                    return true;
-                }
-            });
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-            // search filter not null search was opened before (e.g. before orientation change), open it
-            if (savedSearchFilter != null) {
-                searchItem.expandActionView();
-                searchView.setQuery(savedSearchFilter, false);
-            }
             searchView.setQueryHint(getContext().getString(R.string.edit_chat_members_search_hint));
-            searchView.setOnCloseListener(() -> false);
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    getPresenter().onSearchFilterSelected(newText);
-                    return false;
-                }
-            });
+            searchObservable = RxSearchView.queryTextChanges(searchView);
         }
+    }
+
+    @Override
+    public void restoreSearchQuery(String searchQuery) {
+        if (!TextUtils.isEmpty(searchQuery)) {
+            searchItem.expandActionView();
+            searchView.setQuery(searchQuery, false);
+        }
+    }
+
+    @Override
+    public Observable<CharSequence> getSearchObservable() {
+        return searchObservable;
     }
 
     @NonNull
     @Override
     public EditChatMembersScreenPresenter createPresenter() {
-        return new EditChatMembersScreenPresenterImpl(getContext(), getPath().getConversationId());
+        return new EditChatMembersScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 
     @Override

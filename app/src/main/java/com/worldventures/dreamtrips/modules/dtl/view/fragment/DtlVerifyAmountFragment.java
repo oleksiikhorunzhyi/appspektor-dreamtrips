@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
+@SuppressLint("DefaultLocale")
 @Layout(R.layout.fragment_verify_amount)
 public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantIdBundle>
         implements DtlVerifyAmountPresenter.View {
@@ -38,11 +40,11 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
     SimpleDraweeView receipt;
     @InjectView(R.id.info)
     TextView info;
-
+    //
     @Inject
     @Named(RouteCreatorModule.DTL_TRANSACTION)
     RouteCreator<DtlTransaction> routeCreator;
-
+    //
     private DtlEnrollWizard dtlEnrollWizard;
 
     @Override
@@ -82,16 +84,6 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
         dtlEnrollWizard.clearAndProceed(getFragmentManager(), dtlTransaction, getArgs());
     }
 
-    @OnClick(R.id.infoToggle)
-    void infoToggle() {
-        info.setVisibility(info.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void attachDtPoints(int count) {
-        dtPoints.setText(String.format("+%d", count));
-    }
-
     @Override
     public void attachTransaction(DtlTransaction dtlTransaction, DtlCurrency dtlCurrency) {
         spentAmount.setText(String.format("%s %.2f %s",
@@ -101,5 +93,15 @@ public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmoun
         receipt.setController(
                 GraphicUtils.provideFrescoResizingController(Uri.parse(dtlTransaction.getUploadTask().getFilePath()),
                         receipt.getController()));
+    }
+
+    @OnClick(R.id.infoToggle)
+    void infoToggle() {
+        info.setVisibility(info.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void attachDtPoints(int count) {
+        dtPoints.setText(String.format("+%dpt", count));
     }
 }

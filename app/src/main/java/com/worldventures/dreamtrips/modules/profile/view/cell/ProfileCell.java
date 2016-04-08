@@ -18,6 +18,8 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
@@ -31,6 +33,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.profile.adapters.Expandable;
 import com.worldventures.dreamtrips.modules.profile.adapters.OnExpandedListener;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
@@ -48,6 +51,7 @@ import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayou
 import java.text.DecimalFormat;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -62,7 +66,7 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     @InjectView(R.id.user_cover)
     protected SimpleDraweeView userCover;
     @InjectView(R.id.user_photo)
-    protected SimpleDraweeView userPhoto;
+    protected SmartAvatarView userPhoto;
     @InjectView(R.id.cover_camera)
     protected ImageView cover;
     @InjectView(R.id.avatar_camera)
@@ -129,12 +133,22 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     @Inject
     FeatureManager featureManager;
 
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
     Context context;
     OnExpandedListener onExpandedListener;
 
     public ProfileCell(View view) {
         super(view);
         context = view.getContext();
+    }
+
+    @Override
+    public void fillWithItem(User item) {
+        super.fillWithItem(item);
+        injectorProvider.get().inject(userPhoto);
     }
 
     @Override
@@ -190,6 +204,7 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
         ProfileViewUtils.setUserStatus(user, userStatus, context.getResources());
 
         setAvatarImage(Uri.parse(user.getAvatar() == null ? "" : user.getAvatar().getMedium()));
+        setUserPresence(user);
         setCoverImage(Uri.parse(user.getBackgroundPhotoUrl()));
 
         setTripImagesCount(user.getTripImagesCount());
@@ -241,6 +256,10 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
         if (uri != null) {
             setImage(uri, userPhoto);
         }
+    }
+
+    private void setUserPresence(User user){
+        userPhoto.setup(user, injectorProvider.get());
     }
 
     private void setCoverImage(Uri uri) {
@@ -317,7 +336,7 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
     }
 
     private void setDreamTripPoints(String count) {
-        dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, Float.valueOf(count).intValue())));
+        dtPoints.setText(Html.fromHtml(context.getString(R.string.profile_dt_points, count)));
     }
 
     private void setIsFriend(boolean isFriend) {

@@ -2,10 +2,13 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.api.factory.GoroRxApiFactory;
 import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.dtl.store.RetryLoginComposer;
 
 import javax.inject.Singleton;
 
@@ -17,7 +20,15 @@ public class ApiFactoryModule {
 
     @Provides
     @Singleton
-    RxApiFactory provideApiFactory(@ForApplication Context context, @ForApplication Injector injector) {
-        return new GoroRxApiFactory(context, injector);
+    RxApiFactory provideApiFactory(@ForApplication Context context, RetryLoginComposer retryLoginComposer) {
+        return new GoroRxApiFactory(context, retryLoginComposer);
+    }
+
+    @Provides
+    @Singleton
+    RetryLoginComposer provideRetryLoginComposer(@ForApplication Context context,
+                                                 DreamTripsApi dreamTripsApi,
+                                                 SessionHolder<UserSession> appSessionHolder) {
+        return new RetryLoginComposer(context, dreamTripsApi, appSessionHolder);
     }
 }

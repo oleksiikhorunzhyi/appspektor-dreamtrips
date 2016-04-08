@@ -21,11 +21,11 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
@@ -46,7 +46,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_notification)
 @MenuResource(R.menu.menu_notifications)
-public class NotificationFragment extends BaseFragment<NotificationPresenter> implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+public class NotificationFragment extends RxBaseFragment<NotificationPresenter> implements NotificationPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.notifications)
     EmptyRecyclerView notifications;

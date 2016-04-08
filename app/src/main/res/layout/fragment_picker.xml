@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout
+    android:id="@+id/photo_picker"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:umanoOverlay="true"
+    sothree:umanoPanelHeight="@dimen/picker_panel_height"
+    sothree:umanoShadowHeight="4dp">
+
+    <RelativeLayout
+        android:id="@+id/transparent_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clickable="true"/>
+
+</com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout>

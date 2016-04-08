@@ -20,7 +20,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
@@ -33,25 +32,22 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.Bucket
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
+import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 
 import java.util.Calendar;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+
+import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter.BUCKET_MEDIA_REQUEST_ID;
 
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
 public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
-
-    @Inject
-    BackStackDelegate backStackDelegate;
 
     @Optional
     @InjectView(R.id.done)
@@ -72,8 +68,6 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     protected Spinner spinnerCategory;
     @InjectView(R.id.lv_items)
     protected BucketPhotosView bucketPhotosView;
-    @InjectView(R.id.photo_picker)
-    protected PhotoPickerLayout photoPickerLayout;
     @InjectView(R.id.loading_view)
     protected ViewGroup loadingView;
 
@@ -93,23 +87,13 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     public void onResume() {
         super.onResume();
         initAutoCompleteDate();
-        backStackDelegate.setListener(this::onBackPressed);
         if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        backStackDelegate.setListener(null);
         OrientationUtil.unlockOrientation(getActivity());
-    }
-
-    private boolean onBackPressed() {
-        if (photoPickerLayout.isPanelVisible()) {
-            photoPickerLayout.hidePanel();
-            return true;
-        }
-        return false;
     }
 
     @Optional
@@ -126,7 +110,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_done) {
-            getPresenter().saveItem(true);
+            onSaveItem();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -134,6 +118,11 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     @Optional
     @OnClick(R.id.done)
     void onDone() {
+        onSaveItem();
+    }
+
+    private void onSaveItem() {
+        hideMediaPicker();
         getPresenter().saveItem(true);
     }
 
@@ -168,17 +157,12 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
         if (imageViewDone != null) {
             setHasOptionsMenu(false);
         }
-
-        inject(photoPickerLayout);
-        photoPickerLayout.setup(getChildFragmentManager(), true, 5);
-        photoPickerLayout.hidePanel();
-        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
     }
 
     protected void setupPhotoCellCallbacks() {
         bucketPhotosView.setBucketAddPhotoCellDelegate(model -> {
             if (isVisibleOnScreen()) {
-                showPhotoPicker();
+                showMediaPicker();
             }
         });
         bucketPhotosView.setBucketPhotoUploadCellDelegate(getPresenter()::onUploadTaskClicked);
@@ -307,13 +291,21 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     }
 
     @Override
-    public void hidePhotoPicker() {
-        photoPickerLayout.hidePanel();
+    public void hideMediaPicker() {
+        router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.picker_container)
+                .build());
     }
 
     @Override
-    public void showPhotoPicker() {
-        photoPickerLayout.showPanel();
+    public void showMediaPicker() {
+        router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
+                .backStackEnabled(false)
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.picker_container)
+                .data(new PickerBundle(BUCKET_MEDIA_REQUEST_ID, 5, true))
+                .build());
     }
 
     @Override
@@ -387,8 +379,6 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     public void showError() {
         editTextDescription.validate();
     }
-
-
 }
 
 

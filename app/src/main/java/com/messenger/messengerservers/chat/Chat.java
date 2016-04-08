@@ -5,13 +5,12 @@ import com.messenger.messengerservers.model.Message;
 
 import rx.Observable;
 
-public abstract class Chat {
-    public abstract Observable<Message> send(Message message);
+public interface Chat {
+    Observable<Message> send(Message message);
 
-    public abstract Observable<String> sendReadStatus(String messageId);
+    Observable<String> sendReadStatus(String messageId);
 
-    public abstract void setCurrentState(@ChatState.State String state);
+    void setCurrentState(@ChatState.State String state);
 
-    public void close() {
-    }
+    void close();
 }

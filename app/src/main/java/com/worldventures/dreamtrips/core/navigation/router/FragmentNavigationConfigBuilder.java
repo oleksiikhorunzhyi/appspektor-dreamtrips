@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.worldventures.dreamtrips.R;
@@ -41,6 +42,11 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
 
     public FragmentNavigationConfigBuilder backStackEnabled(boolean backStackEnabled) {
         navigationConfig.backStackEnabled = backStackEnabled;
+        return this;
+    }
+
+    public FragmentNavigationConfigBuilder targetFragment(Fragment fragment) {
+        navigationConfig.targetFragment = fragment;
         return this;
     }
 

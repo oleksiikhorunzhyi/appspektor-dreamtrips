@@ -1,31 +1,25 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter;
 
-import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.SpiceRequest;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
-import com.worldventures.dreamtrips.core.api.UploadPurpose;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.core.utils.events.InsertNewImageUploadTaskEvent;
 import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.api.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.events.ImageUploadedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.AccountImagesPresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
@@ -52,8 +46,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     private int currentPhotoPosition = 0;
 
     protected List<IFullScreenObject> photos = new ArrayList<>();
-    private List<PhotoTag> photoTags;
-
     protected int userId;
 
     protected TripImagesListPresenter(TripImagesType type, int userId) {
@@ -104,20 +96,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         if (!fullscreenMode) {
             reload();
         }
-
-        PhotoUploadSubscriber.bind(view,
-                photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE))
-                .onError(uploadTask -> {
-                    photoError(getCurrentTask(uploadTask.getId()));
-                })
-                .onSuccess((task) -> {
-                    if (!fullscreenMode) photoUploaded(task);
-                })
-                .onProgress(uploadTask -> {
-                    int index = photos.indexOf(uploadTask);
-                    if (index >= 0) updateTask(uploadTask);
-                    else addTask(uploadTask);
-                });
     }
 
     protected void syncPhotosAndUpdatePosition() {
@@ -127,8 +105,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             int prevPhotosCount = photos.size();
             photos = Queryable.from(photos).filter(element -> !(element instanceof UploadTask)).toList();
             currentPhotoPosition -= prevPhotosCount - photos.size();
-        } else {
-            photos.addAll(0, photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE));
         }
     }
 
@@ -164,12 +140,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         doRequest(getReloadRequest(), items -> {
             view.finishLoading();
             //
-            UploadTask uploadTask = null;
-            if (photos.size() > 0 && photos.get(0) instanceof UploadTask)
-                uploadTask = (UploadTask) photos.get(0);
-            //
             photos.clear();
-            if (uploadTask != null) photos.add(uploadTask);
             photos.addAll(items);
             resetLazyLoadFields();
             db.savePhotoEntityList(type, userId, Queryable.from(photos)
@@ -201,21 +172,12 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
 
     public void onItemClick(int position) {
         if (position != -1) {
-            IFullScreenObject obj = photos.get(position);
-            if (obj instanceof UploadTask) {
-                if (((UploadTask) obj).getStatus().equals(UploadTask.Status.FAILED)) {
-                    ((UploadTask) obj).setStatus(UploadTask.Status.STARTED);
-                    view.replace(photos.indexOf(obj), obj);
-                    uploadPhoto((UploadTask) obj);
-                }
-            } else {
-                if (this instanceof MembersImagesPresenter) {
-                    IFullScreenObject screenObject = photos.get(position);
-                    eventBus.post(new TripImageAnalyticEvent(screenObject.getFSId(), TrackingHelper.ATTRIBUTE_VIEW));
-                }
-                int uploadTasksCount = Queryable.from(photos).count(item -> item instanceof UploadTask);
-                view.openFullscreen(getFullscreenArgs(position - uploadTasksCount).build());
+            if (this instanceof MembersImagesPresenter) {
+                IFullScreenObject screenObject = photos.get(position);
+                eventBus.post(new TripImageAnalyticEvent(screenObject.getFSId(), TrackingHelper.ATTRIBUTE_VIEW));
             }
+            int uploadTasksCount = Queryable.from(photos).count(item -> item instanceof UploadTask);
+            view.openFullscreen(getFullscreenArgs(position - uploadTasksCount).build());
         }
     }
 
@@ -241,55 +203,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             default:
                 return Route.SOCIAL_IMAGE_FULLSCREEN;
         }
-    }
-
-    protected void photoUploaded(UploadTask task) {
-
-    }
-
-    protected void uploadTags(String id) {
-        if (photoTags == null || photoTags.isEmpty()) return;
-        doRequest(new AddPhotoTagsCommand(id, photoTags));
-    }
-
-    protected void photoError(UploadTask uploadTask) {
-        if (uploadTask != null) {
-            uploadTask.setStatus(UploadTask.Status.FAILED);
-            updateTask(uploadTask);
-        }
-    }
-
-    protected void processPhoto(int index, Photo photo) {
-        photos.set(index, photo);
-        /**
-         * Filter {@link UploadTask}, because sometimes after rotating device several times there were
-         * some problems with tasks duplication.
-         */
-        db.savePhotoEntityList(type, userId, Queryable.from(photos)
-                .filter(item -> !(item instanceof UploadTask)).toList());
-
-        new Handler().postDelayed(() -> {
-            if (view != null) view.replace(index, photo);
-        }, 300);
-    }
-
-    private void addTask(UploadTask task) {
-        if (view == null) return;
-        photos.add(0, task);
-        view.add(0, task);
-    }
-
-    private void updateTask(UploadTask task) {
-        if (view == null) return;
-        int index = photos.indexOf(task);
-        view.replace(index, task);
-    }
-
-    protected UploadTask getCurrentTask(long id) {
-        return (UploadTask) Queryable.from(photos).firstOrDefault(item ->
-                item instanceof UploadTask
-                        && id == (((UploadTask) item).getId()));
-
     }
 
     private void resetLazyLoadFields() {
@@ -320,18 +233,6 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    public void onEventMainThread(InsertNewImageUploadTaskEvent event) {
-        this.photoTags = event.getPhotoTags();
-        if (type == TripImagesType.ACCOUNT_IMAGES) {
-            uploadPhoto(event.getUploadTask());
-        }
-    }
-
-    private void uploadPhoto(UploadTask uploadTask) {
-        TrackingHelper.photoUploadStarted(uploadTask.getType(), "");
-        photoUploadingManager.upload(uploadTask, UploadPurpose.TRIP_IMAGE);
-    }
-
     public void onEvent(FeedEntityChangedEvent event) {
         if (event.getFeedEntity() instanceof Photo) {
             Photo temp = (Photo) event.getFeedEntity();
@@ -344,13 +245,12 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
         }
     }
 
-    public void onEventMainThread(ImageUploadedEvent event) {
-        if (fullscreenMode) return;
-        //
-        if (event.isSuccess) {
-            processPhoto(photos.indexOf(event.task), event.photo);
-        } else {
-            photoError(getCurrentTask(event.task.getId()));
+    public void onEventMainThread(FeedItemAddedEvent event) {
+        if (event.getFeedItem().getItem() instanceof Photo) {
+            Photo photo = (Photo) event.getFeedItem().getItem();
+            photos.add(0, photo);
+            db.savePhotoEntityList(type, userId, photos);
+            view.add(0, photo);
         }
     }
 

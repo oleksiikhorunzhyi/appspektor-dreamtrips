@@ -31,10 +31,9 @@
             android:id="@+id/profile_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            >
+            android:layout_gravity="center">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
                 android:id="@+id/user_photo"
                 android:layout_width="84dp"
                 android:layout_height="84dp"

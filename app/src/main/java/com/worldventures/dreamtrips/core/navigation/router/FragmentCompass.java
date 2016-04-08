@@ -37,7 +37,7 @@ class FragmentCompass {
     }
 
     public void add(Route route, Bundle bundle) {
-        action(Action.ADD, route, bundle);
+        action(Action.ADD, route, bundle, null);
     }
 
     public void replace(ComponentDescription componentDescription) {
@@ -45,15 +45,15 @@ class FragmentCompass {
     }
 
     public void replace(ComponentDescription componentDescription, Bundle args) {
-        replace(Route.restoreByKey(componentDescription.getKey()), args);
+        replace(Route.restoreByKey(componentDescription.getKey()), args, null);
     }
 
     public void replace(Route route) {
-        replace(route, null);
+        replace(route, null, null);
     }
 
-    public void replace(Route route, Bundle bundle) {
-        action(Action.REPLACE, route, bundle);
+    public void replace(Route route, Bundle bundle, Fragment fragment) {
+        action(Action.REPLACE, route, bundle, fragment);
     }
 
     public void remove(Route route) {
@@ -80,7 +80,7 @@ class FragmentCompass {
         return fragmentManager;
     }
 
-    protected void action(Action action, Route route, Bundle bundle) {
+    protected void action(Action action, Route route, Bundle bundle, Fragment targetFragment) {
         if (!validateState()) {
             Timber.e(new IllegalStateException("Incorrect call of transaction manager action. validateState() false."), "");
         } else {
@@ -88,6 +88,7 @@ class FragmentCompass {
             //
             Fragment fragment = Fragment.instantiate(activity, clazzName);
             setArgsToFragment(fragment, bundle);
+            fragment.setTargetFragment(targetFragment, 1);
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             //
             switch (action) {
@@ -130,7 +131,7 @@ class FragmentCompass {
         try {
             fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } catch (IllegalStateException e) {
-            Timber.e("TransitionManager error", e); //for avoid application crash when called at runtime
+            Timber.e(e, "TransitionManager error"); //for avoid application crash when called at runtime
         }
     }
 

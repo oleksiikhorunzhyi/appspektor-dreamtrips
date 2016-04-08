@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.friends.api;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Command;
 
 import org.json.JSONObject;
@@ -31,6 +32,12 @@ public class ResponseBatchRequestCommand extends Command<ArrayList<JSONObject>> 
             this.action = action;
             this.circleId = circleId;
         }
+    }
+
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_accept_friend_requests;
     }
 
     public static class RequestBody {

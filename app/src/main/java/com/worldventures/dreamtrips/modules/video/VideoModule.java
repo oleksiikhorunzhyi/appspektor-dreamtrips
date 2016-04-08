@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.video;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLanguageCell;
 import com.worldventures.dreamtrips.modules.reptools.view.cell.VideoLocaleCell;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.VideoPlayerPresenter;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
@@ -29,6 +30,7 @@ import dagger.Module;
 
                 ThreeSixtyVideosFragment.class,
                 ThreeSixtyVideosPresenter.class,
+                VideoPlayerPresenter.class,
 
                 TrainingVideosFragment.class,
                 TrainingVideosPresenter.class,

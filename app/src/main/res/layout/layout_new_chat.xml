@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+       xmlns:tools="http://schemas.android.com/tools"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/new_chat_toolbar"
@@ -69,7 +70,7 @@
                     android:inputType="textFilter|textNoSuggestions"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:text="@string/new_chat_chosen_contacts_header_empty"
+                    tools:text="@string/new_chat_chosen_contacts_header_empty"
                     android:textColor="@color/new_chat_header_text_color"
                     android:textSize="@dimen/new_chat_name_chosen_contacts_text_size"
                     />

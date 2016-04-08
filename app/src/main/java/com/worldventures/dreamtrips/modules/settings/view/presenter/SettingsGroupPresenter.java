@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.settings.view.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsGroupFactory;
@@ -14,6 +15,12 @@ public class SettingsGroupPresenter extends Presenter<SettingsGroupPresenter.Vie
         super.takeView(view);
         SettingsGroupFactory settingsGroupFactory = new SettingsGroupFactory(context);
         view.setSettings(settingsGroupFactory.createSettingsGroups());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        TrackingHelper.settings();
     }
 
     public void handleCellClick(SettingsGroup model) {

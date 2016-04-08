@@ -13,14 +13,15 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.EditEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -116,17 +117,13 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
     @Override
     public void onEdit() {
-        if (view != null) view.openEdit(new EditPhotoBundle(photo));
+        if (view != null) view.openEdit(new EditEntityBundle(photo, FeedEntityHolder.Type.PHOTO));
     }
 
     @Override
     public void onFlagAction(Flaggable flaggable) {
         view.showProgress();
         uidItemDelegate.loadFlags(flaggable);
-    }
-
-    public boolean isOwnPhoto() {
-        return photo.getOwner().getId() == getAccount().getId();
     }
 
     public void onEvent(FeedEntityChangedEvent event) {
@@ -157,7 +154,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
         void showContentWrapper();
 
-        void openEdit(EditPhotoBundle editPhotoBundle);
+        void openEdit(EditEntityBundle bundle);
 
         void redrawTags();
     }

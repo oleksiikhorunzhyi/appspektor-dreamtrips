@@ -8,10 +8,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 
@@ -24,7 +25,7 @@ public class FeedItemCommonDataHelper {
     Context context;
 
     @InjectView(R.id.feed_header_avatar)
-    SimpleDraweeView avatar;
+    SmartAvatarView avatar;
     @InjectView(R.id.feed_header_text)
     TextView text;
     @InjectView(R.id.feed_header_location)
@@ -40,15 +41,16 @@ public class FeedItemCommonDataHelper {
         ButterKnife.inject(this, view);
     }
 
-    public void set(FeedItem feedItem, int accountId, boolean forDetails) {
+    public void set(FeedItem feedItem, int accountId, Injector injector) {
         Resources res = context.getResources();
         FeedEntity entity = feedItem.getItem();
         try {
-            User user = ((forDetails && entity.getOwner() != null) || !feedItem.getLinks().hasUsers()) ? entity.getOwner() : feedItem.getLinks().getUsers().get(0);
+            User user = (!feedItem.getLinks().hasUsers()) ? entity.getOwner() : feedItem.getLinks().getUsers().get(0);
             if (user != null) {
                 avatar.setImageURI(user.getAvatar() == null ? null : Uri.parse(user.getAvatar().getThumb()));
+                avatar.setup(user, injector);
             }
-            text.setText(Html.fromHtml((forDetails && entity.getOwner() != null) ? feedItem.detailsText(res) : feedItem.infoText(res, accountId)));
+            text.setText(Html.fromHtml(feedItem.infoText(res, accountId)));
             text.setVisibility(TextUtils.isEmpty(text.getText()) ? View.GONE : View.VISIBLE);
 
             if (TextUtils.isEmpty(entity.place())) {

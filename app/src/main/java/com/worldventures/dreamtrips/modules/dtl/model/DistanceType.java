@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.model;
 
+import com.crashlytics.android.Crashlytics;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 
 public enum DistanceType {
-    MILES("ml"), KMS("km");
+    MILES("mi"), KMS("km");
 
     String analyticsTypeName;
 
@@ -17,11 +18,13 @@ public enum DistanceType {
     }
 
     public static DistanceType provideFromSetting(Setting setting) {
-        if (setting == null) throw new IllegalArgumentException("Setting cannot be null!");
+        if (setting == null) {
+            Crashlytics.logException(new NullPointerException("Setting cannot be null!"));
+            return MILES; // safety-patch, should never happen
+        }
         if (!setting.getName().equals(SettingsFactory.DISTANCE_UNITS))
             throw new IllegalArgumentException(SettingsFactory.DISTANCE_UNITS + " setting must be provided!");
         //
-        if (setting.getValue().equals(SettingsFactory.MILES)) return MILES;
-        else return KMS;
+        return setting.getValue().equals(SettingsFactory.MILES) ? MILES : KMS;
     }
 }

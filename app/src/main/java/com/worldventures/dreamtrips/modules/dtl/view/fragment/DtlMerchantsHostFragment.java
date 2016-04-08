@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlMerchantsHostPresenter;
 
 import butterknife.InjectView;
+import icepick.State;
 
 @Layout(R.layout.fragment_dtl_merchants_host)
 public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPresenter>
@@ -22,6 +23,14 @@ public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPrese
 
     @InjectView(R.id.dtl_landscape_slave_container)
     View landscapeSlave;
+    //
+    /**
+     * Severe monkey-patch to make merchant items clickable in landscape.
+     * EventBus event should be used in couple with this flag.
+     * God forgive me for this.
+     */
+    @State
+    boolean isResumed = false;
 
     @Override
     protected DtlMerchantsHostPresenter createPresenter(Bundle savedInstanceState) {
@@ -39,6 +48,18 @@ public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPrese
     public void onResume() {
         super.onResume();
         showDtlFilters();
+        isResumed = true;
+    }
+
+    @Override
+    public void onPause() {
+        isResumed = false;
+        super.onPause();
+    }
+
+    @Override
+    public boolean isFragmentResumed() {
+        return isResumed;
     }
 
     private void showMaster() {

@@ -1,16 +1,13 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.worldventures.dreamtrips.modules.dtl.delegate.DtlFilterDelegate;
+import android.text.TextUtils;
+
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 
-import javax.inject.Inject;
-
 public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMapInfoPresenter.View> {
-
-    @Inject
-    DtlFilterDelegate dtlFilterDelegate;
 
     public DtlMapInfoPresenter(String id) {
         super(id);
@@ -28,7 +25,15 @@ public class DtlMapInfoPresenter extends DtlMerchantCommonDetailsPresenter<DtlMa
 
     public void onMerchantClick() {
         eventBus.post(new ToggleMerchantSelectionEvent(merchant));
+        trackIfNeeded();
         view.showDetails(merchant.getId());
+    }
+
+    private void trackIfNeeded() {
+        if (!TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery()))
+            TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
+                    dtlMerchantManager.getCurrentQuery(),
+                    dtlLocationManager.getCachedSelectedLocation());
     }
 
     public void onSizeReady(int height) {

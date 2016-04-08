@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.messenger.model.ChatUser;
+import com.messenger.ui.model.ChatUser;
 import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.worldventures.dreamtrips.R;
 

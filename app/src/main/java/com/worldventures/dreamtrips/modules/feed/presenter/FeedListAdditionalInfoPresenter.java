@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -139,5 +140,6 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
         void setCurrentCircle(Circle currentCircle);
 
         void openUser(UserBundle bundle);
+
     }
 }

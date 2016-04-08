@@ -29,6 +29,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.ui.fragment.FragmentHelper;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -150,6 +151,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
 
     @Override
     public void onDestroyView() {
+        FragmentHelper.resetChildFragmentManagerField(this);
         stateDelegate.onDestroyView();
         if (dragDropManager != null) {
             try {

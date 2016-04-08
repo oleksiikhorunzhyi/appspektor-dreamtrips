@@ -6,13 +6,19 @@
         android:title="@string/chat_settings_menu_settings"
         android:icon="@drawable/ic_overflow"
         app:showAsAction="always">
-        <!-- add this as overflow menu as designer suggested-->
         <menu>
-        <item
-            android:id="@+id/action_edit_chat_name"
-            android:title="@string/chat_settings_menu_edit_chat_name"
-            app:showAsAction="always"/>
-        <!-- change image menu item will be here later -->
+            <item
+                android:id="@+id/action_edit_chat_name"
+                android:title="@string/chat_settings_menu_edit_chat_name"
+                app:showAsAction="always"/>
+            <item
+                android:id="@+id/action_change_chat_avatar"
+                android:title="@string/chat_settings_menu_edit_change_chat_image"
+                app:showAsAction="always"/>
+            <item
+                android:id="@+id/action_remove_chat_avatar"
+                android:title="@string/chat_settings_menu_edit_remove_chat_image"
+                app:showAsAction="always"/>
         </menu>
     </item>
 </menu>

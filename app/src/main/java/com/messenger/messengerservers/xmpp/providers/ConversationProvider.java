@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.messenger.delegate.MessageBodyParser;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
@@ -67,6 +68,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                             //noinspection all
                             conversationBuilder.lastActiveDate(timestamp);
 
+                            Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             if (TextUtils.isEmpty(messageId)) {
                                 messageBuilder = null;
@@ -78,6 +80,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .id(messageId)
                                     .date(timestamp)
                                     .fromId(JidCreatorHelper.obtainId(from))
+                                    .status(unread != null && unread ? MessageStatus.SENT  : MessageStatus.READ)
                                     .messageBody(messageBodyParser.parseMessageBody(parser.nextText()));
                     }
                     break;

@@ -1,7 +1,9 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -43,6 +45,8 @@ import com.messenger.storage.helper.AttachmentHelper;
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.PhotoPickerDelegate;
+import com.messenger.ui.model.AttachmentMenuItem;
+import com.messenger.ui.util.AttachmentMenuProvider;
 import com.messenger.ui.util.ChatContextualMenuProvider;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatPath;
@@ -53,6 +57,7 @@ import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.view.settings.TripSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.OpenedConversationTracker;
+import com.messenger.util.PickLocationDelegate;
 import com.messenger.util.Utils;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.techery.spares.module.Injector;
@@ -130,11 +135,13 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     PaginationDelegate paginationDelegate;
     @Inject
     PhotoPickerDelegate photoPickerDelegate;
+    @Inject
+    AttachmentMenuProvider attachmentMenuProvider;
 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
     protected AttachmentHelper attachmentHelper;
-
+   
     protected String conversationId;
 
     @Inject
@@ -154,6 +161,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     LocaleHelper localeHelper;
     @Inject
     MessageTranslationDelegate messageTranslationDelegate;
+    @Inject
+    PickLocationDelegate pickLocationDelegate;
 
     private int page = 0;
     private long before = 0;
@@ -201,6 +210,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         connectToChatStream();
         connectToUnreadCounterStream();
         connectToLastVisibleItemStream();
+        connectToShareLocationsStream();
         submitOneChatAction(this::connectChatTypingStream);
         loadInitialData();
 
@@ -758,6 +768,48 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Attachment menu
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onAttachmentButtonClick() {
+        getView().showAttachmentMenu(attachmentMenuProvider.provide());
+    }
+
+    @Override
+    public void onAttachmentMenuItemChosen(AttachmentMenuItem attachmentMenuItem) {
+        switch (attachmentMenuItem.getType()) {
+            case AttachmentMenuItem.LOCATION:
+                pickLocationDelegate.pickLocation();
+                break;
+            case AttachmentMenuItem.IMAGE:
+                getView().showPhotoPicker();
+                break;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Location picking
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void connectToShareLocationsStream() {
+        pickLocationDelegate
+                .getPickedLocationsStream()
+                .compose(bindView())
+                .subscribe(notification -> {
+                    if (notification.isOnNext()) {
+                        onLocationPicked(notification.getValue());
+                    } else if (notification.isOnError()) {
+                        getView().showPickLocationError();
+                    }
+                });
+    }
+
+    private void onLocationPicked(Location location) {
+        Timber.d(getClass().getSimpleName() + "::onLocationPicked %s", location);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Photo picking
     ///////////////////////////////////////////////////////////////////////////
 
@@ -793,7 +845,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .watchChosenImages()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photos -> {
-                            getView().hidePicker();
+                            getView().hidePhotoPicker();
                             onImagesPicked(photos);
                         },
                         e -> Timber.e(e, "Error while image picking"));

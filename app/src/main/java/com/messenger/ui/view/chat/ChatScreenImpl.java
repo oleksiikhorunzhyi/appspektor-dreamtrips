@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -48,6 +50,8 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
 import timber.log.Timber;
+
+import com.messenger.ui.model.AttachmentMenuItem;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
         implements ChatScreen {
@@ -201,12 +205,15 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @OnClick(R.id.chat_message_add_button)
     protected void onAttachmentButtonClicked() {
-        if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
-        else {
-            messageEditText.clearFocus();
-            // put delay to prevent wrong resizing of photo picker panel
-            postDelayed(() -> photoPickerLayoutDelegate.showPicker(), 400);
-        }
+        getPresenter().onAttachmentButtonClick();
+    }
+
+    @Override
+    public void showAttachmentMenu(AttachmentMenuItem[] items) {
+        new AlertDialog.Builder(getContext())
+                .setItems(Queryable.from(items).map(item -> item.getTitle()).toArray(),
+                (dialog, which) -> getPresenter().onAttachmentMenuItemChosen(items[which]))
+                .show();
     }
 
     @Override
@@ -350,13 +357,36 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         }
     };
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Location picking
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void showPickLocationError() {
+        Snackbar.make(this, R.string.chat_could_not_share_location, Snackbar.LENGTH_SHORT);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Photo picking
+    ///////////////////////////////////////////////////////////////////////////
+
     private void initPhotoPicker() {
         photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
         photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
     }
 
     @Override
-    public void hidePicker() {
+    public void showPhotoPicker() {
+        if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
+        else {
+            messageEditText.clearFocus();
+            // put delay to prevent wrong resizing of photo picker panel
+            postDelayed(() -> photoPickerLayoutDelegate.showPicker(), 400);
+        }
+    }
+
+    @Override
+    public void hidePhotoPicker() {
         photoPickerLayoutDelegate.hidePicker();
     }
 

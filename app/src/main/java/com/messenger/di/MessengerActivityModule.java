@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
-import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
 
 import javax.inject.Singleton;
 

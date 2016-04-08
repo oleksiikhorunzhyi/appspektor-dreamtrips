@@ -66,6 +66,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
     @NonNull
     @Override
     public ChatSettingsScreenPresenter createPresenter() {
-        return new SingleChatSettingsScreenPresenterImpl(getContext(), getPath().getConversationId());
+        return new SingleChatSettingsScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 }

@@ -108,7 +108,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @NonNull
     @Override
     public ChatSettingsScreenPresenter<GroupChatSettingsScreen> createPresenter() {
-        return new MultiChatSettingsScreenPresenter(getContext(), getPath().getConversationId());
+        return new MultiChatSettingsScreenPresenter(getContext(), injector, getPath().getConversationId());
     }
 
     @Override

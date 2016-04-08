@@ -10,6 +10,7 @@ import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.actions.AvatarAction;
 import com.messenger.entities.DataConversation;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -31,8 +32,8 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     @Inject
     ConversationAvatarDelegate conversationAvatarDelegate;
 
-    public MultiChatSettingsScreenPresenter(Context context, String conversationId) {
-        super(context, conversationId);
+    public MultiChatSettingsScreenPresenter(Context context, Injector injector, String conversationId) {
+        super(context, injector, conversationId);
     }
 
     @Override

@@ -5,11 +5,11 @@ import android.content.Context;
 import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
 import com.messenger.delegate.ConversationAvatarDelegate;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.AttachmentDAO;
@@ -21,7 +21,6 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -45,18 +44,13 @@ import de.greenrobot.event.EventBus;
 public class MessengerDelegateModule {
 
     @Provides
-    DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {
-        return new DataUser(appSessionHolder.get().get().getUser().getUsername());
+    ChatDelegate provideChatDelegate(SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade) {
+        return new ChatDelegate(appSessionHolder, messengerServerFacade);
     }
 
     @Provides
-    ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade) {
-        return new ChatDelegate(user.getId(), messengerServerFacade);
-    }
-
-    @Provides
-    UserSectionHelper provideUserSectionHelper(@ForApplication  Context context, DataUser user) {
-        return new UserSectionHelper(context, user);
+    UserSectionHelper provideUserSectionHelper(@ForApplication Context context, SessionHolder<UserSession> appSessionHolder) {
+        return new UserSectionHelper(context, appSessionHolder);
     }
 
     @Provides

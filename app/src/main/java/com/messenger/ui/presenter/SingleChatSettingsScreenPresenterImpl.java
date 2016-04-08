@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import javax.inject.Inject;
@@ -22,8 +23,8 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
 
     protected final ProfileCrosser profileCrosser;
 
-    public SingleChatSettingsScreenPresenterImpl(Context context, String conversationId) {
-        super(context, conversationId);
+    public SingleChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
+        super(context, injector, conversationId);
 
         profileCrosser = new ProfileCrosser(context, routeCreator);
     }

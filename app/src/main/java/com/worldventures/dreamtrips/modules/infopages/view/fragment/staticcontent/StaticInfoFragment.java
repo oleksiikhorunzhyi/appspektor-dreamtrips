@@ -1,15 +1,20 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -28,6 +33,8 @@ import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWit
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
+
+import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
@@ -61,6 +68,15 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     private WeakHandler weakHandler;
 
+    protected static final int REQUEST_CODE_FILE_PICKER = 51426;
+    protected int mRequestCodeFilePicker = REQUEST_CODE_FILE_PICKER;
+    protected WeakReference<Fragment> fragment;
+    protected WeakReference<Activity> activity;
+    /** File upload callback for platform versions prior to Android 5.0 */
+    protected ValueCallback<Uri> mFileUploadCallbackFirst;
+    /** File upload callback for Android 5.0+ */
+    protected ValueCallback<Uri[]> mFileUploadCallbackSecond;
+
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         return (T) new WebViewFragmentPresenter(getURL());
@@ -69,10 +85,17 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fragment = new WeakReference<>(this);
         weakHandler = new WeakHandler();
         if (isWebViewSavedState(savedInstanceState)) {
             savedState = savedInstanceState;
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = new WeakReference<>(activity);
     }
 
     @Override
@@ -168,7 +191,125 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 }
             }
         });
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            // file upload callback (Android 2.2 (API level 8) -- Android 2.3 (API level 10)) (hidden method)
+            @SuppressWarnings("unused")
+            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+                openFileChooser(uploadMsg, null);
+            }
+
+            // file upload callback (Android 3.0 (API level 11) -- Android 4.0 (API level 15)) (hidden method)
+            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
+                openFileChooser(uploadMsg, acceptType, null);
+            }
+
+            // file upload callback (Android 4.1 (API level 16) -- Android 4.3 (API level 18)) (hidden method)
+            @SuppressWarnings("unused")
+            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+                openFileInput(uploadMsg, null);
+            }
+
+            // file upload callback (Android 5.0 (API level 21) -- current) (public method)
+            @SuppressWarnings("all")
+            @Override
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+                openFileInput(null, filePathCallback);
+                return true;
+            }
+
+            @SuppressLint("NewApi")
+            protected void openFileInput(final ValueCallback<Uri> fileUploadCallbackFirst, final ValueCallback<Uri[]> fileUploadCallbackSecond) {
+                if (mFileUploadCallbackFirst != null) {
+                    mFileUploadCallbackFirst.onReceiveValue(null);
+                }
+                mFileUploadCallbackFirst = fileUploadCallbackFirst;
+
+                if (mFileUploadCallbackSecond != null) {
+                    mFileUploadCallbackSecond.onReceiveValue(null);
+                }
+                mFileUploadCallbackSecond = fileUploadCallbackSecond;
+
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("*/*");
+
+                if (fragment != null && fragment.get() != null && Build.VERSION.SDK_INT >= 11) {
+                    fragment.get().startActivityForResult(Intent.createChooser(i, getFileUploadPromptLabel()), mRequestCodeFilePicker);
+                } else if (activity != null && activity.get() != null) {
+                    activity.get().startActivityForResult(Intent.createChooser(i, getFileUploadPromptLabel()), mRequestCodeFilePicker);
+                }
+            }
+
+            /**
+             * Returns whether file uploads can be used on the current device (generally all platform versions except for 4.4)
+             *
+             * @return whether file uploads can be used
+             */
+            public boolean isFileUploadAvailable() {
+                return isFileUploadAvailable(false);
+            }
+
+            /**
+             * Returns whether file uploads can be used on the current device (generally all platform versions except for 4.4)
+             *
+             * On Android 4.4.3/4.4.4, file uploads may be possible but will come with a wrong MIME type
+             *
+             * @param needsCorrectMimeType whether a correct MIME type is required for file uploads or `application/octet-stream` is acceptable
+             * @return whether file uploads can be used
+             */
+            public boolean isFileUploadAvailable(final boolean needsCorrectMimeType) {
+                if (Build.VERSION.SDK_INT == 19) {
+                    final String platformVersion = (Build.VERSION.RELEASE == null) ? "" : Build.VERSION.RELEASE;
+
+                    return !needsCorrectMimeType && (platformVersion.startsWith("4.4.3") || platformVersion.startsWith("4.4.4"));
+                } else {
+                    return true;
+                }
+            }
+
+            protected String getFileUploadPromptLabel() {
+                return getString(R.string.choose_gallery);
+            }
+
+        });
         if (savedState != null) webView.restoreState(savedState);
+    }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+        if (requestCode == mRequestCodeFilePicker) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (intent != null) {
+                    if (mFileUploadCallbackFirst != null) {
+                        mFileUploadCallbackFirst.onReceiveValue(intent.getData());
+                        mFileUploadCallbackFirst = null;
+                    }
+                    else if (mFileUploadCallbackSecond != null) {
+                        Uri[] dataUris;
+                        try {
+                            dataUris = new Uri[] { Uri.parse(intent.getDataString()) };
+                        }
+                        catch (Exception e) {
+                            dataUris = null;
+                        }
+
+                        mFileUploadCallbackSecond.onReceiveValue(dataUris);
+                        mFileUploadCallbackSecond = null;
+                    }
+                }
+            }
+            else {
+                if (mFileUploadCallbackFirst != null) {
+                    mFileUploadCallbackFirst.onReceiveValue(null);
+                    mFileUploadCallbackFirst = null;
+                }
+                else if (mFileUploadCallbackSecond != null) {
+                    mFileUploadCallbackSecond.onReceiveValue(null);
+                    mFileUploadCallbackSecond = null;
+                }
+            }
+        }
     }
 
     protected void sendAnalyticEvent(String actionAnalyticEvent) {

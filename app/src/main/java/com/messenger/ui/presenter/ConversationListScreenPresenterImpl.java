@@ -69,12 +69,12 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     private PublishSubject<DataConversation> selectedConversationStream;
     private Subscription conversationSubscription;
 
-    public ConversationListScreenPresenterImpl(Context context) {
+    public ConversationListScreenPresenterImpl(Context context, Injector injector) {
         super(context);
         this.conversationHelper = new ConversationHelper();
 
-        chatLeavingDelegate = new ChatLeavingDelegate((Injector) context.getApplicationContext(), null);
-        ((Injector) context.getApplicationContext()).inject(this);
+        chatLeavingDelegate = new ChatLeavingDelegate(injector, null);
+        injector.inject(this);
     }
 
     @Override

@@ -227,16 +227,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     }
 
     @Override
-    public void openMap() {
-        router.moveTo(Route.DTL_MAP, NavigationConfigBuilder.forFragment()
-                .containerId(R.id.dtl_landscape_slave_container)
-                .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .data(new DtlMapBundle(true))
-                .build());
-    }
-
-    @Override
     public void openTransaction(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
         router.moveTo(Route.DTL_SCAN_RECEIPT, NavigationConfigBuilder.forActivity()
                 .data(new MerchantIdBundle(dtlMerchant.getId()))

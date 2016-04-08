@@ -70,12 +70,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     SwitchCompat swHideDinings;
     @InjectView(R.id.redo_merchants)
     View loadMerchantsRoot;
+    @InjectView(R.id.filterToggleContainer)
+    View toggleRootView;
     //
     LatLng selectedLocation;
     @State
     String lastQuery;
     //
-    private SearchViewHelper searchViewHelper;
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
     private GoogleMap googleMap;
@@ -116,8 +117,14 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     protected void prepareView() {
         initToolbar();
+        initToggle();
         //
         MapViewUtils.setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
+    }
+
+    private void initToggle() {
+        int visibility = isTabletLandscape() ? View.GONE : VISIBLE;
+        toggleRootView.setVisibility(visibility);
     }
 
     protected void initToolbar() {

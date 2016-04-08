@@ -20,8 +20,6 @@ public interface DtlDetailsScreen extends DtlScreen {
 
     void showSucceed(DtlMerchant DtlMerchant, DtlTransaction dtlTransaction);
 
-    void openMap();
-
     void setTransaction(DtlTransaction dtlTransaction);
 
     void setSuggestMerchantButtonAvailable(boolean available);

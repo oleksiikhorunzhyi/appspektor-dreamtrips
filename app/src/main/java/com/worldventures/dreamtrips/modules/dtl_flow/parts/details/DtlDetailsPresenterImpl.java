@@ -158,11 +158,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         getView().share(merchant);
     }
 
-    public void onBackPressed() {
-        EventBus.getDefault().post(new ToggleMerchantSelectionEvent(merchant));
-        getView().openMap();
-    }
-
     /**
      * Analytic-related
      */

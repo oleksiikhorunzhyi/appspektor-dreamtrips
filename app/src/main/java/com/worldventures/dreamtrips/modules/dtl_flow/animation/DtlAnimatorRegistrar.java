@@ -8,7 +8,7 @@ public class DtlAnimatorRegistrar extends BaseAnimatorRegistrar {
         super();
 //        animators.put(
 //                new Pair<>(DtlStartPath.class, DtlMerchantsPath.class),
-//                new CircularAnimationFactory()
+//                new CircularAnimatorFactory()
 //        );
     }
 }

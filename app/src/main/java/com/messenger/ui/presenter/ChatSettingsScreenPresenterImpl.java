@@ -6,7 +6,6 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
@@ -53,10 +52,9 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     @Inject
     ConversationsDAO conversationsDAO;
 
-    public ChatSettingsScreenPresenterImpl(Context context, String conversationId) {
+    public ChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
 
-        Injector injector = (Injector) context.getApplicationContext();
         injector.inject(this);
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);

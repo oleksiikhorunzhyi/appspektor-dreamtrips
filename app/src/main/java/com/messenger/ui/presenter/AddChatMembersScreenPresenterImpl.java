@@ -18,6 +18,7 @@ import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     private String conversationId;
     private Observable<DataConversation> conversationStream;
 
-    public AddChatMembersScreenPresenterImpl(Context context, String conversationId) {
-        super(context);
+    public AddChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
+        super(context, injector);
         this.conversationId = conversationId;
         conversationStream = conversationsDAO.getConversation(conversationId).first().replay().autoConnect();
     }

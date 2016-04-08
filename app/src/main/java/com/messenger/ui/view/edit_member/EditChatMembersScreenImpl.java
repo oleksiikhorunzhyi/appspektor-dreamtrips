@@ -201,7 +201,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     @NonNull
     @Override
     public EditChatMembersScreenPresenter createPresenter() {
-        return new EditChatMembersScreenPresenterImpl(getContext(), getPath().getConversationId());
+        return new EditChatMembersScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 
     @Override

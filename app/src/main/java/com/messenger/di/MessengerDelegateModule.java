@@ -2,10 +2,7 @@ package com.messenger.di;
 
 import android.content.Context;
 
-import com.messenger.delegate.AttachmentDelegate;
 import com.messenger.delegate.ChatDelegate;
-import com.messenger.delegate.ConversationAvatarDelegate;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
@@ -31,7 +28,6 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
@@ -58,7 +54,7 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    UserProcessor provideUserProcessor (@ForApplication Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
+    UserProcessor provideUserProcessor(@ForApplication Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
         requester.start(context);
         return new UserProcessor(usersDAO, requester);
     }
@@ -69,7 +65,7 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    UserSectionHelper provideUserSectionHelper(@ForApplication  Context context, DataUser user) {
+    UserSectionHelper provideUserSectionHelper(@ForApplication Context context, DataUser user) {
         return new UserSectionHelper(context, user);
     }
 
@@ -80,13 +76,13 @@ public class MessengerDelegateModule {
 
     @Singleton
     @Provides
-    MessageTranslationDelegate provideMessageTranslationDelegate(@ForApplication Context context, DreamSpiceManager dreamSpiceManager, TranslationsDAO translationsDAO, LocaleHelper localeHelper){
+    MessageTranslationDelegate provideMessageTranslationDelegate(@ForApplication Context context, DreamSpiceManager dreamSpiceManager, TranslationsDAO translationsDAO, LocaleHelper localeHelper) {
         return new MessageTranslationDelegate(context, dreamSpiceManager, translationsDAO, localeHelper);
     }
 
     @Provides
     StartChatDelegate provideSingleChatDelegate(UsersDAO usersDAO, ParticipantsDAO participantsDAO,
-                                                           ConversationsDAO conversationsDAO, ChatDelegate chatDelegate){
+                                                ConversationsDAO conversationsDAO, ChatDelegate chatDelegate) {
         return new StartChatDelegate(usersDAO, participantsDAO, conversationsDAO, chatDelegate);
     }
 
@@ -112,12 +108,7 @@ public class MessengerDelegateModule {
             ParticipantsDAO participantsDAO,
             AttachmentDAO attachmentDAO,
             OpenedConversationTracker openedConversationTracker) {
-        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker,  conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
-    }
-
-    @Provides
-    AttachmentDelegate provideAttachmentDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
-        return new AttachmentDelegate(photoUploadingManager, messageDAO, attachmentDAO);
+        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker, conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
     }
 
     @Provides
@@ -128,11 +119,5 @@ public class MessengerDelegateModule {
     @Provides
     PhotoPickerDelegate providePhotoPickerDelegate(@Global EventBus eventBus) {
         return new PhotoPickerDelegate(eventBus);
-    }
-
-    @Provides
-    @Singleton
-    ConversationAvatarDelegate provideConversationAvatarDelegate(PhotoUploadingManagerS3 photoUploadingManager, MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {
-        return new ConversationAvatarDelegate(photoUploadingManager, messengerServerFacade, conversationsDAO);
     }
 }

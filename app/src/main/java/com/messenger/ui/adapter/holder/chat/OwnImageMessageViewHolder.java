@@ -31,7 +31,7 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
             reloadImage();
             if (message.getStatus() == MessageStatus.ERROR) {
                 if (onRepeatMessageSendListener != null) {
-                    onRepeatMessageSendListener.onRepeatMessageSend(message.getId());
+                    onRepeatMessageSendListener.onRepeatMessageSend(message);
                 }
             }
         });
@@ -75,7 +75,7 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
     @OnClick(R.id.iv_message_error)
     void onMessageErrorClicked() {
         if (onRepeatMessageSendListener != null) {
-            onRepeatMessageSendListener.onRepeatMessageSend(message.getId());
+            onRepeatMessageSendListener.onRepeatMessageSend(message);
             viewSwitcher.showNext();
         }
     }

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import icepick.Icepick;
 import icepick.State;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
@@ -80,5 +81,4 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
                 .compose(new IoToMainComposer<>())
                 .compose(bindView());
     }
-
 }

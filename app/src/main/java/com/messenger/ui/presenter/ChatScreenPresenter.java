@@ -14,7 +14,7 @@ import java.util.List;
 public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, ChatLayoutViewState> {
     boolean sendMessage(String message);
 
-    void retrySendMessage(String messageId);
+    void retrySendMessage(DataMessage message);
 
     DataUser getUser();
 

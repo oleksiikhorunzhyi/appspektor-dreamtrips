@@ -272,23 +272,29 @@ android {
     useLibrary 'org.apache.http.legacy'
 }
 
+def janetVersion = '0.1.0'
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Di
     compile 'com.squareup.dagger:dagger:1.2.2'
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
+    // janet
+    compile "com.github.techery.janet:http-service:${janetVersion}"
+    apt "com.github.techery.janet:http-service-compiler:${janetVersion}"
+    compile "com.github.techery.janet:janet:${janetVersion}"
+    compile "com.github.techery.janet:command-service:${janetVersion}"
+    compile "com.github.techery.janet:okhttp:${janetVersion}"
+    compile "com.github.techery.janet:gson:${janetVersion}"
     // Data storage, flow
-    compile 'com.github.techery.janet:janet:0.0.16'
-    compile 'com.github.techery.janet:command-service:0.0.16'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     // Networking
     compile 'com.octo.android.robospice:robospice:1.4.14'
     compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'
+    compile 'com.squareup.okhttp:okhttp:2.7.5'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
     compile 'com.google.code.gson:gson:2.4'
     // Media
     compile 'io.techery:ijkmediaplayer:0.4.0@aar'

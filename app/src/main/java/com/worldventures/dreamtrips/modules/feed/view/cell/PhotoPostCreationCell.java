@@ -5,15 +5,27 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -22,6 +34,10 @@ import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_photo_post)
 public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
+
+    @Inject
+    @ForActivity
+    Injector injector;
 
     @InjectView(R.id.shadow)
     View shadow;
@@ -35,6 +51,8 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     TextView tagButton;
     @InjectView(R.id.photo_title)
     EditText photoTitle;
+    @InjectView(R.id.photo_post_taggable_holder)
+    PhotoTagHolder photoTagHolder;
 
     public PhotoPostCreationCell(View view) {
         super(view);
@@ -50,6 +68,8 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     @Override
     protected void syncUIStateWithModel() {
+        attachedPhoto.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+
         switch (getModelObject().getStatus()) {
             case STARTED:
                 showProgress();
@@ -59,6 +79,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
                 break;
             case COMPLETED:
                 hideProgress();
+                showTagViewGroup();
                 break;
         }
         //
@@ -69,6 +90,16 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
         //
         photoTitle.setText(getModelObject().getTitle());
         photoTitle.addTextChangedListener(textWatcher);
+    }
+
+    private void showTagViewGroup() {
+        photoTagHolder.removeAllViews();
+        PhotoTagHolderManager photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder);
+        photoTagHolderManager.show(attachedPhoto);
+        List<PhotoTag> photoTags = Queryable.from(getModelObject().getSuggestions())
+                .filter((p) -> !PhotoTag.isIntersectedWithPhotoTags(getModelObject().getCombinedTags(), p)).toList();
+        photoTagHolderManager.addSuggestionTagView(photoTags, (tag) -> cellDelegate.onSuggestionClicked(getModelObject(), tag));
+        photoTagHolderManager.addExistsTagViews(getModelObject().getCombinedTags());
     }
 
     private void showProgress() {
@@ -102,7 +133,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     @OnClick(R.id.tag_btn)
     void onTag() {
-        cellDelegate.onTagClicked(getModelObject());
+        cellDelegate.onTagIconClicked(getModelObject());
     }
 
     @OnClick(R.id.remove)

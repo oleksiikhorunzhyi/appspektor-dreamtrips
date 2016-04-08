@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,10 +86,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     protected void processPostSuccess(FeedEntity feedEntity) {
         closeView();
-    }
-
-    protected void processPhotoSuccess(FeedEntity feedEntity) {
-        pushTags(feedEntity);
     }
 
     protected void processTagUploadSuccess(FeedEntity feedEntity) {

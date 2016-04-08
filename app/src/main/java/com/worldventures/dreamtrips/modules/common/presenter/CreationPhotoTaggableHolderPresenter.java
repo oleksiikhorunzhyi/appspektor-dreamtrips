@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.api.AddPhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +53,12 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
         }
         //
         if (newDeletedTags.size() > 0) {
-            List<Integer> userIds = Queryable.from(newDeletedTags).map(photo -> photo.getUser().getId()).toList();
+            List<Integer> userIds = Queryable.from(newDeletedTags).map(photo -> photo.getTargetUserId()).toList();
             doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
                 newDeletedTags.clear();
                 deleteComplete = true;
                 List<PhotoTag> tags = Queryable.from(photo.getPhotoTags())
-                        .filter(tag -> userIds.contains(tag.getUser().getId())).toList();
+                        .filter(tag -> userIds.contains(tag.getTargetUserId())).toList();
                 photo.getPhotoTags().removeAll(tags);
                 onComplete();
             });
@@ -105,7 +105,7 @@ public class CreationPhotoTaggableHolderPresenter extends TaggableImageHolderPre
     }
 
     private boolean isContainUser(List<PhotoTag> tagList, User user) {
-        return Queryable.from(tagList).map(tag -> tag.getUser() == null ? new User() : tag.getUser()).contains(user);
+        return Queryable.from(tagList).map(PhotoTag::getTargetUserId).contains(user.getId());
     }
 
     public interface View extends TaggableImageHolderPresenter.View {

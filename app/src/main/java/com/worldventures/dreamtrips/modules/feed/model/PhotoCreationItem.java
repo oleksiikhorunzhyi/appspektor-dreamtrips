@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +14,6 @@ import java.util.List;
 public class PhotoCreationItem implements Parcelable {
 
     long id;
-    @NotNull
-    String imageUrl;
     @NotNull
     String filePath;
     @NotNull
@@ -34,15 +32,11 @@ public class PhotoCreationItem implements Parcelable {
     String mediaAttachmentType;
     String title;
 
+    List<PhotoTag> suggestions = new ArrayList<>();
+    private int width;
+    private int height;
+
     public PhotoCreationItem() {
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public String getFilePath() {
@@ -88,6 +82,10 @@ public class PhotoCreationItem implements Parcelable {
         return cachedRemovedPhotoTags;
     }
 
+    public List<PhotoTag> getSuggestions() {
+        return suggestions;
+    }
+
     public long getId() {
         return id;
     }
@@ -114,6 +112,10 @@ public class PhotoCreationItem implements Parcelable {
         return title;
     }
 
+    public void setSuggestions(List<PhotoTag> suggestions) {
+        this.suggestions = suggestions;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -125,25 +127,31 @@ public class PhotoCreationItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.imageUrl);
+        dest.writeLong(this.id);
         dest.writeString(this.filePath);
+        dest.writeString(this.originUrl);
         dest.writeString(this.location);
         dest.writeInt(this.status == null ? -1 : this.status.ordinal());
         dest.writeTypedList(basePhotoTags);
         dest.writeTypedList(cachedAddedPhotoTags);
         dest.writeTypedList(cachedRemovedPhotoTags);
+        dest.writeString(this.mediaAttachmentType);
+        dest.writeTypedList(suggestions);
         dest.writeString(title);
     }
 
     protected PhotoCreationItem(Parcel in) {
-        this.imageUrl = in.readString();
+        this.id = in.readLong();
         this.filePath = in.readString();
+        this.originUrl = in.readString();
         this.location = in.readString();
         int tmpStatus = in.readInt();
         this.status = tmpStatus == -1 ? null : UploadTask.Status.values()[tmpStatus];
         this.basePhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
         this.cachedAddedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
         this.cachedRemovedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
+        this.mediaAttachmentType = in.readString();
+        this.suggestions = in.createTypedArrayList(PhotoTag.CREATOR);
         this.title = in.readString();
     }
 
@@ -177,5 +185,21 @@ public class PhotoCreationItem implements Parcelable {
         uploadTask.setType(mediaAttachmentType);
         uploadTask.setTitle(title);
         return uploadTask;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

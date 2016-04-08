@@ -6,8 +6,9 @@ import android.view.MotionEvent;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.ExistsTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.SuggestionTagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class PhotoTaggableHolderViewDelegate {
     }
 
     public boolean isSuggestionViewExist(PhotoTag photoTag) {
-        PhotoTag.TagPosition pos = CoordinatesTransformer.convertToAbsolute(photoTag.getProportionalPosition(), viewGroup.getImageBounds());
+        TagPosition pos = CoordinatesTransformer.convertToAbsolute(photoTag.getProportionalPosition(), viewGroup.getImageBounds());
         return Queryable.from(getSuggestionTagViews()).any(view -> {
             return pos.intersected(view.getAbsoluteTagPosition());
         });
@@ -48,14 +49,14 @@ public class PhotoTaggableHolderViewDelegate {
     }
 
     public boolean isExistingViewExist(PhotoTag photoTag) {
-        PhotoTag.TagPosition pos = CoordinatesTransformer.convertToAbsolute(photoTag.getProportionalPosition(), viewGroup.getImageBounds());
+        TagPosition pos = CoordinatesTransformer.convertToAbsolute(photoTag.getProportionalPosition(), viewGroup.getImageBounds());
         return Queryable.from(getExistingTagViews()).any(view -> {
             return pos.intersected(view.getAbsoluteTagPosition());
         });
     }
 
 
-    static class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener {
+    public static class SingleTapConfirm extends GestureDetector.SimpleOnGestureListener {
 
         private CreationPhotoTaggableHolderViewGroup viewGroup;
 

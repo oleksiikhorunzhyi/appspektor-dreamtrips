@@ -5,21 +5,19 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.SuggestionTagView;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagActionListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagCreationActionsListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagSuggestionActionListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -65,9 +63,9 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
                 .toList());
     }
 
-    protected void addSuggestionTagView(PhotoTag photoTag) {
+    public void addSuggestionTagView(PhotoTag photoTag) {
         TagView view = new SuggestionTagView(getContext());
-        view.setTagListener(createTagListener(view));
+     //todo dep   view.setTagListener(createTagListener(view));
         addTagView(view, photoTag, 0);
         //
         if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag, (SuggestionTagView) view);
@@ -93,14 +91,14 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
     }
 
     public void addCreationTagView(float x, float y) {
-        addCreationTagView(new PhotoTag(CoordinatesTransformer.convertToProportional(new PhotoTag.TagPosition(x, y, x, y), getImageBounds()), null));
+        addCreationTagView(new PhotoTag(CoordinatesTransformer.convertToProportional(new TagPosition(x, y, x, y), getImageBounds()), 0));
     }
 
     protected void addCreationTagViewBasedOnSuggestion(PhotoTag photoTag, SuggestionTagView tagView) {
         removeUncompletedViews();
         CreationTagView view = new CreationTagView(getContext());
-        view.setTagListener((TagCreationActionsListener) createTagListener(view));
-        view.setSuggestionTagView(tagView);
+     //todo  dep  view.setTagListener((TagCreationActionsListener) createTagListener(view));
+       // view.setSuggestionTag(tagView);
         addTagView(view, photoTag);
     }
 
@@ -136,8 +134,8 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
         locallyDeletedTags.add(tag);
     }
 
-    @NonNull
-    @Override
+  /* todo dep
+   @NonNull
     protected TagActionListener createTagListener(TagView view) {
         TagActionListener tagCreationActionsListener;
         if (view instanceof SuggestionTagView) {
@@ -148,19 +146,14 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
             tagCreationActionsListener = super.createTagListener(view);
         }
         return tagCreationActionsListener;
-    }
+    }*/
 
     @NonNull
     private TagSuggestionActionListener getTagSuggestionActionListener() {
         return new TagSuggestionActionListener() {
             @Override
-            public void onFrameClicked(SuggestionTagView suggestionTagView, PhotoTag tag) {
-                addCreationTagViewBasedOnSuggestion(tag, suggestionTagView);
-            }
-
-            @Override
-            public void onTagDeleted(PhotoTag tag) {
-                presenter.deletePhotoTag(tag);
+            public void onFrameClicked( PhotoTag tag) {
+               //todo addCreationTagViewBasedOnSuggestion(tag);
             }
         };
     }
@@ -174,19 +167,20 @@ public class CreationPhotoTaggableHolderViewGroup extends TaggableImageViewGroup
             }
 
             @Override
+            public void onTagCreated(CreationTagView newTagView, PhotoTag suggestion, PhotoTag tag) {
+
+            }
+
+            //@Override
             public void onTagCreated(CreationTagView newTagView, SuggestionTagView suggestionTagView, PhotoTag tag) {
                 PhotoTag cloneTag = PhotoTag.cloneTag(tag);
                 addTag(cloneTag);
                 addExistsTagView(cloneTag);
                 removeView(newTagView);
                 removeView(suggestionTagView);
-                if (suggestionTagView != null) suggestionTagView.removeHelpView();
+            //    if (suggestionTagView != null) suggestionTagView.removeHelpView();
             }
 
-            @Override
-            public void onTagDeleted(PhotoTag tag) {
-                presenter.deletePhotoTag(tag);
-            }
         };
     }
 

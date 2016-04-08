@@ -15,12 +15,12 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.ExistsTagView;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagActionListener;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.List;
 
@@ -88,7 +88,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
         imageView.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         imageView.getHierarchy().getActualImageBounds(imageBounds);
         setVisibility(View.VISIBLE);
-        redrawTags();
         isShown = true;
     }
 
@@ -114,7 +113,6 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
 
     protected void addExistsTagView(PhotoTag photoTag) {
         TagView view = new ExistsTagView(getContext());
-        view.setTagListener(createTagListener(view));
         addTagView(view, photoTag);
     }
 
@@ -123,19 +121,13 @@ public abstract class TaggableImageViewGroup<P extends TaggableImageHolderPresen
     }
 
     protected <T extends TagView> void addTagView(T view, PhotoTag photoTag, int viewPos) {
-        PhotoTag.TagPosition tagPosition = CoordinatesTransformer.convertToAbsolute(photoTag.getProportionalPosition(), getImageBounds());
+        TagPosition tagPosition = CoordinatesTransformer.convertToAbsolute(photoTag.getProportionalPosition(), getImageBounds());
         view.setAbsoluteTagPosition(tagPosition);
 
         view.setPhotoTag(photoTag);
-        view.setAccount(presenter.getAccount());
         view.setPhoto(presenter.getPhoto());
         LayoutParams layoutParams = calculatePosition(view);
         addView(view, viewPos, layoutParams);
-    }
-
-    @NonNull
-    protected TagActionListener createTagListener(final TagView view) {
-        return presenter::deletePhotoTag;
     }
 
     @NonNull

@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class PreviewPhotoTaggableHolderPresenter extends TaggableImageHolderPres
     @Override
     public void deletePhotoTag(PhotoTag tag) {
         List<Integer> userIds = new ArrayList<>();
-        userIds.add(tag.getUser().getId());
+        userIds.add(tag.getTargetUserId());
         doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
             photo.getPhotoTags().remove(tag);
             view.onTagDeleted();

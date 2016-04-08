@@ -24,13 +24,15 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -85,11 +87,16 @@ public class ImageUtils {
     }
 
     public static Observable<Bitmap> getBitmap(Context context, Uri uri, int width, int height) {
-        return Observable.create(subscriber -> setDataSubscriber(context, uri, width, height, bitmap -> {
-            subscriber.onNext(bitmap);
-            subscriber.onCompleted();
-            subscriber.unsubscribe();
-        }));
+        return Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                setDataSubscriber(context, uri, width, height, bitmap -> {
+                    subscriber.onNext(bitmap);
+                    subscriber.onCompleted();
+                    subscriber.unsubscribe();
+                });
+            }
+        });
     }
 
     public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
@@ -115,16 +122,16 @@ public class ImageUtils {
                         PointF position = face.getPosition();
                         float absoluteX = Math.max(position.x, 0.0f);
                         float absoluteY = Math.max(position.y, 0.0f);
-                        PhotoTag.TagPosition absolute = new PhotoTag.TagPosition(
+                        TagPosition absolute = new TagPosition(
                                 (int) absoluteX,
                                 (int) absoluteY,
                                 (int) absoluteX + (int) face.getWidth(),
                                 (int) absoluteY + (int) face.getHeight());
-                        PhotoTag.TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
+                        TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
                         float bottomXProportional = Math.min(0.95f, proportional.getBottomRight().getX());
                         float bottomYProportional = Math.min(0.95f, proportional.getBottomRight().getY());
-                        proportional = new PhotoTag.TagPosition(proportional.getTopLeft(), new PhotoTag.Position(bottomXProportional, bottomYProportional));
-                        result.add(new PhotoTag(proportional, new User()));
+                        proportional = new TagPosition(proportional.getTopLeft(), new Position(bottomXProportional, bottomYProportional));
+                        result.add(new PhotoTag(proportional, 0));
                     }
                     return result;
                 })

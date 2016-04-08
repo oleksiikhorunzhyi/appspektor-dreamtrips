@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -65,9 +65,9 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private final String conversationId;
     private Observable<DataConversation> conversationObservable;
 
-    public EditChatMembersScreenPresenterImpl(Context context, String conversationId) {
+    public EditChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
-        ((Injector) context.getApplicationContext()).inject(this);
+        injector.inject(this);
 
         this.conversationId = conversationId;
 

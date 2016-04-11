@@ -14,7 +14,9 @@ import com.messenger.ui.model.Group;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.model.SwipeDataUser;
 import com.messenger.ui.util.recyclerview.Header;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,11 +33,11 @@ public class UserSectionHelper {
     public static final String HOST_TYPE = "Host";
 
     private final Context context;
-    private final DataUser currentUser;
+    private final SessionHolder<UserSession> userSessionHolder;
 
-    public UserSectionHelper(Context context, DataUser currentUser) {
+    public UserSectionHelper(Context context, SessionHolder<UserSession> userSessionHolder) {
         this.context = context;
-        this.currentUser = currentUser;
+        this.userSessionHolder = userSessionHolder;
     }
 
     public Observable.Transformer<List<DataUser>, Pair<List<Object>, Integer>> prepareItemInCheckableList(Collection<DataUser> participants, Collection<DataUser> selectedUsers) {
@@ -54,6 +56,10 @@ public class UserSectionHelper {
                 })
                 .map(userItems -> new Pair<>(prepareContactGroups(userItems), userItems.size()))
                 .map(this::mapToItem);
+    }
+
+    private String getCurrentUserId() {
+        return userSessionHolder.get().get().getUser().getUsername();
     }
 
     public Observable.Transformer<List<Pair<DataUser, String>>, Pair<List<Object>, Integer>> groupTransformer(
@@ -77,8 +83,9 @@ public class UserSectionHelper {
         return convertToGroups(groupedMap);
     }
 
-    private List<Group<SwipeDataUser>> prepareMemberGroups(List<Pair<DataUser, String>> members, DataConversation conversation) {
-        boolean isAdmin = TextUtils.equals(conversation.getOwnerId(), currentUser.getId());
+    private List<Group<SwipeDataUser>> prepareMemberGroups(List<Pair<DataUser, String>> members,
+                                                           DataConversation conversation) {
+        boolean isAdmin = TextUtils.equals(conversation.getOwnerId(), getCurrentUserId());
         boolean isTripConversation = ConversationHelper.isTripChat(conversation);
         Map<String, Collection<SwipeDataUser>> groupedMap = Queryable.from(members)
                 .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation),

@@ -44,13 +44,8 @@ import de.greenrobot.event.EventBus;
 public class MessengerDelegateModule {
 
     @Provides
-    DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {
-        return new DataUser(appSessionHolder.get().get().getUser().getUsername());
-    }
-
-    @Provides
-    ChatDelegate provideChatDelegate(DataUser user, MessengerServerFacade messengerServerFacade) {
-        return new ChatDelegate(user.getId(), messengerServerFacade);
+    ChatDelegate provideChatDelegate(SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade) {
+        return new ChatDelegate(appSessionHolder, messengerServerFacade);
     }
 
     @Provides
@@ -65,8 +60,8 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    UserSectionHelper provideUserSectionHelper(@ForApplication Context context, DataUser user) {
-        return new UserSectionHelper(context, user);
+    UserSectionHelper provideUserSectionHelper(@ForApplication Context context, SessionHolder<UserSession> appSessionHolder) {
+        return new UserSectionHelper(context, appSessionHolder);
     }
 
     @Provides

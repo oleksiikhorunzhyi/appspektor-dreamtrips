@@ -1,6 +1,5 @@
 package com.messenger.di;
 
-import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.delegate.ChatMessagesEventDelegate;
 import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.JoinedChatEventDelegate;
@@ -12,13 +11,6 @@ import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.TripConversationViewHolder;
 import com.messenger.ui.helper.PhotoPickerDelegate;
-import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
-import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
-import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
-import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
 import com.messenger.util.ChatFacadeManager;
 
 import dagger.Module;
@@ -37,15 +29,6 @@ import dagger.Module;
 
                 ChatFacadeInitializer.class,
                 ChatFacadeManager.class,
-                ChatLeavingDelegate.class,
-
-//                presenters
-                ChatMembersScreenPresenterImpl.class,
-                NewChatScreenPresenterImpl.class,
-                AddChatMembersScreenPresenterImpl.class,
-                SingleChatSettingsScreenPresenterImpl.class,
-                ConversationListScreenPresenterImpl.class,
-                EditChatMembersScreenPresenterImpl.class,
 
                 // adapters
                 SwipeableContactsAdapter.class,

@@ -135,6 +135,7 @@ android {
             buildConfigField 'String', 'DreamTripsApi', '"https://dtapp.worldventures.biz"'
             buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com/config"'
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
+            buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp.worldventures.biz"'
         }
     }
 
@@ -308,7 +309,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-vision:8.4.0'
     //
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
-    compile 'com.instabug.library:instabugsupport:1.7.1'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
     compile('com.twitter.sdk.android:twitter:1.9.1@aar') {
         transitive = true;

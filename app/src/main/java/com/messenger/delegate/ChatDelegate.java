@@ -12,7 +12,9 @@ import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,13 +22,13 @@ import java.util.UUID;
 import rx.Observable;
 
 public class ChatDelegate {
-    private final String currentUserId;
+    private final SessionHolder<UserSession> appSessionHolder;
     private final MessengerServerFacade messengerServerFacade;
 
     private final ConversationIdHelper conversationIdHelper = new ConversationIdHelper();
 
-    public ChatDelegate(String currentUserId, MessengerServerFacade messengerServerFacade) {
-        this.currentUserId = currentUserId;
+    public ChatDelegate(SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade) {
+        this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
     }
 
@@ -39,8 +41,8 @@ public class ChatDelegate {
     private Observable<DataConversation> createSingleChat(String participantId) {
         return Observable.just(new DataConversation.Builder()
                 .type(ConversationType.CHAT)
-                .id(ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId))
-                .ownerId(currentUserId)
+                .id(ThreadCreatorHelper.obtainThreadSingleChat(getCurrentUserId(), participantId))
+                .ownerId(getCurrentUserId())
                 .lastActiveDate(System.currentTimeMillis())
                 .status(ConversationStatus.PRESENT)
                 .build());
@@ -50,7 +52,7 @@ public class ChatDelegate {
         DataConversation conversation = new DataConversation.Builder()
                 .type(ConversationType.GROUP)
                 .id(UUID.randomUUID().toString())
-                .ownerId(currentUserId)
+                .ownerId(getCurrentUserId())
                 .lastActiveDate(System.currentTimeMillis())
                 .status(ConversationStatus.PRESENT)
                 .subject(TextUtils.isEmpty(subject)? null : subject)
@@ -63,7 +65,7 @@ public class ChatDelegate {
                                                            List<DataUser> newChatUserIds, @Nullable String subject) {
         if (TextUtils.equals(conversation.getType(), ConversationType.CHAT)) {
             conversation = new DataConversation.Builder()
-                    .ownerId(currentUserId)
+                    .ownerId(getCurrentUserId())
                     .type(ConversationType.GROUP)
                     .status(ConversationStatus.PRESENT)
                     .subject(TextUtils.isEmpty(subject)? null : subject)
@@ -93,7 +95,7 @@ public class ChatDelegate {
     }
 
     public DataConversation getExistingSingleConversation(String participantId) {
-        String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(currentUserId, participantId);
+        String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(getCurrentUserId(), participantId);
         DataConversation existingConversation = ConversationsDAO.getConversationById(conversationId);
         return existingConversation;
     }
@@ -101,10 +103,15 @@ public class ChatDelegate {
     private Observable<DataConversation> setMultiUserChatData(DataConversation conversation,
                                                               List<DataUser> newParticipants, @Nullable String subject) {
         return messengerServerFacade.getChatManager()
-                .createMultiUserChatObservable(conversation.getId(), currentUserId)
+                .createMultiUserChatObservable(conversation.getId(), getCurrentUserId())
                 .doOnNext(multiUserChat -> multiUserChat.invite(getUserIds(newParticipants)))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .map(chat -> conversation);
+    }
+
+    private String getCurrentUserId() {
+        if (!appSessionHolder.get().isPresent()) return "";
+        return appSessionHolder.get().get().getUser().getUsername();
     }
 
     private List<String> getUserIds(List<DataUser> dataUsers) {

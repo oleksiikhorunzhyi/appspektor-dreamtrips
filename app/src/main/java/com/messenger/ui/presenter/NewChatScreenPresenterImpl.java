@@ -10,6 +10,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
 import java.util.ArrayList;
@@ -30,8 +31,8 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
     @Inject
     StartChatDelegate startChatDelegate;
 
-    public NewChatScreenPresenterImpl(Context context) {
-        super(context);
+    public NewChatScreenPresenterImpl(Context context, Injector injector) {
+        super(context, injector);
     }
 
     @Override

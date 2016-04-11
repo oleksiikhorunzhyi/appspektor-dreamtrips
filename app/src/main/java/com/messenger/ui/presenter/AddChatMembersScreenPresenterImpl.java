@@ -16,8 +16,8 @@ import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.view.chat.ChatPath;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -39,8 +39,8 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
     private Observable<DataConversation> conversationStream;
     private Observable<List<DataUser>> participantsStream;
 
-    public AddChatMembersScreenPresenterImpl(Context context, String conversationId) {
-        super(context);
+    public AddChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
+        super(context, injector);
         conversationStream = conversationsDAO.getConversation(conversationId)
                 .take(1).replay().autoConnect();
         participantsStream = participantsDAO.getParticipantsEntities(conversationId)
@@ -75,19 +75,19 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
         // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
         conversationStream
                 .flatMap(conversation -> modifyConversation(conversation, newChatUsers, getView().getConversationName()))
-                        .doOnNext(conversationPair -> saveModifiedConversation(conversationPair.first, newChatUsers, conversationPair.second))
-                        .compose(bindViewIoToMainComposer())
-                        .map(conversationPair -> conversationPair.first)
-                        .subscribe(newConversation -> {
-                            History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
-                            history.pop();
-                            history.pop();
-                            history.push(new ChatPath(newConversation.getId()));
-                            Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
-                        }, e -> {
-                            doneButtonItem.setEnabled(true);
-                            Timber.e(e, "Could not add chat member");
-                        });
+                .doOnNext(conversationPair -> saveModifiedConversation(conversationPair.first, newChatUsers, conversationPair.second))
+                .compose(bindViewIoToMainComposer())
+                .map(conversationPair -> conversationPair.first)
+                .subscribe(newConversation -> {
+                    History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
+                    history.pop();
+                    history.pop();
+                    history.push(new ChatPath(newConversation.getId()));
+                    Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
+                }, e -> {
+                    doneButtonItem.setEnabled(true);
+                    Timber.e(e, "Could not add chat member");
+                });
     }
 
     private Observable<Pair<DataConversation, String>> modifyConversation (DataConversation conversation, List<DataUser> newChatUsers, String newSubject) {

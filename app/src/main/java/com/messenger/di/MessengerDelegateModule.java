@@ -13,6 +13,7 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.PhotoDAO;
@@ -66,8 +67,8 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO, PhotoDAO photoDAO) {
-        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, photoDAO);
+    PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO, PhotoDAO photoDAO, LocationDAO locationDAO) {
+        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO, photoDAO, locationDAO);
     }
 
     @Singleton

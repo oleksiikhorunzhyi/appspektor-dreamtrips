@@ -11,22 +11,23 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.messenger.delegate.AttachmentDelegate;
+import com.messenger.delegate.LocationAttachmentDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
+import com.messenger.delegate.PhotoAttachmentDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
-import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -36,6 +37,7 @@ import com.messenger.messengerservers.model.Message;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.TranslationsDAO;
@@ -129,7 +131,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     OpenedConversationTracker openedConversationTracker;
     @Inject
-    AttachmentDelegate attachmentDelegate;
+    PhotoAttachmentDelegate attachmentDelegate;
+    @Inject
+    LocationAttachmentDelegate locationAttachmentDelegate;
     @Inject
     PaginationDelegate paginationDelegate;
     @Inject
@@ -153,6 +157,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     AttachmentDAO attachmentDAO;
     @Inject
     PhotoDAO photoDAO;
+    @Inject
+    LocationDAO locationDAO;
     @Inject
     TranslationsDAO translationsDAO;
 
@@ -615,22 +621,30 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void retrySendMessage(DataMessage message) {
         String messageId = message.getId();
 
-        Observable.zip(attachmentDAO.getAttachmentByMessageId(messageId).take(1),
-                        photoDAO.getAttachmentByMessageId(messageId).take(1),
-                        (dataAttachment, dataPhotoAttachment) -> new Pair<>(dataAttachment, dataPhotoAttachment))
+        attachmentDAO.getAttachmentByMessageId(messageId).take(1)
                 .compose(bindView())
-                .subscribe(attachments -> {
-                    DataAttachment attachment = attachments.first;
-                    if (attachment != null) retrySendAttachment(message, attachment, attachments.second);
+                .subscribe(attachment -> {
+                    if (attachment != null) retrySendAttachment(message, attachment);
                     else retrySendTextMessage(message);
                 });
     }
 
+    private void retrySendAttachment(DataMessage dataMessage, DataAttachment attachment){
+        switch (attachment.getType()){
+            case AttachmentType.IMAGE:
+                retrySendPhotoAttachment(dataMessage, attachment);
+                break;
+            case AttachmentType.LOCATION:
+                retrySendLocationAttachment(dataMessage, attachment);
+                break;
+        }
+    }
+
     private void retrySendTextMessage(DataMessage dataMessage) {
         submitOneChatAction(chat -> {
-                        Message message = dataMessage.toChatMessage();
-                        message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
-                        chat.send(message).subscribe();
+            Message message = dataMessage.toChatMessage();
+            message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
+            chat.send(message).subscribe();
         });
     }
 
@@ -803,6 +817,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void onLocationPicked(Location location) {
         Timber.d(getClass().getSimpleName() + "::onLocationPicked %s", location);
+        conversationObservable.take(1)
+                .subscribe(pair -> locationAttachmentDelegate.send(pair.first, location),
+                            throwable -> Timber.d(throwable, ""));
+    }
+
+    private void retrySendLocationAttachment(DataMessage message, DataAttachment dataAttachment) {
+        Observable.zip(conversationObservable.take(1),
+                locationDAO.getAttachmentById(dataAttachment.getId()).take(1),
+                (conversationPair, dataPhotoAttachment) -> new Pair<>(conversationPair.first, dataPhotoAttachment))
+                .subscribe(pair -> locationAttachmentDelegate.retry(pair.first, message, dataAttachment, pair.second),
+                        throwable -> Timber.e(throwable, ""));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -856,10 +881,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .map(filePath -> UploadingFileManager.copyFileIfNeed(filePath, context))
                 .toList()
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::uploadAttachment, throwable -> Timber.e(throwable, ""));
+                .subscribe(this::ploadPhotoAttachments, throwable -> Timber.e(throwable, ""));
     }
 
-    private void uploadAttachment(List<String> filePaths) {
+    private void ploadPhotoAttachments(List<String> filePaths) {
         conversationObservable.take(1)
                 .subscribe(pair -> attachmentDelegate.sendImages(pair.first, filePaths),
                         throwable ->Timber.d(throwable, ""));
@@ -873,11 +898,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Photo uploading
     ///////////////////////////////////////////////////////////////////////////
 
-    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment, DataPhotoAttachment photoAttachment) {
-        conversationObservable.take(1)
-                .subscribe(pair -> attachmentDelegate.retry(pair.first, message, dataAttachment, photoAttachment),
+    private void retrySendPhotoAttachment(DataMessage message, DataAttachment dataAttachment) {
+        Observable.zip(conversationObservable.take(1),
+                photoDAO.getAttachmentById(dataAttachment.getId()).take(1),
+                (conversationPair, dataPhotoAttachment) -> new Pair<>(conversationPair.first, dataPhotoAttachment))
+                .subscribe(pair -> attachmentDelegate.retry(pair.first, message, dataAttachment, pair.second),
                         throwable -> Timber.e(throwable, ""));
     }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // State

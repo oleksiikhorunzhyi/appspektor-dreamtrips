@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.model.AttachmentHolder;
-import com.messenger.messengerservers.model.ImageAttachment;
+import com.messenger.messengerservers.model.LocationAttachment;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
@@ -24,10 +24,10 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import java.util.Collections;
 import java.util.List;
 
-@Table(tableName = DataPhotoAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-@TableEndpoint(name = DataPhotoAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
-    public static final String TABLE_NAME = "Photos";
+@Table(tableName = DataLocationAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+@TableEndpoint(name = DataLocationAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+public class DataLocationAttachment extends BaseProviderModel<DataAttachment> {
+    public static final String TABLE_NAME = "Locations";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -37,22 +37,22 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     @Column(name = BaseColumns._ID)
     String id;
     @Column
-    String url;
+    double lat;
     @Column
-    int uploadTaskId;
+    double lng;
 
-    public DataPhotoAttachment() {
+    public DataLocationAttachment() {
     }
 
-    private DataPhotoAttachment(Builder builder) {
+    private DataLocationAttachment(Builder builder) {
         setId(builder.id);
-        setUrl(builder.url);
-        setUploadTaskId(builder.amazonTaskId);
+        setCoordinates(builder.lat, builder.lng);
     }
 
-    public DataPhotoAttachment(@NonNull ImageAttachment attachment, Message message, int index) {
+    public DataLocationAttachment(@NonNull LocationAttachment attachment, Message message, int index) {
         this.id = createId(message.getId(), index);
-        url = attachment.getOriginUrl();
+        this.lat = attachment.getLat();
+        this.lng = attachment.getLng();
     }
 
     private String createId(String messageId, int index) {
@@ -67,20 +67,17 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
         this.id = id;
     }
 
-    public void setUploadTaskId(int amazonTaskId) {
-        this.uploadTaskId = amazonTaskId;
+    public void setCoordinates(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
     }
 
-    public String getUrl() {
-        return url;
+    public double getLng() {
+        return lng;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public int getUploadTaskId() {
-        return uploadTaskId;
+    public double getLat() {
+        return lat;
     }
 
     @Override
@@ -104,7 +101,7 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     }
 
     @NonNull
-    public static List<DataPhotoAttachment> fromMessage(@NonNull Message message) {
+    public static List<DataLocationAttachment> fromMessage(@NonNull Message message) {
         MessageBody body = message.getMessageBody();
         List<AttachmentHolder> attachmentHolders;
         if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
@@ -113,31 +110,32 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
 
         return Queryable.from(attachmentHolders)
                 .filter(attachmentHolder -> attachmentHolder != null)
-                .filter(attachmentHolder -> TextUtils.equals(attachmentHolder.getType(), AttachmentType.IMAGE))
-                .map((elem, idx) -> new DataPhotoAttachment((ImageAttachment) elem.getItem(), message, idx))
+                .filter(attachmentHolder -> TextUtils.equals(attachmentHolder.getType(), AttachmentType.LOCATION))
+                .map((elem, idx) -> new DataLocationAttachment((LocationAttachment) elem.getItem(), message, idx))
                 .toList();
     }
 
     public static final class Builder {
         String id;
-        String url;
-        int amazonTaskId;
+        double lat;
+        double lng;
 
         public Builder() {
         }
 
-        public Builder id(String var) {
-            id = var;
+        public Builder id(String id){
+            this.id = id;
             return this;
         }
 
-        public Builder url(String val) {
-            url = val;
+        public Builder coordinates(double lat, double lng) {
+            this.lat = lat;
+            this.lng = lng;
             return this;
         }
 
-        public DataPhotoAttachment build() {
-            return new DataPhotoAttachment(this);
+        public DataLocationAttachment build() {
+            return new DataLocationAttachment(this);
         }
     }
 }

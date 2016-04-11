@@ -1,20 +1,22 @@
 package com.messenger.delegate;
 
-import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.PhotoDAO;
+import com.messenger.util.DecomposeMessagesHelper;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Calendar;
-import java.util.List;
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -29,6 +31,10 @@ public class ChatMessagesEventDelegate {
     MessageDAO messageDAO;
     @Inject
     AttachmentDAO attachmentDAO;
+    @Inject
+    PhotoDAO photoDAO;
+    @Inject
+    LocationDAO locationDAO;
     @Inject
     SessionHolder<UserSession> currentUserSession;
     //
@@ -95,11 +101,15 @@ public class ChatMessagesEventDelegate {
         message.setDate(time);
         message.setStatus(status);
 
-        DataMessage dataMessage = new DataMessage(message);
+        DecomposeMessagesHelper.DecomposedMessagesResult decomposedMessagesResult =
+                DecomposeMessagesHelper.decomposeMessages(Collections.singletonList((message)));
+
+        DataMessage dataMessage = decomposedMessagesResult.messages.get(0);
         dataMessage.setSyncTime(time);
 
-        List<DataAttachment> attachments = DataAttachment.fromMessage(message);
-        if (!attachments.isEmpty()) attachmentDAO.save(attachments);
+        photoDAO.save(decomposedMessagesResult.photoAttachments);
+        locationDAO.save(decomposedMessagesResult.locationAttachments);
+        attachmentDAO.save(decomposedMessagesResult.attachments);
 
         messageDAO.save(dataMessage);
         conversationsDAO.updateDate(message.getConversationId(), time);

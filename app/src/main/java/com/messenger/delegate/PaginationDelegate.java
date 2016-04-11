@@ -8,6 +8,7 @@ import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.storage.dao.AttachmentDAO;
+import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.util.DecomposeMessagesHelper;
@@ -27,16 +28,19 @@ public class PaginationDelegate {
     private final MessageDAO messageDAO;
     private final AttachmentDAO attachmentDAO;
     private final PhotoDAO photoDAO;
+    private final LocationDAO locationDAO;
 
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private PagePagination<Message> messagePagePagination;
 
-    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO, PhotoDAO photoDAO) {
+    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO,
+                              AttachmentDAO attachmentDAO, PhotoDAO photoDAO, LocationDAO locationDAO) {
         this.messengerServerFacade = messengerServerFacade;
         this.messageDAO = messageDAO;
         this.attachmentDAO = attachmentDAO;
         this.photoDAO = photoDAO;
+        this.locationDAO = locationDAO;
     }
 
     public void setPageSize(int pageSize) {
@@ -60,8 +64,9 @@ public class PaginationDelegate {
                     return decomposedMessagesResult;
                 }).subscribe(result -> {
                             messageDAO.save(result.messages);
-                            attachmentDAO.save(result.attachments);
                             photoDAO.save(result.photoAttachments);
+                            locationDAO.save(result.locationAttachments);
+                            attachmentDAO.save(result.attachments);
                         }));
 
         messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {

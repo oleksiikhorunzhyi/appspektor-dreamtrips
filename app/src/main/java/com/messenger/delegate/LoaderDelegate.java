@@ -11,11 +11,14 @@ import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.DecomposeMessagesHelper;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -33,28 +36,29 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 
 public class LoaderDelegate {
 
-    private final MessengerServerFacade messengerServerFacade;
-    private final UserProcessor userProcessor;
-
-    private final ConversationsDAO conversationsDAO;
-    private final ParticipantsDAO participantsDAO;
-    private final MessageDAO messageDAO;
-    private final UsersDAO usersDAO;
-    private final AttachmentDAO attachmentDAO;
-    private final PhotoDAO photoDAO;
+    @Inject
+    MessengerServerFacade messengerServerFacade;
+    @Inject
+    UserProcessor userProcessor;
 
     @Inject
-    public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
-                          ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                          MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO, PhotoDAO photoDAO) {
-        this.messengerServerFacade = messengerServerFacade;
-        this.userProcessor = userProcessor;
-        this.conversationsDAO = conversationsDAO;
-        this.participantsDAO = participantsDAO;
-        this.messageDAO = messageDAO;
-        this.usersDAO = usersDAO;
-        this.attachmentDAO = attachmentDAO;
-        this.photoDAO = photoDAO;
+    ConversationsDAO conversationsDAO;
+    @Inject
+    ParticipantsDAO participantsDAO;
+    @Inject
+    MessageDAO messageDAO;
+    @Inject
+    UsersDAO usersDAO;
+    @Inject
+    AttachmentDAO attachmentDAO;
+    @Inject
+    PhotoDAO photoDAO;
+    @Inject
+    LocationDAO locationDAO;
+
+    @Inject
+    public LoaderDelegate(@ForApplication Injector injector) {
+        injector.inject(this);
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
@@ -90,9 +94,12 @@ public class LoaderDelegate {
 
                     conversationsDAO.save(convs);
                     conversationsDAO.deleteBySyncTime(syncTime);
-                    attachmentDAO.save(decomposedMessagesResult.attachments);
+
                     photoDAO.save(decomposedMessagesResult.photoAttachments);
+                    locationDAO.save(decomposedMessagesResult.locationAttachments);
+                    attachmentDAO.save(decomposedMessagesResult.attachments);
                     messageDAO.save(decomposedMessagesResult.messages);
+                    
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
 

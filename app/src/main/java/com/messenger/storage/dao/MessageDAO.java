@@ -6,6 +6,8 @@ import android.database.Cursor;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
+import com.messenger.entities.DataLocationAttachment;
+import com.messenger.entities.DataLocationAttachment$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Adapter;
 import com.messenger.entities.DataMessage$Table;
@@ -72,6 +74,9 @@ public class MessageDAO extends BaseDAO {
 
                         "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", " +
 
+                        "l." + DataLocationAttachment$Table.LAT + " as " + DataLocationAttachment$Table.LAT + ", " +
+                        "l." + DataLocationAttachment$Table.LNG + " as " + DataLocationAttachment$Table.LNG + ", " +
+
                         "t." + DataTranslation$Table._ID + " as " + TRANSLATION_ID + ", " +
                         "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "+
                         "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + " "+
@@ -83,6 +88,8 @@ public class MessageDAO extends BaseDAO {
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
                         "LEFT JOIN " + DataPhotoAttachment.TABLE_NAME + " p " +
                         "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table._ID + " " +
+                        "LEFT JOIN " + DataLocationAttachment.TABLE_NAME + " l " +
+                        "ON a." + DataLocationAttachment$Table._ID + "=l." + DataLocationAttachment$Table._ID + " " +
                         "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
                         "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " " +
 
@@ -91,7 +98,8 @@ public class MessageDAO extends BaseDAO {
                         "ORDER BY m." + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)}).build();
 
-        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataAttachment.CONTENT_URI, DataTranslation.CONTENT_URI);
+        return query(q, DataMessage.CONTENT_URI, DataUser.CONTENT_URI, DataTranslation.CONTENT_URI,
+                DataAttachment.CONTENT_URI, DataPhotoAttachment.CONTENT_URI, DataLocationAttachment.CONTENT_URI);
     }
 
     public Observable<DataMessage> findNewestUnreadMessage(String conversationId, String currentUserId, long syncTime) {

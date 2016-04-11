@@ -2,9 +2,11 @@ package com.messenger.storage.dao;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 
@@ -23,11 +25,14 @@ public abstract class BaseAttachmentDAO<E extends BaseProviderModel> extends Bas
         this.clazz = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    public void save(List<E> attachments) {
+    public void save(@Nullable List<E> attachments) {
+        if (attachments == null || attachments.isEmpty()) return;
+
         bulkInsert(attachments, getModelAdapter(), getModelTableUri());
     }
 
-    public void save(E attachment) {
+    public void save(@Nullable E attachment) {
+        if (attachment == null) return;
         // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
         save(Collections.singletonList(attachment));
     }
@@ -67,5 +72,7 @@ public abstract class BaseAttachmentDAO<E extends BaseProviderModel> extends Bas
         attachment.delete();
     }
 
-
+    public void deleteById(String attachmentId) {
+        new Delete().from(clazz).byIds(attachmentId).query();
+    }
 }

@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -56,9 +57,12 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
 
     private void trackIfNeeded() {
         if (!TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery()))
-            TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
-                    dtlMerchantManager.getCurrentQuery(),
-                    dtlLocationManager.getCachedSelectedLocation());
+            dtlLocationManager.getSelectedLocation()
+                    .map(DtlLocationCommand::getResult)
+                    .compose(bindViewIoToMainComposer())
+                    .subscribe(location -> TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
+                            dtlMerchantManager.getCurrentQuery(),
+                            location));
     }
 
     @Override

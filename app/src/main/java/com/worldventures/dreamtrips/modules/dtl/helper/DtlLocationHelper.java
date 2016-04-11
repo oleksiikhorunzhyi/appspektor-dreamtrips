@@ -21,7 +21,8 @@ public class DtlLocationHelper {
      * @return LatLng object preferable for filtering purposes
      */
     public static LatLng selectAcceptableLocation(Location deviceLocation, DtlLocation dtlLocation) {
-        if (dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME)
+        if (dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME
+                || dtlLocation.getLocationSourceType() == LocationSourceType.UNDEFINED)
             return new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         //
         LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
@@ -32,7 +33,7 @@ public class DtlLocationHelper {
     }
 
     public static boolean checkLocation(double maxDistance, LatLng currentLocation, LatLng targetLatLng,
-                                 DistanceType distanceType) {
+                                        DistanceType distanceType) {
         double distance = distanceType == DistanceType.KMS
                 ? distanceInKms(currentLocation, targetLatLng)
                 : distanceInMiles(currentLocation, targetLatLng);
@@ -40,7 +41,7 @@ public class DtlLocationHelper {
     }
 
     public static boolean checkLocation(double maxDistance, Location currentLocation, Location targetLatLng,
-                                 DistanceType distanceType) {
+                                        DistanceType distanceType) {
         LatLng current = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         LatLng target = new LatLng(targetLatLng.getLatitude(), targetLatLng.getLongitude());
         //

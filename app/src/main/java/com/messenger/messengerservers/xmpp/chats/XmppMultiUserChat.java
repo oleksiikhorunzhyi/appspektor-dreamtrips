@@ -60,12 +60,10 @@ public class XmppMultiUserChat extends XmppChat implements MultiUserChat {
     }
 
     @Override
-    protected boolean trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException {
-        if (chat != null) {
-            chat.sendMessage(message);
-            return true;
-        }
-        return false;
+    protected void trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException {
+        if (chat == null) throw new SmackException.NotConnectedException();
+
+        chat.sendMessage(message);
     }
 
     @Override

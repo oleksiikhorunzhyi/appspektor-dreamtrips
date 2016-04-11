@@ -42,7 +42,7 @@ public abstract class XmppChat implements Chat {
                 .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(),
                         smackMsg -> {
                             Timber.i("Send Message " + smackMsg.toString());
-                            return trySendSmackMessage(smackMsg);
+                            trySendSmackMessage(smackMsg);
                         }));
 
     }
@@ -55,7 +55,7 @@ public abstract class XmppChat implements Chat {
                 .subscribe(message -> {}, throwable -> Timber.e(throwable, "setCurrentState %s", state));
     }
 
-    protected abstract boolean trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException;
+    protected abstract void trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException;
 
     @Override
     public Observable<String> sendReadStatus(String messageId) {
@@ -65,9 +65,7 @@ public abstract class XmppChat implements Chat {
                             AbstractXMPPConnection connection = facade.getConnection();
                             if (connection != null) {
                                 connection.sendStanza(stanza);
-                                return true;
                             }
-                            return false;
                         }));
     }
 

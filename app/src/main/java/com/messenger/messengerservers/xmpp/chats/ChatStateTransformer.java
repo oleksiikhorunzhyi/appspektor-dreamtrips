@@ -25,10 +25,9 @@ class ChatStateTransformer implements Observable.Transformer<String, Message> {
                 })
                 .flatMap(message -> Observable.create(subscriber -> {
                     try {
-                        if (sendAction.call(message)) {
-                            subscriber.onNext(message);
-                            subscriber.onCompleted();
-                        }
+                        sendAction.call(message);
+                        subscriber.onNext(message);
+                        subscriber.onCompleted();
                     } catch (Throwable throwable) {
                         subscriber.onError(throwable);
                     }

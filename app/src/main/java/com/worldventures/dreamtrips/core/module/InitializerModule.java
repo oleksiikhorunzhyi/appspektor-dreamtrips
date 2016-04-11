@@ -23,7 +23,6 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                InstabugInitializer.class,
                 LeakCanaryInitializer.class,
                 FabricInitializer.class,
                 FrescoInitializer.class,
@@ -61,11 +60,6 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     AppInitializer provideSoftInputInitializer() {
         return new SoftInputInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideInstabugInitializer() {
-        return new InstabugInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

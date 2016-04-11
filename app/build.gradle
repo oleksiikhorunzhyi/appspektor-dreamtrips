@@ -135,6 +135,7 @@ android {
             buildConfigField 'String', 'DreamTripsApi', '"https://dtapp.worldventures.biz"'
             buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com/config"'
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
+            buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp.worldventures.biz"'
         }
     }
 

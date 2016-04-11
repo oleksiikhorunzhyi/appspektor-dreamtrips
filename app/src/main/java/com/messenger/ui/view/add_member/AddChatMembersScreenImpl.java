@@ -17,6 +17,6 @@ public class AddChatMembersScreenImpl extends ChatMembersScreenImpl<ExistingChat
 
     @Override
     public AddChatMembersScreenPresenterImpl createPresenter() {
-        return new AddChatMembersScreenPresenterImpl(getContext(), getPath().getConversationId());
+        return new AddChatMembersScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 }

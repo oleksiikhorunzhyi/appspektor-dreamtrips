@@ -16,7 +16,9 @@ import com.messenger.ui.adapter.inflater.ConversationLastMessageDateInflater;
 import com.messenger.ui.adapter.inflater.ConversationLastMessageInflater;
 import com.messenger.ui.adapter.inflater.ConversationSwipeLayoutInflater;
 import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 
@@ -26,6 +28,8 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
      implements View.OnClickListener {
 
     protected final Context context;
+    @Inject
+    SessionHolder<UserSession> sessionHolder;
 
     @InjectView(R.id.conversation_item_view)
     ViewGroup contentLayout;
@@ -40,8 +44,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
     private ConversationLastMessageDateInflater lastMessageDateInflater = new ConversationLastMessageDateInflater();
     private ConversationSwipeLayoutInflater conversationSwipeLayoutInflater = new ConversationSwipeLayoutInflater() ;
 
-    @Inject
-    DataUser currentUser;
+    private DataUser currentUser;
     private DataConversation conversation;
 
     public BaseConversationViewHolder(View itemView) {
@@ -49,6 +52,7 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
         context = itemView.getContext();
         itemView.setOnClickListener(this);
         ((Injector) itemView.getContext().getApplicationContext()).inject(this);
+        currentUser = new DataUser(sessionHolder.get().get().getUsername());
         lastMessageInflater.setView(itemView);
         lastMessageDateInflater.setView(itemView);
         conversationSwipeLayoutInflater.setView(itemView, this);

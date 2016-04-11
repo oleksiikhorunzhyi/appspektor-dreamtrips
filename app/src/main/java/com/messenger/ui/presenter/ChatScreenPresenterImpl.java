@@ -844,16 +844,16 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         if (photos == null || photos.isEmpty()) return;
         //
         Observable.from(photos)
-                .first()
-                .map(photo -> photos.get(0).getFileThumbnail())
+                .map(ChosenImage::getFileThumbnail)
                 .map(filePath -> UploadingFileManager.copyFileIfNeed(filePath, context))
+                .toList()
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::uploadAttachment, throwable -> Timber.e(throwable, ""));
     }
 
-    private void uploadAttachment(String filePath) {
+    private void uploadAttachment(List<String> filePaths) {
         conversationObservable.take(1)
-                .subscribe(pair -> attachmentDelegate.send(pair.first, filePath),
+                .subscribe(pair -> attachmentDelegate.sendImages(pair.first, filePaths),
                         throwable ->Timber.d(throwable, ""));
     }
 

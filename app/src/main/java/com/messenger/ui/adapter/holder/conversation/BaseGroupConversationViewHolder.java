@@ -1,9 +1,10 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.conversation;
 
 import android.text.TextUtils;
 import android.view.View;
 
 import com.messenger.entities.DataConversation;
+import com.messenger.ui.adapter.holder.conversation.BaseConversationViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 
 public abstract class BaseGroupConversationViewHolder extends BaseConversationViewHolder {

@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.inflater;
+package com.messenger.ui.adapter.inflater.conversation;
 
 
 import android.text.Html;
@@ -11,6 +11,7 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.TranslationStatus;
+import com.messenger.ui.adapter.inflater.ViewInflater;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.MessageVersionHelper;
 import com.worldventures.dreamtrips.R;

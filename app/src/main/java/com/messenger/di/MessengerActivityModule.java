@@ -6,6 +6,7 @@ import android.app.Activity;
 import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.entities.DataUser;
+import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
@@ -47,6 +48,7 @@ import dagger.Provides;
                 TripChatSettingsScreenImpl.class,
 
                 ChatLeavingDelegate.class,
+                ChatAdapter.class,
 
                 //presenters
                 MessengerActivityPresenter.class,

@@ -1,9 +1,10 @@
-package com.messenger.ui.adapter.inflater;
+package com.messenger.ui.adapter.inflater.conversation;
 
 import android.view.View;
 import android.widget.TextView;
 
 import com.messenger.entities.DataConversation;
+import com.messenger.ui.adapter.inflater.ViewInflater;
 import com.messenger.util.ChatDateUtils;
 import com.worldventures.dreamtrips.R;
 

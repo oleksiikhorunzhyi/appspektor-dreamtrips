@@ -235,12 +235,6 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="ChatImageMessageImageView">
-        <item name="android:layout_height">@dimen/chat_image_height</item>
-        <item name="android:layout_width">@dimen/chat_image_width</item>
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
     <style name="ConversationListNameTextView">
         <item name="android:layout_marginLeft">
             @dimen/conversation_list_item_conversation_name_textview_left_margin

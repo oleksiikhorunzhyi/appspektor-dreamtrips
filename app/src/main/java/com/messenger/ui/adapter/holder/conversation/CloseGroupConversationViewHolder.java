@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.conversation;
 
 import android.support.v4.content.ContextCompat;
 import android.view.View;

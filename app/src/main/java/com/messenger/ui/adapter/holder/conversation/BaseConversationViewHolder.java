@@ -1,7 +1,6 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.conversation;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,10 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
-import com.messenger.ui.adapter.inflater.ConversationLastMessageDateInflater;
-import com.messenger.ui.adapter.inflater.ConversationLastMessageInflater;
-import com.messenger.ui.adapter.inflater.ConversationSwipeLayoutInflater;
+import com.messenger.ui.adapter.holder.BaseViewHolder;
+import com.messenger.ui.adapter.inflater.conversation.ConversationLastMessageDateInflater;
+import com.messenger.ui.adapter.inflater.conversation.ConversationLastMessageInflater;
+import com.messenger.ui.adapter.inflater.conversation.ConversationSwipeLayoutInflater;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;

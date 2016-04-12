@@ -1,5 +1,6 @@
 package com.messenger.ui.adapter.holder.chat;
 
+import android.database.Cursor;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -8,13 +9,17 @@ import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.storage.dao.MessageDAO;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
-public abstract class ImageMessageViewHolder extends MessageHolder {
+public abstract class ImageMessageViewHolder extends MessageViewHolder {
 
     protected static final float ALPHA_IMAGE_POST_SENDING = 0.5f;
     protected static final float ALPHA_IMAGE_POST_NORMAL = 1f;
@@ -27,14 +32,30 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
     View errorView;
 
     protected Uri imagePostUri;
+    private String attachmentId;
+
+    private DataPhotoAttachment dataPhotoAttachment;
 
     public ImageMessageViewHolder(View itemView) {
         super(itemView);
     }
 
     @Override
-    public void updateMessageStatusUi(boolean needMarkUnreadMessage) {
-        switch (message.getStatus()) {
+    public void bindCursor(Cursor cursor) {
+        super.bindCursor(cursor);
+        dataPhotoAttachment = SqlUtils.convertToModel(true, DataPhotoAttachment.class, cursor);
+        attachmentId = cursor.getString(cursor.getColumnIndex(MessageDAO.ATTACHMENT_ID));
+        loadImage();
+        updateMessageStatusUi();
+    }
+
+    @OnClick(R.id.chat_image_post_image_view)
+    void onImageClicked() {
+        cellDelegate.onImageClicked(attachmentId);
+    }
+
+    public void updateMessageStatusUi() {
+        switch (dataMessage.getStatus()) {
             case MessageStatus.ERROR:
                 applyErrorStatusUi();
                 break;
@@ -57,12 +78,8 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Image message logic
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void reloadImage() {
-        showImageMessage(imagePostUri);
+    public void loadImage() {
+        showImageMessage(Uri.parse(dataPhotoAttachment.getUrl()));
     }
 
     public void showImageMessage(Uri uri) {
@@ -79,15 +96,6 @@ public abstract class ImageMessageViewHolder extends MessageHolder {
                 .build();
 
         imagePostView.setController(controller);
-    }
-
-    public void setOnImageClickListener(View.OnClickListener clickListener) {
-        imagePostView.setOnClickListener(clickListener);
-    }
-
-    @Override
-    public View getMessageView() {
-        return imagePostView;
     }
 
     protected abstract BaseControllerListener<ImageInfo> getLoadingListener();

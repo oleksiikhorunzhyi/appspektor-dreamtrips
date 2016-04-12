@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
@@ -13,13 +14,21 @@
         android:layout_height="match_parent"
         >
 
+        <TextView
+            android:id="@+id/chat_username"
+            style="@style/ChatUsernameTextView"
+            android:layout_alignLeft="@id/message_container"
+            android:layout_alignStart="@+id/message_container"
+            tools:text="Peter Parker"/>
+
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/chat_item_avatar"
             style="@style/ChatAvatarImageView"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_below="@+id/chat_username"
             app:placeholderImage="@drawable/noavatar_small"
-            app:roundAsCircle="true"/>
+            app:roundAsCircle="true"
+            tools:background="@drawable/noavatar_small"/>
 
         <FrameLayout
             android:id="@+id/message_container"
@@ -34,31 +43,15 @@
             android:background="@drawable/dark_grey_bubble_comics"
             >
 
-            <LinearLayout
-                android:id="@+id/message_linear_layout"
+
+            <TextView
+                android:id="@+id/chat_message"
+                style="@style/ChatMessageTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/chat_message"
-                    style="@style/ChatMessageTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/chat_color_message"
-                    />
-
-                <!--<ImageView-->
-                    <!--android:id="@+id/ic_translation_available"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="end"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:paddingLeft="@dimen/spacing_tiny"-->
-                    <!--android:paddingStart="@dimen/spacing_tiny"-->
-                    <!--android:src="@drawable/ic_translation"/>-->
-
-            </LinearLayout>
+                android:textColor="@color/chat_color_message"
+                tools:text="Hello, my name is Peter Parker"
+                />
 
             <ProgressBar
                 android:id="@+id/translation_progress"
@@ -82,10 +75,5 @@
             android:textSize="@dimen/chat_list_translation_status_size"
             />
 
-        <TextView
-            android:id="@+id/chat_username"
-            style="@style/ChatUsernameTextView"
-            android:layout_alignLeft="@id/message_container"
-            android:layout_alignStart="@+id/message_container"/>
     </RelativeLayout>
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.conversation;
 
 import android.view.View;
 import android.widget.ImageView;

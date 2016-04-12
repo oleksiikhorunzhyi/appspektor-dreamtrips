@@ -7,10 +7,10 @@ import com.messenger.delegate.LoaderDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.adapter.SwipeableContactsAdapter;
-import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
-import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
-import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
-import com.messenger.ui.adapter.holder.TripConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.CloseGroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.TripConversationViewHolder;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.util.ChatFacadeManager;
 

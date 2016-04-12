@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializ
 import com.worldventures.dreamtrips.core.initializer.DtlInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
-import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;

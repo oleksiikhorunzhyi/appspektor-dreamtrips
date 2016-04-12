@@ -80,6 +80,6 @@ public class UserCell extends BaseUserCell {
     private void openFriendActionDialog() {
         sdvAvatar.setDrawingCacheEnabled(true);
         new FriendActionDialogDelegate(itemView.getContext(), getEventBus())
-                .showFriendDialog(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
+                .showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
     }
 }

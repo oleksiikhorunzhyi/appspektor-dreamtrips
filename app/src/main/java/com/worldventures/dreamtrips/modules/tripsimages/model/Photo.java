@@ -25,6 +25,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     private String taskId;
     private List<PhotoTag> photoTags;
     private int photoTagsCount;
+    private int width;
+    private int height;
 
     public Photo() {
     }
@@ -99,16 +101,35 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         this.photoTagsCount = photoTagsCount;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     @Override
     public String toString() {
         return "Photo{" +
                 "title='" + title + '\'' +
-                ", shotAt='" + shotAt + '\'' +
+                ", shotAt=" + shotAt +
                 ", location=" + location +
                 ", tags=" + tags +
                 ", images=" + images +
                 ", taskId='" + taskId + '\'' +
-                ", owner=" + owner +
+                ", photoTags=" + photoTags +
+                ", photoTagsCount=" + photoTagsCount +
+                ", width=" + width +
+                ", height=" + height +
                 '}';
     }
 
@@ -228,6 +249,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         parcel.writeString(taskId);
         parcel.writeParcelable(owner, i);
         parcel.writeTypedList(photoTags);
+        parcel.writeInt(width);
+        parcel.writeInt(height);
     }
 
     protected Photo(Parcel in) {
@@ -244,6 +267,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         owner = in.readParcelable(User.class.getClassLoader());
         photoTags = new ArrayList<>();
         in.readTypedList(photoTags, PhotoTag.CREATOR);
+        width = in.readInt();
+        height = in.readInt();
     }
-
 }

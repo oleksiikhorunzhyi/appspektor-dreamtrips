@@ -15,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
 import com.techery.spares.module.Injector;
@@ -113,6 +114,7 @@ public class PickLocationViewImpl extends MvpLinearLayout<PickLocationView, Pick
         noPlayServicesOverlay.setVisibility(View.GONE);
         mapFragment.getMapAsync(map -> {
             this.map = map;
+            MapsInitializer.initialize(getContext());
             map.setMyLocationEnabled(true);
             MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16, RelativeLayout.ALIGN_PARENT_END,
                     RelativeLayout.ALIGN_PARENT_BOTTOM);

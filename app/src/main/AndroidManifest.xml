@@ -45,12 +45,6 @@
         android:theme="@style/Theme.DreamTripsTheme"
         tools:replace="icon, label">
         <meta-data
-            android:name="com.instabug.DevelopmentAppToken"
-            android:value="a3060506f058a57fcc3ef8d80d189e6e"/>
-        <meta-data
-            android:name="com.instabug.ProductionMode"
-            android:value="false"/>
-        <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="0335b8ecdc78ddc687fb4d90b2cdceab4329482f"/>
         <meta-data
@@ -156,19 +150,6 @@
         <activity
             android:name="com.apptentive.android.sdk.ViewActivity"
             android:theme="@style/ApptentiveTheme.Transparent"/>
-        <activity
-            android:name="com.instabug.wrapper.impl.v14.InstabugAnnotationActivity"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name="net.hockeyapp.android.UpdateActivity"/>
-
-
-        <receiver android:name="com.instabug.library.network.InstabugNetworkReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-            </intent-filter>
-        </receiver>
-
-        <service android:name="com.instabug.library.network.UploadCacheService"/>
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true"/>

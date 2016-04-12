@@ -381,7 +381,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         else {
             messageEditText.clearFocus();
             // put delay to prevent wrong resizing of photo picker panel
-            postDelayed(() -> photoPickerLayoutDelegate.showPicker(true), 400);
+            postDelayed(() -> photoPickerLayoutDelegate.showPicker(true,
+                    getResources().getInteger(R.integer.messenger_pick_image_limit)), 400);
         }
     }
 

@@ -154,7 +154,7 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     private void initPickerLayout() {
         inject(photoPickerLayout);
         photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
-        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager(), false);
+        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
         photoPickerLayoutDelegate.hidePicker();
     }
 

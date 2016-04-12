@@ -105,8 +105,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
-        if (isShown)
-            post(() -> showPanel());
+        if (isShown) {
+            post(this::showPanel);
+        }
     }
 
     @Override
@@ -137,18 +138,12 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         }
     }
 
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled) {
-        this.setup(fragmentManager, multiPickEnabled, true);
+    public void setup(FragmentManager fragmentManager) {
+        this.setup(fragmentManager, true);
     }
 
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, int pickLimit) {
-        this.setup(fragmentManager, multiPickEnabled);
-        this.pickLimit = pickLimit;
-    }
-
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, boolean isVisible) {
+    public void setup(FragmentManager fragmentManager, boolean isVisible) {
         this.fragmentManager = fragmentManager;
-        this.multiPickEnabled = multiPickEnabled;
         if (isVisible) updatePickerDelegate();
     }
 
@@ -240,6 +235,17 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void showPanel() {
+        showPanel(false, 0);
+    }
+
+    public void showPanel(boolean multiPickEnabled) {
+        showPanel(multiPickEnabled, Integer.MAX_VALUE);
+    }
+
+    public void showPanel(boolean multiPickEnabled, int pickLimit) {
+        this.multiPickEnabled = multiPickEnabled;
+        this.pickLimit = pickLimit;
+
         if (photoPickerListener != null) photoPickerListener.onOpened();
         isShown = true;
         boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);

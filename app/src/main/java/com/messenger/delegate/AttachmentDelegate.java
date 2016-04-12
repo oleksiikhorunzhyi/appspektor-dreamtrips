@@ -1,5 +1,6 @@
 package com.messenger.delegate;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.command.SendImageAttachmentCommand;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
@@ -10,6 +11,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -64,5 +66,9 @@ public class AttachmentDelegate {
                 .messageId(message.getId())
                 .type(AttachmentType.IMAGE)
                 .build();
+    }
+
+    public void sendImages(DataConversation conversation, List<String> filePaths) {
+        Queryable.from(filePaths).forEachR(path -> send(conversation, path));
     }
 }

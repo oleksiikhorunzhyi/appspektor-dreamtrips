@@ -50,8 +50,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @Inject
     PhotoPickerDelegate photoPickerDelegate;
 
-    @State
-    boolean isShown;
+    @State boolean isShown;
+    @State boolean multiPickEnabled;
+    @State int pickLimit;
 
     private WeakHandler handler = new WeakHandler();
 
@@ -60,9 +61,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     private View draggableView;
 
     private FragmentManager fragmentManager;
-
-    private boolean multiPickEnabled;
-    private int pickLimit;
 
     private PhotoPickerListener photoPickerListener;
 
@@ -106,7 +104,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
         if (isShown) {
-            post(this::showPanel);
+            post(() -> this.showPanel(multiPickEnabled, pickLimit));
         }
     }
 

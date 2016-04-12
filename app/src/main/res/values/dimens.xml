@@ -212,6 +212,9 @@
     <dimen name="chat_list_translation_margin">26dp</dimen>
     <dimen name="chat_list_username_bottom_margin">4dp</dimen>
     <dimen name="chat_list_message_text_size">15sp</dimen>
+    <dimen name="chat_attachment_button_left_margin">8dp</dimen>
+    <dimen name="chat_attachment_button_right_margin">6dp</dimen>
+    <dimen name="chat_attachment_button_padding">5dp</dimen>
     <dimen name="chat_message_edittext_text_size">@dimen/chat_list_message_text_size</dimen>
     <dimen name="chat_message_send_button_text_size">14sp</dimen>
     <dimen name="chat_unread_messages_textview_text_size">15sp</dimen>

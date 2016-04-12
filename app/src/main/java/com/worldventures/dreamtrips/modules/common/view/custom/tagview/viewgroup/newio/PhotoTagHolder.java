@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -18,7 +19,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagSugges
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.TagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.SuggestionHelpView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 
@@ -217,32 +217,54 @@ public class PhotoTagHolder extends RelativeLayout {
         return null;
     }
 
-    private PhotoTag findNextSuggestion(TagPosition pos) {
-        float originX = pos.getTopLeft().getX();
-        float originY = pos.getTopLeft().getY();
 
+    private PhotoTag findNextSuggestion(TagPosition pos) {
+        float cX = getCenterX(pos);
+        float cY = getCenterY(pos);
         PhotoTag result = null;
-        float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
+        double minDistance = Double.MAX_VALUE;
         for (int i = 0; i < getChildCount(); i++) {
             if (getChildAt(i) instanceof SuggestionTagView) {
-                Position childPos = ((SuggestionTagView) getChildAt(i)).getPhotoTag().getProportionalPosition().getTopLeft();
-                if (childPos.getY() >= originY && childPos.getX() > originX || childPos.getY() > originY && childPos.getX() >= originX) {
-                    if (childPos.getY() - originY < minY) {
+                TagPosition childPos = ((SuggestionTagView) getChildAt(i)).getPhotoTag().getProportionalPosition();
+                if (isOnWay(pos, childPos)) {
+                    double distance = Math.hypot(cX - getCenterX(childPos), cY - getCenterY(childPos));
+                    if (distance < minDistance) {
+                        minDistance = distance;
                         result = ((SuggestionTagView) getChildAt(i)).getPhotoTag();
-                        minX = childPos.getX() - originX;
-                        minY = childPos.getY() - originY;
-                    } else if (childPos.getY() - originY == minY) {
-                        if (originX - childPos.getX() < minX) {
-                            result = ((SuggestionTagView) getChildAt(i)).getPhotoTag();
-                            minX = childPos.getX() - originX;
-                            minY = childPos.getY() - originY;
-                        }
                     }
                 }
             }
         }
+
+        if (result == null) {
+            //todo
+        }
+
         return result;
 
+    }
+
+    private boolean isOnWay(TagPosition way, TagPosition barricade) {
+        int wbX = (int) (way.getBottomRight().getX() * 100);
+        int wtY = (int) (way.getTopLeft().getY() * 100);
+        int wbY = (int) (way.getBottomRight().getY() * 100);
+
+        Rect r1 = new Rect(wbX, wtY, 100, wbY);
+        int tX = (int) (barricade.getTopLeft().getX() * 100);
+        int tY = (int) (barricade.getTopLeft().getY() * 100);
+        int bX = (int) (barricade.getBottomRight().getX() * 100);
+        int bY = (int) (barricade.getBottomRight().getY() * 100);
+        Rect r2 = new Rect(tX, tY, bX, bY);
+        return r1.intersect(r2);
+    }
+
+
+    private static float getCenterX(TagPosition pos) {
+        return pos.getTopLeft().getX() + (pos.getBottomRight().getX() - pos.getTopLeft().getX()) / 2;
+    }
+
+    private static float getCenterY(TagPosition pos) {
+        return pos.getTopLeft().getY() + (pos.getBottomRight().getY() - pos.getTopLeft().getY()) / 2;
     }
 
 }

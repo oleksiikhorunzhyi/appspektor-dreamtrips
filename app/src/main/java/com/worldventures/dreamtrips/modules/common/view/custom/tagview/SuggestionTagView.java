@@ -22,7 +22,7 @@ public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
     @InjectView(R.id.suggestion_frame_container)
     View suggestionFrameContainer;
     @InjectView(R.id.test)
-    TextView textView;
+    public TextView textView;
     private SuggestionHelpView suggestionHelpView;
 
     int additionalSize;

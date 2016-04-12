@@ -22,6 +22,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 
+import java.util.ArrayList;
+
 import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
@@ -78,9 +80,10 @@ public class PhotoTagHolder extends RelativeLayout {
     }
 
 
-    protected void addExistsTagView(PhotoTag photoTag) {
+    protected void addExistsTagView(PhotoTag photoTag, boolean deleteEnabled) {
         ExistsTagView view = new ExistsTagView(getContext());
-        view.setTagListener(photoTag1 -> manager.notifyTagDeleted(photoTag1));
+        view.setDeleteEnabled(deleteEnabled);
+        view.setTagListener(tag -> manager.notifyTagDeleted(tag));
         addTagView(view, photoTag);
     }
 
@@ -117,8 +120,9 @@ public class PhotoTagHolder extends RelativeLayout {
 
             @Override
             public void onTagCreated(CreationTagView newTagView, PhotoTag suggestionTag, PhotoTag tag) {
-                tag = PhotoTag.cloneTag(tag);
-                addExistsTagView(tag);
+                ArrayList<PhotoTag> photoTags = new ArrayList<>();
+                photoTags.add(PhotoTag.cloneTag(tag));
+                manager.addExistsTagViews(photoTags);
                 if (suggestionTag != null) {
                     TagPosition pos = suggestionTag.getProportionalPosition();
                     PhotoTag nextSuggestion = findNextSuggestion(pos);

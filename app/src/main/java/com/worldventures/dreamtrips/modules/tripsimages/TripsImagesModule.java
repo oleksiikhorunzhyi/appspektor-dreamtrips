@@ -7,9 +7,6 @@ import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.modules.common.presenter.CreationPhotoTaggableHolderPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.PreviewPhotoTaggableHolderPresenter;
-import com.worldventures.dreamtrips.modules.common.presenter.TaggableImageHolderPresenter;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
@@ -35,7 +32,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoT
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenPhotoWrapperFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.FullScreenTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.MemberImagesListFragment;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.PhotoEditFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagePagerFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.TripImagesTabsFragment;
@@ -68,7 +64,6 @@ import dagger.Provides;
                 TripImagesListFragment.class,
                 TripImagesTabsFragment.class,
                 TripImagePagerFragment.class,
-                PhotoEditFragment.class,
                 PhotoEditPresenter.class,
                 FullScreenTripImageFragment.class,
                 PhotoCell.class,
@@ -92,10 +87,6 @@ import dagger.Provides;
 
                 MessageImageFullscreenFragment.class,
                 MessageImageFullscreenPresenter.class,
-
-                TaggableImageHolderPresenter.class,
-                CreationPhotoTaggableHolderPresenter.class,
-                PreviewPhotoTaggableHolderPresenter.class,
 
                 EditPhotoTagsPresenter.class,
                 EditPhotoTagsFragment.class,

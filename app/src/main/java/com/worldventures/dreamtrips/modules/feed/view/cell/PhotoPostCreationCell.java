@@ -11,14 +11,16 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
@@ -38,6 +40,9 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     @Inject
     @ForActivity
     Injector injector;
+
+    @Inject
+    SessionHolder<UserSession> userSessionHolder;
 
     @InjectView(R.id.shadow)
     View shadow;
@@ -94,7 +99,8 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     private void showTagViewGroup() {
         photoTagHolder.removeAllViews();
-        PhotoTagHolderManager photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder);
+        User user = userSessionHolder.get().get().getUser();
+        PhotoTagHolderManager photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, user, user);
         photoTagHolderManager.show(attachedPhoto);
         List<PhotoTag> photoTags = Queryable.from(getModelObject().getSuggestions())
                 .filter((p) -> !PhotoTag.isIntersectedWithPhotoTags(getModelObject().getCombinedTags(), p)).toList();

@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditEntityBundle;
@@ -22,8 +23,12 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -78,6 +83,15 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
             view.informUser(context.getString(R.string.photo_deleted));
             eventBus.postSticky(new PhotoDeletedEvent(photo.getFSId()));
             eventBus.postSticky(new FeedEntityDeletedEvent(photo));
+        });
+    }
+
+
+    public void deleteTag(PhotoTag tag) {
+        List<Integer> userIds = new ArrayList<>();
+        userIds.add(tag.getTargetUserId());
+        doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
+            photo.getPhotoTags().remove(tag);
         });
     }
 

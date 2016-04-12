@@ -24,7 +24,6 @@ import butterknife.Optional;
 
 public class CreationTagView extends TagView<TagCreationActionsListener> {
 
-    private static final int PAGE_SIZE = 100;
     @Optional
     @InjectView(R.id.new_user_input_name)
     public FriendsAutoCompleteTextView inputFriendName;
@@ -73,7 +72,7 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         inputFriendName.setOnItemClickListener((parent, view, position, id) -> {
             TagPosition tagPosition = photoTag.getProportionalPosition();
             PhotoTag tag = new PhotoTag(tagPosition, adapter.getItem(position).getId());
-            tag.setTitle(adapter.getItem(position).getFullName());
+            tag.setUser(adapter.getItem(position));
             tagListener.onTagCreated(this, suggestionTagView, tag);
         });
         inputFriendName.setOnTouchListener((v, event) -> {

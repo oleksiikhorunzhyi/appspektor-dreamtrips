@@ -17,6 +17,8 @@ import rx.functions.Action1;
 public class PhotoTagHolderManager {
 
     PhotoTagHolder photoTagHolder;
+    User account;
+    private User photoOwner;
 
     private boolean creationEnabled;
     private GestureDetector gestureDetector;
@@ -25,16 +27,12 @@ public class PhotoTagHolderManager {
     private Action1<PhotoTag> tagCreatedListener;
     private Action1<PhotoTag> tagDeletedListener;
 
-    public PhotoTagHolderManager(PhotoTagHolder photoTagHolder) {
+    public PhotoTagHolderManager(PhotoTagHolder photoTagHolder, User account, User photoOwner) {
         this.photoTagHolder = photoTagHolder;
+        this.account = account;
+        this.photoOwner = photoOwner;
 
         gestureDetector = createGestureDetector(photoTagHolder);
-
-        photoTagHolder.setOnTouchListener((v, event) -> {
-            gestureDetector.onTouchEvent(event);
-            return true;
-        });
-
     }
 
     public void show(SimpleDraweeView imageView) {
@@ -47,7 +45,9 @@ public class PhotoTagHolderManager {
 
     public void addExistsTagViews(List<PhotoTag> photoTags) {
         for (PhotoTag photoTag : photoTags) {
-            photoTagHolder.addExistsTagView(photoTag);
+            boolean isAccountOnPhoto = photoTag.getUser().getId() == account.getId();
+            boolean isAccountOwner = creationEnabled || photoOwner.getId() == account.getId();
+            photoTagHolder.addExistsTagView(photoTag, isAccountOnPhoto || isAccountOwner);
         }
     }
 
@@ -55,13 +55,20 @@ public class PhotoTagHolderManager {
         Queryable.from(photoTags).forEachR(arg -> photoTagHolder.addSuggestionTagView(arg, listener));
     }
 
-
     public void addCreationTagBasedOnSuggestion(PhotoTag suggestion) {
         photoTagHolder.addCreationTagViewBasedOnSuggestion(suggestion);
     }
 
     public void creationTagEnabled(boolean creationEnabled) {
         this.creationEnabled = creationEnabled;
+        if (creationEnabled) {
+            photoTagHolder.setOnTouchListener((v, event) -> {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            });
+        } else {
+            photoTagHolder.setOnTouchListener(null);
+        }
     }
 
     public void setFriendRequestProxy(FriendRequestProxy friendRequestProxy) {

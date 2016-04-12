@@ -22,6 +22,7 @@ public class ExistsTagView extends TagView<ExistsTagViewListener> implements Vie
     protected View divider;
     @InjectView(R.id.tagged_user_delete_tag)
     protected View btnDeleteTag;
+    private boolean isDeleteEnabled;
 
     public ExistsTagView(Context context) {
         super(context);
@@ -52,16 +53,13 @@ public class ExistsTagView extends TagView<ExistsTagViewListener> implements Vie
 
     @Override
     public void onClick(View v) {
-        //todo
-        //boolean isAccountOnPhoto = account.getId() == photoTag.getTargetUserId();
-        //boolean isCreationState = photo == null || photo.getOwner() == null;
-        //if (isCreationState || isAccountOnPhoto || account.getId() == photo.getOwner().getId()) {
-        if (btnDeleteTag.getVisibility() == VISIBLE) {
-            hideDeleteButton();
-        } else {
-            showDeleteButton();
+        if (isDeleteEnabled) {
+            if (btnDeleteTag.getVisibility() == VISIBLE) {
+                hideDeleteButton();
+            } else {
+                showDeleteButton();
+            }
         }
-        //}
     }
 
     private void showDeleteButton() {
@@ -76,6 +74,10 @@ public class ExistsTagView extends TagView<ExistsTagViewListener> implements Vie
 
     public void setText(String title) {
         taggedUserName.setText(title);
+    }
+
+    public void setDeleteEnabled(boolean isDeleteEnabled) {
+        this.isDeleteEnabled = isDeleteEnabled;
     }
 
     @OnClick({R.id.tagged_user_delete_tag})

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,7 +15,7 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
 
     private int targetUserId;
     private TagPosition position;
-    private String title;
+    private User user;
 
     /**
      * For serialization
@@ -39,16 +40,16 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
         PhotoTag result = new PhotoTag();
         result.targetUserId = photoTag.targetUserId;
         result.position = photoTag.position;
-        result.title = photoTag.title;
+        result.user = photoTag.user;
         return result;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getTitle() {
-        return title;
+        return user.getFullName();
     }
 
     public int getTargetUserId() {
@@ -59,6 +60,11 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
         return Queryable.from(combinedTags)
                 .any(element -> element.getProportionalPosition().intersected(suggestion.getProportionalPosition()));
     }
+
+    public User getUser() {
+        return user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -91,13 +97,13 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.targetUserId);
         dest.writeParcelable(this.position, flags);
-        dest.writeString(this.title);
+        dest.writeParcelable(this.user, flags);
     }
 
     protected PhotoTag(Parcel in) {
         this.targetUserId = in.readInt();
         this.position = in.readParcelable(TagPosition.class.getClassLoader());
-        this.title = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
     }
 
     public static final Creator<PhotoTag> CREATOR = new Creator<PhotoTag>() {

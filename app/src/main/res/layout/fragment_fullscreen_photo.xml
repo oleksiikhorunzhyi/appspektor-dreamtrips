@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             fresco:actualImageScaleType="fitCenter"/>
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.PreviewPhotoTaggableHolderViewGroup
+        <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
             android:id="@+id/taggable_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

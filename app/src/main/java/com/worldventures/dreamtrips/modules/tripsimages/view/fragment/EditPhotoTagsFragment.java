@@ -60,7 +60,7 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         toolbar.inflateMenu(R.menu.menu_photo_tag_screen);
         toolbar.setOnMenuItemClickListener(this::onToolBarMenuItemClicked);
 
-        photoTagHolderManager = new PhotoTagHolderManager(taggableImageHolder);
+        photoTagHolderManager = new PhotoTagHolderManager(taggableImageHolder, getPresenter().getAccount(), getPresenter().getAccount());
 
         PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(getArgs().getPhoto().getImageUri(), ivImage.getController());
         draweeController.addControllerListener(new BaseControllerListener<ImageInfo>() {
@@ -86,10 +86,8 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         photoTagHolderManager.setTagCreatedListener(photoTag -> {
             locallyAddedTags.add(photoTag);
             locallyDeletedTags.remove(photoTag);
-            //todo next focus
-            //todo photoTagHolderManager.addCreationTagBasedOnSuggestion(getArgs().getActiveSuggestion());
-
         });
+
         photoTagHolderManager.setTagDeletedListener(photoTag -> {
             locallyDeletedTags.add(photoTag);
             locallyAddedTags.remove(photoTag);

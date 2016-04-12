@@ -1,12 +1,12 @@
 package com.messenger.storage.helper;
 
-import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.PhotoAttachment;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
@@ -15,12 +15,12 @@ import rx.Observable;
 
 public class AttachmentHelper {
 
-    private final AttachmentDAO attachmentDAO;
+    private final PhotoDAO photoDAO;
     private final MessageDAO messageDAO;
     private final UsersDAO usersDAO;
 
-    public AttachmentHelper(AttachmentDAO attachmentDAO, MessageDAO messageDAO, UsersDAO usersDAO) {
-        this.attachmentDAO = attachmentDAO;
+    public AttachmentHelper(PhotoDAO photoDAO, MessageDAO messageDAO, UsersDAO usersDAO) {
+        this.photoDAO = photoDAO;
         this.messageDAO = messageDAO;
         this.usersDAO = usersDAO;
     }
@@ -28,8 +28,8 @@ public class AttachmentHelper {
     public Observable<PhotoAttachment> obtainPhotoAttachment(String attachmentImageId) {
         return Observable.just(new PhotoAttachment.Builder())
                 .map(builder -> {
-                    DataAttachment dataAttachment = attachmentDAO.getAttachmentById(attachmentImageId).toBlocking().first();
-                    DataMessage dataMessage = messageDAO.getMessage(dataAttachment.getMessageId()).toBlocking().first();
+                    DataPhotoAttachment dataAttachment = photoDAO.getAttachmentById(attachmentImageId).toBlocking().first();
+                    DataMessage dataMessage = messageDAO.getMessageByAttachmentId(dataAttachment.getId()).toBlocking().first();
                     DataUser dataUser = usersDAO.getUserById(dataMessage.getFromId()).toBlocking().first();
 
                     String url = dataAttachment.getUrl().replace(" ", "%20");

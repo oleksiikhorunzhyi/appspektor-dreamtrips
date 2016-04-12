@@ -29,17 +29,15 @@ class SendMessageTransformer implements Observable.Transformer<Message, Message>
                     emitter.interceptPreOutgoingMessages(message);
                 })
                 .flatMap(message -> Observable.<Message>create(subscriber -> {
-                    int status = MessageStatus.ERROR;
                     try {
-                        org.jivesoftware.smack.packet.Message stanzaPacket = messageConverter.convert(message);
-                        status = sendAction.call(stanzaPacket) ? MessageStatus.SENT : MessageStatus.ERROR;
+                        sendAction.call(messageConverter.convert(message));
                     } catch (Throwable throwable) {
                         Timber.e(throwable, "send message");
-                    } finally {
-                        message.setStatus(status);
-                        subscriber.onNext(message);
-                        subscriber.onCompleted();
+                        subscriber.onError(throwable);
                     }
+                    message.setStatus(MessageStatus.SENT);
+                    subscriber.onNext(message);
+                    subscriber.onCompleted();
                 }))
                     .doOnNext(emitter::interceptOutgoingMessages);
                 }

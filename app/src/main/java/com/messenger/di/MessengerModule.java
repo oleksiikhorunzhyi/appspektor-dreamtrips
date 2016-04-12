@@ -3,6 +3,7 @@ package com.messenger.di;
 import com.messenger.delegate.ChatMessagesEventDelegate;
 import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.JoinedChatEventDelegate;
+import com.messenger.delegate.LoaderDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.adapter.SwipeableContactsAdapter;
@@ -33,6 +34,7 @@ import dagger.Module;
                 // adapters
                 SwipeableContactsAdapter.class,
 
+                LoaderDelegate.class,
                 PhotoPickerDelegate.class,
                 ChatMessagesEventDelegate.class,
                 GroupChatEventDelegate.class,

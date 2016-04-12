@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.messenger.storage.dao.AttachmentDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
@@ -141,8 +141,8 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, AttachmentDAO attachmentDAO, SnappyRepository snappyRepository) {
-        return new ClearDirectoryDelegate(context, attachmentDAO, snappyRepository);
+    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO, SnappyRepository snappyRepository) {
+        return new ClearDirectoryDelegate(context, photoDAO, snappyRepository);
     }
 
     @Provides

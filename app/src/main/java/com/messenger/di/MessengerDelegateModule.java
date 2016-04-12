@@ -13,7 +13,6 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -21,6 +20,7 @@ import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
+import com.messenger.util.DecomposeMessagesHelper;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
@@ -65,8 +65,8 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
-        return new PaginationDelegate(messengerServerFacade, messageDAO, attachmentDAO);
+    PaginationDelegate providePaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper) {
+        return new PaginationDelegate(messengerServerFacade, decomposeMessagesHelper);
     }
 
     @Singleton

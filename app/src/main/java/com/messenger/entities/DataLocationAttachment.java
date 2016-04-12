@@ -3,10 +3,12 @@ package com.messenger.entities;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.model.AttachmentHolder;
+import com.messenger.messengerservers.model.LocationAttachment;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
@@ -22,10 +24,10 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import java.util.Collections;
 import java.util.List;
 
-@Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-@TableEndpoint(name = DataAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-public class DataAttachment extends BaseProviderModel<DataAttachment> {
-    public static final String TABLE_NAME = "Attachments";
+@Table(tableName = DataLocationAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+@TableEndpoint(name = DataLocationAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+public class DataLocationAttachment extends BaseProviderModel<DataAttachment> {
+    public static final String TABLE_NAME = "Locations";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -35,29 +37,22 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     @Column(name = BaseColumns._ID)
     String id;
     @Column
-    String messageId;
+    double lat;
     @Column
-    String conversationId;
-    @AttachmentType.Type
-    @Column
-    String type;
+    double lng;
 
-    public DataAttachment() {
+    public DataLocationAttachment() {
     }
 
-    private DataAttachment(Builder builder) {
-        setId(createId(builder.messageId, 0));
-        setConversationId(builder.conversationId);
-        setMessageId(builder.messageId);
-        setType(builder.type);
+    private DataLocationAttachment(Builder builder) {
+        setId(builder.id);
+        setCoordinates(builder.lat, builder.lng);
     }
 
-    public DataAttachment(@NonNull AttachmentHolder attachment, Message message, int index) {
+    public DataLocationAttachment(@NonNull LocationAttachment attachment, Message message, int index) {
         this.id = createId(message.getId(), index);
-        this.messageId = message.getId();
-        this.conversationId = message.getConversationId();
-        //
-        this.type = attachment.getType();
+        this.lat = attachment.getLat();
+        this.lng = attachment.getLng();
     }
 
     private String createId(String messageId, int index) {
@@ -72,29 +67,17 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         this.id = id;
     }
 
-    public String getMessageId() {
-        return messageId;
+    public void setCoordinates(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
     }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
+    public double getLng() {
+        return lng;
     }
 
-    public void setConversationId(String conversationId) {
-        this.conversationId = conversationId;
-    }
-
-    public String getConversationId() {
-        return conversationId;
-    }
-
-    @AttachmentType.Type
-    public String getType() {
-        return type;
-    }
-
-    public void setType(@AttachmentType.Type String type) {
-        this.type = type;
+    public double getLat() {
+        return lat;
     }
 
     @Override
@@ -118,7 +101,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     }
 
     @NonNull
-    public static List<DataAttachment> fromMessage(@NonNull Message message) {
+    public static List<DataLocationAttachment> fromMessage(@NonNull Message message) {
         MessageBody body = message.getMessageBody();
         List<AttachmentHolder> attachmentHolders;
         if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
@@ -127,35 +110,32 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
 
         return Queryable.from(attachmentHolders)
                 .filter(attachmentHolder -> attachmentHolder != null)
-                .map((elem, idx) -> new DataAttachment(elem, message, idx))
+                .filter(attachmentHolder -> TextUtils.equals(attachmentHolder.getType(), AttachmentType.LOCATION))
+                .map((elem, idx) -> new DataLocationAttachment((LocationAttachment) elem.getItem(), message, idx))
                 .toList();
     }
 
     public static final class Builder {
-        String messageId;
-        String conversationId;
-        String type;
+        String id;
+        double lat;
+        double lng;
 
         public Builder() {
         }
 
-        public Builder conversationId(String conversationId) {
-            this.conversationId = conversationId;
+        public Builder id(String id){
+            this.id = id;
             return this;
         }
 
-        public Builder messageId(String val) {
-            messageId = val;
+        public Builder coordinates(double lat, double lng) {
+            this.lat = lat;
+            this.lng = lng;
             return this;
         }
 
-        public Builder type(@AttachmentType.Type String val) {
-            type = val;
-            return this;
-        }
-
-        public DataAttachment build() {
-            return new DataAttachment(this);
+        public DataLocationAttachment build() {
+            return new DataLocationAttachment(this);
         }
     }
 }

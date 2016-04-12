@@ -7,12 +7,14 @@ import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.util.Utils;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
@@ -35,6 +37,7 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
     private final String filePath;
     private final DataMessage message;
     private final DataAttachment attachment;
+    private final DataPhotoAttachment photoAttachment;
 
     @Inject
     UploaderyManager uploaderyManager;
@@ -43,14 +46,17 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
     @Inject
     AttachmentDAO attachmentDAO;
     @Inject
+    PhotoDAO photoDAO;
+    @Inject
     MessageBodyCreator messageBodyCreator;
 
-    public SendImageAttachmentCommand(DataConversation conversation, @NonNull String filePath,
-                                      @NonNull DataMessage message, @NonNull DataAttachment attachment) {
+    public SendImageAttachmentCommand(DataConversation conversation, @NonNull String filePath, @NonNull DataMessage message,
+                                      @NonNull DataAttachment attachment, @NonNull DataPhotoAttachment photoAttachment) {
         super(conversation);
         this.filePath = filePath;
         this.message = message;
         this.attachment = attachment;
+        this.photoAttachment = photoAttachment;
     }
 
     @Override
@@ -94,7 +100,9 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
 
     private void startUploading() {
         message.setStatus(MessageStatus.SENDING);
-        attachment.setUrl(filePath);
+        photoAttachment.setUrl(filePath);
+
+        photoDAO.save(photoAttachment);
         attachmentDAO.save(attachment);
         saveMessage(System.currentTimeMillis());
     }
@@ -108,7 +116,9 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
 
     private void successUploading(String url) {
         message.setStatus(MessageStatus.SENDING);
-        attachment.setUrl(url);
+        photoAttachment.setUrl(url);
+
+        photoDAO.save(photoAttachment);
         attachmentDAO.save(attachment);
         saveMessage(System.currentTimeMillis());
     }

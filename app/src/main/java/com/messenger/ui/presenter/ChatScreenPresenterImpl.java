@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.messenger.delegate.AttachmentDelegate;
+import com.messenger.delegate.AttachmentManager;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
@@ -35,7 +35,9 @@ import com.messenger.messengerservers.model.Message;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.storage.helper.AttachmentHelper;
@@ -127,7 +129,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     OpenedConversationTracker openedConversationTracker;
     @Inject
-    AttachmentDelegate attachmentDelegate;
+    AttachmentManager attachmentManager;
     @Inject
     PaginationDelegate paginationDelegate;
     @Inject
@@ -138,7 +140,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
     protected AttachmentHelper attachmentHelper;
-   
+
     protected String conversationId;
 
     @Inject
@@ -149,6 +151,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     MessageDAO messageDAO;
     @Inject
     AttachmentDAO attachmentDAO;
+    @Inject
+    PhotoDAO photoDAO;
+    @Inject
+    LocationDAO locationDAO;
     @Inject
     TranslationsDAO translationsDAO;
 
@@ -192,7 +198,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
         profileCrosser = new ProfileCrosser(context, routeCreator);
         conversationHelper = new ConversationHelper();
-        attachmentHelper = new AttachmentHelper(attachmentDAO, messageDAO, usersDAO);
+        attachmentHelper = new AttachmentHelper(photoDAO, messageDAO, usersDAO);
         contextualMenuProvider = new ChatContextualMenuProvider(context, usersDAO, translationsDAO);
         //
         chatStateStream = PublishSubject.<ChatChangeStateEvent>create();
@@ -609,8 +615,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void retrySendMessage(DataMessage message) {
-        attachmentDAO.getAttachmentByMessageId(message.getId())
-                .first()
+        String messageId = message.getId();
+
+        attachmentDAO.getAttachmentByMessageId(messageId).take(1)
                 .compose(bindView())
                 .subscribe(attachment -> {
                     if (attachment != null) retrySendAttachment(message, attachment);
@@ -618,12 +625,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 });
     }
 
-    private void retrySendTextMessage(DataMessage dataMessasge) {
+    private void retrySendTextMessage(DataMessage dataMessage) {
         submitOneChatAction(chat -> {
-                        Message message = dataMessasge.toChatMessage();
-                        message.setMessageBody(messageBodyCreator.provideForText(dataMessasge.getText()));
-                        chat.send(message).subscribe();
+            Message message = dataMessage.toChatMessage();
+            message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
+            chat.send(message).subscribe();
         });
+    }
+
+    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
+        obtaineConversationObservable()
+                .subscribe(conversation -> attachmentManager.retrySendAttachment(conversation, message, dataAttachment));
     }
 
     @Override
@@ -794,7 +806,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onLocationPicked(Location location) {
-        Timber.d(getClass().getSimpleName() + "::onLocationPicked %s", location);
+        obtaineConversationObservable()
+                .subscribe(conversation -> attachmentManager.sendLocation(conversation, location));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -848,27 +861,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .map(filePath -> UploadingFileManager.copyFileIfNeed(filePath, context))
                 .toList()
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::uploadAttachment, throwable -> Timber.e(throwable, ""));
+                .subscribe(this::uploadPhotoAttachments, throwable -> Timber.e(throwable, ""));
     }
 
-    private void uploadAttachment(List<String> filePaths) {
+    private void uploadPhotoAttachments(List<String> filePaths) {
         conversationObservable.take(1)
-                .subscribe(pair -> attachmentDelegate.sendImages(pair.first, filePaths),
+                .subscribe(pair -> attachmentManager.sendImages(pair.first, filePaths),
                         throwable ->Timber.d(throwable, ""));
     }
 
     private void disconnectFromPhotoPicker() {
         photoPickerDelegate.unregister();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Photo uploading
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
-        conversationObservable.take(1)
-                .subscribe(pair -> attachmentDelegate.retry(pair.first, message, dataAttachment),
-                        throwable -> Timber.e(throwable, ""));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -920,6 +923,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
+
+    private Observable<DataConversation> obtaineConversationObservable(){
+        return conversationObservable
+                .take(1)
+                .map(dataConversationListPair -> dataConversationListPair.first);
+    }
 
     private Observable<Chat> createChat(ChatManager chatManager, DataConversation conversation, @NonNull List<DataUser> particioants) {
         switch (conversation.getType()) {

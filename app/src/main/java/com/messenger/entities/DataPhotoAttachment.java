@@ -3,10 +3,12 @@ package com.messenger.entities;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.model.AttachmentHolder;
+import com.messenger.messengerservers.model.ImageAttachment;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
@@ -22,10 +24,10 @@ import com.raizlabs.android.dbflow.structure.provider.BaseProviderModel;
 import java.util.Collections;
 import java.util.List;
 
-@Table(tableName = DataAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
-@TableEndpoint(name = DataAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
-public class DataAttachment extends BaseProviderModel<DataAttachment> {
-    public static final String TABLE_NAME = "Attachments";
+@Table(tableName = DataPhotoAttachment.TABLE_NAME, databaseName = MessengerDatabase.NAME, insertConflict = ConflictAction.REPLACE)
+@TableEndpoint(name = DataPhotoAttachment.TABLE_NAME, contentProviderName = MessengerDatabase.NAME)
+public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
+    public static final String TABLE_NAME = "Photos";
 
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
@@ -35,29 +37,22 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     @Column(name = BaseColumns._ID)
     String id;
     @Column
-    String messageId;
+    String url;
     @Column
-    String conversationId;
-    @AttachmentType.Type
-    @Column
-    String type;
+    int uploadTaskId;
 
-    public DataAttachment() {
+    public DataPhotoAttachment() {
     }
 
-    private DataAttachment(Builder builder) {
-        setId(createId(builder.messageId, 0));
-        setConversationId(builder.conversationId);
-        setMessageId(builder.messageId);
-        setType(builder.type);
+    private DataPhotoAttachment(Builder builder) {
+        setId(builder.id);
+        setUrl(builder.url);
+        setUploadTaskId(builder.amazonTaskId);
     }
 
-    public DataAttachment(@NonNull AttachmentHolder attachment, Message message, int index) {
+    public DataPhotoAttachment(@NonNull ImageAttachment attachment, Message message, int index) {
         this.id = createId(message.getId(), index);
-        this.messageId = message.getId();
-        this.conversationId = message.getConversationId();
-        //
-        this.type = attachment.getType();
+        url = attachment.getOriginUrl();
     }
 
     private String createId(String messageId, int index) {
@@ -72,29 +67,20 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         this.id = id;
     }
 
-    public String getMessageId() {
-        return messageId;
+    public void setUploadTaskId(int amazonTaskId) {
+        this.uploadTaskId = amazonTaskId;
     }
 
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
+    public String getUrl() {
+        return url;
     }
 
-    public void setConversationId(String conversationId) {
-        this.conversationId = conversationId;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public String getConversationId() {
-        return conversationId;
-    }
-
-    @AttachmentType.Type
-    public String getType() {
-        return type;
-    }
-
-    public void setType(@AttachmentType.Type String type) {
-        this.type = type;
+    public int getUploadTaskId() {
+        return uploadTaskId;
     }
 
     @Override
@@ -118,7 +104,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     }
 
     @NonNull
-    public static List<DataAttachment> fromMessage(@NonNull Message message) {
+    public static List<DataPhotoAttachment> fromMessage(@NonNull Message message) {
         MessageBody body = message.getMessageBody();
         List<AttachmentHolder> attachmentHolders;
         if (body == null || (attachmentHolders = body.getAttachments()) == null || attachmentHolders.isEmpty()) {
@@ -127,35 +113,31 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
 
         return Queryable.from(attachmentHolders)
                 .filter(attachmentHolder -> attachmentHolder != null)
-                .map((elem, idx) -> new DataAttachment(elem, message, idx))
+                .filter(attachmentHolder -> TextUtils.equals(attachmentHolder.getType(), AttachmentType.IMAGE))
+                .map((elem, idx) -> new DataPhotoAttachment((ImageAttachment) elem.getItem(), message, idx))
                 .toList();
     }
 
     public static final class Builder {
-        String messageId;
-        String conversationId;
-        String type;
+        String id;
+        String url;
+        int amazonTaskId;
 
         public Builder() {
         }
 
-        public Builder conversationId(String conversationId) {
-            this.conversationId = conversationId;
+        public Builder id(String var) {
+            id = var;
             return this;
         }
 
-        public Builder messageId(String val) {
-            messageId = val;
+        public Builder url(String val) {
+            url = val;
             return this;
         }
 
-        public Builder type(@AttachmentType.Type String val) {
-            type = val;
-            return this;
-        }
-
-        public DataAttachment build() {
-            return new DataAttachment(this);
+        public DataPhotoAttachment build() {
+            return new DataPhotoAttachment(this);
         }
     }
 }

@@ -52,11 +52,6 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     }
 
     @Override
-    public void updateItem(int position) {
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     protected int getPostButtonText() {
         return R.string.post;
     }

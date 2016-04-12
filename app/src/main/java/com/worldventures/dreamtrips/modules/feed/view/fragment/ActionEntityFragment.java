@@ -132,7 +132,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         adapter.notifyDataSetChanged();
     }
 
-    private void updateLocationButtonState() {
+    @Override
+    public void updateLocationButtonState() {
         boolean isSelected = !TextUtils.isEmpty(getPresenter().getLocation().getName());
         locationBtn.setSelected(isSelected);
         locationBtn.setVisibility(View.VISIBLE);
@@ -255,6 +256,11 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         getPresenter().updateLocation(location);
     }
 
+    @Override
+    public void updateItem(PhotoCreationItem item) {
+        adapter.notifyItemChanged(adapter.getItems().indexOf(item));
+    }
+
     //////////////////////////////////////////
     // Cell callbacks
     //////////////////////////////////////////
@@ -303,6 +309,11 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     }
 
     protected void onTitleFocusChanged(boolean hasFocus) {
+
+    }
+
+    @Override
+    public void onPhotoTitleChanged(String title) {
 
     }
 

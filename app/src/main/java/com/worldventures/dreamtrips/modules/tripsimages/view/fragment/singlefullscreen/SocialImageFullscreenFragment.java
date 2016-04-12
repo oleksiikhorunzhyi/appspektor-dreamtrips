@@ -9,15 +9,17 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
-import com.worldventures.dreamtrips.modules.feed.bundle.EditEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.events.SocialViewPagerStateChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -61,7 +63,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-
         viewDelegate.setup(getActivity(), rootView, getPresenter().getAccount(), injectorProvider.get());
         viewDelegate.setContentVisibilityListener(this);
     }
@@ -104,19 +105,18 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     }
 
     @Override
-    public void openEdit(EditEntityBundle bundle) {
+    public void openEdit(EditPhotoBundle bundle) {
         int containerId = R.id.container_details_floating;
-        // TODO edit photo
-//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
-//                .containerId(containerId)
-//                .fragmentManager(getFragmentManager())
-//                .build());
-//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
-//                .containerId(containerId)
-//                .backStackEnabled(false)
-//                .fragmentManager(getFragmentManager())
-//                .data(bundle)
-//                .build());
+        router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
+                .containerId(containerId)
+                .fragmentManager(getFragmentManager())
+                .build());
+        router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forFragment()
+                .containerId(containerId)
+                .backStackEnabled(false)
+                .fragmentManager(getFragmentManager())
+                .data(bundle)
+                .build());
     }
 
     @Override

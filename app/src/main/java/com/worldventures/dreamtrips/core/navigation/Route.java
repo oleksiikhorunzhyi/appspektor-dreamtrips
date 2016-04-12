@@ -41,6 +41,8 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhoto
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
@@ -147,6 +149,8 @@ public enum Route {
     EDIT_COMMENT(EditCommentFragment.class, R.string.empty),
     POST_CREATE(CreateFeedPostFragment.class),
     PHOTO_CREATE(CreateTripImageFragment.class),
+    EDIT_POST(EditPostFragment.class),
+    EDIT_PHOTO(EditPhotoFragment.class),
     ADD_LOCATION(LocationFragment.class),
     EDIT_PHOTO_TAG_FRAGMENT(EditPhotoTagsFragment.class),
     FRIEND_SEARCH(FriendSearchFragment.class),

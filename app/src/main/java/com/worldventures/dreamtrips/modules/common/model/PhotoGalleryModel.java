@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.common.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.util.ValidationUtils;
+
 import java.io.Serializable;
 
 public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Serializable {
@@ -18,7 +20,7 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
 
     public PhotoGalleryModel(String originalPath, long dateTaken) {
         this.originalPath = originalPath;
-        this.thumbnailPath = "file://" + this.originalPath;
+        this.thumbnailPath = ValidationUtils.isUrl(originalPath) ? this.originalPath : "file://" + this.originalPath;
         this.dateTaken = dateTaken;
     }
 

@@ -16,6 +16,8 @@ import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateFeedPostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditCommentPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.EditPhotoPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.EditPostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
@@ -48,6 +50,8 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragme
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
@@ -130,6 +134,11 @@ import de.greenrobot.event.EventBus;
 
                 PhotoPostCreationCell.class,
                 PostCreationTextCell.class,
+
+                EditPostFragment.class,
+                EditPostPresenter.class,
+                EditPhotoFragment.class,
+                EditPhotoPresenter.class,
 
         },
         complete = false,

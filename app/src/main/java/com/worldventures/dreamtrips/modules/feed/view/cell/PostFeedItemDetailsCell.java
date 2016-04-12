@@ -8,6 +8,9 @@ import android.widget.TextView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
@@ -28,16 +31,13 @@ public class PostFeedItemDetailsCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @InjectView(R.id.item_holder)
     View itemHolder;
-
     @InjectView(R.id.post)
     TextView post;
-
     @InjectView(R.id.collage)
     CollageView collageView;
 
     @Inject
     FragmentManager fragmentManager;
-
     @Inject
     Activity activity;
 
@@ -88,19 +88,17 @@ public class PostFeedItemDetailsCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @Override
     protected void onEdit() {
-        super.onEdit();
         int containerId = R.id.container_details_floating;
-        // TODO edit post
-//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
-//                .containerId(containerId)
-//                .fragmentManager(fragmentManager)
-//                .build());
-//        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
-//                .containerId(containerId)
-//                .backStackEnabled(false)
-//                .fragmentManager(fragmentManager)
-//                .data(new EditEntityBundle(getModelObject().getItem(), FeedEntityHolder.Type.POST))
-//                .build());
+        router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forRemoval()
+                .containerId(containerId)
+                .fragmentManager(fragmentManager)
+                .build());
+        router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forFragment()
+                .containerId(containerId)
+                .backStackEnabled(false)
+                .fragmentManager(fragmentManager)
+                .data(new EditPostBundle(getModelObject().getItem()))
+                .build());
     }
 
     @Override

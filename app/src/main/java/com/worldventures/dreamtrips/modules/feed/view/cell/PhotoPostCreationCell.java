@@ -68,13 +68,14 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             super.onTextChanged(s, start, before, count);
             getModelObject().setTitle(s.toString().trim());
+            cellDelegate.onPhotoTitleChanged(s.toString().trim());
         }
     };
 
     @Override
     protected void syncUIStateWithModel() {
         attachedPhoto.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
-
+        //
         switch (getModelObject().getStatus()) {
             case STARTED:
                 showProgress();
@@ -91,7 +92,9 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
         invalidateAddTagBtn();
         //
         attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(
-                Uri.parse(getModelObject().getFilePath()), attachedPhoto.getController()));
+                Uri.parse(getModelObject().getFilePath() == null
+                        ? getModelObject().getOriginUrl()
+                        : getModelObject().getFilePath()), attachedPhoto.getController()));
         //
         photoTitle.setText(getModelObject().getTitle());
         photoTitle.addTextChangedListener(textWatcher);

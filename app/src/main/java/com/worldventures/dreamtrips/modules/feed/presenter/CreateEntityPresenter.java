@@ -2,11 +2,11 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
 import com.worldventures.dreamtrips.core.api.UploadPurpose;
+import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -20,10 +20,10 @@ import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,7 +31,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.State;
 import rx.Observable;
 import rx.Subscription;
 import rx.observables.ConnectableObservable;
@@ -41,11 +40,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     public static final int MAX_PHOTOS_COUNT = 15;
 
-    @State
-    ArrayList<PhotoCreationItem> cachedCreationItems = new ArrayList<>();
-    @State
-    Location location;
-
     @Inject
     MediaPickerManager mediaPickerManager;
 
@@ -54,8 +48,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     @Override
     public void takeView(V view) {
-        if (cachedCreationItems == null) cachedCreationItems = new ArrayList<>();
-        //
         super.takeView(view);
         photoUploadSubscriber = new PhotoUploadSubscriber();
         photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE).subscribe(photoUploadSubscriber);
@@ -64,21 +56,18 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
             if (task != null) {
                 task.setStatus(uploadTask.getStatus());
                 task.setOriginUrl(uploadTask.getOriginUrl());
-                view.updateItem(cachedCreationItems.indexOf(task));
-
+                view.updateItem(task);
+                //
                 if (task.getStatus() == UploadTask.Status.COMPLETED) {
                     ConnectableObservable<Bitmap> observable = ImageUtils.getBitmap(context, Uri.parse(task.getOriginUrl()), 0, 0).publish();
-
                     requestFaceRecognition(observable).subscribe(suggestions -> {
                         task.setSuggestions(suggestions);
-                        view.updateItem(cachedCreationItems.indexOf(task));
+                        view.updateItem(task);
                     });
-
                     observable.subscribe(bitmap -> {
                         task.setWidth(bitmap.getWidth());
                         task.setHeight(bitmap.getHeight());
                     });
-
                     observable.connect();
                 }
             }
@@ -98,7 +87,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                 .flatMap(Observable::from)
                 .toSortedList(Position.SORT_BY_POSITION);
     }
-
 
     public abstract int getMediaRequestId();
 
@@ -168,32 +156,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         return MAX_PHOTOS_COUNT - cachedCreationItems.size();
     }
 
-    protected void processTagUploadSuccess(FeedEntity feedEntity) {
-        super.processTagUploadSuccess(feedEntity); //Firstly update tags, then notify everyone else
-        eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
-    }
-
-    @Override
-    protected void invalidateDynamicViews() {
-        super.invalidateDynamicViews();
-        if (isChanged()) {
-            view.enableButton();
-        } else {
-            view.disableButton();
-        }
-    }
-
-    @Override
-    public Location getLocation() {
-        if (location == null) location = new Location();
-        return location;
-    }
-
-    @Override
-    public void updateLocation(Location location) {
-        this.location = location;
-    }
-
     public boolean removeImage(PhotoCreationItem item) {
         boolean removed = cachedCreationItems.remove(item);
         if (removed) {
@@ -207,10 +169,10 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         if (mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0) {
             return;
         }
-
+        //
         if (cachedCreationItems.size() + mediaAttachment.chosenImages.size() == MAX_PHOTOS_COUNT)
             view.disableImagePicker();
-
+        //
         imageSelected(mediaAttachment);
     }
 
@@ -239,7 +201,16 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
             cachedCreationItems.addAll(newImages);
             view.attachPhotos(newImages);
             //
-            Queryable.from(newImages).forEachR(this::startUpload);
+            Queryable.from(newImages).forEachR(image -> {
+                if (ValidationUtils.isUrl(image.getFilePath())){
+                    doRequest(new CopyFileCommand(context, image.getFilePath()), s -> {
+                        image.setFilePath(s);
+                        startUpload(image);
+                    });
+                } else {
+                    startUpload(image);
+                }
+            });
         }
     }
 
@@ -247,30 +218,8 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         return cachedCreationItems.size() == 0;
     }
 
-    protected boolean isCachedTextEmpty() {
-        return TextUtils.isEmpty(cachedText);
-    }
-
     protected boolean isEntitiesReadyToPost() {
         return Queryable.from(cachedCreationItems).firstOrDefault(item -> item.getStatus() != UploadTask.Status.COMPLETED) == null;
-    }
-
-    @Override
-    public void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
-        PhotoCreationItem item = Queryable.from(cachedCreationItems).firstOrDefault(element -> element.getId() == requestId);
-
-        if (item != null) {
-            item.getCachedAddedPhotoTags().removeAll(photoTags);
-            item.getCachedAddedPhotoTags().addAll(photoTags);
-            item.getCachedAddedPhotoTags().removeAll(removedTags);
-
-            item.getCachedRemovedPhotoTags().removeAll(removedTags);
-            item.getCachedRemovedPhotoTags().addAll(removedTags);
-            //if view ==null state will be updated on attach view.
-            if (view != null) {
-                view.updateItem(cachedCreationItems.indexOf(item));
-            }
-        }
     }
 
     ////////////////////////////////////////
@@ -285,8 +234,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     }
 
     public interface View extends ActionEntityPresenter.View {
-
-        void updateItem(int position);
 
         void enableImagePicker();
 

@@ -13,4 +13,6 @@ public interface PhotoPostCreationDelegate extends CellDelegate<PhotoCreationIte
     void onRemoveClicked(PhotoCreationItem item);
 
     void onSuggestionClicked(PhotoCreationItem item, PhotoTag tag);
+
+    void onPhotoTitleChanged(String title);
 }

@@ -11,11 +11,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
-import com.messenger.delegate.LocationAttachmentDelegate;
+import com.messenger.delegate.AttachmentManager;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
-import com.messenger.delegate.PhotoAttachmentDelegate;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.entities.DataAttachment;
@@ -27,7 +26,6 @@ import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
-import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -131,9 +129,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     OpenedConversationTracker openedConversationTracker;
     @Inject
-    PhotoAttachmentDelegate attachmentDelegate;
-    @Inject
-    LocationAttachmentDelegate locationAttachmentDelegate;
+    AttachmentManager attachmentManager;
     @Inject
     PaginationDelegate paginationDelegate;
     @Inject
@@ -629,23 +625,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 });
     }
 
-    private void retrySendAttachment(DataMessage dataMessage, DataAttachment attachment){
-        switch (attachment.getType()){
-            case AttachmentType.IMAGE:
-                retrySendPhotoAttachment(dataMessage, attachment);
-                break;
-            case AttachmentType.LOCATION:
-                retrySendLocationAttachment(dataMessage, attachment);
-                break;
-        }
-    }
-
     private void retrySendTextMessage(DataMessage dataMessage) {
         submitOneChatAction(chat -> {
             Message message = dataMessage.toChatMessage();
             message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
             chat.send(message).subscribe();
         });
+    }
+
+    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
+        obtaineConversationObservable()
+                .subscribe(conversation -> attachmentManager.retrySendAttachment(conversation, message, dataAttachment));
     }
 
     @Override
@@ -816,18 +806,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onLocationPicked(Location location) {
-        Timber.d(getClass().getSimpleName() + "::onLocationPicked %s", location);
-        conversationObservable.take(1)
-                .subscribe(pair -> locationAttachmentDelegate.send(pair.first, location),
-                            throwable -> Timber.d(throwable, ""));
-    }
-
-    private void retrySendLocationAttachment(DataMessage message, DataAttachment dataAttachment) {
-        Observable.zip(conversationObservable.take(1),
-                locationDAO.getAttachmentById(dataAttachment.getId()).take(1),
-                (conversationPair, dataPhotoAttachment) -> new Pair<>(conversationPair.first, dataPhotoAttachment))
-                .subscribe(pair -> locationAttachmentDelegate.retry(pair.first, message, dataAttachment, pair.second),
-                        throwable -> Timber.e(throwable, ""));
+        obtaineConversationObservable()
+                .subscribe(conversation -> attachmentManager.sendLocation(conversation, location));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -881,31 +861,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .map(filePath -> UploadingFileManager.copyFileIfNeed(filePath, context))
                 .toList()
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::ploadPhotoAttachments, throwable -> Timber.e(throwable, ""));
+                .subscribe(this::uploadPhotoAttachments, throwable -> Timber.e(throwable, ""));
     }
 
-    private void ploadPhotoAttachments(List<String> filePaths) {
+    private void uploadPhotoAttachments(List<String> filePaths) {
         conversationObservable.take(1)
-                .subscribe(pair -> attachmentDelegate.sendImages(pair.first, filePaths),
+                .subscribe(pair -> attachmentManager.sendImages(pair.first, filePaths),
                         throwable ->Timber.d(throwable, ""));
     }
 
     private void disconnectFromPhotoPicker() {
         photoPickerDelegate.unregister();
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Photo uploading
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void retrySendPhotoAttachment(DataMessage message, DataAttachment dataAttachment) {
-        Observable.zip(conversationObservable.take(1),
-                photoDAO.getAttachmentById(dataAttachment.getId()).take(1),
-                (conversationPair, dataPhotoAttachment) -> new Pair<>(conversationPair.first, dataPhotoAttachment))
-                .subscribe(pair -> attachmentDelegate.retry(pair.first, message, dataAttachment, pair.second),
-                        throwable -> Timber.e(throwable, ""));
-    }
-
 
     ///////////////////////////////////////////////////////////////////////////
     // State
@@ -956,6 +923,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
+
+    private Observable<DataConversation> obtaineConversationObservable(){
+        return conversationObservable
+                .take(1)
+                .map(dataConversationListPair -> dataConversationListPair.first);
+    }
 
     private Observable<Chat> createChat(ChatManager chatManager, DataConversation conversation, @NonNull List<DataUser> particioants) {
         switch (conversation.getType()) {

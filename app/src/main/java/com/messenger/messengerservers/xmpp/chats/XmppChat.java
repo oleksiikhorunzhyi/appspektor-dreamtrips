@@ -40,10 +40,7 @@ public abstract class XmppChat implements Chat {
         return Observable.just(message)
                 .doOnNext(msg -> msg.setConversationId(roomId))
                 .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(),
-                        smackMsg -> {
-                            Timber.i("Send Message " + smackMsg.toString());
-                            trySendSmackMessage(smackMsg);
-                        }));
+                        smackMsg -> trySendSmackMessage(smackMsg)));
 
     }
 

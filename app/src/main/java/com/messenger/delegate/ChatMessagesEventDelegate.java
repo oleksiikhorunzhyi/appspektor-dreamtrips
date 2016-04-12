@@ -1,14 +1,10 @@
 package com.messenger.delegate;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -30,18 +26,14 @@ public class ChatMessagesEventDelegate {
     @Inject
     MessageDAO messageDAO;
     @Inject
-    AttachmentDAO attachmentDAO;
-    @Inject
-    PhotoDAO photoDAO;
-    @Inject
-    LocationDAO locationDAO;
-    @Inject
     SessionHolder<UserSession> currentUserSession;
     //
     @Inject
     LoaderDelegate loaderDelegate;
     @Inject
     Lazy<ChatDelegate> chatDelegate;
+    @Inject
+    DecomposeMessagesHelper decomposeMessagesHelper;
 
     private final int maximumYear = Calendar.getInstance().getMaximum(Calendar.YEAR);
 
@@ -101,17 +93,12 @@ public class ChatMessagesEventDelegate {
         message.setDate(time);
         message.setStatus(status);
 
-        DecomposeMessagesHelper.DecomposedMessagesResult decomposedMessagesResult =
-                DecomposeMessagesHelper.decomposeMessages(Collections.singletonList((message)));
+        DecomposeMessagesHelper.Result result =
+                decomposeMessagesHelper.decomposeMessages(Collections.singletonList((message)));
 
-        DataMessage dataMessage = decomposedMessagesResult.messages.get(0);
-        dataMessage.setSyncTime(time);
+        result.messages.get(0).setSyncTime(time);
 
-        photoDAO.save(decomposedMessagesResult.photoAttachments);
-        locationDAO.save(decomposedMessagesResult.locationAttachments);
-        attachmentDAO.save(decomposedMessagesResult.attachments);
-
-        messageDAO.save(dataMessage);
+        decomposeMessagesHelper.saveDecomposeMessage(result);
         conversationsDAO.updateDate(message.getConversationId(), time);
     }
 

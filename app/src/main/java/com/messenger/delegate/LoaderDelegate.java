@@ -9,12 +9,9 @@ import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessengerUser;
-import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.techery.spares.module.Injector;
@@ -50,11 +47,7 @@ public class LoaderDelegate {
     @Inject
     UsersDAO usersDAO;
     @Inject
-    AttachmentDAO attachmentDAO;
-    @Inject
-    PhotoDAO photoDAO;
-    @Inject
-    LocationDAO locationDAO;
+    DecomposeMessagesHelper decomposeMessagesHelper;
 
     @Inject
     public LoaderDelegate(@ForApplication Injector injector) {
@@ -79,8 +72,8 @@ public class LoaderDelegate {
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
 
                     List<Message> serverMessages = from(data).map(conv -> conv.getLastMessage()).notNulls().toList();
-                    DecomposeMessagesHelper.DecomposedMessagesResult decomposedMessagesResult = DecomposeMessagesHelper.decomposeMessages(serverMessages);
-                    from(decomposedMessagesResult.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
+                    DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(serverMessages);
+                    from(result.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
                     List<DataParticipant> relationships = new ArrayList<>();
                     if (!data.isEmpty()) {
@@ -94,12 +87,7 @@ public class LoaderDelegate {
 
                     conversationsDAO.save(convs);
                     conversationsDAO.deleteBySyncTime(syncTime);
-
-                    photoDAO.save(decomposedMessagesResult.photoAttachments);
-                    locationDAO.save(decomposedMessagesResult.locationAttachments);
-                    attachmentDAO.save(decomposedMessagesResult.attachments);
-                    messageDAO.save(decomposedMessagesResult.messages);
-                    
+                    decomposeMessagesHelper.saveDecomposeMessage(result);
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
 

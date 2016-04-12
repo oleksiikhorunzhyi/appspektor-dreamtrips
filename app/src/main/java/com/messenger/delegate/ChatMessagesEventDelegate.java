@@ -54,14 +54,16 @@ public class ChatMessagesEventDelegate {
     }
 
     public void onSendMessage(Message message) {
-        long time;
-        if (message.getStatus() == MessageStatus.ERROR) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, maximumYear);
-            time = calendar.getTimeInMillis();
-        } else {
-            time = System.currentTimeMillis();
-        }
+        updateMessage(message, System.currentTimeMillis());
+    }
+
+    public void onErrorMessage(Message message) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, maximumYear);
+        updateMessage(message, calendar.getTimeInMillis());
+    }
+
+    private void updateMessage(Message message, long time){
         messageDAO.updateStatus(message.getId(), message.getStatus(), time);
         conversationsDAO.updateDate(message.getConversationId(), time);
     }

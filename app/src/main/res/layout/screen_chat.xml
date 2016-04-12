@@ -98,10 +98,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/chat_attachment_button_left_margin"
+                        android:layout_marginRight="@dimen/chat_attachment_button_right_margin"
+                        android:padding="@dimen/chat_attachment_button_padding"
                         android:layout_weight="0"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_attachment_black_24_px"
+                        android:src="@drawable/ic_file_upload_black_24_px"
                         />
 
                     <EditText
@@ -109,7 +110,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:hint="@string/chat_message_edittext_hint"
                         android:imeOptions="actionGo"

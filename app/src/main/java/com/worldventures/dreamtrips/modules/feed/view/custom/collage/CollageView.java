@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.blur.BlurPostprocesso
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -46,7 +47,7 @@ public class CollageView extends FrameLayout {
     private static final int PORTRAIT = 1;
     private static final int SQUARE = 2;
 
-    private List<CollageItem> items;
+    private List<CollageItem> items = Collections.EMPTY_LIST;
     private ItemClickListener itemClickListener;
 
     private int side; //usually this layout is square. side = width; width = MATCH_PARENT;
@@ -81,13 +82,17 @@ public class CollageView extends FrameLayout {
         this.itemClickListener = itemClickListener;
     }
 
-    public void setItems(List<CollageItem> items) {
-        removeAllViews();
+    public void setItems(List<CollageItem> items, int width) {
+        clear();
         this.items = items;
-        side = getWidth();
+        side = width;
         fillLayout();
     }
 
+    public void clear() {
+        removeAllViews();
+        items.clear();
+    }
 
     private void fillLayout() {
         switch (items.size()) {

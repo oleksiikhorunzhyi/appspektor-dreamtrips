@@ -16,7 +16,7 @@ public class MessengerDatabase {
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID;
     public static final String NAME = "MessengerDatabase";
-    public static final int VERSION = 3;
+    public static final int VERSION = 4;
 
     public static Uri buildUri(String... paths) {
         return ContentUtils.buildUri(AUTHORITY, paths);

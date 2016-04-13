@@ -1,6 +1,7 @@
 package com.messenger.delegate;
 
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -17,6 +18,8 @@ import java.util.Collections;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import rx.Notification;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ChatMessagesEventDelegate {
@@ -37,7 +40,8 @@ public class ChatMessagesEventDelegate {
 
     private final int maximumYear = Calendar.getInstance().getMaximum(Calendar.YEAR);
 
-    @Inject
+    private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
+
     public ChatMessagesEventDelegate(@ForApplication Injector injector) {
         injector.inject(this);
     }
@@ -78,8 +82,8 @@ public class ChatMessagesEventDelegate {
                         conversationsDAO.save(conversation);
                         saveReceivedMessage(message);
                         return loaderDelegate.loadParticipants(conversationId);
-                    }).subscribe(dataUsers -> {
-            }, error -> Timber.d(error, ""));
+                    }).subscribe(dataUsers -> {},
+                    error -> Timber.d(error, ""));
         } else {
             saveReceivedMessage(message);
         }
@@ -88,6 +92,12 @@ public class ChatMessagesEventDelegate {
     private void saveReceivedMessage(Message message) {
         saveMessage(message, MessageStatus.SENT);
         conversationsDAO.incrementUnreadField(message.getConversationId());
+        messageDAO.getMessage(message.getId()).take(1).subscribe(dataMessage -> {
+            receivedSavedMessageStream.onNext(Notification.createOnNext(dataMessage));
+        }, e -> {
+            Timber.e("Could not get previously processed and saved message");
+            receivedSavedMessageStream.onNext(Notification.createOnError(e));
+        });
     }
 
     private void saveMessage(Message message, @MessageStatus.Status int status) {
@@ -104,4 +114,7 @@ public class ChatMessagesEventDelegate {
         conversationsDAO.updateDate(message.getConversationId(), time);
     }
 
+    public PublishSubject<Notification<DataMessage>> getReceivedSavedMessageStream() {
+        return receivedSavedMessageStream;
+    }
 }

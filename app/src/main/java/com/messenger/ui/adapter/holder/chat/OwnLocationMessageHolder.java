@@ -5,6 +5,8 @@ import android.view.View;
 
 import com.worldventures.dreamtrips.R;
 
+import butterknife.OnClick;
+
 public class OwnLocationMessageHolder extends LocationMessageHolder {
 
     public OwnLocationMessageHolder(View itemView) {
@@ -22,4 +24,5 @@ public class OwnLocationMessageHolder extends LocationMessageHolder {
     protected int provideBackgroundForInitial() {
         return selected ? R.drawable.dark_blue_bubble_comics_image_post : R.drawable.blue_bubble_comics_image_post;
     }
+
 }

@@ -3,7 +3,6 @@ package com.messenger.ui.adapter.holder.chat;
 import android.graphics.drawable.Animatable;
 import android.support.annotation.DrawableRes;
 import android.view.View;
-import android.widget.ViewSwitcher;
 
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
@@ -11,13 +10,9 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.Utils;
 import com.worldventures.dreamtrips.R;
 
-import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
-
-    @InjectView(R.id.view_switcher)
-    ViewSwitcher retrySwitcher;
 
     public OwnImageMessageViewHolder(View itemView) {
         super(itemView);
@@ -59,11 +54,6 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
         if (dataMessage.getStatus() == MessageStatus.ERROR) {
             cellDelegate.onRetryClicked(dataMessage);
         } else loadImage();
-    }
-
-    @OnClick(R.id.retry)
-    void onRetry() {
-        cellDelegate.onRetryClicked(dataMessage);
     }
 
     @Override

@@ -13,9 +13,6 @@ import butterknife.OnClick;
 
 public class OwnTextMessageViewHolder extends TextMessageViewHolder {
 
-    @InjectView(R.id.view_switcher)
-    ViewSwitcher retrySwitcher;
-
     public OwnTextMessageViewHolder(View itemView) {
         super(itemView);
     }
@@ -36,11 +33,6 @@ public class OwnTextMessageViewHolder extends TextMessageViewHolder {
     @DrawableRes
     protected int provideBackgroundForInitial() {
         return selected ? R.drawable.dark_blue_bubble_comics : R.drawable.blue_bubble_comics;
-    }
-
-    @OnClick(R.id.retry)
-    void onRetry() {
-        cellDelegate.onRetryClicked(dataMessage);
     }
 
     public void updateMessageStatusUi() {

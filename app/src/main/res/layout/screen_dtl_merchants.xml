@@ -14,15 +14,26 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         >
 
-        <include layout="@layout/include_dtl_places_toolbar"/>
+        <include layout="@layout/view_dtl_toolbar" />
 
         <RelativeLayout
             android:id="@+id/subToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:minHeight="48dp"
+            android:minHeight="?attr/actionBarSize"
             >
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/filtersCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/darker_gray"
+                android:textSize="20sp"
+                android:layout_margin="5dp"
+                android:layout_centerVertical="true"
+                android:text="Filters %d"
+                />
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/filterDiningsSwitch"

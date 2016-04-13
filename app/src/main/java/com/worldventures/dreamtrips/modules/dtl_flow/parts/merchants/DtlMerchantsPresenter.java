@@ -17,4 +17,6 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
     void perkClick(DtlOfferPerkData perk);
 
     void pointClicked(DtlOfferPointsData points);
+
+    void mapClicked();
 }

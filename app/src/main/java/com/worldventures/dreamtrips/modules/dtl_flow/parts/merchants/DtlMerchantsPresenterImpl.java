@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -112,16 +111,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     @Override
-    public boolean onToolbarMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_map:
-                Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext())));
-                return true;
-            case R.id.action_dtl_filter:
-                getView().openRightDrawer();
-                return true;
-        }
-        return false;
+    public void mapClicked() {
+        Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext())));
     }
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {

@@ -22,8 +22,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
     void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
 
-    void openRightDrawer();
-
     void toggleDiningFilterSwitch(boolean checked);
 
     Observable<Boolean> getToggleObservable();

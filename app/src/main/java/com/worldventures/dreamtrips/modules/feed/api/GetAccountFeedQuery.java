@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedEntityDeserializer;
 import com.worldventures.dreamtrips.modules.feed.model.serializer.FeedItemDeserializer;
+import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -49,65 +50,30 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
         return stubCollages(result);
     }
 
-    private ArrayList<ParentFeedItem> stubCollages(ArrayList<ParentFeedItem> target) {
-        String json = "[" +
-                "  {" +
-                "    \"type\":\"Single\"," +
-                "    \"items\":[" +
-                "      {" +
-                "        \"type\":\"Post\"," +
-                "        \"action\":\"add\"," +
-                "        \"posted_at\":\"2016-04-12T11:05:49Z\"," +
-                "        \"links\":{" +
-                "          \"users\":[" +
-                "            {" +
-                "              \"id\":143255," +
-                "              \"first_name\":\"Techery\"," +
-                "              \"last_name\":\"Test\"," +
-                "              \"username\":\"65664267\"," +
-                "              \"badges\":[" +
-                "              ]," +
-                "              \"avatar\":{" +
-                "                \"original\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/original/1455543632_20160203_150955.jpg\"," +
-                "                \"medium\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/medium/1455543632_20160203_150955.jpg\"," +
-                "                \"thumb\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/thumb/1455543632_20160203_150955.jpg\"" +
-                "              }," +
-                "              \"location\":null," +
-                "              \"company\":\"\"" +
-                "            }" +
-                "          ]" +
-                "        }," +
-                "        \"item\":{" +
-                "          \"uid\":\"p1JoS2VWdc\"," +
-                "          \"description\":\"Test post\"," +
-                "          \"liked\":false," +
-                "          \"likes_count\":0," +
-                "          \"created_at\":\"2016-04-12T11:05:49Z\"," +
-                "          \"updated_at\":\"2016-04-12T11:05:49Z\"," +
-                "          \"comments_count\":0," +
-                "          \"comments\":[" +
-                "          ]," +
-                "          \"user\":{" +
-                "            \"id\":143255," +
-                "            \"first_name\":\"Techery\"," +
-                "            \"last_name\":\"Test\"," +
-                "            \"username\":\"65664267\"," +
-                "            \"badges\":[" +
-                "            ]," +
-                "            \"avatar\":{" +
-                "              \"original\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/original/1455543632_20160203_150955.jpg\"," +
-                "              \"medium\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/medium/1455543632_20160203_150955.jpg\"," +
-                "              \"thumb\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/thumb/1455543632_20160203_150955.jpg\"" +
-                "            }," +
-                "            \"location\":null," +
-                "            \"company\":\"\"" +
-                "          }" +
-                "        }" +
-                "      }" +
-                "    ]" +
-                "  }" +
-                "]";
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_load_feed;
+    }
 
+    private ArrayList<ParentFeedItem> stubCollages(ArrayList<ParentFeedItem> target) {
+
+        ArrayList<ParentFeedItem> result = new ArrayList<>();
+
+        for (int i = 0; i < 17; i++) {
+            ArrayList<ParentFeedItem> parent = getStubParentFeedItem();
+            List<FeedEntityHolder> attach = new ArrayList<>();
+            for (CollageItem item : getAttachData(i)) {
+                attach.add(getAttachItem(i, item));
+            }
+            ((TextualPost) parent.get(0).getItems().get(0).getItem()).setAttachments(attach);
+            result.addAll(parent);
+        }
+
+        result.addAll(target);
+        return result;
+    }
+
+    private ArrayList<ParentFeedItem> getStubParentFeedItem() {
         Gson gson = new GsonBuilder()
                 .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -121,31 +87,194 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
         ArrayList<ParentFeedItem> result = gson.fromJson(json, new TypeToken<ArrayList<ParentFeedItem>>() {
         }.getType());
 
-        if (result.get(0).getItems().get(0).getType() == FeedEntityHolder.Type.POST) {
-            List<FeedEntityHolder> attach = new ArrayList<>();
-
-            Image image = new Image();
-            image.setUrl("http://i.imgur.com/GhTzf0U.jpg");
-
-            Photo photo = new Photo();
-            photo.setImages(image);
-            photo.setWidth(640);
-            photo.setHeight(480);
-
-            PhotoFeedItem photoFeedItem = new PhotoFeedItem();
-            photoFeedItem.setItem(photo);
-            photoFeedItem.setType(FeedEntityHolder.Type.PHOTO);
-            photoFeedItem.setId(1);
-
-            attach.add(photoFeedItem);
-            ((TextualPost) result.get(0).getItems().get(0).getItem()).setAttachments(attach);
-        }
-        result.addAll(target);
         return result;
     }
 
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_load_feed;
+    private ArrayList<CollageItem> getAttachData(int index) {
+        ArrayList<CollageItem> items = new ArrayList<>();
+        switch (index) {
+            case 0:
+                items.add(new CollageItem(landscape[0], 640, 240));
+                break;
+            case 1:
+                items.add(new CollageItem(landscape[0], 640, 600));
+                break;
+            case 2:
+                items.add(new CollageItem(square[0], 640, 640));
+                break;
+            case 3:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                break;
+            case 4:
+                items.add(new CollageItem(landscape[0], 640, 480));
+                items.add(new CollageItem(landscape[1], 640, 480));
+                break;
+            case 5:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[1], 480, 640));
+                break;
+            case 6:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(square[0], 640, 480));
+                break;
+            case 7:
+                items.add(new CollageItem(landscape[0], 640, 480));
+                items.add(new CollageItem(landscape[1], 640, 480));
+                items.add(new CollageItem(landscape[2], 640, 480));
+                break;
+            case 8:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[1], 480, 640));
+                items.add(new CollageItem(portrait[2], 480, 640));
+                break;
+            case 9:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(square[0], 480, 480));
+                break;
+            case 10:
+                items.add(new CollageItem(landscape[0], 640, 480));
+                items.add(new CollageItem(landscape[1], 640, 480));
+                items.add(new CollageItem(landscape[2], 640, 480));
+                items.add(new CollageItem(landscape[3], 640, 480));
+                break;
+            case 11:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[1], 480, 640));
+                items.add(new CollageItem(portrait[2], 480, 640));
+                items.add(new CollageItem(square[2], 480, 480));
+                break;
+            case 12:
+                items.add(new CollageItem(square[2], 480, 480));
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[1], 480, 640));
+                items.add(new CollageItem(portrait[2], 480, 640));
+                break;
+            case 13:
+                items.add(new CollageItem(landscape[0], 640, 480));
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(square[0], 480, 480));
+                items.add(new CollageItem(square[1], 480, 480));
+                items.add(new CollageItem(square[2], 480, 480));
+                break;
+            case 14:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(square[1], 480, 480));
+                items.add(new CollageItem(landscape[2], 640, 480));
+                items.add(new CollageItem(landscape[3], 640, 480));
+                items.add(new CollageItem(landscape[3], 640, 480));
+                break;
+            case 15:
+                items.add(new CollageItem(square[2], 480, 480));
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[1], 480, 640));
+                items.add(new CollageItem(portrait[2], 480, 640));
+                items.add(new CollageItem(portrait[3], 480, 640));
+                break;
+            case 16:
+                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[1], 480, 640));
+                items.add(new CollageItem(portrait[2], 480, 640));
+                items.add(new CollageItem(square[1], 480, 480));
+                items.add(new CollageItem(square[2], 480, 480));
+                break;
+            default:
+                break;
+        }
+        return items;
     }
+
+    private PhotoFeedItem getAttachItem(int magicNumber, CollageItem item) {
+        Image image = new Image();
+        image.setUrl(item.url());
+
+        Photo photo = new Photo();
+        photo.setImages(image);
+        photo.setWidth(item.width());
+        photo.setHeight(item.height());
+
+        PhotoFeedItem photoFeedItem = new PhotoFeedItem();
+        photoFeedItem.setItem(photo);
+        photoFeedItem.setType(FeedEntityHolder.Type.PHOTO);
+        photoFeedItem.setId(magicNumber);
+
+        return photoFeedItem;
+    }
+
+    private String json = "[" +
+            "  {" +
+            "    \"type\":\"Single\"," +
+            "    \"items\":[" +
+            "      {" +
+            "        \"type\":\"Post\"," +
+            "        \"action\":\"add\"," +
+            "        \"posted_at\":\"2016-04-12T11:05:49Z\"," +
+            "        \"links\":{" +
+            "          \"users\":[" +
+            "            {" +
+            "              \"id\":143255," +
+            "              \"first_name\":\"Techery\"," +
+            "              \"last_name\":\"Test\"," +
+            "              \"username\":\"65664267\"," +
+            "              \"badges\":[" +
+            "              ]," +
+            "              \"avatar\":{" +
+            "                \"original\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/original/1455543632_20160203_150955.jpg\"," +
+            "                \"medium\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/medium/1455543632_20160203_150955.jpg\"," +
+            "                \"thumb\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/thumb/1455543632_20160203_150955.jpg\"" +
+            "              }," +
+            "              \"location\":null," +
+            "              \"company\":\"\"" +
+            "            }" +
+            "          ]" +
+            "        }," +
+            "        \"item\":{" +
+            "          \"uid\":\"p1JoS2VWdc\"," +
+            "          \"description\":\"Test post\"," +
+            "          \"liked\":false," +
+            "          \"likes_count\":0," +
+            "          \"created_at\":\"2016-04-12T11:05:49Z\"," +
+            "          \"updated_at\":\"2016-04-12T11:05:49Z\"," +
+            "          \"comments_count\":0," +
+            "          \"comments\":[" +
+            "          ]," +
+            "          \"user\":{" +
+            "            \"id\":143255," +
+            "            \"first_name\":\"Techery\"," +
+            "            \"last_name\":\"Test\"," +
+            "            \"username\":\"65664267\"," +
+            "            \"badges\":[" +
+            "            ]," +
+            "            \"avatar\":{" +
+            "              \"original\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/original/1455543632_20160203_150955.jpg\"," +
+            "              \"medium\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/medium/1455543632_20160203_150955.jpg\"," +
+            "              \"thumb\":\"http://s3-us-west-2.amazonaws.com/dtappstg/avatars/143255/thumb/1455543632_20160203_150955.jpg\"" +
+            "            }," +
+            "            \"location\":null," +
+            "            \"company\":\"\"" +
+            "          }" +
+            "        }" +
+            "      }" +
+            "    ]" +
+            "  }" +
+            "]";
+
+    private String[] landscape = {
+            "http://i.imgur.com/GhTzf0U.jpg",
+            "http://i.imgur.com/2LG5wxB.jpg",
+            "http://i.imgur.com/DzP0hbc.jpg",
+            "http://i.imgur.com/SlQLU6N.jpg",
+    };
+    private String[] portrait = {
+            "http://i.imgur.com/s6arY5h.jpg",
+            "http://i.imgur.com/cqjjNHX.jpg",
+            "http://i.imgur.com/RafEnde.jpg",
+            "http://i.imgur.com/S6FD2Jr.jpg",
+    };
+    private String[] square = {
+            "http://i.imgur.com/fXGAoRf.jpg",
+            "http://i.imgur.com/GFfCQcf.jpg",
+            "http://i.imgur.com/QiOJ9Y9.jpg",
+            "http://i.imgur.com/lMwszDY.jpg",
+    };
 }

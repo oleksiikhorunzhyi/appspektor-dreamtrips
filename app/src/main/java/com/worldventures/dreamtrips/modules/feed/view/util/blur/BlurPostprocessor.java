@@ -42,7 +42,7 @@ public class BlurPostprocessor extends BasePostprocessor {
         int scaledWidth = width / sampling;
         int scaledHeight = height / sampling;
 
-        Bitmap blurredBitmap = Bitmap.createBitmap(scaledWidth, scaledHeight, Bitmap.Config.ARGB_8888);
+        Bitmap blurredBitmap = Bitmap.createBitmap(scaledWidth, scaledHeight, Bitmap.Config.RGB_565);
 
         Canvas canvas = new Canvas(blurredBitmap);
         canvas.scale(1 / (float) sampling, 1 / (float) sampling);

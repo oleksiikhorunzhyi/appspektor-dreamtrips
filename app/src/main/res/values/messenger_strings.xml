@@ -18,6 +18,8 @@
     <string name="conversation_list_item_last_message_text_format_you">You: %s</string>
     <string name="conversation_list_item_last_message_image_format_you">You sent photo</string>
     <string name="conversation_list_item_last_message_image">sent photo</string>
+    <string name="conversation_list_item_last_message_location_format_you">You sent location</string>
+    <string name="conversation_list_item_last_message_location">sent location</string>
     <string name="conversation_list_last_message_date_format_today" translatable="false">h:mm aa</string>
     <string name="conversation_list_last_message_date_format_yesterday">Yesterday</string>
     <string name="conversation_list_last_message_date_format_more_than_one_day_ago" translatable="false">MMM, dd</string>

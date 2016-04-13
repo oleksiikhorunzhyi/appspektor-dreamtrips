@@ -26,11 +26,27 @@ public class ConversationLastMessageInflater extends ViewInflater {
     public void setLastMessage(DataConversation dataConversation, DataMessage message,
                                String messageAuthor, DataUser currentUser,
                                String attachmentType, DataTranslation dataTranslation) {
-        boolean hasImageAttachment = TextUtils.equals(attachmentType, AttachmentType.IMAGE);
-        lastMessageTextView.setText(hasImageAttachment ?
-                createAttachmentText(message, messageAuthor, currentUser) :
-                createMessageText(dataConversation, message, messageAuthor, currentUser,
-                        attachmentType, dataTranslation));
+        String text = getLastMessageText(dataConversation, message, messageAuthor,
+                currentUser, attachmentType, dataTranslation);
+        lastMessageTextView.setText(text);
+    }
+
+    private String getLastMessageText(DataConversation dataConversation, DataMessage message,
+                                      String messageAuthor, DataUser currentUser, String attachmentType,
+                                      DataTranslation dataTranslation) {
+        if (attachmentType == null) {
+            return createMessageText(dataConversation, message, messageAuthor, currentUser,
+                    attachmentType, dataTranslation);
+        }
+        switch (attachmentType) {
+            case AttachmentType.IMAGE:
+                return createImageAttachmentText(message, messageAuthor, currentUser);
+            case AttachmentType.LOCATION:
+                return createLocationAttachmentText(message, messageAuthor, currentUser);
+            default:
+                return createMessageText(dataConversation, message, messageAuthor,
+                        currentUser, attachmentType, dataTranslation);
+        }
     }
 
     private String createMessageText(DataConversation dataConversation, DataMessage message,
@@ -54,11 +70,20 @@ public class ConversationLastMessageInflater extends ViewInflater {
         return messageText;
     }
 
-    private String createAttachmentText(DataMessage message, String messageAuthor, DataUser currentUser) {
+    private String createImageAttachmentText(DataMessage message, String messageAuthor, DataUser currentUser) {
         if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
             return context.getString(R.string.conversation_list_item_last_message_image_format_you);
         } else {
             return messageAuthor.trim() + " " + context.getString(R.string.conversation_list_item_last_message_image);
+        }
+    }
+
+    private String createLocationAttachmentText(DataMessage message, String messageAuthor, DataUser currentUser) {
+        if (TextUtils.equals(message.getFromId(), currentUser.getId())) {
+            return context.getString(R.string.conversation_list_item_last_message_location_format_you);
+        } else {
+            return messageAuthor.trim() + " "
+                    + context.getString(R.string.conversation_list_item_last_message_location);
         }
     }
 }

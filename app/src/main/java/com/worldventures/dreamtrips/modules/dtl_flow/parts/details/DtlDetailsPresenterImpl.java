@@ -60,13 +60,13 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        processTransaction();
+        //
+        getView().setMerchant(merchant);
+        //
         if (merchant.hasNoOffers()) {
             boolean canSuggest = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
             getView().setSuggestMerchantButtonAvailable(canSuggest);
-        }
-        //
-        getView().setMerchant(merchant);
+        } else processTransaction();
     }
 
     private void processTransaction() {

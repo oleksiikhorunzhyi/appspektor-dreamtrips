@@ -30,16 +30,17 @@ public class LiteMapInflater extends ViewInflater {
         mapView.getMapAsync(this::onMapReady);
     }
 
-    public void onMapReady(GoogleMap googleMap) {
+    public void setLocation(double latitude, double longitude) {
+        this.location = new LatLng(latitude, longitude);
+        updateMap();
+    }
+
+    private void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
         MapsInitializer.initialize(context);
         updateMap();
     }
 
-    public void setLocation(double latitude, double longitude) {
-        this.location = new LatLng(latitude, longitude);
-        updateMap();
-    }
 
     private void updateMap() {
         if (location != null && map != null) {

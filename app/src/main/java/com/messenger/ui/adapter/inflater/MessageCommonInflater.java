@@ -26,7 +26,7 @@ public class MessageCommonInflater {
         //
         Resources res = itemView.getResources();
         messageVerticalPadding = res.getDimensionPixelSize(R.dimen.chat_list_item_row_vertical_padding);
-}
+    }
 
     public void onCellBind(boolean previousMessageFromSameUser,
                            boolean unread,
@@ -43,16 +43,10 @@ public class MessageCommonInflater {
     }
 
     private void setPaddings(boolean previousMessageFromSameUser) {
-        if (previousMessageFromSameUser) {
-            itemView.setPadding(itemView.getPaddingLeft(), 0,
-                    itemView.getPaddingRight(),
-                    itemView.getPaddingBottom());
-        } else {
-            itemView.setPadding(itemView.getPaddingLeft(),
-                    messageVerticalPadding,
-                    itemView.getPaddingRight(),
-                    itemView.getPaddingBottom());
-        }
+        itemView.setPadding(itemView.getPaddingLeft(),
+                previousMessageFromSameUser ? 0 : messageVerticalPadding,
+                itemView.getPaddingRight(),
+                itemView.getPaddingBottom());
     }
 
 }

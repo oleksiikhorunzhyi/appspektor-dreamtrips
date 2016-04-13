@@ -1,6 +1,7 @@
 package com.messenger.ui.adapter.holder.chat;
 
 import android.database.Cursor;
+import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -97,8 +98,10 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         this.selected = selected;
     }
 
+    @DrawableRes
     protected abstract int provideBackgroundForFollowing();
 
+    @DrawableRes
     protected abstract int provideBackgroundForInitial();
 
     public View getMessageView() {
@@ -107,14 +110,13 @@ public abstract class MessageViewHolder extends CursorViewHolder {
 
     private boolean previousMessageIsFromSameUser(Cursor cursor) {
         String currentId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
-        boolean moveCursorToPrev = cursor.moveToPrevious();
-        if (!moveCursorToPrev) {
+        if (!cursor.moveToPrevious()) {
             cursor.moveToNext();
             return false;
         }
         String prevId = cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID));
         cursor.moveToNext();
-        return prevId.equals(currentId);
+        return TextUtils.equals(prevId, currentId);
     }
 
 }

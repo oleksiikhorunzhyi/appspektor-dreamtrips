@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 
 import javax.inject.Inject;
 
+//TODO Think more about viewType providing/viewHolder creation, less boilerplate code
 public class ChatViewHolderProvider {
 
     private static final float MESSAGE_SCREEN_WIDTH_SHARE = 0.6f;
@@ -28,8 +29,10 @@ public class ChatViewHolderProvider {
     private static final int VIEW_TYPE_USER_TEXT_MESSAGE = 2;
     private static final int VIEW_TYPE_OWN_IMAGE_MESSAGE = 3;
     private static final int VIEW_TYPE_USER_IMAGE_MESSAGE = 4;
+    private static final int VIEW_TYPE_OWN_LOCATION = 5;
+    private static final int VIEW_TYPE_USER_LOCATION = 6;
 
-    private DataUser currentUser;
+     private DataUser currentUser;
 
     @Inject
     public ChatViewHolderProvider(DataUser currentUser) {
@@ -37,15 +40,7 @@ public class ChatViewHolderProvider {
     }
 
     public MessageViewHolder provideViewHolder(ViewGroup parent, int viewType) {
-        Resources res = parent.getResources();
-        int screenWidth = res.getDisplayMetrics().widthPixels;
-        int messageWidth = (int) (screenWidth * MESSAGE_SCREEN_WIDTH_SHARE);
-        int ownMessageWidth = 2 * res.getDimensionPixelSize(R.dimen.chat_list_item_horizontal_padding)
-                + messageWidth;
-        freeSpaceForMessageRowOwnMessage = screenWidth - ownMessageWidth;
-        int userMessageWidth = ownMessageWidth + res.getDimensionPixelSize(R.dimen.chat_list_item_horizontal_padding)
-                + res.getDimensionPixelSize(R.dimen.list_item_small_avatar_image_size);
-        freeSpaceForMessageRowUserMessage = screenWidth - userMessageWidth;
+        calculateSpacings(parent.getResources());
 
         MessageViewHolder messageViewHolder = null;
         switch (viewType) {
@@ -69,9 +64,30 @@ public class ChatViewHolderProvider {
                         R.layout.list_item_chat_user_image_message));
                 setMarginForUserMessage(messageViewHolder);
                 break;
+            case VIEW_TYPE_OWN_LOCATION:
+                messageViewHolder = new OwnLocationMessageHolder(inflateRow(parent,
+                        R.layout.list_item_chat_own_location_message));
+                setMarginForOwnMessage(messageViewHolder);
+                break;
+            case VIEW_TYPE_USER_LOCATION:
+                messageViewHolder = new UserLocationMessageHolder(inflateRow(parent,
+                        R.layout.list_item_chat_user_location_message));
+                setMarginForUserMessage(messageViewHolder);
+                break;
         }
 
         return messageViewHolder;
+    }
+
+    private void calculateSpacings(Resources res) {
+        int screenWidth = res.getDisplayMetrics().widthPixels;
+        int messageWidth = (int) (screenWidth * MESSAGE_SCREEN_WIDTH_SHARE);
+        int ownMessageWidth = 2 * res.getDimensionPixelSize(R.dimen.chat_list_item_horizontal_padding)
+                + messageWidth;
+        freeSpaceForMessageRowOwnMessage = screenWidth - ownMessageWidth;
+        int userMessageWidth = ownMessageWidth + res.getDimensionPixelSize(R.dimen.chat_list_item_horizontal_padding)
+                + res.getDimensionPixelSize(R.dimen.list_item_small_avatar_image_size);
+        freeSpaceForMessageRowUserMessage = screenWidth - userMessageWidth;
     }
 
     private void setMarginForOwnMessage(MessageViewHolder messageViewHolder) {
@@ -95,8 +111,11 @@ public class ChatViewHolderProvider {
         String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
 
         int viewType;
+
         if (TextUtils.equals(attachmentType, AttachmentType.IMAGE)) {
             viewType = ownMessage ? VIEW_TYPE_OWN_IMAGE_MESSAGE : VIEW_TYPE_USER_IMAGE_MESSAGE;
+        } else if (TextUtils.equals(attachmentType, AttachmentType.LOCATION)) {
+            viewType = ownMessage ? VIEW_TYPE_OWN_LOCATION : VIEW_TYPE_USER_LOCATION;
         } else {
             viewType = ownMessage ? VIEW_TYPE_OWN_TEXT_MESSAGE : VIEW_TYPE_USER_TEXT_MESSAGE;
         }

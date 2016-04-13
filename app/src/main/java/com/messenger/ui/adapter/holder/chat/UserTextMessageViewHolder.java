@@ -1,5 +1,6 @@
 package com.messenger.ui.adapter.holder.chat;
 
+import android.support.annotation.DrawableRes;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -40,11 +41,15 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder {
         applyTranslationStatus();
     }
 
+    @Override
+    @DrawableRes
     protected int provideBackgroundForFollowing() {
         return selected ? R.drawable.dark_grey_bubble
                 : R.drawable.grey_bubble;
     }
 
+    @Override
+    @DrawableRes
     protected int provideBackgroundForInitial() {
         return selected ? R.drawable.dark_grey_bubble_comics
                 : R.drawable.grey_bubble_comics;

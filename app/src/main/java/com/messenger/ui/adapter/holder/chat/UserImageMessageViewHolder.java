@@ -1,6 +1,7 @@
 package com.messenger.ui.adapter.holder.chat;
 
 import android.graphics.drawable.Animatable;
+import android.support.annotation.DrawableRes;
 import android.view.View;
 
 import com.facebook.drawee.controller.BaseControllerListener;
@@ -21,11 +22,13 @@ public class UserImageMessageViewHolder extends ImageMessageViewHolder {
     }
 
     @Override
+    @DrawableRes
     protected int provideBackgroundForFollowing() {
         return selected ? R.drawable.dark_grey_bubble_image_post : R.drawable.grey_bubble_image_post;
     }
 
     @Override
+    @DrawableRes
     protected int provideBackgroundForInitial() {
         return selected ? R.drawable.dark_grey_bubble_comics_image_post : R.drawable.grey_bubble_comics_image_post;
     }

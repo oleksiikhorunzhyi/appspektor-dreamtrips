@@ -1,6 +1,7 @@
 package com.messenger.ui.adapter.holder.chat;
 
 import android.database.Cursor;
+import android.support.annotation.DrawableRes;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
@@ -26,11 +27,13 @@ public class OwnTextMessageViewHolder extends TextMessageViewHolder {
     }
 
     @Override
+    @DrawableRes
     protected int provideBackgroundForFollowing() {
         return selected ? R.drawable.dark_blue_bubble : R.drawable.blue_bubble;
     }
 
     @Override
+    @DrawableRes
     protected int provideBackgroundForInitial() {
         return selected ? R.drawable.dark_blue_bubble_comics : R.drawable.blue_bubble_comics;
     }

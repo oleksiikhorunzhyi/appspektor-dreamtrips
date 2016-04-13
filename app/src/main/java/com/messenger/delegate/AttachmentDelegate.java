@@ -1,106 +1,68 @@
 package com.messenger.delegate;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.messenger.delegate.command.SendImageAttachmentCommand;
 import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.storage.dao.AttachmentDAO;
-import com.messenger.storage.dao.MessageDAO;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-import rx.Observable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+import io.techery.janet.ActionPipe;
+import io.techery.janet.Janet;
+import io.techery.janet.ReadOnlyActionPipe;
+
+@Singleton
 public class AttachmentDelegate {
-    private final PhotoUploadingManagerS3 photoUploadingManager;
-    private final MessageDAO messageDAO;
-    private final AttachmentDAO attachmentDAO;
+    private final ActionPipe<SendImageAttachmentCommand> sendImagePipe;
+    private final ReadOnlyActionPipe<SendImageAttachmentCommand> readSendImagePipe;
 
-    public AttachmentDelegate(PhotoUploadingManagerS3 photoUploadingManager,
-                              MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
-        this.photoUploadingManager = photoUploadingManager;
-        this.messageDAO = messageDAO;
-        this.attachmentDAO = attachmentDAO;
+    private final SessionHolder<UserSession> sessionHolder;
+
+    @Inject
+    public AttachmentDelegate(SessionHolder<UserSession> sessionHolder, Janet janet) {
+        this.sessionHolder = sessionHolder;
+
+        this.sendImagePipe = janet.createPipe(SendImageAttachmentCommand.class);
+        this.readSendImagePipe = sendImagePipe.asReadOnly();
     }
 
-    public Observable<DataAttachment> prepareMessageWithAttachment(String userId,
-                                                                   String conversationId,
-                                                                   String filePath) {
-        DataMessage dataMessage = new DataMessage.Builder()
+    public void retry(DataConversation conversation, DataMessage message, DataAttachment attachment) {
+        sendImagePipe.send(new SendImageAttachmentCommand(conversation, attachment.getUrl(), message, attachment));
+    }
+
+    public void send(DataConversation conversation, String filePath) {
+        DataMessage emptyMessage = createEmptyMessage(conversation.getId());
+        sendImagePipe.send(new SendImageAttachmentCommand(conversation, filePath, emptyMessage, createDataAttachment(emptyMessage)));
+    }
+
+    public ReadOnlyActionPipe<SendImageAttachmentCommand> getReadSendImagePipe() {
+        return readSendImagePipe;
+    }
+
+    private DataMessage createEmptyMessage(String conversationId) {
+        return new DataMessage.Builder()
                 .conversationId(conversationId)
-                .from(userId)
+                .from(sessionHolder.get().get().getUsername())
                 .id(UUID.randomUUID().toString())
                 .date(new Date(System.currentTimeMillis()))
                 .status(MessageStatus.SENDING)
                 .syncTime(System.currentTimeMillis())
                 .build();
-        //
-        return Observable.just(dataMessage)
-                .map(message -> prepareAttachment(message, filePath))
-                .doOnNext(attachment -> startUpload(dataMessage, attachment));
     }
 
-    private DataAttachment prepareAttachment(DataMessage dataMessage, String filePath) {
+    private DataAttachment createDataAttachment(DataMessage message) {
         return new DataAttachment.Builder()
-                .conversationId(dataMessage.getConversationId())
-                .messageId(dataMessage.getId())
+                .conversationId(message.getConversationId())
+                .messageId(message.getId())
                 .type(AttachmentType.IMAGE)
-                .url(filePath)
                 .build();
     }
-
-    private void startUpload(DataMessage dataMessage, DataAttachment dataAttachment) {
-        UploadTask uploadTask = new UploadTask();
-        uploadTask.setFilePath(dataAttachment.getUrl());
-        TransferObserver transferObserver = photoUploadingManager.upload(uploadTask);
-        dataAttachment.setUploadTaskId(transferObserver.getId());
-        //
-        attachmentDAO.save(dataAttachment);
-        messageDAO.save(dataMessage);
-    }
-
-    public Observable<DataAttachment> bindToPendingAttachment(DataAttachment dataAttachment) {
-        return RxTransferObserver
-                .bind(photoUploadingManager.getTransferById(dataAttachment.getUploadTaskId()))
-                .doOnNext(transferObserver -> newUploadingAttachmentState(dataAttachment, transferObserver.getState()))
-                .filter(observer -> observer.getState().equals(TransferState.COMPLETED))
-                .map(observer -> photoUploadingManager.getResultUrl(observer.getAbsoluteFilePath()))
-                .map(originUrl -> {
-                    dataAttachment.setUrl(originUrl);
-                    dataAttachment.setUploadTaskId(0);
-                    attachmentDAO.save(dataAttachment);
-                    //
-                    return dataAttachment;
-                });
-    }
-
-    private void newUploadingAttachmentState(DataAttachment dataAttachment, TransferState transferState){
-        switch (transferState){
-            case WAITING_FOR_NETWORK:
-                UploadTask uploadTask = new UploadTask();
-                uploadTask.setAmazonTaskId(Integer.toString(dataAttachment.getUploadTaskId()));
-                photoUploadingManager.cancelUploading(uploadTask);
-                break;
-
-            case FAILED:
-            case CANCELED:
-                dataAttachment.setUploadTaskId(0);
-                attachmentDAO.save(dataAttachment);
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR, calendar.getMaximum(Calendar.YEAR));
-                long time = calendar.getTimeInMillis();
-                messageDAO.updateStatus(dataAttachment.getMessageId(), MessageStatus.ERROR, time);
-
-                break;
-
-        }
-    }
-
 }

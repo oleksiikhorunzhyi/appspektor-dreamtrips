@@ -45,7 +45,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     @Column
     String url;
     @Column
-    int uploadTaskId;
+    long uploadTaskId;
 
     public DataAttachment() {
     }
@@ -56,7 +56,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         setMessageId(builder.messageId);
         setType(builder.type);
         setUrl(builder.url);
-        setUploadTaskId(builder.amazonTaskId);
+        setUploadTaskId(builder.uploadTaskId);
     }
 
     public DataAttachment(@NonNull AttachmentHolder attachment, Message message, int index) {
@@ -102,11 +102,11 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         return conversationId;
     }
 
-    public void setUploadTaskId(int amazonTaskId) {
+    public void setUploadTaskId(long amazonTaskId) {
         this.uploadTaskId = amazonTaskId;
     }
 
-    public int getUploadTaskId() {
+    public long getUploadTaskId() {
         return uploadTaskId;
     }
 
@@ -166,7 +166,7 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         String conversationId;
         String type;
         String url;
-        int amazonTaskId;
+        long uploadTaskId;
 
         public Builder() {
         }
@@ -191,6 +191,10 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
             return this;
         }
 
+        public Builder uploadTaskId(long val) {
+            uploadTaskId = val;
+            return this;
+        }
         public DataAttachment build() {
             return new DataAttachment(this);
         }

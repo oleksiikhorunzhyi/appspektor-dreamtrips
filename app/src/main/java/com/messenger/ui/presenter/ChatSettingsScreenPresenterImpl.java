@@ -234,9 +234,12 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     @Override
     public void onToolbarMenuPrepared(Menu menu) {
-        conversationObservable.subscribe(conversation -> {
+        conversationsDAO.getConversation(conversationId)
+                .compose(bindViewIoToMainComposer())
+                .take(1)
+                .subscribe(conversation -> {
                 boolean isMultiUserChat = !ConversationHelper.isSingleChat(conversation);
-                if (!isMultiUserChat || (isMultiUserChat && !isUserOwner(conversation))) {
+                if (!isMultiUserChat || !isUserOwner(conversation)) {
                     menu.findItem(R.id.action_overflow).setVisible(false);
                     return;
                 }

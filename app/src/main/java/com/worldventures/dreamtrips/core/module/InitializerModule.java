@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializ
 import com.worldventures.dreamtrips.core.initializer.DtlInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
-import com.worldventures.dreamtrips.core.initializer.InstabugInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
@@ -23,7 +22,6 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                InstabugInitializer.class,
                 LeakCanaryInitializer.class,
                 FabricInitializer.class,
                 FrescoInitializer.class,
@@ -61,11 +59,6 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     AppInitializer provideSoftInputInitializer() {
         return new SoftInputInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideInstabugInitializer() {
-        return new InstabugInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

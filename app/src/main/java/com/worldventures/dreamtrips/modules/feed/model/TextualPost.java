@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -11,7 +12,7 @@ public class TextualPost extends BaseFeedEntity {
 
     private String description;
 
-    private List<FeedEntityHolder> attachments;
+    private List<FeedEntityHolder> attachments = new ArrayList<>();
 
     private Location location;
 

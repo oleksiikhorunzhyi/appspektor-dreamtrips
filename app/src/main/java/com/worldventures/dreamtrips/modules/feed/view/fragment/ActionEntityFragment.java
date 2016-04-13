@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
@@ -33,7 +35,6 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PostCreation
 import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         super.afterCreateView(rootView);
         postButton.setText(getPostButtonText());
         //
-        adapter = new BaseDelegateAdapter<>(getContext(), this);
+        adapter = new NoCachebleAdapter(getContext(), this);
         adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
         adapter.registerCell(String.class, PostCreationTextCell.class);
         adapter.registerDelegate(String.class, new PostCreationTextDelegate() {
@@ -98,7 +99,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             }
         });
         adapter.registerDelegate(PhotoCreationItem.class, this);
-        photosList.setLayoutManager(new LinearLayoutManager(getContext()));
+        StaggeredGridLayoutManager layout = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        photosList.setLayoutManager(layout);
         photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
         photosList.setAdapter(adapter);
     }
@@ -321,4 +323,17 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     protected abstract int getPostButtonText();
 
     protected abstract Route getRoute();
+
+
+    public static class NoCachebleAdapter extends BaseDelegateAdapter {
+
+        public NoCachebleAdapter(Context context, Injector injector) {
+            super(context, injector);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+    }
 }

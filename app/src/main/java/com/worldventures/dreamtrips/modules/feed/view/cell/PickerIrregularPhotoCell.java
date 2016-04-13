@@ -10,20 +10,20 @@ import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.OpenFacebookEvent;
-import com.worldventures.dreamtrips.modules.feed.model.AttachPhotoModel;
+import com.worldventures.dreamtrips.modules.feed.model.PickerIrregularPhotoModel;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_attach_photo)
-public class AttachPhotoCell extends AbstractCell<AttachPhotoModel> {
+public class PickerIrregularPhotoCell extends AbstractCell<PickerIrregularPhotoModel> {
 
     @InjectView(R.id.icon)
     ImageView icon;
     @InjectView(R.id.title)
     TextView title;
 
-    public AttachPhotoCell(View view) {
+    public PickerIrregularPhotoCell(View view) {
         super(view);
     }
 
@@ -36,12 +36,12 @@ public class AttachPhotoCell extends AbstractCell<AttachPhotoModel> {
             int requestType = -1;
 
             switch (getModelObject().getType()) {
-                case AttachPhotoModel.CAMERA:
+                case PickerIrregularPhotoModel.CAMERA:
                     requestType = PickImageDelegate.CAPTURE_PICTURE;
                     getEventBus().post(new AttachPhotoEvent(requestType));
                     break;
 
-                case AttachPhotoModel.FACEBOOK:
+                case PickerIrregularPhotoModel.FACEBOOK:
                     getEventBus().post(new OpenFacebookEvent());
                     break;
             }

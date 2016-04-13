@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInf
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.cell.AttachPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
@@ -36,8 +35,11 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PickerIrregularPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.SubPhotoAttachmentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestionPhotoCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
@@ -76,10 +78,10 @@ import de.greenrobot.event.EventBus;
                 BucketFeedItemDetailsCell.class,
                 LoadMoreCell.class,
                 PhotoFeedItemDetailsCell.class,
-                PostFeedItemDetailsCell.class,
+                PostFeedItemCell.class,
                 UndefinedFeedItemDetailsCell.class,
 
-                AttachPhotoCell.class,
+                PickerIrregularPhotoCell.class,
                 PhotoGalleryCell.class,
 
                 EditCommentPresenter.class,
@@ -134,11 +136,14 @@ import de.greenrobot.event.EventBus;
 
                 PhotoPostCreationCell.class,
                 PostCreationTextCell.class,
+                SubPhotoAttachmentCell.class,
+                PostFeedItemDetailsCell.class,
 
                 EditPostFragment.class,
                 EditPostPresenter.class,
                 EditPhotoFragment.class,
                 EditPhotoPresenter.class,
+                ActionEntityFragment.NoCachebleAdapter.class,
 
         },
         complete = false,

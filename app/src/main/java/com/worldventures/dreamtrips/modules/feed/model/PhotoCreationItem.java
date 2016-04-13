@@ -11,17 +11,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.techery.janet.ActionState;
+
+import static io.techery.janet.ActionState.Status;
+
 public class PhotoCreationItem implements Parcelable {
 
     long id;
     @NotNull
     String filePath;
     @NotNull
-    String originUrl;
+    String originUrl = "";
     @NotNull
     String location;
     @NotNull
-    UploadTask.Status status;
+    Status status;
     @NotNull
     ArrayList<PhotoTag> basePhotoTags = new ArrayList<>();
     @NotNull
@@ -95,7 +99,7 @@ public class PhotoCreationItem implements Parcelable {
     }
 
     @NotNull
-    public UploadTask.Status getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -147,7 +151,7 @@ public class PhotoCreationItem implements Parcelable {
         this.originUrl = in.readString();
         this.location = in.readString();
         int tmpStatus = in.readInt();
-        this.status = tmpStatus == -1 ? null : UploadTask.Status.values()[tmpStatus];
+        this.status = tmpStatus == -1 ? null : ActionState.Status.values()[tmpStatus];
         this.basePhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
         this.cachedAddedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
         this.cachedRemovedPhotoTags = in.createTypedArrayList(PhotoTag.CREATOR);
@@ -168,7 +172,7 @@ public class PhotoCreationItem implements Parcelable {
         }
     };
 
-    public void setStatus(@NotNull UploadTask.Status status) {
+    public void setStatus(@NotNull Status status) {
         this.status = status;
     }
 
@@ -181,7 +185,6 @@ public class PhotoCreationItem implements Parcelable {
         uploadTask.setId(getId());
         uploadTask.setFilePath(getFilePath());
         uploadTask.setLocationName(getLocation());
-        uploadTask.setStatus(getStatus());
         uploadTask.setOriginUrl(getOriginUrl());
         uploadTask.setType(mediaAttachmentType);
         uploadTask.setTitle(title);

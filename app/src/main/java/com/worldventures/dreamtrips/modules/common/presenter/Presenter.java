@@ -13,7 +13,6 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -43,8 +42,6 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     protected FeatureManager featureManager;
     @Inject
     protected DreamSpiceManager dreamSpiceManager;
-    @Inject
-    protected PhotoUploadingManager photoUploadingManager;
     @Inject
     protected PhotoUploadingManagerS3 photoUploadingManagerS3;
 

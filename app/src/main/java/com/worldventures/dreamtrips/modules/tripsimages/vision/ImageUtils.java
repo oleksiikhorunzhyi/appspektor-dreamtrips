@@ -106,8 +106,8 @@ public class ImageUtils {
         Detector detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.NO_LANDMARKS)
-                .setMode(FaceDetector.FAST_MODE)
                 .setClassificationType(FaceDetector.NO_CLASSIFICATIONS)
+                .setMode(FaceDetector.FAST_MODE)
                 .build();
 
         return bitmapObservable
@@ -145,7 +145,7 @@ public class ImageUtils {
         void onBitmapReceived(Bitmap bitmap);
     }
 
-    public static String getParametrizedUrl (String url, int width, int height){
+    public static String getParametrizedUrl(String url, int width, int height) {
         return String.format(PATTERN, url, width, height);
     }
 }

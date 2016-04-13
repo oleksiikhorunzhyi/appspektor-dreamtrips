@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -31,8 +30,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     BucketItemManager bucketItemManager;
     @Inject
     protected SnappyRepository db;
-    @Inject
-    protected PhotoUploadingManager photoUploadingManager;
 
     protected BucketItem.BucketType type;
     protected String bucketItemId;

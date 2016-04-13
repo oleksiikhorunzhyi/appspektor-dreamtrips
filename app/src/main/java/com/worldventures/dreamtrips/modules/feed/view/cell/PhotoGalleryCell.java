@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
@@ -64,7 +65,8 @@ public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, Ce
             }
         }
 
-        draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));
+        PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100);
+        draweeView.setController(controller);
         draweeView.setTag(uri);
     }
 }

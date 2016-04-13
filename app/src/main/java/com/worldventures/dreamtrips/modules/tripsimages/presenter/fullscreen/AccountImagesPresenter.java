@@ -15,12 +15,12 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
 
     @Override
     public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-        return new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, 1);
+        return new GetUserPhotosQuery(userId, PER_PAGE, 1);
     }
 
     @Override
     public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-        return new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, currentCount / PER_PAGE + 1);
+        return new GetUserPhotosQuery(userId, PER_PAGE, currentCount / PER_PAGE + 1);
     }
 
     @Override

@@ -45,6 +45,10 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
         return commandId;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     protected Observable<ActionState<UploadImageAction>> upload(File file) {
         return janet
                 .createPipe(UploadImageAction.class, Schedulers.io())

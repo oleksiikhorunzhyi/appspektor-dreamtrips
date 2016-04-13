@@ -9,24 +9,24 @@
     <FrameLayout
         android:id="@+id/photo_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="300dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/attached_photo"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="match_parent"
             fresco:actualImageScaleType="fitCenter"/>
 
         <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
             android:id="@+id/photo_post_taggable_holder"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="match_parent"
             android:visibility="visible"/>
 
         <View
             android:id="@+id/shadow"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="match_parent"
             android:background="@color/black_semi_transparent"
             android:visibility="gone"/>
 

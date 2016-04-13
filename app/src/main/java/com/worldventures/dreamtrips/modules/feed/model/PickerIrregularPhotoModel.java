@@ -8,7 +8,7 @@ import android.support.annotation.StringRes;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class AttachPhotoModel {
+public class PickerIrregularPhotoModel {
 
     public static final int CAMERA = 1;
     public static final int FACEBOOK = 2;
@@ -19,10 +19,10 @@ public class AttachPhotoModel {
 
     private int attachType;
 
-    public AttachPhotoModel(@AttachType int attachType,
-                            @DrawableRes int iconRes,
-                            @StringRes int titleRes,
-                            @ColorRes int colorRes) {
+    public PickerIrregularPhotoModel(@AttachType int attachType,
+                                     @DrawableRes int iconRes,
+                                     @StringRes int titleRes,
+                                     @ColorRes int colorRes) {
         this.attachType = attachType;
         this.iconRes = iconRes;
         this.titleRes = titleRes;

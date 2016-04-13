@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icepick.State;
+import io.techery.janet.ActionState;
 
 public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View> extends Presenter<V> {
 
@@ -110,7 +111,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         photoCreationItem.setOriginUrl(photo.getImagePath());
         photoCreationItem.setHeight(photo.getHeight());
         photoCreationItem.setWidth(photo.getWidth());
-        photoCreationItem.setStatus(UploadTask.Status.COMPLETED);
+        photoCreationItem.setStatus(ActionState.Status.START);
         photoCreationItem.setLocation(photo.getLocation().getName());
         photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
         return photoCreationItem;

@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
@@ -31,8 +31,10 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.ActionState;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
+import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_photo_post)
 public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
@@ -46,6 +48,8 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     @InjectView(R.id.shadow)
     View shadow;
+    @InjectView(R.id.photo_container)
+    View photoContainer;
     @InjectView(R.id.fab_progress)
     FabButton fabProgress;
     @InjectView(R.id.attached_photo)
@@ -61,6 +65,11 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     public PhotoPostCreationCell(View view) {
         super(view);
+        itemView.post(() -> {
+            if (itemView != null) {
+                photoContainer.getLayoutParams().width = itemView.getWidth();
+            }
+        });
     }
 
     private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
@@ -74,34 +83,49 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     @Override
     protected void syncUIStateWithModel() {
-        attachedPhoto.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
-        //
-        switch (getModelObject().getStatus()) {
-            case STARTED:
-                showProgress();
-                break;
-            case FAILED:
-                showError();
-                break;
-            case COMPLETED:
-                hideProgress();
-                showTagViewGroup();
-                break;
-        }
-        //
-        invalidateAddTagBtn();
-        //
-        attachedPhoto.setController(GraphicUtils.provideFrescoResizingController(
-                Uri.parse(getModelObject().getFilePath() == null
-                        ? getModelObject().getOriginUrl()
-                        : getModelObject().getFilePath()), attachedPhoto.getController()));
-        //
-        photoTitle.setText(getModelObject().getTitle());
-        photoTitle.addTextChangedListener(textWatcher);
+        itemView.post(() -> {
+            photoContainer.getLayoutParams().width = itemView.getWidth();
+            photoContainer.getLayoutParams().height = (int) (itemView.getWidth() / (float) getModelObject().getWidth() * getModelObject().getHeight());
+            photoContainer.requestLayout();
+            photoContainer.post(() -> {
+                switch (getModelObject().getStatus()) {
+                    case START:
+                        showProgress();
+                        break;
+                    case PROGRESS:
+                        break;
+                    case SUCCESS:
+                        hideProgress();
+                        break;
+                    case FAIL:
+                        showError();
+                        break;
+                }
+
+                try {
+                    PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(
+                            Uri.parse(getModelObject().getFilePath() == null
+                                    ? getModelObject().getOriginUrl()
+                                    : getModelObject().getFilePath()), attachedPhoto.getController(), itemView.getWidth());
+
+                    attachedPhoto.setController(draweeController);
+                } catch (Exception e) {
+                    Timber.e(e, "");
+                }
+                photoTitle.setText(getModelObject().getTitle());
+                photoTitle.addTextChangedListener(textWatcher);
+
+                photoTagHolder.removeAllViews();
+                if (getModelObject().getStatus() == ActionState.Status.SUCCESS) {
+                    showTagViewGroup();
+                }
+                invalidateAddTagBtn();
+            });
+
+        });
     }
 
     private void showTagViewGroup() {
-        photoTagHolder.removeAllViews();
         User user = userSessionHolder.get().get().getUser();
         PhotoTagHolderManager photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, user, user);
         photoTagHolderManager.show(attachedPhoto);
@@ -156,7 +180,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     }
 
     private void invalidateAddTagBtn() {
-        tagButton.setVisibility(getModelObject().getStatus() == UploadTask.Status.COMPLETED ? View.VISIBLE : View.GONE);
+        tagButton.setVisibility((getModelObject().getStatus() == ActionState.Status.SUCCESS) ? View.VISIBLE : View.GONE);
 
         if (getModelObject().getCombinedTags().isEmpty()) {
             tagButton.setText(R.string.tag_people);

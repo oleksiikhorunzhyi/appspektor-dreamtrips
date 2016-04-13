@@ -1,16 +1,18 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
-import com.worldventures.dreamtrips.core.api.UploadPurpose;
+import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
+import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.api.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.UploadPhotosCommand;
@@ -21,20 +23,19 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
 import rx.Observable;
 import rx.Subscription;
-import rx.observables.ConnectableObservable;
-import timber.log.Timber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
@@ -43,49 +44,39 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     @Inject
     MediaPickerManager mediaPickerManager;
 
-    PhotoUploadSubscriber photoUploadSubscriber;
+    @Inject
+    protected SocialUploaderyManager photoUploadManager;
+
     private Subscription mediaSubscription;
+    private Subscription uploadeySubscription;
 
     @Override
     public void takeView(V view) {
         super.takeView(view);
-        photoUploadSubscriber = new PhotoUploadSubscriber();
-        photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE).subscribe(photoUploadSubscriber);
-        photoUploadSubscriber.afterEach(uploadTask -> {
-            PhotoCreationItem task = Queryable.from(cachedCreationItems).firstOrDefault(cachedTask -> cachedTask.getId() == uploadTask.getId());
-            if (task != null) {
-                task.setStatus(uploadTask.getStatus());
-                task.setOriginUrl(uploadTask.getOriginUrl());
-                view.updateItem(task);
-                //
-                if (task.getStatus() == UploadTask.Status.COMPLETED) {
-                    ConnectableObservable<Bitmap> observable = ImageUtils.getBitmap(context, Uri.parse(task.getOriginUrl()), 0, 0).publish();
-                    requestFaceRecognition(observable).subscribe(suggestions -> {
-                        task.setSuggestions(suggestions);
-                        view.updateItem(task);
-                    });
-                    observable.subscribe(bitmap -> {
-                        task.setWidth(bitmap.getWidth());
-                        task.setHeight(bitmap.getHeight());
-                    });
-                    observable.connect();
-                }
-            }
-            //
-            invalidateDynamicViews();
-        });
-        Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
         //
-        mediaSubscription = mediaPickerManager.toObservable()
+        mediaSubscription = mediaPickerManager
+                .toObservable()
                 .filter(attachment -> attachment.requestId == getMediaRequestId())
                 .subscribe(this::attachImages);
+
+        Observable<ActionState<UploaderyImageCommand>> observable = photoUploadManager
+                .getTaskChangingObservable()
+                .compose(new IoToMainComposer<>());
+
+        uploadeySubscription = observable.subscribe(state -> {
+            PhotoCreationItem item = getPhotoCreationItemById(state.action.getCommandId());
+            if (item != null) {
+                item.setStatus(state.status);
+                if (state.status == ActionState.Status.SUCCESS) {
+                    item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult().getPhotoUploadResponse().getLocation());
+                    view.updateItem(item);
+                }
+            }
+        });
     }
 
-    protected Observable<List<PhotoTag>> requestFaceRecognition(Observable<Bitmap> observable) {
-        return observable.compose(bitmapObservable -> ImageUtils.getRecognizedFaces(context, bitmapObservable))
-                .doOnError(throwable -> Timber.e(throwable, ""))
-                .flatMap(Observable::from)
-                .toSortedList(Position.SORT_BY_POSITION);
+    protected PhotoCreationItem getPhotoCreationItemById(int id) {
+        return Queryable.from(cachedCreationItems).firstOrDefault(cachedTask -> cachedTask.getId() == id);
     }
 
     public abstract int getMediaRequestId();
@@ -93,9 +84,9 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     @Override
     public void dropView() {
         super.dropView();
-        if (!photoUploadSubscriber.isUnsubscribed()) photoUploadSubscriber.unsubscribe();
         //
         if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
+        if (!uploadeySubscription.isUnsubscribed()) uploadeySubscription.unsubscribe();
     }
 
     @Override
@@ -178,40 +169,43 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     private void imageSelected(MediaAttachment mediaAttachment) {
         if (view != null) {
-            List<PhotoCreationItem> newImages = new ArrayList<>();
-            Queryable.from(mediaAttachment.chosenImages).forEachR(photo -> {
-                PhotoCreationItem item = new PhotoCreationItem();
-                item.setFilePath(photo.getThumbnailPath());
-                item.setStatus(UploadTask.Status.STARTED);
-                String type = "";
-                switch (mediaAttachment.type) {
-                    case PickImageDelegate.CAPTURE_PICTURE:
-                        type = "camera";
-                        break;
-                    case PickImageDelegate.PICK_PICTURE:
-                        type = "album";
-                        break;
-                    case PickImageDelegate.FACEBOOK:
-                        type = "facebook";
-                        break;
-                }
-                item.setMediaAttachmentType(type);
-                newImages.add(item);
-            });
-            cachedCreationItems.addAll(newImages);
-            view.attachPhotos(newImages);
-            //
-            Queryable.from(newImages).forEachR(image -> {
-                if (ValidationUtils.isUrl(image.getFilePath())){
-                    doRequest(new CopyFileCommand(context, image.getFilePath()), s -> {
-                        image.setFilePath(s);
-                        startUpload(image);
+            Observable.from(mediaAttachment.chosenImages)
+                    .concatMap(this::convertPhotoCreationItem)
+                    .toList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(newImages -> {
+                        cachedCreationItems.addAll(newImages);
+                        view.attachPhotos(newImages);
+                        Queryable.from(newImages).forEachR(image -> {
+                            if (ValidationUtils.isUrl(image.getFilePath())) {
+                                doRequest(new CopyFileCommand(context, image.getFilePath()), s -> {
+                                    image.setFilePath(s);
+                                    startUpload(image);
+                                });
+                            } else {
+                                startUpload(image);
+                            }
+                        });
                     });
-                } else {
-                    startUpload(image);
-                }
-            });
+            //
         }
+    }
+
+    @NonNull
+    private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel) {
+        return ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getThumbnailPath()), 100, 100)
+                .subscribeOn(Schedulers.io())
+                .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable), bitmapObservable, (photoTags, bitmap) -> new Pair<>(bitmap, photoTags)))
+                .map(pair -> {
+                    PhotoCreationItem item = new PhotoCreationItem();
+                    item.setFilePath(photoGalleryModel.getThumbnailPath());
+                    item.setStatus(ActionState.Status.START);
+                    item.setWidth(pair.first.getWidth());
+                    item.setHeight(pair.first.getHeight());
+                    item.setSuggestions(pair.second);
+                    return item;
+                });
     }
 
     protected boolean isCachedUploadTaskEmpty() {
@@ -219,7 +213,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     }
 
     protected boolean isEntitiesReadyToPost() {
-        return Queryable.from(cachedCreationItems).firstOrDefault(item -> item.getStatus() != UploadTask.Status.COMPLETED) == null;
+        return Queryable.from(cachedCreationItems).firstOrDefault(item -> item.getStatus() != ActionState.Status.SUCCESS) == null;
     }
 
     ////////////////////////////////////////
@@ -228,9 +222,8 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     public void startUpload(PhotoCreationItem item) {
         UploadTask uploadTask = item.toUploadTask();
-        long upload = photoUploadingManager.upload(uploadTask, UploadPurpose.TRIP_IMAGE);
-        uploadTask.setId(upload);
-        item.setId(upload);
+        photoUploadManager.upload(uploadTask.getFilePath());
+        item.setId(uploadTask.getFilePath().hashCode());
     }
 
     public interface View extends ActionEntityPresenter.View {

@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -20,6 +22,10 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFr
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+
+import static rx.Observable.just;
 
 public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPresenter.View> {
 
@@ -40,7 +46,9 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
         //
         bindJobObservable(dtlMerchantManager.connectMerchantsWithCache())
                 .onError(apiErrorPresenter::handleError);
-        view.bind(dtlLocationManager.getLocationStream()).compose(new IoToMainComposer<>())
+        view.bind(dtlLocationManager.getSelectedLocation())
+                .map(DtlLocationCommand::getResult)
+                .compose(new IoToMainComposer<>())
                 .subscribe(view::updateToolbarTitle);
     }
 
@@ -63,24 +71,33 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     }
 
     private void preselectProperTab() {
-        int index;
+        Observable<Integer> observable;
         if (dtlMerchantManager.merchantTabSelectionIndexWasSet()) {
-            index = dtlMerchantManager.getMerchantTabSelectionIndex();
+            observable = just(dtlMerchantManager.getMerchantTabSelectionIndex());
         } else {
-            if (dtlLocationManager.isLocationExternal()) {
-                if (((DtlExternalLocation) dtlLocationManager.getSelectedLocation())
-                        .getPartnerCount() < 1) index = 1;
-                else index = 0;
-            } else {
-                if (!dtlMerchantManager.offerMerchantsPresent()) index = 1;
-                else index = 0;
-            }
+            observable = dtlLocationManager.getSelectedLocation()
+                    .map(DtlLocationCommand::getResult)
+                    .compose(bindViewIoToMainComposer())
+                    .flatMap(location -> {
+                        if (location.getLocationSourceType() == LocationSourceType.EXTERNAL) {
+                            if (((DtlExternalLocation) location).getPartnerCount() < 1)
+                                return just(1);
+                            else
+                                return just(0);
+                        } else {
+                            if (!dtlMerchantManager.offerMerchantsPresent())
+                                return just(1);
+                            else
+                                return just(0);
+                        }
+                    });
         }
-        //
-        trackTabChange(index);
-        //
-        view.preselectMerchantTabWithIndex(index);
-        view.setTabChangeListener();
+        observable.subscribe(index -> {
+            trackTabChange(index);
+            view.preselectMerchantTabWithIndex(index);
+            view.setTabChangeListener();
+        });
+
     }
 
     public Bundle prepareArgsForTab(int position) {
@@ -99,7 +116,10 @@ public class DtlMerchantsTabsPresenter extends JobPresenter<DtlMerchantsTabsPres
     }
 
     private void trackTab(String tabName) {
-        dtlMerchantManager.trackTabChange(tabName, dtlLocationManager.getCachedSelectedLocation());
+        dtlLocationManager.getSelectedLocation()
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(location -> dtlMerchantManager.trackTabChange(tabName, location));
     }
 
     public void rememberUserTabSelection(int newPosition) {

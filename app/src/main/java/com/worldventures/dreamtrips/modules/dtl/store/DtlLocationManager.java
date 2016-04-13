@@ -1,30 +1,38 @@
 package com.worldventures.dreamtrips.modules.dtl.store;
 
+import android.content.Context;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DtlApi;
-import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.transfromer.ListFilter;
-import com.worldventures.dreamtrips.core.rx.transfromer.ListSorter;
+import com.worldventures.dreamtrips.core.rx.goro.GoroScheduler;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlUpdateLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionHolder;
+import io.techery.janet.ActionPipe;
+import io.techery.janet.ActionService;
+import io.techery.janet.ActionServiceWrapper;
+import io.techery.janet.CommandActionService;
+import io.techery.janet.Janet;
+import io.techery.janet.JanetException;
+import io.techery.janet.ReadActionPipe;
 import rx.Observable;
-import rx.Subscription;
-import rx.subjects.BehaviorSubject;
-import techery.io.library.Job0Executor;
-import techery.io.library.Job1Executor;
+import rx.Scheduler;
 
 public class DtlLocationManager {
 
@@ -32,172 +40,199 @@ public class DtlLocationManager {
     DtlApi dtlApi;
     @Inject
     SnappyRepository db;
+    @ForApplication
     @Inject
-    RxApiFactory rxApiFactory;
+    Context context;
+
+    private ActionPipe<DtlNearbyLocationCommand> nearbyLocationPipe;
+    private ActionPipe<DtlSearchLocationCommand> searchLocationPipe;
+    private ActionPipe<DtlUpdateLocationCommand> updateLocationPipe;
+    private ActionPipe<DtlLocationCommand> locationPipe;
 
     public DtlLocationManager(Injector injector) {
         injector.inject(this);
+        init(new GoroScheduler(context));
     }
 
-    public DtlLocationManager(DtlApi dtlApi, SnappyRepository db, RxApiFactory rxApiFactory) {
+    public DtlLocationManager(DtlApi dtlApi, SnappyRepository db, Scheduler scheduler) {
         this.dtlApi = dtlApi;
         this.db = db;
-        this.rxApiFactory = rxApiFactory;
+        init(scheduler);
+    }
+
+    private void init(Scheduler scheduler) {
+        Janet janet = new Janet.Builder()
+                .addService(new SearchLocationWrapper(new CacheLocationWrapper(new CommandActionService()), dtlApi))
+                .build();
+        nearbyLocationPipe = janet.createPipe(DtlNearbyLocationCommand.class, scheduler);
+        searchLocationPipe = janet.createPipe(DtlSearchLocationCommand.class, scheduler);
+        updateLocationPipe = janet.createPipe(DtlUpdateLocationCommand.class, scheduler);
+        locationPipe = janet.createPipe(DtlLocationCommand.class, scheduler);
+        locationPipe.send(new DtlLocationCommand(db));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Nearby
     ///////////////////////////////////////////////////////////////////////////
 
-    public final Job1Executor<Location, List<DtlExternalLocation>> nearbyLocationExecutor =
-            new Job1Executor<>(this::loadNearby);
-    private Subscription nearbySubscription;
 
-    public void loadNearbyLocations(Location userLocation) {
-        nearbySubscription = nearbyLocationExecutor.createJobWith(userLocation).subscribe();
+    public ReadActionPipe<DtlNearbyLocationCommand> nearbyLocationPipe() {
+        return nearbyLocationPipe.asReadOnly();
     }
 
-    private Observable<List<DtlExternalLocation>> loadNearby(Location location) {
-        return rxApiFactory.composeApiCall(() ->
-                this.dtlApi.getNearbyLocations(location.getLatitude() + ","
-                        + location.getLongitude()));
+    public void loadNearbyLocations(Location location) {
+        nearbyLocationPipe.send(new DtlNearbyLocationCommand(dtlApi, location));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Search
     ///////////////////////////////////////////////////////////////////////////
 
-    private static final int API_SEARCH_QUERY_LENGHT = 3;
-
-    public final Job0Executor<List<DtlExternalLocation>> searchLocationExecutor =
-            new Job0Executor<>(this::search);
-
-    private Subscription searchSubscription;
-
-    private String query;
-    private List<DtlExternalLocation> searchLocations;
-
-    public String getQuery() {
-        return query;
+    public ReadActionPipe<DtlSearchLocationCommand> searchLocationPipe() {
+        return searchLocationPipe.asReadOnly();
     }
 
     public void searchLocations(String query) {
-        this.query = query;
-        // don't do anything if users enter 'local-search' query and searchLocations is still null
-        // if (shouldPerformLocalSearch() && searchLocations == null) return;
-        // cancel if user enters new 'non-local-search' query
-        if (!shouldPerformLocalSearch()
-                && searchSubscription != null
-                && !searchSubscription.isUnsubscribed())
-            searchSubscription.unsubscribe();
-        // cancel nearby call if search started
-        if (nearbySubscription != null && !nearbySubscription.isUnsubscribed())
-            nearbySubscription.unsubscribe();
-        //
-        searchSubscription = searchLocationExecutor.createJob().subscribe();
-    }
-
-    private Observable<List<DtlExternalLocation>> search() {
-        return Observable.concat(emptySearch(), localSearch(), apiSearch())
-                .first()
-                .compose(prepareLocations());
-    }
-
-    private Observable<List<DtlExternalLocation>> emptySearch() {
-        return shouldPerformEmptySearch()
-                ? Observable.from(Collections.<DtlExternalLocation>emptyList()).toList().doOnNext(locations -> cleanCache())
-                : Observable.empty();
-    }
-
-    private Observable<List<DtlExternalLocation>> apiSearch() {
-        return shouldPerformApiSearch()
-                ? rxApiFactory.composeApiCall(() -> this.dtlApi.searchLocations(query))
-                .doOnNext(this::cacheInMemory)
-                : Observable.empty();
-    }
-
-    private Observable<List<DtlExternalLocation>> localSearch() {
-        return shouldPerformLocalSearch() || (shouldPerformApiSearch() && searchLocations != null)
-                ? Observable.from(searchLocations).toList()
-                : Observable.empty();
-    }
-
-    private void cleanCache() {
-        searchLocations = null;
-    }
-
-    private void cacheInMemory(List<DtlExternalLocation> locations) {
-        searchLocations = locations;
-    }
-
-    private Observable.Transformer<List<DtlExternalLocation>, List<DtlExternalLocation>> prepareLocations() {
-        Comparator<DtlExternalLocation> comparator = DtlExternalLocation.provideComparator(query);
-        return observable -> observable
-                .compose(new ListFilter<>(dtlLocation ->
-                        dtlLocation.getLongName().toLowerCase().contains(query.toLowerCase())))
-                .compose(new ListSorter<>(comparator::compare));
-    }
-
-    private boolean shouldPerformEmptySearch() {
-        return query.length() < API_SEARCH_QUERY_LENGHT;
-    }
-
-    private boolean shouldPerformApiSearch() {
-        return query.length() == API_SEARCH_QUERY_LENGHT;
-    }
-
-    private boolean shouldPerformLocalSearch() {
-        return query.length() > API_SEARCH_QUERY_LENGHT;
+        nearbyLocationPipe.cancelLatest();
+        searchLocationPipe.cancelLatest();
+        searchLocationPipe.send(DtlSearchLocationCommand.createEmpty(query));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Persisted location
     ///////////////////////////////////////////////////////////////////////////
 
-    private DtlLocation persistedLocation;
-    private BehaviorSubject<DtlLocation> locationStream = BehaviorSubject.create();
-
-    public Observable<DtlLocation> getLocationStream() {
-        return locationStream.asObservable();
-    }
 
     public void cleanLocation() {
-        persistedLocation = null;
-        db.cleanDtlLocation();
-        locationStream.onNext(null);
+        locationPipe.send(new DtlLocationCommand(DtlLocation.UNDEFINED));
+        updateLocationPipe.send(new DtlUpdateLocationCommand(db, DtlLocation.UNDEFINED));
     }
 
     public void persistLocation(DtlLocation location) {
-        persistedLocation = location;
-        db.saveDtlLocation(location);
-        db.cleanLastMapCameraPosition(); // need clean last map camera position
-        locationStream.onNext(location);
+        locationPipe.send(new DtlLocationCommand(location));
+        updateLocationPipe.send(new DtlUpdateLocationCommand(db, location));
     }
 
-    @Nullable
-    public DtlLocation getSelectedLocation() {
-        return persistedLocation;
+    public Observable<DtlLocationCommand> getSelectedLocation() {
+        return locationPipe.createObservableSuccess(new DtlLocationCommand(db));
     }
 
-    @NonNull
-    public DtlLocation getCachedSelectedLocation() {
-        if (persistedLocation == null) {
-            persistedLocation = db.getDtlLocation();
-            locationStream.onNext(persistedLocation);
+    private final static class CacheLocationWrapper extends ActionServiceWrapper {
+
+        private DtlLocation lastLocation;
+
+        public CacheLocationWrapper(CommandActionService actionService) {
+            super(actionService);
         }
-        return persistedLocation;
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
+            if (holder.action() instanceof DtlLocationCommand) {
+                if (((DtlLocationCommand) holder.action()).isFromDB()
+                        && lastLocation != null
+                        && lastLocation.getLocationSourceType() != LocationSourceType.UNDEFINED) {
+                    holder.newAction((A) new DtlLocationCommand(lastLocation));
+                }
+            }
+            return false;
+        }
+
+        @Override
+        protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+        }
+
+        @Override
+        protected <A> void onInterceptStart(ActionHolder<A> holder) {
+        }
+
+        @Override
+        protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+        }
+
+        @Override
+        protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+            if (holder.action() instanceof DtlLocationCommand) {
+                lastLocation = ((DtlLocationCommand) holder.action()).getResult();
+            }
+        }
+
+        @Override
+        protected <A> void onInterceptFail(ActionHolder<A> holder, JanetException e) {
+        }
     }
 
-    // TODO :: 3/24/16 migrate to usage of methods below throughout DTL
-    public boolean isLocationExternal() {
-        return getCachedSelectedLocation().getLocationSourceType() == LocationSourceType.EXTERNAL;
-    }
+    private final static class SearchLocationWrapper extends ActionServiceWrapper {
 
-    public boolean isLocationFromMap() {
-        return getCachedSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP;
-    }
+        private static final int API_SEARCH_QUERY_LENGTH = 3;
 
-    public boolean isLocationNearMe() {
-        return getCachedSelectedLocation().getLocationSourceType() == LocationSourceType.NEAR_ME;
+        private final DtlApi api;
+
+        private volatile Pair<String, List<DtlExternalLocation>> cache;
+
+        public SearchLocationWrapper(ActionService actionService, DtlApi api) {
+            super(actionService);
+            this.api = api;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
+            if (holder.action() instanceof DtlSearchLocationCommand) {
+                A newAction;
+                String query = ((DtlSearchLocationCommand) holder.action()).getQuery();
+                if (query.length() < API_SEARCH_QUERY_LENGTH) {
+                    newAction = (A) DtlSearchLocationCommand.createEmpty(query);
+                    cache = null;
+                } else if (cache != null && query.toLowerCase().startsWith(cache.first)) {
+                    newAction = (A) DtlSearchLocationCommand.createWith(filter(cache.second, query), query);
+                } else {
+                    String apiQuery = query.substring(0, API_SEARCH_QUERY_LENGTH);
+                    newAction = (A) DtlSearchLocationCommand.createApiSearch(api, apiQuery, query);
+                }
+                holder.newAction(newAction);
+            }
+            return false;
+        }
+
+        @Override
+        protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+        }
+
+        @Override
+        protected <A> void onInterceptStart(ActionHolder<A> holder) {
+        }
+
+        @Override
+        protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+            if (holder.action() instanceof DtlSearchLocationCommand) {
+                DtlSearchLocationCommand action = (DtlSearchLocationCommand) holder.action();
+                if (action.isFromApi()) {
+                    String query = action.getQuery().toLowerCase();
+                    String key = query.substring(0, Math.min(query.length(), API_SEARCH_QUERY_LENGTH));
+                    cache = new Pair<>(key, new ArrayList<>(action.getResult()));
+                    if (query.length() > key.length()) {
+                        action.getResult().clear();
+                        action.getResult().addAll(filter(cache.second, query));
+                    }
+                }
+            }
+        }
+
+        private static List<DtlExternalLocation> filter(List<DtlExternalLocation> result, String query) {
+            return Queryable.from(result)
+                    .filter((element, index) -> element.getLongName().toLowerCase().contains(query.toLowerCase()))
+                    .sort(DtlExternalLocation.provideComparator(query))
+                    .toList();
+        }
+
+        @Override
+        protected <A> void onInterceptFail(ActionHolder<A> holder, JanetException e) {
+        }
     }
 }

@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.module.dtl.repository;
 
 import com.worldventures.dreamtrips.core.api.DtlApi;
-import com.worldventures.dreamtrips.core.api.factory.RxApiFactory;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 
@@ -11,6 +11,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -22,14 +25,12 @@ public class DtlLocationManagerTest {
     DtlApi dtlApi;
     @Mock
     SnappyRepository db;
-    @Mock
-    RxApiFactory rxApiFactory;
     //
     private DtlLocationManager dtlLocationManager;
 
     @Before
     public void beforeEachTest() {
-        dtlLocationManager = new DtlLocationManager(dtlApi, db, rxApiFactory);
+        dtlLocationManager = new DtlLocationManager(dtlApi, db, Schedulers.immediate());
     }
 
     @Test
@@ -38,7 +39,7 @@ public class DtlLocationManagerTest {
         //
         dtlLocationManager.persistLocation(location);
         //
-        assertThat(dtlLocationManager.getSelectedLocation()).isEqualTo(location);
+        checkPersistedLocation(location);
     }
 
     @Test
@@ -51,6 +52,16 @@ public class DtlLocationManagerTest {
         locationNew.setId("newId");
         dtlLocationManager.persistLocation(locationNew);
         //
-        assertThat(dtlLocationManager.getSelectedLocation()).isEqualTo(locationNew);
+        checkPersistedLocation(locationNew);
+    }
+
+    private void checkPersistedLocation(DtlExternalLocation location) {
+        TestSubscriber<DtlLocationCommand> subscriber = new TestSubscriber<>();
+        dtlLocationManager.getSelectedLocation().subscribe(subscriber);
+        subscriber.unsubscribe();
+        subscriber.assertNoErrors();
+        subscriber.assertValueCount(1);
+        subscriber.assertUnsubscribed();
+        assertThat(subscriber.getOnNextEvents().get(0).getResult()).isEqualTo(location);
     }
 }

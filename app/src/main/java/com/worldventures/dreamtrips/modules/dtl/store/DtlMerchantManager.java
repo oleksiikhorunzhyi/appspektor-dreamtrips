@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -91,15 +92,17 @@ public class DtlMerchantManager {
     }
 
     private Observable<LatLng> combineLocationObservable() {
-        return locationDelegate.getLastKnownLocationOrEmpty()
-                .onErrorResumeNext(Observable.empty())
-                .switchIfEmpty(locationDelegate.requestLocationUpdate()
-                        .take(1)
-                        .timeout(1000L, TimeUnit.MILLISECONDS)
-                        .onErrorReturn(throwable -> dtlLocationManager.getCachedSelectedLocation()
-                                .getCoordinates().asAndroidLocation()))
-                .map(location -> DtlLocationHelper.selectAcceptableLocation(location,
-                        dtlLocationManager.getCachedSelectedLocation()));
+        return dtlLocationManager.getSelectedLocation()
+                .filter(DtlLocationCommand::isResultDefined)
+                .map(DtlLocationCommand::getResult)
+                .flatMap(location -> locationDelegate.getLastKnownLocationOrEmpty()
+                        .onErrorResumeNext(Observable.empty())
+                        .switchIfEmpty(locationDelegate.requestLocationUpdate()
+                                .take(1)
+                                .timeout(1000L, TimeUnit.MILLISECONDS)
+                                .onErrorReturn(throwable -> location.getCoordinates().asAndroidLocation()))
+                        .map(last -> DtlLocationHelper.selectAcceptableLocation(last,
+                                location)));
     }
 
     private List<DtlMerchant> filterMerchants(LatLng latLng, List<DtlMerchant> dtlMerchants, DtlFilterData filterData) {
@@ -212,19 +215,22 @@ public class DtlMerchantManager {
     }
 
     private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-        LocationSourceType sourceType = dtlLocationManager.getSelectedLocation().getLocationSourceType();
-
-        if ((sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)
-                && !dtlMerchants.isEmpty()) {
-            DtlMerchant nearestMerchant = dtlMerchants.get(0);
-            DtlManualLocation oldLocation = (DtlManualLocation) dtlLocationManager.getSelectedLocation();
-            DtlLocation updatedLocation = ImmutableDtlManualLocation
-                    .copyOf(oldLocation)
-                    .withLongName(sourceType == LocationSourceType.FROM_MAP
-                            ? nearestMerchant.getCity() : oldLocation.getLongName())
-                    .withAnalyticsName(nearestMerchant.getAnalyticsName());
-            dtlLocationManager.persistLocation(updatedLocation);
-        }
+        dtlLocationManager.getSelectedLocation()
+                .filter(command -> {
+                    LocationSourceType sourceType = command.getResult().getLocationSourceType();
+                    return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)
+                            && !dtlMerchants.isEmpty();
+                })
+                .map(DtlLocationCommand::getResult)
+                .subscribe(location -> {
+                    DtlMerchant nearestMerchant = dtlMerchants.get(0);
+                    DtlLocation updatedLocation = ImmutableDtlManualLocation
+                            .copyOf((DtlManualLocation) location)
+                            .withLongName(location.getLocationSourceType() == LocationSourceType.FROM_MAP
+                                    ? nearestMerchant.getCity() : location.getLongName())
+                            .withAnalyticsName(nearestMerchant.getAnalyticsName());
+                    dtlLocationManager.persistLocation(updatedLocation);
+                });
     }
 
     /**

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
@@ -336,6 +335,7 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
     // Image Tasks
     ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Use it from PhotoUploadManager
      */
@@ -537,7 +537,7 @@ public class SnappyRepository {
     @Nullable
     public DtlLocation getDtlLocation() {
         return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class))
-                .orNull();
+                .or(DtlLocation.UNDEFINED);
     }
 
     public void saveDtlMerhants(List<DtlMerchant> merchants) {
@@ -562,27 +562,27 @@ public class SnappyRepository {
         clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
     }
 
-    public void saveLastMapCameraPosition(Location location){
+    public void saveLastMapCameraPosition(Location location) {
         act(db -> db.put(DTL_LAST_MAP_POSITION, location));
     }
 
-    public Location getLastMapCameraPosition(){
+    public Location getLastMapCameraPosition() {
         return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
     }
 
-    public void cleanLastMapCameraPosition(){
+    public void cleanLastMapCameraPosition() {
         clearAllForKey(DTL_LAST_MAP_POSITION);
     }
 
-    public void saveLastSelectedOffersOnlyToogle(boolean state){
+    public void saveLastSelectedOffersOnlyToogle(boolean state) {
         act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
     }
 
-    public Boolean getLastSelectedOffersOnlyToggle(){
+    public Boolean getLastSelectedOffersOnlyToggle() {
         return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
     }
 
-    public void cleanLastSelectedOffersOnlyToggle(){
+    public void cleanLastSelectedOffersOnlyToggle() {
         clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
     }
 

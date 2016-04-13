@@ -8,6 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -64,53 +65,48 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
         proceedNavigation(null);
     }
 
-    /**
-     * Determines whether we can proceed without locating device by GPS.
-     */
-    private boolean needsLocation() {
-        DtlLocation persistedLocation = dtlLocationManager.getSelectedLocation();
-        return persistedLocation != null && persistedLocation.getLocationSourceType() == LocationSourceType.NEAR_ME;
-    }
-
     public void proceedNavigation(@Nullable Location newLocation) {
-        DtlLocation persistedLocation = dtlLocationManager.getSelectedLocation();
-        if (persistedLocation == null) {
-            if (newLocation == null) navigatePath(DtlLocationsPath.getDefault());
-            else {
-                DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
-                        .locationSourceType(LocationSourceType.NEAR_ME)
-                        .longName(context.getString(R.string.dtl_near_me_caption))
-                        .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
-                        .build();
-                dtlLocationManager.persistLocation(dtlLocation);
-                navigatePath(new DtlMerchantsPath());
-            }
-        } else {
-            switch (persistedLocation.getLocationSourceType()) {
-                case NEAR_ME:
-                    if (newLocation == null) { // we had location before, but not now - and we need it
-                        dtlLocationManager.cleanLocation();
-                        dtlMerchantManager.clean();
-                        navigatePath(DtlLocationsPath.getDefault());
-                        break;
+        dtlLocationManager.getSelectedLocation()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(command -> {
+                    if (!command.isResultDefined()) {
+                        if (newLocation == null) navigatePath(DtlLocationsPath.getDefault());
+                        else {
+                            DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
+                                    .locationSourceType(LocationSourceType.NEAR_ME)
+                                    .longName(context.getString(R.string.dtl_near_me_caption))
+                                    .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
+                                    .build();
+                            dtlLocationManager.persistLocation(dtlLocation);
+                            navigatePath(new DtlMerchantsPath());
+                        }
+                    } else {
+                        switch (command.getResult().getLocationSourceType()) {
+                            case NEAR_ME:
+                                if (newLocation == null) { // we had location before, but not now - and we need it
+                                    dtlLocationManager.cleanLocation();
+                                    dtlMerchantManager.clean();
+                                    navigatePath(DtlLocationsPath.getDefault());
+                                    break;
+                                }
+                                //
+                                if (!DtlLocationHelper.checkLocation(0.5, newLocation,
+                                        command.getResult().getCoordinates().asAndroidLocation(), DistanceType.MILES))
+                                    dtlMerchantManager.clean();
+                                //
+                                navigatePath(new DtlMerchantsPath());
+                                break;
+                            case FROM_MAP:
+                                navigatePath(new DtlMerchantsPath());
+                                break;
+                            case EXTERNAL:
+                                TrackingHelper.dtlLocationLoaded(
+                                        ((DtlExternalLocation) command.getResult()).getId());
+                                navigatePath(new DtlMerchantsPath());
+                                break;
+                        }
                     }
-                    //
-                    if (!DtlLocationHelper.checkLocation(0.5, newLocation,
-                            persistedLocation.getCoordinates().asAndroidLocation(), DistanceType.MILES))
-                        dtlMerchantManager.clean();
-                    //
-                    navigatePath(new DtlMerchantsPath());
-                    break;
-                case FROM_MAP:
-                    navigatePath(new DtlMerchantsPath());
-                    break;
-                case EXTERNAL:
-                    TrackingHelper.dtlLocationLoaded(
-                            ((DtlExternalLocation) dtlLocationManager.getSelectedLocation()).getId());
-                    navigatePath(new DtlMerchantsPath());
-                    break;
-            }
-        }
+                });
     }
 
     private void navigatePath(Path path) {
@@ -120,16 +116,22 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
 
     /**
      * Check if given error's cause is insufficient GPS resolution or usual throwable and act accordingly
+     *
      * @param e exception that {@link LocationDelegate} subscription returned
      */
     private void onLocationError(Throwable e) {
-        if (!needsLocation()) {
-            proceedNavigation(null);
-            return;
-        } else {
-            if (e instanceof LocationDelegate.LocationException)
-                getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-            else onLocationResolutionDenied();
-        }
+        dtlLocationManager.getSelectedLocation()
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(location -> {
+                    // Determines whether we can proceed without locating device by GPS.
+                    if (location.getLocationSourceType() == LocationSourceType.NEAR_ME) {
+                        proceedNavigation(null);
+                    } else {
+                        if (e instanceof LocationDelegate.LocationException)
+                            getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
+                        else onLocationResolutionDenied();
+                    }
+                });
     }
 }

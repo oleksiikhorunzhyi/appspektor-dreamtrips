@@ -1,15 +1,19 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.MerchantClickedEvent;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import rx.android.schedulers.AndroidSchedulers;
 
-public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresenter.View> {
+public class DtlMerchantsHostPresenter extends JobPresenter<DtlMerchantsHostPresenter.View> {
 
     @Inject
     DtlMerchantManager dtlMerchantManager;
@@ -29,8 +33,12 @@ public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresent
     }
 
     private void loadMerchants() {
-        dtlMerchantManager.loadMerchants(dtlLocationManager.getCachedSelectedLocation()
-                .getCoordinates().asAndroidLocation());
+        dtlLocationManager.getSelectedLocation()
+                .filter(DtlLocationCommand::isResultDefined)
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(location -> dtlMerchantManager.loadMerchants(location
+                        .getCoordinates().asAndroidLocation()));
     }
 
     public void onEvent(final MerchantClickedEvent event) {
@@ -40,7 +48,7 @@ public class DtlMerchantsHostPresenter extends Presenter<DtlMerchantsHostPresent
         }
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void showDetails(String id);
 

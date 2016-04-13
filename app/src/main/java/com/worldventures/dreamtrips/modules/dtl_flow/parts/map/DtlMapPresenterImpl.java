@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -34,8 +35,11 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
+
+import static rx.Observable.just;
 
 @SuppressWarnings("ConstantConditions")
 public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewState.EMPTY> implements DtlMapPresenter {
@@ -95,7 +99,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     private void bindLocationStream() {
-        dtlLocationManager.getLocationStream()
+        dtlLocationManager.getSelectedLocation()
+                .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(getView()::updateToolbarTitle);
     }
@@ -110,21 +115,32 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         getView().tryHideMyLocationButton(hide);
     }
 
-    protected Location getFirstCenterLocation() {
-        Location lastPosition = db.getLastMapCameraPosition();
-        DtlLocation lastSelectedLocation = dtlLocationManager.getCachedSelectedLocation();
-        return lastPosition != null ? lastPosition : (lastSelectedLocation != null ?
-                lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
+    protected Observable<Location> getFirstCenterLocation() {
+        return dtlLocationManager.getSelectedLocation()
+                .map(command -> {
+                    Location lastPosition = db.getLastMapCameraPosition();
+                    boolean validLastPosition = lastPosition != null && lastPosition.getLat() != 0 && lastPosition.getLng() != 0;
+                    DtlLocation lastSelectedLocation = command.getResult();
+                    return validLastPosition ? lastPosition : (command.isResultDefined() ?
+                            lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
+                });
     }
 
     protected Observable<Boolean> showingLoadMerchantsButton() {
         return MapObservableFactory.createCameraChangeObservable(getView().getMap())
                 .doOnNext(position -> getView().cameraPositionChange(position))
                 .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
-                .map(position -> position.zoom < MapViewUtils.DEFAULT_ZOOM ||
-                        !DtlLocationHelper.checkLocation(MAX_DISTANCE,
-                                dtlLocationManager.getCachedSelectedLocation().getCoordinates().asLatLng(),
-                                position.target, DistanceType.MILES));
+                .flatMap(position -> {
+                    if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
+                        return just(true);
+                    }
+                    return dtlLocationManager.getSelectedLocation()
+                            .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE,
+                                    command.getResult().getCoordinates().asLatLng(),
+                                    position.target, DistanceType.MILES));
+                })
+                .compose(bindViewIoToMainComposer())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -133,14 +149,19 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         getView().showProgress(false);
         getView().showButtonLoadMerchants(false);
         //
-        if (dtlMerchants.isEmpty() && dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP)
-            getView().informUser(R.string.dtl_no_merchants_caption);
-        //
-        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
-            getView().zoom(MapViewUtils.DEFAULT_ZOOM);
-        //
-        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() != LocationSourceType.NEAR_ME)
-            getView().addLocationMarker(dtlLocationManager.getSelectedLocation().getCoordinates().asLatLng());
+        dtlLocationManager.getSelectedLocation()
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(location -> {
+                    if (dtlMerchants.isEmpty() && location.getLocationSourceType() == LocationSourceType.FROM_MAP)
+                        getView().informUser(R.string.dtl_no_merchants_caption);
+                    //
+                    if (location.getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
+                        getView().zoom(MapViewUtils.DEFAULT_ZOOM);
+                    //
+                    if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)
+                        getView().addLocationMarker(location.getCoordinates().asLatLng());
+                });
     }
 
     @Override
@@ -154,7 +175,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
             case R.id.action_list:
                 Flow.get(getContext()).goBack();
                 return true;
-            case R.id.action_dtl_filter :
+            case R.id.action_dtl_filter:
                 getView().openFilter();
                 return true;
         }
@@ -189,7 +210,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         mapReady = true;
         connectMerchants();
         //
-        getView().centerIn(getFirstCenterLocation());
+        getFirstCenterLocation()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(getView()::centerIn);
         //
         showingLoadMerchantsButton()
                 .compose(bindView())

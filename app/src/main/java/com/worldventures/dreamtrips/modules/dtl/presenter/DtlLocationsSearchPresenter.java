@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -14,6 +15,8 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlLocationsSearchPresenter extends JobPresenter<DtlLocationsSearchPresenter.View> {
 
@@ -26,15 +29,17 @@ public class DtlLocationsSearchPresenter extends JobPresenter<DtlLocationsSearch
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        connectLocationsSearchExecutor();
+        connectLocationsSearch();
         view.showDefaultCaption(true);
     }
 
-    private void connectLocationsSearchExecutor() {
-        bindJobCached(dtlLocationManager.searchLocationExecutor)
-                .onProgress(view::showProgress)
-                .onError(this::onSearchError)
-                .onSuccess(this::onSearchFinished);
+    private void connectLocationsSearch() {
+        dtlLocationManager.searchLocationPipe().observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlSearchLocationCommand>()
+                        .onStart(command -> view.showProgress())
+                        .onFail((command, throwable) -> onSearchError(throwable))
+                        .onSuccess(this::onSearchFinished));
     }
 
     public void onLocationSelected(DtlExternalLocation location) {
@@ -54,10 +59,11 @@ public class DtlLocationsSearchPresenter extends JobPresenter<DtlLocationsSearch
         dtlLocationManager.searchLocations(query);
     }
 
-    public void onSearchFinished(List<DtlExternalLocation> locations) {
+    private void onSearchFinished(DtlSearchLocationCommand command) {
+        List<DtlExternalLocation> locations = command.getResult();
         view.hideProgress();
         view.setItems(locations);
-        if (TextUtils.isEmpty(dtlLocationManager.getQuery()) && !locations.isEmpty())
+        if (TextUtils.isEmpty(command.getQuery()) && !locations.isEmpty())
             view.showDefaultCaption(false);
     }
 

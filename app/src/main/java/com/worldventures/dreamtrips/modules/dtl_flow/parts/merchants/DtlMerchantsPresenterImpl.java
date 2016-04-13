@@ -8,6 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
@@ -56,8 +57,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         bindMerchantManager();
         bindFilteredStream();
         //
-        dtlMerchantManager.loadMerchants(
-                dtlLocationManager.getSelectedLocation().getCoordinates().asAndroidLocation());
+        dtlLocationManager.getSelectedLocation()
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(location -> dtlMerchantManager.loadMerchants(location.getCoordinates().asAndroidLocation()));
         //
         if (!getView().isTabletLandscape())
             dtlMerchantManager.getMerchantsExecutor.connectSuccessOnly()
@@ -70,9 +73,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .subscribe(new JobSubscriber<List<DtlMerchant>>()
                         .onError(apiErrorPresenter::handleError));
         //
-        dtlLocationManager.getLocationStream()
+        dtlLocationManager.getSelectedLocation()
+                .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(getView()::updateToolbarTitle);
+                .subscribe(location -> getView().updateToolbarTitle(location));
     }
 
     private void bindFilteredStream() {
@@ -128,10 +132,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     protected void navigateToLocations() {
-            Flow.get(getContext()).set(DtlLocationsPath.builder()
-                    .allowUserGoBack(true)
-                    .showNoMerchantsCaption(true)
-                    .build());
+        Flow.get(getContext()).set(DtlLocationsPath.builder()
+                .allowUserGoBack(true)
+                .showNoMerchantsCaption(true)
+                .build());
     }
 
     @Override
@@ -142,9 +146,15 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     @Override
     public void merchantClicked(DtlMerchant merchant) {
         if (!TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery())) {
-            TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
-                    dtlMerchantManager.getCurrentQuery(),
-                    dtlLocationManager.getCachedSelectedLocation());
+            dtlLocationManager.getSelectedLocation()
+                    .map(DtlLocationCommand::getResult)
+                    .compose(bindViewIoToMainComposer())
+                    .subscribe(location -> {
+                        TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
+                                dtlMerchantManager.getCurrentQuery(),
+                                location);
+                    })
+            ;
         }
         Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId()));
     }

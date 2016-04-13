@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMapBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.DtlMerchantDetailsBundle;
@@ -18,7 +19,7 @@ import butterknife.InjectView;
 import icepick.State;
 
 @Layout(R.layout.fragment_dtl_merchants_host)
-public class DtlMerchantsHostFragment extends BaseFragment<DtlMerchantsHostPresenter>
+public class DtlMerchantsHostFragment extends RxBaseFragment<DtlMerchantsHostPresenter>
         implements DtlMerchantsHostPresenter.View {
 
     @InjectView(R.id.dtl_landscape_slave_container)

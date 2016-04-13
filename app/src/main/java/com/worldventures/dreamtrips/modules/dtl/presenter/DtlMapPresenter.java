@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -33,8 +34,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static rx.Observable.just;
 
 public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
 
@@ -77,8 +81,10 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     private void bindLocationStream() {
-        view.bind(dtlLocationManager.getLocationStream()).compose(new IoToMainComposer<>())
-                .subscribe(view::updateToolbarTitle);
+        view.bind(dtlLocationManager.getSelectedLocation())
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(location -> view.updateToolbarTitle(location));
     }
 
     private Observable<Boolean> prepareFilterToogle() {
@@ -90,8 +96,11 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     public void onMapLoaded() {
         mapReady = true;
         //
-        view.centerIn(getFirstCenterLocation());
-        view.bind(showingLoadMerchantsButton()).subscribe(show -> view.showButtonLoadMerchants(show));
+        getFirstCenterLocation()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(view::centerIn);
+        view.bind(showingLoadMerchantsButton())
+                .subscribe(show -> view.showButtonLoadMerchants(show));
         view.bind(MapObservableFactory.createMarkerClickObservable(view.getMap())).subscribe(marker -> view.markerClick(marker));
         //
         checkPendingMapInfo();
@@ -102,25 +111,35 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
     }
 
     protected void tryHideMyLocationButton(boolean hide) {
-        if(view != null) view.tryHideMyLocationButton(hide);
+        if (view != null) view.tryHideMyLocationButton(hide);
     }
 
-    protected Location getFirstCenterLocation() {
-        Location lastPosition = db.getLastMapCameraPosition();
-        DtlLocation lastSelectedLocation = dtlLocationManager.getCachedSelectedLocation();
-        return lastPosition != null ? lastPosition : (lastSelectedLocation != null ?
-                lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
+    protected Observable<Location> getFirstCenterLocation() {
+        return dtlLocationManager.getSelectedLocation()
+                .take(1)
+                .compose(bindViewIoToMainComposer())
+                .map(command -> {
+                    Location lastPosition = db.getLastMapCameraPosition();
+                    DtlLocation lastSelectedLocation = command.getResult();
+                    return lastPosition != null ? lastPosition : (command.isResultDefined() ?
+                            lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
+                });
     }
 
     protected Observable<Boolean> showingLoadMerchantsButton() {
-        return MapObservableFactory.createCameraChangeObservable(view.getMap())
+        return view.bind(MapObservableFactory.createCameraChangeObservable(view.getMap())
                 .doOnNext(position -> view.cameraPositionChange(position))
                 .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
-                .map(position ->
-                        position.zoom < MapViewUtils.DEFAULT_ZOOM ||
-                                !DtlLocationHelper.checkLocation(MAX_DISTANCE,
-                                        dtlLocationManager.getCachedSelectedLocation().getCoordinates().asLatLng(),
-                                        position.target, DistanceType.MILES));
+                .flatMap(position -> {
+                    if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
+                        return just(true);
+                    }
+                    return dtlLocationManager.getSelectedLocation()
+                            .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE,
+                                    command.getResult().getCoordinates().asLatLng(),
+                                    position.target, DistanceType.MILES));
+                })
+                .observeOn(AndroidSchedulers.mainThread()));
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -129,16 +148,22 @@ public class DtlMapPresenter extends JobPresenter<DtlMapPresenter.View> {
         view.showProgress(false);
         view.showButtonLoadMerchants(false);
         //
-        if (dtlMerchants.isEmpty() &&
-                dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP)
-            view.informUser(R.string.dtl_no_merchants_caption);
-        //
-        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.FROM_MAP &&
-                view.getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
-            view.zoom(MapViewUtils.DEFAULT_ZOOM);
-        //
-        if (dtlLocationManager.getSelectedLocation().getLocationSourceType() != LocationSourceType.NEAR_ME)
-            view.addLocationMarker(dtlLocationManager.getSelectedLocation().getCoordinates().asLatLng());
+        dtlLocationManager.getSelectedLocation()
+                .filter(DtlLocationCommand::isResultDefined)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(command -> {
+                    if (dtlMerchants.isEmpty() &&
+                            command.getResult().getLocationSourceType() == LocationSourceType.FROM_MAP)
+                        view.informUser(R.string.dtl_no_merchants_caption);
+                    //
+                    if (command.getResult().getLocationSourceType() == LocationSourceType.FROM_MAP &&
+                            view.getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
+                        view.zoom(MapViewUtils.DEFAULT_ZOOM);
+                    //
+                    if (command.getResult().getLocationSourceType() != LocationSourceType.NEAR_ME)
+                        view.addLocationMarker(command.getResult().getCoordinates().asLatLng());
+                });
+
     }
 
     public void onMarkerClick(String merchantId) {

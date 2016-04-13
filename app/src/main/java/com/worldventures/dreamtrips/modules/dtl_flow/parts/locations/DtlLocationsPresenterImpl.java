@@ -7,6 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
@@ -27,8 +28,8 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
-import techery.io.library.JobSubscriber;
 
 public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScreen, ViewState.EMPTY>
         implements DtlLocationsPresenter {
@@ -59,12 +60,13 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
         //
         tryHideNearMeButton();
         //
-        connectNearbyLocationsExecutor();
+        connectNearbyLocations();
         //
         locationRequestNoFallback = gpsLocationDelegate.requestLocationUpdate()
                 .compose(bindViewIoToMainComposer())
                 .timeout(15, TimeUnit.SECONDS)
-                .subscribe(this::onLocationObtained, throwable -> {});
+                .subscribe(this::onLocationObtained, throwable -> {
+                });
     }
 
     @Override
@@ -113,13 +115,15 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     }
 
     private void tryHideNearMeButton() {
-        if (dtlLocationManager.getSelectedLocation() != null &&
-                dtlLocationManager.getSelectedLocation().getLocationSourceType() == LocationSourceType.NEAR_ME)
-            getView().hideNearMeButton();
+        dtlLocationManager.getSelectedLocation()
+                .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(command -> getView().hideNearMeButton());
     }
 
     /**
      * Check if given error's cause is insufficient GPS resolution or usual throwable and act accordingly
+     *
      * @param e exception that {@link LocationDelegate} subscription returned
      */
     private void onLocationError(Throwable e) {
@@ -139,18 +143,18 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     // Nearby stuff
     ///////////////////////////////////////////////////////////////////////////
 
-    private void connectNearbyLocationsExecutor() {
-        dtlLocationManager.nearbyLocationExecutor.connectWithCache()
+    private void connectNearbyLocations() {
+        dtlLocationManager.nearbyLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new JobSubscriber<List<DtlExternalLocation>>()
-                        .onProgress(getView()::showProgress)
-                        .onError(apiErrorPresenter::handleError)
+                .subscribe(new ActionStateSubscriber<DtlNearbyLocationCommand>()
+                        .onStart(command -> getView().showProgress())
+                        .onFail((command, throwable) -> apiErrorPresenter.handleError(throwable))
                         .onSuccess(this::onLocationsLoaded));
     }
 
-    private void onLocationsLoaded(List<DtlExternalLocation> locations) {
+    private void onLocationsLoaded(DtlNearbyLocationCommand command) {
         getView().hideProgress();
-        showLoadedLocations(locations);
+        showLoadedLocations(command.getResult());
     }
 
     private void showLoadedLocations(List<DtlExternalLocation> locations) {

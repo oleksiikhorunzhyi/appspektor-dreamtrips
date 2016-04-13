@@ -9,6 +9,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -21,7 +22,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
-import techery.io.library.JobSubscriber;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
         implements DtlLocationsSearchPresenter {
@@ -42,22 +43,23 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
         super.onAttachedToWindow();
         getView().toggleDefaultCaptionVisibility(true);
         //
-        connectLocationsSearchExecutor();
+        connectLocationsSearch();
     }
 
-    private void connectLocationsSearchExecutor() {
-        dtlLocationManager.searchLocationExecutor.connectWithCache()
+    private void connectLocationsSearch() {
+        dtlLocationManager.searchLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new JobSubscriber<List<DtlExternalLocation>>()
-                        .onProgress(getView()::showProgress)
-                        .onError(this::onSearchError)
+                .subscribe(new ActionStateSubscriber<DtlSearchLocationCommand>()
+                        .onStart(command -> getView().showProgress())
+                        .onFail((command, throwable) -> onSearchError(throwable))
                         .onSuccess(this::onSearchFinished));
     }
 
-    private void onSearchFinished(List<DtlExternalLocation> locations) {
+    private void onSearchFinished(DtlSearchLocationCommand command) {
+        List<DtlExternalLocation> locations = command.getResult();
         getView().hideProgress();
         getView().setItems(locations);
-        if (TextUtils.isEmpty(dtlLocationManager.getQuery()) && !locations.isEmpty())
+        if (TextUtils.isEmpty(command.getQuery()) && !locations.isEmpty())
             getView().toggleDefaultCaptionVisibility(false);
     }
 

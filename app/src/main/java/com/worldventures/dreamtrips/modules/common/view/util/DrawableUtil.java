@@ -125,4 +125,11 @@ public class DrawableUtil {
         cacheDir.mkdir();
         return cacheDir;
     }
+
+    public static boolean isFileImage(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getPath(), options);
+        return options.outWidth != -1 && options.outHeight != -1;
+    }
 }

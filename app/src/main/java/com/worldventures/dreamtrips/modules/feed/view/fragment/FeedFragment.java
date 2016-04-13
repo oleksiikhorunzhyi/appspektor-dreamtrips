@@ -189,6 +189,13 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         refreshFeedItems(feedItems, needLoader);
     }
 
+    @Override
+    public void refreshFeedItems(List events, boolean needLoader) {
+        if (isNeedToSaveSuggestions(events)) events.add(0, adapter.getItem(0));
+        //
+        super.refreshFeedItems(events, needLoader);
+    }
+
     @Optional
     @OnClick(R.id.share_post)
     protected void onPostClicked() {
@@ -215,5 +222,11 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Override
     public void onCellClicked(MediaAttachment model) {
         // nothing to do
+    }
+
+    private boolean isNeedToSaveSuggestions(List events) {
+        return adapter.getCount() > 0 && adapter.getItem(0) instanceof MediaAttachment && events.size() >= 0
+                && !(events.get(0) instanceof MediaAttachment
+                && getPresenter().isHasNewPhotos(((MediaAttachment) adapter.getItem(0)).chosenImages));
     }
 }

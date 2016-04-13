@@ -29,7 +29,7 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
         Cursor cursor = null;
         String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
         ArrayList<PhotoGalleryModel> photos = new ArrayList<>();
-
+        //
         try {
             cursor = MediaStore.Images.Media.query(context.getContentResolver(),
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -37,11 +37,9 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
                     "",
                     null,
                     MediaStore.Images.Media.DATE_TAKEN + " DESC");
-
             if (cursor != null) {
                 int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
                 int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
-
                 while (cursor.moveToNext()) {
                     String path = cursor.getString(dataColumn);
                     long dateTaken = cursor.getLong(dateColumn);
@@ -60,7 +58,6 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
                 }
             }
         }
-
         return photos;
     }
 }

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
+import com.worldventures.dreamtrips.modules.feed.api.SuggestedPhotosRequest;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -29,8 +29,6 @@ import icepick.State;
 import rx.Subscription;
 
 public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
-
-    public static final int SUGGESTED_PHOTOS_COUNT = 15;
 
     @Inject
     SnappyRepository db;
@@ -76,22 +74,17 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
                 .filter(ParentFeedItem::isSingle)
                 .map(element -> element.getItems().get(0))
                 .toList());
-
-        doRequest(new PhotoGalleryRequest(context), photos -> {
+        //
+        doRequest(new SuggestedPhotosRequest(), photos -> {
             if (isHasNewPhotos(photos)) {
-                long lastSuggestedTime = db.getLastSuggestedPhotosSyncTime();
-                List<PhotoGalleryModel> suggestedPhotos = Queryable.from(photos)
-                        .filter(photo -> photo.getDateTaken() > lastSuggestedTime)
-                        .take(SUGGESTED_PHOTOS_COUNT)
-                        .toList();
-                view.refreshFeedItems(feedItems, suggestedPhotos, !noMoreFeeds);
+                view.refreshFeedItems(feedItems, photos, !noMoreFeeds);
             } else {
                 view.refreshFeedItems(feedItems, !noMoreFeeds);
             }
         }, error -> view.refreshFeedItems(feedItems, !noMoreFeeds));
     }
 
-    private boolean isHasNewPhotos(List<PhotoGalleryModel> photos) {
+    public boolean isHasNewPhotos(List<PhotoGalleryModel> photos) {
         return photos != null && photos.size() > 0 && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
     }
 

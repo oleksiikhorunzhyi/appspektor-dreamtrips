@@ -625,6 +625,6 @@
 
     <string name="suggested_photos_multiple">You have %d new photos</string>
     <string name="suggested_photos_one">You have %d new photo</string>
-    <string name="share_recent_photos">Share recent photos</string>
+    <string name="share_recent_photos">Share photos</string>
 
 </resources>

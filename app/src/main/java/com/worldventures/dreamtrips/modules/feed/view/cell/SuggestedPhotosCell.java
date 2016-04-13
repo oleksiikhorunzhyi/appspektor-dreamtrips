@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -17,6 +18,7 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -45,6 +47,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
+    @Inject
+    SnappyRepository db;
 
     @InjectView(R.id.suggestion_avatar)
     SmartAvatarView avatar;
@@ -75,11 +79,12 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         //
         userName.setText(user.getFullName());
         //
-        if (getModelObject().chosenImages.size() > 0) {
-            int stringRes = QuantityHelper.chooseResource(getModelObject().chosenImages.size(),
+        int newPhotosCount = getNewPhotosCount();
+        if (newPhotosCount > 0) {
+            int stringRes = QuantityHelper.chooseResource(newPhotosCount,
                     R.string.suggested_photos_one, R.string.suggested_photos_multiple);
             description.setText(String.format(itemView.getContext().getString(stringRes),
-                    getModelObject().chosenImages.size()));
+                    newPhotosCount));
             description.setVisibility(View.VISIBLE);
         } else {
             description.setVisibility(View.GONE);
@@ -102,6 +107,11 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         } else {
             cardViewWrapper.setCardElevation(0);
         }
+    }
+
+    private int getNewPhotosCount() {
+        long lastSyncTime = db.getLastSuggestedPhotosSyncTime();
+        return Queryable.from(getModelObject().chosenImages).count(photo -> photo.getDateTaken() > lastSyncTime);
     }
 
     @Override

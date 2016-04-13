@@ -32,7 +32,7 @@ public class SuggestionPhotoCell extends AbstractDelegateCell<PhotoGalleryModel,
     protected void syncUIStateWithModel() {
         setImage(Uri.parse(getModelObject().getThumbnailPath()), photo);
         //
-        pick.setVisibility(getModelObject().isChecked() ? View.VISIBLE : View.GONE);
+        pick.setImageResource(getModelObject().isChecked() ? R.drawable.add_photo_icon_selected : R.drawable.add_photo_icon);
         darkenedView.setVisibility(getModelObject().isChecked() ? View.VISIBLE : View.GONE);
         //
         itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));

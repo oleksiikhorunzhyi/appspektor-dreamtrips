@@ -37,6 +37,10 @@ public class ChatFacadeManager {
         chatMessagesDelegate.onSendMessage(message);
     }
 
+    public void onErrorMessage(Message message) {
+        chatMessagesDelegate.onErrorMessage(message);
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void onChatInvited(String conversationId){

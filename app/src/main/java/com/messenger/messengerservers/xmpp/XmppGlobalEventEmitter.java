@@ -104,6 +104,11 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         notifyGlobalMessage(message, EVENT_PRE_OUTGOING);
     }
 
+    public void interceptErrorMessage(com.messenger.messengerservers.model.Message message) {
+        message.setFromId(facade.getUsername());
+        notifyGlobalMessage(message, EVENT_OUTGOING_ERROR);
+    }
+
     private void interceptIncomingMessage(Stanza packet) {
         if (!facade.isActive()) return;
 

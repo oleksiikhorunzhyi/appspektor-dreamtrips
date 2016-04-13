@@ -609,7 +609,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .conversationId(conversationId)
                 .build())
                 .subscribeOn(Schedulers.io())
-                .subscribe());
+                .subscribe(msg -> {}, throwable -> Timber.e("Error while sending massage")));
         return true;
     }
 
@@ -629,7 +629,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         submitOneChatAction(chat -> {
             Message message = dataMessage.toChatMessage();
             message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
-            chat.send(message).subscribe();
+            chat.send(message).subscribe(msg -> {}, throwable -> Timber.e(throwable, "Error while resending message"));
         });
     }
 

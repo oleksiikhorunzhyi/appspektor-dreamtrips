@@ -23,6 +23,7 @@ public abstract class GlobalEventEmitter {
     protected static final int EVENT_PRE_OUTGOING = 0x777;
     protected static final int EVENT_OUTGOING = 0x778;
     protected static final int EVENT_INCOMING = 0x779;
+    protected static final int EVENT_OUTGOING_ERROR = 0x780;
     protected List<GlobalMessageListener> globalMessageListeners = new CopyOnWriteArrayList<>();
     protected List<PresenceListener> presenceListeners = new CopyOnWriteArrayList<>();
     protected List<FriendsAddedListener> friendsAddedListeners = new CopyOnWriteArrayList<>();
@@ -55,6 +56,10 @@ public abstract class GlobalEventEmitter {
             case EVENT_INCOMING:
                 for (GlobalMessageListener listener : globalMessageListeners)
                     listener.onReceiveMessage(message);
+                break;
+            case EVENT_OUTGOING_ERROR:
+                for (GlobalMessageListener listener : globalMessageListeners)
+                    listener.onErrorMessage(message);
                 break;
             default:
                 break;

@@ -41,6 +41,11 @@ public class ChatFacadeInitializer implements AppInitializer {
             public void onSendMessage(Message message) {
                 chatFacadeManager.onSendMessage(message);
             }
+
+            @Override
+            public void onErrorMessage(Message message) {
+                chatFacadeManager.onErrorMessage(message);
+            }
         });
 
         emitter.addOnSubjectChangesListener(chatFacadeManager::onSubjectChanged);

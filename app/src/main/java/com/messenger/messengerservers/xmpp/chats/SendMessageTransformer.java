@@ -33,12 +33,16 @@ class SendMessageTransformer implements Observable.Transformer<Message, Message>
                         sendAction.call(messageConverter.convert(message));
                     } catch (Throwable throwable) {
                         Timber.e(throwable, "send message");
+
+                        message.setStatus(MessageStatus.ERROR);
+                        emitter.interceptErrorMessage(message);
+
                         subscriber.onError(throwable);
                     }
                     message.setStatus(MessageStatus.SENT);
                     subscriber.onNext(message);
                     subscriber.onCompleted();
                 }))
-                    .doOnNext(emitter::interceptOutgoingMessages);
-                }
+                .doOnNext(emitter::interceptOutgoingMessages);
+    }
     }

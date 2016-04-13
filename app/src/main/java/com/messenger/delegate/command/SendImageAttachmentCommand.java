@@ -67,8 +67,8 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
         urlObservable
                 .flatMap(this::sendMessage)
                 .map(m -> message)
-                .subscribe(message -> onSentSuccess(message, callback),
-                        throwable -> onSentFail(throwable, callback));
+                .subscribe(message -> callback.onSuccess(message),
+                        throwable -> callback.onFail(throwable));
     }
 
     private boolean isFile(String filePath) {
@@ -137,17 +137,5 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
         Chat chat = getChat();
         return chat.send(msg)
                 .doOnNext(m -> chat.close());
-    }
-
-    private void onSentSuccess(DataMessage message, CommandCallback<DataMessage> callback) {
-        message.setStatus(MessageStatus.SENT);
-        messageDAO.save(message);
-        callback.onSuccess(message);
-    }
-
-    private void onSentFail(Throwable throwable, CommandCallback<DataMessage> callback) {
-        message.setStatus(MessageStatus.ERROR);
-        messageDAO.save(message);
-        callback.onFail(throwable);
     }
 }

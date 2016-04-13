@@ -15,7 +15,6 @@ import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -52,8 +51,8 @@ public class SendLocationAttachmentCommand extends BaseChatAction<DataMessage> {
         startSending();
         sendLocationMessage(locationAttachment.getLat(), locationAttachment.getLng())
                 .map(msg -> message)
-                .subscribe(message -> onSentSuccess(message, callback),
-                        throwable -> onSentFail(throwable, callback));
+                .subscribe(message -> callback.onSuccess(message),
+                        throwable -> callback.onFail(throwable));
     }
 
     private void startSending() {
@@ -78,19 +77,5 @@ public class SendLocationAttachmentCommand extends BaseChatAction<DataMessage> {
         Chat chat = getChat();
         return chat.send(msg)
                 .doOnNext(m -> chat.close());
-    }
-
-    private void onSentSuccess(DataMessage message, CommandActionBase.CommandCallback<DataMessage> callback) {
-        message.setStatus(MessageStatus.SENT);
-        messageDAO.save(message);
-        callback.onSuccess(message);
-    }
-
-    private void onSentFail(Throwable throwable, CommandActionBase.CommandCallback<DataMessage> callback) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, Calendar.getInstance().getMaximum(Calendar.YEAR));
-        message.setStatus(MessageStatus.ERROR);
-        saveMessage(calendar.getTimeInMillis());
-        callback.onFail(throwable);
     }
 }

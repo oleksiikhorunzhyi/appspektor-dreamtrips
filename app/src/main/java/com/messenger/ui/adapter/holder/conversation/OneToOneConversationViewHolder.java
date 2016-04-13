@@ -1,12 +1,8 @@
-package com.messenger.ui.adapter.holder;
+package com.messenger.ui.adapter.holder.conversation;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataMessage;
-import com.messenger.entities.DataUser;
 import com.messenger.ui.widget.AvatarView;
 import com.worldventures.dreamtrips.R;
 

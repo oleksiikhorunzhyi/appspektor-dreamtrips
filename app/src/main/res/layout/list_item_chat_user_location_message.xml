@@ -43,37 +43,9 @@
             android:background="@drawable/dark_grey_bubble_comics"
             >
 
-
-            <TextView
-                android:id="@+id/chat_message"
-                style="@style/ChatMessageTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/chat_color_message"
-                tools:text="Hello, my name is Peter Parker"
-                />
-
-            <ProgressBar
-                android:id="@+id/translation_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
+            <include layout="@layout/rounded_map_view"/>
 
         </FrameLayout>
-
-        <TextView
-            android:id="@+id/translation_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/message_container"
-            android:layout_marginLeft="@dimen/chat_list_translation_margin"
-            android:layout_marginStart="@dimen/chat_list_translation_margin"
-            android:layout_marginTop="@dimen/spacing_tiny"
-            android:layout_toEndOf="@id/chat_item_avatar"
-            android:layout_toRightOf="@id/chat_item_avatar"
-            android:textSize="@dimen/chat_list_translation_status_size"
-            />
 
     </RelativeLayout>
 </LinearLayout>

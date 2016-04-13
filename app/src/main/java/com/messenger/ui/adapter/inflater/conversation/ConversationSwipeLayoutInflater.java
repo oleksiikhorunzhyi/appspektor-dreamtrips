@@ -1,4 +1,4 @@
-package com.messenger.ui.adapter.inflater;
+package com.messenger.ui.adapter.inflater.conversation;
 
 import android.view.View;
 
@@ -6,6 +6,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
+import com.messenger.ui.adapter.inflater.ViewInflater;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.SwipeClickListener;
 import com.worldventures.dreamtrips.R;

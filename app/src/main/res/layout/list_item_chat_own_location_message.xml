@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:orientation="vertical">
 
     <include layout="@layout/list_item_chat_date_entry"/>
@@ -11,29 +11,18 @@
         android:id="@+id/chat_message_container"
         style="@style/ChatMessageContainerStyle"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/message_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_width="@dimen/chat_image_width"
+            android:layout_height="@dimen/chat_image_height"
             android:layout_alignParentRight="true"
-            android:background="@drawable/blue_bubble_comics"
-            >
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/blue_bubble_comics_image_post">
 
-            <TextView
-                android:id="@+id/chat_message"
-                style="@style/ChatMessageTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:textColor="@color/chat_color_message_own"
-                android:textColorLink="@color/chat_color_message_own"
-                tools:text="Hello, how r u?"
-                tools:textColor="@color/black"
-                />
+            <include layout="@layout/rounded_map_view"/>
 
         </FrameLayout>
 
@@ -67,5 +56,9 @@
                 android:layout_gravity="center"/>
         </ViewSwitcher>
 
+
     </RelativeLayout>
+
 </LinearLayout>
+
+

@@ -1,88 +1,70 @@
 package com.messenger.ui.adapter.holder.chat;
 
 import android.graphics.drawable.Animatable;
+import android.support.annotation.DrawableRes;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ViewSwitcher;
 
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.ui.adapter.MessagesCursorAdapter;
 import com.messenger.util.Utils;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements MessageHolder.OwnMessageHolder {
+public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
 
     @InjectView(R.id.view_switcher)
-    ViewSwitcher viewSwitcher;
-
-    private MessagesCursorAdapter.OnRepeatMessageSend onRepeatMessageSendListener;
+    ViewSwitcher retrySwitcher;
 
     public OwnImageMessageViewHolder(View itemView) {
         super(itemView);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) imagePostView.getLayoutParams();
-        params.setMargins(freeSpaceForMessageRowOwnMessage, params.topMargin, params.rightMargin,
-                params.bottomMargin);
-        errorView.setOnClickListener(view -> {
-            reloadImage();
-            if (message.getStatus() == MessageStatus.ERROR) {
-                if (onRepeatMessageSendListener != null) {
-                    onRepeatMessageSendListener.onRepeatMessageSend(message);
-                }
-            }
-        });
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // General message logic
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void setBubbleBackground() {
-        int backgroundResource;
-        if (isPreviousMessageFromTheSameUser) {
-            itemView.setPadding(itemView.getPaddingLeft(), 0, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = isSelected ? R.drawable.dark_blue_bubble_image_post : R.drawable.blue_bubble_image_post;
-        } else {
-            itemView.setPadding(itemView.getPaddingLeft(), rowVerticalMargin, itemView.getPaddingRight(), itemView.getPaddingBottom());
-            backgroundResource = isSelected ? R.drawable.dark_blue_bubble_comics_image_post : R.drawable.blue_bubble_comics_image_post;
-        }
-        imagePostView.setBackgroundResource(backgroundResource);
     }
 
     @Override
-    public void updateMessageStatusUi(boolean needMarkUnreadMessage) {
-        super.updateMessageStatusUi(needMarkUnreadMessage);
-        if (message.getStatus() == MessageStatus.SENDING) {
+    @DrawableRes
+    protected int provideBackgroundForFollowing() {
+        return selected ? R.drawable.dark_blue_bubble_image_post : R.drawable.blue_bubble_image_post;
+    }
+
+    @Override
+    @DrawableRes
+    protected int provideBackgroundForInitial() {
+        return selected ? R.drawable.dark_blue_bubble_comics_image_post : R.drawable.blue_bubble_comics_image_post;
+    }
+
+    @Override
+    public void updateMessageStatusUi() {
+        super.updateMessageStatusUi();
+        if (dataMessage.getStatus() == MessageStatus.SENDING) {
             applyLoadingStatusUi();
             imagePostView.setAlpha(ALPHA_IMAGE_POST_SENDING);
         }
-        boolean visible = message.getStatus() == MessageStatus.ERROR;
-        int viewVisible = visible ? View.VISIBLE : View.GONE;
-        if (viewVisible != viewSwitcher.getVisibility()) {
-            viewSwitcher.setVisibility(viewVisible);
+
+        boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;
+        int viewVisible = isError ? View.VISIBLE : View.GONE;
+        if (viewVisible != retrySwitcher.getVisibility()) {
+            retrySwitcher.setVisibility(viewVisible);
         }
-        if (visible && viewSwitcher.getCurrentView().getId() == R.id.progress_bar) {
-            viewSwitcher.showPrevious();
+        if (isError && retrySwitcher.getCurrentView().getId() == R.id.progress_bar) {
+            retrySwitcher.showPrevious();
         }
-        chatMessageContainer.setBackgroundResource(R.color.chat_list_item_read_read_background);
     }
 
-    @OnClick(R.id.iv_message_error)
+
+    @OnClick(R.id.chat_image_error)
     void onMessageErrorClicked() {
-        if (onRepeatMessageSendListener != null) {
-            onRepeatMessageSendListener.onRepeatMessageSend(message);
-            viewSwitcher.showNext();
-        }
+        if (dataMessage.getStatus() == MessageStatus.ERROR) {
+            cellDelegate.onRetryClicked(dataMessage);
+        } else loadImage();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Image message logic
-    ///////////////////////////////////////////////////////////////////////////
+    @OnClick(R.id.retry)
+    void onRetry() {
+        cellDelegate.onRetryClicked(dataMessage);
+    }
 
     @Override
     protected BaseControllerListener<ImageInfo> getLoadingListener() {
@@ -94,15 +76,15 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
 
             @Override
             public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                if (message.getStatus() != MessageStatus.SENDING) {
+                if (dataMessage.getStatus() != MessageStatus.SENDING) {
                     progressBar.setVisibility(View.GONE);
                 }
 
                 //TODO should be refactored
-                if (message.getStatus() == MessageStatus.ERROR &&
+                if (dataMessage.getStatus() == MessageStatus.ERROR &&
                         Utils.isFileUri(imagePostUri)) {
                     errorView.setVisibility(View.VISIBLE);
-                    viewSwitcher.setVisibility(View.GONE);
+                    retrySwitcher.setVisibility(View.GONE);
                 }
             }
 
@@ -113,12 +95,4 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder implements
         };
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Own message logic
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void setOnRepeatMessageListener(MessagesCursorAdapter.OnRepeatMessageSend listener) {
-        this.onRepeatMessageSendListener = listener;
-    }
 }

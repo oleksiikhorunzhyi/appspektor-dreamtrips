@@ -24,9 +24,11 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.adapter.MessagesCursorAdapter;
-import com.messenger.ui.adapter.holder.chat.MessageHolder;
+import com.messenger.ui.adapter.ChatAdapter;
+import com.messenger.ui.adapter.ChatCellDelegate;
+import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -51,8 +53,6 @@ import butterknife.OnEditorAction;
 import rx.Observable;
 import timber.log.Timber;
 
-import com.messenger.ui.model.AttachmentMenuItem;
-
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
         implements ChatScreen {
 
@@ -69,8 +69,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ViewGroup contentView;
     @InjectView(R.id.chat_loading_view)
     View loadingView;
-//    @InjectView(R.id.chat_error_view)
-//    View errorView;
 
     @InjectView(R.id.chat_toolbar)
     Toolbar toolbar;
@@ -92,7 +90,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     private ToolbarPresenter toolbarPresenter;
 
-    private MessagesCursorAdapter adapter;
+    private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
@@ -168,18 +166,35 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
 
-    protected MessagesCursorAdapter createAdapter() {
-        MessagesCursorAdapter adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(),
-                localeHelper.getAccountLocaleFormatted(sessionHolder.get().get().getUser()), null);
-        ChatScreenPresenter presenter = getPresenter();
-        adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
-        adapter.setAvatarClickListener(presenter::openUserProfile);
-        adapter.setOnImageClickListener(presenter::onImageClicked);
-        adapter.setMessageLongClickListener(presenter::onShowContextualMenu);
+    protected ChatAdapter createAdapter() {
+        ChatAdapter adapter = new ChatAdapter(null);
+        injector.inject(adapter);
+        adapter.setCellDelegate(chatCellDelegate);
         adapter.setNeedMarkUnreadMessages(true);
-        //adapter.setMessageClickListener(message -> //do something);
         return adapter;
     }
+
+    private ChatCellDelegate chatCellDelegate = new ChatCellDelegate() {
+        @Override
+        public void onAvatarClicked(DataUser dataUser) {
+            getPresenter().openUserProfile(dataUser);
+        }
+
+        @Override
+        public void onImageClicked(String attachmentId) {
+            getPresenter().onImageClicked(attachmentId);
+        }
+
+        @Override
+        public void onMessageLongClicked(DataMessage dataMessage) {
+            presenter.onShowContextualMenu(dataMessage);
+        }
+
+        @Override
+        public void onRetryClicked(DataMessage dataMessage) {
+            presenter.retrySendMessage(dataMessage);
+        }
+    };
 
     @Override
     public void enableSendMessageButton(boolean enable) {
@@ -212,7 +227,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     public void showAttachmentMenu(AttachmentMenuItem[] items) {
         new AlertDialog.Builder(getContext())
                 .setItems(Queryable.from(items).map(item -> item.getTitle()).toArray(),
-                (dialog, which) -> getPresenter().onAttachmentMenuItemChosen(items[which]))
+                        (dialog, which) -> getPresenter().onAttachmentMenuItemChosen(items[which]))
                 .show();
     }
 
@@ -267,7 +282,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         int firstVisibleViewTop = 0;
         int cursorCountDiff = 0;
         View firstItemView = null;
-        if (cursor != null && adapter.getCursor() != null) {
+        if (adapter.getCursor() != null) {
             int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
             firstItemView = linearLayoutManager.findViewByPosition(firstItem);
             if (firstItemView != null) {
@@ -283,7 +298,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
             // to calculate proper offset measure if first visible view will be different in height
             // (e.g. because of the missing date divider) when new cursor will is assigned
-            MessageHolder messageHolder = adapter.onCreateViewHolder(recyclerView,
+            MessageViewHolder messageHolder = adapter.onCreateViewHolder(recyclerView,
                     adapter.getItemViewType(position));
             adapter.onBindViewHolderCursor(messageHolder, cursor);
             messageHolder.itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
@@ -291,7 +306,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             int offset = firstVisibleViewTop + diffHeight;
 
             linearLayoutManager.scrollToPositionWithOffset(position, offset);
-        } else if (cursor != null && cursor.getCount() == 1) {
+        } else if (cursor.getCount() == 1) {
             getPresenter().onLastVisibleMessageChanged(cursor, 0);
         }
     }

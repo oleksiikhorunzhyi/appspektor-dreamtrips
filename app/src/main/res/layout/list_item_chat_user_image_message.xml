@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
     <include layout="@layout/list_item_chat_date_entry"/>
 
     <RelativeLayout
         android:id="@+id/chat_message_container"
+        style="@style/ChatMessageContainerStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        style="@style/ChatMessageContainerStyle"
         >
+
         <com.facebook.drawee.view.SimpleDraweeView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/chat_item_avatar"
+            style="@style/ChatAvatarImageView"
+            android:layout_below="@+id/chat_username"
             app:placeholderImage="@drawable/noavatar_small"
             app:roundAsCircle="true"
-            android:layout_below="@+id/chat_username"
-            style="@style/ChatAvatarImageView"/>
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/chat_image_post_image_view"
-            android:background="@drawable/blue_bubble_comics_image_post"
-            app:placeholderImage="@color/chat_list_item_image_post_blue_loading_background"
-            app:roundedCornerRadius="@dimen/chat_list_image_post_rounded_corners_radius"
-            android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
-            android:layout_toRightOf="@id/chat_item_avatar"
-            android:layout_below="@+id/chat_username"
-            android:layout_gravity="center_vertical"
-            style="@style/ChatImageMessageImageView"/>
+            tools:background="@drawable/noavatar_small"/>
 
         <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/chat_image_post_image_view"
-            android:layout_alignRight="@id/chat_image_post_image_view"
-            android:layout_alignTop="@id/chat_image_post_image_view"
-            android:layout_alignBottom="@id/chat_image_post_image_view">
+            android:id="@+id/message_container"
+            android:layout_width="@dimen/chat_image_width"
+            android:layout_height="@dimen/chat_image_height"
+            android:layout_below="@+id/chat_username"
+            android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
+            android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
+            android:layout_toRightOf="@id/chat_item_avatar"
+            android:layout_toEndOf="@id/chat_item_avatar"
+            android:background="@drawable/grey_bubble_comics_image_post">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/chat_image_post_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:placeholderImage="@color/chat_list_item_image_post_blue_loading_background"
+                app:roundedCornerRadius="@dimen/chat_list_image_post_rounded_corners_radius"/>
 
             <ProgressBar
                 android:id="@+id/chat_image_post_progress_bar"
@@ -46,17 +47,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="gone"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/chat_image_post_image_view"
-            android:layout_alignRight="@id/chat_image_post_image_view"
-            android:layout_alignTop="@id/chat_image_post_image_view"
-            android:layout_alignBottom="@id/chat_image_post_image_view"
-            >
 
             <ImageView
                 android:id="@+id/chat_image_error"
@@ -66,13 +56,15 @@
                 android:padding="18dp"
                 android:src="@drawable/ic_error_red_400_18dp"
                 android:visibility="gone"/>
-
         </FrameLayout>
+
 
         <TextView
             android:id="@+id/chat_username"
-            android:layout_alignLeft="@id/chat_image_post_image_view"
-            style="@style/ChatUsernameTextView"/>
+            style="@style/ChatUsernameTextView"
+            android:layout_alignLeft="@+id/message_container"
+            android:layout_alignStart="@+id/message_container"
+            tools:text="Peter Parker"/>
 
     </RelativeLayout>
 

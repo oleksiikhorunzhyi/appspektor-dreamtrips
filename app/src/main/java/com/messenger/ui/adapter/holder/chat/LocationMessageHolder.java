@@ -23,4 +23,10 @@ public abstract class LocationMessageHolder extends MessageViewHolder {
                 DataLocationAttachment.class, cursor);
         liteMapInflater.setLocation(dataLocationAttachment.getLat(), dataLocationAttachment.getLng());
     }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        liteMapInflater.clear();
+    }
 }

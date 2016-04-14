@@ -9,10 +9,13 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.techery.spares.adapter.expandable.BaseExpandableAdapter;
+import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -26,7 +29,10 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellNew;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlOfferCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
 import java.util.List;
@@ -60,7 +66,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     @InjectView(R.id.merchant_holder_offers)
     protected TextView emptyTextView;
     //
-    BaseDelegateAdapter<DtlMerchant> baseDelegateAdapter;
+    BaseExpandableAdapter<DtlMerchant> baseDelegateAdapter;
     SearchViewHelper searchViewHelper;
     //
     SelectionManager selectionManager;
@@ -71,16 +77,18 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new ExpandableLayoutManager(getActivity()));
         //
-        baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
-        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantCellNew.class);
-        baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
+        baseDelegateAdapter = new BaseExpandableAdapter<>(getActivity(), injector);
+        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantExpandableCell.class);
+        baseDelegateAdapter.registerCell(DtlOffer.class, DtlOfferCell.class);
+
+        //baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
         //
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
         //
-        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
+        recyclerView.setAdapter(baseDelegateAdapter);
         recyclerView.setEmptyView(emptyView);
         //
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);

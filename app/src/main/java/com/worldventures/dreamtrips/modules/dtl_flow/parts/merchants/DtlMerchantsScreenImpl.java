@@ -117,6 +117,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                 .debounce(250L, TimeUnit.MILLISECONDS)
                 .filter(s -> !dtlToolbar.isCollapsed())
                 .compose(RxLifecycle.bindView(this))
+                .doOnNext(searchQuery -> dtlToolbar.updateAppliedSearchQuery(searchQuery))
                 .subscribe(getPresenter()::applySearch);
         RxDtlToolbar.locationInputFocusChanges(dtlToolbar)
                 .skip(1)
@@ -131,46 +132,19 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         return super.onSaveInstanceState();
     }
 
-//    @Override
-//    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
-//        if (dtlLocation == null || toolbar == null) return; // for safety reasons
-//        //
-//        TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
-//        TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
-//        //
-//        if (locationTitle == null || locationModeCaption == null) return;
-//        //
-//        switch (dtlLocation.getLocationSourceType()) {
-//            case NEAR_ME:
-//            case EXTERNAL:
-//                locationTitle.setText(dtlLocation.getLongName());
-//                locationModeCaption.setVisibility(View.GONE);
-//                break;
-//            case FROM_MAP:
-//                if (dtlLocation.getLongName() == null) {
-//                    locationModeCaption.setVisibility(View.GONE);
-//                    locationTitle.setText(R.string.dtl_nearby_caption);
-//                } else {
-//                    locationModeCaption.setVisibility(View.VISIBLE);
-//                    locationTitle.setText(dtlLocation.getLongName());
-//                }
-//                break;
-//        }
-//    }
-
     @Override
-    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
+    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
+                                   @Nullable String actualSearchQuery) {
         if (dtlLocation == null) return;
-        // TODO :: 4/11/16 null as searchQuery below must be re-done once ready
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:
-                dtlToolbar.setToolbarCaptions(null, dtlLocation.getLongName());
+                dtlToolbar.setToolbarCaptions(actualSearchQuery, dtlLocation.getLongName());
                 break;
             case FROM_MAP:
                 String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
                         getContext().getString(R.string.dtl_nearby_caption) : dtlLocation.getLongName();
-                dtlToolbar.setToolbarCaptions(null, locationTitle);
+                dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
                 break;
         }
     }

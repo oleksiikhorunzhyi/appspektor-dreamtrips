@@ -85,7 +85,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         dtlLocationManager.getSelectedLocation()
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(location -> getView().updateToolbarTitle(location));
+                .subscribe(location -> getView().updateToolbarTitle(location,
+                        dtlMerchantManager.getCurrentQuery()));
     }
 
     private void bindFilteredStream() {

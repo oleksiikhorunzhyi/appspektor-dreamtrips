@@ -107,6 +107,10 @@ public class DtlToolbar extends LinearLayout {
         return collapsed;
     }
 
+    public void updateAppliedSearchQuery(String query) {
+        this.searchQuery = searchQuery;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Essential private and package-private stuff
     ///////////////////////////////////////////////////////////////////////////

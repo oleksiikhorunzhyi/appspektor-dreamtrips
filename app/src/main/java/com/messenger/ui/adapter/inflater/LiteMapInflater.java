@@ -6,6 +6,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.messenger.util.ExternalMapLauncher;
@@ -45,6 +46,14 @@ public class LiteMapInflater extends ViewInflater {
     private void initMap() {
         MapsInitializer.initialize(context);
         map.setOnMapClickListener(this::onMapClick);
+
+        // always only map, disable all additional buttons
+        UiSettings uiSettings = map.getUiSettings();
+        uiSettings.setMapToolbarEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(false);
+        uiSettings.setCompassEnabled(false);
+        uiSettings.setIndoorLevelPickerEnabled(false);
+        uiSettings.setZoomControlsEnabled(false);
     }
 
     private void updateMap() {

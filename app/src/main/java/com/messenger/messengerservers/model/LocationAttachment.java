@@ -2,6 +2,8 @@ package com.messenger.messengerservers.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Locale;
+
 import timber.log.Timber;
 
 public class LocationAttachment implements Attachment {
@@ -24,7 +26,7 @@ public class LocationAttachment implements Attachment {
     }
 
     public LocationAttachment(double lat, double lng) {
-        this.coordinates = String.format("%.7f%s%.7f", lat, COORDINATE_DIVIDER, lng);
+        this.coordinates = String.format(Locale.ENGLISH, "%.7f%s%.7f", lat, COORDINATE_DIVIDER, lng);
         Timber.i("Create string " + coordinates + " from " + lat + " and " +lng);
     }
 

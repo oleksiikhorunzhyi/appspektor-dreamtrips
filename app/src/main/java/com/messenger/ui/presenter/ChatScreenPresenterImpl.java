@@ -780,6 +780,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onAttachmentMenuItemChosen(AttachmentMenuItem attachmentMenuItem) {
         switch (attachmentMenuItem.getType()) {
             case AttachmentMenuItem.LOCATION:
+                getView().hidePhotoPicker();
                 pickLocationDelegate.pickLocation();
                 break;
             case AttachmentMenuItem.IMAGE:

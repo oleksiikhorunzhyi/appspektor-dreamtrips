@@ -3,12 +3,12 @@ package com.messenger.di;
 import android.content.Context;
 
 import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.ChatMessagesEventDelegate;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.PaginationDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.UserProcessor;
-import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.AttachmentDAO;
@@ -95,15 +95,14 @@ public class MessengerDelegateModule {
 
     @Provides
     UnhandledMessageWatcher provideUnhandledMessageWatcher(
-            MessengerServerFacade messengerServerFacade,
             AppNotification appNotification,
-            DreamSpiceManager spiceManager,
+            ChatMessagesEventDelegate chatMessagesEventDelegate,
             ConversationsDAO conversationsDAO,
             UsersDAO usersDAO,
             ParticipantsDAO participantsDAO,
             AttachmentDAO attachmentDAO,
             OpenedConversationTracker openedConversationTracker) {
-        return new UnhandledMessageWatcher(messengerServerFacade, appNotification, spiceManager, openedConversationTracker, conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
+        return new UnhandledMessageWatcher(appNotification, chatMessagesEventDelegate, openedConversationTracker, conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
     }
 
     @Provides
@@ -114,5 +113,11 @@ public class MessengerDelegateModule {
     @Provides
     PhotoPickerDelegate providePhotoPickerDelegate(@Global EventBus eventBus) {
         return new PhotoPickerDelegate(eventBus);
+    }
+
+    @Provides
+    @Singleton
+    ChatMessagesEventDelegate provideChatMessagesEventDelegate(@ForApplication Injector injector) {
+        return new ChatMessagesEventDelegate(injector);
     }
 }

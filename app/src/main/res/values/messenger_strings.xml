@@ -120,6 +120,7 @@
     <string name="subject">Subject</string>
     <string name="change_subject">Enter chat name</string>
     <string name="sent_photo">sent photo</string>
+    <string name="sent_location">sent location</string>
     <string name="unread_conversation">Conversations</string>
 
     <string name="disconnected_overlay_disconnected_message">Connection lost</string>

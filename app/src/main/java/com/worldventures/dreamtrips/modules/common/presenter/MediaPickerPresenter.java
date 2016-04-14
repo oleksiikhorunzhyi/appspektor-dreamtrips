@@ -36,16 +36,6 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
         this.requestId = requestId;
     }
 
-    public void onEvent(AttachPhotoEvent event) {
-        if (view.isVisibleOnScreen() && event.getRequestType() != -1)
-            pickImage(event.getRequestType());
-    }
-
-    public void pickImage(int requestType) {
-        if (view.isVisibleOnScreen())
-            eventBus.post(new ImagePickRequestEvent(requestType, REQUESTER_ID));
-    }
-
     public void onEvent(ImagePickedEvent event) {
         if (view.isVisibleOnScreen() && event.getRequesterID() == REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);

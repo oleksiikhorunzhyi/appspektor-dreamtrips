@@ -1,6 +1,11 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment;
 
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
+import android.support.design.widget.Snackbar;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.model.PickerIrregularPhotoModel;
@@ -13,8 +18,15 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 
 import java.util.List;
 
-public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> implements GalleryPresenter.View {
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+import timber.log.Timber;
 
+@RuntimePermissions
+public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> implements GalleryPresenter.View {
     @Override
     protected void registerCells() {
         adapter.registerCell(PhotoGalleryModel.class, PhotoGalleryCell.class);
@@ -43,5 +55,30 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> impl
     @Override
     public void openFacebookAlbums() {
         photoPickerDelegate.openFacebookAlbums();
+    }
+
+    @Override
+    public void checkPermissions() {
+        DtGalleryFragmentPermissionsDispatcher.cameraPermissionWithCheck(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        DtGalleryFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void cameraPermission() {
+        getPresenter().openCamera();
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationaleForCamera(PermissionRequest request) {
+        Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForCamera() {
+        Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
     }
 }

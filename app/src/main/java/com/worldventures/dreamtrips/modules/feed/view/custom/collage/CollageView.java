@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.custom.collage;
 
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
@@ -19,7 +18,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.feed.view.util.blur.BlurPostprocessor;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -115,8 +116,15 @@ public class CollageView extends FrameLayout {
     }
 
     private void place1() {
-        addImage(0, new FrameLayout.LayoutParams(side, items.get(0).height));
-        resize(side, items.get(0).height);
+        int originalWidth = (int) ViewUtils.pxFromDp(getContext(), items.get(0).width);
+        float scaleCoefficient = originalWidth < side ? 1 : originalWidth / side;
+
+        int originalHeight = (int) ViewUtils.pxFromDp(getContext(), items.get(0).height);
+        int allowableMaxHeight = side / 4 * 5;
+        int resultHeight = originalHeight > allowableMaxHeight ? allowableMaxHeight : originalHeight;
+        resultHeight /= scaleCoefficient;
+        addImage(0, new FrameLayout.LayoutParams(side, resultHeight));
+        resize(side, resultHeight);
     }
 
     private void place2() {
@@ -249,9 +257,15 @@ public class CollageView extends FrameLayout {
     }
 
     private void addImage(final int position, FrameLayout.LayoutParams params, Rect paddings) {
+        String url = ImageUtils.getParametrizedUrl(items.get(position).url, params.width, params.height);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                .build();
+        PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                .setImageRequest(request)
+                .build();
         SimpleDraweeView view = new SimpleDraweeView(getContext());
+        view.setController(controller);
         view.setPadding(paddings.left, paddings.top, paddings.right, paddings.bottom);
-        view.setImageURI(Uri.parse(items.get(position).url));
         addView(view, params);
         view.setOnClickListener(v -> {
             if (itemClickListener != null) itemClickListener.itemClicked(position);
@@ -269,7 +283,8 @@ public class CollageView extends FrameLayout {
         });
 
         //blur view
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(items.get(position).url))
+        String url = ImageUtils.getParametrizedUrl(items.get(position).url, params.width, params.height);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
                 .setPostprocessor(new BlurPostprocessor(getContext(), BLUR_RADIUS, BLUR_SAMPLING))
                 .build();
         PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
@@ -283,7 +298,7 @@ public class CollageView extends FrameLayout {
 
         //text
         TextView textView = new TextView(getContext());
-        textView.setTextColor(getResources().getColor(android.R.color.white, null));
+        textView.setTextColor(getResources().getColor(android.R.color.white));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         textView.setText(String.format("+%d", items.size() - position));
         textView.setGravity(Gravity.CENTER);

@@ -39,6 +39,8 @@ import timber.log.Timber;
 
 public class ImageUtils {
 
+    private static final String PATTERN = "%s?width=%d&height=%d";
+
     private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiveListener bitmapReciveListener) {
         DataSubscriber dataSubscriber = new BaseDataSubscriber<CloseableReference<CloseableBitmap>>() {
             @Override
@@ -141,5 +143,9 @@ public class ImageUtils {
 
     private interface BitmapReceiveListener {
         void onBitmapReceived(Bitmap bitmap);
+    }
+
+    public static String getParametrizedUrl (String url, int width, int height){
+        return String.format(PATTERN, url, width, height);
     }
 }

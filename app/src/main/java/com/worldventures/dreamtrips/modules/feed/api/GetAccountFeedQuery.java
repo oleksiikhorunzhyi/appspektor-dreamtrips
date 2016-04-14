@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
     public static final int LIMIT = 10;
@@ -45,8 +47,13 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
     @Override
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
-        String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
-        ArrayList<ParentFeedItem> result = getService().getAccountFeed(LIMIT, before, circleId);
+        ArrayList<ParentFeedItem> result = new ArrayList<>();
+        try {
+            String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
+            result = getService().getAccountFeed(LIMIT, before, circleId);
+        } catch (Exception e) {
+            Timber.e(e, "Feeds have not been received");
+        }
         return stubCollages(result);
     }
 
@@ -56,7 +63,6 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
     }
 
     private ArrayList<ParentFeedItem> stubCollages(ArrayList<ParentFeedItem> target) {
-
         ArrayList<ParentFeedItem> result = new ArrayList<>();
 
         for (int i = 0; i < 17; i++) {
@@ -94,7 +100,7 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
         ArrayList<CollageItem> items = new ArrayList<>();
         switch (index) {
             case 0:
-                items.add(new CollageItem(landscape[0], 640, 240));
+                items.add(new CollageItem(landscape[0], 4098, 240));
                 break;
             case 1:
                 items.add(new CollageItem(landscape[0], 640, 600));
@@ -103,15 +109,15 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
                 items.add(new CollageItem(square[0], 640, 640));
                 break;
             case 3:
-                items.add(new CollageItem(portrait[0], 480, 640));
+                items.add(new CollageItem(portrait[0], 10, 6400));
                 break;
             case 4:
                 items.add(new CollageItem(landscape[0], 640, 480));
                 items.add(new CollageItem(landscape[1], 640, 480));
                 break;
             case 5:
-                items.add(new CollageItem(portrait[0], 480, 640));
-                items.add(new CollageItem(portrait[1], 480, 640));
+                items.add(new CollageItem(portrait[0], 480, 6400));
+                items.add(new CollageItem(portrait[1], 480, 3400));
                 break;
             case 6:
                 items.add(new CollageItem(portrait[0], 480, 640));

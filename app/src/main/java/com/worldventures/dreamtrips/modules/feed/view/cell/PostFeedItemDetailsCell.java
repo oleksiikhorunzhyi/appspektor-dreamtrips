@@ -62,7 +62,7 @@ public class PostFeedItemDetailsCell extends FeedItemDetailsCell<PostFeedItem> {
     private void processCollageCase(List<FeedEntityHolder> attachments) {
         if (attachments != null && !attachments.isEmpty()) {
             collageView.setVisibility(View.VISIBLE);
-            collageView.setItems(attachmentsToCollageItems(attachments), itemHolder.getWidth());
+            itemHolder.post(() -> collageView.setItems(attachmentsToCollageItems(attachments), itemHolder.getWidth()));
         } else {
             collageView.setVisibility(View.GONE);
             collageView.clear();

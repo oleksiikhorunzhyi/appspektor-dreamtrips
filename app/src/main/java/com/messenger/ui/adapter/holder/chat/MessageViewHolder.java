@@ -1,7 +1,6 @@
 package com.messenger.ui.adapter.holder.chat;
 
 import android.database.Cursor;
-import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -71,10 +70,12 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
         dataTranslation = translationExist ? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
         //
-        messageCommonInflater.onCellBind(previousMessageFromSameUser,
-                dataMessage.getStatus() == MessageStatus.SENT && needMarkUnreadMessage,
-                previousMessageFromSameUser ? provideBackgroundForFollowing() : provideBackgroundForInitial());
+        messageCommonInflater.onCellBind(previousMessageFromSameUser, isUnread(), selected);
         userMessageHolderInflater.onCellBind(dataUserSender, dataConversation, previousMessageFromSameUser);
+    }
+
+    private boolean isUnread() {
+        return dataMessage.getStatus() == MessageStatus.SENT && needMarkUnreadMessage;
     }
 
     @OnLongClick(R.id.message_container)
@@ -111,12 +112,6 @@ public abstract class MessageViewHolder extends CursorViewHolder {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-
-    @DrawableRes
-    protected abstract int provideBackgroundForFollowing();
-
-    @DrawableRes
-    protected abstract int provideBackgroundForInitial();
 
     public View getMessageView() {
         return messageContainer;

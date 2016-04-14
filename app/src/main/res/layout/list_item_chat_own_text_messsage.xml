@@ -14,13 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <com.messenger.ui.widget.ChatItemFrameLayout
             android:id="@+id/message_container"
+            style="@style/OwnTextMessageStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/blue_bubble_comics"
+            tools:background="@drawable/blue_bubble_comics"
             >
 
             <TextView
@@ -35,7 +36,7 @@
                 tools:textColor="@color/black"
                 />
 
-        </FrameLayout>
+        </com.messenger.ui.widget.ChatItemFrameLayout>
 
 
         <ViewSwitcher

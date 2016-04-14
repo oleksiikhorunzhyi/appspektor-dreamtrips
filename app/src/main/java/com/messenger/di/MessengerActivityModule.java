@@ -7,6 +7,7 @@ import com.messenger.delegate.ChatLeavingDelegate;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ChatAdapter;
+import com.messenger.ui.adapter.holder.chat.ChatHolderModule;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
@@ -39,6 +40,9 @@ import dagger.Provides;
 
 
 @Module(
+        includes = {
+                ChatHolderModule.class,
+        },
         injects = {
                 ConversationListScreenImpl.class,
                 EditChatMembersScreenImpl.class,
@@ -60,9 +64,10 @@ import dagger.Provides;
                 MultiChatSettingsScreenPresenter.class,
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,
-},
+        },
         complete = false, library = true
-)public class MessengerActivityModule {
+)
+public class MessengerActivityModule {
     public static final String MESSENGER = "Messenger";
 
     @Provides(type = Provides.Type.SET)

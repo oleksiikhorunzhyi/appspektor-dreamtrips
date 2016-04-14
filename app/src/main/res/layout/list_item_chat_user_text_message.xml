@@ -30,8 +30,9 @@
             app:roundAsCircle="true"
             tools:background="@drawable/noavatar_small"/>
 
-        <FrameLayout
+        <com.messenger.ui.widget.ChatItemFrameLayout
             android:id="@+id/message_container"
+            style="@style/UserTextMessageStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/chat_username"
@@ -40,7 +41,7 @@
             android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
             android:layout_toEndOf="@id/chat_item_avatar"
             android:layout_toRightOf="@id/chat_item_avatar"
-            android:background="@drawable/dark_grey_bubble_comics"
+            tools:background="@drawable/dark_grey_bubble_comics"
             >
 
 
@@ -60,7 +61,7 @@
                 android:layout_gravity="center"
                 android:visibility="gone"/>
 
-        </FrameLayout>
+        </com.messenger.ui.widget.ChatItemFrameLayout>
 
         <TextView
             android:id="@+id/translation_status"

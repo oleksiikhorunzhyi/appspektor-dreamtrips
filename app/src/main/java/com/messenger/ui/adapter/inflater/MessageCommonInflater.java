@@ -1,10 +1,9 @@
 package com.messenger.ui.adapter.inflater;
 
 import android.content.res.Resources;
-import android.support.annotation.DrawableRes;
 import android.view.View;
-import android.widget.FrameLayout;
 
+import com.messenger.ui.widget.ChatItemFrameLayout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;
@@ -18,7 +17,7 @@ public class MessageCommonInflater {
     @InjectView(R.id.chat_message_container)
     public View chatMessageContainer;
     @InjectView(R.id.message_container)
-    public FrameLayout messageContainer;
+    public ChatItemFrameLayout messageContainer;
 
     public MessageCommonInflater(View itemView) {
         this.itemView = itemView;
@@ -29,11 +28,11 @@ public class MessageCommonInflater {
     }
 
     public void onCellBind(boolean previousMessageFromSameUser,
-                           boolean unread,
-                           @DrawableRes int backgroundId) {
+                           boolean unread, boolean selected) {
         updateUnreadStatus(unread);
-        messageContainer.setBackgroundResource(backgroundId);
         setPaddings(previousMessageFromSameUser);
+        messageContainer.setSelected(selected);
+        messageContainer.setPreviousMessageFromSameUser(previousMessageFromSameUser);
     }
 
     public void updateUnreadStatus(boolean unread) {

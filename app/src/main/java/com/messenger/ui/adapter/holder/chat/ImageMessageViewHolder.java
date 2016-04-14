@@ -1,6 +1,7 @@
 package com.messenger.ui.adapter.holder.chat;
 
 import android.database.Cursor;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -89,11 +90,30 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
 
         DraweeController controller = GraphicUtils.provideFrescoResizingControllerBuilder(uri,
                 imagePostView.getController(), width, height)
-                .setControllerListener(getLoadingListener())
+                .setControllerListener(controllerListener)
                 .build();
 
         imagePostView.setController(controller);
     }
 
-    protected abstract BaseControllerListener<ImageInfo> getLoadingListener();
+    protected void onImageDisplayed() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private BaseControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
+        @Override
+        public void onSubmit(String id, Object callerContext) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+            onImageDisplayed();
+        }
+
+        @Override
+        public void onFailure(String id, Throwable throwable) {
+            applyErrorStatusUi();
+        }
+    };
 }

@@ -1,16 +1,13 @@
 package com.messenger.ui.adapter.holder.chat;
 
 import android.database.Cursor;
-import android.support.annotation.DrawableRes;
 import android.view.View;
-import android.widget.ViewSwitcher;
 
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
-import butterknife.InjectView;
-import butterknife.OnClick;
-
+@Layout(R.layout.list_item_chat_own_text_messsage)
 public class OwnTextMessageViewHolder extends TextMessageViewHolder {
 
     public OwnTextMessageViewHolder(View itemView) {
@@ -21,18 +18,6 @@ public class OwnTextMessageViewHolder extends TextMessageViewHolder {
     public void bindCursor(Cursor cursor) {
         super.bindCursor(cursor);
         updateMessageStatusUi();
-    }
-
-    @Override
-    @DrawableRes
-    protected int provideBackgroundForFollowing() {
-        return selected ? R.drawable.dark_blue_bubble : R.drawable.blue_bubble;
-    }
-
-    @Override
-    @DrawableRes
-    protected int provideBackgroundForInitial() {
-        return selected ? R.drawable.dark_blue_bubble_comics : R.drawable.blue_bubble_comics;
     }
 
     public void updateMessageStatusUi() {

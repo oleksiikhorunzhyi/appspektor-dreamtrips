@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.tripsimages.api.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
 public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter.View> {
@@ -18,7 +21,7 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
         //
         super.takeView(view);
         //
-        updateLocation(photo.getLocation());
+        if (location == null) updateLocation(photo.getLocation());
     }
 
     @Override
@@ -39,7 +42,26 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
 
     @Override
     public void post() {
-        // TODO post photo update
+        updatePhoto();
+    }
+
+    private void updatePhoto() {
+        UploadTask uploadTask = new UploadTask();
+        PhotoCreationItem creationItem = cachedCreationItems.get(0);
+        uploadTask.setTitle(creationItem.getTitle());
+        uploadTask.setLocationName(location.getName());
+        uploadTask.setLatitude((float) location.getLat());
+        uploadTask.setLongitude((float) location.getLng());
+        uploadTask.setShotAt(photo.getShotAt());
+        doRequest(new EditPhotoCommand(photo.getUid(), uploadTask,
+                creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()),
+                entity -> {
+                    eventBus.post(new FeedEntityChangedEvent(entity));
+                    view.cancel();
+                }, spiceException -> {
+                    handleError(spiceException);
+                    view.onPostError();
+                });
     }
 
     public interface View extends ActionEntityPresenter.View {

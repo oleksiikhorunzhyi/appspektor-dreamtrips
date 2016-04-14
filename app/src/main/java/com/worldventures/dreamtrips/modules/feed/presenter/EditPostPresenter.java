@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.feed.api.EditPostCommand;
+import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -23,7 +25,7 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
         //
         super.takeView(view);
         //
-        updateLocation(post.getLocation());
+        if (location == null) updateLocation(post.getLocation());
     }
 
     @Override
@@ -40,7 +42,11 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
 
     @Override
     public void post() {
-        //TODO update post
+        doRequest(new EditPostCommand(post.getUid(), cachedText), post -> {
+            eventBus.post(new FeedEntityChangedEvent(post));
+            //
+            view.cancel();
+        }, error -> view.cancel());
     }
 
     private boolean hasAttachments() {

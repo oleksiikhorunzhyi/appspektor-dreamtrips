@@ -53,6 +53,7 @@ public class LiteMapInflater extends ViewInflater {
 
     public void clear() {
         if (map != null) {
+            // Clear the map and free up resources by changing the map type to none
             map.clear();
             map.setMapType(GoogleMap.MAP_TYPE_NONE);
         }

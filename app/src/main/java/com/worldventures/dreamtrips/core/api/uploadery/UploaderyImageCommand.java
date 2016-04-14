@@ -2,7 +2,10 @@ package com.worldventures.dreamtrips.core.api.uploadery;
 
 import android.content.Context;
 
+import com.messenger.util.SessionHolderHelper;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.io.File;
 
@@ -13,6 +16,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 @CommandAction
 public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T> {
@@ -21,6 +25,9 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
     @ForApplication
     @Inject
     Context context;
+
+    @Inject
+    SessionHolder<UserSession> userSessionHolder;
 
     @Inject
     Janet janet;
@@ -46,9 +53,15 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
     }
 
     protected Observable<ActionState<UploadImageAction>> upload(File file) {
+        if (!SessionHolderHelper.hasEntity(userSessionHolder)) {
+            Timber.i("User session is not present");
+            return null;
+        }
+
+        String uploaderyUrl = userSessionHolder.get().get().getGlobalConfig().getUrls().getProduction().getUploaderyBaseURL();
         return janet
                 .createPipe(UploadImageAction.class, Schedulers.io())
-                .createObservable(new UploadImageAction(file));
+                .createObservable(new UploadImageAction(uploaderyUrl, file));
     }
 
     protected abstract Observable.Transformer<ActionState<UploadImageAction>, T> nextAction();

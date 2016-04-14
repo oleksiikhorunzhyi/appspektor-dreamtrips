@@ -28,6 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import icepick.State;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
@@ -41,6 +42,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
+    //
+    @State
+    boolean initialized;
     //
     private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
 
@@ -58,10 +62,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         bindMerchantManager();
         bindFilteredStream();
         //
-        dtlLocationManager.getSelectedLocation()
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(location -> dtlMerchantManager.loadMerchants(location.getCoordinates().asAndroidLocation()));
+        if (!initialized) {
+            dtlLocationManager.getSelectedLocation()
+                    .map(DtlLocationCommand::getResult)
+                    .compose(bindViewIoToMainComposer())
+                    .subscribe(location -> dtlMerchantManager.loadMerchants(
+                            location.getCoordinates().asAndroidLocation()));
+            initialized = true;
+        }
         //
         if (!getView().isTabletLandscape())
             dtlMerchantManager.getMerchantsExecutor.connectSuccessOnly()

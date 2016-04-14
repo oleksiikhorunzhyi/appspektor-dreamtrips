@@ -28,7 +28,7 @@ android {
     def versionMajor = 1
     def versionMinor = 10
     def versionPatch = 0
-    def versionBuild = 1  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 3  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"
@@ -67,7 +67,7 @@ android {
         buildConfigField 'String', 'AuthApiUrl', '"https://dreamTripsApi.dreamtrips.com/AuthenticationService/AuthenticationService.svc"'
         buildConfigField 'String', 'SharedServicesApi', '"http://sharedservices.worldventures.biz"'
         buildConfigField 'String', 'WorldVenturesApi', '"http://dtapp-auth-1384786496.us-west-2.elb.amazonaws.com"'
-        buildConfigField 'String', 'S3Api', '"https://s3-us-west-2.amazonaws.com/dtappstg-config"'
+        buildConfigField 'String', 'S3Api', '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config"'
         buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
         buildConfigField 'String', 'API_VERSION', '"2"'
         buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'

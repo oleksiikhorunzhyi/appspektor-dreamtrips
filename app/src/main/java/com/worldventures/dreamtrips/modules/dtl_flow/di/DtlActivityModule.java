@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
+import com.techery.spares.adapter.expandable.BaseExpandableAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
@@ -68,6 +69,7 @@ import dagger.Provides;
                 DtlMerchantCellNew.class,
                 DtlVerifyAmountFragment.class,
                 DtlVerifyAmountPresenter.class,
+                BaseExpandableAdapter.class,
         },
         complete = false, library = true
 )

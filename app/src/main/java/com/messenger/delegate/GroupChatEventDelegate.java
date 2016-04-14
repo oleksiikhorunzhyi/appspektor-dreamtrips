@@ -40,7 +40,7 @@ public class GroupChatEventDelegate {
     @Inject
     LoaderDelegate loaderDelegate;
     @Inject
-    Lazy<ChatDelegate> chatDelegate;
+    Lazy<CreateConversationHelper> createConversationHelperLazy;
 
     @Inject
     public GroupChatEventDelegate(@ForApplication Injector injector) {
@@ -53,7 +53,7 @@ public class GroupChatEventDelegate {
 
         String currentUserId = currentUserSession.get().get().getUser().getUsername();
 
-        chatDelegate.get().createConversation(conversationId, currentUserId)
+        createConversationHelperLazy.get().createConversation(conversationId, currentUserId)
                 .flatMap(conversation -> {
                     conversationsDAO.save(conversation);
                     return loaderDelegate.loadParticipants(conversationId);

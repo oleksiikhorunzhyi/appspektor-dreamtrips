@@ -7,9 +7,13 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
+import com.messenger.storage.dao.AttachmentDAO;
+import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.DecomposeMessagesHelper;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -28,7 +32,7 @@ public class PaginationDelegate {
 
     private PagePagination<Message> messagePagePagination;
 
-    public PaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper) {
+    @Inject PaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper) {
         this.messengerServerFacade = messengerServerFacade;
         this.decomposeMessagesHelper = decomposeMessagesHelper;
     }

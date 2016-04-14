@@ -92,7 +92,7 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
 
     private Observable<Pair<DataConversation, String>> modifyConversation (DataConversation conversation, List<DataUser> newChatUsers, String newSubject) {
         return participantsStream.flatMap(currentUsers ->
-                    chatDelegate.modifyConversation(conversation, currentUsers, newChatUsers, newSubject)
+                    createConversationHelper.modifyConversation(conversation, currentUsers, newChatUsers, newSubject)
                                 .map(newConversation -> new Pair<>(newConversation, conversation.getType()))
                 );
     }

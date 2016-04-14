@@ -27,14 +27,14 @@ public class StartChatDelegate {
     private final UsersDAO usersDAO;
     private final ParticipantsDAO participantsDAO;
     private final ConversationsDAO conversationsDAO;
-    private final ChatDelegate chatDelegate;
+    private final CreateConversationHelper createConversationHelper;
 
     public StartChatDelegate(UsersDAO usersDAO, ParticipantsDAO participantsDAO, ConversationsDAO conversationsDAO,
-                             ChatDelegate chatDelegate) {
+                             CreateConversationHelper createConversationHelper) {
         this.usersDAO = usersDAO;
         this.participantsDAO = participantsDAO;
         this.conversationsDAO = conversationsDAO;
-        this.chatDelegate = chatDelegate;
+        this.createConversationHelper = createConversationHelper;
     }
 
     public void startSingleChat(User user, @NotNull Action1<DataConversation> crossingAction) {
@@ -68,10 +68,10 @@ public class StartChatDelegate {
     }
 
     private Observable<DataConversation> startSingleChatObservable(DataUser participant) {
-        DataConversation conversation = chatDelegate.getExistingSingleConversation(participant.getId());
+        DataConversation conversation = createConversationHelper.getExistingSingleConversation(participant.getId());
         if (conversation != null) return Observable.just(conversation);
 
-        return chatDelegate.createNewConversation(Collections.singletonList(participant), "")
+        return createConversationHelper.createNewConversation(Collections.singletonList(participant), "")
                 .doOnNext(dataConversation -> {
                     //there is no owners in single chat
                     DataParticipant relationship = new DataParticipant(dataConversation.getId(), participant.getId(), Participant.Affiliation.MEMBER);
@@ -87,7 +87,7 @@ public class StartChatDelegate {
         if (errorAction == null) {
             errorAction = throwable -> Timber.d(throwable, "Error");
         }
-        chatDelegate.createNewConversation(participant, subject)
+        createConversationHelper.createNewConversation(participant, subject)
                 .doOnNext(conversation -> {
                     conversation.setOwnerId(ownerId);
                     List<DataParticipant> relationships = Queryable.from(participant).map(user ->

@@ -125,7 +125,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {
                     // Determines whether we can proceed without locating device by GPS.
-                    if (location.getLocationSourceType() == LocationSourceType.NEAR_ME) {
+                    if (location.getLocationSourceType() != LocationSourceType.NEAR_ME) {
                         proceedNavigation(null);
                     } else {
                         if (e instanceof LocationDelegate.LocationException)

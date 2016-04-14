@@ -27,7 +27,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 
@@ -36,6 +35,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
+import io.techery.janet.Janet;
 
 @Module(
         complete = false,
@@ -49,9 +49,8 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    UserProcessor provideUserProcessor(@ForApplication Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
-        requester.start(context);
-        return new UserProcessor(usersDAO, requester);
+    UserProcessor provideUserProcessor(Janet janet, UsersDAO usersDAO) {
+        return new UserProcessor(usersDAO, janet);
     }
 
     @Provides
@@ -71,8 +70,8 @@ public class MessengerDelegateModule {
 
     @Singleton
     @Provides
-    MessageTranslationDelegate provideMessageTranslationDelegate(@ForApplication Context context, DreamSpiceManager dreamSpiceManager, TranslationsDAO translationsDAO, LocaleHelper localeHelper) {
-        return new MessageTranslationDelegate(context, dreamSpiceManager, translationsDAO, localeHelper);
+    MessageTranslationDelegate provideMessageTranslationDelegate(Janet janet, TranslationsDAO translationsDAO, LocaleHelper localeHelper) {
+        return new MessageTranslationDelegate(janet, translationsDAO, localeHelper);
     }
 
     @Provides

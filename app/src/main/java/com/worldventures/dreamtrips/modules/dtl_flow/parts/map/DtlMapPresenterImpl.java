@@ -9,9 +9,9 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
@@ -35,7 +35,6 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
 
@@ -139,8 +138,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                                     command.getResult().getCoordinates().asLatLng(),
                                     position.target, DistanceType.MILES));
                 })
-                .compose(bindViewIoToMainComposer())
-                .observeOn(AndroidSchedulers.mainThread());
+                .compose(bindView());
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {

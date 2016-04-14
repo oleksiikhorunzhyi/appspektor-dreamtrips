@@ -8,6 +8,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.messenger.util.ExternalMapLauncher;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
@@ -37,10 +38,14 @@ public class LiteMapInflater extends ViewInflater {
 
     private void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
-        MapsInitializer.initialize(context);
+        initMap();
         updateMap();
     }
 
+    private void initMap() {
+        MapsInitializer.initialize(context);
+        map.setOnMapClickListener(this::onMapClick);
+    }
 
     private void updateMap() {
         if (location != null && map != null) {
@@ -49,6 +54,13 @@ public class LiteMapInflater extends ViewInflater {
             // Set the map type back to normal.
             map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
+    }
+
+    private void onMapClick(LatLng latLng) {
+        new ExternalMapLauncher(context)
+                .setLocationWithMarker(latLng.latitude, latLng.longitude)
+                .setZoomLevel(ZOOM_LEVEL)
+                .launch();
     }
 
     public void clear() {

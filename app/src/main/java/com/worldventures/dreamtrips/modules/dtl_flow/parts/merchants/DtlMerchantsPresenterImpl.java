@@ -125,7 +125,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {
-        if (merchants.isEmpty()) navigateToLocations();
+        if (merchants.isEmpty() && // TODO :: 4/14/16 also check applied filters number to be 0
+                TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery())) navigateToLocations();
     }
 
     @Override

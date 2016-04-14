@@ -627,4 +627,6 @@
     <string name="suggested_photos_one">You have %d new photo</string>
     <string name="share_recent_photos">Share photos</string>
 
+    <string name="legal_terms">Legal Terms</string>
+
 </resources>

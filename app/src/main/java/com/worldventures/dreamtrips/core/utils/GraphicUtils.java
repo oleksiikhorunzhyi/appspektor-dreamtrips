@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.utils;
 
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.text.*;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
@@ -10,6 +11,8 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+
+import static android.text.TextUtils.*;
 
 public class GraphicUtils {
 
@@ -56,6 +59,17 @@ public class GraphicUtils {
                 .setOldController(oldController)
                 .setImageRequest(createResizeImageRequest(uri, width, height))
                 .setLowResImageRequest(createResizeImageRequest(localUri, width, height));
+    }
+
+    public static PipelineDraweeControllerBuilder provideFrescoResizingControllerBuilder(@Nullable String strUri, @Nullable String strLocalUri,
+                                                                                         DraweeController oldController,
+                                                                                         int width, int height) {
+        return provideFrescoResizingControllerBuilder(parseUri(strUri), parseUri(strLocalUri), oldController, width, height);
+    }
+
+    @Nullable
+    private static Uri parseUri(@Nullable String uri) {
+        return isEmpty(uri) ? null : Uri.parse(uri);
     }
 
     @Nullable

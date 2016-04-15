@@ -75,7 +75,7 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
     }
 
     private boolean isUploaded() {
-        return photoAttachment.getState() == PhotoAttachmentStatus.UPLOADED;
+        return photoAttachment.getUploadState() == PhotoAttachmentStatus.UPLOADED;
     }
 
     private Observable<String> getPhotoUri() {
@@ -109,7 +109,7 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
 
     private void startUploading() {
         message.setStatus(MessageStatus.SENDING);
-        photoAttachment.setState(PhotoAttachmentStatus.UPLOADING);
+        photoAttachment.setUploadState(PhotoAttachmentStatus.UPLOADING);
 
         photoDAO.save(photoAttachment);
         attachmentDAO.save(attachment);
@@ -120,13 +120,13 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Calendar.getInstance().getMaximum(Calendar.YEAR));
         message.setStatus(MessageStatus.ERROR);
-        photoAttachment.setState(PhotoAttachmentStatus.FAILED);
+        photoAttachment.setUploadState(PhotoAttachmentStatus.FAILED);
         saveMessage(calendar.getTimeInMillis());
     }
 
     private void successUploading(String url) {
         message.setStatus(MessageStatus.SENDING);
-        photoAttachment.setState(PhotoAttachmentStatus.UPLOADED);
+        photoAttachment.setUploadState(PhotoAttachmentStatus.UPLOADED);
         photoAttachment.setUrl(url);
 
         photoDAO.save(photoAttachment);

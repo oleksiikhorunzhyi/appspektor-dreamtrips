@@ -49,9 +49,16 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
 
         //TODO should be refactored
         if (dataMessage.getStatus() == MessageStatus.ERROR &&
-                    dataPhotoAttachment.getState() == DataPhotoAttachment.PhotoAttachmentStatus.UPLOADED) {
+                    dataPhotoAttachment.getUploadState() == DataPhotoAttachment.PhotoAttachmentStatus.UPLOADED) {
             errorView.setVisibility(View.VISIBLE);
             retrySwitcher.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onStartLoading() {
+        if (dataPhotoAttachment.getLocalUri() == null) {
+            progressBar.setVisibility(View.VISIBLE);
         }
     }
 }

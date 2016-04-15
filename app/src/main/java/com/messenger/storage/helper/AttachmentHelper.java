@@ -29,10 +29,12 @@ public class AttachmentHelper {
         return Observable.just(new PhotoAttachment.Builder())
                 .map(builder -> {
                     DataPhotoAttachment dataAttachment = photoDAO.getAttachmentById(attachmentImageId).toBlocking().first();
-                    DataMessage dataMessage = messageDAO.getMessageByAttachmentId(dataAttachment.getId()).toBlocking().first();
+                    DataMessage dataMessage = messageDAO.getMessageByAttachmentId(dataAttachment.getPhotoAttachmentId()).toBlocking().first();
                     DataUser dataUser = usersDAO.getUserById(dataMessage.getFromId()).toBlocking().first();
 
-                    String url = dataAttachment.getUrl().replace(" ", "%20");
+                    String uri = dataAttachment.getUrl() == null ? dataAttachment.getLocalUri() : dataAttachment.getUrl();
+                    //noinspection ConstantConditions
+                    String url = uri.replace(" ", "%20");
                     Image image = new Image();
                     image.setUrl(url);
                     image.setFromFile(false);

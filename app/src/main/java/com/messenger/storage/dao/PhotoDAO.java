@@ -1,6 +1,8 @@
 package com.messenger.storage.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.messenger.entities.DataAttachment$Table;
@@ -10,7 +12,11 @@ import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.entities.DataPhotoAttachment$Adapter;
 import com.messenger.entities.DataPhotoAttachment$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.ModelAdapter;
 
 import java.util.List;
@@ -40,7 +46,7 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
 
     @Override
     protected String getIDColumnName() {
-        return DataPhotoAttachment$Table._ID;
+        return DataPhotoAttachment$Table.PHOTOATTACHMENTID;
     }
 
     public Observable<List<DataPhotoAttachment>> getErrorAttachments() {
@@ -48,7 +54,7 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
                 .withSelection("SELECT * " +
                         "FROM " + DataPhotoAttachment.TABLE_NAME + " as p " +
                         "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
-                        "ON a." + DataAttachment$Table._ID + " = p." + DataPhotoAttachment$Table._ID + " " +
+                        "ON a." + DataAttachment$Table._ID + " = p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " " +
                         "JOIN " + DataMessage$Table.TABLE_NAME + " m " +
                         "ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID + " " +
 
@@ -57,5 +63,37 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
 
         return query(q, DataPhotoAttachment.CONTENT_URI, DataMessage.CONTENT_URI).first()
                 .compose(DaoTransformers.toAttachments(DataPhotoAttachment.class));
+    }
+
+    @Override
+    protected <T extends BaseModel> void bulkInsert(List<T> collection, ModelAdapter<T> adapter, Uri uri) {
+        SQLiteDatabase db = FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase();
+
+        for (T t : collection) {
+            DataPhotoAttachment attachment = (DataPhotoAttachment) t;
+            ContentValues values = toContentValues(attachment);
+            int updated = db.update(adapter.getTableName(), values,
+                    DataPhotoAttachment$Table.PHOTOATTACHMENTID + "=?", new String[] {attachment.getPhotoAttachmentId()});
+            if (updated == 0) {
+                db.insertWithOnConflict(adapter.getTableName(), null, values,
+                        ConflictAction.getSQLiteDatabaseAlgorithmInt(adapter.getInsertOnConflictAction()));
+            }
+        }
+        getContentResolver().notifyChange(uri, null);
+    }
+
+    private ContentValues toContentValues(DataPhotoAttachment model) {
+        ContentValues contentValues = new ContentValues();
+        if (model.getPhotoAttachmentId() != null)  {
+            contentValues.put(DataPhotoAttachment$Table.PHOTOATTACHMENTID, model.getPhotoAttachmentId());
+        }
+        if (model.getUrl() != null)  {
+            contentValues.put(DataPhotoAttachment$Table.URL, model.getUrl());
+        }
+        if (model.getLocalUri() != null)  {
+            contentValues.put(DataPhotoAttachment$Table.LOCALURI, model.getLocalUri());
+        }
+        contentValues.put(DataPhotoAttachment$Table.UPLOADSTATE, model.getUploadState());
+        return contentValues;
     }
 }

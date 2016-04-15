@@ -46,7 +46,7 @@
                 android:id="@+id/chat_image_post_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:placeholderImage="@color/chat_list_item_image_post_blue_loading_background"
+                app:placeholderImage="@color/chat_list_item_image_post_grey_loading_background"
                 app:roundedCornerRadius="@dimen/chat_list_image_post_rounded_corners_radius"/>
 
             <ProgressBar

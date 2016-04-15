@@ -2,9 +2,7 @@ package com.messenger.ui.adapter.holder.chat;
 
 import android.database.Cursor;
 import android.graphics.drawable.Animatable;
-import android.net.Uri;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -78,22 +76,17 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
     }
 
     public void loadImage() {
-        showImageMessage(parseUri(dataPhotoAttachment.getUrl()), parseUri(dataPhotoAttachment.getLocalUri()));
+        showImageMessage(dataPhotoAttachment.getUrl(), dataPhotoAttachment.getLocalUri());
     }
 
-    @Nullable
-    private Uri parseUri(@Nullable String uri) {
-        return TextUtils.isEmpty(uri) ? null : Uri.parse(uri);
-    }
-
-    private void showImageMessage(@Nullable Uri uri, @Nullable Uri localUri) {
+    private void showImageMessage(@Nullable String strUri, @Nullable String strLocalUri) {
         applyLoadingStatusUi();
 
         int width = itemView.getResources().getDimensionPixelSize(R.dimen.chat_image_width);
         int height = itemView.getResources().getDimensionPixelSize(R.dimen.chat_image_height);
 
         DraweeController controller = GraphicUtils
-                .provideFrescoResizingControllerBuilder(uri, localUri, imagePostView.getController(), width, height)
+                .provideFrescoResizingControllerBuilder(strUri, strLocalUri, imagePostView.getController(), width, height)
                 .setControllerListener(controllerListener)
                 .build();
 
@@ -104,10 +97,14 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
         progressBar.setVisibility(View.GONE);
     }
 
+    protected void onStartLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     private BaseControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
         @Override
         public void onSubmit(String id, Object callerContext) {
-            progressBar.setVisibility(View.VISIBLE);
+            onStartLoading();
         }
 
         @Override

@@ -1,7 +1,6 @@
 package com.messenger.entities;
 
 import android.net.Uri;
-import android.provider.BaseColumns;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,27 +35,27 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @PrimaryKey
-    @Column(name = BaseColumns._ID)
-    String id;
+    @Column
+    String photoAttachmentId;
     @Column
     String url;
     @Column
     String localUri;
     @Column @PhotoAttachmentStatus
-    int state; // todo rename to uploadState
+    int uploadState;
 
     public DataPhotoAttachment() {
     }
 
     private DataPhotoAttachment(Builder builder) {
-        setId(builder.id);
+        setPhotoAttachmentId(builder.id);
         setUrl(builder.url);
         setLocalUri(builder.localPath);
-        setState(builder.state);
+        setUploadState(builder.state);
     }
 
     public DataPhotoAttachment(@NonNull ImageAttachment attachment, Message message, int index) {
-        this.id = createId(message.getId(), index);
+        this.photoAttachmentId = createId(message.getId(), index);
         url = attachment.getOriginUrl();
     }
 
@@ -64,12 +63,12 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
         return String.format("%s__%s", messageId, index);
     }
 
-    public String getId() {
-        return id;
+    public String getPhotoAttachmentId() {
+        return photoAttachmentId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPhotoAttachmentId(String id) {
+        this.photoAttachmentId = id;
     }
 
     @Nullable
@@ -91,12 +90,12 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     }
 
     @PhotoAttachmentStatus
-    public int getState() {
-        return state;
+    public int getUploadState() {
+        return uploadState;
     }
 
-    public void setState(@PhotoAttachmentStatus int state) {
-        this.state = state;
+    public void setUploadState(@PhotoAttachmentStatus int uploadState) {
+        this.uploadState = uploadState;
     }
 
     @Override

@@ -54,8 +54,7 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
 
     protected Observable<ActionState<UploadImageAction>> upload(File file) {
         if (!SessionHolderHelper.hasEntity(userSessionHolder)) {
-            Timber.i("User session is not present");
-            return null;
+            throw new IllegalStateException("User session is not present");
         }
 
         String uploaderyUrl = userSessionHolder.get().get().getGlobalConfig().getUrls().getProduction().getUploaderyBaseURL();

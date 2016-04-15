@@ -2,6 +2,7 @@ package com.messenger.ui.presenter;
 
 import android.database.Cursor;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
@@ -41,6 +42,8 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
     void onRevertTranslate(DataMessage message);
 
     void onStartNewChatForMessageOwner(DataMessage message);
+
+    void onMapClicked(LatLng latLng);
 
 }
 

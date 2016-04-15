@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.AttachmentManager;
 import com.messenger.delegate.ChatDelegate;
@@ -42,6 +43,7 @@ import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.storage.helper.AttachmentHelper;
 import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.ui.adapter.inflater.LiteMapInflater;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.ui.model.AttachmentMenuItem;
@@ -55,6 +57,7 @@ import com.messenger.ui.view.settings.GroupSettingsPath;
 import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.view.settings.TripSettingsPath;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
+import com.messenger.util.ExternalMapLauncher;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.PickLocationDelegate;
 import com.messenger.util.Utils;
@@ -675,6 +678,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void onLocationPicked(Location location) {
         obtaineConversationObservable()
                 .subscribe(conversation -> attachmentManager.sendLocation(conversation, location));
+    }
+
+    @Override
+    public void onMapClicked(LatLng latLng) {
+        new ExternalMapLauncher(context)
+                .setLocationWithMarker(latLng.latitude, latLng.longitude)
+                .setZoomLevel(LiteMapInflater.ZOOM_LEVEL)
+                .launch();
     }
 
     ///////////////////////////////////////////////////////////////////////////

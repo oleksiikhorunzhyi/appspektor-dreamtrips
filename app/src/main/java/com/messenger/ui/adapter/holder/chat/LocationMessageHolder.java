@@ -30,6 +30,7 @@ public abstract class LocationMessageHolder extends MessageViewHolder {
         DataLocationAttachment dataLocationAttachment = SqlUtils.convertToModel(true,
                 DataLocationAttachment.class, cursor);
         liteMapInflater.setLocation(dataLocationAttachment.getLat(), dataLocationAttachment.getLng());
+        liteMapInflater.setOnMapClickListener(cellDelegate::onMapClicked);
         updateMessageStatusUi();
     }
 

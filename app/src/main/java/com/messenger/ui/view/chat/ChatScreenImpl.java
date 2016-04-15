@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
@@ -193,6 +194,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         @Override
         public void onRetryClicked(DataMessage dataMessage) {
             presenter.retrySendMessage(dataMessage);
+        }
+
+        @Override
+        public void onMapClicked(LatLng latLng) {
+            getPresenter().onMapClicked(latLng);
         }
     };
 

@@ -9,14 +9,13 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.messenger.util.ExternalMapLauncher;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
 public class LiteMapInflater extends ViewInflater {
 
-    private static final int ZOOM_LEVEL = 15;
+    public static final int ZOOM_LEVEL = 15;
 
     @InjectView(R.id.lite_map_view)
     MapView mapView;
@@ -24,6 +23,8 @@ public class LiteMapInflater extends ViewInflater {
     private GoogleMap map;
 
     private LatLng location;
+
+    private GoogleMap.OnMapClickListener onMapClickListener;
 
     @Override
     public void setView(View rootView) {
@@ -35,6 +36,10 @@ public class LiteMapInflater extends ViewInflater {
     public void setLocation(double latitude, double longitude) {
         this.location = new LatLng(latitude, longitude);
         updateMap();
+    }
+
+    public void setOnMapClickListener(GoogleMap.OnMapClickListener onMapClickListener) {
+        this.onMapClickListener = onMapClickListener;
     }
 
     private void onMapReady(GoogleMap googleMap) {
@@ -66,10 +71,9 @@ public class LiteMapInflater extends ViewInflater {
     }
 
     private void onMapClick(LatLng latLng) {
-        new ExternalMapLauncher(context)
-                .setLocationWithMarker(latLng.latitude, latLng.longitude)
-                .setZoomLevel(ZOOM_LEVEL)
-                .launch();
+        if (onMapClickListener != null) {
+            onMapClickListener.onMapClick(latLng);
+        }
     }
 
     public void clear() {

@@ -58,18 +58,4 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
         return query(q, DataPhotoAttachment.CONTENT_URI, DataMessage.CONTENT_URI).first()
                 .compose(DaoTransformers.toAttachments(DataPhotoAttachment.class));
     }
-
-    public Observable<List<DataPhotoAttachment>> getPendingAttachments(String conversationId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT p.* " +
-                        "FROM " + DataPhotoAttachment.TABLE_NAME + " p " +
-                        "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
-                        "ON a." + DataAttachment$Table._ID + "= p." + DataPhotoAttachment$Table._ID + " " +
-                        "WHERE a." + DataAttachment$Table.CONVERSATIONID + " = ? " +
-                        "AND p." + DataPhotoAttachment$Table.UPLOADTASKID + " <> 0")
-                .withSelectionArgs(new String[]{conversationId}).build();
-        return query(q, DataPhotoAttachment.CONTENT_URI)
-                .compose(DaoTransformers.toAttachments(DataPhotoAttachment.class));
-    }
-
 }

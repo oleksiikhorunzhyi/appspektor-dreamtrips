@@ -17,11 +17,11 @@ import timber.log.Timber;
 
 public class AttachmentManager {
 
-    PhotoDAO photoDAO;
-    LocationDAO locationDAO;
+    private final PhotoDAO photoDAO;
+    private final LocationDAO locationDAO;
 
-    PhotoAttachmentDelegate photoAttachmentDelegate;
-    LocationAttachmentDelegate locationAttachmentDelegate;
+    private final PhotoAttachmentDelegate photoAttachmentDelegate;
+    private final LocationAttachmentDelegate locationAttachmentDelegate;
 
     @Inject
     public AttachmentManager(PhotoDAO photoDAO, LocationDAO locationDAO,

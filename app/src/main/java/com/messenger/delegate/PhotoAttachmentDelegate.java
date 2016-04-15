@@ -37,15 +37,16 @@ public class PhotoAttachmentDelegate {
     }
 
     public void retry(DataConversation conversation, DataMessage message, DataAttachment dataAttachment, DataPhotoAttachment photoAttachment) {
-        sendImagePipe.send(new SendImageAttachmentCommand(conversation, photoAttachment.getUrl(), message, dataAttachment, photoAttachment));
+        sendImagePipe.send(new SendImageAttachmentCommand(conversation, message, dataAttachment, photoAttachment));
     }
 
-    public void send(DataConversation conversation, String filePath) {
+    public void send(DataConversation conversation, String fileUri) {
         String userId = sessionHolder.get().get().getUsername();
         DataMessage emptyMessage = attachmentDelegateHelper.createEmptyMessage(userId, conversation.getId());
         DataAttachment attachment = attachmentDelegateHelper.createDataAttachment(emptyMessage, AttachmentType.IMAGE);
         DataPhotoAttachment dataPhotoAttachment = attachmentDelegateHelper.createEmptyPhotoAttachment(attachment);
-        sendImagePipe.send(new SendImageAttachmentCommand(conversation, filePath, emptyMessage, attachment, dataPhotoAttachment));
+        dataPhotoAttachment.setLocalUri(fileUri);
+        sendImagePipe.send(new SendImageAttachmentCommand(conversation, emptyMessage, attachment, dataPhotoAttachment));
     }
 
     public ReadOnlyActionPipe<SendImageAttachmentCommand> getReadSendImagePipe() {

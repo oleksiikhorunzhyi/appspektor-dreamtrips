@@ -2,8 +2,8 @@ package com.messenger.ui.adapter.holder.chat;
 
 import android.view.View;
 
+import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.util.Utils;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
@@ -49,7 +49,7 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
 
         //TODO should be refactored
         if (dataMessage.getStatus() == MessageStatus.ERROR &&
-                Utils.isFileUri(imagePostUri)) {
+                    dataPhotoAttachment.getState() == DataPhotoAttachment.PhotoAttachmentStatus.UPLOADED) {
             errorView.setVisibility(View.VISIBLE);
             retrySwitcher.setVisibility(View.GONE);
         }

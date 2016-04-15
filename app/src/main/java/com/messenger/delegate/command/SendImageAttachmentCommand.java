@@ -1,6 +1,6 @@
 package com.messenger.delegate.command;
 
-import android.net.Uri;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.messenger.delegate.MessageBodyCreator;
@@ -8,6 +8,7 @@ import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataPhotoAttachment;
+import com.messenger.entities.DataPhotoAttachment.PhotoAttachmentStatus;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.AttachmentHolder;
@@ -15,10 +16,11 @@ import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.PhotoDAO;
-import com.messenger.util.Utils;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +36,6 @@ import static rx.Observable.just;
 
 @CommandAction
 public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
-    private final String filePath;
     private final DataMessage message;
     private final DataAttachment attachment;
     private final DataPhotoAttachment photoAttachment;
@@ -49,11 +50,13 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
     PhotoDAO photoDAO;
     @Inject
     MessageBodyCreator messageBodyCreator;
+    @Inject
+    @ForApplication
+    Context context;
 
-    public SendImageAttachmentCommand(DataConversation conversation, @NonNull String filePath, @NonNull DataMessage message,
+    public SendImageAttachmentCommand(@NonNull DataConversation conversation, @NonNull DataMessage message,
                                       @NonNull DataAttachment attachment, @NonNull DataPhotoAttachment photoAttachment) {
         super(conversation);
-        this.filePath = filePath;
         this.message = message;
         this.attachment = attachment;
         this.photoAttachment = photoAttachment;
@@ -61,23 +64,29 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
 
     @Override
     protected void run(CommandCallback<DataMessage> callback) {
-        Observable<String> urlObservable =
-                isFile(filePath) ? getUploadingObservable() : just(filePath);
-
-        urlObservable
+        getPhotoUri()
                 .flatMap(this::sendMessage)
                 .map(m -> message)
-                .subscribe(message -> callback.onSuccess(message),
-                        throwable -> callback.onFail(throwable));
+                .subscribe(callback::onSuccess, callback::onFail);
     }
 
-    private boolean isFile(String filePath) {
-        return Utils.isFileUri(Uri.parse(filePath));
+    private Observable<String> getUploadedUriObservable() {
+        return just(photoAttachment.getUrl());
+    }
+
+    private boolean isUploaded() {
+        return photoAttachment.getState() == PhotoAttachmentStatus.UPLOADED;
+    }
+
+    private Observable<String> getPhotoUri() {
+        return isUploaded() ? getUploadedUriObservable() : getUploadingObservable();
     }
 
     private Observable<String> getUploadingObservable() {
-        return uploaderyManager.getUploadImagePipe()
-                .createObservable(new SimpleUploaderyCommand(filePath))
+        return just(photoAttachment.getLocalUri())
+                .map(localUri -> UploadingFileManager.copyFileIfNeed(localUri, context))
+                .flatMap(uri -> uploaderyManager.getUploadImagePipe()
+                        .createObservable(new SimpleUploaderyCommand(uri)))
                 .doOnNext(this::handleUploadStatus)
                 .compose(new ActionStateToActionTransformer<>())
                 .map(action -> ((SimpleUploaderyCommand) action).getResult().getPhotoUploadResponse().getLocation());
@@ -100,7 +109,7 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
 
     private void startUploading() {
         message.setStatus(MessageStatus.SENDING);
-        photoAttachment.setUrl(filePath);
+        photoAttachment.setState(PhotoAttachmentStatus.UPLOADING);
 
         photoDAO.save(photoAttachment);
         attachmentDAO.save(attachment);
@@ -111,11 +120,13 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Calendar.getInstance().getMaximum(Calendar.YEAR));
         message.setStatus(MessageStatus.ERROR);
+        photoAttachment.setState(PhotoAttachmentStatus.FAILED);
         saveMessage(calendar.getTimeInMillis());
     }
 
     private void successUploading(String url) {
         message.setStatus(MessageStatus.SENDING);
+        photoAttachment.setState(PhotoAttachmentStatus.UPLOADED);
         photoAttachment.setUrl(url);
 
         photoDAO.save(photoAttachment);

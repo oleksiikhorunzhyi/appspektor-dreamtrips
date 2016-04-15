@@ -2,7 +2,9 @@ package com.messenger.entities;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -39,7 +41,9 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     @Column
     String url;
     @Column
-    int uploadTaskId;
+    String localUri;
+    @Column @PhotoAttachmentStatus
+    int state; // todo rename to uploadState
 
     public DataPhotoAttachment() {
     }
@@ -47,7 +51,8 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     private DataPhotoAttachment(Builder builder) {
         setId(builder.id);
         setUrl(builder.url);
-        setUploadTaskId(builder.amazonTaskId);
+        setLocalUri(builder.localPath);
+        setState(builder.state);
     }
 
     public DataPhotoAttachment(@NonNull ImageAttachment attachment, Message message, int index) {
@@ -67,20 +72,31 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
         this.id = id;
     }
 
-    public void setUploadTaskId(int amazonTaskId) {
-        this.uploadTaskId = amazonTaskId;
-    }
-
+    @Nullable
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(@Nullable String url) {
         this.url = url;
     }
 
-    public int getUploadTaskId() {
-        return uploadTaskId;
+    @Nullable
+    public String getLocalUri() {
+        return localUri;
+    }
+
+    public void setLocalUri(@Nullable String localUri) {
+        this.localUri = localUri;
+    }
+
+    @PhotoAttachmentStatus
+    public int getState() {
+        return state;
+    }
+
+    public void setState(@PhotoAttachmentStatus int state) {
+        this.state = state;
     }
 
     @Override
@@ -119,9 +135,10 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     }
 
     public static final class Builder {
-        String id;
-        String url;
-        int amazonTaskId;
+        private String id;
+        private String url;
+        private int state = PhotoAttachmentStatus.UPLOADED;
+        private String localPath;
 
         public Builder() {
         }
@@ -136,8 +153,27 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
             return this;
         }
 
+        public Builder state(@PhotoAttachmentStatus int val) {
+            state = val;
+            return this;
+        }
+
+        public Builder localPath(String val) {
+            localPath = val;
+            return this;
+        }
+
         public DataPhotoAttachment build() {
             return new DataPhotoAttachment(this);
         }
+
+    }
+
+    @IntDef({PhotoAttachmentStatus.FAILED, PhotoAttachmentStatus.UPLOADED, PhotoAttachmentStatus.UPLOADING, PhotoAttachmentStatus.NONE})
+    public @interface PhotoAttachmentStatus {
+        int NONE = 0x74829;
+        int FAILED = 0x74830;
+        int UPLOADED = 0x74831;
+        int UPLOADING = 0x74832;
     }
 }

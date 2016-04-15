@@ -132,15 +132,12 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     @Override
     public void onCellClicked(PhotoGalleryModel model) {
         model.setChecked(!model.isChecked());
-        /**
-         * temporary for single pick
-         */
-        if (pickedItems.size() > 0) {
-            PhotoGalleryModel lastPickedItem = pickedItems.get(0);
-            lastPickedItem.setChecked(false);
-            pickedItems.remove(lastPickedItem);
-        }
-        if (model.isChecked()) pickedItems.add(model);
+        //
+        if (model.isChecked())
+            pickedItems.add(model);
+        else
+            pickedItems.remove(model);
+        //
         suggestionAdapter.notifyDataSetChanged();
         //
         btnAttach.setVisibility(pickedItems.size() > 0 ? View.VISIBLE : View.GONE);

@@ -345,7 +345,7 @@ dependencies {
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
     compile 'com.github.techery:material-range-bar:9762c0a79b'
-    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.4'
+    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
     compile 'me.relex:circleindicator:1.1.5@aar'
     compile 'com.ms-square:expandableTextView:0.1.4'

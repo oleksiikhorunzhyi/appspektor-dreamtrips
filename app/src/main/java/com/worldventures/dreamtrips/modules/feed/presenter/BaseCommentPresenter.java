@@ -197,7 +197,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         //
-        view.back();
+
+        if (!view.isTabletLandscape()) {
+            view.back();
+        }
     }
 
     public void onEvent(LoadFlagEvent event) {

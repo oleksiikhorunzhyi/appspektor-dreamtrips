@@ -2,28 +2,16 @@ package com.worldventures.dreamtrips.modules.feed.view.custom.collage;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.support.annotation.IntDef;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.feed.view.util.blur.BlurPostprocessor;
-import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.feed.view.custom.collage.layoutmanager.LayoutManager;
+import com.worldventures.dreamtrips.modules.feed.view.custom.collage.layoutmanager.LayoutManagerFactory;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,27 +19,13 @@ import timber.log.Timber;
 
 public class CollageView extends FrameLayout {
 
-    private static final int BLUR_RADIUS = 30;
-    private static final int BLUR_SAMPLING = 1; //scale canvas before blur
-
-    private int halfPadding;
-
-    private float textSize;
-    private int iconResId;
-
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({LANDSCAPE, PORTRAIT, SQUARE})
-    private @interface PhotoType {
-    }
-
-    private static final int LANDSCAPE = 0;
-    private static final int PORTRAIT = 1;
-    private static final int SQUARE = 2;
-
     private List<CollageItem> items = Collections.EMPTY_LIST;
     private ItemClickListener itemClickListener;
-
     private int side; //usually this layout is square. side = width; width = MATCH_PARENT;
+
+    private int padding;
+    private float textSize;
+    private int iconResId;
 
     public CollageView(Context context) {
         this(context, null);
@@ -64,12 +38,11 @@ public class CollageView extends FrameLayout {
     public CollageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray typedArray = getContext().getTheme().obtainStyledAttributes(
+        TypedArray typedArray = context.getTheme().obtainStyledAttributes(
                 attrs, R.styleable.CollageView, 0, 0);
 
         try {
-            int padding = (int) typedArray.getDimension(R.styleable.CollageView_padding, 0);
-            halfPadding = padding / 2;
+            padding = (int) typedArray.getDimension(R.styleable.CollageView_padding, 0);
             textSize = typedArray.getDimension(R.styleable.CollageView_moreTextSize, 25);
             iconResId = typedArray.getResourceId(R.styleable.CollageView_moreIcon, 0);
         } catch (Exception e) {
@@ -96,226 +69,24 @@ public class CollageView extends FrameLayout {
     }
 
     private void fillLayout() {
-        switch (items.size()) {
-            case 1:
-                place1();
-                break;
-            case 2:
-                place2();
-                break;
-            case 3:
-                place3();
-                break;
-            case 4:
-                place4();
-                break;
-            default:
-                placeMany();
-                break;
+        if (items.isEmpty()) return;
+        LayoutManager layoutManager = LayoutManagerFactory.getManager(items.size());
+        layoutManager.initialize(getContext(), items);
+        layoutManager.setAttributes(padding, textSize, iconResId);
+        for (View view : layoutManager.getLocatedViews(side, itemClickListener)) {
+            addView(view);
         }
+        resize(layoutManager.getHolderSize());
     }
 
-    private void place1() {
-        int originalWidth = (int) ViewUtils.pxFromDp(getContext(), items.get(0).width);
-        float scaleCoefficient = originalWidth < side ? 1 : originalWidth / side;
-
-        int originalHeight = (int) ViewUtils.pxFromDp(getContext(), items.get(0).height);
-        int allowableMaxHeight = side / 4 * 5;
-        int resultHeight = originalHeight > allowableMaxHeight ? allowableMaxHeight : originalHeight;
-        resultHeight /= scaleCoefficient;
-        addImage(0, new FrameLayout.LayoutParams(side, resultHeight));
-        resize(side, resultHeight);
-    }
-
-    private void place2() {
-        int firstType = getType(items.get(0));
-        int secondType = getType(items.get(1));
-        if (firstType == LANDSCAPE && secondType == LANDSCAPE) {
-            addImage(0, getLayoutParams(side, side / 2), getPaddings(0, 0, 0, halfPadding));
-            addImage(1, getLayoutParams(side, side / 2, Gravity.BOTTOM), getPaddings(0, halfPadding, 0, 0));
-            resize(side, side);
-        } else if (firstType == PORTRAIT && secondType == PORTRAIT) {
-            addImage(0, getLayoutParams(side / 2, side), getPaddings(0, 0, halfPadding, 0));
-            addImage(1, getLayoutParams(side / 2, side, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, 0));
-            resize(side, side);
-        } else {
-            addImage(0, getLayoutParams(side / 2, side / 2), getPaddings(0, 0, halfPadding, 0));
-            addImage(1, getLayoutParams(side / 2, side / 2, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, 0));
-            resize(side, side / 2);
-        }
-    }
-
-    private void place3() {
-        int firstType = getType(items.get(0));
-        int secondType = getType(items.get(1));
-        int thirdType = getType(items.get(2));
-        if (firstType == LANDSCAPE && secondType == LANDSCAPE && thirdType == LANDSCAPE) {
-            addImage(0, getLayoutParams(side, side * 2 / 3), getPaddings(0, 0, 0, halfPadding));
-            addImage(1, getLayoutParams(side / 2, side / 3, Gravity.BOTTOM), getPaddings(0, halfPadding, halfPadding, 0));
-            addImage(2, getLayoutParams(side / 2, side / 3, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else if (firstType == PORTRAIT && secondType == PORTRAIT && thirdType == PORTRAIT) {
-            addImage(0, getLayoutParams(side * 2 / 3, side), getPaddings(0, 0, halfPadding, 0));
-            addImage(1, getLayoutParams(side / 3, side / 2, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, halfPadding));
-            addImage(2, getLayoutParams(side / 3, side / 2, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else if (firstType == LANDSCAPE) {
-            addImage(0, getLayoutParams(side, side / 2), getPaddings(0, 0, 0, halfPadding));
-            addImage(1, getLayoutParams(side / 2, side / 2, Gravity.BOTTOM), getPaddings(0, halfPadding, halfPadding, 0));
-            addImage(2, getLayoutParams(side / 2, side / 2, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else if (firstType == PORTRAIT) {
-            addImage(0, getLayoutParams(side / 2, side), getPaddings(0, 0, halfPadding, 0));
-            addImage(1, getLayoutParams(side / 2, side / 2, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, halfPadding));
-            addImage(2, getLayoutParams(side / 2, side / 2, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else {
-            addImage(0, getLayoutParams(side * 2 / 3, side * 2 / 3), getPaddings(0, 0, halfPadding, 0));
-            addImage(1, getLayoutParams(side / 3, side / 3, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, halfPadding));
-            addImage(2, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side * 2 / 3);
-        }
-    }
-
-    private void place4() {
-        int firstType = getType(items.get(0));
-        if (firstType == LANDSCAPE) {
-            addImage(0, getLayoutParams(side, side * 2 / 3), getPaddings(0, 0, 0, halfPadding));
-            addImage(1, getLayoutParams(side / 3, side / 3, Gravity.BOTTOM), getPaddings(0, halfPadding, halfPadding, 0));
-            addImage(2, getLayoutParams(side / 3, side / 3, Gravity.BOTTOM | Gravity.CENTER), getPaddings(halfPadding, halfPadding, halfPadding, 0));
-            addImage(3, getLayoutParams(side / 3, side / 3, Gravity.BOTTOM | Gravity.RIGHT), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else if (firstType == PORTRAIT) {
-            addImage(0, getLayoutParams(side * 2 / 3, side), getPaddings(0, 0, halfPadding, 0));
-            addImage(1, getLayoutParams(side / 3, side / 3, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, halfPadding));
-            addImage(2, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.CENTER), getPaddings(halfPadding, halfPadding, 0, halfPadding));
-            addImage(3, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else {
-            addImage(0, getLayoutParams(side / 2, side / 2), getPaddings(0, 0, halfPadding, halfPadding));
-            addImage(1, getLayoutParams(side / 2, side / 2, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, halfPadding));
-            addImage(2, getLayoutParams(side / 2, side / 2, Gravity.BOTTOM), getPaddings(0, halfPadding, halfPadding, 0));
-            addImage(3, getLayoutParams(side / 2, side / 2, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        }
-    }
-
-    private void placeMany() {
-        int firstType = getType(items.get(0));
-        if (firstType == LANDSCAPE) {
-            addImage(0, getLayoutParams(side, side * 2 / 3), getPaddings(0, 0, 0, halfPadding));
-            addImage(1, getLayoutParams(side / 3, side / 3, Gravity.BOTTOM), getPaddings(0, halfPadding, halfPadding, 0));
-            addImage(2, getLayoutParams(side / 3, side / 3, Gravity.BOTTOM | Gravity.CENTER), getPaddings(halfPadding, halfPadding, halfPadding, 0));
-            addMoreButton(3, getLayoutParams(side / 3, side / 3, Gravity.BOTTOM | Gravity.RIGHT), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else if (firstType == PORTRAIT) {
-            addImage(0, getLayoutParams(side * 2 / 3, side), getPaddings(0, 0, halfPadding, 0));
-            addImage(1, getLayoutParams(side / 3, side / 3, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, halfPadding));
-            addImage(2, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.CENTER), getPaddings(halfPadding, halfPadding, 0, halfPadding));
-            addMoreButton(3, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            resize(side, side);
-        } else {
-            addImage(0, getLayoutParams(side * 2 / 3, side / 2), getPaddings(0, 0, halfPadding, halfPadding));
-            addImage(1, getLayoutParams(side * 2 / 3, side / 2, Gravity.BOTTOM), getPaddings(0, halfPadding, halfPadding, 0));
-            addImage(2, getLayoutParams(side / 3, side / 3, Gravity.RIGHT), getPaddings(halfPadding, 0, 0, halfPadding));
-            addImage(3, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.CENTER), getPaddings(halfPadding, halfPadding, 0, halfPadding));
-            resize(side, side);
-            if (items.size() <= 5) {
-                addImage(4, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            } else {
-                addMoreButton(3, getLayoutParams(side / 3, side / 3, Gravity.RIGHT | Gravity.BOTTOM), getPaddings(halfPadding, halfPadding, 0, 0));
-            }
-            resize(side, side);
-        }
-    }
-
-    @PhotoType
-    private int getType(CollageItem item) {
-        if (item.width > item.height) {
-            return LANDSCAPE;
-        } else if (item.width < item.height) {
-            return PORTRAIT;
-        } else {
-            return SQUARE;
-        }
-    }
-
-    private FrameLayout.LayoutParams getLayoutParams(int width, int height) {
-        return getLayoutParams(width, height, Gravity.NO_GRAVITY);
-    }
-
-    private FrameLayout.LayoutParams getLayoutParams(int width, int height, int gravity) {
-        return new LayoutParams(width, height, gravity);
-    }
-
-    private Rect getPaddings(int left, int top, int right, int bottom) {
-        return new Rect(left, top, right, bottom);
-    }
-
-    private void addImage(final int position, FrameLayout.LayoutParams params) {
-        addImage(position, params, new Rect());
-    }
-
-    private void addImage(final int position, FrameLayout.LayoutParams params, Rect paddings) {
-        String url = ImageUtils.getParametrizedUrl(items.get(position).url, params.width, params.height);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-                .build();
-        PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .build();
-        SimpleDraweeView view = new SimpleDraweeView(getContext());
-        view.setController(controller);
-        view.setPadding(paddings.left, paddings.top, paddings.right, paddings.bottom);
-        addView(view, params);
-        view.setOnClickListener(v -> {
-            if (itemClickListener != null) itemClickListener.itemClicked(position);
-        });
-    }
-
-    private void addMoreButton(int position, FrameLayout.LayoutParams params, Rect paddings) {
-        //more image button root
-        FrameLayout moreViewRoot = new FrameLayout(getContext());
-        LayoutParams moreViewRootParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        moreViewRootParams.gravity = params.gravity;
-        addView(moreViewRoot, moreViewRootParams);
-        moreViewRoot.setOnClickListener(v -> {
-            if (itemClickListener != null) itemClickListener.moreClicked();
-        });
-
-        //blur view
-        String url = ImageUtils.getParametrizedUrl(items.get(position).url, params.width, params.height);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-                .setPostprocessor(new BlurPostprocessor(getContext(), BLUR_RADIUS, BLUR_SAMPLING))
-                .build();
-        PipelineDraweeController controller = (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .build();
-        SimpleDraweeView view = new SimpleDraweeView(getContext());
-        view.setController(controller);
-        view.setPadding(paddings.left, paddings.top, paddings.right, paddings.bottom);
-        params.gravity = Gravity.NO_GRAVITY;
-        moreViewRoot.addView(view, params);
-
-        //text
-        TextView textView = new TextView(getContext());
-        textView.setTextColor(getResources().getColor(android.R.color.white));
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textView.setText(String.format("+%d", items.size() - position));
-        textView.setGravity(Gravity.CENTER);
-        textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, iconResId, 0);
-        LayoutParams textViewParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        textViewParams.gravity = Gravity.CENTER;
-        moreViewRoot.addView(textView, textViewParams);
-    }
-
-    private void resize(int width, int height) {
+    private void resize(Size size) {
         ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = height;
+        layoutParams.width = size.getWidth();
+        layoutParams.height = size.getHeight();
         setLayoutParams(layoutParams);
     }
 
-    interface ItemClickListener {
+    public interface ItemClickListener {
         void itemClicked(int position);
 
         void moreClicked();

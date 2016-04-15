@@ -3,11 +3,19 @@ package com.messenger.ui.adapter.holder.chat;
 import android.database.Cursor;
 import android.view.View;
 
+import com.google.android.gms.maps.MapView;
 import com.messenger.entities.DataLocationAttachment;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.inflater.LiteMapInflater;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
+import com.worldventures.dreamtrips.R;
+
+import butterknife.InjectView;
 
 public abstract class LocationMessageHolder extends MessageViewHolder {
+
+    @InjectView(R.id.lite_map_view)
+    MapView mapView;
 
     private LiteMapInflater liteMapInflater = new LiteMapInflater();
 
@@ -22,6 +30,16 @@ public abstract class LocationMessageHolder extends MessageViewHolder {
         DataLocationAttachment dataLocationAttachment = SqlUtils.convertToModel(true,
                 DataLocationAttachment.class, cursor);
         liteMapInflater.setLocation(dataLocationAttachment.getLat(), dataLocationAttachment.getLng());
+        updateMessageStatusUi();
+    }
+
+    public void updateMessageStatusUi() {
+        switch (dataMessage.getStatus()) {
+            case MessageStatus.SENT:
+            case MessageStatus.READ:
+                mapView.setAlpha(ALPHA_IMAGE_POST_NORMAL);
+                break;
+        }
     }
 
     @Override

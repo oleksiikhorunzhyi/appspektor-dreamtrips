@@ -30,6 +30,9 @@ import butterknife.Optional;
 
 public abstract class MessageViewHolder extends CursorViewHolder {
 
+    protected static final float ALPHA_IMAGE_POST_SENDING = 0.5f;
+    protected static final float ALPHA_IMAGE_POST_NORMAL = 1f;
+
     protected DataMessage dataMessage;
     protected DataAttachment dataAttachment;
     protected DataUser dataUserSender;

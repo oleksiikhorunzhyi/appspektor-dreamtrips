@@ -21,9 +21,6 @@ import butterknife.OnClick;
 
 public abstract class ImageMessageViewHolder extends MessageViewHolder {
 
-    protected static final float ALPHA_IMAGE_POST_SENDING = 0.5f;
-    protected static final float ALPHA_IMAGE_POST_NORMAL = 1f;
-
     @InjectView(R.id.chat_image_post_image_view)
     SimpleDraweeView imagePostView;
     @InjectView(R.id.chat_image_post_progress_bar)

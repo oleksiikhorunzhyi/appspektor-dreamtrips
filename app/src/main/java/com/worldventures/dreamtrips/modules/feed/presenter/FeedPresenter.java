@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
-import com.worldventures.dreamtrips.modules.feed.api.SuggestedPhotosRequest;
+import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -75,9 +75,9 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
                 .map(element -> element.getItems().get(0))
                 .toList());
         //
-        doRequest(new SuggestedPhotosRequest(), photos -> {
+        doRequest(new PhotoGalleryRequest(context), photos -> {
             if (isHasNewPhotos(photos)) {
-                view.refreshFeedItems(feedItems, photos, !noMoreFeeds);
+                view.refreshFeedItems(feedItems, Queryable.from(photos).take(15).toList(), !noMoreFeeds);
             } else {
                 view.refreshFeedItems(feedItems, !noMoreFeeds);
             }

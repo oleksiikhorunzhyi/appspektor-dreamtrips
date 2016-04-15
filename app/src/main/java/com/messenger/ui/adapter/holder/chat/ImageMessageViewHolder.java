@@ -60,7 +60,7 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
             case MessageStatus.READ:
                 errorView.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);
-                imagePostView.setAlpha(ALPHA_IMAGE_POST_NORMAL);
+                imagePostView.setAlpha(ALPHA_MESSAGE_NORMAL);
                 break;
         }
     }

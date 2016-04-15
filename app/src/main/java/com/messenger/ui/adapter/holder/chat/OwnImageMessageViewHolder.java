@@ -35,7 +35,7 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
         super.updateMessageStatusUi();
         if (dataMessage.getStatus() == MessageStatus.SENDING) {
             applyLoadingStatusUi();
-            imagePostView.setAlpha(ALPHA_IMAGE_POST_SENDING);
+            imagePostView.setAlpha(ALPHA_MESSAGE_SENDING);
         }
 
         boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;

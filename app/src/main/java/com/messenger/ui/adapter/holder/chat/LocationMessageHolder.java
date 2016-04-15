@@ -37,7 +37,7 @@ public abstract class LocationMessageHolder extends MessageViewHolder {
         switch (dataMessage.getStatus()) {
             case MessageStatus.SENT:
             case MessageStatus.READ:
-                mapView.setAlpha(ALPHA_IMAGE_POST_NORMAL);
+                mapView.setAlpha(ALPHA_MESSAGE_NORMAL);
                 break;
         }
     }

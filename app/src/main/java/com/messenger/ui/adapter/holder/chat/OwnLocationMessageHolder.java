@@ -27,16 +27,19 @@ public class OwnLocationMessageHolder extends LocationMessageHolder {
     @Override
     public void updateMessageStatusUi() {
         super.updateMessageStatusUi();
-        if (dataMessage.getStatus() == MessageStatus.SENDING) {
-            mapView.setAlpha(ALPHA_IMAGE_POST_SENDING);
-        } else if (dataMessage.getStatus() == MessageStatus.ERROR) {
-            mapView.setAlpha(ALPHA_IMAGE_POST_NORMAL);
+        switch (dataMessage.getStatus()) {
+            case MessageStatus.SENDING:
+                mapView.setAlpha(ALPHA_MESSAGE_SENDING);
+                break;
+            case MessageStatus.ERROR:
+                mapView.setAlpha(ALPHA_MESSAGE_NORMAL);
+                break;
         }
 
         boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;
-        int viewVisible = isError ? View.VISIBLE : View.GONE;
-        if (viewVisible != retrySwitcher.getVisibility()) {
-            retrySwitcher.setVisibility(viewVisible);
+        int viewVisibility = isError ? View.VISIBLE : View.GONE;
+        if (viewVisibility != retrySwitcher.getVisibility()) {
+            retrySwitcher.setVisibility(viewVisibility);
         }
         if (isError && retrySwitcher.getCurrentView().getId() == R.id.progress_bar) {
             retrySwitcher.showPrevious();

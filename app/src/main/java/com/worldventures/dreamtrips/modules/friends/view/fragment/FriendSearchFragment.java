@@ -34,6 +34,12 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        enableRefreshLayout(!getQueryFromArgs().isEmpty());
+    }
+
+    @Override
     protected void onMenuInflated(Menu menu) {
         super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -67,6 +73,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
             public boolean onQueryTextChange(String newText) {
                 updateEmptyCaption(newText.length());
                 getPresenter().setQuery(newText);
+                enableRefreshLayout(!newText.isEmpty());
                 return false;
             }
         });
@@ -79,8 +86,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
     @Override
     protected FriendSearchPresenter createPresenter(Bundle savedInstanceState) {
-        String query = getArgs() != null ? getArgs().getQuery() : "";
-        return new FriendSearchPresenter(query);
+        return new FriendSearchPresenter(getQueryFromArgs());
     }
 
     private void updateEmptyCaption(int querySize) {
@@ -101,5 +107,13 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
     @Override
     public void onCellClicked(User model) {
 
+    }
+
+    private void enableRefreshLayout(boolean isEnable) {
+        refreshLayout.setEnabled(isEnable);
+    }
+
+    private String getQueryFromArgs() {
+        return getArgs() != null ? getArgs().getQuery() : "";
     }
 }

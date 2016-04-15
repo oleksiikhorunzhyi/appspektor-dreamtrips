@@ -66,5 +66,7 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
     public interface View extends BasePickerPresenter.View {
 
         void openFacebookAlbums();
+
+        void checkPermissions();
     }
 }

@@ -38,7 +38,7 @@ public class LocationAttachmentDelegate {
     public void send(DataConversation conversation, Location location) {
         String userId = sessionHolder.get().get().getUsername();
         DataMessage emptyMessage = attachmentDelegateHelper.createEmptyMessage(userId, conversation.getId());
-        DataAttachment attachment = attachmentDelegateHelper.createDataAttachment(emptyMessage, AttachmentType.IMAGE);
+        DataAttachment attachment = attachmentDelegateHelper.createDataAttachment(emptyMessage, AttachmentType.LOCATION);
         DataLocationAttachment dataLocationAttachment = attachmentDelegateHelper.createLocationAttachment(attachment, location.getLatitude(), location.getLongitude());
         sendLocationPipe.send(new SendLocationAttachmentCommand(conversation, emptyMessage, attachment, dataLocationAttachment));
     }

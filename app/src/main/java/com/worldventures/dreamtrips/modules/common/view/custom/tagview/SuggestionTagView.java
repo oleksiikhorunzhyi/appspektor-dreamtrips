@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.SuggestionHelpView;
@@ -18,11 +17,8 @@ import butterknife.OnClick;
 
 public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
 
-    static int i = 0;
     @InjectView(R.id.suggestion_frame_container)
     View suggestionFrameContainer;
-    @InjectView(R.id.test)
-    public TextView textView;
     private SuggestionHelpView suggestionHelpView;
 
     int additionalSize;
@@ -44,7 +40,6 @@ public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
         LayoutInflater.from(getContext()).inflate(getLayout(), this, true);
         ButterKnife.inject(this);
         additionalSize = getResources().getDimensionPixelSize(R.dimen.photo_tag_frame_additional_size);
-        textView.setText("" + i++);
     }
 
     protected int getLayout() {

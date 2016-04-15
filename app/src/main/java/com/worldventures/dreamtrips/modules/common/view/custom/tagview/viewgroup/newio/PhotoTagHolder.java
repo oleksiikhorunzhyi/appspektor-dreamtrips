@@ -202,6 +202,15 @@ public class PhotoTagHolder extends RelativeLayout {
         return false;
     }
 
+    private boolean isSuggestionViewExists() {
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) instanceof SuggestionTagView) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     protected void removeUncompletedViews() {
         View view = getChildAt(getChildCount() - 1);
         if (view instanceof CreationTagView) removeView(view);
@@ -214,6 +223,8 @@ public class PhotoTagHolder extends RelativeLayout {
     }
 
     private PhotoTag findNextSuggestion(TagPosition pos) {
+        if (!isSuggestionViewExists()) return null;
+        //
         float cX = getCenterX(pos);
         float cY = getCenterY(pos);
         PhotoTag result = null;
@@ -230,9 +241,8 @@ public class PhotoTagHolder extends RelativeLayout {
                 }
             }
         }
-        if (result == null) {
-            //todo
-        }
+        if (result == null) return findTagOnNextLine(pos);
+        //
         return result;
     }
 
@@ -251,11 +261,24 @@ public class PhotoTagHolder extends RelativeLayout {
     }
 
     private static float getCenterX(TagPosition pos) {
-        return pos.getTopLeft().getX() + (pos.getBottomRight().getX() - pos.getTopLeft().getX()) / 2;
+        return pos.getTopLeft().getX() + Math.abs(pos.getBottomRight().getX() - pos.getTopLeft().getX()) / 2;
     }
 
     private static float getCenterY(TagPosition pos) {
-        return pos.getTopLeft().getY() + (pos.getBottomRight().getY() - pos.getTopLeft().getY()) / 2;
+        return pos.getTopLeft().getY() + Math.abs(pos.getBottomRight().getY() - pos.getTopLeft().getY()) / 2;
     }
 
+    private PhotoTag findTagOnNextLine(TagPosition lastTagPosition) {
+        TagPosition tagPosition = new TagPosition(0,
+                lastTagPosition.getBottomRight().getY(),
+                lastTagPosition.getBottomRight().getX() - lastTagPosition.getTopLeft().getX(),
+                lastTagPosition.getBottomRight().getY() + (lastTagPosition.getBottomRight().getY() - lastTagPosition.getTopLeft().getY()));
+        if (tagPosition.getTopLeft().getY() > 1)
+            return findNextSuggestion(new TagPosition(0,
+                    0,
+                    lastTagPosition.getBottomRight().getX() - lastTagPosition.getTopLeft().getX(),
+                    lastTagPosition.getBottomRight().getY() - lastTagPosition.getTopLeft().getY()));
+        //
+        return findNextSuggestion(tagPosition);
+    }
 }

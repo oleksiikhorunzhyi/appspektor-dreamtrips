@@ -15,6 +15,13 @@
         android:layout_height="match_parent"
         >
 
+        <TextView
+            android:id="@+id/chat_username"
+            style="@style/ChatUsernameTextView"
+            android:layout_alignLeft="@+id/message_container"
+            android:layout_alignStart="@+id/message_container"
+            tools:text="Peter Parker"/>
+
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/chat_item_avatar"
             style="@style/ChatAvatarImageView"
@@ -23,16 +30,17 @@
             app:roundAsCircle="true"
             tools:background="@drawable/noavatar_small"/>
 
-        <FrameLayout
+        <com.messenger.ui.widget.ChatItemFrameLayout
             android:id="@+id/message_container"
+            style="@style/UserImageMessageStyle"
             android:layout_width="@dimen/chat_image_width"
             android:layout_height="@dimen/chat_image_height"
             android:layout_below="@+id/chat_username"
-            android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
             android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
-            android:layout_toRightOf="@id/chat_item_avatar"
+            android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
             android:layout_toEndOf="@id/chat_item_avatar"
-            android:background="@drawable/grey_bubble_comics_image_post">
+            android:layout_toRightOf="@id/chat_item_avatar"
+            tools:background="@drawable/grey_bubble_comics_image_post">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/chat_image_post_image_view"
@@ -56,15 +64,7 @@
                 android:padding="18dp"
                 android:src="@drawable/ic_error_red_400_18dp"
                 android:visibility="gone"/>
-        </FrameLayout>
-
-
-        <TextView
-            android:id="@+id/chat_username"
-            style="@style/ChatUsernameTextView"
-            android:layout_alignLeft="@+id/message_container"
-            android:layout_alignStart="@+id/message_container"
-            tools:text="Peter Parker"/>
+        </com.messenger.ui.widget.ChatItemFrameLayout>
 
     </RelativeLayout>
 

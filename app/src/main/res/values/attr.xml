@@ -52,4 +52,10 @@
         <attr name="rcl_radius" format="dimension|reference" />
     </declare-styleable>
 
+    <declare-styleable name="ChatItemFrameLayout">
+        <attr name="background_following" format="reference"/>
+        <attr name="background_initial" format="reference"/>
+        <attr name="own" format="boolean"/>
+    </declare-styleable>
+
 </resources>

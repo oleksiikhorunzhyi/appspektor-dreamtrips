@@ -315,6 +315,29 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="OwnMessageStyle">
+        <item name="own">true</item>
+    </style>
+    <style name="OwnTextMessageStyle" parent="OwnMessageStyle">
+        <item name="background_following">@drawable/background_chat_text_item_own</item>
+        <item name="background_initial">@drawable/background_chat_text_item_own_initial</item>
+    </style>
+    <style name="OwnImageMessageStyle" parent="OwnMessageStyle">
+        <item name="background_following">@drawable/background_chat_image_item_own</item>
+        <item name="background_initial">@drawable/background_chat_image_item_own_initial</item>
+    </style>
+    <style name="UserMessageStyle">
+        <item name="own">false</item>
+    </style>
+    <style name="UserTextMessageStyle" parent="UserMessageStyle">
+        <item name="background_following">@drawable/background_chat_text_item_user</item>
+        <item name="background_initial">@drawable/background_chat_text_item_user_initial</item>
+    </style>
+    <style name="UserImageMessageStyle" parent="UserMessageStyle">
+        <item name="background_following">@drawable/background_chat_image_item_user</item>
+        <item name="background_initial">@drawable/background_chat_image_item_user_initial</item>
+    </style>
+
     <!--end messenger-->
 
     <!--in app notifications-->

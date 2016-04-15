@@ -1,5 +1,6 @@
 package com.techery.spares.adapter;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,18 +25,21 @@ public class AdapterHelper {
 
         View cellView = layoutInflater.inflate(layoutAnnotation.value(), parent, false);
 
-        AbstractCell cellObject = null;
+        return (AbstractCell) buildHolder(cellClass, cellView);
+    }
 
+    public static RecyclerView.ViewHolder buildHolder(Class<? extends RecyclerView.ViewHolder> cellClass,
+                                                      View cellView) {
+        RecyclerView.ViewHolder cellObject = null;
         try {
 
-            Constructor<? extends AbstractCell> constructor = cellClass.getConstructor(View.class);
-
+            Constructor<? extends RecyclerView.ViewHolder> constructor = cellClass.getConstructor(View.class);
             cellObject = constructor.newInstance(cellView);
 
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException |
+                NoSuchMethodException | InvocationTargetException e) {
             Timber.e(e, "Can't create cell");
         }
-
         return cellObject;
     }
 }

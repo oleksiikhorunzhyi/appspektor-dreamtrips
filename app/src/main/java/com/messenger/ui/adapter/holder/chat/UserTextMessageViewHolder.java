@@ -1,12 +1,12 @@
 package com.messenger.ui.adapter.holder.chat;
 
-import android.support.annotation.DrawableRes;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.messenger.util.TruncateUtils;
+import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
@@ -20,6 +20,7 @@ import static com.messenger.messengerservers.constant.TranslationStatus.TRANSLAT
 import static com.messenger.messengerservers.constant.TranslationStatus.TRANSLATING;
 
 
+@Layout(R.layout.list_item_chat_user_text_message)
 public class UserTextMessageViewHolder extends TextMessageViewHolder {
 
     @InjectView(R.id.translation_progress)
@@ -31,34 +32,11 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder {
         super(itemView);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // General messages logic
-    ///////////////////////////////////////////////////////////////////////////
-
     @Override
     public void showMessage() {
         messageTextView.setAutoLinkMask(Linkify.WEB_URLS);
         applyTranslationStatus();
     }
-
-    @Override
-    @DrawableRes
-    protected int provideBackgroundForFollowing() {
-        return selected ? R.drawable.dark_grey_bubble
-                : R.drawable.grey_bubble;
-    }
-
-    @Override
-    @DrawableRes
-    protected int provideBackgroundForInitial() {
-        return selected ? R.drawable.dark_grey_bubble_comics
-                : R.drawable.grey_bubble_comics;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Translation staff
-    ///////////////////////////////////////////////////////////////////////////
-
 
     public void applyTranslationStatus() {
         setTranslationUiState();
@@ -114,7 +92,5 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder {
 
         messageTextView.setText(TruncateUtils.truncate(dataTranslation.getTranslation(),
                 messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
-
     }
-
 }

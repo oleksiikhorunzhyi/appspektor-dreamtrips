@@ -30,22 +30,23 @@
             app:roundAsCircle="true"
             tools:background="@drawable/noavatar_small"/>
 
-        <FrameLayout
+        <com.messenger.ui.widget.ChatItemFrameLayout
             android:id="@+id/message_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/UserImageMessageStyle"
+            android:layout_width="@dimen/chat_image_width"
+            android:layout_height="@dimen/chat_image_height"
             android:layout_below="@+id/chat_username"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
             android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
             android:layout_toEndOf="@id/chat_item_avatar"
             android:layout_toRightOf="@id/chat_item_avatar"
-            android:background="@drawable/dark_grey_bubble_comics"
+            tools:background="@drawable/dark_grey_bubble_comics"
             >
 
             <include layout="@layout/rounded_map_view"/>
 
-        </FrameLayout>
+        </com.messenger.ui.widget.ChatItemFrameLayout>
 
     </RelativeLayout>
 </LinearLayout>

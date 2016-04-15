@@ -72,7 +72,7 @@ public class LiteMapInflater extends ViewInflater {
 
     private void onMapClick(LatLng latLng) {
         if (onMapClickListener != null) {
-            onMapClickListener.onMapClick(latLng);
+            onMapClickListener.onMapClick(location);
         }
     }
 

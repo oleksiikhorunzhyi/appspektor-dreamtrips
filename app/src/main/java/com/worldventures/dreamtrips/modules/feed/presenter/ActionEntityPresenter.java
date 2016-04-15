@@ -30,8 +30,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     @Override
     public void takeView(V view) {
         super.takeView(view);
-        if (cachedCreationItems == null) cachedCreationItems = new ArrayList<>();
-        //
         updateUi();
     }
 
@@ -83,6 +81,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
                 view.updateItem(item);
             }
         }
+        //
+        invalidateDynamicViews();
     }
 
     public Location getLocation() {

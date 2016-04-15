@@ -83,17 +83,17 @@ public class PhotoTagHolderManager {
         this.tagDeletedListener = tagDeletedListener;
     }
 
-    //
-
     void requestFriends(String query, int page) {
         if (friendRequestProxy != null) {
-            friendRequestProxy.requestFriends(query, page, users -> photoTagHolder.getCreationTagView().setUserFriends(users));
+            friendRequestProxy.requestFriends(query, page, users -> {
+                if (photoTagHolder.getCreationTagView() != null)
+                    photoTagHolder.getCreationTagView().setUserFriends(users);
+            });
         }
     }
 
     void notifyTagCreated(PhotoTag photoTag) {
         tagCreatedListener.call(photoTag);
-
     }
 
     void notifyTagDeleted(PhotoTag photoTag) {
@@ -112,6 +112,7 @@ public class PhotoTagHolderManager {
     }
 
     public interface FriendRequestProxy {
+
         void requestFriends(String query, int page, Action1<List<User>> friends);
     }
 

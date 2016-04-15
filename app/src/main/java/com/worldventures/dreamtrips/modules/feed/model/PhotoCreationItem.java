@@ -108,8 +108,9 @@ public class PhotoCreationItem implements Parcelable {
         return combinedTags;
     }
 
+    @NotNull
     public String getTitle() {
-        return title;
+        return title != null ? title : "";
     }
 
     public void setSuggestions(List<PhotoTag> suggestions) {

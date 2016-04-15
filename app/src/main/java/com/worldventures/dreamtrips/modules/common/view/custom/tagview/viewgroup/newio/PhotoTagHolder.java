@@ -35,7 +35,6 @@ public class PhotoTagHolder extends RelativeLayout {
 
     @State
     boolean isShown;
-
     @State
     RectF imageBounds = new RectF();
 
@@ -52,7 +51,6 @@ public class PhotoTagHolder extends RelativeLayout {
     public PhotoTagHolder(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
 
     @Override
     protected Parcelable onSaveInstanceState() {
@@ -79,7 +77,6 @@ public class PhotoTagHolder extends RelativeLayout {
         isShown = false;
     }
 
-
     protected void addExistsTagView(PhotoTag photoTag, boolean deleteEnabled) {
         ExistsTagView view = new ExistsTagView(getContext());
         view.setDeleteEnabled(deleteEnabled);
@@ -95,7 +92,6 @@ public class PhotoTagHolder extends RelativeLayout {
         if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag, view);
     }
 
-
     protected void addCreationTagView(float x, float y) {
         addCreationTag(x, y);
     }
@@ -107,7 +103,6 @@ public class PhotoTagHolder extends RelativeLayout {
         CreationTagView creationTagView = addCreationTag(x, y);
         creationTagView.setSuggestionTag(suggestion);
     }
-
 
     private CreationTagView addCreationTag(float x, float y) {
         removeUncompletedViews();
@@ -133,9 +128,7 @@ public class PhotoTagHolder extends RelativeLayout {
                 }
                 removeView(newTagView);
                 manager.notifyTagCreated(tag);
-
             }
-
         });
         PhotoTag photoTag = new PhotoTag(convertToProportional(new TagPosition(x, y, x, y), imageBounds), 0);
         addTagView(view, photoTag);
@@ -162,7 +155,6 @@ public class PhotoTagHolder extends RelativeLayout {
     protected <T extends TagView> void addTagView(T view, PhotoTag photoTag, int viewPos) {
         TagPosition tagPosition = convertToAbsolute(photoTag.getProportionalPosition(), imageBounds);
         view.setAbsoluteTagPosition(tagPosition);
-
         view.setPhotoTag(photoTag);
         LayoutParams layoutParams = calculatePosition(view);
         addView(view, viewPos, layoutParams);
@@ -182,7 +174,7 @@ public class PhotoTagHolder extends RelativeLayout {
         float tagHeight = tagSize.getHeight();
         int photoTagXPos = (int) (view.getAbsoluteTagPosition().getBottomRight().getX() - tagWidth / 2);
         int photoTagYPos = (int) (view.getAbsoluteTagPosition().getBottomRight().getY());
-
+        //
         if (photoTagXPos < 0) {
             photoTagXPos = 0;
         }
@@ -195,7 +187,7 @@ public class PhotoTagHolder extends RelativeLayout {
         if (view.getAbsoluteTagPosition().getTopLeft().getY() > getHeight() - tagHeight) {
             photoTagYPos = (int) (getHeight() - tagHeight - (getHeight() - photoTagYPos));
         }
-
+        //
         layoutParams.leftMargin = photoTagXPos;
         layoutParams.topMargin = photoTagYPos;
         return layoutParams;
@@ -221,7 +213,6 @@ public class PhotoTagHolder extends RelativeLayout {
         return null;
     }
 
-
     private PhotoTag findNextSuggestion(TagPosition pos) {
         float cX = getCenterX(pos);
         float cY = getCenterY(pos);
@@ -239,20 +230,17 @@ public class PhotoTagHolder extends RelativeLayout {
                 }
             }
         }
-
         if (result == null) {
             //todo
         }
-
         return result;
-
     }
 
     private boolean isOnWay(TagPosition way, TagPosition barricade) {
         int wbX = (int) (way.getBottomRight().getX() * 100);
         int wtY = (int) (way.getTopLeft().getY() * 100);
         int wbY = (int) (way.getBottomRight().getY() * 100);
-
+        //
         Rect r1 = new Rect(wbX, wtY, 100, wbY);
         int tX = (int) (barricade.getTopLeft().getX() * 100);
         int tY = (int) (barricade.getTopLeft().getY() * 100);
@@ -261,7 +249,6 @@ public class PhotoTagHolder extends RelativeLayout {
         Rect r2 = new Rect(tX, tY, bX, bY);
         return r1.intersect(r2);
     }
-
 
     private static float getCenterX(TagPosition pos) {
         return pos.getTopLeft().getX() + (pos.getBottomRight().getX() - pos.getTopLeft().getX()) / 2;

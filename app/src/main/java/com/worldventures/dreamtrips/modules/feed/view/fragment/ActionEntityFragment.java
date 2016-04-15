@@ -124,6 +124,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         super.onResume();
         backStackDelegate.setListener(this::onBack);
         updateLocationButtonState();
+        getPresenter().invalidateDynamicViews();
     }
 
     @Override

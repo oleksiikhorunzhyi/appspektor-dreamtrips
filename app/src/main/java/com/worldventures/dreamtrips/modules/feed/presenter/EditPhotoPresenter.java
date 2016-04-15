@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -17,7 +16,8 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
 
     @Override
     public void takeView(View view) {
-        cachedCreationItems.add(createItemFromPhoto(photo));
+        if (cachedCreationItems.size() == 0)
+            cachedCreationItems.add(createItemFromPhoto(photo));
         //
         super.takeView(view);
         //
@@ -33,11 +33,21 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
 
     @Override
     protected boolean isChanged() {
+        return isLocationChanged() || isTagsChanged() || isTitleChanged();
+    }
+
+    private boolean isLocationChanged() {
+        return photo.getLocation().getLat() != location.getLat() || photo.getLocation().getLng() != location.getLng();
+    }
+
+    private boolean isTagsChanged() {
         PhotoCreationItem item = cachedCreationItems.get(0);
-        Location photoLocation = photo.getLocation();
-        return (photoLocation.getLat() != location.getLat() || photoLocation.getLng() != location.getLng())
-                || item.getCachedAddedPhotoTags().size() > 0 || item.getCachedRemovedPhotoTags().size() > 0
-                || !photo.getTitle().equals(item.getTitle());
+        return item.getCachedAddedPhotoTags().size() > 0 || item.getCachedRemovedPhotoTags().size() > 0;
+    }
+
+    private boolean isTitleChanged() {
+        PhotoCreationItem item = cachedCreationItems.get(0);
+        return !item.getTitle().equals(photo.getTitle());
     }
 
     @Override
@@ -54,7 +64,7 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
         uploadTask.setLongitude((float) location.getLng());
         uploadTask.setShotAt(photo.getShotAt());
         doRequest(new EditPhotoCommand(photo.getUid(), uploadTask,
-                creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()),
+                        creationItem.getCachedAddedPhotoTags(), creationItem.getCachedRemovedPhotoTags()),
                 entity -> {
                     eventBus.post(new FeedEntityChangedEvent(entity));
                     view.cancel();

@@ -58,7 +58,7 @@ public class LoaderDelegate {
         Observable
                 .zip(loadConversations(), loadContacts(), (o, o2) -> Boolean.TRUE)
                 .onErrorReturn(e -> Boolean.FALSE)
-                .subscribe(listener::onSynchronized);
+                .subscribe(listener::onSynchronized, t -> Timber.e(t, "Error while synchronizing cache"));
     }
 
     public Observable<Void> loadConversations() {

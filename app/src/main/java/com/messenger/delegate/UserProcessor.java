@@ -4,16 +4,16 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.messenger.api.GetShortProfilesQuery;
+import com.messenger.api.GetShortProfileAction;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.Collections;
 import java.util.List;
 
+import io.techery.janet.Janet;
 import rx.Observable;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
@@ -24,44 +24,33 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 public class UserProcessor {
     private static final String HOST_BADGE = "DreamTrips Host";
     private final UsersDAO usersDAO;
-    private final DreamSpiceManager requester;
+    private final Janet janet;
 
-    public UserProcessor(UsersDAO usersDAO, DreamSpiceManager requester) {
+    public UserProcessor(UsersDAO usersDAO, Janet janet) {
         this.usersDAO = usersDAO;
-        this.requester = requester;
+        this.janet = janet;
     }
 
     public Observable<List<DataUser>> connectToUserProvider(Observable<List<MessengerUser>> provider) {
         ConnectableObservable<List<DataUser>> observable = provider
-                .compose(updateWithSocialData())
-                .subscribeOn(Schedulers.io()).observeOn(Schedulers.trampoline())
+                .flatMap(this::updateWithSocialData)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.trampoline())
                 .publish();
         observable.subscribe(aVoid -> Timber.i("Users processed"), t -> Timber.w(t, "Can't process users"));
         observable.connect();
         return observable.asObservable();
     }
 
-    private Observable.Transformer<List<MessengerUser>, List<DataUser>> updateWithSocialData() {
-        return listObservable -> listObservable.flatMap(messengerUsers -> {
-            if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
-            //
-            List<String> usernames = from(messengerUsers).map(MessengerUser::getName).toList();
-            return Observable.<List<User>>create(subscriber -> {
-                // SpiceManager post result on MainThread
-                requester.execute(new GetShortProfilesQuery(usernames), userz -> {
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(userz);
-                        subscriber.onCompleted();
-                    }
-                }, spiceException -> {
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onError(spiceException);
-                    }
-                });
-            }).flatMap(users -> syncCashedUser(messengerUsers, users));
-        });
-    }
+    private Observable<List<DataUser>> updateWithSocialData(List<MessengerUser>  messengerUsers) {
+        if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
 
+        List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
+
+        return janet.createPipe(GetShortProfileAction.class)
+                .createObservableSuccess(new GetShortProfileAction(userNames))
+                .flatMap(action -> syncCashedUser(messengerUsers, action.getShortUsers()));
+    }
 
     private Observable<List<DataUser>> syncCashedUser(List<MessengerUser> messengerUsers,
                                                        List<User> socialUsers) {

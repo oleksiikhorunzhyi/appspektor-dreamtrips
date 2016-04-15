@@ -9,14 +9,18 @@ import io.techery.janet.body.FileBody;
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Part;
 import io.techery.janet.http.annotations.Response;
+import io.techery.janet.http.annotations.Url;
 
-@HttpAction(value = "/upload", type = HttpAction.Type.MULTIPART, method = HttpAction.Method.POST)
+@HttpAction(type = HttpAction.Type.MULTIPART, method = HttpAction.Method.POST)
 public class UploadImageAction extends BaseHttpAction {
+
+    @Url String uploaderyURL;
 
     @Part(value = "photo") FileBody fileBody;
     @Response PhotoUploadResponse photoUploadResponse;
 
-    public UploadImageAction(File imageFile) {
+    public UploadImageAction(String uploaderyURL, File imageFile) {
+        this.uploaderyURL = uploaderyURL + "/upload";
         fileBody = new FileBody("image/*", imageFile);
     }
 

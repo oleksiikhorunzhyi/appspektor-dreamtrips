@@ -1,16 +1,12 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.messenger.api.ShortProfilesBody;
-import com.messenger.api.TranslateTextBody;
-import com.messenger.api.TranslatedText;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.PhotoUploadResponse;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
@@ -89,9 +85,6 @@ public interface DreamTripsApi {
 
     @GET("/api/profiles/{id}")
     User getPublicProfile(@Path("id") int id);
-
-    @POST("/api/users/profiles/short")
-    ArrayList<User> getShortProfiles(@Body ShortProfilesBody body);
 
     @GET("/api/trips")
     List<TripModel> getTrips();
@@ -390,8 +383,5 @@ public interface DreamTripsApi {
 
     @POST("/api/feedbacks")
     Void sendFeedback(@Body FeedbackBody feedbackBody);
-
-    @POST("/api/translate")
-    TranslatedText translateText(@Body TranslateTextBody body);
 
 }

@@ -3,9 +3,8 @@ package com.messenger.ui.adapter.holder.chat;
 import android.support.annotation.DrawableRes;
 import android.view.View;
 
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.worldventures.dreamtrips.R;
-
-import butterknife.OnClick;
 
 public class OwnLocationMessageHolder extends LocationMessageHolder {
 
@@ -25,4 +24,22 @@ public class OwnLocationMessageHolder extends LocationMessageHolder {
         return selected ? R.drawable.dark_blue_bubble_comics_image_post : R.drawable.blue_bubble_comics_image_post;
     }
 
+    @Override
+    public void updateMessageStatusUi() {
+        super.updateMessageStatusUi();
+        if (dataMessage.getStatus() == MessageStatus.SENDING) {
+            mapView.setAlpha(ALPHA_IMAGE_POST_SENDING);
+        } else if (dataMessage.getStatus() == MessageStatus.ERROR) {
+            mapView.setAlpha(ALPHA_IMAGE_POST_NORMAL);
+        }
+
+        boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;
+        int viewVisible = isError ? View.VISIBLE : View.GONE;
+        if (viewVisible != retrySwitcher.getVisibility()) {
+            retrySwitcher.setVisibility(viewVisible);
+        }
+        if (isError && retrySwitcher.getCurrentView().getId() == R.id.progress_bar) {
+            retrySwitcher.showPrevious();
+        }
+    }
 }

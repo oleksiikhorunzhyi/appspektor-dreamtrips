@@ -19,6 +19,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
+import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import java.util.Collections;
@@ -176,5 +177,9 @@ public class MessageDAO extends BaseDAO {
         contentValues.put(DataMessage$Table.DATE, time);
         contentValues.put(DataMessage$Table.SYNCTIME, time);
         getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID + "=?", new String[]{msgId});
+    }
+
+    public DataMessage fromCursor(Cursor cursor, boolean moveToFirst) {
+        return SqlUtils.convertToModel(!moveToFirst, DataMessage.class, cursor);
     }
 }

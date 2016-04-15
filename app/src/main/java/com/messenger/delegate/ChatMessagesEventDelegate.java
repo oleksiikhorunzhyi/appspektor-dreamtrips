@@ -34,9 +34,10 @@ public class ChatMessagesEventDelegate {
     @Inject
     LoaderDelegate loaderDelegate;
     @Inject
-    Lazy<ChatDelegate> chatDelegate;
-    @Inject
+
     DecomposeMessagesHelper decomposeMessagesHelper;
+
+    Lazy<CreateConversationHelper> createConversationHelperLazy;
 
     private final int maximumYear = Calendar.getInstance().getMaximum(Calendar.YEAR);
 
@@ -76,7 +77,7 @@ public class ChatMessagesEventDelegate {
         if (conversationFromBD == null) {
             String conversationId = message.getConversationId();
             String currentUserId = currentUserSession.get().get().getUser().getUsername();
-            chatDelegate.get()
+            createConversationHelperLazy.get()
                     .createConversation(conversationId, currentUserId)
                     .flatMap(conversation -> {
                         conversationsDAO.save(conversation);

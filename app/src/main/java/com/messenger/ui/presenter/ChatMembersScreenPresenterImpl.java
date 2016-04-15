@@ -9,7 +9,7 @@ import android.util.Pair;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.ChatDelegate;
+import com.messenger.delegate.CreateConversationHelper;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;
 import com.messenger.entities.DataUser;
@@ -34,7 +34,6 @@ import javax.inject.Named;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -53,7 +52,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     @Inject
     DreamSpiceManager dreamSpiceManager;
     @Inject
-    ChatDelegate chatDelegate;
+    CreateConversationHelper createConversationHelper;
     @Inject
     UserSectionHelper userSectionHelper;
     @Inject

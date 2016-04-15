@@ -1,6 +1,7 @@
 package com.messenger.messengerservers.xmpp.chats;
 
 import com.messenger.messengerservers.ChatState;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Message;
@@ -62,6 +63,8 @@ public abstract class XmppChat implements Chat {
                             AbstractXMPPConnection connection = facade.getConnection();
                             if (connection != null) {
                                 connection.sendStanza(stanza);
+                            } else {
+                                throw new ConnectionException();
                             }
                         }));
     }

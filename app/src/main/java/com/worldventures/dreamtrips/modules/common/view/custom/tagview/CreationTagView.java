@@ -46,7 +46,6 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         super(context, attrs, defStyleAttr);
     }
 
-
     public void setUserFriends(@Nullable List<User> userFriends) {
         adapter.addFriends(userFriends);
         inputFriendName.post(() -> {

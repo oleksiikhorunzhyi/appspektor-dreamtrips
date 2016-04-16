@@ -28,17 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
-import icepick.State;
-
 
 @Layout(R.layout.fragment_edit_photo_tags)
-public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsPresenter, EditPhotoTagsBundle> {
-
-
-    @State
-    ArrayList<PhotoTag> locallyAddedTags = new ArrayList<>();
-    @State
-    ArrayList<PhotoTag> locallyDeletedTags = new ArrayList<>();
+public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsPresenter, EditPhotoTagsBundle> implements EditPhotoTagsPresenter.View{
 
     @InjectView(R.id.tag_toolbar)
     Toolbar toolbar;
@@ -51,7 +43,7 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
 
     @Override
     protected EditPhotoTagsPresenter createPresenter(Bundle savedInstanceState) {
-        return new EditPhotoTagsPresenter();
+        return new EditPhotoTagsPresenter(getArgs().getRequestId(), getArgs().getPhotoTags());
     }
 
     @Override
@@ -84,13 +76,11 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         ivImage.setController(draweeController);
 
         photoTagHolderManager.setTagCreatedListener(photoTag -> {
-            locallyAddedTags.add(photoTag);
-            locallyDeletedTags.remove(photoTag);
+            getPresenter().onTagAdded(photoTag);
         });
 
         photoTagHolderManager.setTagDeletedListener(photoTag -> {
-            locallyDeletedTags.add(photoTag);
-            locallyAddedTags.remove(photoTag);
+            getPresenter().onTagDeleted(photoTag);
         });
 
         photoTagHolderManager.creationTagEnabled(true);
@@ -110,7 +100,7 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
     protected boolean onToolBarMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                notifyAboutTags();
+                getPresenter().onDone();
                 router.back();
                 break;
         }
@@ -129,13 +119,10 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         OrientationUtil.unlockOrientation(getActivity());
     }
 
-    private void notifyAboutTags() {
+    @Override
+    public void notifyAboutTags(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> deletedTags) {
         if (getTargetFragment() instanceof Callback) {
-            locallyAddedTags.removeAll(getArgs().getPhotoTags());
-            locallyAddedTags.addAll(getArgs().getPhotoTags());
-            locallyAddedTags.removeAll(locallyDeletedTags);
-
-            ((Callback) getTargetFragment()).onTagSelected(getArgs().getRequestId(), locallyAddedTags, locallyDeletedTags);
+            ((Callback) getTargetFragment()).onTagSelected(requestId, addedTags, deletedTags);
         }
     }
 

@@ -135,10 +135,10 @@ public interface DreamTripsApi {
     @PUT("/api/photos/{uid}")
     Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
 
-    //TODO ENDPOINT
-    @POST("tralala")
+    @POST("/api/photos")
     ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
 
+    //TODO ENDPOINT
     @POST("tralala")
     FeedEntity createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
     /* *** END PHOTOS *****************************/

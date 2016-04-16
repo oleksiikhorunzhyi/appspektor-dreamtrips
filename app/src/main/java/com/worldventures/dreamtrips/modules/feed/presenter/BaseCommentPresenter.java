@@ -130,8 +130,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             case ADDED:
                 if (event.getSpiceException() == null) {
                     view.addComment(event.getComment());
-                    feedEntity.getComments().add(event.getComment());
-                    feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
                     sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
                 } else {
                     view.onPostError();
@@ -140,13 +138,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                 break;
             case REMOVED:
                 view.removeComment(event.getComment());
-                feedEntity.getComments().remove(event.getComment());
-                feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
                 sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
                 break;
             case EDITED:
                 view.updateComment(event.getComment());
-                feedEntity.getComments().set(feedEntity.getComments().indexOf(event.getComment()), event.getComment());
                 break;
 
         }
@@ -159,12 +154,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public void onEvent(DeleteCommentRequestEvent event) {
         if (!view.isVisibleOnScreen()) return;
-        entityManager.deleteComment(event.getComment());
+        entityManager.deleteComment(feedEntity, event.getComment());
     }
 
 
     public void onEvent(EditCommentRequestEvent event) {
-        view.editComment(event.getComment());
+        view.editComment(feedEntity, event.getComment());
         sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
     }
 
@@ -283,7 +278,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         void setLoading(boolean loading);
 
-        void editComment(Comment comment);
+        void editComment(FeedEntity feedEntity, Comment comment);
 
         void hideViewMore();
 

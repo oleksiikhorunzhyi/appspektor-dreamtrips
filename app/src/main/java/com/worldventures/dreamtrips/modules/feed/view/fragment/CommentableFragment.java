@@ -216,11 +216,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     }
 
     @Override
-    public void editComment(Comment comment) {
+    public void editComment(FeedEntity feedEntity, Comment comment) {
         router.moveTo(Route.EDIT_COMMENT, NavigationConfigBuilder.forDialog()
                 .fragmentManager(getChildFragmentManager())
                 .gravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
-                .data(new SingleCommentBundle(comment)).build());
+                .data(new SingleCommentBundle(feedEntity, comment)).build());
     }
 
     @Override

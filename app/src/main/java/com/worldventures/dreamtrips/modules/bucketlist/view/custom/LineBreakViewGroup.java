@@ -10,7 +10,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class TagViewGroup extends ViewGroup {
+public class LineBreakViewGroup extends ViewGroup {
+
     public static final int DEFAULT_HORIZONTAL_SPACING = 5;
     public static final int DEFAULT_VERTICAL_SPACING = 5;
 
@@ -19,7 +20,7 @@ public class TagViewGroup extends ViewGroup {
     private List<RowMeasurement> currentRows = Collections.emptyList();
 
 
-    public TagViewGroup(Context context, AttributeSet attrs) {
+    public LineBreakViewGroup(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -99,7 +100,7 @@ public class TagViewGroup extends ViewGroup {
     }
 
     private List<View> getLayoutChildren() {
-        List<View> children = new ArrayList<View>();
+        List<View> children = new ArrayList<>();
         for (int index = 0; index < getChildCount(); index++) {
             View child = getChildAt(index);
             if (child.getVisibility() != View.GONE) {

@@ -105,10 +105,14 @@ public class PhotoTagHolderManager {
         return new GestureDetector(photoTagHolder.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                if (creationEnabled) photoTagHolder.addCreationTagView(e.getX(), e.getY());
-                return true;
+                if (isEnableToTag(e)) photoTagHolder.addCreationTagView(e.getX(), e.getY());
+                return isEnableToTag(e);
             }
         });
+    }
+
+    private boolean isEnableToTag(MotionEvent e) {
+        return creationEnabled && photoTagHolder.getImageBounds().contains(e.getX(), e.getY());
     }
 
     public interface FriendRequestProxy {

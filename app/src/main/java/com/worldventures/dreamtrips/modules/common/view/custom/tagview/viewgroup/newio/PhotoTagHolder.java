@@ -72,6 +72,10 @@ public class PhotoTagHolder extends RelativeLayout {
         isShown = true;
     }
 
+    public RectF getImageBounds() {
+        return imageBounds;
+    }
+
     protected void hide() {
         setVisibility(View.INVISIBLE);
         isShown = false;

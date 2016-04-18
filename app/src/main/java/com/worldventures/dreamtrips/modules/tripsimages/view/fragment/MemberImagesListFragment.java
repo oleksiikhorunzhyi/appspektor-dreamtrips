@@ -19,6 +19,8 @@ import butterknife.OnClick;
 public class MemberImagesListFragment<P extends MembersImagesPresenter> extends TripImagesListFragment<P>
         implements MembersImagesPresenter.View {
 
+    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -49,7 +51,7 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .data(new PickerBundle(getPresenter().getMediaRequestId()))
+                .data(new PickerBundle(getPresenter().getMediaRequestId(), MEDIA_PICKER_ITEMS_COUNT))
                 .build());
     }
 

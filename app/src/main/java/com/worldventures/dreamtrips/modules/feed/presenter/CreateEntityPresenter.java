@@ -48,7 +48,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     protected SocialUploaderyManager photoUploadManager;
 
     private Subscription mediaSubscription;
-    private Subscription uploadeySubscription;
+    private Subscription uploaderySubscription;
 
     @Override
     public void takeView(V view) {
@@ -62,15 +62,18 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         Observable<ActionState<UploaderyImageCommand>> observable = photoUploadManager
                 .getTaskChangingObservable()
                 .compose(new IoToMainComposer<>());
-
-        uploadeySubscription = observable.subscribe(state -> {
+        //
+        uploaderySubscription = observable.subscribe(state -> {
             PhotoCreationItem item = getPhotoCreationItemById(state.action.getCommandId());
             if (item != null) {
                 item.setStatus(state.status);
                 if (state.status == ActionState.Status.SUCCESS) {
                     item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult().getPhotoUploadResponse().getLocation());
-                    view.updateItem(item);
+                    invalidateDynamicViews();
+                } else if (state.status == ActionState.Status.FAIL) {
+                    invalidateDynamicViews();
                 }
+                view.updateItem(item);
             }
         });
     }
@@ -86,7 +89,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         super.dropView();
         //
         if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
-        if (!uploadeySubscription.isUnsubscribed()) uploadeySubscription.unsubscribe();
+        if (!uploaderySubscription.isUnsubscribed()) uploaderySubscription.unsubscribe();
     }
 
     @Override
@@ -188,7 +191,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                             }
                         });
                     });
-            //
         }
     }
 

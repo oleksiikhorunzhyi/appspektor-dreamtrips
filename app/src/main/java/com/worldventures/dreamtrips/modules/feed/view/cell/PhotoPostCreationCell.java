@@ -42,7 +42,6 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     @Inject
     @ForActivity
     Injector injector;
-
     @Inject
     SessionHolder<UserSession> userSessionHolder;
 
@@ -83,45 +82,45 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     @Override
     protected void syncUIStateWithModel() {
+        photoTitle.setText(getModelObject().getTitle());
+        photoTitle.addTextChangedListener(textWatcher);
+        //
+        switch (getModelObject().getStatus()) {
+            case START:
+                showProgress();
+                break;
+            case PROGRESS:
+                break;
+            case SUCCESS:
+                hideProgress();
+                break;
+            case FAIL:
+                showError();
+                break;
+        }
+        //
         itemView.post(() -> {
-            photoContainer.getLayoutParams().width = itemView.getWidth();
-            photoContainer.getLayoutParams().height = (int) (itemView.getWidth() / (float) getModelObject().getWidth() * getModelObject().getHeight());
-            photoContainer.requestLayout();
-            photoContainer.post(() -> {
-                switch (getModelObject().getStatus()) {
-                    case START:
-                        showProgress();
-                        break;
-                    case PROGRESS:
-                        break;
-                    case SUCCESS:
-                        hideProgress();
-                        break;
-                    case FAIL:
-                        showError();
-                        break;
-                }
+                photoContainer.getLayoutParams().width = itemView.getWidth();
+                photoContainer.getLayoutParams().height = (int) (itemView.getWidth() / (float) getModelObject().getWidth() * getModelObject().getHeight());
+                photoContainer.requestLayout();
+                photoContainer.post(() -> {
+                    try {
+                        PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(
+                                Uri.parse(getModelObject().getFilePath() == null
+                                        ? getModelObject().getOriginUrl()
+                                        : getModelObject().getFilePath()), attachedPhoto.getController(), itemView.getWidth());
 
-                try {
-                    PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(
-                            Uri.parse(getModelObject().getFilePath() == null
-                                    ? getModelObject().getOriginUrl()
-                                    : getModelObject().getFilePath()), attachedPhoto.getController(), itemView.getWidth());
+                        attachedPhoto.setController(draweeController);
+                    } catch (Exception e) {
+                        Timber.e(e, "");
+                    }
 
-                    attachedPhoto.setController(draweeController);
-                } catch (Exception e) {
-                    Timber.e(e, "");
-                }
-                photoTitle.setText(getModelObject().getTitle());
-                photoTitle.addTextChangedListener(textWatcher);
-
-                photoTagHolder.removeAllViews();
-                if (getModelObject().getStatus() == ActionState.Status.SUCCESS) {
-                    showTagViewGroup();
-                }
-                invalidateAddTagBtn();
-            });
-
+                    photoTagHolder.removeAllViews();
+                    if (getModelObject().getStatus() == ActionState.Status.SUCCESS) {
+                        showTagViewGroup();
+                    }
+                    invalidateAddTagBtn();
+                });
         });
     }
 

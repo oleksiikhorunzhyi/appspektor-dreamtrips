@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
@@ -79,16 +78,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         //
         userName.setText(user.getFullName());
         //
-        int newPhotosCount = getNewPhotosCount();
-        if (newPhotosCount > 0) {
-            int stringRes = QuantityHelper.chooseResource(newPhotosCount,
-                    R.string.suggested_photos_one, R.string.suggested_photos_multiple);
-            description.setText(String.format(itemView.getContext().getString(stringRes),
-                    newPhotosCount));
-            description.setVisibility(View.VISIBLE);
-        } else {
-            description.setVisibility(View.GONE);
-        }
+        changeText();
+        //
         if (suggestionAdapter == null) {
             suggestionAdapter = new BaseDelegateAdapter(itemView.getContext(), injectorProvider.get());
             suggestionAdapter.registerCell(PhotoGalleryModel.class, SuggestionPhotoCell.class);
@@ -107,11 +98,6 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         } else {
             cardViewWrapper.setCardElevation(0);
         }
-    }
-
-    private int getNewPhotosCount() {
-        long lastSyncTime = db.getLastSuggestedPhotosSyncTime();
-        return Queryable.from(getModelObject().chosenImages).count(photo -> photo.getDateTaken() > lastSyncTime);
     }
 
     @Override
@@ -140,6 +126,21 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         //
         suggestionAdapter.notifyDataSetChanged();
         //
-        btnAttach.setVisibility(pickedItems.size() > 0 ? View.VISIBLE : View.GONE);
+        btnAttach.setVisibility(hasPickedItems() ? View.VISIBLE : View.GONE);
+        changeText();
+    }
+
+    private boolean hasPickedItems() {
+        return pickedItems.size() > 0;
+    }
+
+    private void changeText() {
+        if (hasPickedItems()) {
+            int resource = QuantityHelper.chooseResource(pickedItems.size(),
+                    R.string.suggested_photo_selected_one, R.string.suggested_photo_selected_multiple);
+            description.setText(String.format(itemView.getContext().getResources().getString(resource), pickedItems.size()));
+        } else {
+            description.setText(R.string.suggested_photo);
+        }
     }
 }

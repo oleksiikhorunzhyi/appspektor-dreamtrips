@@ -22,6 +22,7 @@ public class SocialUploaderyManager {
     public void upload(String filePath) {
         upload(filePath, filePath.hashCode());
     }
+
     public void upload(String filePath, int commandId) {
         uploaderyManager.getUploadImagePipe().send(new SimpleUploaderyCommand(filePath, commandId));
     }

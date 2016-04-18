@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -84,6 +84,13 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         }
         //
         invalidateDynamicViews();
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.onPostError();
+        view.enableButton();
     }
 
     public Location getLocation() {

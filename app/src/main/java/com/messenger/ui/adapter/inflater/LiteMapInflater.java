@@ -26,6 +26,8 @@ public class LiteMapInflater extends ViewInflater {
 
     private GoogleMap.OnMapClickListener onMapClickListener;
 
+    private GoogleMap.OnMapLongClickListener onMapLongClickListener;
+
     @Override
     public void setView(View rootView) {
         super.setView(rootView);
@@ -42,6 +44,10 @@ public class LiteMapInflater extends ViewInflater {
         this.onMapClickListener = onMapClickListener;
     }
 
+    public void setOnMapLongClickListener(GoogleMap.OnMapLongClickListener onMapLongClickListener) {
+        this.onMapLongClickListener = onMapLongClickListener;
+    }
+
     private void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
         initMap();
@@ -51,6 +57,7 @@ public class LiteMapInflater extends ViewInflater {
     private void initMap() {
         MapsInitializer.initialize(context);
         map.setOnMapClickListener(this::onMapClick);
+        map.setOnMapLongClickListener(this::onMapLongClick);
 
         // always only map, disable all additional buttons
         UiSettings uiSettings = map.getUiSettings();
@@ -73,6 +80,12 @@ public class LiteMapInflater extends ViewInflater {
     private void onMapClick(LatLng latLng) {
         if (onMapClickListener != null) {
             onMapClickListener.onMapClick(location);
+        }
+    }
+
+    private void onMapLongClick(LatLng clickCoords){
+        if (onMapLongClickListener != null) {
+            onMapLongClickListener.onMapLongClick(clickCoords);
         }
     }
 

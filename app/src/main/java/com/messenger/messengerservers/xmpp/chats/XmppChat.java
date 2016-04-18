@@ -6,7 +6,7 @@ import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
+import com.messenger.messengerservers.xmpp.stanzas.StatusMessageStanza;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
@@ -69,7 +69,7 @@ public abstract class XmppChat implements Chat {
                         }));
     }
 
-    protected abstract StatusMessagePacket createStatusMessage(String messageId);
+    protected abstract StatusMessageStanza createStatusMessage(String messageId);
 
     @Override
     public void close() {

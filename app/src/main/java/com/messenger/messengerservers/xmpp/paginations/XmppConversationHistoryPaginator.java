@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
-import com.messenger.messengerservers.xmpp.packets.ObtainMessageListPacket;
+import com.messenger.messengerservers.xmpp.stanzas.MessagePageIQ;
+import com.messenger.messengerservers.xmpp.stanzas.ObtainMessageListIQ;
 import com.messenger.messengerservers.xmpp.providers.MessagePageProvider;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -31,7 +31,7 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
 
     @Override
     public void loadPage(int page, long sinceSecs) {
-        ObtainMessageListPacket packet = new ObtainMessageListPacket();
+        ObtainMessageListIQ packet = new ObtainMessageListIQ();
         packet.setMax(getSizePerPage());
         packet.setConversationId(conversationId);
         packet.setPage(page);
@@ -39,17 +39,17 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         Timber.i("Send XMPP Packet: %s", packet.toString());
 
         try {
-            ProviderManager.addIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE, new MessagePageProvider(gson));
+            ProviderManager.addIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE, new MessagePageProvider(gson));
             connection.sendStanzaWithResponseCallback(packet,
-                    stanza -> stanza instanceof MessagePagePacket
+                    stanza -> stanza instanceof MessagePageIQ
                             || (stanza.getStanzaId() != null && stanza.getStanzaId().startsWith("page")),
                     stanzaPacket -> {
-                        if (!(stanzaPacket instanceof MessagePagePacket)){
+                        if (!(stanzaPacket instanceof MessagePageIQ)){
                             notifyError(new SmackException("No history"));
                         } else {
-                            notifyLoaded(((MessagePagePacket) stanzaPacket).getMessages());
+                            notifyLoaded(((MessagePageIQ) stanzaPacket).getMessages());
                         }
-                        ProviderManager.removeIQProvider(MessagePagePacket.ELEMENT_CHAT, MessagePagePacket.NAMESPACE);
+                        ProviderManager.removeIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE);
                     },
                     exception -> {
                         Timber.e(exception, getClass().getName());

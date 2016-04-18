@@ -5,8 +5,8 @@ import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
-import com.messenger.messengerservers.xmpp.packets.ObtainConversationListPacket;
+import com.messenger.messengerservers.xmpp.stanzas.ConversationsIQ;
+import com.messenger.messengerservers.xmpp.stanzas.ObtainConversationListIQ;
 import com.messenger.messengerservers.xmpp.providers.ConversationProvider;
 import com.messenger.messengerservers.xmpp.util.ParticipantProvider;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
@@ -30,22 +30,22 @@ public class XmppConversationLoader extends Loader<Conversation> {
     public XmppConversationLoader(XmppServerFacade facade) {
         this.facade = facade;
         ProviderManager.addIQProvider(
-                ConversationsPacket.ELEMENT_LIST, ConversationsPacket.NAMESPACE,
+                ConversationsIQ.ELEMENT_LIST, ConversationsIQ.NAMESPACE,
                 new ConversationProvider(facade.getGson())
         );
     }
 
     @Override
     public void load() {
-        ObtainConversationListPacket packet = new ObtainConversationListPacket();
+        ObtainConversationListIQ packet = new ObtainConversationListIQ();
         packet.setMax(MAX_CONVERSATIONS);
         packet.setType(IQ.Type.get);
 
         try {
             facade.getConnection().sendStanzaWithResponseCallback(packet,
-                    (stanza) -> stanza instanceof ConversationsPacket,
+                    (stanza) -> stanza instanceof ConversationsIQ,
                     (stanzaPacket) -> {
-                        List<Conversation> conversations = ((ConversationsPacket) stanzaPacket).getConversations();
+                        List<Conversation> conversations = ((ConversationsIQ) stanzaPacket).getConversations();
                         obtainConversationsWithParticipants(conversations)
                                 .subscribe(conversationWithParticipants -> {
                                     Timber.i("Conversations loaded: %s", conversations);

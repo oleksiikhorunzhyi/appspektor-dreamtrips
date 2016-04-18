@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.xmpp;
 
-import android.content.Context;
 import android.net.SSLCertificateSocketFactory;
 import android.text.TextUtils;
 
@@ -15,12 +14,11 @@ import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
+import com.messenger.messengerservers.xmpp.stanzas.InitialPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGenerator;
-import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.AbstractConnectionListener;
@@ -30,7 +28,6 @@ import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.PingManager;
 
@@ -47,10 +44,9 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     private static final long PACKET_REPLAY_TIMEOUT = TimeUnit.SECONDS.toMillis(60L);
     private static final int TIME_PING_INTERVAL = 45; // secs
+    private static final String WV_API_PROTOCOL_VERSION = "1.0";
 
-    private Context context;
     private XmppServerParams serverParams;
-    private DreamSpiceManager requester;
     private AbstractXMPPConnection connection;
     private volatile boolean active;
 
@@ -64,11 +60,9 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final ChatManager chatManager;
     private final Gson gson;
 
-    public XmppServerFacade(XmppServerParams serverParams, Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
+    public XmppServerFacade(XmppServerParams serverParams) {
         gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
-        this.context = context;
         this.serverParams = serverParams;
-        this.requester = requester;
         PingManager.setDefaultPingInterval(TIME_PING_INTERVAL);
         loaderManager = new XmppLoaderManager(this);
         paginationManager = new XmppPaginationManager(this);
@@ -104,7 +98,6 @@ public class XmppServerFacade implements MessengerServerFacade {
                         connection.connect();
                         connection.login(username, password);
                         //
-                        if (!requester.isStarted()) requester.start(context);
                         Timber.i("Login success");
                         synchronized (XmppServerFacade.this) {
                             this.connection = connection;
@@ -124,7 +117,6 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     @Override
     public void disconnectAsync() {
-        if (requester.isStarted()) requester.shouldStop();
         if (connection == null) return; // skip if not connected yet
         connectionExecutor.execute(connection::disconnect);
         active = false;
@@ -169,10 +161,10 @@ public class XmppServerFacade implements MessengerServerFacade {
     }
 
     @Override
-    public boolean setPresenceStatus(boolean active) {
+    public boolean sendInitialPresence() {
         try {
-            connection.sendStanza(new Presence(active ? Presence.Type.available : Presence.Type.unavailable));
-            return this.active = true;
+            connection.sendStanza(new InitialPresence(WV_API_PROTOCOL_VERSION));
+            return true;
         } catch (SmackException.NotConnectedException e) {
             Timber.w(e, "Presence failed");
             return false;
@@ -182,6 +174,11 @@ public class XmppServerFacade implements MessengerServerFacade {
     @Override
     public boolean isActive() {
         return active;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

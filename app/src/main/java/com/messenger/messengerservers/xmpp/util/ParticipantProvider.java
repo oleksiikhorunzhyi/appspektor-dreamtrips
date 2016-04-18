@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
-import com.messenger.messengerservers.xmpp.packets.ObtainConversationParticipants;
+import com.messenger.messengerservers.xmpp.stanzas.ConversationParticipantsIQ;
+import com.messenger.messengerservers.xmpp.stanzas.ObtainConversationIQ;
 import com.messenger.messengerservers.xmpp.providers.ConversationParticipantsProvider;
 import com.raizlabs.android.dbflow.annotation.NotNull;
 
@@ -30,7 +30,7 @@ public class ParticipantProvider {
     public ParticipantProvider(AbstractXMPPConnection connection) {
         this.connection = connection;
         ProviderManager.addIQProvider(
-                ConversationParticipants.ELEMENT_QUERY, ConversationParticipants.NAMESPACE,
+                ConversationParticipantsIQ.ELEMENT_QUERY, ConversationParticipantsIQ.NAMESPACE,
                 new ConversationParticipantsProvider(connection.getUser())
         );
     }
@@ -44,26 +44,26 @@ public class ParticipantProvider {
     }
 
     public void loadMultiUserChatParticipants(String conversationId, @NotNull OnGroupChatParticipantsLoaded listener) {
-        ObtainConversationParticipants participantsPacket = new ObtainConversationParticipants();
+        ObtainConversationIQ participantsPacket = new ObtainConversationIQ();
         participantsPacket.setTo(JidCreatorHelper.obtainGroupJid(conversationId));
         participantsPacket.setFrom(connection.getUser());
 
         try {
             connection.sendStanzaWithResponseCallback(participantsPacket,
-                    stanza -> stanza instanceof ConversationParticipants
+                    stanza -> stanza instanceof ConversationParticipantsIQ
                             && TextUtils.equals(conversationId, JidCreatorHelper.obtainId(stanza.getFrom())),
                     packet -> {
-                        ConversationParticipants conversationParticipants = (ConversationParticipants) packet;
+                        ConversationParticipantsIQ conversationParticipantsIQ = (ConversationParticipantsIQ) packet;
                         //
-                        Participant owner = conversationParticipants.getOwner();
+                        Participant owner = conversationParticipantsIQ.getOwner();
                         if (owner != null) {
                             owner = new Participant(owner, conversationId);
                         }
-                        List<Participant> participants = conversationParticipants.getParticipants();
+                        List<Participant> participants = conversationParticipantsIQ.getParticipants();
                         if (participants != null) {
                             participants = Queryable.from(participants).map(p -> new Participant(p, conversationId)).toList();
                         }
-                        boolean abandoned = conversationParticipants.isAbandoned();
+                        boolean abandoned = conversationParticipantsIQ.isAbandoned();
                         //
                         listener.onLoaded(owner, participants, abandoned);
                     },

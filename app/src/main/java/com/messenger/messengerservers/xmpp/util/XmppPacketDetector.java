@@ -2,8 +2,8 @@ package com.messenger.messengerservers.xmpp.util;
 
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
-import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
+import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
+import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;

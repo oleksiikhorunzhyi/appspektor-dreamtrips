@@ -1,8 +1,8 @@
-package com.messenger.messengerservers.xmpp.packets;
+package com.messenger.messengerservers.xmpp.stanzas;
 
 import org.jivesoftware.smack.packet.IQ;
 
-public class ObtainMessageListPacket extends IQ {
+public class ObtainMessageListIQ extends IQ {
 
     private static final String NAMESPACE = "urn:xmpp:archive";
     private static final String ELEMENT_RETRIVE = "retrieve";
@@ -12,7 +12,7 @@ public class ObtainMessageListPacket extends IQ {
     private int max = 20;
     private long since = 0;
 
-    public ObtainMessageListPacket() {
+    public ObtainMessageListIQ() {
         super(ELEMENT_RETRIVE, NAMESPACE);
         setType(Type.get);
         setStanzaId("page" + page);

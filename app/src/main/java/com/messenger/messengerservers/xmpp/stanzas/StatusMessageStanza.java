@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.packets;
+package com.messenger.messengerservers.xmpp.stanzas;
 
 
 import com.messenger.messengerservers.xmpp.chats.Status;
@@ -6,7 +6,7 @@ import com.messenger.messengerservers.xmpp.chats.Status;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class StatusMessagePacket extends Stanza {
+public class StatusMessageStanza extends Stanza {
 
     public static final String ELEMENT = "message";
 
@@ -14,7 +14,7 @@ public class StatusMessagePacket extends Stanza {
     private String status;
     private org.jivesoftware.smack.packet.Message.Type type;
 
-    public StatusMessagePacket(String messageId, @Status.MessageStatus String status, String to,
+    public StatusMessageStanza(String messageId, @Status.MessageStatus String status, String to,
                                org.jivesoftware.smack.packet.Message.Type type) {
         super();
         this.messageId = messageId;

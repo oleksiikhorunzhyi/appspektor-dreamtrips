@@ -9,8 +9,8 @@ import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
-import com.messenger.messengerservers.xmpp.packets.ConversationsPacket;
+import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
+import com.messenger.messengerservers.xmpp.stanzas.ConversationsIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;
@@ -21,7 +21,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class ConversationProvider extends IQProvider<ConversationsPacket> {
+public class ConversationProvider extends IQProvider<ConversationsIQ> {
     private final MessageBodyParser messageBodyParser;
 
     public ConversationProvider(Gson gson) {
@@ -29,8 +29,8 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
     }
 
     @Override
-    public ConversationsPacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
-        ConversationsPacket conversationsPacket = new ConversationsPacket();
+    public ConversationsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
+        ConversationsIQ conversationsIQ = new ConversationsIQ();
 
         String thread = null;
         String elementName;
@@ -93,7 +93,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                                     .lastMessage(messageBuilder != null ? messageBuilder.conversationId(thread).build() : null)
                                     .build();
                             //noinspection all // conversationBuilder cannot be null
-                            conversationsPacket.addConversation(conversation);
+                            conversationsIQ.addConversation(conversation);
                             messageBuilder = null;
                             thread = null;
                             conversationBuilder = null;
@@ -105,7 +105,7 @@ public class ConversationProvider extends IQProvider<ConversationsPacket> {
                     break;
             }
         }
-        return conversationsPacket;
+        return conversationsIQ;
     }
 
     private String getTypeByThread(String thread) {

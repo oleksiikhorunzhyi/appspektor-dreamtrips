@@ -9,15 +9,21 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +61,38 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
         post.setText(obj.getItem().getDescription());
         //
         processAttachments(obj.getItem().getAttachments());
+        if (collageView != null) {
+            collageView.setItemClickListener(new CollageView.ItemClickListener() {
+                @Override
+                public void itemClicked(int position) {
+                    List<IFullScreenObject> items = Queryable.from(getModelObject().getItem().getAttachments())
+                            .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
+                            .map(element -> (IFullScreenObject) element.getItem()).toList();
+                    FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                            .position(position)
+                            .userId(getModelObject().getItem().getOwner().getId())
+                            .type(TripImagesType.FIXED)
+                            .route(Route.SOCIAL_IMAGE_FULLSCREEN)
+                            .fixedList(new ArrayList<>(items))
+                            .showTags(true)
+                            .build();
+
+                    NavigationConfig config = NavigationConfigBuilder.forActivity()
+                            .data(data)
+                            .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                            .build();
+
+                    router.moveTo(Route.FULLSCREEN_PHOTO_LIST, config);
+                }
+
+                @Override
+                public void moreClicked() {
+                    router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+                            .data(new FeedDetailsBundle(getModelObject()))
+                            .build());
+                }
+            });
+        }
     }
 
     /**

@@ -156,6 +156,22 @@
         <item name="colorButtonNormal">@color/selector_verify_button_color</item>
     </style>
 
+    <style name="DtlToolbarInput">
+        <item name="android:inputType">textCapWords</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:selectAllOnFocus">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/dtlt_input_text_size</item>
+        <item name="android:textColor">@color/dtlt_input_text_color</item>
+        <item name="android:layout_marginTop">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:paddingLeft">@dimen/dtlt_input_side_padding</item>
+        <item name="android:paddingTop">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:paddingRight">@dimen/dtlt_input_side_padding</item>
+        <item name="android:paddingBottom">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:background">@drawable/bg_edittext_white</item>
+    </style>
+
     <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
         <item name="colorButtonNormal">@color/white</item>
     </style>

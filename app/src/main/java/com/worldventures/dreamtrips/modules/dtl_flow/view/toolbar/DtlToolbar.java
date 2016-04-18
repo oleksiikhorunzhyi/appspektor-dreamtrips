@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
@@ -36,18 +37,23 @@ import icepick.Icepick;
 import icepick.State;
 import timber.log.Timber;
 
+/**
+ * Custom implementation to wrap up look and behaviour. <br />
+ * Actual layout is included from
+ * {@link com.worldventures.dreamtrips.R.layout#view_dtl_toolbar_content this layout}
+ */
 public class DtlToolbar extends LinearLayout {
 
     @InjectView(R.id.dtlToolbarFirstRow)
     View firstRowLayout;
+    @InjectView(R.id.actionViewLayout)
+    ViewGroup actionViewLayout;
     @InjectView(R.id.actionView)
     ActionView actionView;
     @InjectView(R.id.dtlToolbarTopCaption)
     AppCompatEditText topCaption;
-    @InjectView(R.id.dtlToolbarMap)
-    View mapButton;
     @InjectView(R.id.dtlToolbarSecondRow)
-    View secondRow;
+    ViewGroup secondRow;
     @InjectView(R.id.dtlToolbarBottomCaption)
     AppCompatEditText bottomCaption;
     //
@@ -136,10 +142,11 @@ public class DtlToolbar extends LinearLayout {
         patchInputFields(collapsed);
         if (collapsed) {
             secondRow.setVisibility(GONE);
-            if (!showNavigation) actionView.setVisibility(INVISIBLE);
+            if (!showNavigation) actionViewLayout.setVisibility(INVISIBLE);
+            // TODO :: 4/18/16 show proper actionView state?
         } else {
             secondRow.setVisibility(VISIBLE);
-            actionView.setVisibility(VISIBLE);
+            actionViewLayout.setVisibility(VISIBLE);
         }
     }
 
@@ -183,8 +190,9 @@ public class DtlToolbar extends LinearLayout {
     private void animateExpanding() {
         if (showNavigation) actionView.setAction(new CloseAction());
         else {
-            actionView.setVisibility(VISIBLE);
-            Animator revealNavigationAnimator = ObjectAnimator.ofFloat(actionView, ALPHA, 0F, 1F);
+            actionViewLayout.setVisibility(VISIBLE);
+            Animator revealNavigationAnimator =
+                    ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 0F, 1F);
             revealNavigationAnimator.start();
         }
         //
@@ -201,11 +209,12 @@ public class DtlToolbar extends LinearLayout {
     private void animateCollapsing() {
         if (showNavigation) actionView.setAction(new DrawerAction());
         else {
-            Animator hideNavigationAnimator = ObjectAnimator.ofFloat(actionView, ALPHA, 1F, 0F);
+            Animator hideNavigationAnimator =
+                    ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 1F, 0F);
             hideNavigationAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    actionView.setVisibility(INVISIBLE);
+                    actionViewLayout.setVisibility(INVISIBLE);
                 }
             });
             hideNavigationAnimator.start();
@@ -232,7 +241,7 @@ public class DtlToolbar extends LinearLayout {
         collapseSet.start();
     }
 
-    @OnClick(R.id.actionView)
+    @OnClick(R.id.actionViewLayout)
     void actionViewClicked(View view) {
         if (collapsed) {
             Queryable.from(navigationControlListeners).forEachR(listener ->
@@ -251,7 +260,7 @@ public class DtlToolbar extends LinearLayout {
         }
     }
 
-    @OnClick(R.id.dtlToolbarMap)
+    @OnClick(R.id.dtlToolbarMapLayout)
     void mapClicked(View view) {
         Queryable.from(mapClickListeners).forEachR(listener -> listener.onMapClicked());
     }

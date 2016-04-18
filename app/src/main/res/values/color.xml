@@ -63,6 +63,13 @@
 
     <color name="open">#6ebffc</color>
     <color name="closed">#fe5353</color>
+
+    <!-- <DTL Toolbar colors> -->
+    <!-- these shall have 'dtlt_' prefix -->
+    <color name="dtlt_input_text_color">#222</color>
+    <color name="dtlt_input_hint_color">#9B9B9B</color>
+    <!-- </DTL Toolbar dimens> -->
+
     <color name="facebook_color">#3C5A99</color>
     <color name="share_camera_color">#929292</color>
     <color name="share_photo_bg_color">#EEEEEE</color>

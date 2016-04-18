@@ -47,12 +47,6 @@ public class GalleryPresenter extends BasePickerPresenter<GalleryPresenter.View>
         Queryable.from(photos).filter(photo -> photo.isChecked()).forEachR(photo -> photo.setChecked(false));
     }
 
-    @Override
-    protected String generateUri(BasePhotoPickerModel model) {
-        return "file://" + drawableUtil
-                .compressAndRotateImage(model.getOriginalPath(), DrawableUtil.THUMBNAIL_BIG);
-    }
-
     public interface View extends BasePickerPresenter.View {
 
         void openFacebookAlbums();

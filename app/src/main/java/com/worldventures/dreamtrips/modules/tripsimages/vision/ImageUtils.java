@@ -28,6 +28,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.ArrayList;
 
@@ -139,6 +141,14 @@ public class ImageUtils {
                 })
                 .doOnCompleted(detector::release)
                 .doOnError(throwable -> Timber.d(throwable, ""));
+    }
+
+    public static String generateUri(DrawableUtil drawableUtil, String baseUri) {
+        if (ValidationUtils.isUrl(baseUri)) {
+            return baseUri;
+        } else {
+            return "file://" + drawableUtil.compressAndRotateImage(baseUri, DrawableUtil.THUMBNAIL_BIG);
+        }
     }
 
     private interface BitmapReceiveListener {

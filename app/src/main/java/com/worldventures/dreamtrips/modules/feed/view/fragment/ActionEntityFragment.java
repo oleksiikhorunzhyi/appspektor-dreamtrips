@@ -284,6 +284,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     }
 
     protected void openTagEditScreen(PhotoCreationItem item, PhotoTag activeSuggestion) {
+        SoftInputUtil.hideSoftInputMethod(getView());
+
         PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFilePath());
         EditPhotoTagsBundle bundle = new EditPhotoTagsBundle();
         bundle.setPhoto(photoEntity);

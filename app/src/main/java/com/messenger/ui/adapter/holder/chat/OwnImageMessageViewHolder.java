@@ -57,7 +57,7 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
 
     @Override
     protected void onStartLoading() {
-        if (dataPhotoAttachment.getLocalUri() == null) {
+        if (dataPhotoAttachment.getLocalPath() == null) {
             progressBar.setVisibility(View.VISIBLE);
         }
     }

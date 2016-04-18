@@ -74,7 +74,7 @@ public class MessageDAO extends BaseDAO {
                         "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
 
                         "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", " +
-                        "p." + DataPhotoAttachment$Table.LOCALURI + " as " + DataPhotoAttachment$Table.LOCALURI + ", " +
+                        "p." + DataPhotoAttachment$Table.LOCALPATH + " as " + DataPhotoAttachment$Table.LOCALPATH + ", " +
                         "p." + DataPhotoAttachment$Table.UPLOADSTATE + " as " + DataPhotoAttachment$Table.UPLOADSTATE + ", " +
 
                         "l." + DataLocationAttachment$Table.LAT + " as " + DataLocationAttachment$Table.LAT + ", " +

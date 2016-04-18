@@ -48,7 +48,7 @@ public class PhotoAttachmentDelegate {
         DataMessage emptyMessage = attachmentDelegateHelper.createEmptyMessage(userId, conversation.getId());
         DataAttachment attachment = attachmentDelegateHelper.createDataAttachment(emptyMessage, AttachmentType.IMAGE);
         DataPhotoAttachment dataPhotoAttachment = attachmentDelegateHelper.createEmptyPhotoAttachment(attachment);
-        dataPhotoAttachment.setLocalUri(rectificationScheme(filePath));
+        dataPhotoAttachment.setLocalPath(rectificationScheme(filePath));
         sendImagePipe.send(new SendImageAttachmentCommand(conversation, emptyMessage, attachment, dataPhotoAttachment));
     }
 

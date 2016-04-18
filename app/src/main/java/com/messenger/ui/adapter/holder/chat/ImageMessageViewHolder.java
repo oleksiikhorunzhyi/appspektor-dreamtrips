@@ -76,7 +76,7 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
     }
 
     public void loadImage() {
-        showImageMessage(dataPhotoAttachment.getUrl(), dataPhotoAttachment.getLocalUri());
+        showImageMessage(dataPhotoAttachment.getUrl(), dataPhotoAttachment.getLocalPath());
     }
 
     private void showImageMessage(@Nullable String strUri, @Nullable String strLocalUri) {

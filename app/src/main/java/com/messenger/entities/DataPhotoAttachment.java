@@ -40,7 +40,7 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     @Column
     String url;
     @Column
-    String localUri;
+    String localPath;
     @Column @PhotoAttachmentStatus
     int uploadState;
 
@@ -50,7 +50,7 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     private DataPhotoAttachment(Builder builder) {
         setPhotoAttachmentId(builder.id);
         setUrl(builder.url);
-        setLocalUri(builder.localPath);
+        setLocalPath(builder.localPath);
         setUploadState(builder.state);
     }
 
@@ -81,12 +81,12 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     }
 
     @Nullable
-    public String getLocalUri() {
-        return localUri;
+    public String getLocalPath() {
+        return localPath;
     }
 
-    public void setLocalUri(@Nullable String localUri) {
-        this.localUri = localUri;
+    public void setLocalPath(@Nullable String localPath) {
+        this.localPath = localPath;
     }
 
     @PhotoAttachmentStatus

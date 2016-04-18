@@ -32,7 +32,7 @@ public class AttachmentHelper {
                     DataMessage dataMessage = messageDAO.getMessageByAttachmentId(dataAttachment.getPhotoAttachmentId()).toBlocking().first();
                     DataUser dataUser = usersDAO.getUserById(dataMessage.getFromId()).toBlocking().first();
 
-                    String uri = dataAttachment.getUrl() == null ? dataAttachment.getLocalUri() : dataAttachment.getUrl();
+                    String uri = dataAttachment.getUrl() == null ? dataAttachment.getLocalPath() : dataAttachment.getUrl();
                     //noinspection ConstantConditions
                     String url = uri.replace(" ", "%20");
                     Image image = new Image();

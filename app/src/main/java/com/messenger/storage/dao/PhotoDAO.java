@@ -90,8 +90,8 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
         if (model.getUrl() != null)  {
             contentValues.put(DataPhotoAttachment$Table.URL, model.getUrl());
         }
-        if (model.getLocalUri() != null)  {
-            contentValues.put(DataPhotoAttachment$Table.LOCALURI, model.getLocalUri());
+        if (model.getLocalPath() != null)  {
+            contentValues.put(DataPhotoAttachment$Table.LOCALPATH, model.getLocalPath());
         }
         contentValues.put(DataPhotoAttachment$Table.UPLOADSTATE, model.getUploadState());
         return contentValues;

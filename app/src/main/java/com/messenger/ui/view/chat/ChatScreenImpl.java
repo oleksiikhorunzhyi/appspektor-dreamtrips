@@ -2,6 +2,7 @@ package com.messenger.ui.view.chat;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -96,6 +97,10 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
+    private Handler handler = new Handler();
+    private final Runnable openPikerTask = () -> photoPickerLayoutDelegate.showPicker(true,
+            getResources().getInteger(R.integer.messenger_pick_image_limit));
+
     public ChatScreenImpl(Context context) {
         super(context);
     }
@@ -166,6 +171,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         inflateToolbarMenu(toolbar);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        handler.removeCallbacks(openPikerTask);
+        photoPickerLayoutDelegate.hidePicker();
+        super.onDetachedFromWindow();
+    }
 
     protected ChatAdapter createAdapter() {
         ChatAdapter adapter = new ChatAdapter(null);
@@ -402,8 +413,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         else {
             messageEditText.clearFocus();
             // put delay to prevent wrong resizing of photo picker panel
-            postDelayed(() -> photoPickerLayoutDelegate.showPicker(true,
-                    getResources().getInteger(R.integer.messenger_pick_image_limit)), 400);
+            handler.postDelayed(openPikerTask, 400);
         }
     }
 

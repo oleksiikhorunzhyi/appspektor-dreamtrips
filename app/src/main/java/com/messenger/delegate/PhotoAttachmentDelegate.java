@@ -1,5 +1,7 @@
 package com.messenger.delegate;
 
+import android.support.annotation.NonNull;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.command.SendImageAttachmentCommand;
 import com.messenger.entities.DataAttachment;
@@ -40,13 +42,18 @@ public class PhotoAttachmentDelegate {
         sendImagePipe.send(new SendImageAttachmentCommand(conversation, message, dataAttachment, photoAttachment));
     }
 
-    public void send(DataConversation conversation, String fileUri) {
+    public void send(@NonNull DataConversation conversation, @NonNull String filePath) {
+
         String userId = sessionHolder.get().get().getUsername();
         DataMessage emptyMessage = attachmentDelegateHelper.createEmptyMessage(userId, conversation.getId());
         DataAttachment attachment = attachmentDelegateHelper.createDataAttachment(emptyMessage, AttachmentType.IMAGE);
         DataPhotoAttachment dataPhotoAttachment = attachmentDelegateHelper.createEmptyPhotoAttachment(attachment);
-        dataPhotoAttachment.setLocalUri(fileUri);
+        dataPhotoAttachment.setLocalUri(rectificationScheme(filePath));
         sendImagePipe.send(new SendImageAttachmentCommand(conversation, emptyMessage, attachment, dataPhotoAttachment));
+    }
+
+    private String rectificationScheme(@NonNull String filePath) {
+        return filePath.contains("://") ? filePath : "file://" + filePath;
     }
 
     public ReadOnlyActionPipe<SendImageAttachmentCommand> getReadSendImagePipe() {

@@ -258,16 +258,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         getView().removeAllTypingUsers();
                     }
                 }, e -> Timber.w("Unable to connect connectivity status"));
-
-        connectionStatusStream
-                .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(status -> {
-                    if (status == ConnectionStatus.CONNECTED) {
-                        //noinspection ConstantConditions
-                        getView().setShowMarkUnreadMessage(true);
-                    }
-                }, e -> {});
     }
 
     private void connectConversationStream() {
@@ -386,13 +376,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void handlePaginationStatus(PaginationStatus paginationStatus) {
+        ChatScreen view = getView();
         switch (paginationStatus.status) {
             case START:
-                getView().showLoading();
+                if (paginationStatus.page == 0) view.setShowMarkUnreadMessage(true);
+                view.showLoading();
                 getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
                 break;
             default:
-                getView().showContent();
+                view.showContent();
         }
     }
 
@@ -734,7 +726,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         if (photos == null || photos.isEmpty()) return;
         //
         Observable.from(photos)
-                .map(photo -> "file://" + photo.getFilePathOriginal())
+                .map(ChosenImage::getFilePathOriginal)
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::uploadPhotoAttachments, throwable -> Timber.e(throwable, ""));

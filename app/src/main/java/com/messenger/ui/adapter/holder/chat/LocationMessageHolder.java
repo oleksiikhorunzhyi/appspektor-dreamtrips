@@ -17,7 +17,7 @@ public abstract class LocationMessageHolder extends MessageViewHolder {
     @InjectView(R.id.lite_map_view)
     MapView mapView;
 
-    private LiteMapInflater liteMapInflater = new LiteMapInflater();
+    protected LiteMapInflater liteMapInflater = new LiteMapInflater();
 
     public LocationMessageHolder(View itemView) {
         super(itemView);

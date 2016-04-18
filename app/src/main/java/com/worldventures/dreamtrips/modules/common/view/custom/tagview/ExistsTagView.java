@@ -44,7 +44,6 @@ public class ExistsTagView extends TagView<ExistsTagViewListener> implements Vie
         setOnClickListener(this);
     }
 
-
     @Override
     public void setPhotoTag(PhotoTag photoTag) {
         super.setPhotoTag(photoTag);

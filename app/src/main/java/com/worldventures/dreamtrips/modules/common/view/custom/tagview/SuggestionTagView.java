@@ -4,10 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.SuggestionHelpView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
 
@@ -19,7 +17,6 @@ public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
 
     @InjectView(R.id.suggestion_frame_container)
     View suggestionFrameContainer;
-    private SuggestionHelpView suggestionHelpView;
 
     int additionalSize;
 
@@ -73,19 +70,4 @@ public class SuggestionTagView extends TagView<TagSuggestionActionListener> {
         layoutParams.topMargin = layoutParams.topMargin - getSize().getHeight() + additionalSize;
     }
 
-    public void setSuggestionHelpView(SuggestionHelpView suggestionHelpView) {
-        this.suggestionHelpView = suggestionHelpView;
-    }
-
-    private void removeHelpView() {
-        if (suggestionHelpView == null || suggestionHelpView.getParent() == null) return;
-        //
-        ((ViewGroup) suggestionHelpView.getParent()).removeView(suggestionHelpView);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        // removeHelpView();
-        super.onDetachedFromWindow();
-    }
 }

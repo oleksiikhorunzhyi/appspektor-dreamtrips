@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.CreationTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.ExistsTagView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.SuggestionTagView;
@@ -23,6 +24,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import icepick.Icepick;
 import icepick.State;
@@ -93,7 +95,7 @@ public class PhotoTagHolder extends RelativeLayout {
         view.setTagListener(tagSuggestionActionListener);
         addTagView(view, photoTag, 0);
         //
-        if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag, view);
+        if (!isSuggestionHelpExists()) addSuggestionHelp(photoTag);
     }
 
     protected void addCreationTagView(float x, float y) {
@@ -141,12 +143,14 @@ public class PhotoTagHolder extends RelativeLayout {
 
     private void removeTag(PhotoTag tag) {
         try {
+            List<View> viewsToRemove = new ArrayList<>();
             for (int i = 0; i < getChildCount(); i++) {
                 TagView childAt = (TagView) getChildAt(i);
                 if (childAt.getPhotoTag().equals(tag)) {
-                    removeView(childAt);
+                    viewsToRemove.add(childAt);
                 }
             }
+            Queryable.from(viewsToRemove).forEachR(this::removeView);
         } catch (Exception e) {
             Timber.i(e, "");
         }
@@ -164,10 +168,9 @@ public class PhotoTagHolder extends RelativeLayout {
         addView(view, viewPos, layoutParams);
     }
 
-    protected void addSuggestionHelp(PhotoTag photoTag, SuggestionTagView suggestionTagView) {
+    protected void addSuggestionHelp(PhotoTag photoTag) {
         SuggestionHelpView helpView = new SuggestionHelpView(getContext());
         addTagView(helpView, photoTag, 0);
-        suggestionTagView.setSuggestionHelpView(helpView);
     }
 
     @NonNull

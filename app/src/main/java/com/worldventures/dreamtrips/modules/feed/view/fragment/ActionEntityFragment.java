@@ -80,7 +80,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         super.afterCreateView(rootView);
         postButton.setText(getPostButtonText());
         //
-        adapter = new NoCachebleAdapter(getContext(), this);
+        adapter = new BaseDelegateAdapter(getContext(), this);
         adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
         adapter.registerCell(String.class, PostCreationTextCell.class);
         adapter.registerDelegate(String.class, new PostCreationTextDelegate() {
@@ -326,16 +326,4 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     protected abstract Route getRoute();
 
-
-    public static class NoCachebleAdapter extends BaseDelegateAdapter {
-
-        public NoCachebleAdapter(Context context, Injector injector) {
-            super(context, injector);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-    }
 }

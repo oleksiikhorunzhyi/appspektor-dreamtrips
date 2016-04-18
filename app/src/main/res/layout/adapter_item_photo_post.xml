@@ -9,13 +9,13 @@
     <FrameLayout
         android:id="@+id/photo_container"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="match_parent">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/attached_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            fresco:actualImageScaleType="fitCenter"/>
+            fresco:scaleType="fitCenter"/>
 
         <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
             android:id="@+id/photo_post_taggable_holder"

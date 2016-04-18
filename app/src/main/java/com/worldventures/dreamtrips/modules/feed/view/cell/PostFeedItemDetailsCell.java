@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -20,8 +21,6 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.Optional;
 
-import static com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragment.NoCachebleAdapter;
-
 @Layout(R.layout.adapter_item_feed_post_details)
 public class PostFeedItemDetailsCell extends PostFeedItemCell {
 
@@ -34,7 +33,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
     @Inject
     @ForActivity
     Injector injector;
-    private NoCachebleAdapter adapter;
+    private BaseDelegateAdapter adapter;
 
     public PostFeedItemDetailsCell(View view) {
         super(view);
@@ -45,7 +44,7 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
         LinearLayoutManager layout = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
         layout.setAutoMeasureEnabled(true);
         imagesList.setLayoutManager(layout);
-        adapter = new NoCachebleAdapter(itemHolder.getContext(), injector);
+        adapter = new BaseDelegateAdapter<>(itemHolder.getContext(), injector);
         adapter.registerCell(Photo.class, SubPhotoAttachmentCell.class);
         imagesList.setAdapter(adapter);
         super.syncUIStateWithModel();

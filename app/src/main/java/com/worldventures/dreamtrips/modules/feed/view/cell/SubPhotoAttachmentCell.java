@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.net.Uri;
-import android.os.Build;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -23,35 +21,42 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
     SimpleDraweeView photo;
     @InjectView(R.id.tag)
     protected ImageView tag;
+    int cellWidth;
 
     public SubPhotoAttachmentCell(View view) {
         super(view);
+        itemView.post(() -> cellWidth = (itemView.getWidth()));
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
+        if (cellWidth > 0) {
+            itemView.setVisibility(View.VISIBLE);
+            photo.getLayoutParams().width = cellWidth;
+            photo.getLayoutParams().height = calculateHeight();
+            photo.requestLayout();
 
-        itemView.setOnClickListener(v -> {
-            if (cellDelegate != null) {
-                cellDelegate.onCellClicked(getModelObject());
-            }
-        });
-
-        itemView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int width = itemView.getWidth();
-                photo.getLayoutParams().width = width;
-                photo.getLayoutParams().height = (int) (width / (float) getModelObject().getWidth() * getModelObject().getHeight());
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    itemView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                } else {
-                    itemView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            itemView.setOnClickListener(v -> {
+                if (cellDelegate != null) {
+                    cellDelegate.onCellClicked(getModelObject());
                 }
-            }
-        });
-        tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
+            });
+
+            itemView.post(() -> {
+                setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
+                tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
+            });
+        } else {
+
+            itemView.setVisibility(View.INVISIBLE);
+            itemView.post(this::syncUIStateWithModel);
+        }
+    }
+
+    private int calculateHeight() {
+        int calculated = (int) (cellWidth / (float) getModelObject().getWidth() * getModelObject().getHeight());
+        int maxAvailable = cellWidth / 4 * 5;
+        return Math.min(calculated, maxAvailable);
     }
 
     @Override

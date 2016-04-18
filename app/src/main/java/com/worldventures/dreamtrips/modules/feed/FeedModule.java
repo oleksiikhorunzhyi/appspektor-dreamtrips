@@ -143,8 +143,6 @@ import de.greenrobot.event.EventBus;
                 EditPostPresenter.class,
                 EditPhotoFragment.class,
                 EditPhotoPresenter.class,
-                ActionEntityFragment.NoCachebleAdapter.class,
-
         },
         complete = false,
         library = true

@@ -68,7 +68,7 @@ public class UserProcessor {
         DataUser cachedUser = usersDAO.getUserById(messengerUser.getName()).toBlocking().first();
 
         DataUser user = new DataUser();
-        user.setId(messengerUser.getName());
+        user.setId(messengerUser.getName().toLowerCase());
         user.setSocialId(socialUser.getId());
         user.setFirstName(socialUser.getFirstName());
         user.setLastName(socialUser.getLastName());
@@ -91,7 +91,7 @@ public class UserProcessor {
     private Pair<MessengerUser, User> pairUserProfiles(MessengerUser messengerUser, List<User> socialUsers) {
         String messengerName = messengerUser.getName();
         User user = from(socialUsers)
-                .firstOrDefault(temp -> TextUtils.equals(temp.getUsername(), messengerName));
+                .firstOrDefault(temp -> TextUtils.equals(temp.getUsername().toLowerCase(), messengerName));
         return new Pair<>(messengerUser, user);
     }
 

@@ -52,6 +52,29 @@ android {
     //
     def ALLOW_BUILD_LOG = true
     def BUILD_LOG_TAG = "BUILD_LOG"
+    //
+    def CONFIG_MAP_DEFAULT = [
+            'DreamTripsApi' : '"http://techery-dt-staging.techery.io"',
+            'S3Api' : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config"',
+            'MESSENGER_API_URL' : '"dtmsgapp-dev.worldventures.biz"',
+    ]
+    def CONFIG_MAP_DTL = [
+            'DreamTripsApi' : '"http://techery-dt-dtl.techery.io"',
+    ]
+    def CONFIG_MAP_PERF = [
+            'DreamTripsApi' : '"http://dtapp-perf.worldventures.biz"',
+    ]
+    def CONFIG_MAP_PROD = [
+            'DreamTripsApi' : '"https://dtapp.worldventures.biz"',
+            'S3Api' : '"http://dtappprd.s3.amazonaws.com/config"',
+            'MESSENGER_API_URL' : '"dtmsgapp.worldventures.biz"',
+    ]
+    //
+    def CONFIG_MAPS = [
+            "dtl" : CONFIG_MAP_DTL,
+            "perf" : CONFIG_MAP_PERF,
+            "prod" : CONFIG_MAP_PROD,
+    ]
 
     defaultConfig {
         applicationId APP_ID_BASE
@@ -125,23 +148,13 @@ android {
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
-        stage {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://techery-dt-staging.techery.io"'
-        }
-        perf {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz"'
-        }
+        stage { dimension "config" }
+        perf { dimension "config" }
         prod {
             dimension "config"
             //
             manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
-            //
-            buildConfigField 'String', 'DreamTripsApi', '"https://dtapp.worldventures.biz"'
-            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com/config"'
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
-            buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp.worldventures.biz"'
         }
     }
 
@@ -220,6 +233,32 @@ android {
                         "appId = ${generatedAppId}\n" +
                         "versionName = ${versionName}"
         )
+
+        ///////////////////////////////////////////////////////////////////////////
+        // Patch config from config maps
+        ///////////////////////////////////////////////////////////////////////////
+
+        CONFIG_MAP_DEFAULT.each { entry ->
+            buildConfigField 'String', entry.key, entry.value
+        }
+        //
+        if (CONFIG_MAPS.containsKey(buildSuffix)) {
+            CONFIG_MAPS.get(buildSuffix).each { entry ->
+                buildConfigField 'String', entry.key, entry.value
+            }
+        }
+        //
+        if (CONFIG_MAPS.containsKey(streamSuffix)) {
+            CONFIG_MAPS.get(streamSuffix).each { entry ->
+                buildConfigField 'String', entry.key, entry.value
+            }
+        }
+        //
+        if (CONFIG_MAPS.containsKey(configSuffix)) {
+            CONFIG_MAPS.get(configSuffix).each { entry ->
+                buildConfigField 'String', entry.key, entry.value
+            }
+        }
     }
 
     signingConfigs {

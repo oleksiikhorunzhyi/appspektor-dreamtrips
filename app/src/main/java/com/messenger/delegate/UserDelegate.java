@@ -63,7 +63,7 @@ public class UserDelegate {
         MessengerUser messengerUser = new MessengerUser(userId);
         messengerUser.setType(UserType.FRIEND);
         userProcessor.connectToUserProvider(Observable
-                .just(Collections.singletonList(new MessengerUser(userId))));
+                .just(Collections.singletonList(messengerUser)));
     }
 
 

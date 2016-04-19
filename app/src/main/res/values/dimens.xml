@@ -264,6 +264,8 @@
     <dimen name="messenger_connection_overlay_progress_bar_right_margin">8dp</dimen>
     <dimen name="messenger_overlay_reconnect_button_padding">20dp</dimen>
 
+    <dimen name="messenger_master_width">300dp</dimen>
+
     <!--end messenger-->
 
     <!--In app notifications-->

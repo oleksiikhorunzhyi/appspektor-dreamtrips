@@ -47,7 +47,6 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
                 tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
             });
         } else {
-
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
         }

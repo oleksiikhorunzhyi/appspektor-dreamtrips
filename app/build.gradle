@@ -273,8 +273,8 @@ android {
     useLibrary 'org.apache.http.legacy'
 }
 
-def janetVersion = '0.2.3'
 def googleLibrariesVersion = '23.3.0'
+def janetVersion = '0.2.3'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

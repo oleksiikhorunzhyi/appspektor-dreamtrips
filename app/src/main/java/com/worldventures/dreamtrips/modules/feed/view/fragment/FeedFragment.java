@@ -191,7 +191,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public void refreshFeedItems(List events, boolean needLoader) {
-        if (isNeedToSaveSuggestions(events)) events.add(0, adapter.getItem(0));
+        if (isNeedToSaveSuggestions()) events.add(0, adapter.getItem(0));
         //
         super.refreshFeedItems(events, needLoader);
     }
@@ -224,9 +224,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         // nothing to do
     }
 
-    private boolean isNeedToSaveSuggestions(List events) {
-        return adapter.getCount() > 0 && adapter.getItem(0) instanceof MediaAttachment && events.size() >= 0
-                && !(events.get(0) instanceof MediaAttachment
-                && getPresenter().isHasNewPhotos(((MediaAttachment) adapter.getItem(0)).chosenImages));
+    private boolean isNeedToSaveSuggestions() {
+        return adapter.getCount() > 0 && adapter.getItem(0) instanceof MediaAttachment
+                && getPresenter().isHasNewPhotos(((MediaAttachment) adapter.getItem(0)).chosenImages);
     }
 }

@@ -135,7 +135,6 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
         });
     }
 
-
     public void onEvent(CommentIconClickedEvent event) {
         if (isVisibleOnScreen()) {
             Route detailsRoute = Route.FEED_ITEM_DETAILS;
@@ -164,8 +163,10 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
     @Override
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
-        adapter.clearAndUpdateItems(events);
+        adapter.clear();
+        adapter.addItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
+        adapter.notifyDataSetChanged();
     }
 
     private boolean isPhoneLandscape() {

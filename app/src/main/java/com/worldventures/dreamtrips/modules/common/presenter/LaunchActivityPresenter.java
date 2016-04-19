@@ -69,6 +69,10 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
     @Inject
     DrawableUtil drawableUtil;
+    @Inject
+    SnappyRepository db;
+    @Inject
+    DtlLocationManager locationManager;
 
     private boolean requestInProgress = false;
 
@@ -82,6 +86,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         networkEvents.register();
 
         startPreloadChain();
+        prepareLocation();
     }
 
     @Override
@@ -95,6 +100,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         view.configurationStarted();
         requestInProgress = true;
 
+    }
+
+    private void prepareLocation() {
+        db.cleanLastSelectedOffersOnlyToggle();
+        db.cleanLastMapCameraPosition();
+        locationManager.cleanLocation();
     }
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
+import android.support.annotation.StringRes;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
@@ -11,25 +12,25 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
 public class LikersPanelHelper {
 
-    private int invisibility;
+    private final int INVISIBILITY;
 
     public LikersPanelHelper() {
-        this(View.INVISIBLE);
+        this(View.GONE);
     }
 
     public LikersPanelHelper(int invisibility) {
-        this.invisibility = invisibility;
+        this.INVISIBILITY = invisibility;
     }
 
     public void setup(TextView panel, FeedEntity feedEntity) {
         int likesCount = feedEntity.getLikesCount();
         if (likesCount == 0) {
-            panel.setVisibility(invisibility);
+            panel.setVisibility(INVISIBILITY);
             return;
         }
         //
         String appeal;
-        int stringRes;
+        @StringRes int stringRes;
         if (feedEntity.isLiked()) {
             stringRes = QuantityHelper.chooseResource(likesCount - 1, R.string.account_who_liked_item_zero,
                     R.string.account_who_liked_item_one, R.string.account_who_liked_item_other);

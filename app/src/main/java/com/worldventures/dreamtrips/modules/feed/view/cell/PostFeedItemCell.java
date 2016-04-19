@@ -63,17 +63,19 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
         if (width > 0) {
             itemView.setVisibility(View.VISIBLE);
             processAttachments(obj.getItem().getAttachments());
-            //
-            String postText = obj.getItem().getDescription();
-            if (!TextUtils.isEmpty(postText)) {
-                post.setVisibility(View.VISIBLE);
-                post.setText(postText);
-            } else {
-                post.setVisibility(View.GONE);
-            }
+            processPostText(obj.getItem().getDescription());
         } else {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
+        }
+    }
+
+    private void processPostText(String postText) {
+        if (!TextUtils.isEmpty(postText)) {
+            post.setVisibility(View.VISIBLE);
+            post.setText(postText);
+        } else {
+            post.setVisibility(View.GONE);
         }
     }
 

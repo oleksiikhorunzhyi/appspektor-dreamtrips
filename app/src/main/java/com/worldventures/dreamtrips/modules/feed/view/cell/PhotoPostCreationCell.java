@@ -95,52 +95,58 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     @Override
     protected void syncUIStateWithModel() {
         if (cellWidth > 0) {
-            itemView.setVisibility(View.VISIBLE);
             photoContainer.getLayoutParams().width = cellWidth;
             photoContainer.getLayoutParams().height = calculateHeight();
             photoContainer.requestLayout();
             photoContainer.post(() -> {
-                switch (getModelObject().getStatus()) {
-                    case START:
-                        showProgress();
-                        break;
-                    case PROGRESS:
-                        break;
-                    case SUCCESS:
-                        hideProgress();
-                        break;
-                    case FAIL:
-                        showError();
-                        break;
-                }
-
-                PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(
-                        Uri.parse(getModelObject().getFilePath() == null
-                                ? getModelObject().getOriginUrl()
-                                : getModelObject().getFilePath()), attachedPhoto.getController());
-
-                attachedPhoto.setController(draweeController);
-                photoTitle.setText(getModelObject().getTitle());
-                photoTitle.setEnabled(getModelObject().isCanDelete() && getModelObject().isCanEditTags());
-
+                itemView.setVisibility(View.VISIBLE);
                 photoTagHolder.removeAllViews();
                 if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEditTags()) {
                     showTagViewGroup();
                 }
                 invalidateAddTagBtn();
-                invalidateDeleteBtn();
+
             });
+
+            PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(
+                    Uri.parse(getModelObject().getFilePath() == null
+                            ? getModelObject().getOriginUrl()
+                            : getModelObject().getFilePath()), attachedPhoto.getController());
+
+            attachedPhoto.setController(draweeController);
+            photoTitle.setText(getModelObject().getTitle());
+            photoTitle.setEnabled(getModelObject().isCanDelete() && getModelObject().isCanEditTags());
+
+            photoTagHolder.removeAllViews();
+            if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEditTags()) {
+                showTagViewGroup();
+            }
+            invalidateAddTagBtn();
+            invalidateDeleteBtn();
+
         } else {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
         }
 
+        switch (getModelObject().getStatus()) {
+            case START:
+                showProgress();
+                break;
+            case PROGRESS:
+                break;
+            case SUCCESS:
+                hideProgress();
+                break;
+            case FAIL:
+                showError();
+                break;
+        }
     }
 
     private int calculateHeight() {
         int calculated = (int) (cellWidth / (float) getModelObject().getWidth() * getModelObject().getHeight());
-        int maxAvailable = cellWidth / 4 * 5;
-        return Math.min(calculated, maxAvailable);
+        return calculated;
     }
 
     private void showTagViewGroup() {

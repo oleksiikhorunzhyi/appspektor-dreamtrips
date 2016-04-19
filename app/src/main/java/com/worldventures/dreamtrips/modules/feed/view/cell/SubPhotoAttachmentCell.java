@@ -31,21 +31,18 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
     @Override
     protected void syncUIStateWithModel() {
         if (cellWidth > 0) {
-            itemView.setVisibility(View.VISIBLE);
             photo.getLayoutParams().width = cellWidth;
             photo.getLayoutParams().height = calculateHeight();
             photo.requestLayout();
-
+            photo.post(() -> itemView.setVisibility(View.VISIBLE));
             itemView.setOnClickListener(v -> {
                 if (cellDelegate != null) {
                     cellDelegate.onCellClicked(getModelObject());
                 }
             });
 
-            itemView.post(() -> {
-                setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
-                tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
-            });
+            setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
+            tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
         } else {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
@@ -68,7 +65,7 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
             return;
         }
 
-        draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));
+        draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController()));
         draweeView.setTag(uri);
     }
 }

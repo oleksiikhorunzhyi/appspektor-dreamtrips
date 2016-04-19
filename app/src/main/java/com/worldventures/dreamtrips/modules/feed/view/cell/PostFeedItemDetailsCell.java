@@ -43,16 +43,15 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
     @ForActivity
     Injector injector;
     private BaseDelegateAdapter adapter;
+    private LinearLayoutManager layout;
 
     public PostFeedItemDetailsCell(View view) {
         super(view);
     }
 
     @Override
-    protected void syncUIStateWithModel() {
-        LinearLayoutManager layout = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
-        layout.setAutoMeasureEnabled(true);
-        imagesList.setLayoutManager(layout);
+    public void afterInject() {
+        super.afterInject();
         adapter = new BaseDelegateAdapter<>(itemHolder.getContext(), injector);
         adapter.registerCell(Photo.class, SubPhotoAttachmentCell.class);
         adapter.registerDelegate(Photo.class, new CellDelegate<Photo>() {
@@ -61,7 +60,16 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
                 openFullsreenPhoto(model);
             }
         });
-        imagesList.setAdapter(adapter);
+        layout = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
+        layout.setAutoMeasureEnabled(true);
+    }
+
+    @Override
+    protected void syncUIStateWithModel() {
+
+        imagesList.setLayoutManager(layout);
+        if (adapter != imagesList.getAdapter()) imagesList.setAdapter(adapter);
+
         super.syncUIStateWithModel();
     }
 
@@ -100,11 +108,13 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
     }
 
     protected void processAttachments(List<FeedEntityHolder> attachments) {
+        adapter.clear();
         Queryable.from(attachments).forEachR(itemHolder -> {
             if (itemHolder.getItem() instanceof Photo) {
                 adapter.addItem(itemHolder.getItem());
             }
         });
+        adapter.notifyDataSetChanged();
     }
 
     @Override

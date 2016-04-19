@@ -313,6 +313,18 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     }
 
+    @Override
+    public void onPhotoTitleFocusChanged(boolean hasFocus) {
+        onTitleFocusChanged(hasFocus);
+    }
+
+    @Override
+    public void onTagsChanged() {
+        getPresenter().invalidateDynamicViews();
+    }
+
+    ///////////////////////////////////////////////////////////////
+
     protected void onTitleFocusChanged(boolean hasFocus) {
 
     }

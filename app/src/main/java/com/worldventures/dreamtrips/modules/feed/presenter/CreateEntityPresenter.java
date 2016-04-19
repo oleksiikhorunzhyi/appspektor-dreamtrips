@@ -206,6 +206,8 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                     item.setWidth(pair.first.getWidth());
                     item.setHeight(pair.first.getHeight());
                     item.setSuggestions(pair.second);
+                    item.setCanDelete(true);
+                    item.setCanEditTags(true);
                     return item;
                 });
     }

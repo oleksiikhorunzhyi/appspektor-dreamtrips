@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.api.CreatePostCommand;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -314,9 +315,8 @@ public interface DreamTripsApi {
     @POST("/api/social/posts")
     TextualPost post(@Field("description") String description);
 
-    @FormUrlEncoded
     @PUT("/api/social/posts/{uid}")
-    TextualPost editPost(@Path("uid") String uid, @Field("description") String description);
+    TextualPost editPost(@Path("uid") String uid, @Body CreatePhotoPostEntity createPhotoPostEntity);
 
     @DELETE("/api/social/posts/{uid}")
     Void deletePost(@Path("uid") String uid);

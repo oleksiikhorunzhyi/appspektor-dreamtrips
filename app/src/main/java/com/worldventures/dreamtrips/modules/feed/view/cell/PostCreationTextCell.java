@@ -29,18 +29,27 @@ public class PostCreationTextCell extends AbstractDelegateCell<String, PostCreat
 
     public PostCreationTextCell(View view) {
         super(view);
+        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                post.addTextChangedListener(textWatcher);
+                post.setOnFocusChangeListener((view, hasFocus) -> cellDelegate.onFocusChanged(hasFocus));
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+            }
+        });
     }
 
     @Override
     protected void syncUIStateWithModel() {
         post.setText(getModelObject());
-        post.addTextChangedListener(textWatcher);
         post.setOnKeyPreImeListener((keyCode, event) -> {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 post.clearFocus();
             }
         });
-        post.setOnFocusChangeListener((v, hasFocus) -> cellDelegate.onFocusChanged(hasFocus));
     }
 
     @Override

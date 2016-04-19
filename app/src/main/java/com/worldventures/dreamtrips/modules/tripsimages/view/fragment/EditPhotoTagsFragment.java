@@ -53,7 +53,7 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_photo_tag_screen);
         toolbar.setOnMenuItemClickListener(this::onToolBarMenuItemClicked);
-
+        //
         getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             int height = 0;
 
@@ -61,18 +61,16 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
             public void onGlobalLayout() {
                 height = ViewUtils.getRootViewHeight(getActivity());
                 ViewGroup.LayoutParams params = ivImage.getLayoutParams();
-
                 if (height == params.height) {
                     ViewUtils.removeSupportGlobalLayoutListener(getView(), this);
                     return;
                 }
                 params.height = height;
-
                 ivImage.setLayoutParams(params);
                 ivImage.setController(createTaggableDraweeController());
             }
         });
-
+        //
         photoTagHolderManager = new PhotoTagHolderManager(taggableImageHolder, getPresenter().getAccount(), getPresenter().getAccount());
         photoTagHolderManager.setTagCreatedListener(photoTag -> {
             getPresenter().onTagAdded(photoTag);
@@ -91,7 +89,6 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
                 (suggestion) -> {
                     photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion);
                 });
-
     }
 
     protected boolean onToolBarMenuItemClicked(MenuItem item) {
@@ -133,15 +130,16 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         draweeController.addControllerListener(new BaseControllerListener<ImageInfo>() {
             @Override
             public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                photoTagHolderManager.show(ivImage);
-                addSuggestions();
-                photoTagHolderManager.addExistsTagViews(getArgs().getPhotoTags());
-                if (getArgs().getActiveSuggestion() != null) {
-                    photoTagHolderManager.addCreationTagBasedOnSuggestion(getArgs().getActiveSuggestion());
-                }
+                ivImage.post(() -> {
+                    photoTagHolderManager.show(ivImage);
+                    addSuggestions();
+                    photoTagHolderManager.addExistsTagViews(getArgs().getPhotoTags());
+                    if (getArgs().getActiveSuggestion() != null) {
+                        photoTagHolderManager.addCreationTagBasedOnSuggestion(getArgs().getActiveSuggestion());
+                    }
+                });
             }
         });
-
         return draweeController;
     }
 }

@@ -55,6 +55,13 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
         updatePhoto();
     }
 
+    @Override
+    protected PhotoCreationItem createItemFromPhoto(Photo photo) {
+        PhotoCreationItem item = super.createItemFromPhoto(photo);
+        item.setCanDelete(false);
+        return item;
+    }
+
     private void updatePhoto() {
         UploadTask uploadTask = new UploadTask();
         PhotoCreationItem creationItem = cachedCreationItems.get(0);

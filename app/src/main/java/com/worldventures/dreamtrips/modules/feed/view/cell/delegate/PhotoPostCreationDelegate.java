@@ -15,4 +15,8 @@ public interface PhotoPostCreationDelegate extends CellDelegate<PhotoCreationIte
     void onSuggestionClicked(PhotoCreationItem item, PhotoTag tag);
 
     void onPhotoTitleChanged(String title);
+
+    void onPhotoTitleFocusChanged(boolean hasFocus);
+
+    void onTagsChanged();
 }

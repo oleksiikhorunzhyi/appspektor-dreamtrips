@@ -4,6 +4,8 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +34,9 @@ public class TextualPost extends BaseFeedEntity {
         this.attachments = attachments;
     }
 
+    @NotNull
     public Location getLocation() {
-        return location;
+        return location != null ? location : new Location();
     }
 
     public void setLocation(Location location) {

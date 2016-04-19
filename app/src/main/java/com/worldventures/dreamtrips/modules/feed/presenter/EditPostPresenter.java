@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.feed.api.EditPostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
@@ -37,16 +39,33 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
 
     @Override
     protected boolean isChanged() {
-        return !cachedText.equals(post.getDescription());
+        return !cachedText.equals(post.getDescription()) || !post.getLocation().equals(location);
     }
 
     @Override
     public void post() {
-        doRequest(new EditPostCommand(post.getUid(), cachedText), post -> {
+        doRequest(new EditPostCommand(post.getUid(), createPostObject()), post -> {
             eventBus.post(new FeedEntityChangedEvent(post));
             //
             view.cancel();
         }, error -> view.cancel());
+    }
+
+    private CreatePhotoPostEntity createPostObject() {
+        CreatePhotoPostEntity entity = new CreatePhotoPostEntity();
+        entity.setDescription(cachedText);
+        entity.setLocation(location);
+        Queryable.from(post.getAttachments())
+                .forEachR(attachment -> entity.addAttachment(new CreatePhotoPostEntity.Attachment(attachment.getItem().getUid())));
+        return entity;
+    }
+
+    @Override
+    protected PhotoCreationItem createItemFromPhoto(Photo photo) {
+        PhotoCreationItem item = super.createItemFromPhoto(photo);
+        item.setCanEditTags(false);
+        item.setCanDelete(false);
+        return item;
     }
 
     private boolean hasAttachments() {

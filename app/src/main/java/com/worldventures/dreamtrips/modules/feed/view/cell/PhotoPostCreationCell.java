@@ -59,12 +59,28 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     EditText photoTitle;
     @InjectView(R.id.photo_post_taggable_holder)
     PhotoTagHolder photoTagHolder;
+    @InjectView(R.id.remove)
+    View remove;
 
     int cellWidth;
 
     public PhotoPostCreationCell(View view) {
         super(view);
         itemView.post(() -> cellWidth = (itemView.getWidth()));
+        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                photoTitle.addTextChangedListener(textWatcher);
+                photoTitle.setOnFocusChangeListener((view, hasFocus) -> {
+                    if (!hasFocus) photoContainer.requestFocus();
+                    cellDelegate.onPhotoTitleFocusChanged(hasFocus);
+                });
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+            }
+        });
     }
 
     private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
@@ -105,14 +121,14 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
                 attachedPhoto.setController(draweeController);
                 photoTitle.setText(getModelObject().getTitle());
-                photoTitle.addTextChangedListener(textWatcher);
+                photoTitle.setEnabled(getModelObject().isCanDelete() && getModelObject().isCanEditTags());
 
                 photoTagHolder.removeAllViews();
-                if (getModelObject().getStatus() == ActionState.Status.SUCCESS) {
+                if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEditTags()) {
                     showTagViewGroup();
                 }
                 invalidateAddTagBtn();
-
+                invalidateDeleteBtn();
             });
         } else {
             itemView.setVisibility(View.INVISIBLE);
@@ -130,6 +146,16 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     private void showTagViewGroup() {
         User user = userSessionHolder.get().get().getUser();
         PhotoTagHolderManager photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, user, user);
+        photoTagHolderManager.setTagCreatedListener(photoTag -> {
+            getModelObject().getCachedRemovedPhotoTags().remove(photoTag);
+            getModelObject().getCachedAddedPhotoTags().add(photoTag);
+            invalidateTags();
+        });
+        photoTagHolderManager.setTagDeletedListener(photoTag -> {
+            boolean removed = getModelObject().getCachedAddedPhotoTags().remove(photoTag);
+            if (!removed) getModelObject().getCachedRemovedPhotoTags().add(photoTag);
+            invalidateTags();
+        });
         photoTagHolderManager.show(attachedPhoto);
         List<PhotoTag> photoTags = Queryable.from(getModelObject().getSuggestions())
                 .filter((p) -> !PhotoTag.isIntersectedWithPhotoTags(getModelObject().getCombinedTags(), p)).toList();
@@ -181,8 +207,21 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     }
 
+    @Override
+    public void clearResources() {
+        super.clearResources();
+        photoTitle.removeTextChangedListener(textWatcher);
+        photoTitle.setOnFocusChangeListener(null);
+    }
+
+    private void invalidateTags() {
+        invalidateAddTagBtn();
+        cellDelegate.onTagsChanged();
+    }
+
     private void invalidateAddTagBtn() {
-        tagButton.setVisibility((getModelObject().getStatus() == ActionState.Status.SUCCESS) ? View.VISIBLE : View.GONE);
+        tagButton.setVisibility((getModelObject().getStatus() == ActionState.Status.SUCCESS
+                && getModelObject().isCanEditTags()) ? View.VISIBLE : View.GONE);
         //
         if (getModelObject().getCombinedTags().isEmpty()) {
             tagButton.setText(R.string.tag_people);
@@ -191,5 +230,9 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
             tagButton.setText(R.string.empty);
             tagButton.setSelected(true);
         }
+    }
+
+    private void invalidateDeleteBtn() {
+        remove.setVisibility(getModelObject().isCanDelete() ? View.VISIBLE : View.GONE);
     }
 }

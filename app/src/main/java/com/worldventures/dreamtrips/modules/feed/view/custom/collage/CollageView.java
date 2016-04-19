@@ -12,14 +12,14 @@ import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.layoutmanager.LayoutManager;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.layoutmanager.LayoutManagerFactory;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 
 public class CollageView extends FrameLayout {
 
-    private List<CollageItem> items = Collections.EMPTY_LIST;
+    private List<CollageItem> items = new ArrayList<>();
     private ItemClickListener itemClickListener;
     private int side; //usually this layout is square. side = width; width = MATCH_PARENT;
 
@@ -66,6 +66,7 @@ public class CollageView extends FrameLayout {
     public void clear() {
         removeAllViews();
         items.clear();
+        resize(new Size(side, 0));
     }
 
     private void fillLayout() {

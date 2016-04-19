@@ -20,7 +20,6 @@
         android:id="@+id/collage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         collage:moreIcon="@drawable/ic_collage_more"
         collage:moreTextSize="25dp"
         collage:padding="3dp"/>

@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.packets;
+package com.messenger.messengerservers.xmpp.extensions;
 
 import android.text.TextUtils;
 

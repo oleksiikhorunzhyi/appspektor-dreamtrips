@@ -1,8 +1,6 @@
-package com.messenger.messengerservers.xmpp.packets;
+package com.messenger.messengerservers.xmpp.extensions;
 
 import android.text.TextUtils;
-
-import com.messenger.messengerservers.ChatState;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;

@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.packets;
+package com.messenger.messengerservers.xmpp.stanzas;
 
 
 import com.messenger.messengerservers.model.Participant;
@@ -8,7 +8,7 @@ import org.jivesoftware.smack.packet.IQ;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationParticipants extends IQ {
+public class ConversationParticipantsIQ extends IQ {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/muc#admin";
     public static final String ELEMENT_QUERY = "query";
@@ -17,7 +17,7 @@ public class ConversationParticipants extends IQ {
     private Participant owner;
     private boolean abandoned;
 
-    public ConversationParticipants() {
+    public ConversationParticipantsIQ() {
         super(ELEMENT_QUERY, NAMESPACE);
         participants = new ArrayList<>();
     }

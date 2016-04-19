@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.packets;
+package com.messenger.messengerservers.xmpp.stanzas;
 
 import com.messenger.messengerservers.model.Conversation;
 
@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ConversationsPacket extends IQ {
+public class ConversationsIQ extends IQ {
 
     public static final String NAMESPACE = "urn:xmpp:archive";
     public static final String ELEMENT_LIST = "list";
 
     private List<Conversation> conversations;
 
-    public ConversationsPacket() {
+    public ConversationsIQ() {
         super(ELEMENT_LIST, NAMESPACE);
         conversations = new ArrayList<>();
     }

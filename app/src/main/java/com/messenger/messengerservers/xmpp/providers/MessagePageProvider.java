@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.messenger.delegate.MessageBodyParser;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.xmpp.packets.MessagePagePacket;
+import com.messenger.messengerservers.xmpp.stanzas.MessagePageIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;
@@ -17,7 +17,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class MessagePageProvider extends IQProvider<MessagePagePacket> {
+public class MessagePageProvider extends IQProvider<MessagePageIQ> {
 
     private MessageBodyParser messageBodyParser;
 
@@ -26,8 +26,8 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
     }
 
     @Override
-    public MessagePagePacket parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
-        MessagePagePacket messagePagePacket = new MessagePagePacket();
+    public MessagePageIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
+        MessagePageIQ messagePageIQ = new MessagePageIQ();
 
         String elementName;
         Message.Builder messageBuilder = null;
@@ -66,7 +66,7 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                             if (messageBuilder == null) continue;
                             Message message = messageBuilder.build();
                             if (TextUtils.isEmpty(message.getId()) || message.getMessageBody() == null) continue;
-                            messagePagePacket.add(message);
+                            messagePageIQ.add(message);
                             break;
                         case "chat":
                             done = true;
@@ -75,6 +75,6 @@ public class MessagePageProvider extends IQProvider<MessagePagePacket> {
                     break;
             }
         }
-        return messagePagePacket;
+        return messagePageIQ;
     }
 }

@@ -1,16 +1,16 @@
-package com.messenger.messengerservers.xmpp.packets;
+package com.messenger.messengerservers.xmpp.stanzas;
 
 import org.jivesoftware.smack.packet.IQ;
 
 
-public class ObtainConversationListPacket extends IQ {
+public class ObtainConversationListIQ extends IQ {
 
     private static final String NAMESPACE = "urn:xmpp:archive";
     private static final String ELEMENT = "list";
 
     private int max = 10;
 
-    public ObtainConversationListPacket() {
+    public ObtainConversationListIQ() {
         super(ELEMENT, NAMESPACE);
         setType(Type.get);
     }

@@ -9,9 +9,9 @@ import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
-import com.messenger.messengerservers.xmpp.packets.LeavePresence;
-import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
+import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
+import com.messenger.messengerservers.xmpp.stanzas.LeavePresence;
+import com.messenger.messengerservers.xmpp.stanzas.StatusMessageStanza;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -67,8 +67,8 @@ public class XmppMultiUserChat extends XmppChat implements MultiUserChat {
     }
 
     @Override
-    protected StatusMessagePacket createStatusMessage(String messageId) {
-        return new StatusMessagePacket(messageId, Status.DISPLAYED,
+    protected StatusMessageStanza createStatusMessage(String messageId) {
+        return new StatusMessageStanza(messageId, Status.DISPLAYED,
                 JidCreatorHelper.obtainGroupJid(roomId), org.jivesoftware.smack.packet.Message.Type.groupchat);
     }
 

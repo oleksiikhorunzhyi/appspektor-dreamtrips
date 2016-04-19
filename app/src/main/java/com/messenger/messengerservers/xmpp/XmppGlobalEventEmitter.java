@@ -4,8 +4,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
-import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
+import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
+import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
@@ -51,7 +51,6 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         public void onSuccess() {
             super.onSuccess();
             AbstractXMPPConnection abstractXMPPConnection = facade.getConnection();
-            abstractXMPPConnection.addPacketInterceptor(XmppGlobalEventEmitter.this::interceptOutgoingPacket, StanzaTypeFilter.MESSAGE);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingMessage, StanzaTypeFilter.MESSAGE);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
 
@@ -84,9 +83,6 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
         }
     };
-
-    private void interceptOutgoingPacket(Stanza packet) {
-    }
 
     private void onChatInvited(XMPPConnection conn, MultiUserChat room, String inviter, String reason, String password, Message message) {
         notifyReceiveInvite(JidCreatorHelper.obtainId(room.getRoom()));

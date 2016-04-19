@@ -49,4 +49,5 @@ public class MessengerInitializerModule {
     public AppInitializer provideRosterInitializer() {
         return new RosterListenerInitializer();
     }
+
 }

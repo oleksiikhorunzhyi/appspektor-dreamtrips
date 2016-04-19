@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import java.util.Collections;
 import java.util.List;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import rx.Observable;
 import rx.observables.ConnectableObservable;
@@ -24,11 +25,11 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 public class UserProcessor {
     private static final String HOST_BADGE = "DreamTrips Host";
     private final UsersDAO usersDAO;
-    private final Janet janet;
+    private final ActionPipe<GetShortProfileAction> shortProfilePipe;
 
     public UserProcessor(UsersDAO usersDAO, Janet janet) {
         this.usersDAO = usersDAO;
-        this.janet = janet;
+        this.shortProfilePipe = janet.createPipe(GetShortProfileAction.class);
     }
 
     public Observable<List<DataUser>> connectToUserProvider(Observable<List<MessengerUser>> provider) {
@@ -47,8 +48,9 @@ public class UserProcessor {
 
         List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
 
-        return janet.createPipe(GetShortProfileAction.class)
+        return shortProfilePipe
                 .createObservableSuccess(new GetShortProfileAction(userNames))
+                .take(1)
                 .flatMap(action -> syncCashedUser(messengerUsers, action.getShortUsers()));
     }
 

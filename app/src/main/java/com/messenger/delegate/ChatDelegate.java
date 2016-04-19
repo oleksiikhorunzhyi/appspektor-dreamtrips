@@ -101,7 +101,11 @@ public class ChatDelegate {
         if (!haveMoreElements || loading.get()) return;
 
         loading.set(true);
-        paginationStateObservable.onNext(new PaginationStatus(Status.START));
+        paginationStateObservable.onNext(PaginationStatus.builder()
+                .status(Status.START)
+                .page(page)
+                .build()
+        );
         conversationObservable
                 .subscribe(conversation -> {
                     paginationDelegate.loadConversationHistoryPage(conversation, ++page, before,
@@ -112,7 +116,12 @@ public class ChatDelegate {
 
     private void pageLoadFailed() {
         page--;
-        paginationStateObservable.onNext(new PaginationStatus(Status.FAILED));
+        paginationStateObservable.onNext(PaginationStatus.builder()
+                .status(Status.FAILED)
+                .page(page)
+                .haveMoreElements(true)
+                .build()
+        );
     }
 
     private void paginationPageLoaded(List<Message> loadedMessages) {
@@ -120,7 +129,12 @@ public class ChatDelegate {
         if (loadedMessages == null || loadedMessages.size() == 0) {
             loading.set(false);
             haveMoreElements = false;
-            paginationStateObservable.onNext(new PaginationStatus(false));
+            paginationStateObservable.onNext(PaginationStatus.builder()
+                    .haveMoreElements(false)
+                    .page(page)
+                    .status(Status.SUCCESS)
+                    .build()
+            );
             return;
         }
 
@@ -132,7 +146,12 @@ public class ChatDelegate {
             loadNextPage();
         }
 
-        paginationStateObservable.onNext(new PaginationStatus());
+        paginationStateObservable.onNext(PaginationStatus.builder()
+                .haveMoreElements(true)
+                .status(Status.SUCCESS)
+                .page(page)
+                .build()
+        );
     }
 
     // TODO: 4/13/16 LAST MESSAGE  remove iterator
@@ -154,22 +173,42 @@ public class ChatDelegate {
     public static class PaginationStatus {
         public final Status status;
         public final boolean haveMoreElements;
+        public final int page;
 
-        public PaginationStatus() {
-            this(Status.SUCCESS);
+
+        private PaginationStatus(Builder builder) {
+            status = builder.status;
+            page = builder.page;
+            haveMoreElements = builder.haveMoreElements;
         }
 
-        public PaginationStatus(boolean haveMoreElements) {
-            this(Status.SUCCESS, haveMoreElements);
+        private static Builder builder() {
+            return new Builder();
         }
 
-        public PaginationStatus(Status status) {
-            this(status, true);
-        }
+        private static class Builder {
+            private Status status;
+            private boolean haveMoreElements;
+            private int page;
 
-        public PaginationStatus(Status status, boolean haveMoreElements) {
-            this.status = status;
-            this.haveMoreElements = haveMoreElements;
+            public Builder status(Status val) {
+                this.status = val;
+                return this;
+            }
+
+            public Builder haveMoreElements(boolean var) {
+                this.haveMoreElements = var;
+                return this;
+            }
+
+            public Builder page(int var) {
+                this.page = var;
+                return this;
+            }
+
+            public PaginationStatus build() {
+                return new PaginationStatus(this);
+            }
         }
     }
 

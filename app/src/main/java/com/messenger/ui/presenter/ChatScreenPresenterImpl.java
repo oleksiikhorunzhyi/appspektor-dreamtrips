@@ -78,7 +78,6 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -259,16 +258,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         getView().removeAllTypingUsers();
                     }
                 }, e -> Timber.w("Unable to connect connectivity status"));
-
-        connectionStatusStream
-                .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(status -> {
-                    if (status == ConnectionStatus.CONNECTED) {
-                        //noinspection ConstantConditions
-                        getView().setShowMarkUnreadMessage(true);
-                    }
-                }, e -> {});
     }
 
     private void connectConversationStream() {
@@ -387,13 +376,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void handlePaginationStatus(PaginationStatus paginationStatus) {
+        ChatScreen view = getView();
         switch (paginationStatus.status) {
             case START:
-                getView().showLoading();
+                if (paginationStatus.page == 0) view.setShowMarkUnreadMessage(true);
+                view.showLoading();
                 getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
                 break;
             default:
-                getView().showContent();
+                view.showContent();
         }
     }
 
@@ -503,7 +494,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
-        obtaineConversationObservable()
+        obtainConversationObservable()
                 .subscribe(conversation -> attachmentManager.retrySendAttachment(conversation, message, dataAttachment));
     }
 
@@ -676,7 +667,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void onLocationPicked(Location location) {
-        obtaineConversationObservable()
+        obtainConversationObservable()
                 .subscribe(conversation -> attachmentManager.sendLocation(conversation, location));
     }
 
@@ -735,8 +726,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         if (photos == null || photos.isEmpty()) return;
         //
         Observable.from(photos)
-                .map(ChosenImage::getFileThumbnail)
-                .map(filePath -> UploadingFileManager.copyFileIfNeed(filePath, context))
+                .map(ChosenImage::getFilePathOriginal)
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::uploadPhotoAttachments, throwable -> Timber.e(throwable, ""));
@@ -794,17 +784,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
-    private Observable<DataConversation> obtaineConversationObservable(){
+    private Observable<DataConversation> obtainConversationObservable(){
         return conversationObservable
                 .take(1)
                 .map(dataConversationListPair -> dataConversationListPair.first);
     }
 
     // TODO: 4/13/16 may be create `CreateChatHelper` ?
-    private Observable<Chat> createChat(ChatManager chatManager, DataConversation conversation, @NonNull List<DataUser> particioants) {
+    private Observable<Chat> createChat(ChatManager chatManager, DataConversation conversation, @NonNull List<DataUser> participants) {
         switch (conversation.getType()) {
             case ConversationType.CHAT:
-                return Observable.just(particioants)
+                return Observable.just(participants)
                         .filter(usersList -> !usersList.isEmpty())
                         .map(users -> users.get(0))
                         .map(mate -> chatManager.createSingleUserChat(mate.getId(), conversation.getId()));

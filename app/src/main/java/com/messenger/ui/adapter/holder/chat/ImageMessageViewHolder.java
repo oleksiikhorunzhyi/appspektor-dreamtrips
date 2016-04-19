@@ -2,7 +2,7 @@ package com.messenger.ui.adapter.holder.chat;
 
 import android.database.Cursor;
 import android.graphics.drawable.Animatable;
-import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -29,10 +29,9 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
     @InjectView(R.id.chat_image_error)
     View errorView;
 
-    protected Uri imagePostUri;
     private String attachmentId;
 
-    private DataPhotoAttachment dataPhotoAttachment;
+    protected DataPhotoAttachment dataPhotoAttachment;
 
     public ImageMessageViewHolder(View itemView) {
         super(itemView);
@@ -77,19 +76,17 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
     }
 
     public void loadImage() {
-        showImageMessage(Uri.parse(dataPhotoAttachment.getUrl()));
+        showImageMessage(dataPhotoAttachment.getUrl(), dataPhotoAttachment.getLocalPath());
     }
 
-    public void showImageMessage(Uri uri) {
-        this.imagePostUri = uri;
-
+    private void showImageMessage(@Nullable String strUri, @Nullable String strLocalUri) {
         applyLoadingStatusUi();
 
         int width = itemView.getResources().getDimensionPixelSize(R.dimen.chat_image_width);
         int height = itemView.getResources().getDimensionPixelSize(R.dimen.chat_image_height);
 
-        DraweeController controller = GraphicUtils.provideFrescoResizingControllerBuilder(uri,
-                imagePostView.getController(), width, height)
+        DraweeController controller = GraphicUtils
+                .provideFrescoResizingControllerBuilder(strUri, strLocalUri, imagePostView.getController(), width, height)
                 .setControllerListener(controllerListener)
                 .build();
 
@@ -100,10 +97,14 @@ public abstract class ImageMessageViewHolder extends MessageViewHolder {
         progressBar.setVisibility(View.GONE);
     }
 
+    protected void onStartLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     private BaseControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
         @Override
         public void onSubmit(String id, Object callerContext) {
-            progressBar.setVisibility(View.VISIBLE);
+            onStartLoading();
         }
 
         @Override

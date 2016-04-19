@@ -1,8 +1,9 @@
 package com.messenger.entities;
 
 import android.net.Uri;
-import android.provider.BaseColumns;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -34,24 +35,27 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
 
     @Unique(unique = true, onUniqueConflict = ConflictAction.REPLACE)
     @PrimaryKey
-    @Column(name = BaseColumns._ID)
-    String id;
+    @Column
+    String photoAttachmentId;
     @Column
     String url;
     @Column
-    int uploadTaskId;
+    String localPath;
+    @Column @PhotoAttachmentStatus
+    int uploadState;
 
     public DataPhotoAttachment() {
     }
 
     private DataPhotoAttachment(Builder builder) {
-        setId(builder.id);
+        setPhotoAttachmentId(builder.id);
         setUrl(builder.url);
-        setUploadTaskId(builder.amazonTaskId);
+        setLocalPath(builder.localPath);
+        setUploadState(builder.state);
     }
 
     public DataPhotoAttachment(@NonNull ImageAttachment attachment, Message message, int index) {
-        this.id = createId(message.getId(), index);
+        this.photoAttachmentId = createId(message.getId(), index);
         url = attachment.getOriginUrl();
     }
 
@@ -59,28 +63,39 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
         return String.format("%s__%s", messageId, index);
     }
 
-    public String getId() {
-        return id;
+    public String getPhotoAttachmentId() {
+        return photoAttachmentId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPhotoAttachmentId(String id) {
+        this.photoAttachmentId = id;
     }
 
-    public void setUploadTaskId(int amazonTaskId) {
-        this.uploadTaskId = amazonTaskId;
-    }
-
+    @Nullable
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(@Nullable String url) {
         this.url = url;
     }
 
-    public int getUploadTaskId() {
-        return uploadTaskId;
+    @Nullable
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(@Nullable String localPath) {
+        this.localPath = localPath;
+    }
+
+    @PhotoAttachmentStatus
+    public int getUploadState() {
+        return uploadState;
+    }
+
+    public void setUploadState(@PhotoAttachmentStatus int uploadState) {
+        this.uploadState = uploadState;
     }
 
     @Override
@@ -119,9 +134,10 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
     }
 
     public static final class Builder {
-        String id;
-        String url;
-        int amazonTaskId;
+        private String id;
+        private String url;
+        private int state = PhotoAttachmentStatus.UPLOADED;
+        private String localPath;
 
         public Builder() {
         }
@@ -136,8 +152,27 @@ public class DataPhotoAttachment extends BaseProviderModel<DataAttachment> {
             return this;
         }
 
+        public Builder state(@PhotoAttachmentStatus int val) {
+            state = val;
+            return this;
+        }
+
+        public Builder localPath(String val) {
+            localPath = val;
+            return this;
+        }
+
         public DataPhotoAttachment build() {
             return new DataPhotoAttachment(this);
         }
+
+    }
+
+    @IntDef({PhotoAttachmentStatus.FAILED, PhotoAttachmentStatus.UPLOADED, PhotoAttachmentStatus.UPLOADING, PhotoAttachmentStatus.NONE})
+    public @interface PhotoAttachmentStatus {
+        int NONE = 0x74829;
+        int FAILED = 0x74830;
+        int UPLOADED = 0x74831;
+        int UPLOADING = 0x74832;
     }
 }

@@ -74,6 +74,8 @@ public class MessageDAO extends BaseDAO {
                         "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
 
                         "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", " +
+                        "p." + DataPhotoAttachment$Table.LOCALPATH + " as " + DataPhotoAttachment$Table.LOCALPATH + ", " +
+                        "p." + DataPhotoAttachment$Table.UPLOADSTATE + " as " + DataPhotoAttachment$Table.UPLOADSTATE + ", " +
 
                         "l." + DataLocationAttachment$Table.LAT + " as " + DataLocationAttachment$Table.LAT + ", " +
                         "l." + DataLocationAttachment$Table.LNG + " as " + DataLocationAttachment$Table.LNG + ", " +
@@ -88,7 +90,7 @@ public class MessageDAO extends BaseDAO {
                         "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
                         "LEFT JOIN " + DataPhotoAttachment.TABLE_NAME + " p " +
-                        "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table._ID + " " +
+                        "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " " +
                         "LEFT JOIN " + DataLocationAttachment.TABLE_NAME + " l " +
                         "ON a." + DataLocationAttachment$Table._ID + "=l." + DataLocationAttachment$Table._ID + " " +
                         "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +

@@ -35,6 +35,7 @@ public class AttachmentDelegateHelper {
     public DataPhotoAttachment createEmptyPhotoAttachment(DataAttachment attachment) {
         return new DataPhotoAttachment.Builder()
                 .id(attachment.getId())
+                .state(DataPhotoAttachment.PhotoAttachmentStatus.NONE)
                 .build();
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
@@ -527,7 +526,10 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveDtlLocation(DtlLocation dtlLocation) {
-        act(db -> db.put(DTL_SELECTED_LOCATION, dtlLocation));
+        // list below is a hack to allow manipulating DtlLocation class since it is an interface
+        List<DtlLocation> location = new ArrayList<>();
+        location.add(dtlLocation);
+        putList(DTL_SELECTED_LOCATION, location);
     }
 
     public void cleanDtlLocation() {
@@ -536,8 +538,10 @@ public class SnappyRepository {
 
     @Nullable
     public DtlLocation getDtlLocation() {
-        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class))
-                .orNull();
+        // list below is a hack to allow manipulating DtlLocation class since it is an interface
+        List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
+        if (location.isEmpty()) return null;
+        else return location.get(0);
     }
 
     public void saveDtlMerhants(List<DtlMerchant> merchants) {
@@ -578,7 +582,7 @@ public class SnappyRepository {
         act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
     }
 
-    public Boolean getLastSelectedOffersOnlyToggle(){
+    public Boolean getLastSelectedOffersOnlyToggle() {
         return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
     }
 

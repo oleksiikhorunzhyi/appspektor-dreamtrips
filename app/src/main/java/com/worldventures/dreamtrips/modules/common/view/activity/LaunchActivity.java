@@ -26,6 +26,12 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) getPresentationModel().initDtl();
+    }
+
+    @Override
     public void alert(String s) {
         runOnUiThread(() -> {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(this);

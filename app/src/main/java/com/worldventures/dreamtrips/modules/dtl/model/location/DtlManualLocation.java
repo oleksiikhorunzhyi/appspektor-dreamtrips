@@ -14,6 +14,8 @@ import org.immutables.value.Value;
 @Value.Style(privateNoargConstructor = true)
 public abstract class DtlManualLocation implements DtlLocation {
 
+    protected DtlManualLocation() {};
+
     @Override
     public abstract LocationSourceType getLocationSourceType();
 

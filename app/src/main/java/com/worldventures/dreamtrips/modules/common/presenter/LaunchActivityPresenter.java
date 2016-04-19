@@ -86,7 +86,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         networkEvents.register();
 
         startPreloadChain();
-        prepareLocation();
     }
 
     @Override
@@ -102,7 +101,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     }
 
-    private void prepareLocation() {
+    public void initDtl() {
         db.cleanLastSelectedOffersOnlyToggle();
         db.cleanLastMapCameraPosition();
         locationManager.cleanLocation();

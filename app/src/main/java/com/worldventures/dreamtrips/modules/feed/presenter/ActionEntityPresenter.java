@@ -118,7 +118,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         photoCreationItem.setOriginUrl(photo.getImagePath());
         photoCreationItem.setHeight(photo.getHeight());
         photoCreationItem.setWidth(photo.getWidth());
-        photoCreationItem.setStatus(ActionState.Status.START);
+        photoCreationItem.setStatus(ActionState.Status.SUCCESS);
         photoCreationItem.setLocation(photo.getLocation().getName());
         photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
         return photoCreationItem;

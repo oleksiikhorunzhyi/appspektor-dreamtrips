@@ -40,9 +40,4 @@ public class EditPhotoFragment extends ActionEntityFragment<EditPhotoPresenter, 
         return new EditPhotoPresenter(getArgs().getPhoto());
     }
 
-    @Override
-    public void onPhotoTitleChanged(String title) {
-        super.onPhotoTitleChanged(title);
-        getPresenter().invalidateDynamicViews();
-    }
 }

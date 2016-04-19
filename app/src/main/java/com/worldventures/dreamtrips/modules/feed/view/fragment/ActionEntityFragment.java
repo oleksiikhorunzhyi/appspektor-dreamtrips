@@ -319,7 +319,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     @Override
     public void onPhotoTitleChanged(String title) {
-
+        getPresenter().invalidateDynamicViews();
     }
 
     protected abstract int getPostButtonText();

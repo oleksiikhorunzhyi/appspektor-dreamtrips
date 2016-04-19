@@ -183,7 +183,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     private void invalidateAddTagBtn() {
         tagButton.setVisibility((getModelObject().getStatus() == ActionState.Status.SUCCESS) ? View.VISIBLE : View.GONE);
-
+        //
         if (getModelObject().getCombinedTags().isEmpty()) {
             tagButton.setText(R.string.tag_people);
             tagButton.setSelected(false);

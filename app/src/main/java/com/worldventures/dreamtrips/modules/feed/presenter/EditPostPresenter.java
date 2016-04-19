@@ -20,7 +20,7 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
             cachedText = post.getDescription();
         if (hasAttachments())
             Queryable.from(post.getAttachments()).forEachR(attachment -> {
-                cachedCreationItems.add(createItemFromPhoto((Photo) attachment));
+                cachedCreationItems.add(createItemFromPhoto((Photo) attachment.getItem()));
             });
         //
         super.takeView(view);

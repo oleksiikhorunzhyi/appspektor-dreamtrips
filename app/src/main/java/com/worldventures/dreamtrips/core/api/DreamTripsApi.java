@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -138,9 +137,8 @@ public interface DreamTripsApi {
     @POST("/api/photos")
     ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
 
-    //TODO ENDPOINT
-    @POST("tralala")
-    FeedEntity createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
+    @POST("/api/social/posts")
+    TextualPost createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
     /* *** END PHOTOS *****************************/
 
     @GET("/api/success_stories")

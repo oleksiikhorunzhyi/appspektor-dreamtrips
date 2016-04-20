@@ -39,7 +39,6 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @InjectView(R.id.post)
     TextView post;
-
     @Optional
     @InjectView(R.id.collage)
     CollageView collageView;

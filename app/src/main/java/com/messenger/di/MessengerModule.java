@@ -11,7 +11,6 @@ import com.messenger.ui.adapter.holder.conversation.CloseGroupConversationViewHo
 import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.TripConversationViewHolder;
-import com.messenger.ui.helper.PhotoPickerDelegate;
 import com.messenger.util.ChatFacadeManager;
 
 import dagger.Module;
@@ -35,7 +34,6 @@ import dagger.Module;
                 SwipeableContactsAdapter.class,
 
                 LoaderDelegate.class,
-                PhotoPickerDelegate.class,
                 ChatMessagesEventDelegate.class,
                 GroupChatEventDelegate.class,
                 JoinedChatEventDelegate.class,

@@ -9,6 +9,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onImageClicked(String attachmentImageId);
 
-    void onImagesPicked(List<ChosenImage> images);
+    void onImagesPicked(List<BasePhotoPickerModel> images);
 
     void onShowContextualMenu(DataMessage message);
 

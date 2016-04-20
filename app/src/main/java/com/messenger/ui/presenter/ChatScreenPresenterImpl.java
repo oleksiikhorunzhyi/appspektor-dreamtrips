@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.AttachmentManager;
 import com.messenger.delegate.ChatDelegate;
@@ -45,7 +46,7 @@ import com.messenger.storage.helper.AttachmentHelper;
 import com.messenger.synchmechanism.ConnectionStatus;
 import com.messenger.ui.adapter.inflater.LiteMapInflater;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.helper.PhotoPickerDelegate;
+import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.util.AttachmentMenuProvider;
 import com.messenger.ui.util.ChatContextualMenuProvider;
@@ -74,6 +75,7 @@ import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -128,7 +130,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject
     AttachmentManager attachmentManager;
     @Inject
-    PhotoPickerDelegate photoPickerDelegate;
+    LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
     @Inject
     AttachmentMenuProvider attachmentMenuProvider;
 
@@ -469,7 +471,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .conversationId(conversationId)
                 .build())
                 .subscribeOn(Schedulers.io())
-                .subscribe(msg -> {}, throwable -> Timber.e("Error while sending massage")));
+                .subscribe(msg -> {
+                }, throwable -> Timber.e("Error while sending massage")));
         return true;
     }
 
@@ -489,7 +492,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         submitOneChatAction(chat -> {
             Message message = dataMessage.toChatMessage();
             message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
-            chat.send(message).subscribe(msg -> {}, throwable -> Timber.e(throwable, "Error while resending message"));
+            chat.send(message).subscribe(msg -> {
+            }, throwable -> Timber.e(throwable, "Error while resending message"));
         });
     }
 
@@ -710,23 +714,29 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void connectToPhotoPicker() {
-        photoPickerDelegate.register();
-        photoPickerDelegate
+        legacyPhotoPickerDelegate.register();
+        legacyPhotoPickerDelegate
                 .watchChosenImages()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photos -> {
-                            getView().hidePhotoPicker();
-                            onImagesPicked(photos);
-                        },
-                        e -> Timber.e(e, "Error while image picking"));
+                    getView().hidePhotoPicker();
+                    uploadPickedImages(Queryable.from(photos)
+                            .map(ChosenImage::getFilePathOriginal)
+                            .toList());
+                }, e -> Timber.e(e, "Error while image picking"));
     }
 
     @Override
-    public void onImagesPicked(List<ChosenImage> photos) {
+    public void onImagesPicked(List<BasePhotoPickerModel> photos) {
         if (photos == null || photos.isEmpty()) return;
         //
-        Observable.from(photos)
-                .map(ChosenImage::getFilePathOriginal)
+        uploadPickedImages(Queryable.from(photos)
+                .map(BasePhotoPickerModel::getOriginalPath)
+                .toList());
+    }
+
+    private void uploadPickedImages(List<String> paths) {
+        Observable.from(paths)
                 .toList()
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::uploadPhotoAttachments, throwable -> Timber.e(throwable, ""));
@@ -735,11 +745,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void uploadPhotoAttachments(List<String> filePaths) {
         conversationObservable.take(1)
                 .subscribe(pair -> attachmentManager.sendImages(pair.first, filePaths),
-                        throwable ->Timber.d(throwable, ""));
+                        throwable -> Timber.d(throwable, ""));
     }
 
     private void disconnectFromPhotoPicker() {
-        photoPickerDelegate.unregister();
+        legacyPhotoPickerDelegate.unregister();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -784,7 +794,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
-    private Observable<DataConversation> obtainConversationObservable(){
+    private Observable<DataConversation> obtainConversationObservable() {
         return conversationObservable
                 .take(1)
                 .map(dataConversationListPair -> dataConversationListPair.first);

@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,37 +92,49 @@ public class SimplePathContainer extends PathContainer {
         if (traversalState.fromPath() != null) {
             fromView = containerView.getChildAt(0);
             traversalState.saveViewState(fromView);
-        } else fromView = null;
+        } else {
+            fromView = null;
+        }
         traversalState.restoreViewState(newView);
         //
         if (fromView == null) {
-            containerView.removeAllViews();
+            finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
             containerView.addView(newView);
-            oldPath.destroyNotIn(pathContext, contextFactory);
-            callback.onTraversalCompleted();
             return;
         }
         //
         containerView.addView(newView);
         Utils.waitForMeasure(newView, ((view, width, height) -> {
-            if (animatorRegistrar == null) {
-                containerView.removeView(fromView);
-                oldPath.destroyNotIn(pathContext, contextFactory);
-                callback.onTraversalCompleted();
-                return;
-            }
-            //
-            AnimatorFactory factory = animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to);
-            Animator animator = factory.createAnimator(fromView, newView, direction, containerView);
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override public void onAnimationEnd(Animator animation) {
-                    containerView.removeView(fromView);
-                    oldPath.destroyNotIn(pathContext, contextFactory);
-                    callback.onTraversalCompleted();
+                    if (animatorRegistrar == null) {
+                        finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
+                        return;
+                    }
+                    //
+                    AnimatorFactory factory = animatorRegistrar.getAnimatorFactory(traversalState.fromPath(), to);
+                    Animator animator = factory.createAnimator(fromView, newView, direction, containerView);
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
+                        }
+                    });
+                    animator.start();
+                }), view -> {
+                    finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
+                    containerView.addView(fromView);
+                    containerView.removeAllViews();
+                    containerView.addView(newView);
                 }
-            });
-            animator.start();
-        }));
+        );
+    }
+
+    private void finalizeViewTransition(ViewGroup containerView, @Nullable View fromView,
+                                        PathContext pathContext, PathContext oldPath,
+                                        Flow.TraversalCallback callback) {
+        if (fromView == null) containerView.removeAllViews();
+        else containerView.removeView(fromView);
+        oldPath.destroyNotIn(pathContext, contextFactory);
+        callback.onTraversalCompleted();
     }
 
     protected int getLayout(Path path) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl
+    android:id="@+id/dtl_merchants_screen_root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +14,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         >
 
-        <include layout="@layout/include_dtl_places_toolbar" />
+        <include layout="@layout/include_dtl_places_toolbar"/>
 
         <RelativeLayout
             android:id="@+id/subToolbarLayout"
@@ -36,9 +37,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/filterDiningsSwitch"
                 android:layout_centerVertical="true"
                 android:layout_margin="5dp"
+                android:layout_toLeftOf="@id/filterDiningsSwitch"
                 android:text="@string/dtl_show_offers_only"
                 android:textAllCaps="true"
                 android:textColor="@color/black"
@@ -66,10 +67,10 @@
                 android:layout_height="match_parent"
                 android:fadingEdgeLength="0dp"
                 android:overScrollMode="never"
-                android:paddingLeft="12dp"
-                android:paddingTop="6dp"
                 android:paddingBottom="6dp"
+                android:paddingLeft="12dp"
                 android:paddingRight="12dp"
+                android:paddingTop="6dp"
                 android:visibility="visible"
                 tools:listitem="@layout/adapter_item_dtl_merchant_new"
                 />

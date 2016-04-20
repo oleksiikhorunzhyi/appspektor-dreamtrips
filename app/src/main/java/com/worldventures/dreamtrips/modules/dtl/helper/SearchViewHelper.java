@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 import com.jakewharton.rxbinding.support.v7.widget.SearchViewQueryTextEvent;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.transfromer.DelayedComposer;
+import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
 
 import rx.Subscription;
 import timber.log.Timber;

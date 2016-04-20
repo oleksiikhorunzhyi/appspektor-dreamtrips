@@ -12,7 +12,8 @@ public class DelayedComposer<T> implements Observable.Transformer<T, T> {
         this.timeout = timeout;
     }
 
-    @Override public Observable<T> call(Observable<T> observable) {
+    @Override
+    public Observable<T> call(Observable<T> observable) {
         return observable.throttleWithTimeout(timeout, TimeUnit.MILLISECONDS);
     }
 }

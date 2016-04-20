@@ -179,7 +179,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos, boolean needLoader) {
-        if (suggestedPhotos.size() > 0) {
+        if (isNeedAddSuggestions(suggestedPhotos.size())) {
             List feedList = new ArrayList<>();
             feedList.add(new MediaAttachment(suggestedPhotos, PickImageDelegate.PICK_PICTURE, -1));
             feedList.addAll(feedItems);
@@ -222,6 +222,12 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Override
     public void onCellClicked(MediaAttachment model) {
         // nothing to do
+    }
+
+    private boolean isNeedAddSuggestions(int suggestedPhotosSize){
+        boolean isAdapterEmpty = adapter.getCount() == 0;
+        boolean isAdapterContainsSuggestions = !isAdapterEmpty && adapter.getItem(0) instanceof MediaAttachment;
+        return suggestedPhotosSize > 0 && (isAdapterEmpty || !isAdapterContainsSuggestions);
     }
 
     private boolean isNeedToSaveSuggestions() {

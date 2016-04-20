@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
+import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,6 +27,7 @@ import dagger.Provides;
                 FabricInitializer.class,
                 FrescoInitializer.class,
                 SoftInputInitializer.class,
+                ViewServerInitializer.class,
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
                 DtlInitializer.class,
@@ -69,6 +71,11 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideLoggingInitializer() {
         return new LoggingInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideViewServerInitializer() {
+        return new ViewServerInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

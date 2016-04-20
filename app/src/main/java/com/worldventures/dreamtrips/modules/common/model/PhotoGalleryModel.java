@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.modules.common.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.Serializable;
@@ -13,9 +15,15 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
     private String thumbnailPath;
     private boolean checked;
     private long dateTaken;
+    private Size size;
 
     public PhotoGalleryModel(String originalPath) {
         this(originalPath, 0);
+    }
+
+    public PhotoGalleryModel(String originalPath, Size size) {
+        this(originalPath);
+        this.size = size;
     }
 
     public PhotoGalleryModel(String originalPath, long dateTaken) {
@@ -46,6 +54,11 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
 
     public long getDateTaken() {
         return dateTaken;
+    }
+
+    @Nullable
+    public Size getSize() {
+        return size;
     }
 
     @Override

@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.ArrayList;
@@ -104,7 +105,6 @@ public class ImageUtils {
     }
 
     public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
-
         Detector detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.NO_LANDMARKS)
@@ -143,11 +143,11 @@ public class ImageUtils {
                 .doOnError(throwable -> Timber.d(throwable, ""));
     }
 
-    public static String generateUri(DrawableUtil drawableUtil, String baseUri) {
+    public static Pair<String, Size> generateUri(DrawableUtil drawableUtil, String baseUri) {
         if (ValidationUtils.isUrl(baseUri)) {
-            return baseUri;
+            return new Pair<>(baseUri, drawableUtil.getImageSizeFromUrl(baseUri, DrawableUtil.THUMBNAIL_BIG));
         } else {
-            return "file://" + drawableUtil.compressAndRotateImage(baseUri, DrawableUtil.THUMBNAIL_BIG);
+            return drawableUtil.compressAndRotateImage(baseUri, DrawableUtil.THUMBNAIL_BIG);
         }
     }
 

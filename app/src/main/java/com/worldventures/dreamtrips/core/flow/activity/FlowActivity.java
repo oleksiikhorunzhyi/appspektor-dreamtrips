@@ -102,6 +102,7 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
     @Override
     public void onDestroy() {
         flowActivityHelper = null;
+        navigationDrawerPresenter.detach();
         super.onDestroy();
     }
 

@@ -154,11 +154,12 @@ public class DtlToolbar extends LinearLayout {
         patchInputFields(collapsed);
         if (collapsed) {
             secondRow.setVisibility(GONE);
+            actionView.setAction(new DrawerAction(), false);
             if (!showNavigation) actionViewLayout.setVisibility(INVISIBLE);
-            // TODO :: 4/18/16 show proper actionView state?
         } else {
             secondRow.setVisibility(VISIBLE);
             actionViewLayout.setVisibility(VISIBLE);
+            actionView.setAction(new CloseAction(), false);
         }
     }
 

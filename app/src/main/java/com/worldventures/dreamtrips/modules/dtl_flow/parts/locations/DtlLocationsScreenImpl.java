@@ -62,10 +62,6 @@ public class DtlLocationsScreenImpl
     Toolbar toolbar;
     //
     BaseDelegateAdapter adapter;
-    //
-//    @State
-//    boolean shouldShowEmptyMerchantsCaption = false;
-
 
     @Override
     protected void onPostAttachToWindowView() {

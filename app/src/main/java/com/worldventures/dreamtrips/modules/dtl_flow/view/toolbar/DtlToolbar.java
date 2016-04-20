@@ -141,7 +141,7 @@ public class DtlToolbar extends LinearLayout {
     }
 
     private void initAttributes(AttributeSet attrs) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ShowMoreTextView);
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
         collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
         focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
                 DEF_FOCUSED_MODE.id));

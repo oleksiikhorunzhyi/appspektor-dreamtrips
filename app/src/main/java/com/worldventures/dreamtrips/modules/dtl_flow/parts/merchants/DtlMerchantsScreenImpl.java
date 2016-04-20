@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
@@ -124,11 +123,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                 .compose(RxLifecycle.bindView(this))
                 .filter(Boolean::booleanValue) // only true -> only focus gains
                 .subscribe(aBoolean -> getPresenter().locationChangeRequested());
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        return super.onSaveInstanceState();
     }
 
     @Override

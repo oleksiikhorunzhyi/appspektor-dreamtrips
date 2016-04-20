@@ -28,11 +28,6 @@ public class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
             return null;
         }
 
-        final Map<String, T> lowerToEnum = new HashMap<String, T>();
-        for (T constant : rawType.getEnumConstants()) {
-            lowerToEnum.put(LowercaseEnumTypeAdapter.toLowercase(constant), constant);
-        }
-
         return (TypeAdapter<T>) new LowercaseEnumTypeAdapter(rawType, fallbackKey);
     }
 

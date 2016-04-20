@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 import android.os.Bundle;
 import android.view.View;
 
-import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
@@ -50,7 +49,11 @@ public class PhotoPickerDelegate {
     public void onDone() {
         if (doneClickListener != null && selectedPhotosProvider != null) {
             List<ChosenImage> chosenImages = Queryable.from(selectedPhotosProvider.provideSelectedPhotos())
-                    .map((Converter<BasePhotoPickerModel, ChosenImage>) element -> null)
+                    .map(element -> {
+                        ChosenImage chosenImage = new ChosenImage();
+                        chosenImage.setFilePathOriginal(element.getOriginalPath());
+                        return chosenImage;
+                    })
                     .toList();
             doneClickListener.onDone(chosenImages, selectedPhotosProvider.getType());
             return;

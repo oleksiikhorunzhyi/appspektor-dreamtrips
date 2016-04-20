@@ -1,10 +1,11 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
+import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
 
 import java.util.ArrayList;
 
@@ -35,5 +36,13 @@ public class UsersLikedItemPresenter extends BaseUserListPresenter<UsersLikedIte
 
     public interface View extends BaseUserListPresenter.View {
 
+    }
+
+    public void acceptRequest(User user) {
+        eventBus.post(new AcceptRequestEvent(user));
+    }
+
+    public void addUserRequest(User user) {
+        eventBus.post(new AddUserRequestEvent(user));
     }
 }

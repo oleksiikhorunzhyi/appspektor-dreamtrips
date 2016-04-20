@@ -5,9 +5,12 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import icepick.State;
 
@@ -15,7 +18,8 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
 
     @State
     protected ArrayList<BasePhotoPickerModel> photos;
-
+    @Inject
+    MediaPickerManager mediaPickerManager;
     private int pickLimit;
 
     public BasePickerPresenter() {
@@ -45,17 +49,9 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
         view.updateItem(event.model);
     }
 
-    public List<ChosenImage> getSelectedPhotos() {
-        return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).map(element -> {
-            ChosenImage chosenImage = new ChosenImage();
-            chosenImage.setFileThumbnail(generateUri(element));
-            chosenImage.setFilePathOriginal(element.getOriginalPath());
-
-            return chosenImage;
-        }).toList();
+    public List<BasePhotoPickerModel> getSelectedPhotos() {
+        return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).toList();
     }
-
-    protected abstract String generateUri(BasePhotoPickerModel model);
 
     public void setLimit(int pickLimit) {
         this.pickLimit = pickLimit;

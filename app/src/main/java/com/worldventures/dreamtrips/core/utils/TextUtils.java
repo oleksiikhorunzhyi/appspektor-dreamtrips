@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.utils;
 
+import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 
 import java.util.Collections;
@@ -67,7 +68,10 @@ public class TextUtils {
         if (android.text.TextUtils.isEmpty(temp)) {
             return Collections.emptyList();
         } else {
-            return Queryable.from(temp.split(divider)).map(String::trim).toList();
+            return Queryable.from(temp.split(divider))
+                    .filter(element -> !android.text.TextUtils.isEmpty(element))
+                    .map(String::trim)
+                    .toList();
         }
     }
 }

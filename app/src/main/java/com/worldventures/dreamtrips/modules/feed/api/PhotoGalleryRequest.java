@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 
-public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryModel>>{
+public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryModel>> {
 
     private Context context;
 
@@ -27,9 +27,9 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
 
     private ArrayList<PhotoGalleryModel> getGalleryPhotos() {
         Cursor cursor = null;
-        String[] projectionPhotos = {MediaStore.Images.Media.DATA};
+        String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
         ArrayList<PhotoGalleryModel> photos = new ArrayList<>();
-
+        //
         try {
             cursor = MediaStore.Images.Media.query(context.getContentResolver(),
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -37,13 +37,13 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
                     "",
                     null,
                     MediaStore.Images.Media.DATE_TAKEN + " DESC");
-
             if (cursor != null) {
                 int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-
+                int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
                 while (cursor.moveToNext()) {
                     String path = cursor.getString(dataColumn);
-                    PhotoGalleryModel photo = new PhotoGalleryModel(path);
+                    long dateTaken = cursor.getLong(dateColumn);
+                    PhotoGalleryModel photo = new PhotoGalleryModel(path, dateTaken);
                     photos.add(photo);
                 }
             }
@@ -58,7 +58,6 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
                 }
             }
         }
-
         return photos;
     }
 }

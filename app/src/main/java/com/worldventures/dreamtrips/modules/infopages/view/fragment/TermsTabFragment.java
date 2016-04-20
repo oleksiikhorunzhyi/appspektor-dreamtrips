@@ -22,7 +22,7 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_tab_info)
 @MenuResource(R.menu.menu_mock)
 public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
-    private static final int TERMS_OFFSCREEN_PAGES = 2;
+    private static final int TERMS_OFFSCREEN_PAGES = 3;
 
     @InjectView(R.id.tabs)
     protected BadgedTabLayout tabs;
@@ -42,6 +42,7 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter(getChildFragmentManager());
+            this.adapter.add(new FragmentItem(Route.FAQ, getString(R.string.cookie)));
             this.adapter.add(new FragmentItem(Route.PRIVACY_POLICY, getString(R.string.privacy)));
             this.adapter.add(new FragmentItem(Route.TERMS_OF_SERVICE, getString(R.string.terms_of_service)));
             this.adapter.add(new FragmentItem(Route.COOKIE_POLICY, getString(R.string.cookie)));

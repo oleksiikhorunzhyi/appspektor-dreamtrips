@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.api;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Command;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -31,6 +31,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.fragment.FragmentHelper;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -125,6 +126,27 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
         dragDropManager = new RecyclerViewDragDropManager();
         dragDropManager.setInitiateOnLongPress(true);
         dragDropManager.setInitiateOnMove(false);
+        dragDropManager.setOnItemDragEventListener(new RecyclerViewDragDropManager.OnItemDragEventListener() {
+            @Override
+            public void onItemDragStarted(int position) {
+                OrientationUtil.lockOrientation(getActivity());
+            }
+
+            @Override
+            public void onItemDragPositionChanged(int fromPosition, int toPosition) {
+                //do nothing
+            }
+
+            @Override
+            public void onItemDragFinished(int fromPosition, int toPosition, boolean result) {
+                OrientationUtil.unlockOrientation(getActivity());
+            }
+
+            @Override
+            public void onItemDragMoveDistanceUpdated(int offsetX, int offsetY) {
+                //do nothing
+            }
+        });
         dragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.material_shadow_z3, getActivity().getTheme()));
         adapter = new BucketItemAdapter(getActivity(), this);
 

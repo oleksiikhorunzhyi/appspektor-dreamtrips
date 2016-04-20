@@ -11,8 +11,9 @@ import android.widget.AbsListView;
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
     public FriendsAutoCompleteTextView inputFriendName;
 
     private TagFriendAdapter adapter;
-    private SuggestionTagView suggestionTagView;
+    private PhotoTag suggestionTagView;
     private boolean loading = true;
     private int page = 1;
     private WeakHandler weakHandler = new WeakHandler();
@@ -44,7 +45,6 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
     public CreationTagView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
 
     public void setUserFriends(@Nullable List<User> userFriends) {
         adapter.addFriends(userFriends);
@@ -69,8 +69,10 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         inputFriendName.setThreshold(0);
         inputFriendName.setDropDownAnchor(R.id.new_user_suggestions_popup_anchor);
         inputFriendName.setOnItemClickListener((parent, view, position, id) -> {
-            PhotoTag.TagPosition tagPosition = photoTag.getProportionalPosition();
-            tagListener.onTagCreated(this, suggestionTagView, new PhotoTag(tagPosition, adapter.getItem(position)));
+            TagPosition tagPosition = photoTag.getProportionalPosition();
+            PhotoTag tag = new PhotoTag(tagPosition, adapter.getItem(position).getId());
+            tag.setUser(adapter.getItem(position));
+            tagListener.onTagCreated(this, suggestionTagView, tag);
         });
         inputFriendName.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -115,7 +117,6 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
     public void setTagListener(TagCreationActionsListener tagListener) {
         super.setTagListener(tagListener);
         tagListener.requestFriendList("", page);
-
     }
 
     @OnClick({R.id.new_user_delete_tag})
@@ -123,7 +124,7 @@ public class CreationTagView extends TagView<TagCreationActionsListener> {
         deleteTag();
     }
 
-    public void setSuggestionTagView(SuggestionTagView suggestionTagView) {
+    public void setSuggestionTag(PhotoTag suggestionTagView) {
         this.suggestionTagView = suggestionTagView;
     }
 }

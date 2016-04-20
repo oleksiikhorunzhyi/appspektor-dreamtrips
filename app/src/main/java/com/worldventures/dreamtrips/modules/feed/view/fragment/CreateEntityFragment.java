@@ -7,15 +7,22 @@ import android.view.ViewGroup;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
+import icepick.State;
 
 public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle>
         implements CreateEntityPresenter.View {
+
+    @State
+    boolean pickerDisabled;
+    @State
+    boolean imageFromArgsAlreadyAttached;
 
     @InjectView(R.id.picker_container)
     ViewGroup pickerContainer;
@@ -23,10 +30,6 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        post.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) hideMediaPicker();
-            else name.requestFocus();
-        });
         pickerContainer.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
             @Override
             public void onChildViewAdded(View parent, View child) {
@@ -38,6 +41,8 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
                 backStackDelegate.setListener(() -> onBack());
             }
         });
+        //
+        attachImages();
     }
 
     @Override
@@ -52,38 +57,42 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
     }
 
     @Override
-    public void showProgress() {
-        shadow.setVisibility(View.VISIBLE);
-        fabProgress.setVisibility(View.VISIBLE);
-        fabProgress.setIcon(R.drawable.ic_upload_cloud, R.drawable.ic_upload_cloud);
-        fabProgress.setIndeterminate(true);
-        fabProgress.showProgress(true);
-        int color = getResources().getColor(R.color.bucket_blue);
-        circleView.setColor(color);
+    public void onProgressClicked(PhotoCreationItem item) {
+        super.onProgressClicked(item);
+        getPresenter().startUpload(item);
     }
 
     @Override
-    public void hideProgress() {
-        fabProgress.setVisibility(View.GONE);
-        shadow.setVisibility(View.GONE);
+    public void onRemoveClicked(PhotoCreationItem uploadTask) {
+        super.onRemoveClicked(uploadTask);
+        boolean removed = getPresenter().removeImage(uploadTask);
+        if (removed) {
+            adapter.remove(uploadTask);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
-    public void imageError() {
-        fabProgress.showProgress(false);
-        fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
-        int color = getResources().getColor(R.color.bucket_red);
-        circleView.setColor(color);
+    public void enableImagePicker() {
+        pickerDisabled = false;
+        updatePickerState();
     }
 
-    @OnClick(R.id.cancel_action)
-    protected void onPhotoCancel() {
-        getPresenter().cancelClicked();
+    @Override
+    public void disableImagePicker() {
+        pickerDisabled = true;
+        updatePickerState();
     }
 
-    @OnClick(R.id.fab_progress)
-    void onProgressClick() {
-        getPresenter().onProgressClicked();
+    @Override
+    protected void onTitleFocusChanged(boolean hasFocus) {
+        super.onTitleFocusChanged(hasFocus);
+        if (hasFocus) hideMediaPicker();
+        else name.requestFocus();
+    }
+
+    protected void updatePickerState() {
+        image.setEnabled(!pickerDisabled);
     }
 
     protected void showMediaPicker() {
@@ -91,7 +100,7 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .data(new PickerBundle(getPresenter().getMediaRequestId()))
+                .data(new PickerBundle(getPresenter().getMediaRequestId(), getPresenter().getRemainingPhotosCount()))
                 .build());
     }
 
@@ -100,5 +109,16 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
                 .build());
+    }
+
+    protected void attachImages() {
+        if (!imageFromArgsAlreadyAttached && getMediaAttachment() != null) {
+            getPresenter().attachImages(getMediaAttachment());
+            imageFromArgsAlreadyAttached = true;
+        }
+    }
+
+    private MediaAttachment getMediaAttachment() {
+        return getArgs() != null && getArgs().getMediaAttachment() != null ? getArgs().getMediaAttachment() : null;
     }
 }

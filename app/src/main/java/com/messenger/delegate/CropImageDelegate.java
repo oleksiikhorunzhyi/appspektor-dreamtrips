@@ -56,17 +56,21 @@ public class CropImageDelegate {
         }
     }
 
-    public void cropImage(ChosenImage image) {
+    public void cropImage(String filePath) {
         if (activity == null) {
             throw new IllegalStateException("You must call init() first");
         }
+        if (ValidationUtils.isUrl(filePath)) {
+            cacheFacebookImage(filePath, path -> startCropActivity(path, path));
+        } else {
+            executeCrop(filePath);
+        }
+
+    }
+
+    public void cropImage(ChosenImage image) {
         if (image != null) {
-            String filePath = image.getFilePathOriginal();
-            if (ValidationUtils.isUrl(filePath)) {
-                cacheFacebookImage(filePath, path -> startCropActivity(path, path));
-            } else {
-                executeCrop(filePath);
-            }
+            cropImage(image.getFilePathOriginal());
         }
     }
 
@@ -106,7 +110,7 @@ public class CropImageDelegate {
         return true;
     }
 
-    private void onCropFinished (String path, String errorMsg) {
+    private void onCropFinished(String path, String errorMsg) {
         if (!TextUtils.isEmpty(path)) {
             // TODO Improve this. Workaround for onAttachedToWindow() called after
             // onActivityResult() after user rotated screen in crop activity

@@ -14,11 +14,12 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.PreviewPhotoTaggableHolderViewGroup;
-import com.worldventures.dreamtrips.modules.feed.bundle.EditEntityBundle;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.popup.FeedItemMenuBuilder;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.events.SocialViewPagerStateChangedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -48,10 +49,11 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @InjectView(R.id.flag)
     protected FlagView flag;
     @InjectView(R.id.taggable_holder)
-    protected PreviewPhotoTaggableHolderViewGroup taggableImageHolder;
+    protected PhotoTagHolder photoTagHolder;
     @InjectView(R.id.tag)
     protected ImageView tag;
 
+    private PhotoTagHolderManager photoTagHolderManager;
     @Inject
     SnappyRepository db;
     @Inject
@@ -95,18 +97,21 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         if (photo.getUser() == null) return;
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
-        taggableImageHolder.setup(this, (Photo) photo);
-        taggableImageHolder.setOnTagDeletedAction(() -> getPresenter().loadEntity());
+
+        photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, getPresenter().getAccount(), photo.getUser());
+        photoTagHolderManager.show(ivImage);
+        photoTagHolderManager.addExistsTagViews(((Photo) photo).getPhotoTags());
+        photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().deleteTag(photoTag));
     }
 
     @Override
-    public void openEdit(EditEntityBundle bundle) {
+    public void openEdit(EditPhotoBundle bundle) {
         int containerId = R.id.container_details_floating;
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
+        router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
                 .containerId(containerId)
                 .fragmentManager(getFragmentManager())
                 .build());
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
+        router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forFragment()
                 .containerId(containerId)
                 .backStackEnabled(false)
                 .fragmentManager(getFragmentManager())
@@ -116,7 +121,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     public void redrawTags() {
-        taggableImageHolder.redrawTags();
+        //todo
     }
 
     @Override
@@ -187,18 +192,18 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @OnClick(R.id.tag)
     public void onTag() {
         SocialViewPagerState state = getState();
-        saveViewState(state.isContentWrapperVisible(), !taggableImageHolder.isShown());
+        saveViewState(state.isContentWrapperVisible(), !photoTagHolder.isShown());
         eventBus.post(new SocialViewPagerStateChangedEvent());
     }
 
     protected void hideTagViewGroup() {
         tag.setSelected(false);
-        taggableImageHolder.hide();
+        photoTagHolderManager.hide();
     }
 
     protected void showTagViewGroup() {
         tag.setSelected(true);
-        taggableImageHolder.show(ivImage);
+        photoTagHolderManager.show(ivImage);
     }
 
     private void deletePhoto() {

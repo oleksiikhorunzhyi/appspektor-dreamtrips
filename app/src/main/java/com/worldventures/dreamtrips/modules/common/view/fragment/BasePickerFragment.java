@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -27,7 +26,7 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
         implements BasePickerPresenter.View {
 
     @InjectView(R.id.picker)
-    protected  RecyclerView picker;
+    protected RecyclerView picker;
     @InjectView(R.id.progress)
     protected ProgressBar progressBar;
 
@@ -43,8 +42,7 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
         adapter = new BaseArrayListAdapter<>(getContext(), this);
         registerCells();
 
-        picker.setLayoutManager(new GridAutofitLayoutManager(getContext(),
-                getContext().getResources().getDimension(R.dimen.photo_picker_size)));
+        picker.setLayoutManager(new GridAutofitLayoutManager(getContext(), getContext().getResources().getDimension(R.dimen.photo_picker_size)));
         picker.setAdapter(adapter);
     }
 
@@ -54,7 +52,7 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
         photoPickerDelegate.attachScrollableView(picker);
         photoPickerDelegate.setSelectedPhotosProvider(new PhotoPickerDelegate.SelectedPhotosProvider() {
             @Override
-            public List<ChosenImage> provideSelectedPhotos() {
+            public List<BasePhotoPickerModel> provideSelectedPhotos() {
                 return getPresenter().getSelectedPhotos();
             }
 
@@ -62,6 +60,7 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
             public int getType() {
                 return getPhotosType();
             }
+
         });
     }
 

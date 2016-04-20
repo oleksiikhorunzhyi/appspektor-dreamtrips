@@ -3,6 +3,10 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 import android.os.Bundle;
 import android.view.View;
 
+import com.innahema.collections.query.functions.Converter;
+import com.innahema.collections.query.queriables.Queryable;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import java.util.List;
@@ -11,8 +15,9 @@ public class PhotoPickerDelegate {
 
     private PhotoPickerLayout photoPickerLayout;
     //
-    private PhotoPickerLayout.OnDoneClickListener onDoneClickListener;
     private SelectedPhotosProvider selectedPhotosProvider;
+    private PhotoPickerLayout.OnDoneClickListener doneClickListener;
+    private PhotoPickerLayout.OnDoneClickListener2 doneClickListener2;
 
     public boolean isMultiPickEnabled() {
         return photoPickerLayout.isMultiPickEnabled();
@@ -43,12 +48,24 @@ public class PhotoPickerDelegate {
     }
 
     public void onDone() {
-        if (onDoneClickListener != null && selectedPhotosProvider != null)
-            onDoneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos(), selectedPhotosProvider.getType());
+        if (doneClickListener != null && selectedPhotosProvider != null) {
+            List<ChosenImage> chosenImages = Queryable.from(selectedPhotosProvider.provideSelectedPhotos())
+                    .map((Converter<BasePhotoPickerModel, ChosenImage>) element -> null)
+                    .toList();
+            doneClickListener.onDone(chosenImages, selectedPhotosProvider.getType());
+            return;
+        }
+        if (doneClickListener2 != null && selectedPhotosProvider != null) {
+            doneClickListener2.onDone(selectedPhotosProvider.provideSelectedPhotos(), selectedPhotosProvider.getType());
+        }
     }
 
-    public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
-        this.onDoneClickListener = onDoneClickListener;
+    public void setDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
+        this.doneClickListener = onDoneClickListener;
+    }
+
+    public void setDoneClickListener2(PhotoPickerLayout.OnDoneClickListener2 doneClickListener2) {
+        this.doneClickListener2 = doneClickListener2;
     }
 
     public void setSelectedPhotosProvider(SelectedPhotosProvider selectedPhotosProvider) {
@@ -57,7 +74,7 @@ public class PhotoPickerDelegate {
 
     public interface SelectedPhotosProvider {
 
-        List provideSelectedPhotos();
+        List<BasePhotoPickerModel> provideSelectedPhotos();
 
         int getType();
     }

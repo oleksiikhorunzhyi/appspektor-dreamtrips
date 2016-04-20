@@ -52,6 +52,10 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
         return commandId;
     }
 
+    public String getFilePath() {
+        return filePath;
+    }
+
     protected Observable<ActionState<UploadImageAction>> upload(File file) {
         if (!SessionHolderHelper.hasEntity(userSessionHolder)) {
             throw new IllegalStateException("User session is not present");

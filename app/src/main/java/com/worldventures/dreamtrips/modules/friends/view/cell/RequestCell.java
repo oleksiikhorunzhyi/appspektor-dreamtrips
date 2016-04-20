@@ -7,16 +7,13 @@ import android.widget.FrameLayout;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.RejectRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.RequestCellDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_request)
-public class RequestCell extends BaseUserCell {
+public class RequestCell extends BaseUserCell<RequestCellDelegate> {
 
     @InjectView(R.id.accept_button)
     FrameLayout accept;
@@ -44,9 +41,7 @@ public class RequestCell extends BaseUserCell {
     @Override
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
-
         container.setVisibility(View.VISIBLE);
-
         switch (getModelObject().getRelationship()) {
             case INCOMING_REQUEST:
                 hide.setVisibility(View.GONE);
@@ -68,33 +63,32 @@ public class RequestCell extends BaseUserCell {
                 tvMutual.setVisibility(View.GONE);
                 break;
         }
-
         enableButtons();
     }
 
     @OnClick(R.id.accept)
     void onAccept() {
         btnAccept.setEnabled(false);
-        getEventBus().post(new AcceptRequestEvent(getModelObject(), getAdapterPosition()));
+        cellDelegate.acceptRequest(getModelObject());
     }
 
     @OnClick(R.id.reject)
     void onReject() {
         btnReject.setEnabled(false);
-        getEventBus().post(new RejectRequestEvent(getModelObject(), getAdapterPosition()));
+        cellDelegate.rejectRequest(getModelObject());
         TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_REJECT_FRIEND_REQUEST);
     }
 
     @OnClick(R.id.hide)
     void onHide() {
         btnHide.setEnabled(false);
-        getEventBus().post(new HideRequestEvent(getModelObject(), getAdapterPosition()));
+        cellDelegate.hideRequest(getModelObject());
     }
 
     @OnClick(R.id.cancel)
     void onCancel() {
         btnCancel.setEnabled(false);
-        getEventBus().post(new CancelRequestEvent(getModelObject(), getAdapterPosition()));
+        cellDelegate.cancelRequest(getModelObject());
         TrackingHelper.tapMyFriendsButtonFeed(TrackingHelper.ATTRIBUTE_CANCEL_FRIEND_REQUEST);
     }
 

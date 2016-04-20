@@ -245,7 +245,6 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
 
-
     @Override
     public synchronized void start(Context context) {
         super.start(context);
@@ -287,6 +286,10 @@ public class DreamSpiceManager extends SpiceManager {
                     Throwable t = retrofitError.getCause();
                     if (t instanceof UnknownHostException || t instanceof ConnectException) {
                         errorMessage = context.getResources().getString(R.string.no_connection);
+                    } else {
+                        if (isShouldToBeProcessedLocally(request, retrofitError)) {
+                            errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
+                        }
                     }
                 } else if (isShouldToBeProcessedLocally(request, retrofitError)) {
                     errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
@@ -300,7 +303,7 @@ public class DreamSpiceManager extends SpiceManager {
         }
 
         private boolean isShouldToBeProcessedLocally(SpiceRequest request, RetrofitError retrofitError) {
-            return retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY
+            return (retrofitError.getResponse() == null || retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY)
                     && request instanceof DreamTripsRequest && ((DreamTripsRequest) request).getErrorMessage() != 0;
         }
 

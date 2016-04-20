@@ -623,4 +623,11 @@
     <string name="dream_trips_points">DreamTrip點數：</string>
     <string name="rovia_bucks">Rovia幣</string>
 
+    <string name="suggested_photo">You have new photos</string>
+    <string name="suggested_photo_selected_one">%d photo selected</string>
+    <string name="suggested_photo_selected_multiple">%d photos selected</string>
+    <string name="share_recent_photos">Share photos</string>
+
+    <string name="legal_terms">Legal Terms</string>
+
 </resources>

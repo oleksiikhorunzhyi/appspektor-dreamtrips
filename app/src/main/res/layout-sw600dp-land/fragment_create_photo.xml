@@ -28,7 +28,7 @@
                 fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
                 fresco:placeholderImageScaleType="centerCrop"/>
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup
+            <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
                 android:id="@+id/taggable_holder"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

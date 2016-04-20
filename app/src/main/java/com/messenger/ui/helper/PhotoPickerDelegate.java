@@ -5,6 +5,7 @@ import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
+import com.worldventures.dreamtrips.modules.common.presenter.GalleryPresenter;
 import com.worldventures.dreamtrips.modules.feed.event.AttachPhotoEvent;
 
 import java.util.List;
@@ -16,9 +17,6 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class PhotoPickerDelegate {
-
-    public static final int REQUESTER_ID = -3;
-
     private EventBus eventBus;
 
     private PublishSubject<List<ChosenImage>> stream = PublishSubject.create();
@@ -27,15 +25,8 @@ public class PhotoPickerDelegate {
         this.eventBus = eventBus;
     }
 
-    public void onEvent(AttachPhotoEvent event) {
-        if (event.getRequestType() != -1) {
-            eventBus.cancelEventDelivery(event);
-            eventBus.post(new ImagePickRequestEvent(event.getRequestType(), REQUESTER_ID));
-        }
-    }
-
     public void onEvent(ImagePickedEvent event) {
-        if (event.getRequesterID() == REQUESTER_ID) {
+        if (event.getRequesterID() == GalleryPresenter.REQUESTER_ID) {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
 

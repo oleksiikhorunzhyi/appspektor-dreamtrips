@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -16,21 +15,28 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DelaySearchView;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBundle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendSearchPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.UserSearchCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserSearchCellDelegate;
 
 import java.util.ArrayList;
-
 
 @Layout(R.layout.fragment_search_friends)
 @MenuResource(R.menu.menu_search)
 public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresenter, FriendGlobalSearchBundle>
-        implements FriendSearchPresenter.View {
+        implements FriendSearchPresenter.View, UserSearchCellDelegate {
 
-    DelaySearchView searchView;
+    private DelaySearchView searchView;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         adapter.registerCell(User.class, UserSearchCell.class);
+        adapter.registerDelegate(User.class, this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        enableRefreshLayout(!getQueryFromArgs().isEmpty());
     }
 
     @Override
@@ -67,6 +73,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
             public boolean onQueryTextChange(String newText) {
                 updateEmptyCaption(newText.length());
                 getPresenter().setQuery(newText);
+                enableRefreshLayout(!newText.isEmpty());
                 return false;
             }
         });
@@ -79,8 +86,7 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
     @Override
     protected FriendSearchPresenter createPresenter(Bundle savedInstanceState) {
-        String s = getArgs() != null ? getArgs().getQuery() : "";
-        return new FriendSearchPresenter(s);
+        return new FriendSearchPresenter(getQueryFromArgs());
     }
 
     private void updateEmptyCaption(int querySize) {
@@ -91,5 +97,23 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
                 caption.setText(R.string.start_searching);
             }
         }
+    }
+
+    @Override
+    public void addUserRequest(User user) {
+        getPresenter().addUserRequest(user);
+    }
+
+    @Override
+    public void onCellClicked(User model) {
+
+    }
+
+    private void enableRefreshLayout(boolean isEnable) {
+        refreshLayout.setEnabled(isEnable);
+    }
+
+    private String getQueryFromArgs() {
+        return getArgs() != null ? getArgs().getQuery() : "";
     }
 }

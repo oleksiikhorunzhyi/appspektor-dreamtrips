@@ -78,6 +78,7 @@ public class SnappyRepository {
     public static final String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
     public static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
+    public static final String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
     private Context context;
     private ExecutorService executorService;
@@ -180,7 +181,7 @@ public class SnappyRepository {
     /**
      * Method is intended to delete all records for given keys.
      *
-     * @param key keys array to be deleted.
+     * @param keys keys array to be deleted.
      */
     public void clearAllForKeys(String... keys) {
         Queryable.from(keys).forEachR(key -> {
@@ -333,8 +334,23 @@ public class SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Settings
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveLastSuggestedPhotosSyncTime(long time) {
+        act(db -> db.putLong(SUGGESTED_PHOTOS_SYNC_TIME, time));
+    }
+
+    public long getLastSuggestedPhotosSyncTime() {
+        if (isEmpty(SUGGESTED_PHOTOS_SYNC_TIME))
+            saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
+        return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(System.currentTimeMillis());
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Image Tasks
     ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Use it from PhotoUploadManager
      */
@@ -566,19 +582,19 @@ public class SnappyRepository {
         clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
     }
 
-    public void saveLastMapCameraPosition(Location location){
+    public void saveLastMapCameraPosition(Location location) {
         act(db -> db.put(DTL_LAST_MAP_POSITION, location));
     }
 
-    public Location getLastMapCameraPosition(){
+    public Location getLastMapCameraPosition() {
         return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
     }
 
-    public void cleanLastMapCameraPosition(){
+    public void cleanLastMapCameraPosition() {
         clearAllForKey(DTL_LAST_MAP_POSITION);
     }
 
-    public void saveLastSelectedOffersOnlyToogle(boolean state){
+    public void saveLastSelectedOffersOnlyToogle(boolean state) {
         act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
     }
 
@@ -586,7 +602,7 @@ public class SnappyRepository {
         return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
     }
 
-    public void cleanLastSelectedOffersOnlyToggle(){
+    public void cleanLastSelectedOffersOnlyToggle() {
         clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
     }
 

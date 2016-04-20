@@ -1,40 +1,37 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.net.Uri;
+import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.api.AddPhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import icepick.State;
+import io.techery.janet.ActionState;
 
 public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View> extends Presenter<V> {
 
     @State
     String cachedText = "";
-
     @State
-    ArrayList<PhotoTag> cachedAddedPhotoTags = new ArrayList<>();
-
+    Location location;
     @State
-    ArrayList<PhotoTag> cachedRemovedPhotoTags = new ArrayList<>();
+    ArrayList<PhotoCreationItem> cachedCreationItems = new ArrayList<>();
 
     @Override
     public void takeView(V view) {
         super.takeView(view);
         updateUi();
-        invalidateAddTagBtn();
     }
 
     protected void updateUi() {
@@ -55,82 +52,78 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     protected abstract boolean isChanged();
 
-    public abstract void invalidateAddTagBtn();
-
     public void postInputChanged(String input) {
         cachedText = input;
         invalidateDynamicViews();
     }
 
-    public abstract void updateLocation(Location location);
-
-    protected void invalidateDynamicViews() {
-        invalidateAddTagBtn();
+    public void invalidateDynamicViews() {
+        if (isChanged()) {
+            view.enableButton();
+        } else {
+            view.disableButton();
+        }
     }
 
     public abstract void post();
 
-    public void onTagClicked() {
-        view.showPhotoTagView(getImageForTagging(), getCombinedTags());
-    }
+    public void onTagSelected(long requestId, ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
+        PhotoCreationItem item = Queryable.from(cachedCreationItems).firstOrDefault(element -> element.getId() == requestId);
+        //
+        if (item != null) {
+            item.getCachedAddedPhotoTags().removeAll(photoTags);
+            item.getCachedAddedPhotoTags().addAll(photoTags);
+            item.getCachedAddedPhotoTags().removeAll(removedTags);
 
-    protected abstract EditPhotoTagsBundle.PhotoEntity getImageForTagging();
-
-    protected List<PhotoTag> getCombinedTags() {
-        return new ArrayList<>(cachedAddedPhotoTags);
-    }
-
-    public void onTagSelected(ArrayList<PhotoTag> photoTags, ArrayList<PhotoTag> removedTags) {
-        cachedAddedPhotoTags.removeAll(photoTags);
-        cachedAddedPhotoTags.addAll(photoTags);
-        cachedAddedPhotoTags.removeAll(removedTags);
-
-        cachedRemovedPhotoTags.removeAll(removedTags);
-        cachedRemovedPhotoTags.addAll(removedTags);
-    }
-
-    public abstract Location getLocation();
-
-    protected void pushTags(FeedEntity feedEntity) {
-        cachedAddedPhotoTags.removeAll(((Photo) feedEntity).getPhotoTags());
-        if (cachedAddedPhotoTags.size() > 0) {
-            doRequest(new AddPhotoTagsCommand(feedEntity.getUid(), cachedAddedPhotoTags), aVoid -> {
-                if (cachedRemovedPhotoTags.size() > 0) {
-                    postRemovedPhotoTags(feedEntity);
-                } else {
-                    processTagUploadSuccess(feedEntity);
-                }
-            });
-        } else if (cachedRemovedPhotoTags.size() > 0) {
-            postRemovedPhotoTags(feedEntity);
-        } else {
-            processTagUploadSuccess(feedEntity);
+            item.getCachedRemovedPhotoTags().removeAll(removedTags);
+            item.getCachedRemovedPhotoTags().addAll(removedTags);
+            //if view ==null state will be updated on attach view.
+            if (view != null) {
+                view.updateItem(item);
+            }
         }
+        //
+        invalidateDynamicViews();
     }
 
-    private void postRemovedPhotoTags(FeedEntity feedEntity) {
-        List<Integer> userIds = Queryable.from(cachedRemovedPhotoTags)
-                .concat(((Photo) feedEntity).getPhotoTags()).map(photo -> photo.getUser().getId()).toList();
-        doRequest(new DeletePhotoTagsCommand(feedEntity.getUid(), userIds), bVoid -> {
-            processTagUploadSuccess(feedEntity);
-        });
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        view.onPostError();
+        view.enableButton();
+    }
+
+    public Location getLocation() {
+        if (location == null) location = new Location();
+        return location;
+    }
+
+    public void updateLocation(Location location) {
+        this.location = location;
+        invalidateDynamicViews();
+        view.updateLocationButtonState();
+    }
+
+    protected boolean isCachedTextEmpty() {
+        return TextUtils.isEmpty(cachedText);
     }
 
     protected void processPostSuccess(FeedEntity feedEntity) {
         closeView();
     }
 
-    protected void processPhotoSuccess(FeedEntity feedEntity) {
-        pushTags(feedEntity);
-    }
-
-    protected void processTagUploadSuccess(FeedEntity feedEntity) {
-        Photo photo = (Photo) feedEntity;
-        photo.getPhotoTags().addAll(cachedAddedPhotoTags);
-        photo.getPhotoTags().removeAll(cachedRemovedPhotoTags);
-        photo.setPhotoTagsCount(photo.getPhotoTags().size());
-
-        closeView();
+    protected PhotoCreationItem createItemFromPhoto(Photo photo) {
+        PhotoCreationItem photoCreationItem = new PhotoCreationItem();
+        photoCreationItem.setTitle(photo.getTitle());
+        photoCreationItem.setOriginUrl(photo.getImagePath());
+        photoCreationItem.setHeight(photo.getHeight());
+        photoCreationItem.setWidth(photo.getWidth());
+        photoCreationItem.setStatus(ActionState.Status.SUCCESS);
+        photoCreationItem.setLocation(photo.getLocation().getName());
+        photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
+        photoCreationItem.setCanDelete(true);
+        photoCreationItem.setCanEditTags(true);
+        return photoCreationItem;
     }
 
     private void closeView() {
@@ -144,7 +137,9 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     public interface View extends RxView {
 
-        void attachPhoto(Uri uri);
+        void attachPhotos(List<PhotoCreationItem> images);
+
+        void updateItem(PhotoCreationItem item);
 
         void setName(String userName);
 
@@ -162,9 +157,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
         void onPostError();
 
-        void redrawTagButton(boolean isViewShown, boolean someTagSets);
-
-        void showPhotoTagView(EditPhotoTagsBundle.PhotoEntity photoEntity, List<PhotoTag> photoTags);
+        void updateLocationButtonState();
 
         void openLocation(Location location);
     }

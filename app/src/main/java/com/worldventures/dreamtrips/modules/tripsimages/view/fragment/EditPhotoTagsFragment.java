@@ -7,42 +7,45 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.CreationPhotoTaggableHolderViewGroup;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolderManager;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.InjectView;
 
-
 @Layout(R.layout.fragment_edit_photo_tags)
-public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsPresenter, EditPhotoTagsBundle> {
+public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsPresenter, EditPhotoTagsBundle> implements EditPhotoTagsPresenter.View {
 
     @InjectView(R.id.tag_toolbar)
     Toolbar toolbar;
     @InjectView(R.id.iv_image)
     SimpleDraweeView ivImage;
     @InjectView(R.id.taggable_holder)
-    CreationPhotoTaggableHolderViewGroup taggableImageHolder;
+    PhotoTagHolder taggableImageHolder;
+
+    PhotoTagHolderManager photoTagHolderManager;
 
     @Override
     protected EditPhotoTagsPresenter createPresenter(Bundle savedInstanceState) {
-        return new EditPhotoTagsPresenter();
+        return new EditPhotoTagsPresenter(getArgs().getRequestId(), getArgs().getPhotoTags());
     }
 
     @Override
@@ -50,27 +53,48 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         super.afterCreateView(rootView);
         toolbar.inflateMenu(R.menu.menu_photo_tag_screen);
         toolbar.setOnMenuItemClickListener(this::onToolBarMenuItemClicked);
+        //
+        getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            int height = 0;
 
-        PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(getArgs().getPhoto().getImageUri(), ivImage.getController());
-        draweeController.addControllerListener(new BaseControllerListener<ImageInfo>() {
             @Override
-            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                ivImage.post(() -> taggableImageHolder.show(ivImage));
+            public void onGlobalLayout() {
+                height = ViewUtils.getRootViewHeight(getActivity());
+                ViewGroup.LayoutParams params = ivImage.getLayoutParams();
+                if (height == params.height) {
+                    ViewUtils.removeSupportGlobalLayoutListener(getView(), this);
+                    return;
+                }
+                params.height = height;
+                ivImage.setLayoutParams(params);
+                ivImage.setController(createTaggableDraweeController());
             }
         });
+        //
+        photoTagHolderManager = new PhotoTagHolderManager(taggableImageHolder, getPresenter().getAccount(), getPresenter().getAccount());
+        photoTagHolderManager.setTagCreatedListener(photoTag -> {
+            getPresenter().onTagAdded(photoTag);
+        });
+        photoTagHolderManager.setTagDeletedListener(photoTag -> {
+            getPresenter().onTagDeleted(photoTag);
+        });
+        photoTagHolderManager.creationTagEnabled(true);
+        photoTagHolderManager.setFriendRequestProxy(getPresenter());
+    }
 
-        ViewGroup.LayoutParams params = ivImage.getLayoutParams();
-        params.height = ViewUtils.getRootViewHeight(getActivity());
-        ivImage.setLayoutParams(params);
-
-        ivImage.setController(draweeController);
-        taggableImageHolder.setup(this, buildPhoto());
+    protected void addSuggestions() {
+        List<PhotoTag> photoTags = Queryable.from(getArgs().getSuggestions())
+                .filter(element -> !PhotoTag.isIntersectedWithPhotoTags(getArgs().getPhotoTags(), element)).toList();
+        photoTagHolderManager.addSuggestionTagView(photoTags,
+                (suggestion) -> {
+                    photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion);
+                });
     }
 
     protected boolean onToolBarMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                notifyAboutTags();
+                getPresenter().onDone();
                 router.back();
                 break;
         }
@@ -89,28 +113,33 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         OrientationUtil.unlockOrientation(getActivity());
     }
 
-    private void notifyAboutTags() {
+    @Override
+    public void notifyAboutTags(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> deletedTags) {
         if (getTargetFragment() instanceof Callback) {
-            taggableImageHolder.getLocallyAddedTags().removeAll(getArgs().getPhotoTags());
-            taggableImageHolder.getLocallyAddedTags().addAll(getArgs().getPhotoTags());
-            taggableImageHolder.getLocallyAddedTags().removeAll(taggableImageHolder.getLocallyDeletedTags());
-
-            ((Callback) getTargetFragment()).onTagSelected(taggableImageHolder.getLocallyAddedTags(), taggableImageHolder.getLocallyDeletedTags());
+            ((Callback) getTargetFragment()).onTagSelected(requestId, addedTags, deletedTags);
         }
     }
 
-    @NonNull
-    protected Photo buildPhoto() {
-        Photo photo = new Photo();
-        Image images = new Image();
-        images.setUrl(getArgs().getPhoto().getImageUri().toString());
-        photo.setImages(images);
-        photo.setPhotoTags(getArgs().getPhotoTags());
-        return photo;
-    }
-
     public interface Callback {
-        void onTagSelected(ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags);
+        void onTagSelected(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags);
     }
 
+    @NonNull
+    private PipelineDraweeController createTaggableDraweeController() {
+        PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(getArgs().getPhoto().getImageUri(), ivImage.getController());
+        draweeController.addControllerListener(new BaseControllerListener<ImageInfo>() {
+            @Override
+            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                ivImage.post(() -> {
+                    photoTagHolderManager.show(ivImage);
+                    addSuggestions();
+                    photoTagHolderManager.addExistsTagViews(getArgs().getPhotoTags());
+                    if (getArgs().getActiveSuggestion() != null) {
+                        photoTagHolderManager.addCreationTagBasedOnSuggestion(getArgs().getActiveSuggestion());
+                    }
+                });
+            }
+        });
+        return draweeController;
+    }
 }

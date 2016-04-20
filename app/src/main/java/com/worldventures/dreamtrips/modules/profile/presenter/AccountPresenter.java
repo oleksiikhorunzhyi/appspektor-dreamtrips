@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.delegate.CropImageDelegate;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
@@ -12,6 +11,7 @@ import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -135,7 +135,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         //
         mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> (attachment.requestId == AVATAR_MEDIA_REQUEST_ID
-                        || attachment.requestId == COVER_MEDIA_REQUEST_ID)  && attachment.chosenImages.size() > 0)
+                        || attachment.requestId == COVER_MEDIA_REQUEST_ID) && attachment.chosenImages.size() > 0)
                 .subscribe(mediaAttachment -> {
                     if (view != null) {
                         view.hideMediaPicker();
@@ -148,7 +148,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         connectToCroppedImageStream();
     }
 
-    private void connectToCroppedImageStream(){
+    private void connectToCroppedImageStream() {
         view.bind(cropImageDelegate.getCroppedImagesStream()
                 .compose(new IoToMainComposer<>()))
                 .subscribe(fileNotification -> {
@@ -246,7 +246,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     private void imageSelected(MediaAttachment mediaAttachment) {
-        ChosenImage image = mediaAttachment.chosenImages.get(0);
+        PhotoGalleryModel image = mediaAttachment.chosenImages.get(0);
         switch (mediaAttachment.requestId) {
             case AVATAR_MEDIA_REQUEST_ID:
                 onAvatarChosen(image);
@@ -257,9 +257,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
-    public void onAvatarChosen(ChosenImage image) {
+    public void onAvatarChosen(PhotoGalleryModel image) {
         if (image != null) {
-            String filePath = image.getFilePathOriginal();
+            String filePath = image.getOriginalPath();
             if (ValidationUtils.isUrl(filePath)) {
                 cacheFacebookImage(filePath, this::uploadAvatar);
             } else {
@@ -275,8 +275,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         doRequest(bigBinaryRequest, inputStream -> action.action(filePath));
     }
 
-    public void onCoverChosen(ChosenImage image) {
-        cropImageDelegate.cropImage(image);
+    public void onCoverChosen(PhotoGalleryModel image) {
+        cropImageDelegate.cropImage(image.getOriginalPath());
     }
 
     public void onEvent(OnPhotoClickEvent e) {

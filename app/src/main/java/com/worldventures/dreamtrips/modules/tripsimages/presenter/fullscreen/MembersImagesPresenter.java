@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.SpiceRequest;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMemberPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -65,6 +65,6 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
 
     public interface View extends TripImagesListPresenter.View {
 
-        void attachImages(List<ChosenImage> photos, int requestType);
+        void attachImages(List<PhotoGalleryModel> photos, int requestType);
     }
 }

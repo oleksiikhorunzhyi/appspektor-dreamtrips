@@ -8,20 +8,30 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
 import com.worldventures.dreamtrips.modules.friends.bundle.FriendMainBundle;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -29,7 +39,7 @@ import butterknife.Optional;
 @Layout(R.layout.fragment_feed)
 @MenuResource(R.menu.menu_activity_feed)
 public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
-        implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener, SuggestedPhotosDelegate {
 
     BadgeImageView friendsBadge;
     BadgeImageView unreadConversationBadge;
@@ -49,6 +59,9 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                     .data(new FeedAdditionalInfoBundle(getPresenter().getAccount()))
                     .build());
         }
+
+        adapter.registerCell(MediaAttachment.class, SuggestedPhotosCell.class);
+        ((BaseDelegateAdapter) adapter).registerDelegate(MediaAttachment.class, this);
     }
 
     @Override
@@ -122,7 +135,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public BaseArrayListAdapter createAdapter() {
-        return new BaseArrayListAdapter<>(feedView.getContext(), this);
+        return new BaseDelegateAdapter<>(feedView.getContext(), this);
     }
 
     private void openPost() {
@@ -137,7 +150,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .build());
     }
 
-    private void openSharePhoto() {
+    private void openSharePhoto(CreateEntityBundle bundle) {
         router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forRemoval()
                 .containerId(R.id.container_details_floating)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -146,7 +159,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
-                .data(new CreateEntityBundle(true))
+                .data(bundle)
                 .build());
     }
 
@@ -164,6 +177,25 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         }
     }
 
+    @Override
+    public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos, boolean needLoader) {
+        if (suggestedPhotos.size() > 0) {
+            List feedList = new ArrayList<>();
+            feedList.add(new MediaAttachment(suggestedPhotos, PickImageDelegate.PICK_PICTURE, -1));
+            feedList.addAll(feedItems);
+            refreshFeedItems(feedList, needLoader);
+            return;
+        }
+        refreshFeedItems(feedItems, needLoader);
+    }
+
+    @Override
+    public void refreshFeedItems(List events, boolean needLoader) {
+        if (isNeedToSaveSuggestions()) events.add(0, adapter.getItem(0));
+        //
+        super.refreshFeedItems(events, needLoader);
+    }
+
     @Optional
     @OnClick(R.id.share_post)
     protected void onPostClicked() {
@@ -173,7 +205,27 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Optional
     @OnClick(R.id.share_photo)
     protected void onSharePhotoClick() {
-        openSharePhoto();
+        openSharePhoto(new CreateEntityBundle(true));
     }
 
+    @Override
+    public void onCancelClicked() {
+        getPresenter().removeSuggestedPhotos();
+    }
+
+    @Override
+    public void onAttachClicked(List<PhotoGalleryModel> pickedItems) {
+        openSharePhoto(new CreateEntityBundle(new MediaAttachment(pickedItems, PickImageDelegate.PICK_PICTURE)));
+        getPresenter().removeSuggestedPhotos();
+    }
+
+    @Override
+    public void onCellClicked(MediaAttachment model) {
+        // nothing to do
+    }
+
+    private boolean isNeedToSaveSuggestions() {
+        return adapter.getCount() > 0 && adapter.getItem(0) instanceof MediaAttachment
+                && getPresenter().isHasNewPhotos(((MediaAttachment) adapter.getItem(0)).chosenImages);
+    }
 }

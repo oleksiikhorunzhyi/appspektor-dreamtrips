@@ -1,11 +1,12 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
@@ -17,6 +18,8 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_account_images_list)
 public class MemberImagesListFragment<P extends MembersImagesPresenter> extends TripImagesListFragment<P>
         implements MembersImagesPresenter.View {
+
+    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -38,9 +41,9 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
     }
 
     @Override
-    public void attachImages(List<ChosenImage> photos, int requestType) {
+    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
         hidePhotoPicker();
-        openCreatePhoto(new CreateEntityBundle(photos, requestType));
+        openCreatePhoto(new CreateEntityBundle(new MediaAttachment(photos, requestType)));
     }
 
     private void showPhotoPicker() {
@@ -48,7 +51,7 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .data(new PickerBundle(getPresenter().getMediaRequestId()))
+                .data(new PickerBundle(getPresenter().getMediaRequestId(), MEDIA_PICKER_ITEMS_COUNT))
                 .build());
     }
 

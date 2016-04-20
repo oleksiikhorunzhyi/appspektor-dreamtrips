@@ -8,7 +8,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
+import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
@@ -42,9 +42,9 @@ import de.greenrobot.event.EventBus;
                 AuthorizedDataUpdater.class,
                 VideoCachingDelegate.class,
                 VideoDownloadSpiceService.class,
-                PhotoUploadingManager.class,
                 PhotoUploadingManagerS3.class,
                 BucketItemManager.class,
+                SocialUploaderyManager.class,
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
@@ -71,8 +71,8 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    public PhotoUploadingManager providePhotoManager(@ForApplication Injector injector) {
-        return new PhotoUploadingManager(injector);
+    public SocialUploaderyManager provideSocialUploaderyManager(@ForApplication Injector injector) {
+        return new SocialUploaderyManager(injector);
     }
 
     @Provides

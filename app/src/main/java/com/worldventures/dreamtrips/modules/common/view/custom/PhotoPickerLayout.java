@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 
@@ -283,13 +284,20 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         return draggableView;
     }
 
-    public void setOnDoneClickListener(OnDoneClickListener onDoneClickListener) {
-        photoPickerDelegate.setOnDoneClickListener(onDoneClickListener);
+    public void setOnDoneClickListener(OnDoneClickListener onDoneClickListenerObservable) {
+        photoPickerDelegate.setDoneClickListener(onDoneClickListenerObservable);
+    }
+
+    public void setOnDoneClickListener2(OnDoneClickListener2 onDoneClickListenerObservable) {
+        photoPickerDelegate.setDoneClickListener2(onDoneClickListenerObservable);
     }
 
     public interface OnDoneClickListener {
-
         void onDone(List<ChosenImage> chosenImages, int type);
+    }
+
+    public interface OnDoneClickListener2 {
+        void onDone(List<BasePhotoPickerModel> chosenImages, int type);
     }
 
     private void clearAllBackStack() {

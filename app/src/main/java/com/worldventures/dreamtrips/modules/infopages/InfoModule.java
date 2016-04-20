@@ -58,7 +58,6 @@ import dagger.Provides;
 )
 public class InfoModule {
 
-    public static final String FAQ = Route.FAQ.name();
     public static final String TERMS = Route.TERMS.name();
     public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
 
@@ -69,12 +68,7 @@ public class InfoModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideTermsOfServiceComponent() {
-        return new ComponentDescription(TERMS, R.string.terms, R.string.terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
-    }
-
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideFAQComponent() {
-        return new ComponentDescription(FAQ, R.string.faq, R.string.faq, R.drawable.ic_faq, StaticInfoFragment.FAQFragment.class);
+        return new ComponentDescription(TERMS, R.string.legal_terms, R.string.legal_terms, R.drawable.ic_termsconditions, TermsTabFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)

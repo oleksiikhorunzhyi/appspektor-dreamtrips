@@ -1,0 +1,170 @@
+package com.worldventures.dreamtrips.modules.feed.view.cell;
+
+import android.app.Activity;
+import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
+
+import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.annotations.Layout;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
+import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.InjectView;
+import butterknife.Optional;
+
+@Layout(R.layout.adapter_item_feed_post_event)
+public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
+
+    @InjectView(R.id.post)
+    TextView post;
+
+    @Optional
+    @InjectView(R.id.collage)
+    CollageView collageView;
+
+    @Inject
+    FragmentManager fragmentManager;
+    @Inject
+    Activity activity;
+
+    private int width;
+
+    public PostFeedItemCell(View view) {
+        super(view);
+        itemView.post(() -> width = itemView.getWidth());
+    }
+
+    @Override
+    protected void syncUIStateWithModel() {
+        super.syncUIStateWithModel();
+        PostFeedItem obj = getModelObject();
+        if (width > 0) {
+            itemView.setVisibility(View.VISIBLE);
+            processAttachments(obj.getItem().getAttachments());
+            processPostText(obj.getItem().getDescription());
+        } else {
+            itemView.setVisibility(View.INVISIBLE);
+            itemView.post(this::syncUIStateWithModel);
+        }
+    }
+
+    private void processPostText(String postText) {
+        if (!TextUtils.isEmpty(postText)) {
+            post.setVisibility(View.VISIBLE);
+            post.setText(postText);
+        } else {
+            post.setVisibility(View.GONE);
+        }
+    }
+
+    protected void processAttachments(List<FeedEntityHolder> attachments) {
+        if (collageView == null) return;
+        //
+        if (attachments != null && !attachments.isEmpty()) {
+            collageView.setItems(attachmentsToCollageItems(attachments), width);
+            collageView.setItemClickListener(new CollageView.ItemClickListener() {
+                @Override
+                public void itemClicked(int position) {
+                    openFullscreenPhotoList(position);
+                }
+
+                @Override
+                public void moreClicked() {
+                    openFeedItemDetails();
+                }
+            });
+
+        } else {
+            collageView.clear();
+        }
+    }
+
+    private void openFullscreenPhotoList(int position) {
+        List<IFullScreenObject> items = Queryable.from(getModelObject().getItem().getAttachments())
+                .filter(element -> element.getType() == FeedEntityHolder.Type.PHOTO)
+                .map(element -> (IFullScreenObject) element.getItem()).toList();
+        FullScreenImagesBundle data = new FullScreenImagesBundle.Builder()
+                .position(position)
+                .userId(getModelObject().getItem().getOwner().getId())
+                .type(TripImagesType.FIXED)
+                .route(Route.SOCIAL_IMAGE_FULLSCREEN)
+                .fixedList(new ArrayList<>(items))
+                .showTags(true)
+                .build();
+
+        NavigationConfig config = NavigationConfigBuilder.forActivity()
+                .data(data)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .build();
+
+        router.moveTo(Route.FULLSCREEN_PHOTO_LIST, config);
+    }
+
+    private void openFeedItemDetails() {
+        router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
+                .data(new FeedDetailsBundle(getModelObject()))
+                .build());
+    }
+
+    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
+        return Queryable.from(attachments)
+                .map(element -> (Photo) element.getItem())
+                .map(photo -> {
+                    return new CollageItem(photo.getImages().getUrl(), photo.getWidth(), photo.getHeight());
+                })
+                .toList();
+    }
+
+    @Override
+    protected void onDelete() {
+        super.onDelete();
+        getEventBus().post(new DeletePostEvent(getModelObject().getItem()));
+    }
+
+    @Override
+    protected void onEdit() {
+        int containerId = R.id.container_details_floating;
+        router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forRemoval()
+                .containerId(containerId)
+                .fragmentManager(fragmentManager)
+                .build());
+        router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forFragment()
+                .containerId(containerId)
+                .backStackEnabled(false)
+                .fragmentManager(fragmentManager)
+                .data(new EditPostBundle(getModelObject().getItem()))
+                .build());
+    }
+
+    @Override
+    public void prepareForReuse() {
+
+    }
+
+    @Override
+    protected void onMore() {
+        showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
+    }
+}

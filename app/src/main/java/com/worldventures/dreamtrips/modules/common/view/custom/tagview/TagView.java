@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import butterknife.InjectView;
 import butterknife.Optional;
@@ -19,7 +19,6 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
 
     protected PhotoTag photoTag;
     protected T tagListener;
-    protected User account;
     protected Photo photo;
 
     @Optional
@@ -32,7 +31,7 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
     @InjectView(R.id.pointer_shift_x)
     View space;
 
-    PhotoTag.TagPosition absoluteTagPosition;
+    TagPosition absoluteTagPosition;
 
     public TagView(Context context) {
         this(context, null);
@@ -50,10 +49,6 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
 
     public void setPhotoTag(PhotoTag photoTag) {
         this.photoTag = photoTag;
-    }
-
-    public void setAccount(User user) {
-        this.account = user;
     }
 
     public void setPhoto(Photo photo) {
@@ -103,11 +98,15 @@ public abstract class TagView<T extends TagActionListener> extends RelativeLayou
         ((ViewGroup) getParent()).removeView(this);
     }
 
-    public PhotoTag.TagPosition getAbsoluteTagPosition() {
+    public TagPosition getAbsoluteTagPosition() {
         return absoluteTagPosition;
     }
 
-    public void setAbsoluteTagPosition(PhotoTag.TagPosition absoluteTagPosition) {
+    public void setAbsoluteTagPosition(TagPosition absoluteTagPosition) {
         this.absoluteTagPosition = absoluteTagPosition;
+    }
+
+    public PhotoTag getPhotoTag() {
+        return photoTag;
     }
 }

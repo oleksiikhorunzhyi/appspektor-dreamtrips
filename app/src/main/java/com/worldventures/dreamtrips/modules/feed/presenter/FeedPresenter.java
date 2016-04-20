@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.worldventures.dreamtrips.R;
@@ -9,8 +10,11 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
+import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
@@ -58,6 +62,35 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     public void onResume() {
         super.onResume();
         refreshFeed();
+    }
+
+    @Override
+    protected void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
+        loading = false;
+        noMoreFeeds = freshItems == null || freshItems.size() == 0;
+        view.finishLoading();
+        feedItems.clear();
+        feedItems.addAll(Queryable.from(freshItems)
+                .filter(ParentFeedItem::isSingle)
+                .map(element -> element.getItems().get(0))
+                .toList());
+        //
+        doRequest(new PhotoGalleryRequest(context), photos -> {
+            if (isHasNewPhotos(photos)) {
+                view.refreshFeedItems(feedItems, Queryable.from(photos).take(15).toList(), !noMoreFeeds);
+            } else {
+                view.refreshFeedItems(feedItems, !noMoreFeeds);
+            }
+        }, error -> view.refreshFeedItems(feedItems, !noMoreFeeds));
+    }
+
+    public boolean isHasNewPhotos(List<PhotoGalleryModel> photos) {
+        return photos != null && photos.size() > 0 && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
+    }
+
+    public void removeSuggestedPhotos() {
+        db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
+        view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
     @Override
@@ -124,5 +157,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         void setRequestsCount(int count);
 
         void setUnreadConversationCount(int count);
+
+        void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos, boolean needLoader);
     }
 }

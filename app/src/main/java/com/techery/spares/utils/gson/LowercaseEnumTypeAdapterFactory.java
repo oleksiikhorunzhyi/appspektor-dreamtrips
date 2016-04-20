@@ -26,6 +26,7 @@ public class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
         this.fallbackKey = LowercaseEnumTypeAdapter.toLowercase(fallbackKey);
     }
 
+    @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
         Class<T> rawType = (Class<T>) type.getRawType();
         if (!rawType.isEnum()) {
@@ -70,7 +71,7 @@ public class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
                 reader.nextNull();
                 return null;
             } else {
-                T t = lowerToEnum.get(reader.nextString());
+                T t = lowerToEnum.get(reader.nextString().toLowerCase());
                 return t != null ? t : lowerToEnum.get(fallbackKey);
             }
         }

@@ -115,14 +115,10 @@
 
         <!--For result activities-->
 
-        <activity
-            android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
-            android:label="@string/trips"/>
+        <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>
 
         <activity
             android:name=".modules.picklocation.view.PickLocationActivity"/>
-
-        <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>
 
         <!--Content Provider-->
 

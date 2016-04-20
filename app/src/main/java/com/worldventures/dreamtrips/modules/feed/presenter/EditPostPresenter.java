@@ -39,7 +39,7 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
 
     @Override
     protected boolean isChanged() {
-        return !cachedText.equals(post.getDescription()) || !post.getLocation().equals(location);
+        return (!isCachedTextEmpty() && !cachedText.equals(post.getDescription())) || !post.getLocation().equals(location);
     }
 
     @Override

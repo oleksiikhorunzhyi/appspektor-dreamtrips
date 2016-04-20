@@ -42,7 +42,7 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter(getChildFragmentManager());
-            this.adapter.add(new FragmentItem(Route.FAQ, getString(R.string.cookie)));
+            this.adapter.add(new FragmentItem(Route.FAQ, getString(R.string.faq)));
             this.adapter.add(new FragmentItem(Route.PRIVACY_POLICY, getString(R.string.privacy)));
             this.adapter.add(new FragmentItem(Route.TERMS_OF_SERVICE, getString(R.string.terms_of_service)));
             this.adapter.add(new FragmentItem(Route.COOKIE_POLICY, getString(R.string.cookie)));

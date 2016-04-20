@@ -20,6 +20,7 @@ import javax.inject.Singleton;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import io.techery.janet.ReadOnlyActionPipe;
+import rx.schedulers.Schedulers;
 
 @Singleton
 public class PhotoAttachmentDelegate {
@@ -33,7 +34,7 @@ public class PhotoAttachmentDelegate {
     public PhotoAttachmentDelegate(SessionHolder<UserSession> sessionHolder, Janet janet) {
         this.sessionHolder = sessionHolder;
 
-        this.sendImagePipe = janet.createPipe(SendImageAttachmentCommand.class);
+        this.sendImagePipe = janet.createPipe(SendImageAttachmentCommand.class, Schedulers.io());
         this.readSendImagePipe = sendImagePipe.asReadOnly();
         this.attachmentDelegateHelper = new AttachmentDelegateHelper();
     }

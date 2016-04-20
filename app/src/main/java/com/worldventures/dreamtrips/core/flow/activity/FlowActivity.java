@@ -149,11 +149,13 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
 
     public void openLeftDrawer() {
         if (!ViewUtils.isLandscapeOrientation(this)) {
+            SoftInputUtil.hideSoftInputMethod(this);
             drawerLayout.openDrawer(GravityCompat.START);
         }
     }
 
     public void openRightDrawer() {
+        SoftInputUtil.hideSoftInputMethod(this);
         drawerLayout.openDrawer(GravityCompat.END);
     }
 

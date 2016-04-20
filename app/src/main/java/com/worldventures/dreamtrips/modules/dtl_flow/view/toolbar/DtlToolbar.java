@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -44,6 +46,9 @@ import timber.log.Timber;
  */
 public class DtlToolbar extends LinearLayout {
 
+    private static final boolean DEF_COLLAPSED = true;
+    private static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
+
     @InjectView(R.id.dtlToolbarFirstRow)
     View firstRowLayout;
     @InjectView(R.id.actionViewLayout)
@@ -60,6 +65,7 @@ public class DtlToolbar extends LinearLayout {
     @State
     boolean collapsed;
     //
+    private FocusedMode focusedMode;
     private String searchQuery;
     private String locationTitle;
     private String defaultEmptySearchCaption = "Food and Drinks"; // TODO :: 4/11/16 move to resources
@@ -73,7 +79,9 @@ public class DtlToolbar extends LinearLayout {
     public DtlToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOrientation(VERTICAL);
-        initAttributes();
+        setGravity(Gravity.TOP);
+        setFocusableInTouchMode(true);
+        initAttributes(attrs);
     }
 
     @Override
@@ -132,9 +140,13 @@ public class DtlToolbar extends LinearLayout {
         return bottomCaption;
     }
 
-    private void initAttributes() {
-        // TODO :: 4/12/16 add ability to customize some attrs from xml?
-        collapsed = true;
+    private void initAttributes(AttributeSet attrs) {
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ShowMoreTextView);
+        collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
+        focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
+                DEF_FOCUSED_MODE.id));
+        a.recycle();
+        if (focusedMode != FocusedMode.UNDEFINED) collapsed = false;
         showNavigation = !ViewUtils.isLandscapeOrientation(getContext());
     }
 
@@ -167,8 +179,19 @@ public class DtlToolbar extends LinearLayout {
             topCaption.setFocusable(true);
             topCaption.setFocusableInTouchMode(true);
             topCaption.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-            topCaption.requestFocus();
-            SoftInputUtil.showSoftInputMethod(topCaption);
+            //
+            if (focusedMode != FocusedMode.UNDEFINED) {
+                switch (focusedMode) {
+                    case SEARCH:
+                        topCaption.requestFocus();
+                        SoftInputUtil.showSoftInputMethod(topCaption);
+                        break;
+                    case LOCATION:
+                        bottomCaption.requestFocus();
+                        SoftInputUtil.showSoftInputMethod(bottomCaption);
+                        break;
+                }
+            }
         }
     }
 
@@ -350,5 +373,28 @@ public class DtlToolbar extends LinearLayout {
 
     @Override public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Attributes enum
+    ///////////////////////////////////////////////////////////////////////////
+
+    public enum FocusedMode {
+        UNDEFINED(0), SEARCH(1), LOCATION(2);
+
+        private int id;
+
+        FocusedMode(int attributeId) {
+            this.id = attributeId;
+        }
+
+        public static FocusedMode fromAttribute(int attributeId) {
+            for (FocusedMode value : values()) {
+                if (value.id == attributeId) return value;
+            }
+            throw new IllegalArgumentException("DtlToolbar: wrong argument provided for focused" +
+                    " mode attribute: must be one of " +
+                    Queryable.from(values()).joinStrings(" ", element -> element.name()));
+        }
     }
 }

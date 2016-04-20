@@ -130,7 +130,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     @Override
-    public void onToolbarTitleClicked() {
+    public void locationChangeRequested() {
         navigateToLocations();
     }
 

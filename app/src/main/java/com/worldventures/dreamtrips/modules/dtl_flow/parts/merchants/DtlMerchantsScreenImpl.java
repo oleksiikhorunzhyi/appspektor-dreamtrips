@@ -122,9 +122,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         RxDtlToolbar.locationInputFocusChanges(dtlToolbar)
                 .skip(1)
                 .compose(RxLifecycle.bindView(this))
-                .subscribe(gainedFocus -> {
-                    if (gainedFocus) getPresenter().onToolbarTitleClicked();
-                });
+                .filter(Boolean::booleanValue) // only true -> only focus gains
+                .subscribe(aBoolean -> getPresenter().locationChangeRequested());
     }
 
     @Override

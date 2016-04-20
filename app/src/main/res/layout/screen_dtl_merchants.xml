@@ -3,6 +3,7 @@
     android:id="@+id/dtl_merchants_screen_root"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,7 +16,19 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         >
 
-        <include layout="@layout/view_dtl_toolbar" />
+        <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/dtlToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/theme_main"
+            app:dtlt_collapsed="false"
+            app:dtlt_focused_mode="undefined"
+            >
+
+            <!-- Make additional wrapping to make layout editable and previewable in IDE -->
+            <include layout="@layout/view_dtl_toolbar_content" />
+        </com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar>
 
         <RelativeLayout
             android:id="@+id/subToolbarLayout"

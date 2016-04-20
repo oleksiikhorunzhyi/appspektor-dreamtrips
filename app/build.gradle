@@ -183,56 +183,12 @@ android {
     // TODO : move to external method later
     android.applicationVariants.all { variant ->
 
-        ///////////////////////////////////////////////////////////////////////////
-        // appId constructor
-        ///////////////////////////////////////////////////////////////////////////
-
         String flavorName = variant.flavorName.toLowerCase()
         String buildSuffix, streamSuffix, configSuffix
         //
         buildSuffix = oneOfSubstrings(flavorName, BUILD_CODES)
         streamSuffix = oneOfSubstrings(flavorName, STREAM_CODES)
         configSuffix = oneOfSubstrings(flavorName, CONFIG_CODES)
-        //
-        if (streamSuffix.equals(STABLE_CODE) && configSuffix.equals(PROD_CODE)) {
-            writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
-                    "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
-                            "appId = ${APP_ID_BASE}\n" +
-                            "versionName = ${APP_VERSION_NAME_BASE}"
-            )
-            return
-        }
-        //
-        String generatedAppId = APP_ID_BASE
-        //
-        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
-            generatedAppId += ".${buildSuffix}"
-        if (!streamSuffix.equals(STABLE_CODE)) generatedAppId += ".${streamSuffix}"
-        if (!configSuffix.equals(PROD_CODE)) generatedAppId += ".${configSuffix}"
-        //
-        variant.mergedFlavor.setApplicationId generatedAppId
-
-        ///////////////////////////////////////////////////////////////////////////
-        // Version name constructor
-        ///////////////////////////////////////////////////////////////////////////
-
-        String versionName = APP_VERSION_NAME_BASE
-        //
-        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
-            versionName += "-${buildSuffix}"
-        if (!streamSuffix.equals(STABLE_CODE)) versionName += "-${streamSuffix}"
-        if (!configSuffix.equals(PROD_CODE)) {
-            versionName += "-${configSuffix}"
-            versionName += "-${versionBuild}"
-        }
-        //
-        variant.mergedFlavor.setVersionName versionName
-        //
-        writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
-                "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
-                        "appId = ${generatedAppId}\n" +
-                        "versionName = ${versionName}"
-        )
 
         ///////////////////////////////////////////////////////////////////////////
         // Patch config from config maps
@@ -259,6 +215,50 @@ android {
                 buildConfigField 'String', entry.key, entry.value
             }
         }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // appId constructor
+        ///////////////////////////////////////////////////////////////////////////
+
+        if (streamSuffix.equals(STABLE_CODE) && configSuffix.equals(PROD_CODE)) {
+            writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
+                    "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
+                            "appId = ${APP_ID_BASE}\n" +
+                            "versionName = ${APP_VERSION_NAME_BASE}"
+            )
+            return
+        }
+        //
+        String generatedAppId = APP_ID_BASE
+        //
+        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
+            generatedAppId += ".${DEV_CODE}"
+        if (!streamSuffix.equals(STABLE_CODE)) generatedAppId += ".${streamSuffix}"
+        if (!configSuffix.equals(PROD_CODE)) generatedAppId += ".${configSuffix}"
+        //
+        variant.mergedFlavor.setApplicationId generatedAppId
+
+        ///////////////////////////////////////////////////////////////////////////
+        // Version name constructor
+        ///////////////////////////////////////////////////////////////////////////
+
+        String versionName = APP_VERSION_NAME_BASE
+        //
+        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
+            versionName += "-${DEV_CODE}"
+        if (!streamSuffix.equals(STABLE_CODE)) versionName += "-${streamSuffix}"
+        if (!configSuffix.equals(PROD_CODE)) {
+            versionName += "-${configSuffix}"
+            versionName += "-${versionBuild}"
+        }
+        //
+        variant.mergedFlavor.setVersionName versionName
+        //
+        writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
+                "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
+                        "appId = ${generatedAppId}\n" +
+                        "versionName = ${versionName}"
+        )
     }
 
     signingConfigs {

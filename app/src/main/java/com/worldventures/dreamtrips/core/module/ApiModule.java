@@ -126,7 +126,7 @@ public class ApiModule {
         return new GsonBuilder()
                 .serializeNulls()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-//                .registerTypeAdapterFactory(new LowercaseEnumTypeAdapterFactory("unknown"))
+                .registerTypeAdapterFactory(new LowercaseEnumTypeAdapterFactory("unknown"))
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
                 .registerTypeAdapter(FeedItem.class, new FeedItemDeserializer())

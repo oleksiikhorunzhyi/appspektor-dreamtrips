@@ -1,10 +1,9 @@
 package com.techery.spares.utils.gson;
 
-import android.support.annotation.NonNull;
-
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -16,11 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
-
     private String fallbackKey;
-
-    public LowercaseEnumTypeAdapterFactory() {
-    }
 
     public LowercaseEnumTypeAdapterFactory(String fallbackKey) {
         this.fallbackKey = LowercaseEnumTypeAdapter.toLowercase(fallbackKey);
@@ -28,32 +23,40 @@ public class LowercaseEnumTypeAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        Class<T> rawType = (Class<T>) type.getRawType();
+        Class<? extends T> rawType = (Class<T>) type.getRawType();
         if (!rawType.isEnum()) {
             return null;
         }
 
-        final Map<String, T> lowerToEnum = new HashMap<String, T>();
-        for (T constant : rawType.getEnumConstants()) {
-            lowerToEnum.put(LowercaseEnumTypeAdapter.toLowercase(constant), constant);
-        }
-
-        return createTypeAdapter(lowerToEnum);
+        return (TypeAdapter<T>) new LowercaseEnumTypeAdapter(rawType, fallbackKey);
     }
 
-    @NonNull
-    protected <T> TypeAdapter<T> createTypeAdapter(Map<String, T> lowerToEnum) {
-        return new LowercaseEnumTypeAdapter<T>(lowerToEnum, fallbackKey);
-    }
+    public static class LowercaseEnumTypeAdapter<T extends Enum<T>> extends TypeAdapter<T> {
 
-    public static class LowercaseEnumTypeAdapter<T> extends TypeAdapter<T> {
+        protected final Map<String, T> lowerToEnum = new HashMap<>();
+        protected final Map<T, String> enumToLower = new HashMap<>();
 
-        protected final Map<String, T> lowerToEnum;
         protected final String fallbackKey;
 
-        public LowercaseEnumTypeAdapter(Map<String, T> lowerToEnum, String fallbackKey) {
-            this.lowerToEnum = lowerToEnum;
+        public LowercaseEnumTypeAdapter(Class<T> classOfT, String fallbackKey) {
             this.fallbackKey = fallbackKey;
+
+            try {
+                for (T constant : classOfT.getEnumConstants()) {
+                    String name = constant.name();
+                    SerializedName annotation = classOfT.getField(name).getAnnotation(SerializedName.class);
+                    if (annotation != null) {
+                        name = annotation.value();
+                        for (String alternate : annotation.alternate()) {
+                            lowerToEnum.put(alternate.toLowerCase(), constant);
+                        }
+                    }
+                    lowerToEnum.put(name.toLowerCase(), constant);
+                    enumToLower.put(constant, name.toLowerCase());
+                }
+            } catch (NoSuchFieldException e) {
+                throw new AssertionError("Missing field in " + classOfT.getName(), e);
+            }
         }
 
         @Override

@@ -206,7 +206,7 @@ android {
         String generatedAppId = APP_ID_BASE
         //
         if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
-            generatedAppId += ".${buildSuffix}"
+            generatedAppId += ".${DEV_CODE}"
         if (!streamSuffix.equals(STABLE_CODE)) generatedAppId += ".${streamSuffix}"
         if (!configSuffix.equals(PROD_CODE)) generatedAppId += ".${configSuffix}"
         //
@@ -219,7 +219,7 @@ android {
         String versionName = APP_VERSION_NAME_BASE
         //
         if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
-            versionName += "-${buildSuffix}"
+            versionName += "-${DEV_CODE}"
         if (!streamSuffix.equals(STABLE_CODE)) versionName += "-${streamSuffix}"
         if (!configSuffix.equals(PROD_CODE)) {
             versionName += "-${configSuffix}"

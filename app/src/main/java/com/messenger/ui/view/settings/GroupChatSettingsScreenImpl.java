@@ -7,13 +7,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
-import com.messenger.ui.util.avatar.ChangeAvatarDelegate;
+import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.worldventures.dreamtrips.R;
 
@@ -34,7 +33,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     private ConversationHelper conversationHelper;
 
     @Inject
-    ChangeAvatarDelegate changeAvatarDelegate;
+    MessengerMediaPickerDelegate messengerMediaPickerDelegate;
 
     public GroupChatSettingsScreenImpl(Context context) {
         super(context);
@@ -54,13 +53,13 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        changeAvatarDelegate.register();
+        messengerMediaPickerDelegate.register();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        changeAvatarDelegate.unregister();
+        messengerMediaPickerDelegate.unregister();
     }
 
     @Override
@@ -111,18 +110,18 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     }
 
     @Override
-    public Observable<ChosenImage> getAvatarImagesStream() {
-        return changeAvatarDelegate.getAvatarImagesStream();
+    public Observable<String> getAvatarImagePathsStream() {
+        return messengerMediaPickerDelegate.getImagePathsStream();
     }
 
     @Override
     public void showAvatarPhotoPicker() {
-        changeAvatarDelegate.showAvatarPhotoPicker();
+        messengerMediaPickerDelegate.showPhotoPicker();
     }
 
     @Override
     public void hideAvatarPhotoPicker() {
-        changeAvatarDelegate.hideAvatarPhotoPicker();
+        messengerMediaPickerDelegate.hidePhotoPicker();
     }
 
     @Override

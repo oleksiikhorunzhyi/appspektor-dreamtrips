@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -288,15 +287,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         photoPickerDelegate.setDoneClickListener(onDoneClickListenerObservable);
     }
 
-    public void setOnDoneClickListener2(OnDoneClickListener2 onDoneClickListenerObservable) {
-        photoPickerDelegate.setDoneClickListener2(onDoneClickListenerObservable);
-    }
-
     public interface OnDoneClickListener {
-        void onDone(List<ChosenImage> chosenImages, int type);
-    }
-
-    public interface OnDoneClickListener2 {
         void onDone(List<BasePhotoPickerModel> chosenImages, int type);
     }
 

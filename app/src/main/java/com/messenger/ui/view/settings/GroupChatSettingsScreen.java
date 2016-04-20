@@ -1,7 +1,5 @@
 package com.messenger.ui.view.settings;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
-
 import rx.Observable;
 
 public interface GroupChatSettingsScreen extends ChatSettingsScreen {
@@ -9,7 +7,7 @@ public interface GroupChatSettingsScreen extends ChatSettingsScreen {
 
     void hideAvatarPhotoPicker();
 
-    Observable<ChosenImage> getAvatarImagesStream();
+    Observable<String> getAvatarImagePathsStream();
 
     void showChangingAvatarProgressBar();
 

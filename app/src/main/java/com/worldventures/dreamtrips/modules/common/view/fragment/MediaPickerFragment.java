@@ -55,7 +55,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
         });
         photoPickerLayout.setTransparentView(transparentView);
 
-        photoPickerLayout.setOnDoneClickListener2((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
+        photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
     }
 
     @Override

@@ -11,7 +11,6 @@ import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.command.ChangeAvatarCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
-import com.techery.spares.module.Injector;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState.UploadingState;
 import com.techery.spares.module.Injector;
@@ -45,7 +44,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         super.onAttachedToWindow();
         TrackingHelper.groupSettingsOpened();
 
-        getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
+        getView().getAvatarImagePathsStream().subscribe(cropImageDelegate::cropImage);
 
         Observable.combineLatest(
                 cropImageDelegate.getCroppedImagesStream(),

@@ -22,7 +22,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
@@ -41,6 +40,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -90,8 +90,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @InjectView(R.id.input_holder)
     ViewGroup inputHolder;
 
-    private ToolbarPresenter toolbarPresenter;
-
     private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
@@ -126,7 +124,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         ButterKnife.inject(this);
         injector.inject(this);
         //
-        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
+        ToolbarPresenter toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
         toolbarPresenter.hideBackButtonInLandscape();
         toolbarPresenter.setTitle("");
@@ -422,7 +420,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         photoPickerLayoutDelegate.hidePicker();
     }
 
-    private void onImagesPicked(List<ChosenImage> images) {
+    private void onImagesPicked(List<BasePhotoPickerModel> images) {
         photoPickerLayoutDelegate.hidePicker();
         //
         getPresenter().onImagesPicked(images);

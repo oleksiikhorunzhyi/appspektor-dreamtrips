@@ -8,14 +8,13 @@ import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.UserProcessor;
-import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.ui.helper.PhotoPickerDelegate;
+import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
@@ -92,13 +91,13 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    MessageBodyCreator provideMessageBodyCreator(LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
-        return new MessageBodyCreator(localeHelper, userSessionHolder.get().get().getUser());
+    LegacyPhotoPickerDelegate providePhotoPickerDelegate(@Global EventBus eventBus) {
+        return new LegacyPhotoPickerDelegate(eventBus);
     }
 
     @Provides
-    PhotoPickerDelegate providePhotoPickerDelegate(@Global EventBus eventBus) {
-        return new PhotoPickerDelegate(eventBus);
+    MessageBodyCreator provideMessageBodyCreator(LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
+        return new MessageBodyCreator(localeHelper, userSessionHolder.get().get().getUser());
     }
 
     @Provides

@@ -68,12 +68,6 @@ public class CropImageDelegate {
 
     }
 
-    public void cropImage(ChosenImage image) {
-        if (image != null) {
-            cropImage(image.getFilePathOriginal());
-        }
-    }
-
     public Observable<Notification<File>> getCroppedImagesStream() {
         return croppedImagesStream;
     }

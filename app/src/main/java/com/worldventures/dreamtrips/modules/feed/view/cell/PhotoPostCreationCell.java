@@ -115,7 +115,8 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
             attachedPhoto.setController(draweeController);
             photoTitle.setText(getModelObject().getTitle());
-            photoTitle.setEnabled(getModelObject().isCanDelete() && getModelObject().isCanEditTags());
+            boolean titleChangesEnabled = getModelObject().isCanDelete() && getModelObject().isCanEditTags();
+            photoTitle.setVisibility(titleChangesEnabled ? View.VISIBLE : View.GONE);
 
             photoTagHolder.removeAllViews();
             if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEditTags()) {

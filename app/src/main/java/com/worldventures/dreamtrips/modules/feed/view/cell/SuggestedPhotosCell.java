@@ -17,6 +17,9 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
@@ -27,6 +30,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
+import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +117,15 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     @OnClick(R.id.btn_attach)
     void onAttach() {
         cellDelegate.onAttachClicked(pickedItems);
+    }
+
+    @OnClick(R.id.suggestion_avatar)
+    void onAvatarClicked() {
+        User user = appSessionHolder.get().get().getUser();
+        router.moveTo(Route.ACCOUNT_PROFILE, NavigationConfigBuilder.forActivity()
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
+                .data(new UserBundle(user))
+                .build());
     }
 
     @Override

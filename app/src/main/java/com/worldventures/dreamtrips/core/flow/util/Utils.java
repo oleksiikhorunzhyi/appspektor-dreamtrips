@@ -21,33 +21,42 @@ import android.view.ViewTreeObserver;
 
 public final class Utils {
 
-  public interface OnMeasuredCallback {
-    void onMeasured(View view, int width, int height);
-  }
-
-  public static void waitForMeasure(final View view, final OnMeasuredCallback callback) {
-    int width = view.getWidth();
-    int height = view.getHeight();
-
-    if (width > 0 && height > 0) {
-      callback.onMeasured(view, width, height);
-      return;
+    public interface OnMeasuredCallback {
+        void onMeasured(View view, int width, int height);
     }
 
-    view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-      @Override public boolean onPreDraw() {
-        final ViewTreeObserver observer = view.getViewTreeObserver();
-        if (observer.isAlive()) {
-          observer.removeOnPreDrawListener(this);
+    public interface OnMeasureFailCallback {
+        void onMeasureFailed(View view);
+    }
+
+    public static void waitForMeasure(final View view, final OnMeasuredCallback callback) {
+        waitForMeasure(view, callback, null);
+    }
+
+    public static void waitForMeasure(final View view, final OnMeasuredCallback callback, final OnMeasureFailCallback failCallback) {
+        int width = view.getWidth();
+        int height = view.getHeight();
+        if (width > 0 || height > 0) {
+            callback.onMeasured(view, width, height);
+            return;
         }
+        ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                int width = view.getWidth();
+                int height = view.getHeight();
+                if (width > 0 || height > 0) {
+                    callback.onMeasured(view, width, height);
+                } else if (failCallback != null) {
+                    failCallback.onMeasureFailed(view);
+                }
+                if (viewTreeObserver.isAlive()) viewTreeObserver.removeOnPreDrawListener(this);
+                return true;
+            }
+        });
+    }
 
-        callback.onMeasured(view, view.getWidth(), view.getHeight());
-
-        return true;
-      }
-    });
-  }
-
-  private Utils() {
-  }
+    private Utils() {
+    }
 }

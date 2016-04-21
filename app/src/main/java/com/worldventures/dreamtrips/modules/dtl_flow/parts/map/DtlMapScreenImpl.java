@@ -31,7 +31,6 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
-import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -105,13 +104,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     protected void onDetachedFromWindow() {
-        if (mapView != null) {
-            mapView.removeAllViews();
-        }
-        if (googleMap != null) {
-            googleMap.clear();
-            googleMap.setOnMarkerClickListener(null);
-        }
+        destroyMap();
         super.onDetachedFromWindow();
     }
 
@@ -139,20 +132,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     private void checkMapAvailable() {
-        if (isGooglePlayServicesAvailable()) {
-            mapView.setVisibility(View.GONE);
-            noGoogleContainer.setVisibility(View.VISIBLE);
-        } else {
+        if (MapsInitializer.initialize(getContext()) == 0) {
             mapView.onCreate(null);
             mapView.onResume();
-            MapsInitializer.initialize(getContext());
+        } else {
+            mapView.setVisibility(View.GONE);
+            noGoogleContainer.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public Observable<Boolean> getToggleObservable() {
-        return RxCompoundButton.checkedChanges(swHideDinings)
-                .compose(RxLifecycle.bindView(this));
     }
 
     protected void prepareMap() {
@@ -162,6 +148,22 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
             mapView.setMapTouchListener(this::onMapTouched);
             onMapLoaded();
         });
+    }
+
+    private void destroyMap() {
+        if (googleMap != null) {
+            googleMap = null;
+        }
+        if (mapView != null) {
+            mapView.onPause();
+            mapView.onDestroy();
+        }
+    }
+
+    @Override
+    public Observable<Boolean> getToggleObservable() {
+        return RxCompoundButton.checkedChanges(swHideDinings)
+                .compose(RxLifecycle.bindView(this));
     }
 
     @OnClick(R.id.redo_merchants_button)
@@ -251,7 +253,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void openFilter() {
-        ((FlowActivity)getActivity()).openRightDrawer();
+        ((FlowActivity) getActivity()).openRightDrawer();
     }
 
     @Override

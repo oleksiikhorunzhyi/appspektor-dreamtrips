@@ -26,6 +26,7 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionService;
 import io.techery.janet.ActionServiceWrapper;
+import io.techery.janet.CommandActionBase;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
@@ -115,6 +116,10 @@ public class DtlLocationManager {
 
     public Observable<DtlLocationCommand> getSelectedLocation() {
         return locationPipe.createObservableSuccess(new DtlLocationCommand(db));
+    }
+
+    public Observable<DtlLocation> observeLocationUpdates() {
+        return updateLocationPipe.observeSuccess().map(CommandActionBase::getResult);
     }
 
     private final static class CacheLocationWrapper extends ActionServiceWrapper {

@@ -185,11 +185,11 @@ public class DtlToolbar extends LinearLayout {
                 switch (focusedMode) {
                     case SEARCH:
                         topCaption.requestFocus();
-                        SoftInputUtil.showSoftInputMethod(topCaption);
+                        SoftInputUtil.showSoftInputMethod(getContext());
                         break;
                     case LOCATION:
                         bottomCaption.requestFocus();
-                        SoftInputUtil.showSoftInputMethod(bottomCaption);
+                        SoftInputUtil.showSoftInputMethod(getContext());
                         break;
                 }
             }
@@ -280,6 +280,7 @@ public class DtlToolbar extends LinearLayout {
     void firstRowClicked(View view) {
         if (collapsed) {
             expand();
+            focusedMode = FocusedMode.SEARCH;
             Queryable.from(expandListeners).forEachR(listener -> listener.onExpanded());
         }
     }

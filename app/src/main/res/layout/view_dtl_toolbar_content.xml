@@ -13,7 +13,7 @@
     <LinearLayout
         android:id="@+id/dtlToolbarFirstRow"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/dtlt_row_height"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         >
@@ -41,7 +41,7 @@
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/dtlToolbarTopCaption"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             style="@style/DtlToolbarInput"
             android:textColorHint="@color/dtlt_input_hint_color"
@@ -63,7 +63,7 @@
                 android:layout_marginRight="@dimen/dtlt_icon_side_margin"
                 android:layout_marginBottom="@dimen/dtlt_icon_vertical_margin"
                 android:src="@drawable/ic_menu_trip_map"
-                android:scaleType="fitXY"
+                android:scaleType="center"
                 android:layout_gravity="center"
                 />
         </FrameLayout>
@@ -72,7 +72,7 @@
     <LinearLayout
         android:id="@+id/dtlToolbarSecondRow"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/dtlt_row_height"
         android:paddingLeft="@dimen/dtlt_second_row_side_padding"
         android:paddingRight="@dimen/dtlt_second_row_side_padding"
         android:orientation="horizontal"
@@ -82,10 +82,10 @@
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/dtlToolbarBottomCaption"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             style="@style/DtlToolbarInput"
             android:textColorHint="@color/dtlt_input_hint_color"
-            android:text="London"
+            tools:text="London"
             />
     </LinearLayout>
 </LinearLayout>

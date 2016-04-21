@@ -170,6 +170,9 @@
         <item name="android:paddingRight">@dimen/dtlt_input_side_padding</item>
         <item name="android:paddingBottom">@dimen/dtlt_input_vertical_margin</item>
         <item name="android:background">@drawable/bg_edittext_white</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:elevation">@dimen/dtlt_input_elevation</item>
+        <item name="android:outlineProvider">background</item>
     </style>
 
     <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">

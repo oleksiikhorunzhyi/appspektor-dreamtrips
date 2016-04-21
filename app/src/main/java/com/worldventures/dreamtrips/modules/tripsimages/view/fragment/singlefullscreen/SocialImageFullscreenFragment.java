@@ -97,11 +97,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         if (photo.getUser() == null) return;
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
-
-        photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, getPresenter().getAccount(), photo.getUser());
-        photoTagHolderManager.show(ivImage);
-        photoTagHolderManager.addExistsTagViews(((Photo) photo).getPhotoTags());
-        photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().deleteTag(photoTag));
     }
 
     @Override
@@ -223,7 +218,14 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     @Override
     protected void onImageGlobalLayout() {
         if (isResumed()) {
-            syncTagViewGroupWithGlobalState();
+            Photo photo = getPresenter().getPhoto();
+            if (photo != null) {
+                photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, getPresenter().getAccount(), photo.getUser());
+                photoTagHolderManager.show(ivImage);
+                photoTagHolderManager.addExistsTagViews(photo.getPhotoTags());
+                photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().deleteTag(photoTag));
+                syncTagViewGroupWithGlobalState();
+            }
         }
     }
 

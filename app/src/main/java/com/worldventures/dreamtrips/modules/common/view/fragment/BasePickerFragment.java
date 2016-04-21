@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
 

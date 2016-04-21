@@ -180,20 +180,25 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Override
     public void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos, boolean needLoader) {
         if (isNeedAddSuggestions(suggestedPhotos.size())) {
-            List feedList = new ArrayList<>();
-            feedList.add(new MediaAttachment(suggestedPhotos, PickImageDelegate.PICK_PICTURE, -1));
-            feedList.addAll(feedItems);
-            refreshFeedItems(feedList, needLoader);
+            List listWithSuggestion = new ArrayList<>();
+            listWithSuggestion.add(new MediaAttachment(suggestedPhotos, PickImageDelegate.PICK_PICTURE, -1));
+            listWithSuggestion.addAll(feedItems);
+            refreshFeedItems(listWithSuggestion, needLoader);
             return;
         }
         refreshFeedItems(feedItems, needLoader);
     }
 
     @Override
-    public void refreshFeedItems(List events, boolean needLoader) {
-        if (isNeedToSaveSuggestions()) events.add(0, adapter.getItem(0));
-        //
-        super.refreshFeedItems(events, needLoader);
+    public void refreshFeedItems(List feedItems, boolean needLoader) {
+        if (isNeedToSaveSuggestions()) {
+            List listWithSuggestion = new ArrayList<>();
+            listWithSuggestion.add(0, adapter.getItem(0));
+            listWithSuggestion.addAll(feedItems);
+            super.refreshFeedItems(listWithSuggestion, needLoader);
+            return;
+        }
+        super.refreshFeedItems(feedItems, needLoader);
     }
 
     @Optional

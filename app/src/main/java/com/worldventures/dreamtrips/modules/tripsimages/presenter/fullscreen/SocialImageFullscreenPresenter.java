@@ -21,8 +21,8 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -154,6 +154,10 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
                 view.redrawTags();
             }
         }
+    }
+
+    public Photo getPhoto() {
+        return photo;
     }
 
     public interface View extends FullScreenPresenter.View {

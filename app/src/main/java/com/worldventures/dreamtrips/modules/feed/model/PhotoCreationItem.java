@@ -36,7 +36,7 @@ public class PhotoCreationItem implements Parcelable {
     String mediaAttachmentType;
     String title;
 
-    boolean canEditTags;
+    boolean canEdit;
     boolean canDelete;
 
     List<PhotoTag> suggestions = new ArrayList<>();
@@ -128,12 +128,12 @@ public class PhotoCreationItem implements Parcelable {
         this.title = title;
     }
 
-    public boolean isCanEditTags() {
-        return canEditTags;
+    public boolean isCanEdit() {
+        return canEdit;
     }
 
-    public void setCanEditTags(boolean canEditTags) {
-        this.canEditTags = canEditTags;
+    public void setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
     }
 
     public boolean isCanDelete() {

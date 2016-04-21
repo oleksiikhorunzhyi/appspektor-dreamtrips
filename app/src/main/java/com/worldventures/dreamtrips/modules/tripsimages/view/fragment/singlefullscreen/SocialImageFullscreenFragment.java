@@ -44,7 +44,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     FullScreenPhotoActionPanelDelegate viewDelegate = new FullScreenPhotoActionPanelDelegate();
 
     //For resolving Fresco onFinalImageSet callback double launch (here onImageGlobalLayout() method)
-    private boolean isImageLoaded;
 
     @InjectView(R.id.flag)
     protected FlagView flag;
@@ -97,6 +96,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         if (photo.getUser() == null) return;
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
+        manageTagIconVisibility();
     }
 
     @Override
@@ -221,10 +221,11 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
             Photo photo = getPresenter().getPhoto();
             if (photo != null) {
                 photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, getPresenter().getAccount(), photo.getUser());
-                photoTagHolderManager.show(ivImage);
+                showTagViewGroup();
                 photoTagHolderManager.addExistsTagViews(photo.getPhotoTags());
                 photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().deleteTag(photoTag));
                 syncTagViewGroupWithGlobalState();
+                manageTagIconVisibility();
             }
         }
     }
@@ -259,6 +260,18 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         } else {
             hideTagViewGroup();
             ivImage.setScaleEnabled(true);
+        }
+
+        manageTagIconVisibility();
+    }
+
+    private void manageTagIconVisibility() {
+        if (getPresenter().getPhoto().getPhotoTagsCount() == 0) {
+            tag.setVisibility(View.GONE);
+            photoTagHolder.setVisibility(View.INVISIBLE);
+        } else {
+            tag.setVisibility(View.VISIBLE);
+            photoTagHolder.setVisibility(View.VISIBLE);
         }
     }
 

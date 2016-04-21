@@ -76,12 +76,12 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         if (items != null) {
             List<User> incoming = Queryable.from(items).filter(item -> item.getRelationship() == INCOMING_REQUEST).toList();
             List<Object> sortedItems = new ArrayList<>();
-            RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming), true);
+            RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming_long), true);
             incomingHeader.setCount(incoming.size());
             sortedItems.add(incomingHeader);
             sortedItems.addAll(incoming);
 
-            sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing)));
+            sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing_long)));
             sortedItems.addAll(Queryable.from(items).filter(item ->
                     (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
                     .toList());

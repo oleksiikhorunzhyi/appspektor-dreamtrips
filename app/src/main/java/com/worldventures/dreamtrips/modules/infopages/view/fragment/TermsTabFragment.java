@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
@@ -14,7 +13,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
 import butterknife.InjectView;
 
@@ -22,7 +20,7 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_tab_info)
 @MenuResource(R.menu.menu_mock)
 public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
-    private static final int TERMS_OFFSCREEN_PAGES = 3;
+    private static final int TERMS_OFFSCREEN_PAGES = 2;
 
     @InjectView(R.id.tabs)
     protected BadgedTabLayout tabs;
@@ -42,7 +40,6 @@ public class TermsTabFragment extends BaseFragment<Presenter> implements Present
 
         if (adapter == null) {
             this.adapter = new BasePagerAdapter(getChildFragmentManager());
-            this.adapter.add(new FragmentItem(Route.FAQ, getString(R.string.faq)));
             this.adapter.add(new FragmentItem(Route.PRIVACY_POLICY, getString(R.string.privacy)));
             this.adapter.add(new FragmentItem(Route.TERMS_OF_SERVICE, getString(R.string.terms_of_service)));
             this.adapter.add(new FragmentItem(Route.COOKIE_POLICY, getString(R.string.cookie)));

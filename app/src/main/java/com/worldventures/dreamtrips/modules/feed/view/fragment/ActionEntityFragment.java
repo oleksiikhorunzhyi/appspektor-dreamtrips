@@ -135,6 +135,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     }
 
     @Override
+    public void attachPhoto(PhotoCreationItem image) {
+        adapter.addItem(image);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void updateLocationButtonState() {
         boolean isSelected = getPresenter().getLocation() != null && !TextUtils.isEmpty(getPresenter().getLocation().getName());
         locationBtn.setSelected(isSelected);

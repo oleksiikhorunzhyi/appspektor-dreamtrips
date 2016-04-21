@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.feed.event.PickerDoneEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
     }
 
     public void attachImages(List<BasePhotoPickerModel> pickedImages, int type) {
+        eventBus.post(new PickerDoneEvent());
+        //
         Observable.from(pickedImages)
                 .map(element -> {
                     Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());

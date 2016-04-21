@@ -5,13 +5,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
-
-import java.util.List;
 
 import butterknife.OnClick;
 
@@ -40,18 +36,12 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
         }
     }
 
-    @Override
-    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
-        hidePhotoPicker();
-        openCreatePhoto(new CreateEntityBundle(new MediaAttachment(photos, requestType)));
-    }
-
     private void showPhotoPicker() {
         router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .data(new PickerBundle(getPresenter().getMediaRequestId(), MEDIA_PICKER_ITEMS_COUNT))
+                .data(new PickerBundle(CreateTripImagePresenter.REQUEST_ID, MEDIA_PICKER_ITEMS_COUNT))
                 .build());
     }
 
@@ -64,7 +54,8 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .build());
     }
 
-    private void openCreatePhoto(CreateEntityBundle bundle) {
+    @Override
+    public void openCreatePhoto() {
         router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forRemoval()
                 .containerId(R.id.container_details_floating)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -73,7 +64,6 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
-                .data(bundle)
                 .build());
     }
 

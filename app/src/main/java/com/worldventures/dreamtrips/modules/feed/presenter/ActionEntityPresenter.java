@@ -140,6 +140,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
         void attachPhotos(List<PhotoCreationItem> images);
 
+        void attachPhoto(PhotoCreationItem image);
+
         void updateItem(PhotoCreationItem item);
 
         void setName(String userName);

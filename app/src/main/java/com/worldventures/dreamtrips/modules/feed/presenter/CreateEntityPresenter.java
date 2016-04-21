@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     private Subscription mediaSubscription;
     private Subscription uploaderySubscription;
-    private Subscription mediaAttachmentSubscription;
+    private List<Subscription> mediaAttachmentSubscriptions = new ArrayList<>();
 
     @Override
     public void takeView(V view) {
@@ -95,9 +96,10 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
             mediaSubscription.unsubscribe();
         if (uploaderySubscription != null && !uploaderySubscription.isUnsubscribed())
             uploaderySubscription.unsubscribe();
-        if (mediaAttachmentSubscription != null && !mediaAttachmentSubscription.isUnsubscribed())
-            mediaAttachmentSubscription.unsubscribe();
-
+        Queryable.from(mediaAttachmentSubscriptions).forEachR(subscription -> {
+            if (subscription != null && !subscription.isUnsubscribed())
+                subscription.unsubscribe();
+        });
     }
 
     @Override
@@ -180,29 +182,26 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     private void imageSelected(MediaAttachment mediaAttachment) {
         if (view != null) {
-            mediaAttachmentSubscription = Observable.from(mediaAttachment.chosenImages)
+            mediaAttachmentSubscriptions.add(Observable.from(mediaAttachment.chosenImages)
                     .concatMap(this::convertPhotoCreationItem)
-                    .toList()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(newImages -> {
-                        cachedCreationItems.addAll(newImages);
+                    .subscribe(newImage -> {
+                        cachedCreationItems.add(newImage);
                         if (view != null) {
-                            view.attachPhotos(newImages);
-                            Queryable.from(newImages).forEachR(image -> {
-                                if (ValidationUtils.isUrl(image.getFilePath())) {
-                                    doRequest(new CopyFileCommand(context, image.getFilePath()), s -> {
-                                        image.setFilePath(s);
-                                        startUpload(image);
-                                    });
-                                } else {
-                                    startUpload(image);
-                                }
-                            });
+                            view.attachPhoto(newImage);
+                            if (ValidationUtils.isUrl(newImage.getFilePath())) {
+                                doRequest(new CopyFileCommand(context, newImage.getFilePath()), s -> {
+                                    newImage.setFilePath(s);
+                                    startUpload(newImage);
+                                });
+                            } else {
+                                startUpload(newImage);
+                            }
                         }
                     }, throwable -> {
                         Timber.e(throwable, "");
-                    });
+                    }));
         }
     }
 

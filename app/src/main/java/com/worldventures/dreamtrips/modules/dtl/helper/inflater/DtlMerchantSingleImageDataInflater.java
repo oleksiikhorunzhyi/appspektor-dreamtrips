@@ -20,10 +20,6 @@ public class DtlMerchantSingleImageDataInflater extends DtlMerchantCommonDataInf
     @InjectView(R.id.merchant_details_cover)
     SimpleDraweeView cover;
 
-    public DtlMerchantSingleImageDataInflater(DtlMerchantHelper helper) {
-        super(helper);
-    }
-
     @Override
     protected void onMerchantApply(DtlMerchant merchant) {
         super.onMerchantApply(merchant);

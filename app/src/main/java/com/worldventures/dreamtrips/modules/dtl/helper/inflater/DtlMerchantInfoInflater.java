@@ -16,8 +16,6 @@ import io.techery.properratingbar.ProperRatingBar;
 
 public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
 
-    protected DtlMerchantHelper helper;
-    //
     @InjectView(R.id.merchant_title)
     TextView title;
     @InjectView(R.id.operational_time)
@@ -28,10 +26,6 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
     TextView categories;
     @InjectView(R.id.distance)
     TextView distance;
-
-    public DtlMerchantInfoInflater(DtlMerchantHelper helper) {
-        this.helper = helper;
-    }
 
     @Override
     protected void onMerchantApply(DtlMerchant merchant) {
@@ -47,7 +41,7 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
                     res.getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)));
         } else distance.setVisibility(View.GONE);
         //
-        String categoriesString = helper.getCategories(merchant);
+        String categoriesString = DtlMerchantHelper.getCategories(merchant);
         if (!TextUtils.isEmpty(categoriesString)) {
             categories.setVisibility(View.VISIBLE);
             categories.setText(categoriesString);
@@ -56,7 +50,7 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
         if (merchant.hasOffer(DtlOffer.TYPE_POINTS) &&
                 merchant.getOperationDays() != null && !merchant.getOperationDays().isEmpty()) {
             operationalTime.setVisibility(View.VISIBLE);
-            operationalTime.setText(helper.getOperationalTime(merchant));
+            operationalTime.setText(DtlMerchantHelper.getOperationalTime(rootView.getContext(), merchant));
         } else operationalTime.setVisibility(View.GONE);
     }
 }

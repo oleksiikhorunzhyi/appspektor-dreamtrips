@@ -28,8 +28,7 @@ public class DtlMerchantManyImagesDataInflater extends DtlMerchantCommonDataInfl
     @InjectView(R.id.merchant_details_cover_pager_indicator)
     CircleIndicator coverPagerIndicator;
 
-    public DtlMerchantManyImagesDataInflater(DtlMerchantHelper helper, FragmentManager fragmentManager) {
-        super(helper);
+    public DtlMerchantManyImagesDataInflater(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
 

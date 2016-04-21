@@ -70,6 +70,7 @@ import dagger.Provides;
                 DtlVerifyAmountFragment.class,
                 DtlVerifyAmountPresenter.class,
                 BaseExpandableAdapter.class,
+                BaseExpandableDelegateAdapter.class,
         },
         complete = false, library = true
 )

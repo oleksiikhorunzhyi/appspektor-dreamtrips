@@ -1,12 +1,16 @@
 package com.techery.spares.adapter.expandable;
 
+import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 
-public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.OnAttachStateChangeListener, View.OnClickListener, GroupListCell<C> {
+public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.OnAttachStateChangeListener, View.OnClickListener {
 
     private boolean expanded;
     private boolean enabled;
@@ -38,8 +42,15 @@ public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.On
         this.groupExpandListener = groupExpandListener;
     }
 
-    protected View getExpandItemView() {
-        return getExpandItemViewId() > 0 ? ButterKnife.findById(itemView, getExpandItemViewId()) : itemView;
+    protected void attachActionsToView(View.OnClickListener listener) {
+        if (getClickableItemViewId() > 0) setupAction(ButterKnife.findById(itemView, getClickableItemViewId()), ACTION.CLICK, listener);
+        if (getExpandItemViewId() > 0) setupAction(ButterKnife.findById(itemView, getExpandItemViewId()), ACTION.TOGGLE, listener);
+        else setupAction(itemView, ACTION.TOGGLE, listener);
+    }
+
+
+    protected int getClickableItemViewId () {
+        return 0;
     }
 
     protected int getExpandItemViewId() {
@@ -48,29 +59,46 @@ public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.On
 
     @Override
     public void onViewAttachedToWindow(View v) {
-        getExpandItemView().setOnClickListener(this);
+        attachActionsToView(this);
     }
 
     @Override
     public void onViewDetachedFromWindow(View v) {
-        getExpandItemView().setOnClickListener(this);
+        attachActionsToView(null);
     }
 
-    protected boolean shouldExpandViewWhenClick(View v) {
+    protected boolean shouldReactWhenClick(View v) {
         return true;
     }
 
+    public abstract List<C> getChildListCell();
+
     @Override
     public void onClick(View v) {
-        if (!shouldExpandViewWhenClick(v) || !isEnabled()) return;
+        if (!shouldReactWhenClick(v) || !isEnabled()) return;
 
+        final ACTION action = (ACTION) v.getTag();
+        if (action == ACTION.TOGGLE) toggleView();
+        this.onAction(action);
+    }
+
+    private void setupAction(View view, ACTION action, View.OnClickListener listener) {
+        final ACTION tag = listener != null ? action : null;
+        view.setTag(tag);
+        view.setOnClickListener(listener);
+    }
+
+    private void toggleView(){
         if (isExpanded()) collapseView();
         else expandView();
     }
 
+    protected void onAction(ACTION action) {}
+
     /**
      * Triggers expansion of the parent.
      */
+    @CallSuper
     protected void expandView() {
         setExpanded(true);
 
@@ -82,6 +110,7 @@ public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.On
     /**
      * Triggers collapse of the parent.
      */
+    @CallSuper
     protected void collapseView() {
         setExpanded(false);
 
@@ -106,5 +135,9 @@ public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.On
          * @param position The index of the item in the list being collapsed
          */
         void onGroupCollapsed(int position);
+    }
+
+    public enum ACTION {
+        CLICK, TOGGLE
     }
 }

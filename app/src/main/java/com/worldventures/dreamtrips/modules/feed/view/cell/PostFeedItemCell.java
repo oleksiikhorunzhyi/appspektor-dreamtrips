@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -42,6 +43,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
     @Optional
     @InjectView(R.id.collage)
     CollageView collageView;
+    @InjectView(R.id.tag)
+    protected ImageView tag;
 
     @Inject
     FragmentManager fragmentManager;
@@ -98,6 +101,17 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
         } else {
             collageView.clear();
         }
+        processTags(attachments);
+    }
+
+    private void processTags(List<FeedEntityHolder> attachments) {
+        tag.setVisibility(isHasTags(attachments) ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean isHasTags(List<FeedEntityHolder> attachments) {
+        return Queryable.from(attachments)
+                .count(attachment -> attachment.getType() == FeedEntityHolder.Type.PHOTO &&
+                        ((Photo) attachment.getItem()).getPhotoTagsCount() > 0) > 0;
     }
 
     private void openFullscreenPhotoList(int position) {

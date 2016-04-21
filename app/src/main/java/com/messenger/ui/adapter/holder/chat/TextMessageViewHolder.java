@@ -6,11 +6,13 @@ import android.text.util.Linkify;
 import android.view.View;
 import android.widget.TextView;
 
+import com.messenger.util.LinkHandlerMovementMethod;
 import com.messenger.util.MessageVersionHelper;
 import com.messenger.util.TruncateUtils;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
+import butterknife.OnLongClick;
 
 public abstract class TextMessageViewHolder extends MessageViewHolder {
 
@@ -27,6 +29,14 @@ public abstract class TextMessageViewHolder extends MessageViewHolder {
         if (MessageVersionHelper.isUnsupported(dataMessage.getVersion(), dataAttachment.getType()))
             showUnsupportMessage();
         else showMessage();
+
+        messageTextView.setMovementMethod(LinkHandlerMovementMethod.getInstance());
+    }
+
+    @OnLongClick(R.id.chat_message)
+    boolean onMessageLongClicked() {
+        cellDelegate.onMessageLongClicked(dataMessage);
+        return true;
     }
 
     protected void showMessage() {

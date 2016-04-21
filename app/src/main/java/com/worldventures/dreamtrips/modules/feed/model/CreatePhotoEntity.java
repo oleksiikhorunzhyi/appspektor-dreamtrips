@@ -31,7 +31,7 @@ public class CreatePhotoEntity {
         private int height;
         private Coordinates coordinates;
         private String locationName;
-        private List<PhotoTag> tags;
+        private List<PhotoTag> photoTags;
 
         public void setOriginUrl(String originUrl) {
             this.originUrl = originUrl;
@@ -61,8 +61,8 @@ public class CreatePhotoEntity {
             this.locationName = locationName;
         }
 
-        public void setTags(List<PhotoTag> tags) {
-            this.tags = tags;
+        public void setPhotoTags(List<PhotoTag> photoTags) {
+            this.photoTags = photoTags;
         }
 
         public static class Builder {
@@ -108,8 +108,8 @@ public class CreatePhotoEntity {
                 return this;
             }
 
-            public Builder tags(List<PhotoTag> tags) {
-                photoEntity.tags = tags;
+            public Builder photoTags(List<PhotoTag> photoTags) {
+                photoEntity.photoTags = photoTags;
                 return this;
             }
 

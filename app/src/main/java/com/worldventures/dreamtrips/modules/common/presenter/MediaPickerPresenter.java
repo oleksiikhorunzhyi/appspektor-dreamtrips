@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
@@ -18,8 +19,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
 
@@ -42,7 +41,10 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
             eventBus.removeStickyEvent(event);
 
             List<PhotoGalleryModel> images = new ArrayList<>();
-            Queryable.from(event.getImages()).forEachR(image -> images.add(new PhotoGalleryModel(image.getFilePathOriginal())));
+            Queryable.from(event.getImages()).forEachR(image -> {
+                Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, image.getFilePathOriginal());
+                images.add(new PhotoGalleryModel(pair.first, pair.second));
+            });
             mediaPickerManager.attach(new MediaAttachment(images, event.getRequestType(), requestId));
         }
     }
@@ -58,8 +60,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                     chosenImages.add(photoGalleryModel);
                     return new MediaAttachment(chosenImages, type, requestId);
                 })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new IoToMainComposer<>())
                 .subscribe(mediaAttachment -> {
                     mediaPickerManager.attach(mediaAttachment);
                 });

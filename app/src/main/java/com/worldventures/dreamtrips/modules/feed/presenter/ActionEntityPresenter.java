@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -93,8 +94,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         view.enableButton();
     }
 
+    @Nullable
     public Location getLocation() {
-        if (location == null) location = new Location();
         return location;
     }
 

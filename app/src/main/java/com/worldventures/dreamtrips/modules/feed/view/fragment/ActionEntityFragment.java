@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -137,7 +136,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     @Override
     public void updateLocationButtonState() {
-        boolean isSelected = !TextUtils.isEmpty(getPresenter().getLocation().getName());
+        boolean isSelected = getPresenter().getLocation() != null && !TextUtils.isEmpty(getPresenter().getLocation().getName());
         locationBtn.setSelected(isSelected);
         locationBtn.setVisibility(View.VISIBLE);
     }

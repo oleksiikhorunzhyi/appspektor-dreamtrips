@@ -121,9 +121,9 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                             .width(item.getWidth())
                             .height(item.getHeight())
                             .date(Calendar.getInstance().getTime())
-                            .coordinates(new CreatePhotoEntity.Coordinates(location.getLat(), location.getLng()))
-                            .locationName(location.getName())
-                            .tags(item.getCachedAddedPhotoTags())
+                            .coordinates(location != null ? new CreatePhotoEntity.Coordinates(location.getLat(), location.getLng()) : null)
+                            .locationName(location != null ? location.getName() : null)
+                            .photoTags(item.getCachedAddedPhotoTags())
                             .build()));
             if (!createPhotoEntity.isEmpty()) {
                 doRequest(new UploadPhotosCommand(createPhotoEntity), this::createPost);

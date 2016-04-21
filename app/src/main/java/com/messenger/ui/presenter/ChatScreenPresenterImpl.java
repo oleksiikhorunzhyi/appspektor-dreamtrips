@@ -720,7 +720,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photos -> {
                     getView().hidePhotoPicker();
-                    uploadPickedImages(Queryable.from(photos)
+                    uploadPhotoAttachments(Queryable.from(photos)
                             .map(ChosenImage::getFilePathOriginal)
                             .toList());
                 }, e -> Timber.e(e, "Error while image picking"));
@@ -730,16 +730,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onImagesPicked(List<BasePhotoPickerModel> photos) {
         if (photos == null || photos.isEmpty()) return;
         //
-        uploadPickedImages(Queryable.from(photos)
+        uploadPhotoAttachments(Queryable.from(photos)
                 .map(BasePhotoPickerModel::getOriginalPath)
                 .toList());
-    }
-
-    private void uploadPickedImages(List<String> paths) {
-        Observable.from(paths)
-                .toList()
-                .subscribeOn(Schedulers.io())
-                .subscribe(this::uploadPhotoAttachments, throwable -> Timber.e(throwable, ""));
     }
 
     private void uploadPhotoAttachments(List<String> filePaths) {

@@ -68,7 +68,6 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
     public void onDestroyView() {
         super.onDestroyView();
         photoPickerDelegate.setSelectedPhotosProvider(null);
-        photoPickerDelegate.setDoneClickListener(null);
     }
 
     protected abstract void registerCells();

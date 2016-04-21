@@ -85,7 +85,6 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
         if (collageView == null) return;
         //
         if (attachments != null && !attachments.isEmpty()) {
-            collageView.setItems(attachmentsToCollageItems(attachments), width);
             collageView.setItemClickListener(new CollageView.ItemClickListener() {
                 @Override
                 public void itemClicked(int position) {
@@ -97,7 +96,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
                     openFeedItemDetails();
                 }
             });
-
+            collageView.setItems(attachmentsToCollageItems(attachments), width);
         } else {
             collageView.clear();
         }

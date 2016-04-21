@@ -126,11 +126,11 @@ public class PhotoTagHolder extends RelativeLayout {
                 manager.addExistsTagViews(photoTags);
                 if (suggestionTag != null) {
                     TagPosition pos = suggestionTag.getProportionalPosition();
+                    removeTag(suggestionTag);
                     PhotoTag nextSuggestion = findNextSuggestion(pos);
                     if (nextSuggestion != null) {
                         addCreationTagViewBasedOnSuggestion(nextSuggestion);
                     }
-                    removeTag(suggestionTag);
                 }
                 removeView(newTagView);
                 manager.notifyTagCreated(tag);

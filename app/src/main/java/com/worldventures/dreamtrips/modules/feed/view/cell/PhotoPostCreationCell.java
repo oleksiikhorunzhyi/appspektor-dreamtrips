@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -101,7 +102,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
             photoContainer.post(() -> {
                 itemView.setVisibility(View.VISIBLE);
                 photoTagHolder.removeAllViews();
-                if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEditTags()) {
+                if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEdit()) {
                     showTagViewGroup();
                 }
                 invalidateAddTagBtn();
@@ -115,11 +116,14 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
             attachedPhoto.setController(draweeController);
             photoTitle.setText(getModelObject().getTitle());
-            boolean titleChangesEnabled = getModelObject().isCanDelete() && getModelObject().isCanEditTags();
-            photoTitle.setVisibility(titleChangesEnabled ? View.VISIBLE : View.GONE);
+            boolean titleChangesEnabled = getModelObject().isCanEdit();
+            photoTitle.setVisibility(titleChangesEnabled || !TextUtils.isEmpty(getModelObject().getTitle())
+                    ? View.VISIBLE
+                    : View.GONE);
+            photoTitle.setEnabled(titleChangesEnabled);
 
             photoTagHolder.removeAllViews();
-            if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEditTags()) {
+            if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEdit()) {
                 showTagViewGroup();
             }
             invalidateAddTagBtn();
@@ -228,7 +232,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
 
     private void invalidateAddTagBtn() {
         tagButton.setVisibility((getModelObject().getStatus() == ActionState.Status.SUCCESS
-                && getModelObject().isCanEditTags()) ? View.VISIBLE : View.GONE);
+                && getModelObject().isCanEdit()) ? View.VISIBLE : View.GONE);
         //
         if (getModelObject().getCombinedTags().isEmpty()) {
             tagButton.setText(R.string.tag_people);

@@ -123,7 +123,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         photoCreationItem.setLocation(photo.getLocation().getName());
         photoCreationItem.setBasePhotoTags((ArrayList<PhotoTag>) photo.getPhotoTags());
         photoCreationItem.setCanDelete(true);
-        photoCreationItem.setCanEditTags(true);
+        photoCreationItem.setCanEdit(true);
         return photoCreationItem;
     }
 

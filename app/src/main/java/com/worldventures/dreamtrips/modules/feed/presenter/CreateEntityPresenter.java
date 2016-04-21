@@ -220,7 +220,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                     item.setHeight(imageSize != null ? imageSize.getHeight() : pair.first.getHeight());
                     item.setSuggestions(pair.second);
                     item.setCanDelete(true);
-                    item.setCanEditTags(true);
+                    item.setCanEdit(true);
                     return item;
                 });
     }

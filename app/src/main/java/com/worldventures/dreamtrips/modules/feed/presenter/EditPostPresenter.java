@@ -63,7 +63,7 @@ public class EditPostPresenter extends ActionEntityPresenter<EditPostPresenter.V
     @Override
     protected PhotoCreationItem createItemFromPhoto(Photo photo) {
         PhotoCreationItem item = super.createItemFromPhoto(photo);
-        item.setCanEditTags(false);
+        item.setCanEdit(false);
         item.setCanDelete(false);
         return item;
     }

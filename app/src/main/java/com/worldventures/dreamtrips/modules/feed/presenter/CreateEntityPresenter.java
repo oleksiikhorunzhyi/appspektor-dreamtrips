@@ -51,6 +51,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     private Subscription mediaSubscription;
     private Subscription uploaderySubscription;
+    private Subscription mediaAttachmentSubscription;
 
     @Override
     public void takeView(V view) {
@@ -92,6 +93,8 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         //
         if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
         if (!uploaderySubscription.isUnsubscribed()) uploaderySubscription.unsubscribe();
+        if (!mediaAttachmentSubscription.isUnsubscribed()) mediaAttachmentSubscription.unsubscribe();
+
     }
 
     @Override
@@ -174,24 +177,26 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     private void imageSelected(MediaAttachment mediaAttachment) {
         if (view != null) {
-            Observable.from(mediaAttachment.chosenImages)
+            mediaAttachmentSubscription = Observable.from(mediaAttachment.chosenImages)
                     .concatMap(this::convertPhotoCreationItem)
                     .toList()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(newImages -> {
                         cachedCreationItems.addAll(newImages);
-                        view.attachPhotos(newImages);
-                        Queryable.from(newImages).forEachR(image -> {
-                            if (ValidationUtils.isUrl(image.getFilePath())) {
-                                doRequest(new CopyFileCommand(context, image.getFilePath()), s -> {
-                                    image.setFilePath(s);
+                        if (view != null) {
+                            view.attachPhotos(newImages);
+                            Queryable.from(newImages).forEachR(image -> {
+                                if (ValidationUtils.isUrl(image.getFilePath())) {
+                                    doRequest(new CopyFileCommand(context, image.getFilePath()), s -> {
+                                        image.setFilePath(s);
+                                        startUpload(image);
+                                    });
+                                } else {
                                     startUpload(image);
-                                });
-                            } else {
-                                startUpload(image);
-                            }
-                        });
+                                }
+                            });
+                        }
                     }, throwable -> {
                         Timber.e(throwable, "");
                     });

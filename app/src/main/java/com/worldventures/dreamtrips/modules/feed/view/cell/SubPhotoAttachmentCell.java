@@ -40,6 +40,11 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
                     cellDelegate.onCellClicked(getModelObject());
                 }
             });
+            tag.setOnClickListener(v -> {
+                if (cellDelegate != null) {
+                    cellDelegate.onCellClicked(getModelObject());
+                }
+            });
 
             setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
             tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);

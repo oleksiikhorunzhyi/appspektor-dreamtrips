@@ -37,6 +37,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
@@ -191,6 +192,8 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                                 startUpload(image);
                             }
                         });
+                    }, throwable -> {
+                        Timber.e(throwable, "");
                     });
         }
     }

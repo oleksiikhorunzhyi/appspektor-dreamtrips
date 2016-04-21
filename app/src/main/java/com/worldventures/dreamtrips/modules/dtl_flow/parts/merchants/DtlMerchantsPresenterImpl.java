@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
@@ -126,19 +127,16 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {
         if (merchants.isEmpty() && // TODO :: 4/14/16 also check applied filters number to be 0
-                TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery())) navigateToLocations();
+                TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery()))
+            Flow.get(getContext()).set(DtlLocationsPath.builder()
+                    .allowUserGoBack(true)
+                    .showNoMerchantsCaption(true)
+                    .build());
     }
 
     @Override
     public void locationChangeRequested() {
-        navigateToLocations();
-    }
-
-    protected void navigateToLocations() {
-        Flow.get(getContext()).set(DtlLocationsPath.builder()
-                .allowUserGoBack(true)
-                .showNoMerchantsCaption(true)
-                .build());
+        Flow.get(getContext()).set(new DtlLocationChangePath());
     }
 
     @Override

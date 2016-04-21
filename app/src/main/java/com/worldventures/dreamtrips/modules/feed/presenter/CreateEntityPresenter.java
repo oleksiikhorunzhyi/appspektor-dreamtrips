@@ -91,9 +91,12 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     public void dropView() {
         super.dropView();
         //
-        if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
-        if (!uploaderySubscription.isUnsubscribed()) uploaderySubscription.unsubscribe();
-        if (!mediaAttachmentSubscription.isUnsubscribed()) mediaAttachmentSubscription.unsubscribe();
+        if (mediaSubscription != null && !mediaSubscription.isUnsubscribed())
+            mediaSubscription.unsubscribe();
+        if (uploaderySubscription != null && !uploaderySubscription.isUnsubscribed())
+            uploaderySubscription.unsubscribe();
+        if (mediaAttachmentSubscription != null && !mediaAttachmentSubscription.isUnsubscribed())
+            mediaAttachmentSubscription.unsubscribe();
 
     }
 

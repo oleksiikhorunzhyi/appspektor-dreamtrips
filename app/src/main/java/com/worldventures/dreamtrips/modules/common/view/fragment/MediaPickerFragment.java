@@ -59,6 +59,14 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (photoPickerLayout != null) {
+            photoPickerLayout.setOnDoneClickListener(null);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         backStackDelegate.setListener(this::onBackPressed);

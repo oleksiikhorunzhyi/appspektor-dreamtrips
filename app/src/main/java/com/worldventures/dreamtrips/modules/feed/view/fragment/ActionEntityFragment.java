@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;

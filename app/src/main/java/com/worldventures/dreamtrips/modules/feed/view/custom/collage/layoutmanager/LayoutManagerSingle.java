@@ -17,15 +17,13 @@ class LayoutManagerSingle extends LayoutManager {
     @Override
     public List<View> getLocatedViews(int holderSide, CollageView.ItemClickListener itemClickListener) {
         int originalWidth = (int) ViewUtils.pxFromDp(context, items.get(0).width);
-        float scaleCoefficient = originalWidth < holderSide ? 1 : originalWidth / holderSide;
-
         int originalHeight = (int) ViewUtils.pxFromDp(context, items.get(0).height);
-        int allowableMaxHeight = holderSide / 4 * 5;
-        int resultHeight = originalHeight > allowableMaxHeight ? allowableMaxHeight : originalHeight;
-        resultHeight /= scaleCoefficient;
+
+        int calculatedHeight = (int) (holderSide / (float) originalWidth * originalHeight);
+        int maxAvailableHeight = holderSide / 4 * 5;
+        int resultHeight = Math.min(calculatedHeight, maxAvailableHeight);
 
         holderSize = new Size(holderSide, resultHeight);
-
         List<View> views = new ArrayList<>(items.size());
         views.add(getImageView(0, new FrameLayout.LayoutParams(holderSide, resultHeight), itemClickListener));
 

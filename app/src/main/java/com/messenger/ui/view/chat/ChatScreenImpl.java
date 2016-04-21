@@ -172,7 +172,11 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     protected void onDetachedFromWindow() {
         handler.removeCallbacks(openPikerTask);
-        photoPickerLayoutDelegate.hidePicker();
+        try {
+            photoPickerLayoutDelegate.hidePicker();
+        } catch (Exception e) {
+            Timber.d(e, "Error while rotate screen");
+        }
         super.onDetachedFromWindow();
     }
 

@@ -22,9 +22,4 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
     public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
         return new GetUserPhotosQuery(userId, PER_PAGE, currentCount / PER_PAGE + 1);
     }
-
-    @Override
-    public int getMediaRequestId() {
-        return AccountImagesPresenter.class.getSimpleName().hashCode();
-    }
 }

@@ -46,4 +46,11 @@ public class CreateFeedPostFragment extends CreateEntityFragment<CreateFeedPostP
         //
         super.attachPhotos(images);
     }
+
+    @Override
+    public void attachPhoto(PhotoCreationItem image) {
+        hideMediaPicker();
+        //
+        super.attachPhoto(image);
+    }
 }

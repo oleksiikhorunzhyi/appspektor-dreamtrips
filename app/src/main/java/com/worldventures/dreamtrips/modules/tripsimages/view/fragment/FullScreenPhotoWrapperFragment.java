@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -209,7 +208,7 @@ public class FullScreenPhotoWrapperFragment
     }
 
     @Override
-    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
+    public void openCreatePhoto() {
         /**
          * Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
          */

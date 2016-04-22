@@ -20,7 +20,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
@@ -207,7 +206,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     }
 
     @Override
-    public void attachImages(List<PhotoGalleryModel> photos, int requestType) {
+    public void openCreatePhoto() {
         //TODO temp solution will be removed after refactoring
     }
 }

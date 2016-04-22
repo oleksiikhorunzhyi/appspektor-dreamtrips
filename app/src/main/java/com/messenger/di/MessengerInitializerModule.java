@@ -3,6 +3,7 @@ package com.messenger.di;
 import android.content.Context;
 
 import com.messenger.initializer.ChatFacadeInitializer;
+import com.messenger.initializer.FailedMessageInitializer;
 import com.messenger.initializer.MessengerInitializer;
 import com.messenger.initializer.PresenceListenerInitializer;
 import com.messenger.initializer.RosterListenerInitializer;
@@ -16,6 +17,7 @@ import dagger.Provides;
 @Module(
         injects = {
                 MessengerInitializer.class,
+                FailedMessageInitializer.class,
                 RosterListenerInitializer.class,
                 StorageInitializer.class,
                 PresenceListenerInitializer.class,
@@ -49,5 +51,11 @@ public class MessengerInitializerModule {
     public AppInitializer provideRosterInitializer() {
         return new RosterListenerInitializer();
     }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideFailedMessageInitializer() {
+        return new FailedMessageInitializer();
+    }
+
 
 }

@@ -6,13 +6,13 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
-import java.util.Calendar;
 import java.util.Collections;
 
 import javax.inject.Inject;
@@ -39,8 +39,6 @@ public class ChatMessagesEventDelegate {
 
     Lazy<CreateConversationHelper> createConversationHelperLazy;
 
-    private final int maximumYear = Calendar.getInstance().getMaximum(Calendar.YEAR);
-
     private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
     public ChatMessagesEventDelegate(@ForApplication Injector injector) {
@@ -63,9 +61,7 @@ public class ChatMessagesEventDelegate {
     }
 
     public void onErrorMessage(Message message) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, maximumYear);
-        updateMessage(message, calendar.getTimeInMillis());
+        updateMessage(message, ChatDateUtils.getErrorMessageDate());
     }
 
     private void updateMessage(Message message, long time){

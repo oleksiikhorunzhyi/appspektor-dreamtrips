@@ -18,16 +18,19 @@ import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.util.ChatDateUtils;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 
 public class MessageDAO extends BaseDAO {
+    private final int maximumYear = Calendar.getInstance().getMaximum(Calendar.YEAR);
 
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
     public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
@@ -183,5 +186,15 @@ public class MessageDAO extends BaseDAO {
 
     public DataMessage fromCursor(Cursor cursor, boolean moveToFirst) {
         return SqlUtils.convertToModel(!moveToFirst, DataMessage.class, cursor);
+    }
+
+    public int markSendingAsFailed() {
+        ContentValues cv = new ContentValues();
+        cv.put(DataMessage$Table.STATUS, MessageStatus.ERROR);
+        cv.put(DataMessage$Table.SYNCTIME, ChatDateUtils.getErrorMessageDate());
+        return getContentResolver().update(DataMessage.CONTENT_URI, cv,
+                DataMessage$Table.STATUS + "=?",
+                new String[] {String.valueOf(MessageStatus.SENDING)}
+        );
     }
 }

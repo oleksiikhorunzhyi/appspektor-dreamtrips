@@ -24,7 +24,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationChangeCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
@@ -106,11 +106,11 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(getResources()
-                .getDrawable(R.drawable.list_divider), true));
+                .getDrawable(R.drawable.dtl_location_change_list_divider), true));
         //
         adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(),
                 injectorProvider.get());
-        adapter.registerCell(DtlExternalLocation.class, DtlLocationCell.class);
+        adapter.registerCell(DtlExternalLocation.class, DtlLocationChangeCell.class);
         adapter.registerDelegate(DtlExternalLocation.class, this);
         //
         recyclerView.setAdapter(adapter);

@@ -67,6 +67,8 @@
     <!-- <DTL Toolbar colors> -->
     <!-- these shall have 'dtlt_' prefix -->
     <color name="dtlt_input_text_color">#222</color>
+    <color name="dtlt_location_change_city_name">#222</color>
+    <color name="dtlt_location_separator">#C2C2C2</color>
     <color name="dtlt_input_hint_color">#9B9B9B</color>
     <!-- </DTL Toolbar dimens> -->
 

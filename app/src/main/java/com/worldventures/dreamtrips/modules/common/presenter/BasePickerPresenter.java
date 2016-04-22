@@ -1,16 +1,12 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
-import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import icepick.State;
 
@@ -18,8 +14,6 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
 
     @State
     protected ArrayList<BasePhotoPickerModel> photos;
-    @Inject
-    MediaPickerManager mediaPickerManager;
     private int pickLimit;
 
     public BasePickerPresenter() {

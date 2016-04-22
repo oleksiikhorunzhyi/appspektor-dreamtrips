@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-
 import android.support.annotation.NonNull;
 
 import com.github.pwittchen.networkevents.library.BusWrapper;
@@ -20,17 +19,14 @@ import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.events.AppConfigUpdatedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
-import com.worldventures.dreamtrips.modules.common.api.GlobalConfigQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
-import com.worldventures.dreamtrips.modules.common.model.ServerStatus;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.common.view.util.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
@@ -73,6 +69,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     SnappyRepository db;
     @Inject
     DtlLocationManager locationManager;
+    @Inject
+    GlobalConfigManager globalConfigManager;
 
     private boolean requestInProgress = false;
 
@@ -138,30 +136,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     }
 
     private void loadGlobalConfig() {
-        GlobalConfigQuery.GetConfigRequest getConfigRequest = new GlobalConfigQuery.GetConfigRequest();
-        doRequest(getConfigRequest, this::proccessAppConfig);
-    }
-
-    private void proccessAppConfig(AppConfig appConfig) {
-        ServerStatus.Status serv = appConfig.getServerStatus().getProduction();
-        String status = serv.getStatus();
-        String message = serv.getMessage();
-
-        if (!"up".equalsIgnoreCase(status)) {
-            view.alert(message);
-        } else {
-            UserSession userSession;
-            if (appSessionHolder.get().isPresent()) {
-                userSession = appSessionHolder.get().get();
-            } else {
-                userSession = new UserSession();
-            }
-
-            userSession.setGlobalConfig(appConfig);
-            appSessionHolder.put(userSession);
-            eventBus.postSticky(new AppConfigUpdatedEvent());
-            loadFiltersData();
-        }
+        globalConfigManager.loadGlobalConfig(dreamSpiceManager, this::loadFiltersData, () -> view.configurationFailed());
     }
 
     private void loadFiltersData() {

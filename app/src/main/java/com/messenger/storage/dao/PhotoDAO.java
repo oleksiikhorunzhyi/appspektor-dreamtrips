@@ -11,6 +11,7 @@ import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.entities.DataPhotoAttachment$Adapter;
 import com.messenger.entities.DataPhotoAttachment$Table;
+import com.messenger.entities.DataPhotoAttachment.PhotoAttachmentStatus;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.RxContentResolver;
@@ -95,5 +96,14 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
         }
         contentValues.put(DataPhotoAttachment$Table.UPLOADSTATE, model.getUploadState());
         return contentValues;
+    }
+
+    public int markSendingAsFailed() {
+        ContentValues cv = new ContentValues();
+        cv.put(DataPhotoAttachment$Table.UPLOADSTATE, PhotoAttachmentStatus.FAILED);
+        return getContentResolver().update(DataPhotoAttachment.CONTENT_URI, cv,
+                DataPhotoAttachment$Table.UPLOADSTATE + "=?",
+                new String[] {String.valueOf(PhotoAttachmentStatus.UPLOADING)}
+        );
     }
 }

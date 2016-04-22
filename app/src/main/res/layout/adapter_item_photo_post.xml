@@ -74,6 +74,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/photo_container"
         android:background="@null"
-        android:hint="Add a title"
+        android:hint="@string/add_title"
         android:padding="10dp"/>
 </RelativeLayout>

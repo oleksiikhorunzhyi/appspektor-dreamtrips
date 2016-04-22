@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
@@ -81,8 +82,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         //
         adapter = new BaseDelegateAdapter(getContext(), this);
         adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
-        adapter.registerCell(String.class, PostCreationTextCell.class);
-        adapter.registerDelegate(String.class, new PostCreationTextDelegate() {
+        adapter.registerCell(PostDescription.class, PostCreationTextCell.class);
+        adapter.registerDelegate(PostDescription.class, new PostCreationTextDelegate() {
             @Override
             public void onTextChanged(String text) {
                 getPresenter().postInputChanged(text);
@@ -94,7 +95,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             }
 
             @Override
-            public void onCellClicked(String model) {
+            public void onCellClicked(PostDescription model) {
             }
         });
         adapter.registerDelegate(PhotoCreationItem.class, this);
@@ -167,7 +168,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     @Override
     public void setText(String text) {
-        adapter.addItem(text);
+        adapter.addItem(new PostDescription(text));
     }
 
     @Override

@@ -61,8 +61,11 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         mediaSubscription = mediaPickerManager
                 .toObservable()
                 .filter(attachment -> attachment.requestId == getMediaRequestId())
-                .subscribe(this::attachImages);
-
+                .subscribe(this::attachImages,
+                        error -> {
+                            Timber.e(error, "");
+                        });
+        //
         Observable<ActionState<UploaderyImageCommand>> observable = photoUploadManager
                 .getTaskChangingObservable()
                 .compose(new IoToMainComposer<>());
@@ -79,6 +82,8 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                 }
                 view.updateItem(item);
             }
+        }, error -> {
+            Timber.e(error, "");
         });
     }
 

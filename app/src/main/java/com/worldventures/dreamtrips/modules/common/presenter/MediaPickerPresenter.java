@@ -20,6 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import timber.log.Timber;
 
 public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
 
@@ -66,6 +67,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                 .compose(new IoToMainComposer<>())
                 .subscribe(mediaAttachment -> {
                     mediaPickerManager.attach(mediaAttachment);
+                }, error -> {
+                    Timber.e(error, "");
                 });
     }
 

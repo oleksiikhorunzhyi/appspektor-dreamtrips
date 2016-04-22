@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import icepick.State;
 import retrofit.mime.TypedFile;
 import rx.Subscription;
+import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
@@ -142,6 +143,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                         //
                         imageSelected(mediaAttachment);
                     }
+                }, error -> {
+                    Timber.e(error, "");
                 });
 
         cropImageDelegate.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
@@ -157,6 +160,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                     } else {
                         onCoverCropped(fileNotification.getValue(), null);
                     }
+                }, error -> {
+                    Timber.e(error, "");
                 });
     }
 

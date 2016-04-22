@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
 
@@ -81,8 +82,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                                 break;
                         }
                     }
+                }, error -> {
+                    Timber.e(error, "");
                 });
-
+        //
         mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID)
                 .subscribe(mediaAttachment -> attachImages(mediaAttachment.chosenImages, mediaAttachment.type));

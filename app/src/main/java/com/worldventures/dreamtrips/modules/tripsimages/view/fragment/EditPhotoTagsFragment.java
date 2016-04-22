@@ -16,6 +16,7 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.OrientationUtil;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
@@ -111,6 +112,12 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
     public void onPause() {
         super.onPause();
         OrientationUtil.unlockOrientation(getActivity());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        SoftInputUtil.hideSoftInputMethod(getActivity());
     }
 
     @Override

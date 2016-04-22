@@ -45,6 +45,7 @@
             android:layout_weight="1"
             style="@style/DtlToolbarInput"
             android:textColorHint="@color/dtlt_input_hint_color"
+            android:drawableLeft="@drawable/ic_dtlt_search_input"
             tools:text="Mexican"
             />
 
@@ -85,6 +86,7 @@
             android:layout_height="wrap_content"
             style="@style/DtlToolbarInput"
             android:textColorHint="@color/dtlt_input_hint_color"
+            android:drawableLeft="@drawable/ic_dtlt_location_input"
             tools:text="London"
             />
     </LinearLayout>

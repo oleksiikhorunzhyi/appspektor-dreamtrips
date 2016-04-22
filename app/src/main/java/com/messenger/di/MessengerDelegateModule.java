@@ -40,8 +40,8 @@ import io.techery.janet.Janet;
 )
 public class MessengerDelegateModule {
     @Provides
-    UserProcessor provideUserProcessor(Janet janet, UsersDAO usersDAO) {
-        return new UserProcessor(usersDAO, janet);
+    UserProcessor provideUserProcessor(Janet janet, UsersDAO usersDAO, SessionHolder<UserSession> sessionHolder) {
+        return new UserProcessor(usersDAO, janet, sessionHolder);
     }
 
     @Provides

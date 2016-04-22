@@ -18,6 +18,7 @@
     <string name="action_quick_input">快速添加</string>
     <string name="action_popular_string">添加来自流行</string>
     <string name="action_done">完成</string>
+    <string name="action_cancel">取消</string>
     <string name="action_enroll">注册</string>
     <string name="action_filter">筛选</string>
     <string name="action_map">地图</string>
@@ -623,18 +624,20 @@
     <string name="dream_trips_points">DreamTrip点数：</string>
     <string name="rovia_bucks"> Rovia币：</string>
 
-    <string name="suggested_photo">You have new photos</string>
-    <string name="suggested_photo_selected_one">%d photo selected</string>
-    <string name="suggested_photo_selected_multiple">%d photos selected</string>
-    <string name="share_recent_photos">Share photos</string>
+    <string name="suggested_photo">您有新照片</string>
+    <string name="suggested_photo_selected_one">%1$d照片已选定</string>
+    <string name="suggested_photo_selected_multiple">%1$d照片已选定</string>
+    <string name="share_recent_photos">分享照片</string>
 
-    <string name="legal_terms">Legal Terms</string>
+    <string name="legal_terms">法律条款</string>
 
-    <string name="location_picker_title">Pick location</string>
-    <string name="location_picker_no_play_services">Sorry, but to see the map you should have Google Play services installed on your device.</string>
-    <string name="location_picker_could_not_get_location">Could not get current location</string>
+    <string name="location_picker_title">选择位置</string>
+    <string name="location_picker_no_play_services">很抱歉，若需要查看地图，您必须先在您的设备上安装Google Play服务。</string>
+    <string name="location_picker_could_not_get_location">无法获取当前位置</string>
 
-    <string name="request_incoming_long">Incoming Requests</string>
-    <string name="request_outgoing_long">Outgoing Requests</string>
+    <string name="request_incoming_long">传入</string>
+    <string name="request_outgoing_long">传出</string>
+
+    <string name="add_title">添加标题</string>
 
 </resources>

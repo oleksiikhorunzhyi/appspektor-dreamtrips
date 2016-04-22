@@ -1,11 +1,13 @@
 package com.worldventures.dreamtrips.modules.friends.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.utils.ui.OrientationUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -40,21 +42,32 @@ public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPres
     @Override
     public void onResume() {
         super.onResume();
+        OrientationUtil.lockOrientation(getActivity());
         //hack for https://trello.com/c/oKIh9Rnb/922-nav-bar-of-likers-pop-up-becomes-grey-if-go-back-from-profile (reproducible on android 5.0+ )
         header.getBackground().mutate().setAlpha(255);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Override
     public void refreshUsers(List<User> users) {
         super.refreshUsers(users);
         if (isTabletLandscape()) {
-            String titleArg = users.size() == 1 ? users.get(0).getFullName() : String.valueOf(users.size());
-
-            String title = String.format(getResources().getString(
-                    QuantityHelper.chooseResource(users.size(), R.string.people_liked_one, R.string.people_liked_other)), titleArg);
+            String titleArg = users.size() == 1 ? users.get(0).getFullName() : String.valueOf(getLikersCount(users));
+            @StringRes int quantityStringId = QuantityHelper.chooseResource(users.size(),
+                    R.string.users_who_liked_title, R.string.people_liked_one, R.string.people_liked_other);
+            String title = String.format(getResources().getString(quantityStringId), titleArg);
             header.setText(title);
             header.setVisibility(View.VISIBLE);
         }
+    }
+
+    private int getLikersCount(List<User> users) {
+        return getArgs() != null && getArgs().getLikersCount() > 0 ? getArgs().getLikersCount() : users.size();
     }
 
     @Override

@@ -5,9 +5,11 @@ import android.os.Parcel;
 public class UsersLikedEntityBundle extends BaseUsersBundle {
 
     private String uid;
+    private int likersCount;
 
-    public UsersLikedEntityBundle(String uid) {
+    public UsersLikedEntityBundle(String uid, int likersCount) {
         this.uid = uid;
+        this.likersCount = likersCount;
     }
 
     protected UsersLikedEntityBundle(Parcel in) {
@@ -30,6 +32,9 @@ public class UsersLikedEntityBundle extends BaseUsersBundle {
         return uid;
     }
 
+    public int getLikersCount() {
+        return likersCount;
+    }
 
     @Override
     public int describeContents() {

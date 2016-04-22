@@ -10,8 +10,6 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import java.util.ArrayList;
 import java.util.Date;
 
-import timber.log.Timber;
-
 public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
     public static final int LIMIT = 10;
@@ -30,13 +28,9 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
     @Override
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
-        ArrayList<ParentFeedItem> result = new ArrayList<>();
-        try {
-            String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
-            result = getService().getAccountFeed(LIMIT, before, circleId);
-        } catch (Exception e) {
-            Timber.e(e, "Feeds have not been received");
-        }
+        ArrayList<ParentFeedItem> result;
+        String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
+        result = getService().getAccountFeed(LIMIT, before, circleId);
         return result;
     }
 

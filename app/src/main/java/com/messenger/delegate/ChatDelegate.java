@@ -144,6 +144,8 @@ public class ChatDelegate {
 
         if (!isLastLoadedMessageRead(loadedMessages)) {
             loadNextPage();
+        } else {
+            loading.set(false);
         }
 
         paginationStateObservable.onNext(PaginationStatus.builder()

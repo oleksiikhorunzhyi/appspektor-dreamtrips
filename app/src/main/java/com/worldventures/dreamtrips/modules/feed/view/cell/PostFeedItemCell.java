@@ -43,8 +43,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
     @Optional
     @InjectView(R.id.collage)
     CollageView collageView;
+    @Optional
     @InjectView(R.id.tag)
-    protected ImageView tag;
+    ImageView tag;
 
     @Inject
     FragmentManager fragmentManager;
@@ -104,7 +105,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
     }
 
     private void processTags(List<FeedEntityHolder> attachments) {
-        tag.setVisibility(isHasTags(attachments) ? View.VISIBLE : View.GONE);
+        if (tag != null) tag.setVisibility(isHasTags(attachments) ? View.VISIBLE : View.GONE);
     }
 
     private boolean isHasTags(List<FeedEntityHolder> attachments) {

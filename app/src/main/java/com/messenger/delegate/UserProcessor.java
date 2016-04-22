@@ -5,9 +5,12 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.messenger.api.GetShortProfileAction;
+import com.messenger.api.temp.RetryLoginComposer;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.Collections;
@@ -26,9 +29,13 @@ public class UserProcessor {
     private static final String HOST_BADGE = "DreamTrips Host";
     private final UsersDAO usersDAO;
     private final ActionPipe<GetShortProfileAction> shortProfilePipe;
+    private final SessionHolder<UserSession> sessionHolder;
+    private final Janet janet;
 
-    public UserProcessor(UsersDAO usersDAO, Janet janet) {
+    public UserProcessor(UsersDAO usersDAO, Janet janet, SessionHolder<UserSession> sessionHolder) {
         this.usersDAO = usersDAO;
+        this.janet = janet;
+        this.sessionHolder = sessionHolder;
         this.shortProfilePipe = janet.createPipe(GetShortProfileAction.class);
     }
 
@@ -43,19 +50,19 @@ public class UserProcessor {
         return observable.asObservable();
     }
 
-    private Observable<List<DataUser>> updateWithSocialData(List<MessengerUser>  messengerUsers) {
+    private Observable<List<DataUser>> updateWithSocialData(List<MessengerUser> messengerUsers) {
         if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
 
         List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
-
         return shortProfilePipe
                 .createObservableSuccess(new GetShortProfileAction(userNames))
+                .compose(new RetryLoginComposer<>(sessionHolder, janet))
                 .take(1)
                 .flatMap(action -> syncCashedUser(messengerUsers, action.getShortUsers()));
     }
 
     private Observable<List<DataUser>> syncCashedUser(List<MessengerUser> messengerUsers,
-                                                       List<User> socialUsers) {
+                                                      List<User> socialUsers) {
         return Observable.from(messengerUsers)
                 .map(messengerUser -> pairUserProfiles(messengerUser, socialUsers))
                 .filter(pair -> pair.second != null)

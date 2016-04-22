@@ -72,7 +72,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<I
         if (likersPanel != null) {
             likersPanelHelper.setup(likersPanel, getModelObject().getItem());
             likersPanel.setOnClickListener(v -> navigationWrapper.navigate(Route.USERS_LIKED_CONTENT,
-                    new UsersLikedEntityBundle(getModelObject().getItem().getUid())));
+                    new UsersLikedEntityBundle(getModelObject().getItem().getUid(), getModelObject().getItem().getLikesCount())));
         }
     }
 

@@ -165,7 +165,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     public void setLikersPanel(FeedEntity entity) {
         if (likersPanel == null || !getArgs().showLikersPanel()) return;
         likersPanelHelper.setup(likersPanel, entity);
-        likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid())));
+        likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid(), entity.getLikesCount())));
     }
 
     @Override

@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 import java.util.List;
 
+import rx.Observable;
+
 public interface DtlLocationChangeScreen extends DtlScreen {
 
     void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
@@ -22,4 +24,12 @@ public interface DtlLocationChangeScreen extends DtlScreen {
     void showProgress();
 
     void hideProgress();
+
+    Observable<Void> provideMapClickObservable();
+
+    Observable<Boolean> provideMerchantInputFocusLossObservable();
+
+    Observable<Void> provideDtlToolbarCollapsesObservable();
+
+    Observable<String> provideLocationSearchObservable();
 }

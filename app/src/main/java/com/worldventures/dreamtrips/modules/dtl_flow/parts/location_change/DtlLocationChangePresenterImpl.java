@@ -17,7 +17,9 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManua
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ import javax.inject.Inject;
 import flow.Flow;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import rx.Subscription;
 
 public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocationChangeScreen, ViewState.EMPTY>
@@ -45,6 +48,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
     @State
     ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
+    @State
+    boolean toolbarInitialized;
     //
     private Subscription locationRequestNoFallback;
 
@@ -59,21 +64,61 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         apiErrorPresenter.setView(getView());
         //
         tryHideNearMeButton();
+        // remember this observable - we will start listening to search below only after this fires
+        Observable<DtlLocation> locationObservable = connectDtlLocationUpdate();
+        //
         connectNearbyLocations();
         connectLocationsSearch();
-        //
+        connectLocationDelegateNoFallback();
+        connectToolbarMapClicks();
+        connectToolbarCollapses();
+        connectToolbarLocationSearch(locationObservable.take(1));
+    }
+
+    private void connectToolbarMapClicks() {
+        getView().provideMapClickObservable()
+                .compose(bindView())
+                .subscribe(aVoid -> mapClicked());
+    }
+
+    private void connectToolbarCollapses() {
+        getView().provideDtlToolbarCollapsesObservable()
+                .compose(bindView())
+                .subscribe(aVoid -> toolbarCollapsed());
+        // below: treat merchant search input focus gain as location search exit (collapsing)
+        getView().provideMerchantInputFocusLossObservable()
+                .compose(bindView())
+                .subscribe(aVoid -> toolbarCollapsed());
+    }
+
+    private void connectToolbarLocationSearch(Observable<DtlLocation> dtlLocationObservable) {
+        getView().provideLocationSearchObservable()
+                .skipUntil(dtlLocationObservable)
+                .debounce(250L, TimeUnit.MILLISECONDS)
+                .compose(bindView())
+                .subscribe(this::search);
+    }
+
+    private Observable<DtlLocation> connectDtlLocationUpdate() {
+        Observable<DtlLocation> locationObservable = dtlLocationManager.getSelectedLocation()
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer());
+        locationObservable
+                .filter(dtlLocation -> !toolbarInitialized)
+                .subscribe(location -> {
+                    getView().updateToolbarTitle(location, dtlMerchantManager.getCurrentQuery());
+                    toolbarInitialized = true;
+                });
+        return locationObservable;
+    }
+
+    private void connectLocationDelegateNoFallback() {
         locationRequestNoFallback = gpsLocationDelegate.requestLocationUpdate()
                 .compose(bindViewIoToMainComposer())
                 .timeout(10L, TimeUnit.SECONDS)
                 .subscribe(this::onLocationObtained, throwable -> {
                     if (throwable instanceof TimeoutException) getView().hideProgress();
                 });
-        //
-        dtlLocationManager.getSelectedLocation()
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(location -> getView().updateToolbarTitle(location,
-                        dtlMerchantManager.getCurrentQuery()));
     }
 
     private void onLocationObtained(Location location) {
@@ -128,13 +173,15 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         getView().setItems(command.getResult());
     }
 
-    @Override
-    public void toolbarCollapsed() {
+    private void mapClicked() {
+        Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext())));
+    }
+
+    private void toolbarCollapsed() {
         Flow.get(getContext()).goBack();
     }
 
-    @Override
-    public void search(String query) {
+    private void search(String query) {
         screenMode = ScreenMode.SEARCH;
         dtlLocationManager.searchLocations(query);
     }
@@ -188,10 +235,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     @Override
-    public void locationSelected(DtlExternalLocation location) {
+    public void locationSelected(DtlExternalLocation dtlExternalLocation) {
 //        trackLocationSelection(location); // TODO :: 4/20/16 new analytics
-        dtlLocationManager.persistLocation(location);
+        dtlLocationManager.persistLocation(dtlExternalLocation);
         dtlMerchantManager.clean();
+        dtlMerchantManager.loadMerchants(dtlExternalLocation.getCoordinates().asAndroidLocation());
         Flow.get(getContext()).goBack();
     }
 

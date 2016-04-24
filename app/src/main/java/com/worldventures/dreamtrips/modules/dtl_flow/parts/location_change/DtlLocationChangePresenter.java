@@ -14,8 +14,4 @@ public interface DtlLocationChangePresenter
     void onLocationResolutionGranted();
 
     void onLocationResolutionDenied();
-
-    void toolbarCollapsed();
-
-    void search(String query);
 }

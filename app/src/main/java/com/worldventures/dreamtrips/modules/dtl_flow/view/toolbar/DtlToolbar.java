@@ -12,7 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -23,6 +26,7 @@ import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
@@ -68,7 +72,7 @@ public class DtlToolbar extends LinearLayout {
     private FocusedMode focusedMode;
     private String searchQuery;
     private String locationTitle;
-    private String defaultEmptySearchCaption = "Food and Drinks"; // TODO :: 4/11/16 move to resources
+    private String defaultEmptySearchCaption = "Food & Drinks"; // TODO :: 4/11/16 move to resources
     private boolean showNavigation;
     //
     private List<CollapseListener> collapseListeners = new ArrayList<>();
@@ -188,27 +192,47 @@ public class DtlToolbar extends LinearLayout {
                         SoftInputUtil.showSoftInputMethod(getContext());
                         break;
                     case LOCATION:
-                        bottomCaption.requestFocus();
                         SoftInputUtil.showSoftInputMethod(getContext());
+                        bottomCaption.requestFocus();
                         break;
                 }
+            }
+            // due to possible bug in EditText - hint not saved after rotation. Fix below:
+            if (TextUtils.isEmpty(searchQuery) || TextUtils.isEmpty(topCaption.getHint())) {
+                topCaption.setHint(defaultEmptySearchCaption);
             }
         }
     }
 
     private void updateToolbarCaptions() {
         if (collapsed) {
-            String searchQueryTitle =
+            final String searchQueryTitle =
                     TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
             if (TextUtils.isEmpty(searchQuery)) {
                 topCaption.setHint(searchQueryTitle + " " + locationTitle);
                 topCaption.setText("");
-            } else topCaption.setText(searchQueryTitle + " " + locationTitle);
+            } else {
+                topCaption.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
+            }
         } else {
-            if (TextUtils.isEmpty(searchQuery)) topCaption.setHint(defaultEmptySearchCaption);
+            if (TextUtils.isEmpty(searchQuery)) {
+                topCaption.setHint(defaultEmptySearchCaption);
+            }
             topCaption.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
             bottomCaption.setText(locationTitle);
+            bottomCaption.selectAll();
         }
+    }
+
+    private SpannableStringBuilder prepareSpannedTopCaption(String searchQuery,
+                                                            String locationTitle) {
+        final SpannableStringBuilder stringBuilder =
+                new SpannableStringBuilder(searchQuery + " " + locationTitle);
+        final ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources()
+                .getColor(R.color.dtlt_input_hint_color));
+        stringBuilder.setSpan(colorSpan, searchQuery.length(), stringBuilder.length(),
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return stringBuilder;
     }
 
     private void animateExpanding() {
@@ -279,8 +303,8 @@ public class DtlToolbar extends LinearLayout {
     @OnClick(R.id.dtlToolbarTopCaption)
     void firstRowClicked(View view) {
         if (collapsed) {
-            expand();
             focusedMode = FocusedMode.SEARCH;
+            expand();
             Queryable.from(expandListeners).forEachR(listener -> listener.onExpanded());
         }
     }

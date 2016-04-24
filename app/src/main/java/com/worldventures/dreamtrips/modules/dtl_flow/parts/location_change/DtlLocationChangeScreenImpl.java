@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.InjectView;
+import rx.Observable;
 import timber.log.Timber;
 
 public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScreen,
@@ -67,7 +68,6 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
         //
         activityResultDelegate.addListener(this);
         //
-        setupDtlToolbar();
         setupRecyclerView();
         bindNearMeButton();
     }
@@ -81,27 +81,6 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     ///////////////////////////////////////////////////////////////////////////
     // Private screen methods
     ///////////////////////////////////////////////////////////////////////////
-
-    private void setupDtlToolbar() {
-        // TODO :: 4/20/16 navigation to map - save backstack?
-//        RxDtlToolbar.mapClicks(dtlToolbar)
-//                .throttleFirst(250L, TimeUnit.MILLISECONDS)
-//                .compose(RxLifecycle.bindView(this))
-//                .subscribe(aVoid -> getPresenter().mapClicked());
-        RxDtlToolbar.merchantSearchInputFocusChanges(dtlToolbar)
-                .skip(1)
-                .compose(RxLifecycle.bindView(this))
-                .filter(Boolean::booleanValue) // only true -> only focus gains
-                .subscribe(aBoolean1 -> getPresenter().toolbarCollapsed());
-        RxDtlToolbar.collapses(dtlToolbar)
-                .compose(RxLifecycle.bindView(this))
-                .subscribe(aVoid -> getPresenter().toolbarCollapsed());
-        RxDtlToolbar.locationSearchTextChanges(dtlToolbar)
-                .skip(1)
-                .debounce(250L, TimeUnit.MILLISECONDS)
-                .compose(RxLifecycle.bindView(this))
-                .subscribe(getPresenter()::search);
-    }
 
     private void setupRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -127,6 +106,29 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     // Overridden and screen implementation methods
     ///////////////////////////////////////////////////////////////////////////
 
+    @Override
+    public Observable<Void> provideMapClickObservable() {
+        return RxDtlToolbar.mapClicks(dtlToolbar)
+                .throttleFirst(250L, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public Observable<Boolean> provideMerchantInputFocusLossObservable() {
+        return RxDtlToolbar.merchantSearchInputFocusChanges(dtlToolbar)
+                .skip(1)
+                .filter(Boolean::booleanValue); // only true -> only focus gains;
+    }
+
+    @Override
+    public Observable<Void> provideDtlToolbarCollapsesObservable() {
+        return RxDtlToolbar.collapses(dtlToolbar);
+    }
+
+    @Override
+    public Observable<String> provideLocationSearchObservable() {
+        return RxDtlToolbar.locationSearchTextChanges(dtlToolbar)
+                .skip(1);
+    }
 
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,

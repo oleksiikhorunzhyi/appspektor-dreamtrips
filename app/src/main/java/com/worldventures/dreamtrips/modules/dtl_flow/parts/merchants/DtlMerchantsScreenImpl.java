@@ -116,7 +116,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                 .debounce(250L, TimeUnit.MILLISECONDS)
                 .filter(s -> !dtlToolbar.isCollapsed())
                 .compose(RxLifecycle.bindView(this))
-                .doOnNext(searchQuery -> dtlToolbar.updateAppliedSearchQuery(searchQuery))
                 .subscribe(getPresenter()::applySearch);
         RxDtlToolbar.locationInputFocusChanges(dtlToolbar)
                 .skip(1)

@@ -98,6 +98,7 @@ public class DtlToolbar extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         initState();
+        bindSearchQueryPersisting();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -128,13 +129,17 @@ public class DtlToolbar extends LinearLayout {
         return collapsed;
     }
 
-    public void updateAppliedSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Essential private and package-private stuff
     ///////////////////////////////////////////////////////////////////////////
+
+    private void bindSearchQueryPersisting() {
+        RxDtlToolbar.merchantSearchTextChanges(this)
+                .skip(1)
+                .filter(s -> !isCollapsed())
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(searchQuery -> this.searchQuery = searchQuery);
+    }
 
     AppCompatEditText getMerchantSearchView() {
         return topCaption;

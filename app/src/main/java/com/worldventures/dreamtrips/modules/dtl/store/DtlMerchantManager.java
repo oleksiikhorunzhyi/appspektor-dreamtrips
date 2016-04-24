@@ -95,7 +95,6 @@ public class DtlMerchantManager {
         return dtlLocationManager.getSelectedLocation()
                 .filter(DtlLocationCommand::isResultDefined)
                 .map(DtlLocationCommand::getResult)
-                .mergeWith(dtlLocationManager.observeLocationUpdates())
                 .distinct(DtlLocation::getCoordinates)
                 .flatMap(location -> locationDelegate.getLastKnownLocationOrEmpty()
                         .onErrorResumeNext(Observable.empty())

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 
 public class BaseExpandableDelegateAdapter extends BaseExpandableAdapter {
@@ -33,6 +34,9 @@ public class BaseExpandableDelegateAdapter extends BaseExpandableAdapter {
         AbstractCell cell = super.onCreateViewHolder(parent, viewType);
         if (cell instanceof GroupDelegateCell) {
             ((GroupDelegateCell) cell).setCellDelegate(itemDelegateMapping.get(viewType));
+        }
+        if (cell instanceof AbstractDelegateCell) {
+            ((AbstractDelegateCell) cell).setCellDelegate(itemDelegateMapping.get(viewType));
         }
         return cell;
     }

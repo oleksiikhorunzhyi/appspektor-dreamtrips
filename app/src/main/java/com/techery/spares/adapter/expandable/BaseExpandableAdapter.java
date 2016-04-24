@@ -42,7 +42,7 @@ public class BaseExpandableAdapter<T> extends BaseArrayListAdapter<T> implements
         //
         AbstractCell cell = (AbstractCell) recyclerViewReference.get().findViewHolderForAdapterPosition(position);
 
-        if (cell instanceof GroupCell) expandView((GroupCell) cell, position);
+        if (cell != null && cell instanceof GroupCell) expandView((GroupCell) cell, position);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class BaseExpandableAdapter<T> extends BaseArrayListAdapter<T> implements
         //
         AbstractCell cell = (AbstractCell) recyclerViewReference.get().findViewHolderForAdapterPosition(position);
 
-        if (cell instanceof GroupCell) collapseView((GroupCell) cell, position);
+        if (cell != null && cell instanceof GroupCell) collapseView((GroupCell) cell, position);
     }
 
     public void expandView(GroupCell cell, int position) {
@@ -130,7 +130,7 @@ public class BaseExpandableAdapter<T> extends BaseArrayListAdapter<T> implements
     }
 
     protected void notifyGroupUpdate(GroupCell cell, int position, boolean expand) {
-        notifyItemChanged(position); // can use notifyItemChanged(position) with animation
+        notifyItemChanged(position);
     }
 
     protected void prepareBind(AbstractCell cell, int position) {

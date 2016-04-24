@@ -6,11 +6,9 @@ import android.support.v4.view.ViewPager;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
 import com.worldventures.dreamtrips.core.ui.fragment.ImageBundle;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
-import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
@@ -24,7 +22,8 @@ public class DtlMerchantManyImagesDataInflater extends DtlMerchantCommonDataInfl
 
     private final FragmentManager fragmentManager;
     //
-    @InjectView(R.id.merchant_details_cover_pager)
+    // TODO :: 4/24/16 add view pager usage when requested support for many images
+//    @InjectView(R.id.merchant_details_cover_pager)
     ViewPager coverPager;
     @InjectView(R.id.merchant_details_cover_pager_indicator)
     CircleIndicator coverPagerIndicator;
@@ -53,7 +52,7 @@ public class DtlMerchantManyImagesDataInflater extends DtlMerchantCommonDataInfl
             }
         };
         Queryable.from(mediaList).forEachR(image -> {
-            adapter.add(new FragmentItem(Route.DTL_IMAGE, ""));
+            // TODO :: 4/24/16 temporary empty - untill requested support for many images
         });
         coverPager.setAdapter(adapter);
         if (mediaList.size() > 1) coverPagerIndicator.setViewPager(coverPager);

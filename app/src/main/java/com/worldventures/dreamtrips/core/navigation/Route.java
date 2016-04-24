@@ -21,24 +21,12 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsSearchFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantDetailsFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsHostFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
@@ -48,6 +36,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendListFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendPreferenceFragment;
@@ -171,23 +160,14 @@ public enum Route {
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
     FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty),
 
-    DTL_START(DtlStartFragment.class),
-    DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
-    DTL_LOCATIONS_SEARCH(DtlLocationsSearchFragment.class, R.string.dtl_locations_title),
+    // <dtl_legasy_routes>
+    // TODO :: 4/24/16 re-write the rest of DTL to Flow-powered views
     DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
-    DTL_MERCHANTS_HOLDER(DtlMerchantsHostFragment.class),
-    DTL_MERCHANTS_TABS(DtlMerchantsTabsFragment.class),
-    DTL_MERCHANTS_LIST(DtlMerchantsListFragment.class),
-    DTL_IMAGE(DtlImageFragment.class),
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
-    DTL_FILTERS(DtlFiltersFragment.class),
-    DTL_MAP(DtlMapFragment.class),
-    DTL_MAP_INFO(DtlMapInfoFragment.class),
-    DTL_MERCHANT_DETAILS(DtlMerchantDetailsFragment.class),
-
     DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
+    // </dtl_legasy_routes>
 
     GALLERY(DtGalleryFragment.class),
 

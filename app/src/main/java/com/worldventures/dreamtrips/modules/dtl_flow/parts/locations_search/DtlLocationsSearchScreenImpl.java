@@ -18,7 +18,6 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
@@ -69,7 +68,7 @@ public class DtlLocationsSearchScreenImpl
     }
 
     private void initToolbar() {
-        toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
+        toolbar.setTitle(R.string.dtl_locations_title);
         toolbar.inflateMenu(R.menu.menu_locations_search);
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(view -> getPresenter().searchClosed());

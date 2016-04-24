@@ -4,15 +4,15 @@ import android.view.View;
 
 import com.techery.spares.ui.view.cell.CellDelegate;
 
-public abstract class GroupDelegateCell<G, C, D extends CellDelegate> extends GroupCell<G, C> {
+public abstract class GroupDelegateCell<GROUP, CELL, DELEGATE extends CellDelegate> extends GroupCell<GROUP, CELL> {
 
-    protected D cellDelegate;
+    protected DELEGATE cellDelegate;
 
     public GroupDelegateCell(View view) {
         super(view);
     }
 
-    public void setCellDelegate(D cellDelegate) {
+    public void setCellDelegate(DELEGATE cellDelegate) {
         this.cellDelegate = cellDelegate;
     }
 

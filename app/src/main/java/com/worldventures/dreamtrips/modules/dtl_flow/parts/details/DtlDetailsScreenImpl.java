@@ -61,7 +61,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
     DtlMerchantCommonDataInflater commonDataInflater;
     DtlMerchantInfoInflater merchantInfoInflater;
-    DtlMerchantHelper helper;
 
     @Inject
     ActivityResultDelegate activityResultDelegate;

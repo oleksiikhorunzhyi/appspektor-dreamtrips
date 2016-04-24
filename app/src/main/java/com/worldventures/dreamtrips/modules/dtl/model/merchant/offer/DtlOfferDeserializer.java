@@ -10,6 +10,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -34,6 +35,7 @@ public class DtlOfferDeserializer implements JsonDeserializer<DtlOffer> {
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .registerTypeAdapter(Date.class, new DateTimeDeserializer())
                 .registerTypeAdapter(Date.class, new DateTimeSerializer())
+                .registerTypeAdapter(DayOfWeek.class, new DayOfWeekDeserializer())
                 .create();
     }
 

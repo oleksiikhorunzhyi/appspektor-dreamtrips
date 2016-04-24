@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/perks_view"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:padding="4dp">
+<RelativeLayout android:id="@+id/perks_view"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:fresco="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@android:color/white"
+             android:orientation="horizontal"
+    >
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/perk_logo"
-        android:layout_width="74dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/dtlOfferIconWidth"
+        android:layout_height="@dimen/dtlOfferIconHeight"
         android:layout_gravity="center_vertical"
         fresco:actualImageScaleType="centerCrop"
+        android:layout_margin="4dp"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dtlOfferIconWidth"
         android:orientation="vertical"
-        android:padding="3dp">
+        android:padding="6dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -30,17 +33,18 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:src="@drawable/perks_icon"/>
 
             <TextView
                 android:id="@+id/perks_description"
                 style="@style/DreamMerchantHeaderTextAppearance"
-                android:layout_gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="31dp"
                 android:lineSpacingMultiplier="0.8"
                 android:maxLines="2"
-                android:layout_marginLeft="22dp"
                 tools:text="Complimentary Margarita"/>
         </FrameLayout>
 
@@ -50,11 +54,18 @@
             style="@style/DreamMerchantHeaderTextAppearance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="31dp"
             android:textColor="@color/dtl_tab_indicator"
             android:textSize="12sp"
-            android:layout_marginLeft="22dp"
             tools:text="Everyday"/>
 
     </LinearLayout>
 
-</LinearLayout>
+    <View
+        android:layout_below="@id/perk_logo"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/divider_list"/>
+
+</RelativeLayout>

@@ -29,6 +29,7 @@ import icepick.State;
 import rx.Subscription;
 
 public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
+    private static final int SUGGESTION_ITEM_CHUNK = 15;
 
     @Inject
     SnappyRepository db;
@@ -75,9 +76,9 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
                 .map(element -> element.getItems().get(0))
                 .toList());
         //
-        doRequest(new PhotoGalleryRequest(context), photos -> {
+        doRequest(new PhotoGalleryRequest(context, SUGGESTION_ITEM_CHUNK), photos -> {
             if (isHasNewPhotos(photos)) {
-                view.refreshFeedItems(feedItems, Queryable.from(photos).take(15).toList(), !noMoreFeeds);
+                view.refreshFeedItems(feedItems, photos, !noMoreFeeds);
             } else {
                 view.refreshFeedItems(feedItems, !noMoreFeeds);
             }
@@ -85,11 +86,10 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     public boolean isHasNewPhotos(List<PhotoGalleryModel> photos) {
-        return photos != null && photos.size() > 0 && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
+        return photos != null && !photos.isEmpty() && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
     }
 
     public void removeSuggestedPhotos() {
-        db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
         view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 

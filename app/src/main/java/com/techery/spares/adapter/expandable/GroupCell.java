@@ -4,7 +4,6 @@ import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.techery.spares.ui.view.cell.AbstractCell;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.On
     }
 
 
-    protected int getClickableItemViewId () {
+    protected int getClickableItemViewId() {
         return 0;
     }
 
@@ -88,12 +87,13 @@ public abstract class GroupCell<G, C> extends AbstractCell<G> implements View.On
         view.setOnClickListener(listener);
     }
 
-    private void toggleView(){
+    private void toggleView() {
         if (isExpanded()) collapseView();
         else expandView();
     }
 
-    protected void onAction(ACTION action) {}
+    protected void onAction(ACTION action) {
+    }
 
     /**
      * Triggers expansion of the parent.

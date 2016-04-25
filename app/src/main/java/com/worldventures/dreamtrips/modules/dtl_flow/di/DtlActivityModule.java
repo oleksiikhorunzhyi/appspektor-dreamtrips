@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
 import com.techery.spares.adapter.expandable.BaseExpandableAdapter;
+import com.techery.spares.adapter.expandable.BaseExpandableDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
@@ -11,7 +12,9 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlTransactionSucceedP
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresenter;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellNew;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
@@ -58,6 +61,9 @@ import dagger.Provides;
                 DtlLocationCell.class,
                 DtlFilterAttributeCell.class,
                 DtlFilterAttributeHeaderCell.class,
+                DtlMerchantExpandableCell.class,
+                DtlPerkCell.class,
+                DtlPointsCell.class,
                 DtlScanReceiptFragment.class,
                 DtlScanReceiptPresenter.class,
                 DtlPointsEstimationFragment.class,
@@ -66,7 +72,6 @@ import dagger.Provides;
                 DtlScanQrCodePresenter.class,
                 DtlTransactionSucceedFragment.class,
                 DtlTransactionSucceedPresenter.class,
-                DtlMerchantCellNew.class,
                 DtlVerifyAmountFragment.class,
                 DtlVerifyAmountPresenter.class,
                 BaseExpandableAdapter.class,

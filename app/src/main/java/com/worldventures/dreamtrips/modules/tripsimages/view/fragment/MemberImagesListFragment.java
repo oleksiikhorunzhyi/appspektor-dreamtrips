@@ -6,7 +6,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
@@ -56,13 +58,14 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
     }
 
     @Override
-    public void openCreatePhoto() {
+    public void openCreatePhoto(MediaAttachment mediaAttachment) {
         if (isCreatePhotoAlreadyAttached()) return;
         //
         router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
+                .data(new CreateEntityBundle(mediaAttachment))
                 .build());
     }
 

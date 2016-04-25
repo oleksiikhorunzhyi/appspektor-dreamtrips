@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.octo.android.robospice.request.SpiceRequest;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.feed.event.PickerDoneEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetMemberPhotosQuery;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -33,11 +34,11 @@ public class MembersImagesPresenter extends TripImagesListPresenter<MembersImage
     }
 
     public void onEvent(PickerDoneEvent event) {
-        view.openCreatePhoto();
+        view.openCreatePhoto(event.getMediaAttachment());
     }
 
     public interface View extends TripImagesListPresenter.View {
 
-        void openCreatePhoto();
+        void openCreatePhoto(MediaAttachment mediaAttachment);
     }
 }

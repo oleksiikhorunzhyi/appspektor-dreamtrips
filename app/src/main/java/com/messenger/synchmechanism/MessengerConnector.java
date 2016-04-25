@@ -29,13 +29,13 @@ public class MessengerConnector {
 
     private static MessengerConnector INSTANCE;
     //
-    private SessionHolder<UserSession> appSessionHolder;
-    private NetworkEvents networkEvents;
+    private final SessionHolder<UserSession> appSessionHolder;
+    private final NetworkEvents networkEvents;
     //
-    private MessengerServerFacade messengerServerFacade;
-    private MessengerCacheSynchronizer messengerCacheSynchronizer;
+    private final MessengerServerFacade messengerServerFacade;
+    private final MessengerCacheSynchronizer messengerCacheSynchronizer;
     //
-    private BehaviorSubject<ConnectionStatus> connectionStream = BehaviorSubject.create(ConnectionStatus.DISCONNECTED);
+    private final BehaviorSubject<ConnectionStatus> connectionStream = BehaviorSubject.create(ConnectionStatus.DISCONNECTED);
 
     private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                                SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
@@ -75,20 +75,20 @@ public class MessengerConnector {
     }
 
     public void connect() {
-        if (isConnectingOrConnected() || !isUserSessionPresent()) return;
+        synchronized (messengerServerFacade) {
+            if (isConnectingOrConnected() || !isUserSessionPresent()) return;
 
-        connectionStream.onNext(CONNECTING);
-        UserSession userSession = appSessionHolder.get().get();
-        if (userSession.getUser() == null) return;
-        messengerServerFacade.authorizeAsync(userSession.getUsername(), userSession.getLegacyApiToken());
+            connectionStream.onNext(CONNECTING);
+            UserSession userSession = appSessionHolder.get().get();
+            if (userSession.getUser() == null) return;
+            messengerServerFacade.authorizeAsync(userSession.getUsername(), userSession.getLegacyApiToken());
+        }
     }
 
     public void disconnect() {
-        if (!isConnectingOrConnected()) return;
-        messengerServerFacade.disconnectAsync();
-
-        if (connectionStream.getValue() != DISCONNECTED) {
-            connectionStream.onNext(DISCONNECTED);
+        synchronized (messengerServerFacade) {
+            if (!isConnectingOrConnected()) return;
+            messengerServerFacade.disconnectAsync(() -> connectionStream.onNext(DISCONNECTED));
         }
     }
 

@@ -1,6 +1,7 @@
 package com.messenger.messengerservers.xmpp;
 
 import android.net.SSLCertificateSocketFactory;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -116,9 +117,14 @@ public class XmppServerFacade implements MessengerServerFacade {
     }
 
     @Override
-    public void disconnectAsync() {
+    public void disconnectAsync(@Nullable Runnable callback) {
         if (connection == null) return; // skip if not connected yet
-        connectionExecutor.execute(connection::disconnect);
+        connectionExecutor.execute(() -> {
+            synchronized (XmppServerFacade.this) {
+                connection.disconnect();
+                if (callback != null) callback.run();
+            }
+        });
         active = false;
     }
 

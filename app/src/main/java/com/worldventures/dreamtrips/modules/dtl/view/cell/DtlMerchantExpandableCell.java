@@ -116,7 +116,7 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
             offersContainer.setVisibility(View.VISIBLE);
             Observable.from(offers)
                     .compose(RxLifecycle.bindView(itemView))
-                    .distinct(offer -> offer.getType().equals(Offer.PERKS))
+                    .filter(offer -> offer.getType().equals(Offer.PERKS))
                     .count().subscribe(perks -> setOffersTypes(perks, offers.size() - perks));
         } else offersContainer.setVisibility(View.GONE);
     }

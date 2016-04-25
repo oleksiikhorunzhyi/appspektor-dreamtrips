@@ -12,7 +12,6 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -135,12 +134,6 @@ public class ApiModule {
                 .registerTypeAdapter(Setting.class, new SettingsDeserializer())
                 .registerTypeAdapter(Setting.class, new SettingsSerializer())
                 .create();
-    }
-
-    @Provides
-    @Singleton
-    ConfigApi provideS3Api(GsonConverter gsonConverter) {
-        return createRestAdapter(BuildConfig.S3Api, gsonConverter).create(ConfigApi.class);
     }
 
     @Provides

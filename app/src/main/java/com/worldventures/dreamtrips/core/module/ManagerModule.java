@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
-import com.worldventures.dreamtrips.modules.common.view.util.GlobalConfigManager;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
@@ -37,6 +37,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
+import io.techery.janet.Janet;
 
 @Module(
         injects = {
@@ -159,7 +160,9 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    GlobalConfigManager provideGlobalConfigManager(SessionHolder<UserSession> appSessionHolder, @Global EventBus eventBus) {
-        return new GlobalConfigManager(appSessionHolder, eventBus);
+    GlobalConfigManager provideGlobalConfigManager(SessionHolder<UserSession> appSessionHolder,
+                                                   Janet janet,
+                                                   @Global EventBus eventBus) {
+        return new GlobalConfigManager(appSessionHolder, janet, eventBus);
     }
 }

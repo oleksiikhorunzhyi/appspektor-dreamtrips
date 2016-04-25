@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.view.util.GlobalConfigManager;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
 import org.apache.http.HttpStatus;
@@ -154,7 +154,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     private void reloadGlobalConfig(OnLoginSuccess onLoginSuccess, SpiceException error) {
-        globalConfigManager.loadGlobalConfig(this, () -> {
+        globalConfigManager.loadGlobalConfig(() -> {
             final UserSession userSession = appSessionHolder.get().get();
             final String username = userSession.getUsername();
             final String userPassword = userSession.getUserPassword();

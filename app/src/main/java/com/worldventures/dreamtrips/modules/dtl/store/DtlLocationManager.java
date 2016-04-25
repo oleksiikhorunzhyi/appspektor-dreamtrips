@@ -8,12 +8,12 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DtlApi;
+import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlUpdateLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
@@ -26,7 +26,6 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionService;
 import io.techery.janet.ActionServiceWrapper;
-import io.techery.janet.CommandActionBase;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
@@ -63,7 +62,7 @@ public class DtlLocationManager {
 
     private void init(Scheduler scheduler) {
         Janet janet = new Janet.Builder()
-                .addService(new SearchLocationWrapper(new CacheLocationWrapper(new CommandActionService()), dtlApi))
+                .addService(new SearchLocationWrapper(new CacheResultWrapper(new CommandActionService()), dtlApi))
                 .build();
         nearbyLocationPipe = janet.createPipe(DtlNearbyLocationCommand.class, scheduler);
         searchLocationPipe = janet.createPipe(DtlSearchLocationCommand.class, scheduler);
@@ -116,55 +115,6 @@ public class DtlLocationManager {
 
     public Observable<DtlLocationCommand> getSelectedLocation() {
         return locationPipe.createObservableSuccess(new DtlLocationCommand(db));
-    }
-
-    public Observable<DtlLocation> observeLocationUpdates() {
-        return updateLocationPipe.observeSuccess().map(CommandActionBase::getResult);
-    }
-
-    private final static class CacheLocationWrapper extends ActionServiceWrapper {
-
-        private DtlLocation lastLocation;
-
-        public CacheLocationWrapper(CommandActionService actionService) {
-            super(actionService);
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
-            if (holder.action() instanceof DtlLocationCommand) {
-                if (((DtlLocationCommand) holder.action()).isFromDB()
-                        && lastLocation != null
-                        && lastLocation.getLocationSourceType() != LocationSourceType.UNDEFINED) {
-                    holder.newAction((A) new DtlLocationCommand(lastLocation));
-                }
-            }
-            return false;
-        }
-
-        @Override
-        protected <A> void onInterceptCancel(ActionHolder<A> holder) {
-        }
-
-        @Override
-        protected <A> void onInterceptStart(ActionHolder<A> holder) {
-        }
-
-        @Override
-        protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
-        }
-
-        @Override
-        protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
-            if (holder.action() instanceof DtlLocationCommand) {
-                lastLocation = ((DtlLocationCommand) holder.action()).getResult();
-            }
-        }
-
-        @Override
-        protected <A> void onInterceptFail(ActionHolder<A> holder, JanetException e) {
-        }
     }
 
     private final static class SearchLocationWrapper extends ActionServiceWrapper {

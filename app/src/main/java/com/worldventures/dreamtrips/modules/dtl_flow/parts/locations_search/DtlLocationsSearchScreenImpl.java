@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
@@ -78,6 +79,7 @@ public class DtlLocationsSearchScreenImpl
         searchItem = toolbar.getMenu().findItem(R.id.action_search);
         if (searchItem != null) {
             SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            searchView.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
             searchView.setIconified(false);
             // line below is magic - prevents empty string to be sent as query during screen creation
             searchView.setQuery("", false);

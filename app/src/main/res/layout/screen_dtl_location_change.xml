@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangeScreenImpl
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        >
+
+        <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/dtlToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/theme_main"
+            app:dtlt_collapsed="false"
+            app:dtlt_focused_mode="location"
+            >
+
+            <!-- Make additional wrapping to make layout editable and previewable in IDE -->
+            <include layout="@layout/view_dtl_toolbar_content" />
+        </com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <Button
+        android:id="@+id/autoDetectNearMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:text="@string/dtl_autodetect_location"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/locationsList"
+            style="@style/myRecyclerViewStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadingEdgeLength="0dp"
+            android:overScrollMode="never"
+            android:padding="@dimen/spacing_tiniest"
+            />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="gone"
+            />
+    </FrameLayout>
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangeScreenImpl>

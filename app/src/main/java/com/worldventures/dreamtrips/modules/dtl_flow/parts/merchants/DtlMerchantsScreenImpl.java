@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
@@ -32,17 +31,18 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableC
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import icepick.State;
 import rx.Observable;
 
 public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
@@ -52,26 +52,23 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     @ForActivity
     Provider<Injector> injectorProvider;
     //
-    @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
+    @InjectView(R.id.dtlToolbar)
+    DtlToolbar dtlToolbar;
     @InjectView(R.id.filterDiningsSwitch)
     SwitchCompat filterDiningsSwitch;
+    @InjectView(R.id.filtersCounter)
+    AppCompatTextView filtersCounter;
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
+    SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView)
-    protected View emptyView;
+    View emptyView;
     @InjectView(R.id.merchant_holder_offers)
-    protected TextView emptyTextView;
+    TextView emptyTextView;
     //
     BaseExpandableDelegateAdapter baseDelegateAdapter;
-    SearchViewHelper searchViewHelper;
-    //
     SelectionManager selectionManager;
-    //
-    @State
-    String lastQuery;
 
     @Override
     protected void onAttachedToWindow() {
@@ -97,64 +94,55 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
         refreshLayout.setEnabled(false);
-        //
-        toolbar.inflateMenu(getPresenter().getToolbarMenuRes());
-        searchViewHelper = new SearchViewHelper();
-        searchViewHelper.init(toolbar.getMenu().findItem(R.id.action_search), lastQuery,
-                query -> {
-                    lastQuery = query;
-                    getPresenter().applySearch(query);
-                }, null);
-        toolbar.setOnMenuItemClickListener(getPresenter()::onToolbarMenuItemClick);
-        initToolbar();
     }
 
     @Override
-    protected Parcelable onSaveInstanceState() {
-        return super.onSaveInstanceState();
+    protected void onPostAttachToWindowView() {
+        super.onPostAttachToWindowView();
+        initDtlToolbar();
+    }
+
+    private void initDtlToolbar() {
+        RxDtlToolbar.navigationClicks(dtlToolbar)
+                .throttleFirst(250L, TimeUnit.MILLISECONDS)
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(aVoid -> ((FlowActivity) getActivity()).openLeftDrawer());
+        RxDtlToolbar.mapClicks(dtlToolbar)
+                .throttleFirst(250L, TimeUnit.MILLISECONDS)
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(aVoid -> getPresenter().mapClicked());
+        RxDtlToolbar.merchantSearchTextChanges(dtlToolbar)
+                .skip(1)
+                .debounce(250L, TimeUnit.MILLISECONDS)
+                .filter(s -> !dtlToolbar.isCollapsed())
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(getPresenter()::applySearch);
+        RxDtlToolbar.locationInputFocusChanges(dtlToolbar)
+                .skip(1)
+                .compose(RxLifecycle.bindView(this))
+                .filter(Boolean::booleanValue) // only true -> only focus gains
+                .subscribe(aBoolean -> getPresenter().locationChangeRequested());
     }
 
     @Override
-    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
-        if (dtlLocation == null || toolbar == null) return; // for safety reasons
-        //
-        TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
-        TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
-        //
-        if (locationTitle == null || locationModeCaption == null) return;
-        //
+    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
+                                   @Nullable String actualSearchQuery) {
+        if (dtlLocation == null) return;
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:
-                locationTitle.setText(dtlLocation.getLongName());
-                locationModeCaption.setVisibility(View.GONE);
+                dtlToolbar.setToolbarCaptions(actualSearchQuery, dtlLocation.getLongName());
                 break;
             case FROM_MAP:
-                if (dtlLocation.getLongName() == null) {
-                    locationModeCaption.setVisibility(View.GONE);
-                    locationTitle.setText(R.string.dtl_nearby_caption);
-                } else {
-                    locationModeCaption.setVisibility(View.VISIBLE);
-                    locationTitle.setText(dtlLocation.getLongName());
-                }
+                String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
+                        getContext().getString(R.string.dtl_nearby_caption) : dtlLocation.getLongName();
+                dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
                 break;
         }
     }
 
-    private void initToolbar() {
-        // TODO move to delegate
-        if (!isTabletLandscape()) {
-            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-            toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
-        }
-        //
-        ButterKnife.findById(toolbar, R.id.titleContainer).setOnClickListener(v ->
-                getPresenter().onToolbarTitleClicked()
-        );
-    }
-
-    @Override
-    public void openRightDrawer() {
+    @OnClick(R.id.filtersCounter)
+    void onFiltersCounterClicked(View view) {
         ((FlowActivity) getActivity()).openRightDrawer();
     }
 
@@ -198,7 +186,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
     @Override
     protected void onDetachedFromWindow() {
-        searchViewHelper.dropHelper();
         selectionManager.release();
         super.onDetachedFromWindow();
     }

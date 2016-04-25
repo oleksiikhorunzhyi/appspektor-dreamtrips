@@ -46,6 +46,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        dtlMerchantManager.initFilterData();
         bindLocationObtaining();
     }
 

@@ -20,9 +20,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
     void toggleSelection(DtlMerchant DtlMerchant);
 
-    void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
-
-    void openRightDrawer();
+    void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
 
     void toggleDiningFilterSwitch(boolean checked);
 

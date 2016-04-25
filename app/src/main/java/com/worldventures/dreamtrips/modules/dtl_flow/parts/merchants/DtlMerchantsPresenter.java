@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 
 public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, ViewState.EMPTY> {
 
-    void onToolbarTitleClicked();
+    void locationChangeRequested();
 
     void applySearch(String query);
 
@@ -17,4 +17,6 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
     void perkClick(DtlOfferPerkData perk);
 
     void pointClicked(DtlOfferPointsData points);
+
+    void mapClicked();
 }

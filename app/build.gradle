@@ -378,6 +378,7 @@ dependencies {
     compile 'com.trello:rxlifecycle-components:0.4.0'
     compile 'io.reactivex:rxjava-debug:1.0.3'
     // Ui
+    compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile "com.android.support:design:${googleLibrariesVersion}"
     compile 'com.github.traex.expandablelayout:library:1.3'

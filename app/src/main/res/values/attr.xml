@@ -47,4 +47,14 @@
     <declare-styleable name="AvatarView">
         <attr name="av_online_indicator_size" format="dimension|reference" />
     </declare-styleable>
+
+    <declare-styleable name="DtlToolbar">
+        <!-- 'dtlt_' prefix to prevent any possible duplication -->
+        <attr name="dtlt_collapsed" format="boolean" />
+        <attr name="dtlt_focused_mode" format="enum">
+            <enum name="undefined" value="0" />
+            <enum name="search" value="1" />
+            <enum name="location" value="2" />
+        </attr>
+    </declare-styleable>
 </resources>

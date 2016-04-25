@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -20,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
@@ -29,6 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import icepick.State;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
@@ -42,6 +43,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     DtlMerchantManager dtlMerchantManager;
     @Inject
     DtlLocationManager dtlLocationManager;
+    //
+    @State
+    boolean initialized;
     //
     private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
 
@@ -59,10 +63,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         bindMerchantManager();
         bindFilteredStream();
         //
-        dtlLocationManager.getSelectedLocation()
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(location -> dtlMerchantManager.loadMerchants(location.getCoordinates().asAndroidLocation()));
+        if (!initialized) {
+            dtlLocationManager.getSelectedLocation()
+                    .map(DtlLocationCommand::getResult)
+                    .compose(bindViewIoToMainComposer())
+                    .subscribe(location -> dtlMerchantManager.loadMerchants(
+                            location.getCoordinates().asAndroidLocation()));
+            initialized = true;
+        }
         //
         if (!getView().isTabletLandscape())
             dtlMerchantManager.getMerchantsExecutor.connectSuccessOnly()
@@ -78,7 +86,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         dtlLocationManager.getSelectedLocation()
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(location -> getView().updateToolbarTitle(location));
+                .subscribe(location -> getView().updateToolbarTitle(location,
+                        dtlMerchantManager.getCurrentQuery()));
     }
 
     private void bindFilteredStream() {
@@ -112,32 +121,22 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     @Override
-    public boolean onToolbarMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_map:
-                Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext())));
-                return true;
-            case R.id.action_dtl_filter:
-                getView().openRightDrawer();
-                return true;
-        }
-        return false;
+    public void mapClicked() {
+        Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext())));
     }
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {
-        if (merchants.isEmpty()) navigateToLocations();
+        if (merchants.isEmpty() && // TODO :: 4/14/16 also check applied filters number to be 0
+                TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery()))
+            Flow.get(getContext()).set(DtlLocationsPath.builder()
+                    .allowUserGoBack(true)
+                    .showNoMerchantsCaption(true)
+                    .build());
     }
 
     @Override
-    public void onToolbarTitleClicked() {
-        navigateToLocations();
-    }
-
-    protected void navigateToLocations() {
-        Flow.get(getContext()).set(DtlLocationsPath.builder()
-                .allowUserGoBack(true)
-                .showNoMerchantsCaption(true)
-                .build());
+    public void locationChangeRequested() {
+        Flow.get(getContext()).set(new DtlLocationChangePath());
     }
 
     @Override

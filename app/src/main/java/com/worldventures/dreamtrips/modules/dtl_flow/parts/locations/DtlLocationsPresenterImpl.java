@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchant
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
@@ -66,6 +67,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
                 .compose(bindViewIoToMainComposer())
                 .timeout(15, TimeUnit.SECONDS)
                 .subscribe(this::onLocationObtained, throwable -> {
+                    if (throwable instanceof TimeoutException) getView().hideProgress();
                 });
     }
 

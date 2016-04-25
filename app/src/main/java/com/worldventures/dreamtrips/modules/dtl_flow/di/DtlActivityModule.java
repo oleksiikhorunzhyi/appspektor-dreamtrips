@@ -23,6 +23,8 @@ import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFra
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangeScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations_search.DtlLocationsSearchPresenterImpl;
@@ -54,6 +56,8 @@ import dagger.Provides;
                 DtlStartScreenImpl.class,
                 DtlMerchantsPresenterImpl.class,
                 DtlMerchantsScreenImpl.class,
+                DtlLocationChangePresenterImpl.class,
+                DtlLocationChangeScreenImpl.class,
                 DtlDetailsPresenterImpl.class,
                 DtlDetailsScreenImpl.class,
                 ActivityPresenter.class,

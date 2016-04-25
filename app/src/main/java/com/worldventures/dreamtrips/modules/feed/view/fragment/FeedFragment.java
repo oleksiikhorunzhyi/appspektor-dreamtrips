@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
+import com.worldventures.dreamtrips.modules.feed.event.DestroyFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
@@ -112,6 +113,12 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     public void onDetach() {
         super.onDetach();
         filterPopupWindow = null;
+    }
+
+    @Override
+    public void onDestroyView() {
+        eventBus.post(new DestroyFeedFragment());
+        super.onDestroyView();
     }
 
     private void actionFilter() {

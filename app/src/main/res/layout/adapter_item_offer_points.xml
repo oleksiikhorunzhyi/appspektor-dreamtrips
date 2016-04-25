@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/spacing_tiny"
         android:layout_marginBottom="@dimen/spacing_tiny"
         android:layout_marginLeft="@dimen/spacing_tiny"
-        fresco:actualImageScaleType="centerCrop"
+        fresco:actualImageScaleType="centerInside"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
 
     <TextView

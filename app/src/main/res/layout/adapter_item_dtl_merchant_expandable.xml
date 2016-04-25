@@ -24,7 +24,7 @@
                 android:id="@+id/merchantCoverImage"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                app:actualImageScaleType="centerCrop"
+                app:actualImageScaleType="centerInside"
                 app:placeholderImage="@drawable/ic_trip_image_placeholder"
                 />
 

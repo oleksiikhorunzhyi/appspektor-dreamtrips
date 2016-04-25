@@ -35,8 +35,10 @@ public class MessageTranslationDelegate {
                             && SessionHolderHelper.hasEntity(userSession)){
                         translateMessageRequest(message, localeHelper.
                                 getAccountLocaleFormatted(userSession.get().get().getUser()));
+
+                        return;
                     }
-                    if (dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED){
+                    if (dataTranslation != null && dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED){
                         dataTranslation.setTranslateStatus(TranslationStatus.TRANSLATED);
                         translationsDAO.save(dataTranslation);
                     }

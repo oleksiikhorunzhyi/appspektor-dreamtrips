@@ -67,7 +67,7 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOfferPerkData, DtlMerch
         List<OperationDay> operationDays = getModelObject().getOperationDays();
         if (operationDays == null) return;
         //
-        String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays.subList(0, 3));
+        String concatDays = DateTimeUtils.concatOperationDays(itemView.getResources(), operationDays);
         this.operationDays.setText(concatDays);
     }
 }

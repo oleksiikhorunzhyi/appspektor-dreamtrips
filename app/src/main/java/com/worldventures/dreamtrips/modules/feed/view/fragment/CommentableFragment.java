@@ -127,7 +127,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         recyclerView.setAdapter(adapter);
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
-        if (getArgs().isOpenKeyboard()) {
+        if (getArgs().isOpenKeyboard() && getArgs().getFeedEntity().getCommentsCount() == 0) {
             showKeyboard();
         }
         restorePostIfNeeded();
@@ -145,8 +145,13 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     }
 
-    private void showKeyboard(){
-        input.post(() -> SoftInputUtil.showSoftInputMethod(input));
+    private void showKeyboard() {
+        recyclerView.postDelayed(() -> {
+            recyclerView.scrollBy(0, Integer.MAX_VALUE);
+            inputContainer.setVisibility(View.VISIBLE);
+            input.requestFocus();
+            SoftInputUtil.showSoftInputMethod(input);
+        }, 500);
     }
 
     @Override
@@ -159,6 +164,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     public void onPause() {
         super.onPause();
         input.removeTextChangedListener(inputWatcher);
+        SoftInputUtil.hideSoftInputMethod(getActivity());
     }
 
     @Override
@@ -178,9 +184,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         boolean commentsEmpty = layout.getItemCount() <= getAdditionalItemsCount();
         adapter.addItems(getAdditionalItemsCount(), commentList);
         if (commentsEmpty && getArgs().isOpenKeyboard()) {
-            recyclerView.post(() -> {
-                recyclerView.scrollToPosition(layout.getItemCount() - 1);
-            });
+            showKeyboard();
         }
     }
 

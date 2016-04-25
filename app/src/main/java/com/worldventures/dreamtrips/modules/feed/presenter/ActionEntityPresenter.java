@@ -13,12 +13,17 @@ import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import icepick.State;
 import io.techery.janet.ActionState;
+import rx.Subscription;
+import timber.log.Timber;
 
 public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View> extends Presenter<V> {
 
@@ -29,10 +34,29 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     @State
     ArrayList<PhotoCreationItem> cachedCreationItems = new ArrayList<>();
 
+    @Inject
+    EditPhotoTagsCallback editPhotoTagsCallback;
+
+    private Subscription editTagsSubscription;
+
     @Override
     public void takeView(V view) {
         super.takeView(view);
         updateUi();
+        //
+        editTagsSubscription = editPhotoTagsCallback.toObservable().subscribe(bundle -> {
+            onTagSelected(bundle.requestId, bundle.addedTags, bundle.removedTags);
+        }, error -> {
+            Timber.e(error, "");
+        });
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        //
+        if (editTagsSubscription != null && !editTagsSubscription.isUnsubscribed())
+            editTagsSubscription.unsubscribe();
     }
 
     protected void updateUi() {

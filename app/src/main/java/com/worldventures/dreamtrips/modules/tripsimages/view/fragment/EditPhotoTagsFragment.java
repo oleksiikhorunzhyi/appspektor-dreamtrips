@@ -26,14 +26,21 @@ import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.EditPhotoTagsPresenter;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_edit_photo_tags)
-public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsPresenter, EditPhotoTagsBundle> implements EditPhotoTagsPresenter.View {
+public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsPresenter, EditPhotoTagsBundle>
+        implements EditPhotoTagsPresenter.View {
+
+    @Inject
+    EditPhotoTagsCallback editPhotoTagsCallback;
 
     @InjectView(R.id.tag_toolbar)
     Toolbar toolbar;
@@ -73,23 +80,23 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
         });
         //
         photoTagHolderManager = new PhotoTagHolderManager(taggableImageHolder, getPresenter().getAccount(), getPresenter().getAccount());
-        photoTagHolderManager.setTagCreatedListener(photoTag -> {
-            getPresenter().onTagAdded(photoTag);
-        });
-        photoTagHolderManager.setTagDeletedListener(photoTag -> {
-            getPresenter().onTagDeleted(photoTag);
-        });
+        photoTagHolderManager.setTagCreatedListener(photoTag -> getPresenter().onTagAdded(photoTag));
+        photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().onTagDeleted(photoTag));
         photoTagHolderManager.creationTagEnabled(true);
         photoTagHolderManager.setFriendRequestProxy(getPresenter());
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        OrientationUtil.lockOrientation(getActivity());
     }
 
     protected void addSuggestions() {
         List<PhotoTag> photoTags = Queryable.from(getArgs().getSuggestions())
                 .filter(element -> !PhotoTag.isIntersectedWithPhotoTags(getArgs().getPhotoTags(), element)).toList();
         photoTagHolderManager.addSuggestionTagView(photoTags,
-                (suggestion) -> {
-                    photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion);
-                });
+                (suggestion) -> photoTagHolderManager.addCreationTagBasedOnSuggestion(suggestion));
     }
 
     protected boolean onToolBarMenuItemClicked(MenuItem item) {
@@ -103,32 +110,15 @@ public class EditPhotoTagsFragment extends RxBaseFragmentWithArgs<EditPhotoTagsP
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        OrientationUtil.lockOrientation(getActivity());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
+        super.onDestroyView();
+        SoftInputUtil.hideSoftInputMethod(getActivity());
         OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        SoftInputUtil.hideSoftInputMethod(getActivity());
-    }
-
-    @Override
     public void notifyAboutTags(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> deletedTags) {
-        if (getTargetFragment() instanceof Callback) {
-            ((Callback) getTargetFragment()).onTagSelected(requestId, addedTags, deletedTags);
-        }
-    }
-
-    public interface Callback {
-        void onTagSelected(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags);
+        editPhotoTagsCallback.onTagsSelected(requestId, addedTags, deletedTags);
     }
 
     @NonNull

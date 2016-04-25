@@ -16,7 +16,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -24,6 +23,7 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.modules.feed.event.DestroyFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
@@ -35,7 +35,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import rx.Observable;
+import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
 @Layout(R.layout.adapter_item_suggested_photos)
@@ -74,35 +74,37 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         super.afterInject();
 
         presenter.takeView(this);
+
+        EventBus bus = getEventBus();
+        if (!bus.isRegistered(this)) {
+            bus.register(this);
+        }
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        presenter.fetchUser();
-
         if (suggestionAdapter == null) {
             final LinearLayoutManager layoutManager =
                     new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             layoutManager.setAutoMeasureEnabled(true);
 
             RecyclerView.OnScrollListener preLoadScrollListener = new RecyclerView.OnScrollListener() {
-                long lastDateTaken = Long.MAX_VALUE;
-
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
+                    int count = layoutManager.getItemCount();
                     int position = layoutManager.findLastVisibleItemPosition();
-                    int updatePosition = layoutManager.getItemCount() - OFFSET;
-                    if (position >= updatePosition) {
-                        PhotoGalleryModel model = (PhotoGalleryModel) suggestionAdapter.getItem(layoutManager.getItemCount() - 1);
 
-                        if (model.getDateTaken() < lastDateTaken) {
-                            lastDateTaken = model.getDateTaken();
-                            Timber.d("Count last date %s", lastDateTaken);
+                    if (position >= count - OFFSET) {
+                        if (count == 0) {
+                            presenter.preloadSuggestedPhotos(null);
+                            return;
+                        }
+
+                        PhotoGalleryModel model = (PhotoGalleryModel) suggestionAdapter.getItem(layoutManager.getItemCount() - 1);
+                        if (model.getDateTaken() < presenter.lastSyncTime()) {
                             presenter.preloadSuggestedPhotos(model);
-                            Timber.d("Count %s last position %s, last %s param %s, Link %s", layoutManager.getItemCount(),
-                                    position, lastDateTaken, model.getDateTaken(), SuggestedPhotosCell.this.toString());
                         }
                     }
                 }
@@ -128,6 +130,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         } else {
             cardViewWrapper.setCardElevation(0);
         }
+
+        presenter.sync();
     }
 
     @Override
@@ -137,14 +141,16 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
 
     @OnClick(R.id.suggestion_cancel)
     void onCancel() {
-        cellDelegate.onCancelClicked();
         presenter.removeSuggestedPhotos();
+        cellDelegate.onCancelClicked();
     }
 
     @OnClick(R.id.btn_attach)
     void onAttach() {
-        cellDelegate.onAttachClicked(presenter.selectedPhotos());
+        List<PhotoGalleryModel> selectedPhotos = presenter.selectedPhotos();
         presenter.removeSuggestedPhotos();
+
+        cellDelegate.onAttachClicked(selectedPhotos);
     }
 
     @OnClick(R.id.suggestion_avatar)
@@ -157,13 +163,17 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         presenter.selectPhoto(model);
         suggestionAdapter.notifyDataSetChanged();
         //
-        btnAttach.setVisibility(presenter.hasSelectedPhotos() ? View.VISIBLE : View.GONE);
     }
-
 
     @Override
     public void appendPhotoSuggestions(List<PhotoGalleryModel> items) {
         suggestionAdapter.addItems(items);
+    }
+
+    @Override
+    public void pushForward(List<PhotoGalleryModel> items) {
+        suggestionAdapter.addItems(0, items);
+        suggestedList.scrollToPosition(0);
     }
 
     @Override
@@ -177,13 +187,17 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
 
     @Override
     public void setSuggestionTitle(int sizeOfSelectedPhotos) {
-        if (sizeOfSelectedPhotos > 0) {
+        boolean hasPhotos = sizeOfSelectedPhotos > 0;
+        if (hasPhotos) {
             int resource = QuantityHelper.chooseResource(sizeOfSelectedPhotos,
                     R.string.suggested_photo_selected_one, R.string.suggested_photo_selected_multiple);
+
             description.setText(String.format(itemView.getContext().getResources().getString(resource), sizeOfSelectedPhotos));
         } else {
             description.setText(R.string.suggested_photo);
         }
+
+        btnAttach.setVisibility(hasPhotos ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -193,7 +207,16 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     }
 
     @Override
-    public <T> Observable<T> bind(Observable<T> observable) {
-        return observable.compose(RxLifecycle.bindView(itemView));
+    public void clearListState() {
+        suggestionAdapter.clear();
+    }
+
+    @Override
+    public PhotoGalleryModel firstElement() {
+        return (PhotoGalleryModel) suggestionAdapter.getItem(0);
+    }
+
+    public void onEvent(DestroyFeedFragment event) {
+        presenter.detachView();
     }
 }

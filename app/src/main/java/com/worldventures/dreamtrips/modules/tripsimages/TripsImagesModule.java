@@ -41,6 +41,9 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefull
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.SocialImageFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.TripPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.YSBHPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -108,6 +111,12 @@ public class TripsImagesModule {
     @Provides
     DrawableUtil provideDrawableUtil(Context context) {
         return new DrawableUtil(context);
+    }
+
+    @Provides
+    @Singleton
+    EditPhotoTagsCallback provideEditPhotoTagsCallback() {
+        return new EditPhotoTagsCallback();
     }
 
 }

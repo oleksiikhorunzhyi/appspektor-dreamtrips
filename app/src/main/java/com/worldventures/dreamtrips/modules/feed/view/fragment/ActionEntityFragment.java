@@ -35,9 +35,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PostCreation
 import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,7 +48,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, EditPhotoTagsFragment.Callback,
+        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View,
         LocationFragment.Callback, PhotoPostCreationDelegate {
 
     @Inject
@@ -244,18 +242,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     }
 
     @Override
-    public void onTagSelected(long requestId, ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags) {
-        getPresenter().onTagSelected(requestId, addedTags, removedTags);
-    }
-
-    @Override
     public void openLocation(Location location) {
         router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder
                 .forFragment()
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.additional_page_container)
-                .targetFragment(ActionEntityFragment.this)
                 .data(location)
                 .build());
     }
@@ -304,7 +296,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.additional_page_container)
-                .targetFragment(this)
                 .data(bundle)
                 .build());
     }

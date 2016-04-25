@@ -22,7 +22,6 @@ import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
@@ -90,7 +89,7 @@ public class DtlLocationsScreenImpl
     }
 
     private void initToolbar() {
-        toolbar.setTitle(Route.DTL_LOCATIONS.getTitleRes());
+        toolbar.setTitle(R.string.dtl_locations_title);
         toolbar.inflateMenu(R.menu.menu_locations);
         if (getPath().isAllowUserGoBack()) {
             toolbar.setNavigationIcon(R.drawable.back_icon);

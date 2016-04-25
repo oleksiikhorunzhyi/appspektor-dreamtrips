@@ -205,7 +205,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             MessengerActivity.startMessenger(this);
             return;
         }
-        if (component.getKey().equals(DtlActivityModule.DTLFLOW)) {
+        if (component.getKey().equals(DtlActivityModule.DTL)) {
             closeLeftDrawer();
             DtlActivity.startDtl(this);
             return;

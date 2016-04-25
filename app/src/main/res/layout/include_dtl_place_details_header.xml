@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="@layout/fragment_dtl_merchant_details">
+    tools:showIn="@layout/screen_dtl_details"
+    >
 
     <ImageView
         android:id="@+id/merchant_details_cover_stub"
@@ -72,8 +73,7 @@
             android:drawableStart="@drawable/perks_icon"
             android:gravity="center"
             android:text="@string/dtl_perks_description"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            />
     </LinearLayout>
-
-
 </RelativeLayout>

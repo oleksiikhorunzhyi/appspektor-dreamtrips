@@ -15,6 +15,7 @@ import timber.log.Timber;
 
 public class SearchViewHelper {
 
+    // TODO :: 4/24/16 delete after merge of new toolbar
     private static final int THROTTLE_SEARCH_DURATION = 900;
 
     private QueryChangedListener onQueryChangedListener;

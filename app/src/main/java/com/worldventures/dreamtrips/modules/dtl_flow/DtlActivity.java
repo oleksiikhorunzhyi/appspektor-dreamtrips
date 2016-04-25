@@ -10,11 +10,8 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterViewImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPath;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import flow.History;
@@ -41,7 +38,7 @@ public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresente
 
     @Override
     protected ComponentDescription getCurrentComponent() {
-        return rootComponentsProvider.getComponentByKey(DtlActivityModule.DTLFLOW);
+        return rootComponentsProvider.getComponentByKey(DtlActivityModule.DTL);
     }
 
     @Override

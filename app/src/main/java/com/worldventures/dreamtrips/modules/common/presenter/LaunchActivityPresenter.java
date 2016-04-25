@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.common.view.util.GlobalConfigManager;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
@@ -136,7 +136,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     }
 
     private void loadGlobalConfig() {
-        globalConfigManager.loadGlobalConfig(dreamSpiceManager, this::loadFiltersData, () -> view.configurationFailed());
+        globalConfigManager.loadGlobalConfig(this::loadFiltersData, () -> view.configurationFailed());
     }
 
     private void loadFiltersData() {

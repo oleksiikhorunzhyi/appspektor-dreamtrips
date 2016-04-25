@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import com.messenger.delegate.CropImageDelegate;
+import android.content.Intent;
+
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
@@ -9,6 +10,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -54,9 +56,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Inject
     MediaPickerManager mediaPickerManager;
     @Inject
-    CropImageDelegate cropImageDelegate;
+    SocialCropImageManager socialCropImageManager;
 
     private Subscription mediaSubscription;
+    private Subscription cropSubscription;
 
     private String coverTempFilePath;
 
@@ -146,14 +149,14 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                 }, error -> {
                     Timber.e(error, "");
                 });
-
-        cropImageDelegate.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
+        //
+        socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
         connectToCroppedImageStream();
     }
 
     private void connectToCroppedImageStream() {
-        view.bind(cropImageDelegate.getCroppedImagesStream()
-                .compose(new IoToMainComposer<>()))
+        cropSubscription = socialCropImageManager.getCroppedImagesStream()
+                .compose(new IoToMainComposer<>())
                 .subscribe(fileNotification -> {
                     if (fileNotification.isOnError()) {
                         onCoverCropped(null, fileNotification.getThrowable().toString());
@@ -169,6 +172,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void dropView() {
         super.dropView();
         if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
+        if (cropSubscription != null && !cropSubscription.isUnsubscribed()) cropSubscription.unsubscribe();
     }
 
     @Override
@@ -216,7 +220,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                 user.setCoverUploadInProgress(false);
                 view.notifyUserChanged();
             });
-
         } else {
             view.informUser(errorMsg);
         }
@@ -281,7 +284,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     public void onCoverChosen(PhotoGalleryModel image) {
-        cropImageDelegate.cropImage(image.getOriginalPath());
+        view.cropImage(socialCropImageManager, image.getOriginalPath());
+    }
+
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        return socialCropImageManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onEvent(OnPhotoClickEvent e) {
@@ -305,6 +312,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         void showMediaPicker(int requestId);
 
         void hideMediaPicker();
+
+        void cropImage(SocialCropImageManager socialCropImageManager, String path);
     }
 
 }

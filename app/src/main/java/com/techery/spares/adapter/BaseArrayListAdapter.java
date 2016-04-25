@@ -179,7 +179,7 @@ public class BaseArrayListAdapter<BaseItemClass> extends RecyclerView.Adapter<Ab
     }
 
     public void clearAndUpdateItems(List<BaseItemClass> updatedItems) {
-        clear();
+        items.clear();
         getItems().addAll(updatedItems);
         notifyDataSetChanged();
     }

@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 
+import java.util.List;
+
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_suggestion_photo)

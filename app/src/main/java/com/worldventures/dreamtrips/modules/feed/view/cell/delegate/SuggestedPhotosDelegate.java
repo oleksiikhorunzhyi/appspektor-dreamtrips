@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import java.util.List;
 
 public interface SuggestedPhotosDelegate extends CellDelegate<MediaAttachment> {
-
     void onCancelClicked();
 
     void onAttachClicked(List<PhotoGalleryModel> pickedItems);

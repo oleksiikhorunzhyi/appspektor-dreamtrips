@@ -37,7 +37,8 @@
         android:layout_gravity="right"
         android:layout_marginRight="@dimen/spacing_normal"
         android:layout_marginTop="@dimen/spacing_normal"
-        android:src="@drawable/ic_tag"/>
+        android:src="@drawable/ic_tag"
+        android:visibility="invisible"/>
 
     <LinearLayout
         android:id="@+id/ll_global_content_wrapper"

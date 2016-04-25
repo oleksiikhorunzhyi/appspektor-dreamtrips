@@ -96,7 +96,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         if (photo.getUser() == null) return;
         super.setContent(photo);
         viewDelegate.setContent((Photo) photo);
-        manageTagIconVisibility();
     }
 
     @Override
@@ -194,11 +193,13 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     protected void hideTagViewGroup() {
         tag.setSelected(false);
         photoTagHolderManager.hide();
+        ivImage.setScaleEnabled(true);
     }
 
     protected void showTagViewGroup() {
         tag.setSelected(true);
         photoTagHolderManager.show(ivImage);
+        ivImage.setScaleEnabled(false);
     }
 
     private void deletePhoto() {
@@ -220,12 +221,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         if (isResumed()) {
             Photo photo = getPresenter().getPhoto();
             if (photo != null) {
-                photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, getPresenter().getAccount(), photo.getUser());
-                showTagViewGroup();
-                photoTagHolderManager.addExistsTagViews(photo.getPhotoTags());
-                photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().deleteTag(photoTag));
                 syncTagViewGroupWithGlobalState();
-                manageTagIconVisibility();
             }
         }
     }
@@ -254,12 +250,16 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     private void syncTagViewGroupWithGlobalState() {
         SocialViewPagerState state = getState();
-        if (state.isTagHolderVisible()) {
-            showTagViewGroup();
-            ivImage.setScaleEnabled(false);
+        photoTagHolderManager = new PhotoTagHolderManager(photoTagHolder, getPresenter().getAccount(), getPresenter().getPhoto().getUser());
+        if (state.isTagHolderVisible() && !getPresenter().getPhoto().getPhotoTags().isEmpty()) {
+            photoTagHolder.removeAllViews();
+            if (getPresenter().getPhoto() != null) {
+                showTagViewGroup();
+                photoTagHolderManager.addExistsTagViews(getPresenter().getPhoto().getPhotoTags());
+                photoTagHolderManager.setTagDeletedListener(photoTag -> getPresenter().deleteTag(photoTag));
+            }
         } else {
             hideTagViewGroup();
-            ivImage.setScaleEnabled(true);
         }
 
         manageTagIconVisibility();
@@ -268,10 +268,8 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     private void manageTagIconVisibility() {
         if (getPresenter().getPhoto().getPhotoTagsCount() == 0) {
             tag.setVisibility(View.GONE);
-            photoTagHolder.setVisibility(View.INVISIBLE);
         } else {
             tag.setVisibility(View.VISIBLE);
-            photoTagHolder.setVisibility(View.VISIBLE);
         }
     }
 

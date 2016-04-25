@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -56,10 +57,8 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
 
     @Override
     public void openCreatePhoto() {
-        router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forRemoval()
-                .containerId(R.id.container_details_floating)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .build());
+        if (isCreatePhotoAlreadyAttached()) return;
+        //
         router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
@@ -67,4 +66,8 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .build());
     }
 
+    private boolean isCreatePhotoAlreadyAttached() {
+        return Queryable.from(getActivity().getSupportFragmentManager().getFragments())
+                .firstOrDefault(fragment -> fragment instanceof CreateTripImageFragment) != null;
+    }
 }

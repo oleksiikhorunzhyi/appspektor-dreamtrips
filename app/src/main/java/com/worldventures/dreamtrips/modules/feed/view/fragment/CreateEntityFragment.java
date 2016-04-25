@@ -13,7 +13,10 @@ import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter;
 
+import java.util.List;
+
 import butterknife.InjectView;
+import butterknife.OnClick;
 import icepick.State;
 
 public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> extends ActionEntityFragment<PM, CreateEntityBundle>
@@ -89,6 +92,25 @@ public abstract class CreateEntityFragment<PM extends CreateEntityPresenter> ext
         super.onTitleFocusChanged(hasFocus);
         if (hasFocus) hideMediaPicker();
         else name.requestFocus();
+    }
+
+    @Override
+    public void attachPhotos(List<PhotoCreationItem> images) {
+        hideMediaPicker();
+        //
+        super.attachPhotos(images);
+    }
+
+    @Override
+    public void attachPhoto(PhotoCreationItem image) {
+        hideMediaPicker();
+        //
+        super.attachPhoto(image);
+    }
+
+    @OnClick(R.id.image)
+    void onImage() {
+        showMediaPicker();
     }
 
     protected void updatePickerState() {

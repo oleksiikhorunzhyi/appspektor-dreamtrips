@@ -32,42 +32,44 @@ import java.util.List;
 
 public class DtlMerchantHelper {
 
-    private Context context;
-
     public static final DateTimeFormatter OPERATION_TIME_FORMATTER = DateTimeFormat.forPattern("hh:mm a");
 
-    public DtlMerchantHelper(Context context) {
-        this.context = context;
+    private DtlMerchantHelper() {
+        throw new UnsupportedOperationException("No instance");
     }
 
-    public String getCategories(DtlMerchant merchant) {
+    public static String getCategories(DtlMerchant merchant) {
         List<DtlMerchantAttribute> categories = merchant.getCategories();
         return categories == null ? null : TextUtils.join(", ", categories);
     }
 
-    public List<ImageTextItem> getContactsData(DtlMerchant merchant) {
+    public static List<ImageTextItem> getContactsData(Context context, DtlMerchant merchant) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
-        addContactIfNotEmpty(items, String.format("%s, %s, %s, %s", merchant.getAddress1(), merchant.getCity(),
+        addContactIfNotEmpty(context, items, String.format("%s, %s, %s, %s", merchant.getAddress1(), merchant.getCity(),
                         merchant.getState(), merchant.getZip()),
                 R.drawable.address_icon,
                 IntentUtils.newMapIntent(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng()),
                 ImageTextItem.Type.ADDRESS);
-        addContactIfNotEmpty(items, merchant.getPhone(), R.drawable.phone_icon,
+        addContactIfNotEmpty(context, items, merchant.getPhone(), R.drawable.phone_icon,
                 IntentUtils.newDialerIntent(merchant.getPhone()),
                 ImageTextItem.Type.PHONE_NUMBER);
-        addContactIfNotEmpty(items, merchant.getWebsite(), R.drawable.website_icon,
+        addContactIfNotEmpty(context, items, merchant.getWebsite(), R.drawable.website_icon,
                 IntentUtils.browserIntent(merchant.getWebsite()),
                 ImageTextItem.Type.WEBSITE_URL);
         return items;
     }
 
-    private void addContactIfNotEmpty(List<ImageTextItem> items, String contact, @DrawableRes int icon,
+    private static void addContactIfNotEmpty(Context context, List<ImageTextItem> items, String contact, @DrawableRes int icon,
                                       Intent intent, ImageTextItem.Type type) {
         if (TextUtils.isEmpty(contact)) return;
         items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type));
     }
 
-    public Spannable getOperationalTime(DtlMerchant DtlMerchant) {
+    public static Spannable getOperationalTime(Context context, DtlMerchant merchant) {
+        return getOperationalTime(context, merchant, true);
+    }
+
+    public static Spannable getOperationalTime(Context context, DtlMerchant DtlMerchant, boolean includeTime) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 
@@ -97,15 +99,17 @@ public class DtlMerchantHelper {
                             && currentDate.isBefore(dateTimeEnd);
                 }
 
-                stringBuilder.append(String.format("%s - %s",
-                        localTimeStart.toString(OPERATION_TIME_FORMATTER),
-                        localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
-                stringBuilder.append(", ");
+                if (includeTime) {
+                    stringBuilder.append(String.format("%s - %s",
+                            localTimeStart.toString(OPERATION_TIME_FORMATTER),
+                            localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
+                    stringBuilder.append(", ");
+                }
             }
         }
 
         int length = stringBuilder.length();
-        stringBuilder.append(provideOpenClosedStatus(openNow));
+        stringBuilder.append(provideOpenClosedStatus(context, openNow));
 
         final ForegroundColorSpan fcs = new ForegroundColorSpan(context.getResources()
                 .getColor(openNow ? R.color.open : R.color.closed));
@@ -115,7 +119,7 @@ public class DtlMerchantHelper {
         return spannable;
     }
 
-    private String provideOpenClosedStatus(boolean openNow) {
+    private static String provideOpenClosedStatus(Context context, boolean openNow) {
         return openNow ?
                 context.getString(R.string.dtl_open_now) :
                 context.getString(R.string.dtl_closed);

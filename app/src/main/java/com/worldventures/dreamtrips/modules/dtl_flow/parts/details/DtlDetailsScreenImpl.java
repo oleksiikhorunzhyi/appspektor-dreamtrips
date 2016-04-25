@@ -61,7 +61,6 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
     DtlMerchantCommonDataInflater commonDataInflater;
     DtlMerchantInfoInflater merchantInfoInflater;
-    DtlMerchantHelper helper;
 
     @Inject
     ActivityResultDelegate activityResultDelegate;
@@ -115,9 +114,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
     @Override
     protected void onPostAttachToWindowView() {
-        helper = new DtlMerchantHelper(getContext());
-        commonDataInflater = new DtlMerchantSingleImageDataInflater(helper);
-        merchantInfoInflater = new DtlMerchantInfoInflater(helper);
+        commonDataInflater = new DtlMerchantSingleImageDataInflater();
+        merchantInfoInflater = new DtlMerchantInfoInflater();
         //
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
@@ -166,7 +164,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     }
 
     private void setAdditional(DtlMerchant merchant) {
-        Queryable.from(helper.getContactsData(merchant)).forEachR(contact -> {
+        Queryable.from(DtlMerchantHelper.getContactsData(getContext(), merchant)).forEachR(contact -> {
             TextView contactView = (TextView) LayoutInflater.from(getActivity())
                     .inflate(R.layout.list_item_dtl_merchant_contact, additionalContainer, false);
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);

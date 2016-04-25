@@ -12,6 +12,8 @@ import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -153,10 +155,21 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                         TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
                                 dtlMerchantManager.getCurrentQuery(),
                                 location);
-                    })
-            ;
+                    });
         }
         Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId()));
+    }
+
+    @Override
+    public void perkClick(DtlOfferPerkData perk) {
+        String merchantId = "e1c9b17e-72f3-4a28-a5fe-bbee8f9a49c6"; // TODO stub
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId));
+    }
+
+    @Override
+    public void pointClicked(DtlOfferPointsData points) {
+        String merchantId = "e1c9b17e-72f3-4a28-a5fe-bbee8f9a49c6"; // TODO stub
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId));
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {

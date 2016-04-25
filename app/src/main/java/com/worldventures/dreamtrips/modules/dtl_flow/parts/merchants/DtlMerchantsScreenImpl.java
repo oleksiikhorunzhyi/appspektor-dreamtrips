@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -12,7 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
-import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.techery.spares.adapter.expandable.BaseExpandableDelegateAdapter;
+import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -26,8 +26,13 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.dtl.helper.SearchViewHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellNew;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
 import java.util.List;
 
@@ -60,7 +65,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     @InjectView(R.id.merchant_holder_offers)
     protected TextView emptyTextView;
     //
-    BaseDelegateAdapter<DtlMerchant> baseDelegateAdapter;
+    BaseExpandableDelegateAdapter baseDelegateAdapter;
     SearchViewHelper searchViewHelper;
     //
     SelectionManager selectionManager;
@@ -71,16 +76,22 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        recyclerView.setLayoutManager(new ExpandableLayoutManager(getActivity()));
         //
-        baseDelegateAdapter = new BaseDelegateAdapter<>(getActivity(), injectorProvider.get());
-        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantCellNew.class);
+        baseDelegateAdapter = new BaseExpandableDelegateAdapter(getActivity(), injector);
+        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantExpandableCell.class);
+        baseDelegateAdapter.registerCell(DtlOfferPerkData.class, DtlPerkCell.class);
+        baseDelegateAdapter.registerCell(DtlOfferPointsData.class, DtlPointsCell.class);
+
         baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
+        baseDelegateAdapter.registerDelegate(DtlOfferPerkData.class, new PerkDelegate());
+        baseDelegateAdapter.registerDelegate(DtlOfferPointsData.class, new PointsDelegate());
         //
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
         //
-        recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
+        recyclerView.setAdapter(baseDelegateAdapter);
         recyclerView.setEmptyView(emptyView);
         //
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
@@ -208,6 +219,20 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         alertDialog.setCancelable(false);
         alertDialog.show();
         return true;
+    }
+
+    public final class PerkDelegate implements CellDelegate<DtlOfferPerkData> {
+        @Override
+        public void onCellClicked(DtlOfferPerkData perk) {
+            getPresenter().perkClick(perk);
+        }
+    }
+
+    public final class PointsDelegate implements CellDelegate<DtlOfferPointsData> {
+        @Override
+        public void onCellClicked(DtlOfferPointsData points) {
+            getPresenter().pointClicked(points);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

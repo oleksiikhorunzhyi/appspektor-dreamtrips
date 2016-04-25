@@ -148,7 +148,7 @@ public class DtlMerchant implements Parcelable {
     }
 
     public List<DtlOffer> getOffers() {
-        return offers;
+        return hasNoOffers() ? new ArrayList<>() : offers;
     }
 
     public void setOffers(List<DtlOffer> offers) {

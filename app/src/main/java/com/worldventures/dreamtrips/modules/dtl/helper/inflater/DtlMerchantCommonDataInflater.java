@@ -26,10 +26,6 @@ public class DtlMerchantCommonDataInflater extends DtlMerchantDataInflater {
     @InjectView(R.id.perks)
     TextView perks;
 
-    public DtlMerchantCommonDataInflater(DtlMerchantHelper helper) {
-        this.helper = helper;
-    }
-
     @Override
     protected void onMerchantApply(DtlMerchant merchant) {
         coverStub.setVisibility(merchant.getImages().isEmpty() ? View.VISIBLE : View.GONE);

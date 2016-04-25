@@ -51,6 +51,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/dtl_cities_background"
         >
 
         <android.support.v4.widget.SwipeRefreshLayout
@@ -72,7 +73,7 @@
                 android:paddingRight="12dp"
                 android:paddingTop="6dp"
                 android:visibility="visible"
-                tools:listitem="@layout/adapter_item_dtl_merchant_new"
+                tools:listitem="@layout/adapter_item_dtl_merchant_expandable"
                 />
         </android.support.v4.widget.SwipeRefreshLayout>
 

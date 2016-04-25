@@ -1,8 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public enum DayOfWeek {
     MONDAY(Calendar.MONDAY),
@@ -19,7 +22,15 @@ public enum DayOfWeek {
         this.calendarDayOfWeek = calendarDayOfWeek;
     }
 
+    public int getDay() {
+        return calendarDayOfWeek;
+    }
+
     public static DayOfWeek from(int calendarDayOfWeek) {
         return Queryable.from(values()).first(element -> element.calendarDayOfWeek == calendarDayOfWeek);
+    }
+
+    public static DayOfWeek from(String calendarDayOfWeek) {
+        return Queryable.from(values()).firstOrDefault(element -> DateTimeUtils.isSameDayOfWeek(element.calendarDayOfWeek, calendarDayOfWeek));
     }
 }

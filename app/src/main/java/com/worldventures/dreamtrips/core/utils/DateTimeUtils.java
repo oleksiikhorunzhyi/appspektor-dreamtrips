@@ -2,9 +2,13 @@ package com.worldventures.dreamtrips.core.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.text.*;
 import android.text.format.DateUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
@@ -14,10 +18,12 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -281,6 +287,34 @@ public class DateTimeUtils {
         }
 
         return calendar.getTime();
+    }
+
+    public static boolean isSameDayOfWeek(int calendarDayOfWeek, String dayName) {
+        String weekDay = getDisplayWeekDay(calendarDayOfWeek, Calendar.SHORT).toLowerCase();
+        String day = dayName.toLowerCase();
+        return day.startsWith(weekDay);
+    }
+
+    public static String getDisplayWeekDay(int dayOfWeek, int style) {
+        return getDisplayWeekDay(dayOfWeek, style, Locale.ENGLISH);
+    }
+
+    public static String getDisplayWeekDay(int dayOfWeek, int style, Locale locale) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+        return calendar.getDisplayName(Calendar.DAY_OF_WEEK, style, locale);
+    }
+
+    public static String concatOperationDays(Resources res, List<OperationDay> operationDays) {
+        return concatOperationDays(res, operationDays, Locale.getDefault());
+    }
+
+    public static String concatOperationDays(Resources res, List<OperationDay> operationDays, Locale locale) {
+        if (operationDays.size() == Calendar.DAY_OF_WEEK || operationDays.isEmpty()) return res.getString(R.string.everyday);
+        //
+        String delimiter = operationDays.size() == 2 ? " & " : " "; // TODO need translations??
+        List<String> days = Queryable.from(operationDays).map(day -> getDisplayWeekDay(day.getDayOfWeek().getDay(), Calendar.SHORT, locale)).toList();
+        return android.text.TextUtils.join(delimiter, days);
     }
 
     public static CharSequence getRelativeTimeSpanString(Resources res, long startTime) {

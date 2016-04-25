@@ -16,6 +16,7 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
     private boolean checked;
     private long dateTaken;
     private Size size;
+    private long pickedTime;
 
     public PhotoGalleryModel(String originalPath) {
         this(originalPath, 0);
@@ -62,6 +63,15 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
     }
 
     @Override
+    public long getPickedTime() {
+        return pickedTime;
+    }
+
+    public void setPickedTime(long pickedTime) {
+        this.pickedTime = pickedTime;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -69,7 +79,6 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Seri
         PhotoGalleryModel that = (PhotoGalleryModel) o;
 
         return originalPath.equals(that.originalPath);
-
     }
 
     @Override

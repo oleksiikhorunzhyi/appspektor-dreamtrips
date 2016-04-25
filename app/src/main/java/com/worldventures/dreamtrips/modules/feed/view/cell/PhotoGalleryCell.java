@@ -34,6 +34,7 @@ public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, Ce
 
         itemView.setOnClickListener(v -> {
             getModelObject().setChecked(!getModelObject().isChecked());
+            getModelObject().setPickedTime(getModelObject().isChecked() ? System.currentTimeMillis() : -1);
             //
             if (cellDelegate != null) {
                 cellDelegate.onCellClicked(getModelObject());

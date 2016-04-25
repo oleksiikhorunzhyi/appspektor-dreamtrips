@@ -87,7 +87,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
     public void deleteTag(PhotoTag tag) {
         List<Integer> userIds = new ArrayList<>();
-        userIds.add(tag.getTargetUserId());
+        userIds.add(tag.getUser().getId());
         doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
             photo.getPhotoTags().remove(tag);
         });

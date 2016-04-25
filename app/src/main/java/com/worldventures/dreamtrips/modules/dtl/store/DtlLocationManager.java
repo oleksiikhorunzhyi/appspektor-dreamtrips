@@ -9,7 +9,6 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.goro.GoroScheduler;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationCommand;
@@ -33,6 +32,7 @@ import io.techery.janet.JanetException;
 import io.techery.janet.ReadActionPipe;
 import rx.Observable;
 import rx.Scheduler;
+import rx.schedulers.Schedulers;
 
 public class DtlLocationManager {
 
@@ -51,7 +51,7 @@ public class DtlLocationManager {
 
     public DtlLocationManager(Injector injector) {
         injector.inject(this);
-        init(new GoroScheduler(context));
+        init(Schedulers.io());
     }
 
     public DtlLocationManager(DtlApi dtlApi, SnappyRepository db, Scheduler scheduler) {

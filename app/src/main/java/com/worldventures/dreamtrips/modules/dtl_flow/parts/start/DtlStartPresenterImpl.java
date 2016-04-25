@@ -132,6 +132,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                             getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
                         else onLocationResolutionDenied();
                     }
-                });
+                },
+                        throwable -> navigatePath(DtlLocationsPath.getDefault()));
     }
 }

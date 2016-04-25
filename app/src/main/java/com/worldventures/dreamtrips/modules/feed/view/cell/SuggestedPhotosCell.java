@@ -1,6 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
+import android.database.ContentObserver;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +19,7 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -23,7 +27,6 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.feed.event.DestroyFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
@@ -35,8 +38,7 @@ import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
-import timber.log.Timber;
+import rx.Observable;
 
 @Layout(R.layout.adapter_item_suggested_photos)
 public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate>
@@ -65,6 +67,17 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
 
     private BaseDelegateAdapter suggestionAdapter;
 
+    private ContentObserver contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+
+            if (!selfChange) {
+                presenter.notifyNewSuggestions();
+            }
+        }
+    };
+
     public SuggestedPhotosCell(View view) {
         super(view);
     }
@@ -74,11 +87,13 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         super.afterInject();
 
         presenter.takeView(this);
+    }
 
-        EventBus bus = getEventBus();
-        if (!bus.isRegistered(this)) {
-            bus.register(this);
-        }
+    @Override
+    public void setCellDelegate(SuggestedPhotosDelegate cellDelegate) {
+        super.setCellDelegate(cellDelegate);
+
+        cellDelegate.onRegisterObserver(contentObserver);
     }
 
     @Override
@@ -216,7 +231,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         return (PhotoGalleryModel) suggestionAdapter.getItem(0);
     }
 
-    public void onEvent(DestroyFeedFragment event) {
-        presenter.detachView();
+    @Override
+    public <T> Observable<T> bind(Observable<T> observable) {
+        return observable.compose(RxLifecycle.bindView(itemView));
     }
 }

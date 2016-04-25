@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.database.ContentObserver;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
@@ -21,7 +23,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
-import com.worldventures.dreamtrips.modules.feed.event.DestroyFeedFragment;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
@@ -46,6 +47,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     BadgeImageView unreadConversationBadge;
 
     private CirclesFilterPopupWindow filterPopupWindow;
+
+    private ContentObserver contentObserver;
 
     @Override
     public void afterCreateView(View rootView) {
@@ -117,7 +120,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public void onDestroyView() {
-        eventBus.post(new DestroyFeedFragment());
+        getContext().getContentResolver().unregisterContentObserver(contentObserver);
         super.onDestroyView();
     }
 
@@ -231,6 +234,13 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     public void onAttachClicked(List<PhotoGalleryModel> pickedItems) {
         openSharePhoto(new CreateEntityBundle(new MediaAttachment(pickedItems, PickImageDelegate.PICK_PICTURE)));
         getPresenter().removeSuggestedPhotos();
+    }
+
+    @Override
+    public void onRegisterObserver(ContentObserver contentObserver) {
+        this.contentObserver = contentObserver;
+        getContext().getContentResolver()
+                .registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, contentObserver);
     }
 
     @Override

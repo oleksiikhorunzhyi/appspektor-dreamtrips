@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.content.Context;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -28,8 +27,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class SuggestedPhotoCellPresenter {
@@ -52,25 +49,6 @@ public class SuggestedPhotoCellPresenter {
 
     private View view;
 
-    private ContentObserver contentObserver = new ContentObserver(null) {
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-
-            if (!selfChange) {
-                compositeSubscription.add(getSuggestionObservable(view.firstElement().getDateTaken(), false)
-                        .subscribe(new Action1<List<PhotoGalleryModel>>() {
-                            @Override
-                            public void call(List<PhotoGalleryModel> photoGalleryModels) {
-                                view.pushForward(photoGalleryModels);
-                            }
-                        }));
-            }
-        }
-    };
-
-    private CompositeSubscription compositeSubscription;
-
     private List<PhotoGalleryModel> selectedPhotos;
 
     private long syncTimestampLast = Long.MAX_VALUE;
@@ -80,28 +58,26 @@ public class SuggestedPhotoCellPresenter {
         this.view = view;
 
         selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
-
-        compositeSubscription = new CompositeSubscription();
-        context.getContentResolver().registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, contentObserver);
-    }
-
-    public void detachView() {
-        view = null;
-
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed())
-            compositeSubscription.unsubscribe();
-        context.getContentResolver().unregisterContentObserver(contentObserver);
     }
 
     public void preloadSuggestedPhotos(@Nullable PhotoGalleryModel model) {
         syncTimestampLast = getLastSyncOrDefault(model);
 
-        compositeSubscription.add(getSuggestionObservable(syncTimestampLast, true)
+        view.bind(getSuggestionObservable(syncTimestampLast, true))
                 .subscribe(photoGalleryModels -> {
                     view.appendPhotoSuggestions(photoGalleryModels);
                 }, throwable -> {
                     Timber.e(throwable, "Cannot prefetch suggestions");
-                }));
+                });
+    }
+
+    public void notifyNewSuggestions() {
+        view.bind(getSuggestionObservable(view.firstElement().getDateTaken(), false))
+                .subscribe(photoGalleryModels -> {
+                    view.pushForward(photoGalleryModels);
+                }, throwable -> {
+                    Timber.e(throwable, "Cannot fetch new suggestion items");
+                });
     }
 
     public void sync() {
@@ -243,5 +219,7 @@ public class SuggestedPhotoCellPresenter {
         void showMaxSelectionMessage();
 
         PhotoGalleryModel firstElement();
+
+        <T> Observable<T> bind(Observable<T> observable);
     }
 }

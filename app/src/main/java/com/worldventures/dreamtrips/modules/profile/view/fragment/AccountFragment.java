@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
@@ -129,5 +131,16 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
                 .build());
+    }
+
+    @Override
+    public void cropImage(SocialCropImageManager socialCropImageManager, String path) {
+        socialCropImageManager.cropImage(this, path);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!getPresenter().onActivityResult(requestCode, resultCode, data))
+            super.onActivityResult(requestCode, resultCode, data);
     }
 }

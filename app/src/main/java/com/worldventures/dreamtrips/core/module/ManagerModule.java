@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
@@ -164,5 +165,12 @@ public class ManagerModule {
                                                    Janet janet,
                                                    @Global EventBus eventBus) {
         return new GlobalConfigManager(appSessionHolder, janet, eventBus);
+    }
+
+    @Provides
+    @Singleton
+    SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context,
+                                                      DreamSpiceManager dreamSpiceManager) {
+        return new SocialCropImageManager(context, dreamSpiceManager);
     }
 }

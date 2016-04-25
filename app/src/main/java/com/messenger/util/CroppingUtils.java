@@ -24,10 +24,11 @@ public class CroppingUtils {
                 .start(activity);
     }
 
-    public static void startCropping(Context context, Fragment fragment, String fileFrom, String fileTo, int ratioX, int ratioY){
+    public static void startCropping(Context context, Fragment fragment, int requestCode,
+                                     String fileFrom, String fileTo, int ratioX, int ratioY){
         obtainBasicUCrop(context, fileFrom, fileTo)
                 .withAspectRatio(ratioX, ratioY)
-                .start(context, fragment);
+                .start(context, fragment, requestCode);
     }
 
     public static void startCropping(Activity activity, String fileFrom, String fileTo){

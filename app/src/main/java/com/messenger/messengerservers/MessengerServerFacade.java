@@ -1,5 +1,7 @@
 package com.messenger.messengerservers;
 
+import android.support.annotation.Nullable;
+
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
 
@@ -7,7 +9,7 @@ public interface MessengerServerFacade {
 
     void authorizeAsync(String username, String password);
 
-    void disconnectAsync();
+    void disconnectAsync(@Nullable Runnable callback);
 
     boolean isAuthorized();
 

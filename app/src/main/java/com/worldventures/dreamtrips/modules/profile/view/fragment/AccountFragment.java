@@ -13,13 +13,12 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgeView;
 import com.worldventures.dreamtrips.modules.profile.adapters.IgnoreFirstExpandedItemAdapter;
 import com.worldventures.dreamtrips.modules.profile.presenter.AccountPresenter;
-
-import io.techery.scalablecropp.library.Crop;
 
 @Layout(R.layout.fragment_account)
 @MenuResource(R.menu.menu_empty)
@@ -86,13 +85,6 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!Crop.onActivityResult(requestCode, resultCode, data, getPresenter()::onCoverCropped)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
     private void showLogoutDialog() {
         new MaterialDialog.Builder(getActivity())
                 .title(getString(R.string.logout_dialog_title))
@@ -139,5 +131,16 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
                 .build());
+    }
+
+    @Override
+    public void cropImage(SocialCropImageManager socialCropImageManager, String path) {
+        socialCropImageManager.cropImage(this, path);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!getPresenter().onActivityResult(requestCode, resultCode, data))
+            super.onActivityResult(requestCode, resultCode, data);
     }
 }

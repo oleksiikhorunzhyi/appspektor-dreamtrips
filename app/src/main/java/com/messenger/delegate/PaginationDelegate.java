@@ -1,23 +1,23 @@
 package com.messenger.delegate;
 
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
-import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.util.DecomposeMessagesHelper;
 
-import java.util.LinkedList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
 
@@ -26,17 +26,15 @@ public class PaginationDelegate {
     public static final int DEFAULT_PAGE_SIZE = 20;
 
     private final MessengerServerFacade messengerServerFacade;
-    private final MessageDAO messageDAO;
-    private final AttachmentDAO attachmentDAO;
+    private final DecomposeMessagesHelper decomposeMessagesHelper;
 
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private PagePagination<Message> messagePagePagination;
 
-    public PaginationDelegate(MessengerServerFacade messengerServerFacade, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
+    @Inject PaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper) {
         this.messengerServerFacade = messengerServerFacade;
-        this.messageDAO = messageDAO;
-        this.attachmentDAO = attachmentDAO;
+        this.decomposeMessagesHelper = decomposeMessagesHelper;
     }
 
     public void setPageSize(int pageSize) {
@@ -55,14 +53,11 @@ public class PaginationDelegate {
                 Observable.just(messages)
                 .subscribeOn(Schedulers.io())
                 .map(serverMessages -> {
-                    List<DataMessage> msgs = from(serverMessages).map(DataMessage::new).toList();
-                    List<DataAttachment> attachments = getDataAttachment(serverMessages);
-                    from(msgs).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
-                    return new Pair<>(msgs, attachments);
-                }).subscribe(listListPair -> {
-                            messageDAO.save(listListPair.first);
-                            attachmentDAO.save(listListPair.second);
-                        }));
+                    DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(serverMessages);
+                    from(result.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
+                    return result;
+                }).subscribe(result -> decomposeMessagesHelper.saveDecomposeMessage(result),
+                        throwable -> Timber.i(throwable, "Error while loading message page")));
 
         messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
             @Override
@@ -78,14 +73,6 @@ public class PaginationDelegate {
             }
         });
         messagePagePagination.loadPage(page, before);
-    }
-
-    private List<DataAttachment> getDataAttachment(List<Message> messages) {
-        List<DataAttachment> result = new LinkedList<>();
-        for (Message m : messages) {
-            result.addAll(DataAttachment.fromMessage(m));
-        }
-        return result;
     }
 
     public void stopPaginate(){

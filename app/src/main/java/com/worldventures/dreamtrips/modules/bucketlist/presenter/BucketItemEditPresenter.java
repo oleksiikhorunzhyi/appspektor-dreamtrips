@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
-import com.worldventures.dreamtrips.core.api.UploadPurpose;
+import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
+import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -27,10 +28,14 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
 
@@ -42,9 +47,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     private Date selectedDate;
 
     private boolean savingItem = false;
-
-    PhotoUploadSubscriber photoUploadSubscriber;
+    @Inject
+    SocialUploaderyManager uploaderyManager;
     private Subscription mediaSubscription;
+    private Subscription uploaderySubscription;
 
     public BucketItemEditPresenter(BucketBundle bundle) {
         super(bundle);
@@ -54,13 +60,31 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     public void takeView(BucketItemEditPresenterView view) {
         priorityEventBus = 1;
         super.takeView(view);
-        photoUploadSubscriber = new PhotoUploadSubscriber();
-        photoUploadingManager.getTaskChangingObservable(UploadPurpose.BUCKET_IMAGE).subscribe(photoUploadSubscriber);
-        photoUploadSubscriber
-                .onError(view::itemChanged)
-                .onSuccess(this::addPhotoToBucketItem)
-                .onProgress(view::addImage)
-                .onCancel(view::deleteImage);
+        uploaderySubscription = uploaderyManager.getTaskChangingObservable()
+                .compose(new IoToMainComposer<>())
+                .subscribe(state -> {
+                    UploadTask uploadTask = db.getUploadTask((state.action.getFilePath()));
+                    if (uploadTask != null && Objects.equals(uploadTask.getLinkedItemId(), bucketItem.getUid())) {
+                        switch (state.status) {
+                            case START:
+                            case PROGRESS:
+                                uploadTask.setStatus(UploadTask.Status.STARTED);
+                                view.addImage(uploadTask);
+                                break;
+                            case SUCCESS:
+                                uploadTask.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult().getPhotoUploadResponse().getLocation());
+                                uploadTask.setStatus(UploadTask.Status.COMPLETED);
+                                addPhotoToBucketItem(uploadTask);
+                                break;
+                            case FAIL:
+                                uploadTask.setStatus(UploadTask.Status.FAILED);
+                                view.itemChanged(uploadTask);
+                                break;
+                        }
+                    }
+                }, error -> {
+                    Timber.e(error, "");
+                });
         //
         mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> attachment.requestId == BUCKET_MEDIA_REQUEST_ID)
@@ -70,17 +94,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     @Override
     public void dropView() {
         super.dropView();
-        if (!photoUploadSubscriber.isUnsubscribed()) photoUploadSubscriber.unsubscribe();
-        //
         if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
-    }
-
-    @Override
-    protected void syncUI() {
-        super.syncUI();
-        List<UploadTask> tasks = photoUploadingManager.getUploadTasksForLinkedItemId(UploadPurpose.BUCKET_IMAGE, bucketItemId);
-        Queryable.from(tasks).forEachR(photoUploadSubscriber::onNext);
-        view.addImages(tasks);
+        if (!uploaderySubscription.isUnsubscribed()) uploaderySubscription.unsubscribe();
     }
 
     @Override
@@ -155,7 +170,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     /////// Photo picking
     ////////////////////////////////////////
 
-    public void attachImages(List<ChosenImage> chosenImages, int type) {
+    public void attachImages(List<PhotoGalleryModel> chosenImages, int type) {
         if (chosenImages.size() == 0) {
             return;
         }
@@ -163,7 +178,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         saveItem(false);
 
         Queryable.from(chosenImages).forEachR(choseImage ->
-                imageSelected(Uri.parse(choseImage.getFileThumbnail()), type));
+                imageSelected(Uri.parse(choseImage.getThumbnailPath()), type));
     }
 
     private void imageSelected(Uri uri, int requestType) {
@@ -203,7 +218,9 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     protected void startUpload(UploadTask uploadTask) {
         TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, uploadTask.getType(), bucketItem.getType());
         eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
-        photoUploadingManager.upload(uploadTask, UploadPurpose.BUCKET_IMAGE);
+        uploaderyManager.upload(uploadTask.getFilePath());
+        uploadTask.setLinkedItemId(bucketItem.getUid());
+        db.saveUploadTask(uploadTask);
     }
 
     private void onError(long id, Exception ex) {
@@ -221,10 +238,11 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
 
     private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
         view.replace(bucketPhotoUploadTask, bucketPhoto);
+        db.removeUploadTask(bucketPhotoUploadTask);
         getBucketItemManager().updateBucketItemWithPhoto(bucketItem, bucketPhoto);
     }
 
     protected void cancelUpload(UploadTask uploadTask) {
-        photoUploadingManager.cancelUpload(uploadTask);
+        db.removeUploadTask(uploadTask);
     }
 }

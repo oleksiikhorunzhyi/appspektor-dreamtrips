@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
@@ -72,9 +73,13 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     protected int mRequestCodeFilePicker = REQUEST_CODE_FILE_PICKER;
     protected WeakReference<Fragment> fragment;
     protected WeakReference<Activity> activity;
-    /** File upload callback for platform versions prior to Android 5.0 */
+    /**
+     * File upload callback for platform versions prior to Android 5.0
+     */
     protected ValueCallback<Uri> mFileUploadCallbackFirst;
-    /** File upload callback for Android 5.0+ */
+    /**
+     * File upload callback for Android 5.0+
+     */
     protected ValueCallback<Uri[]> mFileUploadCallbackSecond;
 
     @Override
@@ -273,6 +278,16 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             }
 
         });
+        webView.setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
+                    webView.goBack();
+                    return true;
+                }
+            }
+            return false;
+        });
+
         if (savedState != null) webView.restoreState(savedState);
     }
 
@@ -284,13 +299,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                     if (mFileUploadCallbackFirst != null) {
                         mFileUploadCallbackFirst.onReceiveValue(intent.getData());
                         mFileUploadCallbackFirst = null;
-                    }
-                    else if (mFileUploadCallbackSecond != null) {
+                    } else if (mFileUploadCallbackSecond != null) {
                         Uri[] dataUris;
                         try {
-                            dataUris = new Uri[] { Uri.parse(intent.getDataString()) };
-                        }
-                        catch (Exception e) {
+                            dataUris = new Uri[]{Uri.parse(intent.getDataString())};
+                        } catch (Exception e) {
                             dataUris = null;
                         }
 
@@ -298,13 +311,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                         mFileUploadCallbackSecond = null;
                     }
                 }
-            }
-            else {
+            } else {
                 if (mFileUploadCallbackFirst != null) {
                     mFileUploadCallbackFirst.onReceiveValue(null);
                     mFileUploadCallbackFirst = null;
-                }
-                else if (mFileUploadCallbackSecond != null) {
+                } else if (mFileUploadCallbackSecond != null) {
                     mFileUploadCallbackSecond.onReceiveValue(null);
                     mFileUploadCallbackSecond = null;
                 }

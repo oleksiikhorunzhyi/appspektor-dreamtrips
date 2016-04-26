@@ -14,4 +14,3 @@ public abstract class AbstractDelegateCell<T, V extends CellDelegate<T>> extends
         this.cellDelegate = cellDelegate;
     }
 }
-

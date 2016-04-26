@@ -40,13 +40,18 @@ public class UserSectionHelper {
         this.userSessionHolder = userSessionHolder;
     }
 
-    public Observable.Transformer<List<DataUser>, Pair<List<Object>, Integer>> prepareItemInCheckableList(Collection<DataUser> selectedUsers) {
+    public Observable.Transformer<List<DataUser>, Pair<List<Object>, Integer>> prepareItemInCheckableList(Collection<DataUser> participants, Collection<DataUser> selectedUsers) {
         return listObservable -> listObservable
                 .map(dataUsers -> {
                     List<SelectableDataUser> res = new ArrayList<>(selectedUsers.size());
                     for (DataUser user : dataUsers) {
-                        res.add(new SelectableDataUser(user, selectedUsers.contains(user)));
+                        boolean existingParticipant = participants.contains(user);
+                        boolean futureParticipant = selectedUsers.contains(user);
+                        boolean selectable = !existingParticipant;
+                        boolean selected = existingParticipant || futureParticipant;
+                        res.add(new SelectableDataUser(user, selected, selectable));
                     }
+
                     return res;
                 })
                 .map(userItems -> new Pair<>(prepareContactGroups(userItems), userItems.size()))

@@ -31,9 +31,9 @@
 
             <com.worldventures.dreamtrips.core.flow.container.MasterPathContainerView
                 android:id="@id/master_container"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/messenger_master_width"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                />
 
             <View
                 android:layout_width="0.5dp"
@@ -43,9 +43,9 @@
 
             <com.worldventures.dreamtrips.core.flow.container.DetailContainerView
                 android:id="@id/details_container"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
         </com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot>
 
     </com.messenger.ui.widget.MessengerPhotoPickerLayout>

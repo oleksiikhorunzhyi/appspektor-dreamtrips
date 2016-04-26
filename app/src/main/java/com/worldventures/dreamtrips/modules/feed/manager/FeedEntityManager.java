@@ -66,18 +66,28 @@ public class FeedEntityManager {
 
     public void createComment(FeedEntity feedEntity, String comment) {
         requestingPresenter.doRequest(new CreateCommentCommand(feedEntity.getUid(), comment),
-                comment1 -> eventBus.post(new CommentEvent(comment1, CommentEvent.Type.ADDED)),
+                comment1 -> {
+                    feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
+                    feedEntity.getComments().add(comment1);
+
+                    eventBus.post(new CommentEvent(comment1, CommentEvent.Type.ADDED));
+                },
                 spiceException -> handelCommentError(spiceException, CommentEvent.Type.ADDED));
     }
 
-    public void deleteComment(Comment comment) {
+    public void deleteComment(FeedEntity feedEntity, Comment comment) {
         requestingPresenter.doRequest(new DeleteCommentCommand(comment.getUid()), jsonObject -> {
+            feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
+            feedEntity.getComments().remove(comment);
+
             eventBus.post(new CommentEvent(comment, CommentEvent.Type.REMOVED));
         }, spiceException -> handelCommentError(spiceException, CommentEvent.Type.REMOVED));
     }
 
-    public void updateComment(Comment comment) {
+    public void updateComment(FeedEntity feedEntity, Comment comment) {
         requestingPresenter.doRequest(new EditCommentCommand(comment), result -> {
+            feedEntity.getComments().set(feedEntity.getComments().indexOf(result), result);
+
             eventBus.post(new CommentEvent(comment, CommentEvent.Type.EDITED));
         }, spiceException -> handelCommentError(spiceException, CommentEvent.Type.EDITED));
     }

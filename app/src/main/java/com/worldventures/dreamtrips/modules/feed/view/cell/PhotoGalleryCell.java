@@ -4,15 +4,11 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
-import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
@@ -21,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_photo_pick)
-public class PhotoGalleryCell extends AbstractCell<PhotoGalleryModel> {
+public class PhotoGalleryCell extends AbstractDelegateCell<PhotoGalleryModel, CellDelegate<PhotoGalleryModel>> {
 
     @InjectView(R.id.iv_photo)
     SimpleDraweeView photo;
@@ -38,8 +34,13 @@ public class PhotoGalleryCell extends AbstractCell<PhotoGalleryModel> {
 
         itemView.setOnClickListener(v -> {
             getModelObject().setChecked(!getModelObject().isChecked());
-
-            getEventBus().post(new PhotoPickedEvent(getModelObject()));
+            getModelObject().setPickedTime(getModelObject().isChecked() ? System.currentTimeMillis() : -1);
+            //
+            if (cellDelegate != null) {
+                cellDelegate.onCellClicked(getModelObject());
+            } else {
+                getEventBus().post(new PhotoPickedEvent(getModelObject()));
+            }
         });
 
         updatePickState();
@@ -65,7 +66,8 @@ public class PhotoGalleryCell extends AbstractCell<PhotoGalleryModel> {
             }
         }
 
-        draweeView.setController(GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100));
+        PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(uri, draweeView.getController(), 100, 100);
+        draweeView.setController(controller);
         draweeView.setTag(uri);
     }
 }

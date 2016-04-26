@@ -37,6 +37,12 @@ public class TripMapFragment extends MapFragment<TripMapPresenter> implements Tr
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.trips);
+    }
+
+    @Override
     protected void onMenuInflated(Menu menu) {
         super.onMenuInflated(menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);

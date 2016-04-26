@@ -11,19 +11,23 @@ import com.worldventures.dreamtrips.core.utils.events.PhotoDeletedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.EditEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoTagsCommand;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -81,6 +85,14 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         });
     }
 
+    public void deleteTag(PhotoTag tag) {
+        List<Integer> userIds = new ArrayList<>();
+        userIds.add(tag.getUser().getId());
+        doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
+            photo.getPhotoTags().remove(tag);
+        });
+    }
+
     @Override
     public void sendFlagAction(int flagReasonId, String reason) {
         uidItemDelegate.flagItem(new FlagData(photo.getUid(),
@@ -107,7 +119,6 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         new NavigationWrapperFactory()
                 .componentOrDialogNavigationWrapper(router, fm, view)
                 .navigate(Route.COMMENTS, new CommentsBundle(photo, false, true));
-
     }
 
     @Override
@@ -117,7 +128,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
     @Override
     public void onEdit() {
-        if (view != null) view.openEdit(new EditEntityBundle(photo, FeedEntityHolder.Type.PHOTO));
+        if (view != null) view.openEdit(new EditPhotoBundle(photo));
     }
 
     @Override
@@ -145,6 +156,9 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         }
     }
 
+    public Photo getPhoto() {
+        return photo;
+    }
 
     public interface View extends FullScreenPresenter.View {
 
@@ -154,7 +168,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
 
         void showContentWrapper();
 
-        void openEdit(EditEntityBundle bundle);
+        void openEdit(EditPhotoBundle bundle);
 
         void redrawTags();
     }

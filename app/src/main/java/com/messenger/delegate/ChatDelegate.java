@@ -1,103 +1,220 @@
 package com.messenger.delegate;
 
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.constant.ConversationStatus;
-import com.messenger.messengerservers.constant.ConversationType;
-import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
+import com.messenger.entities.DataMessage;
+import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.MessageDAO;
+import com.messenger.synchmechanism.ConnectionStatus;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.ListIterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.inject.Inject;
 
 import rx.Observable;
+import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class ChatDelegate {
-    private final SessionHolder<UserSession> appSessionHolder;
-    private final MessengerServerFacade messengerServerFacade;
+    private static final int MAX_MESSAGE_PER_PAGE = 50;
 
-    public ChatDelegate(SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade) {
-        this.appSessionHolder = appSessionHolder;
-        this.messengerServerFacade = messengerServerFacade;
+    private Observable<DataConversation> conversationObservable;
+    private Observable<Chat> chatObservable;
+
+    private long before;
+    public int page;
+    public final AtomicBoolean loading = new AtomicBoolean(false);
+    public boolean haveMoreElements = true;
+
+    private final MessageDAO messageDAO;
+    private ConversationsDAO conversationsDAO;
+    private final SessionHolder<UserSession> sessionHolder;
+    private final PaginationDelegate paginationDelegate;
+    private final PublishSubject<PaginationStatus> paginationStateObservable = PublishSubject.create();
+
+    @Inject
+    ChatDelegate(MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder, PaginationDelegate paginationDelegate) {
+        this.messageDAO = messageDAO;
+        this.conversationsDAO = conversationsDAO;
+        this.sessionHolder = sessionHolder;
+        this.paginationDelegate = paginationDelegate;
+        paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
     }
 
-    public Observable<DataConversation> createNewConversation(List<DataUser> participants, @Nullable String subject) {
-    if (BuildConfig.DEBUG && participants.size() < 1) throw new RuntimeException();
-        return participants.size() == 1 ?
-                createSingleChat(participants.get(0).getId()) : createMultiUserChat(participants, subject);
+    public Observable<PaginationStatus> bind(Observable<ConnectionStatus> connectionObservable,
+                                             Observable<Chat> chatObservable, Observable<DataConversation> conversationObservable) {
+        this.conversationObservable = conversationObservable.take(1).cacheWithInitialCapacity(1);
+        this.chatObservable = chatObservable;
+        connectToChatConnection(connectionObservable);
+
+        return paginationStateObservable;
     }
 
-    private Observable<DataConversation> createSingleChat(String participantId) {
-        return Observable.just(new DataConversation.Builder()
-                .type(ConversationType.CHAT)
-                .id(ThreadCreatorHelper.obtainThreadSingleChat(getCurrentUserId(), participantId))
-                .ownerId(getCurrentUserId())
-                .lastActiveDate(System.currentTimeMillis())
-                .status(ConversationStatus.PRESENT)
-                .build());
+
+    private void connectToChatConnection(Observable<ConnectionStatus> connectionObservable) {
+        connectionObservable
+                .subscribe(this::handleConnectionState);
     }
 
-    private Observable<DataConversation> createMultiUserChat(List<DataUser> participants, @Nullable String subject){
-        DataConversation conversation = new DataConversation.Builder()
-                .type(ConversationType.GROUP)
-                .id(UUID.randomUUID().toString())
-                .ownerId(getCurrentUserId())
-                .lastActiveDate(System.currentTimeMillis())
-                .status(ConversationStatus.PRESENT)
-                .subject(TextUtils.isEmpty(subject)? null : subject)
-                .build();
-
-        return setMultiUserChatData(conversation, participants, subject);
+    private void handleConnectionState(ConnectionStatus state) {
+        if (state == ConnectionStatus.CONNECTED && page == 0) loadNextPage();
     }
 
-    public Observable<DataConversation> modifyConversation(DataConversation conversation, List<DataUser> existParticipants,
-                                                           List<DataUser> newChatUserIds, @Nullable String subject) {
-        if (TextUtils.equals(conversation.getType(), ConversationType.CHAT)) {
-            conversation = new DataConversation.Builder()
-                    .ownerId(getCurrentUserId())
-                    .type(ConversationType.GROUP)
-                    .status(ConversationStatus.PRESENT)
-                    .subject(TextUtils.isEmpty(subject)? null : subject)
-                    .lastActiveDate(System.currentTimeMillis())
-                    .id(UUID.randomUUID().toString())
-                    .build();
-            // since we create new group chat
-            // make sure to invite original participant (addressee) from old single chat
-            newChatUserIds.addAll(existParticipants);
+    public void tryMarkAsReadMessage(DataMessage lastMessage) {
+        if (lastMessage.getStatus() == MessageStatus.READ || TextUtils.equals(lastMessage.getFromId(), getUsername())) {
+            return;
         }
 
-        return setMultiUserChatData(conversation, newChatUserIds, subject);
+        chatObservable.take(1)
+                .flatMap(chat -> chat.sendReadStatus(lastMessage.getId()))
+                .flatMap(msgId -> markMessagesAsRead(lastMessage))
+                .flatMap(this::changeUnreadCounter)
+                .subscribe(count -> Timber.d("%s messages was marked"),
+                        throwable -> Timber.e(throwable, "Error while marking message as read"));
     }
 
-    public DataConversation getExistingSingleConversation(String participantId) {
-        String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(getCurrentUserId(), participantId);
-        DataConversation existingConversation = ConversationsDAO.getConversationById(conversationId);
-        return existingConversation;
+    private Observable<Integer> changeUnreadCounter(int markCount) {
+        return conversationObservable
+                .doOnNext(conversation -> {
+                    conversation.setUnreadMessageCount(0);
+                    conversationsDAO.save(conversation);
+                })
+                .map(conversation -> markCount);
     }
 
-    private Observable<DataConversation> setMultiUserChatData(DataConversation conversation,
-                                                              List<DataUser> newParticipants, @Nullable String subject) {
-        return messengerServerFacade.getChatManager()
-                .createMultiUserChatObservable(conversation.getId(), getCurrentUserId())
-                .doOnNext(multiUserChat -> multiUserChat.invite(getUserIds(newParticipants)))
-                .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
-                .map(chat -> conversation);
+    private Observable<Integer> markMessagesAsRead(DataMessage sinceMessage) {
+        return conversationObservable
+                .flatMap(conversation -> messageDAO
+                        .markMessagesAsRead(conversation.getId(), getUsername(), sinceMessage.getDate().getTime())
+                );
     }
 
-    private String getCurrentUserId() {
-        if (!appSessionHolder.get().isPresent()) return "";
-        return appSessionHolder.get().get().getUser().getUsername();
+    public void loadNextPage() {
+        if (!haveMoreElements || loading.get()) return;
+
+        loading.set(true);
+        paginationStateObservable.onNext(PaginationStatus.builder()
+                .status(Status.START)
+                .page(page)
+                .build()
+        );
+        conversationObservable
+                .subscribe(conversation -> {
+                    paginationDelegate.loadConversationHistoryPage(conversation, ++page, before,
+                            (loadedPage, loadedMessage) -> paginationPageLoaded(loadedMessage),
+                            this::pageLoadFailed);
+                }, e -> Timber.w("Unable to get conversation"));
     }
 
-    private List<String> getUserIds(List<DataUser> dataUsers) {
-        return Queryable.from(dataUsers).map(DataUser::getId).toList();
+    private void pageLoadFailed() {
+        page--;
+        paginationStateObservable.onNext(PaginationStatus.builder()
+                .status(Status.FAILED)
+                .page(page)
+                .haveMoreElements(true)
+                .build()
+        );
+    }
+
+    private void paginationPageLoaded(List<Message> loadedMessages) {
+        // pagination stops when we loaded nothing. In otherwise we can load not whole page cause localeName is present in some messages
+        if (loadedMessages == null || loadedMessages.size() == 0) {
+            loading.set(false);
+            haveMoreElements = false;
+            paginationStateObservable.onNext(PaginationStatus.builder()
+                    .haveMoreElements(false)
+                    .page(page)
+                    .status(Status.SUCCESS)
+                    .build()
+            );
+            return;
+        }
+
+        int loadedCount = loadedMessages.size();
+        Message lastMessage = loadedMessages.get(loadedCount - 1);
+        before = lastMessage.getDate();
+
+        if (!isLastLoadedMessageRead(loadedMessages)) {
+            loadNextPage();
+        } else {
+            loading.set(false);
+        }
+
+        paginationStateObservable.onNext(PaginationStatus.builder()
+                .haveMoreElements(true)
+                .status(Status.SUCCESS)
+                .page(page)
+                .build()
+        );
+    }
+
+    // TODO: 4/13/16 LAST MESSAGE  remove iterator
+    private boolean isLastLoadedMessageRead(List<Message> loadedMessages) {
+        ListIterator<Message> iterator = loadedMessages.listIterator(loadedMessages.size());
+        while (iterator.hasPrevious()) {
+            Message message = iterator.previous();
+            if (!TextUtils.equals(message.getFromId(), getUsername())) {
+                return message.getStatus() == MessageStatus.READ;
+            }
+        }
+        return true;
+    }
+
+    private String getUsername() {
+        return sessionHolder.get().get().getUsername();
+    }
+
+    public static class PaginationStatus {
+        public final Status status;
+        public final boolean haveMoreElements;
+        public final int page;
+
+
+        private PaginationStatus(Builder builder) {
+            status = builder.status;
+            page = builder.page;
+            haveMoreElements = builder.haveMoreElements;
+        }
+
+        private static Builder builder() {
+            return new Builder();
+        }
+
+        private static class Builder {
+            private Status status;
+            private boolean haveMoreElements;
+            private int page;
+
+            public Builder status(Status val) {
+                this.status = val;
+                return this;
+            }
+
+            public Builder haveMoreElements(boolean var) {
+                this.haveMoreElements = var;
+                return this;
+            }
+
+            public Builder page(int var) {
+                this.page = var;
+                return this;
+            }
+
+            public PaginationStatus build() {
+                return new PaginationStatus(this);
+            }
+        }
+    }
+
+    public enum Status {
+        FAILED, SUCCESS, START
     }
 }

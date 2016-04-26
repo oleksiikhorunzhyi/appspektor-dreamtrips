@@ -14,6 +14,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.innahema.collections.query.functions.Action1;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
@@ -32,6 +33,8 @@ import com.worldventures.dreamtrips.modules.friends.model.RequestHeaderModel;
 import com.worldventures.dreamtrips.modules.friends.presenter.RequestsPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestCell;
 import com.worldventures.dreamtrips.modules.friends.view.cell.RequestHeaderCell;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.RequestCellDelegate;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.RequestHeaderCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
 import java.util.List;
@@ -44,7 +47,7 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_requests)
 @MenuResource(R.menu.menu_friend)
 public class RequestsFragment extends BaseFragment<RequestsPresenter>
-        implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements RequestsPresenter.View, SwipeRefreshLayout.OnRefreshListener, RequestCellDelegate {
 
     @InjectView(R.id.requests)
     RecyclerView recyclerView;
@@ -52,7 +55,7 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     SwipeRefreshLayout refreshLayout;
 
     RecyclerViewStateDelegate stateDelegate;
-    BaseArrayListAdapter<Object> adapter;
+    BaseDelegateAdapter<Object> adapter;
 
     @Inject
     @Named(RouteCreatorModule.PROFILE)
@@ -92,9 +95,21 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
         stateDelegate.setRecyclerView(recyclerView);
         recyclerView.setLayoutManager(getLayoutManager());
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), this);
+        adapter = new BaseDelegateAdapter<>(getActivity(), this);
         adapter.registerCell(User.class, RequestCell.class);
         adapter.registerCell(RequestHeaderModel.class, RequestHeaderCell.class);
+        adapter.registerDelegate(User.class, this);
+        adapter.registerDelegate(RequestHeaderModel.class, new RequestHeaderCellDelegate() {
+            @Override
+            public void acceptAllRequests() {
+                getPresenter().acceptAllRequests();
+            }
+
+            @Override
+            public void onCellClicked(RequestHeaderModel model) {
+
+            }
+        });
 
         recyclerView.setAdapter(adapter);
 
@@ -169,7 +184,30 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
                         })
                 .negativeText(R.string.cancel)
                 .show();
-
     }
 
+    @Override
+    public void acceptRequest(User user) {
+        getPresenter().acceptRequest(user);
+    }
+
+    @Override
+    public void rejectRequest(User user) {
+        getPresenter().rejectRequest(user);
+    }
+
+    @Override
+    public void hideRequest(User user) {
+        getPresenter().hideRequest(user);
+    }
+
+    @Override
+    public void cancelRequest(User user) {
+        getPresenter().cancelRequest(user);
+    }
+
+    @Override
+    public void onCellClicked(User model) {
+
+    }
 }

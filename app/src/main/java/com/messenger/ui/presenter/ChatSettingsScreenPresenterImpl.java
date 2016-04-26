@@ -54,7 +54,6 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     public ChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
-
         injector.inject(this);
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);

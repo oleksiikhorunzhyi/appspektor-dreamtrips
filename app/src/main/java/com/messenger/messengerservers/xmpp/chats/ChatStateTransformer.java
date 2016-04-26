@@ -2,7 +2,7 @@ package com.messenger.messengerservers.xmpp.chats;
 
 import android.support.annotation.NonNull;
 
-import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
+import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 
 import org.jivesoftware.smack.packet.Message;
 
@@ -25,10 +25,9 @@ class ChatStateTransformer implements Observable.Transformer<String, Message> {
                 })
                 .flatMap(message -> Observable.create(subscriber -> {
                     try {
-                        if (sendAction.call(message)) {
-                            subscriber.onNext(message);
-                            subscriber.onCompleted();
-                        }
+                        sendAction.call(message);
+                        subscriber.onNext(message);
+                        subscriber.onCompleted();
                     } catch (Throwable throwable) {
                         subscriber.onError(throwable);
                     }

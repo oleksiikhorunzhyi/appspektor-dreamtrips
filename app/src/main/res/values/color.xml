@@ -155,5 +155,7 @@
     <color name="translation_state_error">#EC6A6A</color>
     <color name="translation_state_translated">#53B5FE</color>
 
+    <color name="cropping_selected_button">#41A4FD</color>
+
     <!--end messenger-->
 </resources>

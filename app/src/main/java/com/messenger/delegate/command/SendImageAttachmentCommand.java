@@ -1,22 +1,26 @@
 package com.messenger.delegate.command;
 
-import android.net.Uri;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataPhotoAttachment;
+import com.messenger.entities.DataPhotoAttachment.PhotoAttachmentStatus;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.messenger.util.Utils;
+import com.messenger.storage.dao.PhotoDAO;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager;
+import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -32,9 +36,9 @@ import static rx.Observable.just;
 
 @CommandAction
 public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
-    private final String filePath;
     private final DataMessage message;
     private final DataAttachment attachment;
+    private final DataPhotoAttachment photoAttachment;
 
     @Inject
     UploaderyManager uploaderyManager;
@@ -43,35 +47,46 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
     @Inject
     AttachmentDAO attachmentDAO;
     @Inject
+    PhotoDAO photoDAO;
+    @Inject
     MessageBodyCreator messageBodyCreator;
+    @Inject
+    @ForApplication
+    Context context;
 
-    public SendImageAttachmentCommand(DataConversation conversation, @NonNull String filePath,
-                                      @NonNull DataMessage message, @NonNull DataAttachment attachment) {
+    public SendImageAttachmentCommand(@NonNull DataConversation conversation, @NonNull DataMessage message,
+                                      @NonNull DataAttachment attachment, @NonNull DataPhotoAttachment photoAttachment) {
         super(conversation);
-        this.filePath = filePath;
         this.message = message;
         this.attachment = attachment;
+        this.photoAttachment = photoAttachment;
     }
 
     @Override
     protected void run(CommandCallback<DataMessage> callback) {
-        Observable<String> urlObservable =
-                isFile(filePath) ? getUploadingObservable() : just(filePath);
-
-        urlObservable
+        getPhotoUri()
                 .flatMap(this::sendMessage)
                 .map(m -> message)
-                .subscribe(message -> onSentSuccess(message, callback),
-                        throwable -> onSentFail(throwable, callback));
+                .subscribe(callback::onSuccess, callback::onFail);
     }
 
-    private boolean isFile(String filePath) {
-        return Utils.isFileUri(Uri.parse(filePath));
+    private Observable<String> getUploadedUriObservable() {
+        return just(photoAttachment.getUrl());
+    }
+
+    private boolean isUploaded() {
+        return photoAttachment.getUploadState() == PhotoAttachmentStatus.UPLOADED;
+    }
+
+    private Observable<String> getPhotoUri() {
+        return isUploaded() ? getUploadedUriObservable() : getUploadingObservable();
     }
 
     private Observable<String> getUploadingObservable() {
-        return uploaderyManager.getUploadImagePipe()
-                .createObservable(new SimpleUploaderyCommand(filePath))
+        return just(photoAttachment.getLocalPath())
+                .map(localUri -> UploadingFileManager.copyFileIfNeed(localUri, context))
+                .flatMap(uri -> uploaderyManager.getUploadImagePipe()
+                        .createObservable(new SimpleUploaderyCommand(uri)))
                 .doOnNext(this::handleUploadStatus)
                 .compose(new ActionStateToActionTransformer<>())
                 .map(action -> ((SimpleUploaderyCommand) action).getResult().getPhotoUploadResponse().getLocation());
@@ -94,7 +109,9 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
 
     private void startUploading() {
         message.setStatus(MessageStatus.SENDING);
-        attachment.setUrl(filePath);
+        photoAttachment.setUploadState(PhotoAttachmentStatus.UPLOADING);
+
+        photoDAO.save(photoAttachment);
         attachmentDAO.save(attachment);
         saveMessage(System.currentTimeMillis());
     }
@@ -103,12 +120,16 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, Calendar.getInstance().getMaximum(Calendar.YEAR));
         message.setStatus(MessageStatus.ERROR);
+        photoAttachment.setUploadState(PhotoAttachmentStatus.FAILED);
         saveMessage(calendar.getTimeInMillis());
     }
 
     private void successUploading(String url) {
         message.setStatus(MessageStatus.SENDING);
-        attachment.setUrl(url);
+        photoAttachment.setUploadState(PhotoAttachmentStatus.UPLOADED);
+        photoAttachment.setUrl(url);
+
+        photoDAO.save(photoAttachment);
         attachmentDAO.save(attachment);
         saveMessage(System.currentTimeMillis());
     }
@@ -127,17 +148,5 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
         Chat chat = getChat();
         return chat.send(msg)
                 .doOnNext(m -> chat.close());
-    }
-
-    private void onSentSuccess(DataMessage message, CommandCallback<DataMessage> callback) {
-        message.setStatus(MessageStatus.SENT);
-        messageDAO.save(message);
-        callback.onSuccess(message);
-    }
-
-    private void onSentFail(Throwable throwable, CommandCallback<DataMessage> callback) {
-        message.setStatus(MessageStatus.ERROR);
-        messageDAO.save(message);
-        callback.onFail(throwable);
     }
 }

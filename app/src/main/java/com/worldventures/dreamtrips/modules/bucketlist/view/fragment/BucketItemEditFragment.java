@@ -173,6 +173,11 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
             }
 
             @Override
+            public void choosePhoto(BucketPhoto photo) {
+                getPresenter().saveCover(photo);
+            }
+
+            @Override
             public void onCellClicked(BucketPhoto model) {
 
             }

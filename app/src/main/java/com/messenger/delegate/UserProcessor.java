@@ -4,16 +4,20 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.messenger.api.GetShortProfilesQuery;
+import com.messenger.api.GetShortProfileAction;
+import com.messenger.api.temp.RetryLoginComposer;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.Collections;
 import java.util.List;
 
+import io.techery.janet.ActionPipe;
+import io.techery.janet.Janet;
 import rx.Observable;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
@@ -24,47 +28,41 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 public class UserProcessor {
     private static final String HOST_BADGE = "DreamTrips Host";
     private final UsersDAO usersDAO;
-    private final DreamSpiceManager requester;
+    private final ActionPipe<GetShortProfileAction> shortProfilePipe;
+    private final SessionHolder<UserSession> sessionHolder;
+    private final Janet janet;
 
-    public UserProcessor(UsersDAO usersDAO, DreamSpiceManager requester) {
+    public UserProcessor(UsersDAO usersDAO, Janet janet, SessionHolder<UserSession> sessionHolder) {
         this.usersDAO = usersDAO;
-        this.requester = requester;
+        this.janet = janet;
+        this.sessionHolder = sessionHolder;
+        this.shortProfilePipe = janet.createPipe(GetShortProfileAction.class);
     }
 
     public Observable<List<DataUser>> connectToUserProvider(Observable<List<MessengerUser>> provider) {
         ConnectableObservable<List<DataUser>> observable = provider
-                .compose(updateWithSocialData())
-                .subscribeOn(Schedulers.io()).observeOn(Schedulers.trampoline())
+                .flatMap(this::updateWithSocialData)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.trampoline())
                 .publish();
         observable.subscribe(aVoid -> Timber.i("Users processed"), t -> Timber.w(t, "Can't process users"));
         observable.connect();
         return observable.asObservable();
     }
 
-    private Observable.Transformer<List<MessengerUser>, List<DataUser>> updateWithSocialData() {
-        return listObservable -> listObservable.flatMap(messengerUsers -> {
-            if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
-            //
-            List<String> usernames = from(messengerUsers).map(MessengerUser::getName).toList();
-            return Observable.<List<User>>create(subscriber -> {
-                // SpiceManager post result on MainThread
-                requester.execute(new GetShortProfilesQuery(usernames), userz -> {
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(userz);
-                        subscriber.onCompleted();
-                    }
-                }, spiceException -> {
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onError(spiceException);
-                    }
-                });
-            }).flatMap(users -> syncCashedUser(messengerUsers, users));
-        });
+    private Observable<List<DataUser>> updateWithSocialData(List<MessengerUser> messengerUsers) {
+        if (messengerUsers.isEmpty()) return Observable.just(Collections.emptyList());
+
+        List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
+        return shortProfilePipe
+                .createObservableSuccess(new GetShortProfileAction(userNames))
+                .compose(new RetryLoginComposer<>(sessionHolder, janet))
+                .take(1)
+                .flatMap(action -> syncCashedUser(messengerUsers, action.getShortUsers()));
     }
 
-
     private Observable<List<DataUser>> syncCashedUser(List<MessengerUser> messengerUsers,
-                                                       List<User> socialUsers) {
+                                                      List<User> socialUsers) {
         return Observable.from(messengerUsers)
                 .map(messengerUser -> pairUserProfiles(messengerUser, socialUsers))
                 .filter(pair -> pair.second != null)
@@ -79,7 +77,7 @@ public class UserProcessor {
         DataUser cachedUser = usersDAO.getUserById(messengerUser.getName()).toBlocking().first();
 
         DataUser user = new DataUser();
-        user.setId(messengerUser.getName());
+        user.setId(messengerUser.getName().toLowerCase());
         user.setSocialId(socialUser.getId());
         user.setFirstName(socialUser.getFirstName());
         user.setLastName(socialUser.getLastName());
@@ -102,7 +100,7 @@ public class UserProcessor {
     private Pair<MessengerUser, User> pairUserProfiles(MessengerUser messengerUser, List<User> socialUsers) {
         String messengerName = messengerUser.getName();
         User user = from(socialUsers)
-                .firstOrDefault(temp -> TextUtils.equals(temp.getUsername(), messengerName));
+                .firstOrDefault(temp -> TextUtils.equals(temp.getUsername().toLowerCase(), messengerName));
         return new Pair<>(messengerUser, user);
     }
 

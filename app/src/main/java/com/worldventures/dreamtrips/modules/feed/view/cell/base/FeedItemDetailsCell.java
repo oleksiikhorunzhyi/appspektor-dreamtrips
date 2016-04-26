@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell.base;
 
+import android.support.v7.widget.CardView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
@@ -10,6 +12,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -21,6 +24,7 @@ import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
@@ -35,6 +39,9 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
     @ForActivity
     Provider<Injector> injectorProvider;
 
+    @InjectView(R.id.card_view_wrapper)
+    CardView cardViewWrapper;
+
     public FeedItemDetailsCell(View view) {
         super(view);
         ButterKnife.inject(this, view);
@@ -46,6 +53,13 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
         feedItemCommonDataHelper.set(getModelObject(), sessionHolder.get().get().getUser().getId(), injectorProvider.get());
+        if (ViewUtils.isTablet(itemView.getContext())) {
+            cardViewWrapper.setCardElevation(4);
+            int m = itemView.getContext().getResources().getDimensionPixelSize(R.dimen.spacing_small);
+            ((ViewGroup.MarginLayoutParams) cardViewWrapper.getLayoutParams()).setMargins(m, m, m, m);
+        } else {
+            cardViewWrapper.setCardElevation(0);
+        }
     }
 
     public void openItemDetails() {

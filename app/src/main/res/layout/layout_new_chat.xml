@@ -60,20 +60,33 @@
 
                 </LinearLayout>
 
-                <com.messenger.ui.widget.SelectionListenerEditText
-                    android:id="@+id/new_chat_chosen_contacts_edittext"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/new_chat_content_header_size"
-                    android:layout_weight="0"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:inputType="textFilter|textNoSuggestions"
+                    android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    tools:text="@string/new_chat_chosen_contacts_header_empty"
-                    android:textColor="@color/new_chat_header_text_color"
-                    android:textSize="@dimen/new_chat_name_chosen_contacts_text_size"
-                    />
+                    android:layout_weight="0">
+
+                    <EditText
+                        android:id="@+id/new_chat_chosen_contacts_count_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/new_chat_content_header_size"
+                        style="@style/NewChatMembersEditText"
+                        />
+
+                    <com.messenger.ui.widget.SelectionListenerEditText
+                        android:id="@+id/new_chat_chosen_contacts_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/new_chat_content_header_size"
+                        android:maxLines="3"
+                        android:layout_toRightOf="@+id/new_chat_chosen_contacts_count_editText"
+                        android:paddingLeft="@dimen/new_chat_name_chosen_contacts_left_margin"
+                        android:inputType="textMultiLine|textFilter|textNoSuggestions"
+                        style="@style/NewChatMembersEditText"
+                        />
+
+                </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"

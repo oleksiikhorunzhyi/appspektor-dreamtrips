@@ -10,6 +10,5 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/spacing_small"
-    android:visibility="invisible"
     android:textColor="@android:color/black"
     tools:text="User and 15 Other liked it"/>

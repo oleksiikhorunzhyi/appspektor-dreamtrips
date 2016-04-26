@@ -24,22 +24,17 @@ public class PhotoPickerLayoutDelegate {
     }
 
     public void initPicker(FragmentManager fragmentManager) {
-        initPicker(fragmentManager, false, true);
-    }
-
-    public void initPicker(FragmentManager fragmentManager, boolean multiPickEnabled) {
-        initPicker(fragmentManager, multiPickEnabled, true);
+        initPicker(fragmentManager, true);
     }
 
     /**
      * Init picker and attach it to provided container
      *
      * @param fragmentManager  FragmentManager to init picker
-     * @param multiPickEnabled default value is {false}
      * @param isVisible        default value is {true}
      */
-    public void initPicker(FragmentManager fragmentManager, boolean multiPickEnabled, boolean isVisible) {
-        photoPickerLayout.setup(fragmentManager, multiPickEnabled, isVisible);
+    public void initPicker(FragmentManager fragmentManager, boolean isVisible) {
+        photoPickerLayout.setup(fragmentManager, isVisible);
     }
 
     public void setPhotoPickerListener(PhotoPickerLayout.PhotoPickerListener listener) {
@@ -57,8 +52,16 @@ public class PhotoPickerLayoutDelegate {
     }
 
     public void showPicker() {
+        showPicker(false, Integer.MAX_VALUE);
+    }
+
+    public void showPicker(boolean multiPickEnabled) {
+        showPicker(multiPickEnabled, Integer.MAX_VALUE);
+    }
+
+    public void showPicker(boolean multiPickEnabled, int pickerLimit) {
         if (photoPickerLayout != null) {
-            photoPickerLayout.showPanel();
+            photoPickerLayout.showPanel(multiPickEnabled, pickerLimit);
             backStackDelegate.setListener(() -> {
                 if (photoPickerLayout.isPanelVisible()) {
                     photoPickerLayout.hidePanel();

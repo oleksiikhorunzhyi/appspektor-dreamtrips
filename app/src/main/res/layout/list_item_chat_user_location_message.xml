@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <include layout="@layout/list_item_chat_date_entry"/>
+
+    <RelativeLayout
+        android:id="@+id/chat_message_container"
+        style="@style/ChatMessageContainerStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:id="@+id/chat_username"
+            style="@style/ChatUsernameTextView"
+            android:layout_alignLeft="@id/message_container"
+            android:layout_alignStart="@+id/message_container"
+            tools:text="Peter Parker"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/chat_item_avatar"
+            style="@style/ChatAvatarImageView"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_below="@+id/chat_username"
+            app:placeholderImage="@drawable/noavatar_small"
+            app:roundAsCircle="true"
+            tools:background="@drawable/noavatar_small"/>
+
+        <com.messenger.ui.widget.ChatItemFrameLayout
+            android:id="@+id/message_container"
+            style="@style/UserImageMessageStyle"
+            android:layout_width="@dimen/chat_image_width"
+            android:layout_height="@dimen/chat_image_height"
+            android:layout_below="@+id/chat_username"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
+            android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
+            android:layout_toEndOf="@id/chat_item_avatar"
+            android:layout_toRightOf="@id/chat_item_avatar"
+            tools:background="@drawable/dark_grey_bubble_comics"
+            >
+
+            <include layout="@layout/rounded_map_view"/>
+
+        </com.messenger.ui.widget.ChatItemFrameLayout>
+
+    </RelativeLayout>
+</LinearLayout>

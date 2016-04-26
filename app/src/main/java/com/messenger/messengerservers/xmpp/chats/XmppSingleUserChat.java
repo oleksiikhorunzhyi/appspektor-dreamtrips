@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.chat.SingleUserChat;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.packets.StatusMessagePacket;
+import com.messenger.messengerservers.xmpp.stanzas.StatusMessageStanza;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 
@@ -28,17 +28,15 @@ public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
     }
 
     @Override
-    protected boolean trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException {
-        if (chat != null) {
-            chat.sendMessage(message);
-            return true;
-        }
-        return false;
+    protected void trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException {
+        if (chat == null) throw new SmackException.NotConnectedException();
+
+        chat.sendMessage(message);
     }
 
     @Override
-    protected StatusMessagePacket createStatusMessage(String messageId) {
-        return new StatusMessagePacket(messageId, Status.DISPLAYED,
+    protected StatusMessageStanza createStatusMessage(String messageId) {
+        return new StatusMessageStanza(messageId, Status.DISPLAYED,
                 JidCreatorHelper.obtainUserJid(companionId), Type.chat);
     }
 

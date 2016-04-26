@@ -1,10 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
 import com.octo.android.robospice.request.SpiceRequest;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
-import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.GetUserPhotosQuery;
-import com.worldventures.dreamtrips.modules.tripsimages.events.ImageUploadedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -18,16 +15,11 @@ public class AccountImagesPresenter extends MembersImagesPresenter {
 
     @Override
     public SpiceRequest<ArrayList<IFullScreenObject>> getReloadRequest() {
-        return new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, 1);
+        return new GetUserPhotosQuery(userId, PER_PAGE, 1);
     }
 
     @Override
     public SpiceRequest<ArrayList<IFullScreenObject>> getNextPageRequest(int currentCount) {
-        return new GetUserPhotosQuery(photoUploadingManager, userId, PER_PAGE, currentCount / PER_PAGE + 1);
-    }
-
-    @Override
-    public int getMediaRequestId() {
-        return AccountImagesPresenter.class.getSimpleName().hashCode();
+        return new GetUserPhotosQuery(userId, PER_PAGE, currentCount / PER_PAGE + 1);
     }
 }

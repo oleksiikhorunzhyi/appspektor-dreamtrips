@@ -7,19 +7,19 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.messenger.util.CroppingUtils;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
-import com.worldventures.dreamtrips.util.CopyFileTask;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
-import io.techery.scalablecropp.library.Crop;
 import rx.Notification;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -43,11 +43,12 @@ public class CropImageDelegate {
     private int ratioX = RATIO_X_DEFAULT;
     private int ratioY = RATIO_Y_DEFAULT;
 
-    public CropImageDelegate(DreamSpiceManager dreamSpiceManager) {
+    public CropImageDelegate(Activity activity, DreamSpiceManager dreamSpiceManager) {
         this.dreamSpiceManager = dreamSpiceManager;
+        init(activity);
     }
 
-    public void init(Activity activity) {
+    private void init(Activity activity) {
         this.activity = new WeakReference<>(activity);
         context = activity.getApplicationContext();
         if (!dreamSpiceManager.isStarted()) {
@@ -55,18 +56,16 @@ public class CropImageDelegate {
         }
     }
 
-    public void cropImage(ChosenImage image) {
+    public void cropImage(String filePath) {
         if (activity == null) {
             throw new IllegalStateException("You must call init() first");
         }
-        if (image != null) {
-            String filePath = image.getFilePathOriginal();
-            if (ValidationUtils.isUrl(filePath)) {
-                cacheFacebookImage(filePath, path -> startCropActivity(path));
-            } else {
-                executeCrop(filePath);
-            }
+        if (ValidationUtils.isUrl(filePath)) {
+            cacheFacebookImage(filePath, path -> startCropActivity(path, path));
+        } else {
+            executeCrop(filePath);
         }
+
     }
 
     public Observable<Notification<File>> getCroppedImagesStream() {
@@ -79,10 +78,8 @@ public class CropImageDelegate {
     }
 
     private void executeCrop(String originalFilePath) {
-        dreamSpiceManager.execute(new CopyFileTask(new File(originalFilePath),
-                getTempFile(originalFilePath).getAbsolutePath()),
-                path -> startCropActivity(path),
-                e -> reportError(e, "Could not copy avatar file from disk"));
+        String temporaryFile = getTempFile(originalFilePath).getAbsolutePath();
+        startCropActivity(originalFilePath, temporaryFile);
     }
 
     private void cacheFacebookImage(String url, Action<String> action) {
@@ -98,10 +95,16 @@ public class CropImageDelegate {
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        return Crop.onActivityResult(requestCode, resultCode, data, this::onCropFinished);
+        if (!CroppingUtils.isCroppingResult(requestCode, resultCode)) return false;
+
+        Pair<String, Throwable> resultPair = CroppingUtils.obtainResults(requestCode, resultCode, data);
+        if (resultPair == null) return true;
+
+        onCropFinished(resultPair.first, String.valueOf(resultPair.second));
+        return true;
     }
 
-    private void onCropFinished (String path, String errorMsg) {
+    private void onCropFinished(String path, String errorMsg) {
         if (!TextUtils.isEmpty(path)) {
             // TODO Improve this. Workaround for onAttachedToWindow() called after
             // onActivityResult() after user rotated screen in crop activity
@@ -139,11 +142,11 @@ public class CropImageDelegate {
         croppedImagesStream.onNext(Notification.createOnError(exception));
     }
 
-    private void startCropActivity(String path) {
+    private void startCropActivity(String originalPath, String targetPath) {
         if (activity.get() == null) {
             Timber.w("Cannot start cropping activity, starting activity is null");
             return;
         }
-        Crop.prepare(path).ratio(ratioX, ratioY).startFrom(activity.get());
+        CroppingUtils.startCropping(activity.get(), originalPath, targetPath, ratioX, ratioY);
     }
 }

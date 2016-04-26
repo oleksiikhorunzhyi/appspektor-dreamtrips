@@ -54,8 +54,10 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     View conversationNameEditTextLayout;
     @InjectView(R.id.new_chat_conversation_name)
     EditText conversationNameEditText;
+    @InjectView(R.id.new_chat_chosen_contacts_count_editText)
+    EditText chosenContactsCountEditText;
     @InjectView(R.id.new_chat_chosen_contacts_edittext)
-    SelectionListenerEditText chosenContactsEditText;
+    SelectionListenerEditText chosenContactsListEditText;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -115,9 +117,9 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
-        searchQueryObservable = RxTextView.textChanges(chosenContactsEditText);
-        chosenContactsEditText.setSelectionListener((s, a)
-                -> chosenContactsEditText.setSelection(chosenContactsEditText.getText().length()));
+        searchQueryObservable = RxTextView.afterTextChangeEvents(chosenContactsListEditText).map(event -> event.editable());
+        chosenContactsListEditText.setSelectionListener((s, a)
+                -> chosenContactsListEditText.setSelection(chosenContactsListEditText.getText().length()));
         conversationNameAnimator =
                 new WeightSlideAnimator(conversationNameEditTextLayout);
     }
@@ -174,9 +176,10 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public void setSelectedUsersHeaderText(CharSequence text) {
-        chosenContactsEditText.setText(text);
-        chosenContactsEditText.setSelection(text.length());
+    public void setSelectedUsersHeaderText(CharSequence selectedContactsCount, CharSequence selectedContactsList) {
+        chosenContactsCountEditText.setText(selectedContactsCount);
+        chosenContactsListEditText.setText(selectedContactsList);
+        chosenContactsListEditText.setSelection(selectedContactsList.length());
     }
 
     @Override

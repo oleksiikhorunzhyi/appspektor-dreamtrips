@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
+import com.messenger.util.PickLocationDelegate;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
@@ -31,6 +32,8 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
     @Inject
+    PickLocationDelegate pickLocationDelegate;
+    @Inject
     CropImageDelegate cropImageDelegate;
 
     @InjectView(R.id.chat_photo_picker)
@@ -45,7 +48,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
         conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         //
         initPickerLayout();
-        initCropImageDelegate();
         //
         navigationDrawerPresenter.setCurrentComponent(rootComponentsProvider
                 .getComponentByKey(MessengerActivityModule.MESSENGER));
@@ -53,9 +55,9 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!cropImageDelegate.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+        if (pickLocationDelegate.onActivityResult(requestCode, resultCode, data)) return;
+        if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -68,12 +70,8 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
     private void initPickerLayout() {
         inject(photoPickerLayout);
         photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
-        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager(), false);
+        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
         photoPickerLayoutDelegate.hidePicker();
-    }
-
-    private void initCropImageDelegate() {
-        cropImageDelegate.init(this);
     }
 
     @Override
@@ -96,7 +94,7 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
         return history;
     }
 
-    //TODO refactor after merge with social and update social router
+        //TODO refactor after merge with social and update social router
     public static void startMessenger(Context context) {
         context.startActivity(new Intent(context, MessengerActivity.class));
     }

@@ -58,6 +58,7 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
     private byte[] mBytes = null;
 
     private boolean checked;
+    private long pickedTime;
 
     private FacebookPhoto(GraphObject graphObject) {
 
@@ -198,6 +199,15 @@ public class FacebookPhoto implements BasePhotoPickerModel, Serializable {
         } else {
             return getSource();
         }
+    }
+
+    @Override
+    public long getPickedTime() {
+        return pickedTime;
+    }
+
+    public void setPickedTime(long pickedTime) {
+        this.pickedTime = pickedTime;
     }
 
     public boolean isChecked() {

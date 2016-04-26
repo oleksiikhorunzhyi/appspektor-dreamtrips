@@ -267,12 +267,6 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="ChatImageMessageImageView">
-        <item name="android:layout_height">@dimen/chat_image_height</item>
-        <item name="android:layout_width">@dimen/chat_image_width</item>
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
     <style name="ConversationListNameTextView">
         <item name="android:layout_marginLeft">
             @dimen/conversation_list_item_conversation_name_textview_left_margin
@@ -327,6 +321,13 @@
         </item>
     </style>
 
+    <style name="NewChatMembersEditText">
+        <item name="android:textColor">@color/new_chat_header_text_color</item>
+        <item name="android:textSize">@dimen/new_chat_name_chosen_contacts_text_size</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="BaseMessengerChatInfoSettingsContainer">
         <item name="android:layout_marginTop">@dimen/chat_settings_chat_info_vertical_margin</item>
         <item name="android:layout_marginBottom">@dimen/chat_settings_chat_info_vertical_margin
@@ -344,6 +345,29 @@
     <style name="MessengerImageFullscreenDateStyle">
         <item name="android:textColor">@color/grey</item>
         <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="OwnMessageStyle">
+        <item name="own">true</item>
+    </style>
+    <style name="OwnTextMessageStyle" parent="OwnMessageStyle">
+        <item name="background_following">@drawable/background_chat_text_item_own</item>
+        <item name="background_initial">@drawable/background_chat_text_item_own_initial</item>
+    </style>
+    <style name="OwnImageMessageStyle" parent="OwnMessageStyle">
+        <item name="background_following">@drawable/background_chat_image_item_own</item>
+        <item name="background_initial">@drawable/background_chat_image_item_own_initial</item>
+    </style>
+    <style name="UserMessageStyle">
+        <item name="own">false</item>
+    </style>
+    <style name="UserTextMessageStyle" parent="UserMessageStyle">
+        <item name="background_following">@drawable/background_chat_text_item_user</item>
+        <item name="background_initial">@drawable/background_chat_text_item_user_initial</item>
+    </style>
+    <style name="UserImageMessageStyle" parent="UserMessageStyle">
+        <item name="background_following">@drawable/background_chat_image_item_user</item>
+        <item name="background_initial">@drawable/background_chat_image_item_user_initial</item>
     </style>
 
     <!--end messenger-->

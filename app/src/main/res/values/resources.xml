@@ -3,4 +3,5 @@
     <integer name="dtl_keyboard_point_estimator_action_id">481516</integer>
 
     <integer name="messenger_max_message_length">3000</integer>
+    <integer name="messenger_pick_image_limit">15</integer>
 </resources>

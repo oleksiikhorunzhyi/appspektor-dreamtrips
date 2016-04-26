@@ -28,8 +28,10 @@ public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
     @Override
     public ArrayList<ParentFeedItem> loadDataFromNetwork() throws Exception {
+        ArrayList<ParentFeedItem> result;
         String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
-        return getService().getAccountFeed(LIMIT, before, circleId);
+        result = getService().getAccountFeed(LIMIT, before, circleId);
+        return result;
     }
 
     @Override

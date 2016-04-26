@@ -75,6 +75,7 @@ public class DtlMerchantManager {
 
     public DtlMerchantManager(Injector injector) {
         injector.inject(this);
+        merchants = db.getDtlMerchants();
         this.filterStream = PublishSubject.create();
         initFilterData();
         initAnalytics();
@@ -193,8 +194,7 @@ public class DtlMerchantManager {
         if (lastResult != null && !lastResult.first.equals(locationArg)) {
             lastResult = null;
         }
-        getMerchantsExecutor.createJobWith(locationArg)
-                .subscribe();
+        getMerchantsExecutor.createJobWith(locationArg).subscribe();
     }
 
     public Observable<Job<List<DtlMerchant>>> connectMerchantsWithCache() {
@@ -208,7 +208,14 @@ public class DtlMerchantManager {
             }
             return result;
         });
-        return observable;
+        return observable.startWith(Observable.fromCallable(() -> {
+            List<DtlMerchant> merchants = null;
+            if (lastResult != null) merchants = lastResult.second;
+            else merchants = db.getDtlMerchants();
+            return new Job.Builder<List<DtlMerchant>>()
+                    .status(Job.JobStatus.SUCCESS)
+                    .value(merchants).create();
+        }));
     }
 
     private void cacheAndPersistMerchants(List<DtlMerchant> dtlMerchants) {

@@ -57,4 +57,20 @@
             <enum name="location" value="2" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="CollageView">
+        <attr name="padding" format="dimension"/>
+        <attr name="moreTextSize" format="dimension"/>
+        <attr name="moreIcon" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="RoundedCornersLayout">
+        <attr name="rcl_radius" format="dimension|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ChatItemFrameLayout">
+        <attr name="background_following" format="reference"/>
+        <attr name="background_initial" format="reference"/>
+        <attr name="own" format="boolean"/>
+    </declare-styleable>
 </resources>

@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 
 public class ViewUtils {
@@ -34,6 +36,15 @@ public class ViewUtils {
         display.getSize(size);
         int height = size.y;
         return height;
+    }
+
+    public static void removeSupportGlobalLayoutListener(View view, ViewTreeObserver.OnGlobalLayoutListener listener) {
+        ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            viewTreeObserver.removeGlobalOnLayoutListener(listener);
+        } else {
+            viewTreeObserver.removeOnGlobalLayoutListener(listener);
+        }
     }
 
     public static int getRootViewHeight(Activity activity) {

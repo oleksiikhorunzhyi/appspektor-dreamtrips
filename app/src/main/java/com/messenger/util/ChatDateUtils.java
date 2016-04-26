@@ -6,6 +6,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class ChatDateUtils {
+    private final static int MAX_YEAR = Calendar.getInstance().getMaximum(Calendar.YEAR);
 
     public static Calendar getToday() {
         Calendar today = Calendar.getInstance();
@@ -48,5 +49,11 @@ public class ChatDateUtils {
 
         return TimeUnit.MILLISECONDS.toDays(
                 Math.abs(diff));
+    }
+
+    public static long getErrorMessageDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, MAX_YEAR);
+        return calendar.getTimeInMillis();
     }
 }

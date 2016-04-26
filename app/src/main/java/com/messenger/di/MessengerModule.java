@@ -1,21 +1,17 @@
 package com.messenger.di;
 
-import com.messenger.delegate.ChatLeavingDelegate;
+import com.messenger.delegate.ChatMessagesEventDelegate;
+import com.messenger.delegate.GroupChatEventDelegate;
+import com.messenger.delegate.JoinedChatEventDelegate;
+import com.messenger.delegate.LoaderDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.adapter.SwipeableContactsAdapter;
-import com.messenger.ui.adapter.holder.CloseGroupConversationViewHolder;
-import com.messenger.ui.adapter.holder.GroupConversationViewHolder;
-import com.messenger.ui.adapter.holder.OneToOneConversationViewHolder;
-import com.messenger.ui.adapter.holder.TripConversationViewHolder;
-import com.messenger.ui.helper.PhotoPickerDelegate;
-import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
-import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
-import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
-import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
-import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
+import com.messenger.ui.adapter.holder.conversation.CloseGroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.TripConversationViewHolder;
+import com.messenger.util.ChatFacadeManager;
 
 import dagger.Module;
 
@@ -32,11 +28,15 @@ import dagger.Module;
                 CloseGroupConversationViewHolder.class,
 
                 ChatFacadeInitializer.class,
+                ChatFacadeManager.class,
 
                 // adapters
                 SwipeableContactsAdapter.class,
 
-                PhotoPickerDelegate.class,
+                LoaderDelegate.class,
+                ChatMessagesEventDelegate.class,
+                GroupChatEventDelegate.class,
+                JoinedChatEventDelegate.class,
 
                 MessengerNotificationPreSyncService.class,
         },

@@ -2,10 +2,8 @@ package com.worldventures.dreamtrips.core.navigation;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
@@ -14,7 +12,6 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
-import com.worldventures.dreamtrips.modules.tripsimages.view.activity.CreatePhotoActivity;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
@@ -34,13 +31,6 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void openLaunch() {
         startActivity(LaunchActivity.class);
-    }
-
-    public void openCreatePhoto(Fragment fm, Uri fileUri, String type) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(CreatePhotoActivity.EXTRA_FILE_URI, fileUri);
-        bundle.putString(CreatePhotoActivity.EXTRA_TYPE, type);
-        startForResult(fm, CreatePhotoActivity.class, CreatePhotoActivity.REQUEST_CODE_CREATE_PHOTO, bundle);
     }
 
     public void open360Activity(String url, String title) {

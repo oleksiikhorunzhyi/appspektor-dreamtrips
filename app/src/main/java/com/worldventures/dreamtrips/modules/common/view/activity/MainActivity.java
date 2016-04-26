@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.di.MessengerActivityModule;
 import com.messenger.ui.activity.MessengerActivity;
 import com.techery.spares.annotations.Layout;
@@ -60,6 +62,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     @Inject
     protected RootComponentsProvider rootComponentsProvider;
+    @Inject
+    CropImageDelegate cropImageDelegate;
 
     @State
     protected ComponentDescription currentComponent;
@@ -221,6 +225,13 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         //
         currentComponent = component;
         openComponent(component);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!cropImageDelegate.onActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void openComponent(ComponentDescription component) {

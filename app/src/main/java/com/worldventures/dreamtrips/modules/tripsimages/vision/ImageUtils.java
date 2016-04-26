@@ -24,18 +24,25 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.ArrayList;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ImageUtils {
+
+    private static final String PATTERN = "%s?width=%d&height=%d";
 
     private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiveListener bitmapReciveListener) {
         DataSubscriber dataSubscriber = new BaseDataSubscriber<CloseableReference<CloseableBitmap>>() {
@@ -85,20 +92,24 @@ public class ImageUtils {
     }
 
     public static Observable<Bitmap> getBitmap(Context context, Uri uri, int width, int height) {
-        return Observable.create(subscriber -> setDataSubscriber(context, uri, width, height, bitmap -> {
-            subscriber.onNext(bitmap);
-            subscriber.onCompleted();
-            subscriber.unsubscribe();
-        }));
+        return Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                setDataSubscriber(context, uri, width, height, bitmap -> {
+                    subscriber.onNext(bitmap);
+                    subscriber.onCompleted();
+                    subscriber.unsubscribe();
+                });
+            }
+        });
     }
 
     public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
-
         Detector detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.NO_LANDMARKS)
-                .setMode(FaceDetector.FAST_MODE)
                 .setClassificationType(FaceDetector.NO_CLASSIFICATIONS)
+                .setMode(FaceDetector.FAST_MODE)
                 .build();
 
         return bitmapObservable
@@ -115,16 +126,16 @@ public class ImageUtils {
                         PointF position = face.getPosition();
                         float absoluteX = Math.max(position.x, 0.0f);
                         float absoluteY = Math.max(position.y, 0.0f);
-                        PhotoTag.TagPosition absolute = new PhotoTag.TagPosition(
+                        TagPosition absolute = new TagPosition(
                                 (int) absoluteX,
                                 (int) absoluteY,
                                 (int) absoluteX + (int) face.getWidth(),
                                 (int) absoluteY + (int) face.getHeight());
-                        PhotoTag.TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
+                        TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
                         float bottomXProportional = Math.min(0.95f, proportional.getBottomRight().getX());
                         float bottomYProportional = Math.min(0.95f, proportional.getBottomRight().getY());
-                        proportional = new PhotoTag.TagPosition(proportional.getTopLeft(), new PhotoTag.Position(bottomXProportional, bottomYProportional));
-                        result.add(new PhotoTag(proportional, new User()));
+                        proportional = new TagPosition(proportional.getTopLeft(), new Position(bottomXProportional, bottomYProportional));
+                        result.add(new PhotoTag(proportional, 0));
                     }
                     return result;
                 })
@@ -132,7 +143,19 @@ public class ImageUtils {
                 .doOnError(throwable -> Timber.d(throwable, ""));
     }
 
+    public static Pair<String, Size> generateUri(DrawableUtil drawableUtil, String baseUri) {
+        if (ValidationUtils.isUrl(baseUri)) {
+            return new Pair<>(baseUri, drawableUtil.getImageSizeFromUrl(baseUri, DrawableUtil.THUMBNAIL_BIG));
+        } else {
+            return drawableUtil.compressAndRotateImage(baseUri, DrawableUtil.THUMBNAIL_BIG);
+        }
+    }
+
     private interface BitmapReceiveListener {
         void onBitmapReceived(Bitmap bitmap);
+    }
+
+    public static String getParametrizedUrl(String url, int width, int height) {
+        return String.format(PATTERN, url, width, height);
     }
 }

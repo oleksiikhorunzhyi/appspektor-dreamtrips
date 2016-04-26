@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
@@ -53,15 +52,7 @@ public class FilterPopupAdapter<T> extends BaseAdapter {
             view.setTag(holder);
         }
 
-        if (view.isSelected()) {
-
-        } else {
-
-        }
-
-        T contentItem = getItem(position);
-        holder.name.setText(contentItem.toString());
-
+        holder.name.setText(getItem(position).toString());
         return view;
     }
 
@@ -72,8 +63,5 @@ public class FilterPopupAdapter<T> extends BaseAdapter {
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }
-
-
     }
-
 }

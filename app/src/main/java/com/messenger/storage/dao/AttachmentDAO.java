@@ -1,33 +1,40 @@
 package com.messenger.storage.dao;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Adapter;
 import com.messenger.entities.DataAttachment$Table;
-import com.messenger.entities.DataMessage;
-import com.messenger.entities.DataMessage$Table;
-import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.RxContentResolver;
-
-import java.util.Collections;
-import java.util.List;
+import com.raizlabs.android.dbflow.structure.ModelAdapter;
 
 import rx.Observable;
 
-public class AttachmentDAO extends BaseDAO {
+public class AttachmentDAO extends BaseAttachmentDAO<DataAttachment> {
 
     public AttachmentDAO(Context context, RxContentResolver rxContentResolver) {
         super(context, rxContentResolver);
     }
 
-    public void save(List<DataAttachment> attachments) {
-        bulkInsert(attachments, new DataAttachment$Adapter(), DataAttachment.CONTENT_URI);
+    @Override
+    protected ModelAdapter<DataAttachment> getModelAdapter() {
+        return new DataAttachment$Adapter();
     }
 
-    public void save(DataAttachment attachment) {
-        // BaseProviderModel.save() saves all null strings as "null"(https://github.com/Raizlabs/DBFlow/pull/430)
-        save(Collections.singletonList(attachment));
+    @Override
+    protected Uri getModelTableUri() {
+        return DataAttachment.CONTENT_URI;
+    }
+
+    @Override
+    protected String getModelTableName() {
+        return DataAttachment.TABLE_NAME;
+    }
+
+    @Override
+    protected String getIDColumnName() {
+        return DataAttachment$Table._ID;
     }
 
     public Observable<DataAttachment> getAttachmentById(String attachmentId) {
@@ -37,7 +44,7 @@ public class AttachmentDAO extends BaseDAO {
                 .withSelectionArgs(new String[]{attachmentId})
                 .build();
         return query(q, DataAttachment.CONTENT_URI)
-                .compose(DaoTransformers.toDataAttachment());
+                .compose(DaoTransformers.toAttachment(DataAttachment.class));
     }
 
     public Observable<DataAttachment> getAttachmentByMessageId(String messageId) {
@@ -47,39 +54,7 @@ public class AttachmentDAO extends BaseDAO {
                 .withSelectionArgs(new String[]{messageId})
                 .build();
         return query(q, DataAttachment.CONTENT_URI)
-                .compose(DaoTransformers.toDataAttachment());
-
-    }
-
-    public Observable<List<DataAttachment>> getErrorAtachments() {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * " +
-                        "FROM " + DataAttachment.TABLE_NAME + " as a " +
-                        "JOIN " + DataMessage$Table.TABLE_NAME + " m " +
-                        "ON a." + DataAttachment$Table.MESSAGEID + " = m." + DataMessage$Table._ID + " " +
-
-                        "WHERE m." + DataMessage$Table.STATUS + "= ? ")
-                .withSelectionArgs(new String[]{Integer.toString(MessageStatus.ERROR)}).build();
-
-        return query(q, DataAttachment.CONTENT_URI, DataMessage.CONTENT_URI).first()
-                .compose(DaoTransformers.toDataAttachments());
-    }
-
-    public Observable<List<DataAttachment>> getPendingAttachments(String conversationId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * " +
-                        "FROM " + DataAttachment.TABLE_NAME + " " +
-
-                        "WHERE " + DataAttachment$Table.CONVERSATIONID + " = ? " +
-                        "AND " + DataAttachment$Table.UPLOADTASKID + " <> 0")
-                .withSelectionArgs(new String[]{conversationId}).build();
-
-        return query(q, DataAttachment.CONTENT_URI)
-                .compose(DaoTransformers.toDataAttachments());
-    }
-
-    public void deleteAttachment(DataAttachment dataAttachment) {
-        dataAttachment.delete();
+                .compose(DaoTransformers.toAttachment(DataAttachment.class));
     }
 
 }

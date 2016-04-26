@@ -10,6 +10,8 @@ public interface GlobalMessageListener {
 
     void onSendMessage(Message message);
 
+    void onErrorMessage(Message message);
+
     class SimpleGlobalMessageListener implements GlobalMessageListener {
 
         @Override
@@ -23,6 +25,10 @@ public interface GlobalMessageListener {
 
         @Override
         public void onSendMessage(Message message) {
+        }
+
+        @Override
+        public void onErrorMessage(Message message) {
         }
     }
 }

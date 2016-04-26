@@ -5,13 +5,9 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
 import java.net.CookieManager;
 import java.util.Set;
@@ -27,7 +23,6 @@ import io.techery.janet.CommandActionService;
 import io.techery.janet.HttpActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.http.HttpClient;
-import timber.log.Timber;
 
 @Module(
         includes = {JanetCommandModule.class, JanetServiceModule.class},
@@ -66,18 +61,9 @@ public class JanetModule {
     @Named(JANET_QUALIFIER)
     @Provides
     Interceptor interceptor() {
-        return chain -> {
-            Request request = chain.request();
-            Timber.d("---->");
-            Timber.tag("OkHttpClient").d(request.headers().toString());
-            Timber.tag("OkHttpClient").d(request.toString());
-            Timber.d("---->");
-            Timber.d("<----");
-            Response response = chain.proceed(request);
-            Timber.tag("OkHttpClient").d(response.toString());
-            Timber.d("<----");
-            return response;
-        };
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return logging;
     }
 
     @Singleton
@@ -87,13 +73,8 @@ public class JanetModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    ActionService provideHttpService(@ForApplication Context appContext, SessionHolder<UserSession> appSessionHolder,  HttpClient httpClient, Gson gson) {
-        if (!appSessionHolder.get().isPresent()) return null;
-        AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
-        if (appConfig == null) return null;
-        AppConfig.URLS urls = appConfig.getUrls();
-        String uploaderyApi = urls.getProduction().getUploaderyBaseURL();
-        if (uploaderyApi == null) return null;
-        return new AuthHttpServiceWrapper(new HttpActionService(uploaderyApi, httpClient, new io.techery.janet.gson.GsonConverter(gson)), appContext );
+    ActionService provideHttpUploaderService(@ForApplication Context appContext,  HttpClient httpClient, Gson gson) {
+        return new AuthHttpServiceWrapper(new HttpActionService(BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson)), appContext );
     }
+
 }

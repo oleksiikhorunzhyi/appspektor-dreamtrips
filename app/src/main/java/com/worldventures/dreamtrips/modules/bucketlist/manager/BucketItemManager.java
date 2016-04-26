@@ -363,6 +363,9 @@ public class BucketItemManager {
     }
 
     public void updateBucketItemWithPhoto(BucketItem bucketItem, BucketPhoto photo) {
+        if (bucketItem.getCoverPhoto() == null) {
+            bucketItem.setCoverPhoto(photo);
+        }
         bucketItem.getPhotos().add(0, photo);
         resaveBucketItem(bucketItem);
     }

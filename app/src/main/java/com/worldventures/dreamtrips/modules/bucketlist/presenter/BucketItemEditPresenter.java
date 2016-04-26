@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
@@ -154,6 +155,10 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
     protected List getBucketPhotos() {
         List bucketPhotos = new ArrayList<>(super.getBucketPhotos());
         List tasks = Queryable.from(db.getAllBucketPhotoCreationItem())
+                .map(element -> {
+                    element.setStatus(ActionState.Status.FAIL);
+                    return element;
+                })
                 .filter(element -> {
                     return Objects.equals(bucketItemId, element.getBucketId());
                 }).toList();

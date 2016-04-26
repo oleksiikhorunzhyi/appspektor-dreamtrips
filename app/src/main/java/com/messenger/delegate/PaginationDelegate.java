@@ -8,8 +8,6 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnLoadedListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
-import com.messenger.storage.dao.AttachmentDAO;
-import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.DecomposeMessagesHelper;
 
 import java.util.List;
@@ -17,7 +15,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -35,7 +32,8 @@ public class PaginationDelegate {
 
     private PagePagination<Message> messagePagePagination;
 
-    @Inject PaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
+    @Inject
+    PaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
         this.messengerServerFacade = messengerServerFacade;
         this.decomposeMessagesHelper = decomposeMessagesHelper;
         this.usersDelegate = usersDelegate;
@@ -55,12 +53,12 @@ public class PaginationDelegate {
 
         messagePagePagination.setPersister(messages ->
                 Observable.just(messages)
-                .subscribeOn(Schedulers.io())
-                .map(serverMessages -> {
-                    DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(serverMessages);
-                    from(result.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
-                    return result;
-                }).subscribe(result -> decomposeMessagesHelper.saveDecomposeMessage(result),
+                        .subscribeOn(Schedulers.io())
+                        .map(serverMessages -> {
+                            DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(serverMessages);
+                            from(result.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
+                            return result;
+                        }).subscribe(result -> decomposeMessagesHelper.saveDecomposeMessage(result),
                         throwable -> Timber.i(throwable, "Error while loading message page")));
 
         messagePagePagination.setOnEntityLoadedListener(new OnLoadedListener<Message>() {
@@ -80,15 +78,17 @@ public class PaginationDelegate {
 
     private void processLoadedMessages(List<Message> entities, int fromPage, PageLoadedListener loadedListener) {
         List<String> usersIds = Queryable.from(entities).map(Message::getFromId).toList();
-        usersDelegate.loadIfNeedUsers(usersIds)
+        if (usersIds.size() > 0)
+            usersDelegate.loadIfNeedUsers(usersIds)
                     .subscribe(dataUsers -> {
                         if (loadedListener == null) return;
                         loadedListener.onPageLoaded(fromPage, entities);
                     }, e -> Timber.e(e, "Failed to update users"));
+        else loadedListener.onPageLoaded(fromPage, entities);
     }
 
-    public void stopPaginate(){
-        if (messagePagePagination != null){
+    public void stopPaginate() {
+        if (messagePagePagination != null) {
             messagePagePagination.close();
         }
         messagePagePagination = null;

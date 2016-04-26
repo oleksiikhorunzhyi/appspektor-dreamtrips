@@ -51,4 +51,9 @@ public abstract class TextMessageViewHolder extends MessageViewHolder {
         messageTextView.setText(Html.fromHtml(itemView.getContext().getString(R.string.chat_update_proposition)));
     }
 
+    @Override
+    public View getTimestampClickableView() {
+        return messageTextView;
+    }
+
 }

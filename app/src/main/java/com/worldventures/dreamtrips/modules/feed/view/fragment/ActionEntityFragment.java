@@ -248,6 +248,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.additional_page_container)
+                .targetFragment(this)
                 .data(location)
                 .build());
     }

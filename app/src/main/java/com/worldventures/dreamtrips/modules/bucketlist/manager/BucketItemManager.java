@@ -41,6 +41,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
@@ -362,12 +363,7 @@ public class BucketItemManager {
     }
 
     public void updateBucketItemWithPhoto(BucketItem bucketItem, BucketPhoto photo) {
-        if (bucketItem.getCoverPhoto() == null) {
-            bucketItem.setCoverPhoto(photo);
-        }
-
         bucketItem.getPhotos().add(0, photo);
-
         resaveBucketItem(bucketItem);
     }
 

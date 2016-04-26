@@ -15,8 +15,11 @@ public class SocialUploaderyManager {
     @Inject
     UploaderyManager uploaderyManager;
 
+    Observable<ActionState<UploaderyImageCommand>> cache;
+
     public SocialUploaderyManager(Injector injector) {
         injector.inject(this);
+        cache = uploaderyManager.getUploadImagePipe().observe().cache();
     }
 
     public void upload(String filePath) {
@@ -28,7 +31,7 @@ public class SocialUploaderyManager {
     }
 
     public Observable<ActionState<UploaderyImageCommand>> getTaskChangingObservable() {
-        return uploaderyManager.getUploadImagePipe().observe();
+        return cache;
     }
     
 }

@@ -3,15 +3,15 @@ package com.worldventures.dreamtrips.modules.bucketlist.api;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 
 public class UploadBucketPhotoCommand extends DreamTripsRequest<BucketPhoto> {
 
 
-    protected UploadTask photoUploadTask;
+    protected BucketPhotoCreationItem photoUploadTask;
     private String bucketItemId;
 
-    public UploadBucketPhotoCommand(String bucketItemId, UploadTask photoUploadTask) {
+    public UploadBucketPhotoCommand(String bucketItemId, BucketPhotoCreationItem photoUploadTask) {
         super(BucketPhoto.class);
         this.bucketItemId = bucketItemId;
         this.photoUploadTask = photoUploadTask;

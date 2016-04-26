@@ -113,7 +113,7 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         this.selected = selected;
     }
 
-    public View getMessageView() {
+    public View getTimestampClickableView() {
         return messageContainer;
     }
 

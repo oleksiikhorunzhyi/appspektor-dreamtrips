@@ -556,7 +556,7 @@ public class SnappyRepository {
     public DtlLocation getDtlLocation() {
         // list below is a hack to allow manipulating DtlLocation class since it is an interface
         List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
-        if (location.isEmpty()) return null;
+        if (location.isEmpty()) return DtlLocation.UNDEFINED;
         else return location.get(0);
     }
 

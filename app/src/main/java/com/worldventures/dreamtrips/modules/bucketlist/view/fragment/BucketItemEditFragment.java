@@ -25,12 +25,12 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoCellDelegate;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -86,14 +86,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     @Override
     public void onResume() {
         super.onResume();
-        initAutoCompleteDate();
         if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        OrientationUtil.unlockOrientation(getActivity());
     }
 
     @Optional
@@ -179,7 +172,6 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
             @Override
             public void onCellClicked(BucketPhoto model) {
-
             }
         });
     }
@@ -331,23 +323,13 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     }
 
     @Override
-    public void setImages(List<BucketPhoto> photos) {
+    public void setImages(List photos) {
         bucketPhotosView.setImages(photos);
     }
 
     @Override
-    public void addImages(List<UploadTask> tasks) {
-        bucketPhotosView.addImages(tasks);
-    }
-
-    @Override
-    public void addImage(UploadTask uploadTask) {
-        bucketPhotosView.addImage(uploadTask);
-    }
-
-    @Override
-    public void deleteImage(UploadTask task) {
-        bucketPhotosView.deleteImage(task);
+    public void addImage(BucketPhotoCreationItem uploadTask) {
+        bucketPhotosView.addImageToStart(uploadTask);
     }
 
     @Override
@@ -356,18 +338,23 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     }
 
     @Override
-    public void itemChanged(UploadTask uploadTask) {
+    public void itemChanged(BucketPhotoCreationItem uploadTask) {
         bucketPhotosView.itemChanged(uploadTask);
     }
 
     @Override
-    public void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
+    public void replace(BucketPhotoCreationItem bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
         bucketPhotosView.replace(bucketPhotoUploadTask, bucketPhoto);
     }
 
     @Override
-    public UploadTask getBucketPhotoUploadTask(long taskId) {
-        return bucketPhotosView.getBucketPhotoUploadTask(taskId);
+    public BucketPhotoCreationItem getBucketPhotoUploadTask(String filePath) {
+        return bucketPhotosView.getBucketPhotoUploadTask(filePath);
+    }
+
+    @Override
+    public void deleteImage(BucketPhotoCreationItem task) {
+        bucketPhotosView.deleteImage(task);
     }
 
     @Override

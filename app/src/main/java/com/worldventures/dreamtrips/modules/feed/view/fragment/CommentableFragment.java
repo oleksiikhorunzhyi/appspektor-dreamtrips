@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_comments)
 public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends BaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
@@ -242,6 +243,12 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     @Override
     public void showEdit(BucketBundle bucketBundle) {
         int containerId = R.id.container_details_floating;
+        bucketBundle.setLock(true);
+        try {
+            bucketBundle.setOwnerId(getArgs().getFeedEntity().getOwner().getId());
+        } catch (Exception e) {
+            Timber.e(e, "");
+        }
         if (isTabletLandscape()) {
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(true)
@@ -251,7 +258,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
                     .build());
             showContainer(containerId);
         } else {
-            bucketBundle.setLock(true);
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
                     .data(bucketBundle)
                     .build());

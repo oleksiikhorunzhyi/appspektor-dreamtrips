@@ -11,6 +11,7 @@ import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -55,6 +56,7 @@ public class SnappyRepository {
     public static final String SETTINGS_KEY = "settings";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
+    public static final String BUCKET_PHOTO_CREATION_ITEM = "BUCKET_PHOTO_CREATION_ITEM";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
     public static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
@@ -374,6 +376,42 @@ public class SnappyRepository {
                 Timber.e(e, "Error while deleting");
             }
         }));
+    }
+
+    /**
+     * Use it from Buclet photos
+     */
+    public void saveBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
+        act(db -> db.put(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath(), uploadTask));
+    }
+
+    public BucketPhotoCreationItem getBucketPhotoCreationItem(String filePath) {
+        return actWithResult(db -> db.get(BUCKET_PHOTO_CREATION_ITEM + filePath, BucketPhotoCreationItem.class)).orNull();
+    }
+
+    public void removeBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
+        act(db -> db.del(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath()));
+    }
+
+    public void removeAllBucketItemPhotoCreations() {
+        act(db -> Queryable.from(db.findKeys(BUCKET_PHOTO_CREATION_ITEM)).forEachR(key -> {
+            try {
+                db.del(key);
+            } catch (SnappydbException e) {
+                Timber.e(e, "Error while deleting");
+            }
+        }));
+    }
+
+    public List<BucketPhotoCreationItem> getAllBucketPhotoCreationItem() {
+        return actWithResult(db -> {
+            List<BucketPhotoCreationItem> tasks = new ArrayList<>();
+            String[] keys = db.findKeys(BUCKET_PHOTO_CREATION_ITEM);
+            for (String key : keys) {
+                tasks.add(db.get(key, BucketPhotoCreationItem.class));
+            }
+            return tasks;
+        }).or(Collections.emptyList());
     }
 
     public List<UploadTask> getAllUploadTask() {

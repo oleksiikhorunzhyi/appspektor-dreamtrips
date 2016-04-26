@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
+import android.support.annotation.Nullable;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -10,8 +12,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEv
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -19,7 +21,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -76,14 +77,22 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.setTags(bucketItem.getBucketTags());
             view.setTime(BucketItemInfoUtil.getTime(context, bucketItem));
 
-            List<BucketPhoto> photos = bucketItem.getPhotos();
-            if (photos != null && !photos.isEmpty()) {
-                int coverIndex = Math.max(photos.indexOf(bucketItem.getCoverPhoto()), 0);
-                Collections.reverse(photos);
-                Collections.swap(photos, coverIndex, 0);
+            List photos = getBucketPhotos();
+            if (photos != null) {
                 view.setImages(photos);
             }
         }
+    }
+
+    @Nullable
+    protected List getBucketPhotos() {
+        List<BucketPhoto> photos = bucketItem.getPhotos();
+        if (!photos.isEmpty()) {
+            int coverIndex = Math.max(photos.indexOf(bucketItem.getCoverPhoto()), 0);
+            photos.get(coverIndex).setIsCover(true);
+            photos.add(0, photos.remove(coverIndex));
+        }
+        return photos;
     }
 
 
@@ -180,8 +189,10 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
 
         void openFullscreen(FullScreenImagesBundle data);
 
-        void setImages(List<BucketPhoto> photos);
+        void setImages(List photos);
 
-        UploadTask getBucketPhotoUploadTask(long taskId);
+        BucketPhotoCreationItem getBucketPhotoUploadTask(String filePath);
+
+
     }
 }

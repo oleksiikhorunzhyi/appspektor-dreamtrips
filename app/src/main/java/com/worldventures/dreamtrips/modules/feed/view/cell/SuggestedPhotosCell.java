@@ -4,6 +4,7 @@ import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +33,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPho
 import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,6 +41,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 
 @Layout(R.layout.adapter_item_suggested_photos)
 public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate>
@@ -66,6 +69,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     SuggestedPhotoCellPresenter presenter;
 
     private BaseDelegateAdapter suggestionAdapter;
+    private PublishSubject<Void> notificationSubject = PublishSubject.create();
 
     private ContentObserver contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
         @Override
@@ -73,7 +77,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
             super.onChange(selfChange);
 
             if (!selfChange) {
-                presenter.notifyNewSuggestions();
+                notificationSubject.onNext(null);
             }
         }
     };
@@ -85,14 +89,12 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     @Override
     public void afterInject() {
         super.afterInject();
-
         presenter.takeView(this);
     }
 
     @Override
     public void setCellDelegate(SuggestedPhotosDelegate cellDelegate) {
         super.setCellDelegate(cellDelegate);
-
         cellDelegate.onRegisterObserver(contentObserver);
     }
 
@@ -223,12 +225,22 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
 
     @Override
     public void clearListState() {
-        suggestionAdapter.clear();
+        suggestionAdapter.notifyDataSetChanged();
+    }
+
+    @Nullable
+    @Override
+    public PhotoGalleryModel firstElement() {
+        return suggestionAdapter.getItemCount() == 0 ? null : (PhotoGalleryModel) suggestionAdapter.getItem(0);
     }
 
     @Override
-    public PhotoGalleryModel firstElement() {
-        return (PhotoGalleryModel) suggestionAdapter.getItem(0);
+    public Observable<Void> notificationObservable() {
+        return notificationSubject
+                .asObservable()
+                .throttleLast(1, TimeUnit.SECONDS)
+                .replay(1)
+                .autoConnect();
     }
 
     @Override

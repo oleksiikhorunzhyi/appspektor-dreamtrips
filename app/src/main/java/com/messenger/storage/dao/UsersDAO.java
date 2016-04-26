@@ -26,6 +26,24 @@ public class UsersDAO extends BaseDAO {
         return new Select().from(DataUser.class).byIds(userId).querySingle();
     }
 
+    public Observable<List<DataUser>> getExitingUserByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) return Observable.from(Collections.emptyList());
+        //
+        StringBuilder sb = new StringBuilder("(");
+        for (String id: ids) {
+            sb.append(String.format(" %s,", id));
+        }
+        sb.setCharAt(sb.length() - 1, ')');
+
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT " + DataUser$Table._ID +
+                        " FROM " + DataUser.TABLE_NAME +
+                        " WHERE " + DataUser$Table._ID + " in " + sb.toString())
+                        .build();
+        return query(q, DataUser.CONTENT_URI)
+                .compose(DaoTransformers.toDataUsers());
+    }
+
     public Observable<DataUser> getUserById(String id) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT * FROM " + DataUser.TABLE_NAME + " WHERE " + DataUser$Table._ID + "=?")

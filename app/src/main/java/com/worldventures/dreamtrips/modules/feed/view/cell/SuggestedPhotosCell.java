@@ -4,7 +4,6 @@ import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -149,6 +148,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         }
 
         presenter.sync();
+        presenter.subscribeNewPhotoNotifications();
     }
 
     @Override
@@ -188,9 +188,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     }
 
     @Override
-    public void pushForward(List<PhotoGalleryModel> items) {
-        suggestionAdapter.addItems(0, items);
-        suggestedList.scrollToPosition(0);
+    public void replacePhotoSuggestions(List<PhotoGalleryModel> items) {
+        suggestionAdapter.clearAndUpdateItems(items);
     }
 
     @Override
@@ -224,14 +223,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     }
 
     @Override
-    public void clearListState() {
+    public void notifyListChange() {
         suggestionAdapter.notifyDataSetChanged();
-    }
-
-    @Nullable
-    @Override
-    public PhotoGalleryModel firstElement() {
-        return suggestionAdapter.getItemCount() == 0 ? null : (PhotoGalleryModel) suggestionAdapter.getItem(0);
     }
 
     @Override

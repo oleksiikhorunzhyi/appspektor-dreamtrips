@@ -50,7 +50,7 @@ public class FeedActionPanelViewActionHandler {
         });
 
         actionView.setOnLikersClickListener(feedItem -> {
-            navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem().getUid()));
+            navigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(feedItem.getItem().getUid(), feedItem.getItem().getLikesCount()));
         });
 
         actionView.setOnCommentIconClickListener(feedItem -> eventBus.post(new CommentIconClickedEvent(feedItem)));

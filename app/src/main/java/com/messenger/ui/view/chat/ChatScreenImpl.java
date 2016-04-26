@@ -2,8 +2,10 @@ package com.messenger.ui.view.chat;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,15 +18,18 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.adapter.MessagesCursorAdapter;
-import com.messenger.ui.adapter.holder.chat.MessageHolder;
+import com.messenger.ui.adapter.ChatAdapter;
+import com.messenger.ui.adapter.ChatCellDelegate;
+import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -35,6 +40,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -65,8 +71,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ViewGroup contentView;
     @InjectView(R.id.chat_loading_view)
     View loadingView;
-//    @InjectView(R.id.chat_error_view)
-//    View errorView;
 
     @InjectView(R.id.chat_toolbar)
     Toolbar toolbar;
@@ -86,12 +90,14 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @InjectView(R.id.input_holder)
     ViewGroup inputHolder;
 
-    private ToolbarPresenter toolbarPresenter;
-
-    private MessagesCursorAdapter adapter;
+    private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
     private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
+
+    private Handler handler = new Handler();
+    private final Runnable openPikerTask = () -> photoPickerLayoutDelegate.showPicker(true,
+            getResources().getInteger(R.integer.messenger_pick_image_limit));
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -118,7 +124,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         ButterKnife.inject(this);
         injector.inject(this);
         //
-        toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
+        ToolbarPresenter toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
         toolbarPresenter.hideBackButtonInLandscape();
         toolbarPresenter.setTitle("");
@@ -163,19 +169,51 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         inflateToolbarMenu(toolbar);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        handler.removeCallbacks(openPikerTask);
+        try {
+            photoPickerLayoutDelegate.hidePicker();
+        } catch (Exception e) {
+            Timber.d(e, "Error while rotate screen");
+        }
+        super.onDetachedFromWindow();
+    }
 
-    protected MessagesCursorAdapter createAdapter() {
-        MessagesCursorAdapter adapter = new MessagesCursorAdapter(getContext(), getPresenter().getUser(),
-                localeHelper.getAccountLocaleFormatted(sessionHolder.get().get().getUser()), null);
-        ChatScreenPresenter presenter = getPresenter();
-        adapter.setOnRepeatMessageSend(presenter::retrySendMessage);
-        adapter.setAvatarClickListener(presenter::openUserProfile);
-        adapter.setOnImageClickListener(presenter::onImageClicked);
-        adapter.setMessageLongClickListener(presenter::onShowContextualMenu);
+    protected ChatAdapter createAdapter() {
+        ChatAdapter adapter = new ChatAdapter(null);
+        injector.inject(adapter);
+        adapter.setCellDelegate(chatCellDelegate);
         adapter.setNeedMarkUnreadMessages(true);
-        //adapter.setMessageClickListener(message -> //do something);
         return adapter;
     }
+
+    private ChatCellDelegate chatCellDelegate = new ChatCellDelegate() {
+        @Override
+        public void onAvatarClicked(DataUser dataUser) {
+            getPresenter().openUserProfile(dataUser);
+        }
+
+        @Override
+        public void onImageClicked(String attachmentId) {
+            getPresenter().onImageClicked(attachmentId);
+        }
+
+        @Override
+        public void onMessageLongClicked(DataMessage dataMessage) {
+            presenter.onShowContextualMenu(dataMessage);
+        }
+
+        @Override
+        public void onRetryClicked(DataMessage dataMessage) {
+            presenter.retrySendMessage(dataMessage);
+        }
+
+        @Override
+        public void onMapClicked(LatLng latLng) {
+            getPresenter().onMapClicked(latLng);
+        }
+    };
 
     @Override
     public void enableSendMessageButton(boolean enable) {
@@ -201,12 +239,15 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @OnClick(R.id.chat_message_add_button)
     protected void onAttachmentButtonClicked() {
-        if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
-        else {
-            messageEditText.clearFocus();
-            // put delay to prevent wrong resizing of photo picker panel
-            postDelayed(() -> photoPickerLayoutDelegate.showPicker(), 400);
-        }
+        getPresenter().onAttachmentButtonClick();
+    }
+
+    @Override
+    public void showAttachmentMenu(AttachmentMenuItem[] items) {
+        new AlertDialog.Builder(getContext())
+                .setItems(Queryable.from(items).map(item -> item.getTitle()).toArray(),
+                        (dialog, which) -> getPresenter().onAttachmentMenuItemChosen(items[which]))
+                .show();
     }
 
     @Override
@@ -260,7 +301,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         int firstVisibleViewTop = 0;
         int cursorCountDiff = 0;
         View firstItemView = null;
-        if (cursor != null && adapter.getCursor() != null) {
+        if (adapter.getCursor() != null) {
             int firstItem = linearLayoutManager.findFirstVisibleItemPosition();
             firstItemView = linearLayoutManager.findViewByPosition(firstItem);
             if (firstItemView != null) {
@@ -276,7 +317,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
             // to calculate proper offset measure if first visible view will be different in height
             // (e.g. because of the missing date divider) when new cursor will is assigned
-            MessageHolder messageHolder = adapter.onCreateViewHolder(recyclerView,
+            MessageViewHolder messageHolder = adapter.onCreateViewHolder(recyclerView,
                     adapter.getItemViewType(position));
             adapter.onBindViewHolderCursor(messageHolder, cursor);
             messageHolder.itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
@@ -284,7 +325,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             int offset = firstVisibleViewTop + diffHeight;
 
             linearLayoutManager.scrollToPositionWithOffset(position, offset);
-        } else if (cursor != null && cursor.getCount() == 1) {
+        } else if (cursor.getCount() == 1) {
             getPresenter().onLastVisibleMessageChanged(cursor, 0);
         }
     }
@@ -350,17 +391,40 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         }
     };
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Location picking
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void showPickLocationError() {
+        Snackbar.make(this, R.string.chat_could_not_share_location, Snackbar.LENGTH_SHORT);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Photo picking
+    ///////////////////////////////////////////////////////////////////////////
+
     private void initPhotoPicker() {
         photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
         photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
     }
 
     @Override
-    public void hidePicker() {
+    public void showPhotoPicker() {
+        if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
+        else {
+            messageEditText.clearFocus();
+            // put delay to prevent wrong resizing of photo picker panel
+            handler.postDelayed(openPikerTask, 400);
+        }
+    }
+
+    @Override
+    public void hidePhotoPicker() {
         photoPickerLayoutDelegate.hidePicker();
     }
 
-    private void onImagesPicked(List<ChosenImage> images) {
+    private void onImagesPicked(List<BasePhotoPickerModel> images) {
         photoPickerLayoutDelegate.hidePicker();
         //
         getPresenter().onImagesPicked(images);

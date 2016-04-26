@@ -1,22 +1,24 @@
 package com.worldventures.dreamtrips.modules.tripsimages.view.fragment;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.presenter.CreateTripImagePresenter;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
-
-import java.util.List;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_account_images_list)
 public class MemberImagesListFragment<P extends MembersImagesPresenter> extends TripImagesListFragment<P>
         implements MembersImagesPresenter.View {
+
+    public static final int MEDIA_PICKER_ITEMS_COUNT = 15;
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -37,18 +39,12 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
         }
     }
 
-    @Override
-    public void attachImages(List<ChosenImage> photos, int requestType) {
-        hidePhotoPicker();
-        openCreatePhoto(new CreateEntityBundle(photos, requestType));
-    }
-
     private void showPhotoPicker() {
         router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.picker_container)
-                .data(new PickerBundle(getPresenter().getMediaRequestId()))
+                .data(new PickerBundle(CreateTripImagePresenter.REQUEST_ID, MEDIA_PICKER_ITEMS_COUNT))
                 .build());
     }
 
@@ -61,17 +57,20 @@ public class MemberImagesListFragment<P extends MembersImagesPresenter> extends 
                 .build());
     }
 
-    private void openCreatePhoto(CreateEntityBundle bundle) {
-        router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forRemoval()
-                .containerId(R.id.container_details_floating)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .build());
+    @Override
+    public void openCreatePhoto(MediaAttachment mediaAttachment) {
+        if (isCreatePhotoAlreadyAttached()) return;
+        //
         router.moveTo(Route.PHOTO_CREATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
                 .fragmentManager(getActivity().getSupportFragmentManager())
                 .containerId(R.id.container_details_floating)
-                .data(bundle)
+                .data(new CreateEntityBundle(mediaAttachment))
                 .build());
     }
 
+    private boolean isCreatePhotoAlreadyAttached() {
+        return Queryable.from(getActivity().getSupportFragmentManager().getFragments())
+                .firstOrDefault(fragment -> fragment instanceof CreateTripImageFragment) != null;
+    }
 }

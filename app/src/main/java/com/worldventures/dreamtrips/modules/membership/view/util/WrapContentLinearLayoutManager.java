@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 public class WrapContentLinearLayoutManager extends LinearLayoutManager {
 
-    public WrapContentLinearLayoutManager(Context context, int orientation, boolean reverseLayout)    {
+    public WrapContentLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
     }
 
@@ -60,7 +60,7 @@ public class WrapContentLinearLayoutManager extends LinearLayoutManager {
 
     private void measureScrapChild(RecyclerView.Recycler recycler, int position, int widthSpec,
                                    int heightSpec, int[] measuredDimension) {
-        View view = recycler.getViewForPosition(position);
+        View view = recycler.getScrapList().size() > 0 && getItemCount() > 0 ? recycler.getViewForPosition(position) : null;
         if (view != null) {
             RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
             int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,

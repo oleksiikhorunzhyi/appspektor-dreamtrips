@@ -3,7 +3,7 @@
                 xmlns:fresco="http://schemas.android.com/tools"
                 android:padding="10dp"
                 android:layout_width="@dimen/video_three_sixty_width"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_bg"

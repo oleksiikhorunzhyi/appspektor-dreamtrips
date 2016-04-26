@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
-        fresco:actualImageScaleType="focusCrop"
-        />
+        fresco:actualImageScaleType="focusCrop"/>
 
     <view
         android:id="@+id/fab_progress"

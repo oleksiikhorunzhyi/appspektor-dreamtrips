@@ -12,7 +12,6 @@
         android:orientation="horizontal"
         android:padding="14dp">
 
-
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="0dp"
@@ -28,6 +27,4 @@
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_success_story_more" />
     </LinearLayout>
-
-
 </LinearLayout>

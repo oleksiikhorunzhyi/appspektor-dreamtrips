@@ -44,23 +44,23 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         super.onAttachedToWindow();
         TrackingHelper.groupSettingsOpened();
 
-        getView().getAvatarImagesStream().subscribe(cropImageDelegate::cropImage);
+        getView().getAvatarImagePathsStream().subscribe(cropImageDelegate::cropImage);
 
         Observable.combineLatest(
-            cropImageDelegate.getCroppedImagesStream(),
-            conversationObservable.first(),
-            (image, conversation) -> new Pair<>(conversation, image))
-            .compose(bindView())
-            .subscribe(pair -> {
-                DataConversation conversation = pair.first;
-                Notification<File> notification = pair.second;
-                if (notification.isOnNext()) {
-                    onAvatarCropped(conversation, notification.getValue());
-                } else if (notification.isOnError()) {
-                    Timber.w(notification.getThrowable(), "Could not crop image");
-                    getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-                }
-            });
+                cropImageDelegate.getCroppedImagesStream(),
+                conversationObservable.take(1),
+                (image, conversation) -> new Pair<>(conversation, image))
+                .compose(bindView())
+                .subscribe(pair -> {
+                    DataConversation conversation = pair.first;
+                    Notification<File> notification = pair.second;
+                    if (notification.isOnNext()) {
+                        onAvatarCropped(conversation, notification.getValue());
+                    } else if (notification.isOnError()) {
+                        Timber.w(notification.getThrowable(), "Could not crop image");
+                        getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+                    }
+                });
 
         conversationAvatarDelegate.getReadChangeAvatarCommandActionPipe()
                 .observe()

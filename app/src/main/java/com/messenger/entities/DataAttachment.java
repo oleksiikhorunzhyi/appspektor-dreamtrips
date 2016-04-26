@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.model.AttachmentHolder;
-import com.messenger.messengerservers.model.ImageAttachment;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
@@ -42,10 +41,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
     @AttachmentType.Type
     @Column
     String type;
-    @Column
-    String url;
-    @Column
-    long uploadTaskId;
 
     public DataAttachment() {
     }
@@ -55,8 +50,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         setConversationId(builder.conversationId);
         setMessageId(builder.messageId);
         setType(builder.type);
-        setUrl(builder.url);
-        setUploadTaskId(builder.uploadTaskId);
     }
 
     public DataAttachment(@NonNull AttachmentHolder attachment, Message message, int index) {
@@ -65,13 +58,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         this.conversationId = message.getConversationId();
         //
         this.type = attachment.getType();
-
-        switch (type) {
-            case AttachmentType.IMAGE: {
-                ImageAttachment image = (ImageAttachment) attachment.getItem();
-                url = image.getOriginUrl();
-            }
-        }
     }
 
     private String createId(String messageId, int index) {
@@ -102,14 +88,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         return conversationId;
     }
 
-    public void setUploadTaskId(long amazonTaskId) {
-        this.uploadTaskId = amazonTaskId;
-    }
-
-    public long getUploadTaskId() {
-        return uploadTaskId;
-    }
-
     @AttachmentType.Type
     public String getType() {
         return type;
@@ -117,14 +95,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
 
     public void setType(@AttachmentType.Type String type) {
         this.type = type;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     @Override
@@ -165,8 +135,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
         String messageId;
         String conversationId;
         String type;
-        String url;
-        long uploadTaskId;
 
         public Builder() {
         }
@@ -186,15 +154,6 @@ public class DataAttachment extends BaseProviderModel<DataAttachment> {
             return this;
         }
 
-        public Builder url(String val) {
-            url = val;
-            return this;
-        }
-
-        public Builder uploadTaskId(long val) {
-            uploadTaskId = val;
-            return this;
-        }
         public DataAttachment build() {
             return new DataAttachment(this);
         }

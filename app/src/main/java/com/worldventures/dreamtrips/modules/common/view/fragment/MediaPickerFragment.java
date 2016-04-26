@@ -36,7 +36,13 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
         rootView.setClickable(false);
         inject(photoPickerLayout);
         setupPicker();
-        photoPickerLayout.showPanel();
+        boolean multipickEnabled = false;
+        int pickLimit = 1;
+        if (getArgs() != null) {
+            multipickEnabled = getArgs().isMultipickEnabled();
+            pickLimit = getArgs().getPickLimit();
+        }
+        photoPickerLayout.showPanel(multipickEnabled, pickLimit);
         photoPickerLayout.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
             @Override
             public void onClosed() {
@@ -48,7 +54,16 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
             }
         });
         photoPickerLayout.setTransparentView(transparentView);
+
         photoPickerLayout.setOnDoneClickListener((chosenImages, type) -> getPresenter().attachImages(chosenImages, type));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (photoPickerLayout != null) {
+            photoPickerLayout.setOnDoneClickListener(null);
+        }
     }
 
     @Override
@@ -85,12 +100,6 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
     }
 
     private void setupPicker() {
-        boolean multipickEnabled = false;
-        int pickLimit = 1;
-        if (getArgs() != null) {
-            multipickEnabled = getArgs().isMultipickEnabled();
-            pickLimit = getArgs().getPickLimit();
-        }
-        photoPickerLayout.setup(getChildFragmentManager(), multipickEnabled, pickLimit);
+        photoPickerLayout.setup(getChildFragmentManager());
     }
 }

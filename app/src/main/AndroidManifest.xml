@@ -115,11 +115,10 @@
 
         <!--For result activities-->
 
-        <activity
-            android:name=".modules.tripsimages.view.activity.CreatePhotoActivity"
-            android:label="@string/trips"/>
-
         <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>
+
+        <activity
+            android:name=".modules.picklocation.view.PickLocationActivity"/>
 
         <!--Content Provider-->
 
@@ -136,6 +135,11 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity android:name="nl.changer.polypicker.ImagePickerActivity"/>
 

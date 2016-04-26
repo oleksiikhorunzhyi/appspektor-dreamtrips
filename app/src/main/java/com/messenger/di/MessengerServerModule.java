@@ -25,8 +25,6 @@ public class MessengerServerModule {
     @Provides
     MessengerServerFacade provideXmppServerFacade(@ForApplication Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
         return new XmppServerFacade(
-                new XmppServerParams(BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT),
-                context, requester, usersDAO
-        );
+                new XmppServerParams(BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT));
     }
 }

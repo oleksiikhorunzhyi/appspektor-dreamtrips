@@ -18,6 +18,8 @@
     <string name="conversation_list_item_last_message_text_format_you">You: %s</string>
     <string name="conversation_list_item_last_message_image_format_you">You sent photo</string>
     <string name="conversation_list_item_last_message_image">sent photo</string>
+    <string name="conversation_list_item_last_message_location_format_you">You sent location</string>
+    <string name="conversation_list_item_last_message_location">sent location</string>
     <string name="conversation_list_last_message_date_format_today" translatable="false">h:mm aa</string>
     <string name="conversation_list_last_message_date_format_yesterday">Yesterday</string>
     <string name="conversation_list_last_message_date_format_more_than_one_day_ago" translatable="false">MMM, dd</string>
@@ -64,6 +66,10 @@
     <string name="chat_contextual_translate_message">Translate</string>
     <string name="chat_contextual_revert_translate_message">Show original</string>
     <string name="chat_contextual_start_chat_format">Message %s</string>
+    <string name="chat_share_dialog_location">Share location</string>
+    <string name="chat_share_dialog_image">Share image</string>
+    <string name="chat_share_dialog_cancel">Cancel</string>
+    <string name="chat_could_not_share_location">Could not share location</string>
 
     <!---->
     <!--Chat Settings -->
@@ -94,7 +100,7 @@
     <!---->
     <!--Add new members -->
     <!---->
-    <string name="chat_add_new_members_title">Add new members</string>
+    <string name="chat_add_new_members_title">Add new member</string>
     <!---->
     <!--Edit chat members -->
     <!---->
@@ -114,6 +120,7 @@
     <string name="subject">Subject</string>
     <string name="change_subject">Enter chat name</string>
     <string name="sent_photo">sent photo</string>
+    <string name="sent_location">sent location</string>
     <string name="unread_conversation">Conversations</string>
 
     <string name="disconnected_overlay_disconnected_message">Connection lost</string>

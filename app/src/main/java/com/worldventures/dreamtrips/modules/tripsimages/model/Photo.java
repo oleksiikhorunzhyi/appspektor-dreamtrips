@@ -6,8 +6,11 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +27,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
     private String taskId;
     private List<PhotoTag> photoTags;
     private int photoTagsCount;
+    private int width;
+    private int height;
 
     public Photo() {
     }
@@ -62,8 +67,9 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         this.location = coordinates;
     }
 
+    @NotNull
     public String getTitle() {
-        return title;
+        return title != null ? title : "";
     }
 
     public void setTitle(String title) {
@@ -98,16 +104,35 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         this.photoTagsCount = photoTagsCount;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     @Override
     public String toString() {
         return "Photo{" +
                 "title='" + title + '\'' +
-                ", shotAt='" + shotAt + '\'' +
+                ", shotAt=" + shotAt +
                 ", location=" + location +
                 ", tags=" + tags +
                 ", images=" + images +
                 ", taskId='" + taskId + '\'' +
-                ", owner=" + owner +
+                ", photoTags=" + photoTags +
+                ", photoTagsCount=" + photoTagsCount +
+                ", width=" + width +
+                ", height=" + height +
                 '}';
     }
 
@@ -227,6 +252,8 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         parcel.writeString(taskId);
         parcel.writeParcelable(owner, i);
         parcel.writeTypedList(photoTags);
+        parcel.writeInt(width);
+        parcel.writeInt(height);
     }
 
     protected Photo(Parcel in) {
@@ -243,6 +270,7 @@ public class Photo extends BaseFeedEntity implements IFullScreenObject {
         owner = in.readParcelable(User.class.getClassLoader());
         photoTags = new ArrayList<>();
         in.readTypedList(photoTags, PhotoTag.CREATOR);
+        width = in.readInt();
+        height = in.readInt();
     }
-
 }

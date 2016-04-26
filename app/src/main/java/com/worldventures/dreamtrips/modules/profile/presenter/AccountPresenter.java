@@ -1,17 +1,19 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -26,7 +28,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.util.Action;
-import com.worldventures.dreamtrips.util.CopyFileTask;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
@@ -36,14 +37,17 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import icepick.State;
-import io.techery.scalablecropp.library.Crop;
 import retrofit.mime.TypedFile;
 import rx.Subscription;
+import timber.log.Timber;
 
 public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, User> {
 
     public static final int AVATAR_MEDIA_REQUEST_ID = 155322;
     public static final int COVER_MEDIA_REQUEST_ID = 155323;
+
+    public static final int DEFAULT_RATIO_X = 3;
+    public static final int DEFAULT_RATIO_Y = 1;
 
     @Inject
     RootComponentsProvider rootComponentsProvider;
@@ -51,8 +55,11 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     LogoutDelegate logoutDelegate;
     @Inject
     MediaPickerManager mediaPickerManager;
+    @Inject
+    SocialCropImageManager socialCropImageManager;
 
     private Subscription mediaSubscription;
+    private Subscription cropSubscription;
 
     private String coverTempFilePath;
 
@@ -60,8 +67,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     boolean shouldReload;
     @State
     int mediaRequestId;
-
-    public static final String TEMP_PHOTO_FILE_PREFIX = "temp_copy_of_";
 
     public AccountPresenter() {
         super();
@@ -134,13 +139,32 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         //
         mediaSubscription = mediaPickerManager.toObservable()
                 .filter(attachment -> (attachment.requestId == AVATAR_MEDIA_REQUEST_ID
-                        || attachment.requestId == COVER_MEDIA_REQUEST_ID)  && attachment.chosenImages.size() > 0)
+                        || attachment.requestId == COVER_MEDIA_REQUEST_ID) && attachment.chosenImages.size() > 0)
                 .subscribe(mediaAttachment -> {
                     if (view != null) {
                         view.hideMediaPicker();
                         //
                         imageSelected(mediaAttachment);
                     }
+                }, error -> {
+                    Timber.e(error, "");
+                });
+        //
+        socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
+        connectToCroppedImageStream();
+    }
+
+    private void connectToCroppedImageStream() {
+        cropSubscription = socialCropImageManager.getCroppedImagesStream()
+                .compose(new IoToMainComposer<>())
+                .subscribe(fileNotification -> {
+                    if (fileNotification.isOnError()) {
+                        onCoverCropped(null, fileNotification.getThrowable().toString());
+                    } else {
+                        onCoverCropped(fileNotification.getValue(), null);
+                    }
+                }, error -> {
+                    Timber.e(error, "");
                 });
     }
 
@@ -148,6 +172,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void dropView() {
         super.dropView();
         if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
+        if (cropSubscription != null && !cropSubscription.isUnsubscribed()) cropSubscription.unsubscribe();
     }
 
     @Override
@@ -183,12 +208,10 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         });
     }
 
-    //Called from onActivityResult
-    public void onCoverCropped(String path, String errorMsg) {
-        if (path != null) {
-            this.coverTempFilePath = path;
-            final File file = new File(path);
-            final TypedFile typedFile = new TypedFile("image/*", file);
+    public void onCoverCropped(File croppedFile, String errorMsg) {
+        if (croppedFile != null) {
+            this.coverTempFilePath = croppedFile.getPath();
+            final TypedFile typedFile = new TypedFile("image/*", croppedFile);
             user.setCoverUploadInProgress(true);
             view.notifyUserChanged();
             TrackingHelper.profileUploadStart(getAccountUserId());
@@ -197,17 +220,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
                 user.setCoverUploadInProgress(false);
                 view.notifyUserChanged();
             });
-
         } else {
             view.informUser(errorMsg);
         }
-    }
-
-    private void cacheFacebookImage(String url, Action<String> action) {
-        String filePath = CachedEntity.getFilePath(context, CachedEntity.getFilePath(context, url));
-        BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
-
-        doRequest(bigBinaryRequest, inputStream -> action.action(filePath));
     }
 
     @Override
@@ -239,7 +254,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     }
 
     private void imageSelected(MediaAttachment mediaAttachment) {
-        ChosenImage image = mediaAttachment.chosenImages.get(0);
+        PhotoGalleryModel image = mediaAttachment.chosenImages.get(0);
         switch (mediaAttachment.requestId) {
             case AVATAR_MEDIA_REQUEST_ID:
                 onAvatarChosen(image);
@@ -250,9 +265,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
-    public void onAvatarChosen(ChosenImage image) {
+    public void onAvatarChosen(PhotoGalleryModel image) {
         if (image != null) {
-            String filePath = image.getFilePathOriginal();
+            String filePath = image.getOriginalPath();
             if (ValidationUtils.isUrl(filePath)) {
                 cacheFacebookImage(filePath, this::uploadAvatar);
             } else {
@@ -261,27 +276,19 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         }
     }
 
-    public void onCoverChosen(ChosenImage image) {
-        if (image != null) {
-            String filePath = image.getFilePathOriginal();
-            if (ValidationUtils.isUrl(filePath)) {
-                cacheFacebookImage(filePath, path -> Crop.prepare(path).startFrom((Fragment) view));
-            } else {
-                executeCrop(filePath);
-            }
-        }
+    private void cacheFacebookImage(String url, Action<String> action) {
+        String filePath = CachedEntity.getFilePath(context, CachedEntity.getFilePath(context, url));
+        BigBinaryRequest bigBinaryRequest = new BigBinaryRequest(url, new File(filePath));
+
+        doRequest(bigBinaryRequest, inputStream -> action.action(filePath));
     }
 
-    /**
-     * Crop library needs temp file for processing
-     *
-     * @param originalFilePath
-     */
-    private void executeCrop(String originalFilePath) {
-        File originalFile = new File(originalFilePath);
-        doRequest(new CopyFileTask(originalFile,
-                        originalFile.getParentFile() + "/" + TEMP_PHOTO_FILE_PREFIX + originalFile.getName()),
-                s -> Crop.prepare(s).startFrom((Fragment) view));
+    public void onCoverChosen(PhotoGalleryModel image) {
+        view.cropImage(socialCropImageManager, image.getOriginalPath());
+    }
+
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        return socialCropImageManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onEvent(OnPhotoClickEvent e) {
@@ -305,6 +312,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         void showMediaPicker(int requestId);
 
         void hideMediaPicker();
+
+        void cropImage(SocialCropImageManager socialCropImageManager, String path);
     }
 
 }

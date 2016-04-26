@@ -4,8 +4,10 @@ import com.worldventures.dreamtrips.modules.feed.presenter.CreateEntityPresenter
 
 public class CreateTripImagePresenter extends CreateEntityPresenter<CreateEntityPresenter.View> {
 
+    public static final int REQUEST_ID = CreateTripImagePresenter.class.getSimpleName().hashCode();
+
     @Override
     public int getMediaRequestId() {
-        return CreateTripImagePresenter.class.getSimpleName().hashCode();
+        return REQUEST_ID;
     }
 }

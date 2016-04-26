@@ -8,11 +8,10 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
 
 import javax.inject.Inject;
 
@@ -20,7 +19,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_popular_cell)
-public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
+public class BucketPopularCell extends AbstractDelegateCell<PopularBucketItem, BucketPopularCellDelegate> {
 
     @InjectView(R.id.imageViewImage)
     protected SimpleDraweeView imageViewImage;
@@ -61,13 +60,13 @@ public class BucketPopularCell extends AbstractCell<PopularBucketItem> {
 
     @OnClick(R.id.buttonDone)
     void onDone() {
-        getEventBus().post(new DonePressedEvent(getModelObject(), getPosition()));
+        cellDelegate.doneClicked(getModelObject(), getLayoutPosition());
         hideButtons();
     }
 
     @OnClick(R.id.buttonAdd)
     void onAdd() {
-        getEventBus().post(new AddPressedEvent(getModelObject(), getPosition()));
+        cellDelegate.addClicked(getModelObject(), getLayoutPosition());
         hideButtons();
     }
 

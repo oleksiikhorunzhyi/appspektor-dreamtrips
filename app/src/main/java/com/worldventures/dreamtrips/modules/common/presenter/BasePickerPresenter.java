@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.event.PhotoPickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
@@ -15,7 +14,6 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
 
     @State
     protected ArrayList<BasePhotoPickerModel> photos;
-
     private int pickLimit;
 
     public BasePickerPresenter() {
@@ -45,17 +43,14 @@ public abstract class BasePickerPresenter<T extends BasePickerPresenter.View> ex
         view.updateItem(event.model);
     }
 
-    public List<ChosenImage> getSelectedPhotos() {
-        return Queryable.from(photos).filter(BasePhotoPickerModel::isChecked).map(element -> {
-            ChosenImage chosenImage = new ChosenImage();
-            chosenImage.setFileThumbnail(generateUri(element));
-            chosenImage.setFilePathOriginal(element.getOriginalPath());
-
-            return chosenImage;
-        }).toList();
+    public List<BasePhotoPickerModel> getSelectedPhotos() {
+        return Queryable.from(photos)
+                .filter(BasePhotoPickerModel::isChecked)
+                .sort((lhs, rhs) -> lhs.getPickedTime() > rhs.getPickedTime()
+                        ? 1
+                        : lhs.getPickedTime() < rhs.getPickedTime() ? -1 : 0)
+                .toList();
     }
-
-    protected abstract String generateUri(BasePhotoPickerModel model);
 
     public void setLimit(int pickLimit) {
         this.pickLimit = pickLimit;

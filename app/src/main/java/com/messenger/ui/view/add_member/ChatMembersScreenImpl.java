@@ -7,12 +7,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.adapter.cell.CheckableUserCell;
 import com.messenger.ui.adapter.cell.HeaderCell;
@@ -54,8 +56,10 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     View conversationNameEditTextLayout;
     @InjectView(R.id.new_chat_conversation_name)
     EditText conversationNameEditText;
+    @InjectView(R.id.new_chat_chosen_contacts_count_editText)
+    EditText chosenContactsCountEditText;
     @InjectView(R.id.new_chat_chosen_contacts_edittext)
-    SelectionListenerEditText chosenContactsEditText;
+    SelectionListenerEditText chosenContactsListEditText;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -115,9 +119,9 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
-        searchQueryObservable = RxTextView.textChanges(chosenContactsEditText);
-        chosenContactsEditText.setSelectionListener((s, a)
-                -> chosenContactsEditText.setSelection(chosenContactsEditText.getText().length()));
+        searchQueryObservable = RxTextView.afterTextChangeEvents(chosenContactsListEditText).map(event -> event.editable());
+        chosenContactsListEditText.setSelectionListener((s, a)
+                -> chosenContactsListEditText.setSelection(chosenContactsListEditText.getText().length()));
         conversationNameAnimator =
                 new WeightSlideAnimator(conversationNameEditTextLayout);
     }
@@ -174,9 +178,10 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public void setSelectedUsersHeaderText(CharSequence text) {
-        chosenContactsEditText.setText(text);
-        chosenContactsEditText.setSelection(text.length());
+    public void setSelectedUsersHeaderText(CharSequence selectedContactsCount, CharSequence selectedContactsList) {
+        chosenContactsCountEditText.setText(selectedContactsCount);
+        chosenContactsListEditText.setText(selectedContactsList);
+        chosenContactsListEditText.setSelection(selectedContactsList.length());
     }
 
     @Override

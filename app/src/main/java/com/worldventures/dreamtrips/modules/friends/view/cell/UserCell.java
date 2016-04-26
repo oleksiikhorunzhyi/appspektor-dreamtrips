@@ -10,8 +10,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
-import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import javax.inject.Inject;
@@ -19,7 +18,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_user)
-public class UserCell extends BaseUserCell {
+public class UserCell extends BaseUserCell<UserCellDelegate> {
 
     @InjectView(R.id.iv_status)
     ImageView ivStatus;
@@ -70,16 +69,16 @@ public class UserCell extends BaseUserCell {
     }
 
     void acceptRequest() {
-        getEventBus().post(new AcceptRequestEvent(getModelObject(), getAdapterPosition()));
+        cellDelegate.acceptRequest(getModelObject());
     }
 
     void addUser() {
-        getEventBus().post(new AddUserRequestEvent(getModelObject()));
+        cellDelegate.addUserRequest(getModelObject());
     }
 
     private void openFriendActionDialog() {
         sdvAvatar.setDrawingCacheEnabled(true);
         new FriendActionDialogDelegate(itemView.getContext(), getEventBus())
-                .showFriendDialog(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
+                .showFriendDialogSkipChat(getModelObject(), drawableUtil.copyIntoDrawable(sdvAvatar.getDrawingCache()));
     }
 }

@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
@@ -21,10 +20,10 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.custom.RecyclerItemClickListener;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -208,7 +207,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     }
 
     @Override
-    public void attachImages(List<ChosenImage> photos, int requestType) {
+    public void openCreatePhoto(MediaAttachment mediaAttachment) {
         //TODO temp solution will be removed after refactoring
     }
 }

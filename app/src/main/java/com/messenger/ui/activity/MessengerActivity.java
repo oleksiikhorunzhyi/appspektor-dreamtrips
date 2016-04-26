@@ -20,6 +20,7 @@ import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
+import com.messenger.util.PickLocationDelegate;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
@@ -59,6 +60,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
     @Inject
+    PickLocationDelegate pickLocationDelegate;
+    @Inject
     CropImageDelegate cropImageDelegate;
     @Inject
     ActivityRouter activityRouter;
@@ -83,7 +86,6 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         //
         initPickerLayout();
-        initCropImageDelegate();
         initNavDrawer();
         initFlow(conversationId);
         //
@@ -131,9 +133,9 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!cropImageDelegate.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+        if (pickLocationDelegate.onActivityResult(requestCode, resultCode, data)) return;
+        if (cropImageDelegate.onActivityResult(requestCode, resultCode, data)) return;
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -152,12 +154,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     private void initPickerLayout() {
         inject(photoPickerLayout);
         photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
-        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager(), false);
+        photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
         photoPickerLayoutDelegate.hidePicker();
-    }
-
-    private void initCropImageDelegate() {
-        cropImageDelegate.init(this);
     }
 
     private void initNavDrawer() {

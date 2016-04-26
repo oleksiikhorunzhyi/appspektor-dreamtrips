@@ -4,20 +4,18 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.profile.view.dialog.FriendActionDialogDelegate;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_friend)
-public class FriendCell extends BaseUserCell {
+public class FriendCell extends BaseUserCell<CellDelegate<User>> {
 
     FriendActionDialogDelegate dialog;
 

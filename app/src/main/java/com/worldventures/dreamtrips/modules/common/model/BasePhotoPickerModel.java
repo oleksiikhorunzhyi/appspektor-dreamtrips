@@ -9,4 +9,6 @@ public interface BasePhotoPickerModel {
     String getThumbnailPath();
 
     String getOriginalPath();
+
+    long getPickedTime();
 }

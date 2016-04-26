@@ -7,7 +7,7 @@ import com.techery.spares.module.Injector;
 
 import java.util.List;
 
-public class LoaderRecycleAdapter<BaseItemClass> extends BaseArrayListAdapter<BaseItemClass> implements DataListAdapter<List<BaseItemClass>>, ContentLoader.ContentLoadingObserving<List<BaseItemClass>> {
+public class LoaderRecycleAdapter<BaseItemClass> extends BaseDelegateAdapter<BaseItemClass> implements DataListAdapter<List<BaseItemClass>>, ContentLoader.ContentLoadingObserving<List<BaseItemClass>> {
 
     private ContentLoader<List<BaseItemClass>> contentLoader;
 

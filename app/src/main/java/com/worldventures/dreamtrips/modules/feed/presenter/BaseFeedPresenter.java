@@ -53,8 +53,8 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
-    private boolean loading = true;
-    private boolean noMoreFeeds = false;
+    protected boolean loading = true;
+    protected boolean noMoreFeeds = false;
     private UidItemDelegate uidItemDelegate;
     @Inject
     protected FeedEntityManager entityManager;

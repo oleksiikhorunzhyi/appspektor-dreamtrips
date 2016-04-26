@@ -7,6 +7,7 @@ import com.techery.spares.application.BaseApplicationWithInjector;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDataParser;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
+import com.worldventures.dreamtrips.modules.gcm.model.NewLocationPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewUnsupportedMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
@@ -51,6 +52,9 @@ public class PushListenerService extends GcmListenerService {
                 break;
             case NEW_IMG_MESSAGE:
                 delegate.notifyNewImageMessageReceived(parser.parseMessage(data, NewImagePushMessage.class));
+                break;
+            case NEW_LOC_MESSAGE:
+                delegate.notifyNewLocationMessageReceived(parser.parseMessage(data, NewLocationPushMessage.class));
                 break;
             case UNSUPPORTED_MESSAGE:
                 delegate.notifyUnsupportedMessageReceived(parser.parseMessage(data, NewUnsupportedMessage.class));

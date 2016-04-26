@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationFactory;
 import com.worldventures.dreamtrips.modules.gcm.model.NewImagePushMessage;
+import com.worldventures.dreamtrips.modules.gcm.model.NewLocationPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewMessagePushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.NewUnsupportedMessage;
 
@@ -61,6 +62,19 @@ public class MessengerNotificationFactory extends NotificationFactory {
         return createUnsupportedMessageNotification(
                 unsupportedMessage.conversationId, unsupportedMessage.notificationsCount)
                 .build();
+    }
+
+    public Notification createNewLocationMessage(NewLocationPushMessage locationMessage) {
+        return createNewMessageNotification(locationMessage.conversationId,
+                locationMessage.unreadConversationsCount,
+                createNewLocationMessageText(locationMessage)).build();
+    }
+
+    @NonNull
+    private String createNewLocationMessageText(NewLocationPushMessage data) {
+        return String.format("%s %s",
+                TextUtils.join(" ", data.alertWrapper.alert.locArgs.subList(0, 2)),
+                context.getString(R.string.sent_location));
     }
 
     /**

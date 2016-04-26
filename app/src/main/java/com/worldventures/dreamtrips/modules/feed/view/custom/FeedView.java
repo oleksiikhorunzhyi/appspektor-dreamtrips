@@ -10,20 +10,16 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.UndefinedFeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
-import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.PostFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.TripFeedItemDetailsCell;
-import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoaderCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.UndefinedFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ReloadFeedCell;
@@ -69,7 +65,8 @@ public class FeedView extends EmptyRecyclerView {
         adapter.registerCell(UndefinedFeedItem.class, UndefinedFeedItemDetailsCell.class);
         adapter.registerCell(LoadMoreModel.class, LoaderCell.class);
 
-        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        layoutManager.setAutoMeasureEnabled(true);
         setLayoutManager(layoutManager);
 
         setAdapter(this.adapter);

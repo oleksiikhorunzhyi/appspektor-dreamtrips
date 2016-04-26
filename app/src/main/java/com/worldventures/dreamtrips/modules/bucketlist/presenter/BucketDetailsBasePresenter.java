@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketPhotoAsCoverRequestEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -32,8 +30,6 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     BucketItemManager bucketItemManager;
     @Inject
     protected SnappyRepository db;
-    @Inject
-    protected PhotoUploadingManager photoUploadingManager;
 
     protected BucketItem.BucketType type;
     protected String bucketItemId;
@@ -153,15 +149,8 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         }
     }
 
-    public void onEvent(BucketPhotoAsCoverRequestEvent event) {
-        if (bucketItem.getPhotos().contains(event.getPhoto())) {
-            eventBus.cancelEventDelivery(event);
-            saveCover(event.getPhoto().getFSId());
-        }
-    }
-
-    private void saveCover(String coverID) {
-        getBucketItemManager().updateBucketItemCoverId(bucketItem, coverID, this);
+    public void saveCover(BucketPhoto photo) {
+        getBucketItemManager().updateBucketItemCoverId(bucketItem, photo.getFSId(), this);
     }
 
     protected BucketItemManager getBucketItemManager() {

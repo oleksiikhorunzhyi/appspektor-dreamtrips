@@ -8,16 +8,14 @@ import android.text.Html;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.ChatMessagesEventDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
-import com.messenger.messengerservers.listeners.GlobalMessageListener;
-import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -31,7 +29,6 @@ import com.messenger.ui.widget.inappnotification.messanger.InAppNotificationView
 import com.messenger.util.MessageVersionHelper;
 import com.messenger.util.OpenedConversationTracker;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
@@ -39,10 +36,11 @@ import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
-import rx.Observable;
-import timber.log.Timber;
+import javax.inject.Inject;
 
-import static com.messenger.messengerservers.listeners.GlobalMessageListener.SimpleGlobalMessageListener;
+import rx.Observable;
+import rx.Subscription;
+import timber.log.Timber;
 
 public class UnhandledMessageWatcher {
 
@@ -54,26 +52,26 @@ public class UnhandledMessageWatcher {
      * onStop FirstActivity
      */
     private Activity currentActivity;
-    private MessengerServerFacade messengerServerFacade;
     private AppNotification appNotification;
-    private DreamSpiceManager spiceManager;
+    private ChatMessagesEventDelegate chatMessagesEventDelegate;
     private OpenedConversationTracker openedConversationTracker;
     private ConversationsDAO conversationsDAO;
     private ParticipantsDAO participantsDAO;
     private UsersDAO usersDAO;
     private AttachmentDAO attachmentDAO;
 
-    public UnhandledMessageWatcher(MessengerServerFacade messengerServerFacade,
-                                   AppNotification appNotification,
-                                   DreamSpiceManager spiceManager,
+    private Subscription processedMessagesSubscription;
+
+    @Inject
+    public UnhandledMessageWatcher(AppNotification appNotification,
+                                   ChatMessagesEventDelegate chatMessagesEventDelegate,
                                    OpenedConversationTracker openedConversationTracker,
                                    ConversationsDAO conversationsDAO,
                                    ParticipantsDAO participantsDAO,
                                    UsersDAO usersDAO,
                                    AttachmentDAO attachmentDAO) {
-        this.messengerServerFacade = messengerServerFacade;
         this.appNotification = appNotification;
-        this.spiceManager = spiceManager;
+        this.chatMessagesEventDelegate = chatMessagesEventDelegate;
         this.openedConversationTracker = openedConversationTracker;
         this.conversationsDAO = conversationsDAO;
         this.participantsDAO = participantsDAO;
@@ -81,36 +79,41 @@ public class UnhandledMessageWatcher {
         this.attachmentDAO = attachmentDAO;
     }
 
-    private GlobalMessageListener messageListener = new SimpleGlobalMessageListener() {
-        @Override
-        public void onReceiveMessage(Message message) {
-            onUnhandledMessage(UnhandledMessageWatcher.this.currentActivity,
-                    new DataMessage(message));
-        }
-    };
-
     public void start(Activity activity) {
         if (currentActivity == activity) return;
         //
-        messengerServerFacade.getGlobalEventEmitter().removeGlobalMessageListener(messageListener);
+        unsubscribeFromMessagesUpdates();
         this.currentActivity = activity;
-        messengerServerFacade.getGlobalEventEmitter().addGlobalMessageListener(messageListener);
+        subscribeToMessagesUpdates();
     }
 
     public void stop(Activity activity) {
         if (currentActivity == activity) {
             dismissAppNotification(currentActivity);
-            messengerServerFacade.getGlobalEventEmitter().removeGlobalMessageListener(messageListener);
+            unsubscribeFromMessagesUpdates();
             currentActivity = null;
         } else {
             dismissAppNotification(activity);
         }
     }
 
-    private void onUnhandledMessage(Activity activity, DataMessage message) {
+    private void subscribeToMessagesUpdates() {
+        processedMessagesSubscription = chatMessagesEventDelegate
+                .getReceivedSavedMessageStream()
+                    .subscribe(notification -> {
+                        if (notification.isOnNext()) onUnhandledMessage(notification.getValue());
+                });
+    }
+
+    private void unsubscribeFromMessagesUpdates() {
+        if (processedMessagesSubscription != null) processedMessagesSubscription.unsubscribe();
+        processedMessagesSubscription = null;
+    }
+
+    private void onUnhandledMessage(DataMessage message) {
         if (isOpenedConversation(message)) return;
         //
-        WeakReference<Activity> activityRef = new WeakReference<>(activity);
+        WeakReference<Activity> activityRef = new WeakReference<>(currentActivity);
         conversationsDAO.getConversation(message.getConversationId())
                 .compose(new NonNullFilter<>())
                 .filter(conversation -> TextUtils.equals(conversation.getStatus(), ConversationStatus.PRESENT))
@@ -159,16 +162,33 @@ public class UnhandledMessageWatcher {
         return user.getName() + " " + currentActivity.getString(R.string.sent_photo);
     }
 
+    private String getLocationPostMessage(DataUser user) {
+        return user.getName() + " " + currentActivity.getString(R.string.sent_location);
+    }
+
     //single ava + sender name + sender text
     private Observable<NotificationData> composeSingleChatNotification(DataConversation conversation, DataMessage message, @Nullable String attachmentType) {
         return usersDAO.getUserById(message.getFromId())
                 .compose(new NonNullFilter<>()).first()
                 .map(user -> {
-                    String messageText = TextUtils.equals(attachmentType, AttachmentType.IMAGE) ?
-                            getImagePostMessage(user) :
-                            getMessageText(message, attachmentType);
+                    String messageText = getSingleChatNotificationText(message, attachmentType, user);
                     return new NotificationData(user.getName(), user.getName(), Collections.singletonList(user), messageText, conversation, false);
                 });
+    }
+
+    private String getSingleChatNotificationText(DataMessage message, @Nullable String attachmentType,
+                                                 DataUser user) {
+        if (attachmentType == null) {
+            return getMessageText(message, attachmentType);
+        }
+        switch (attachmentType) {
+            case AttachmentType.IMAGE:
+                return getImagePostMessage(user);
+            case AttachmentType.LOCATION:
+                return getLocationPostMessage(user);
+            default:
+                return getMessageText(message, attachmentType);
+        }
     }
 
     //group 4 avas + group name/user names + last name : last message
@@ -178,13 +198,7 @@ public class UnhandledMessageWatcher {
                 usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()).first(),
                 (users, fromUser) -> {
                     String lastName = fromUser.getName();
-                    String messageText;
-                    if (!TextUtils.equals(attachmentType, AttachmentType.IMAGE)) {
-                        messageText = lastName + ": " + getMessageText(message, attachmentType);
-                    } else {
-                        messageText = getImagePostMessage(fromUser);
-                    }
-
+                    String messageText = getGroupChatNotificationText(message, attachmentType, fromUser);
                     String groupName = TextUtils.isEmpty(conversation.getSubject()) ?
                             TextUtils.join(", ", Queryable.from(users).map(DataUser::getName).toList()) :
                             conversation.getSubject();
@@ -192,11 +206,30 @@ public class UnhandledMessageWatcher {
                 }).first();
     }
 
+    private String getGroupChatNotificationText(DataMessage message, @Nullable String attachmentType,
+                                                DataUser fromUser) {
+        if (attachmentType == null) {
+            return getGroupNotificationMessage(fromUser, message, attachmentType);
+        }
+        switch (attachmentType) {
+            case AttachmentType.IMAGE:
+                return getImagePostMessage(fromUser);
+            case AttachmentType.LOCATION:
+                return getLocationPostMessage(fromUser);
+            default:
+                return getGroupNotificationMessage(fromUser, message, attachmentType);
+        }
+    }
+
+    private String getGroupNotificationMessage(DataUser dataUser, DataMessage dataMessage,
+                                               String attachmentType) {
+        return dataUser.getName() + ": " + getMessageText(dataMessage, attachmentType);
+    }
+
     private String getMessageText(DataMessage dataMessage, String attachmentType) {
         return MessageVersionHelper.isUnsupported(dataMessage.getVersion(), attachmentType) ?
                 Html.fromHtml(currentActivity.getString(R.string.chat_update_proposition)).toString() :
                 dataMessage.getText();
-
     }
 
     private InAppMessengerNotificationView createSingleChatCrouton(Context context, String avaUrl, String title, String text) {

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.xmpp.packets.ConversationParticipants;
+import com.messenger.messengerservers.xmpp.stanzas.ConversationParticipantsIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;
@@ -14,7 +14,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class ConversationParticipantsProvider extends IQProvider<ConversationParticipants> {
+public class ConversationParticipantsProvider extends IQProvider<ConversationParticipantsIQ> {
 
     private final String userId;
 
@@ -23,8 +23,8 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
     }
 
     @Override
-    public ConversationParticipants parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
-        ConversationParticipants conversationParticipants = new ConversationParticipants();
+    public ConversationParticipantsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
+        ConversationParticipantsIQ conversationParticipantsIQ = new ConversationParticipantsIQ();
 
         String elementName;
         String affiliation = null;
@@ -51,21 +51,21 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
                             Participant participant = new Participant(participantId, affiliation.toLowerCase(), null);
 
                             if (TextUtils.equals(affiliation.toLowerCase(), Participant.Affiliation.OWNER)) {
-                                conversationParticipants.setOwner(participant);
+                                conversationParticipantsIQ.setOwner(participant);
                             } else {
-                                conversationParticipants.addParticipant(participant);
+                                conversationParticipantsIQ.addParticipant(participant);
                             }
                             break;
                         case "query":
-                            boolean isOwner = conversationParticipants.getOwner() != null && TextUtils.equals(conversationParticipants.getOwner().getUserId(), userId);
-                            boolean isMember = Queryable.from(conversationParticipants.getParticipants()).map((elem, idx) -> elem.getUserId()).contains(userId);
-                            conversationParticipants.setAbandoned(!isOwner && !isMember);
+                            boolean isOwner = conversationParticipantsIQ.getOwner() != null && TextUtils.equals(conversationParticipantsIQ.getOwner().getUserId(), userId);
+                            boolean isMember = Queryable.from(conversationParticipantsIQ.getParticipants()).map((elem, idx) -> elem.getUserId()).contains(userId);
+                            conversationParticipantsIQ.setAbandoned(!isOwner && !isMember);
                             done = true;
                             break;
                     }
                     break;
             }
         }
-        return conversationParticipants;
+        return conversationParticipantsIQ;
     }
 }

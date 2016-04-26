@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.core.module;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentManager;
+import android.app.FragmentManager;
 
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -37,8 +37,13 @@ public class ActivityModule {
     }
 
     @Provides
-    public FragmentManager provideFragmentManager() {
+    public android.support.v4.app.FragmentManager provideSupportFragmentManager() {
         return baseActivity.getSupportFragmentManager();
+    }
+
+    @Provides
+    public FragmentManager provideFragmentManager() {
+        return baseActivity.getFragmentManager();
     }
 
     @Provides

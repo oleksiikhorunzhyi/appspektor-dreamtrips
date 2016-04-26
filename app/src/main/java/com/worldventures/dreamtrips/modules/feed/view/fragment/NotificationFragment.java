@@ -132,6 +132,7 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter> 
     public void onResume() {
         super.onResume();
         TrackingHelper.viewNotificationsScreen();
+        getPresenter().reload();
     }
 
     @Override

@@ -2,21 +2,25 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
-import com.messenger.storage.dao.AttachmentDAO;
+import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.PhotoUploadingManager;
+import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
@@ -34,6 +38,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import de.greenrobot.event.EventBus;
+import io.techery.janet.Janet;
 
 @Module(
         injects = {
@@ -42,9 +47,9 @@ import de.greenrobot.event.EventBus;
                 AuthorizedDataUpdater.class,
                 VideoCachingDelegate.class,
                 VideoDownloadSpiceService.class,
-                PhotoUploadingManager.class,
                 PhotoUploadingManagerS3.class,
                 BucketItemManager.class,
+                SocialUploaderyManager.class,
                 //
                 DownloadVideoListener.class,
                 PhoneContactRequest.class,
@@ -54,6 +59,8 @@ import de.greenrobot.event.EventBus;
                 DtlLocationManager.class,
                 DtlMerchantManager.class,
                 DtlJobManager.class,
+
+                GlobalConfigManager.class,
         },
         library = true, complete = false
 )
@@ -71,8 +78,8 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    public PhotoUploadingManager providePhotoManager(@ForApplication Injector injector) {
-        return new PhotoUploadingManager(injector);
+    public SocialUploaderyManager provideSocialUploaderyManager(@ForApplication Injector injector) {
+        return new SocialUploaderyManager(injector);
     }
 
     @Provides
@@ -141,13 +148,29 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, AttachmentDAO attachmentDAO, SnappyRepository snappyRepository) {
-        return new ClearDirectoryDelegate(context, attachmentDAO, snappyRepository);
+    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO, SnappyRepository snappyRepository) {
+        return new ClearDirectoryDelegate(context, photoDAO, snappyRepository);
     }
 
     @Provides
     @Singleton
     MediaPickerManager provideMediaPickerManager() {
         return new MediaPickerManager();
+    }
+
+
+    @Provides
+    @Singleton
+    GlobalConfigManager provideGlobalConfigManager(SessionHolder<UserSession> appSessionHolder,
+                                                   Janet janet,
+                                                   @Global EventBus eventBus) {
+        return new GlobalConfigManager(appSessionHolder, janet, eventBus);
+    }
+
+    @Provides
+    @Singleton
+    SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context,
+                                                      DreamSpiceManager dreamSpiceManager) {
+        return new SocialCropImageManager(context, dreamSpiceManager);
     }
 }

@@ -3,9 +3,6 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.messenger.di.MessengerInitializerModule;
-import com.messenger.initializer.MessengerInitializer;
-import com.messenger.initializer.PresenceListenerInitializer;
-import com.messenger.initializer.StorageInitializer;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.DtlInitializer;
@@ -31,12 +28,6 @@ import dagger.Provides;
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
                 DtlInitializer.class,
-                //
-                StorageInitializer.class,
-                //
-                MessengerInitializer.class,
-                //
-                PresenceListenerInitializer.class
 
         },
         includes = {

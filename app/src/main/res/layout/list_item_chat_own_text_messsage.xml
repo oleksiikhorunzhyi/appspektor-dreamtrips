@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:orientation="vertical">
 
     <include layout="@layout/list_item_chat_date_entry"/>
@@ -14,27 +14,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/chat_message"
-            style="@style/ChatMessageTextView"
+        <com.messenger.ui.widget.ChatItemFrameLayout
+            android:id="@+id/message_container"
+            style="@style/OwnTextMessageStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/chat_color_message_own"
-            android:textColorLink="@color/chat_color_message_own"
-            tools:text="MESSAGES"
-            tools:textColor="@color/black"
-            />
+            tools:background="@drawable/blue_bubble_comics"
+            >
+
+            <TextView
+                android:id="@+id/chat_message"
+                style="@style/ChatMessageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/chat_color_message_own"
+                android:textColorLink="@color/chat_color_message_own"
+                tools:text="Hello, how r u?"
+                tools:textColor="@color/black"
+                />
+
+        </com.messenger.ui.widget.ChatItemFrameLayout>
+
 
         <ViewSwitcher
             android:id="@+id/view_switcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/chat_message"
-            android:layout_alignRight="@+id/chat_message"
-            android:layout_below="@+id/chat_message"
+            android:layout_alignEnd="@+id/message_container"
+            android:layout_alignRight="@+id/message_container"
+            android:layout_below="@+id/message_container"
             android:paddingEnd="@dimen/spacing_small"
             android:paddingRight="@dimen/spacing_small"
             android:paddingTop="@dimen/spacing_tiny"
@@ -42,7 +53,7 @@
             tools:visibility="visible">
 
             <ImageView
-                android:id="@+id/iv_message_error"
+                android:id="@+id/retry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

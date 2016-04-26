@@ -1,10 +1,11 @@
 package com.messenger.messengerservers.xmpp;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.xmpp.packets.ChangeAvatarExtension;
-import com.messenger.messengerservers.xmpp.packets.ChatStateExtension;
+import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
+import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
@@ -12,21 +13,21 @@ import com.messenger.messengerservers.xmpp.util.XmppPacketDetector;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
-import java.util.List;
+import java.util.Collection;
 
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_AVATAR;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
@@ -50,22 +51,38 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         public void onSuccess() {
             super.onSuccess();
             AbstractXMPPConnection abstractXMPPConnection = facade.getConnection();
-            abstractXMPPConnection.addPacketInterceptor(XmppGlobalEventEmitter.this::interceptOutgoingPacket, StanzaTypeFilter.MESSAGE);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingMessage, StanzaTypeFilter.MESSAGE);
             abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
-            ChatManager.getInstanceFor(abstractXMPPConnection).addChatListener(XmppGlobalEventEmitter.this::onChatCreated);
+
             ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT, ChatStateExtension.NAMESPACE, new ChatStateExtension.Provider());
             ProviderManager.addExtensionProvider(ChangeAvatarExtension.ELEMENT, ChangeAvatarExtension.NAMESPACE, ChangeAvatarExtension.PROVIDER);
             MultiUserChatManager.getInstanceFor(abstractXMPPConnection).addInvitationListener(XmppGlobalEventEmitter.this::onChatInvited);
+
+            Roster.getInstanceFor(abstractXMPPConnection).addRosterListener(rosterListener);
         }
     };
 
-    private void interceptOutgoingPacket(Stanza packet) {
-    }
+    private RosterListener rosterListener = new RosterListener() {
+        @Override
+        public void entriesAdded(Collection<String> addresses) {
+            notifyFriendsAdded(Queryable.from(addresses).map(JidCreatorHelper::obtainId).toList());
+        }
 
-    private void onChatCreated(Chat chat, boolean createdLocally) {
-        notifyOnChatCreatedListener(chat.getThreadID(), createdLocally);
-    }
+        @Override
+        public void entriesUpdated(Collection<String> addresses) {
+
+        }
+
+        @Override
+        public void entriesDeleted(Collection<String> addresses) {
+            notifyFriendsRemoved(Queryable.from(addresses).map(JidCreatorHelper::obtainId).toList());
+        }
+
+        @Override
+        public void presenceChanged(Presence presence) {
+
+        }
+    };
 
     private void onChatInvited(XMPPConnection conn, MultiUserChat room, String inviter, String reason, String password, Message message) {
         notifyReceiveInvite(JidCreatorHelper.obtainId(room.getRoom()));
@@ -81,6 +98,11 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         // TODO: 1/7/16 set fromId in chat
         message.setFromId(facade.getUsername());
         notifyGlobalMessage(message, EVENT_PRE_OUTGOING);
+    }
+
+    public void interceptErrorMessage(com.messenger.messengerservers.model.Message message) {
+        message.setFromId(facade.getUsername());
+        notifyGlobalMessage(message, EVENT_OUTGOING_ERROR);
     }
 
     private void interceptIncomingMessage(Stanza packet) {
@@ -117,7 +139,6 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                     break; // cause server sends type error and returns this message in history
                 }
                 notifyGlobalMessage(message, EVENT_INCOMING);
-                notifyNewUnhandledMessage(message); // TODO remove unhandled listeners
                 break;
             case SUBJECT:
                 notifyOnSubjectChanges(JidCreatorHelper.obtainId(packet.getFrom()), ((Message) packet).getSubject());
@@ -168,15 +189,5 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 && JidCreatorHelper.obtainId(message.getTo()).equals(JidCreatorHelper.obtainUserIdFromGroupJid(message.getFrom()));
         boolean delayed = message.getExtension("urn:xmpp:delay") != null;
         return ownMessage || delayed;
-    }
-
-    @Override
-    public void notifyOnUserStatusChangedListener(String userId, boolean online) {
-        super.notifyOnUserStatusChangedListener(userId, online);
-    }
-
-    @Override
-    public void notifyOnFriendsChangedListener(List<String> userIds, boolean isFriend) {
-        super.notifyOnFriendsChangedListener(userIds, isFriend);
     }
 }

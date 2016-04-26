@@ -33,8 +33,7 @@ public class BaseDelegateAdapter<BaseItemClass> extends BaseArrayListAdapter<Bas
     public AbstractCell onCreateViewHolder(ViewGroup parent, int viewType) {
         AbstractCell cell = super.onCreateViewHolder(parent, viewType);
         if (cell instanceof AbstractDelegateCell) {
-            ((AbstractDelegateCell) cell).setCellDelegate
-                    (itemDelegateMapping.get(viewType));
+            ((AbstractDelegateCell) cell).setCellDelegate(itemDelegateMapping.get(viewType));
         }
         return cell;
     }

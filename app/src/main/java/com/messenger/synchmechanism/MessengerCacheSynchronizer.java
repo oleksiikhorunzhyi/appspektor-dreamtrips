@@ -21,11 +21,8 @@ public class MessengerCacheSynchronizer {
 
     private LoaderDelegate loaderDelegate;
 
-    public MessengerCacheSynchronizer(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
-                                      ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                                      MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
-        this.loaderDelegate = new LoaderDelegate(messengerServerFacade, userProcessor,
-                conversationsDAO, participantsDAO, messageDAO, usersDAO, attachmentDAO);
+    public MessengerCacheSynchronizer(LoaderDelegate loaderDelegate) {
+        this.loaderDelegate = loaderDelegate;
     }
 
     public void updateCache(OnUpdatedListener listener) {

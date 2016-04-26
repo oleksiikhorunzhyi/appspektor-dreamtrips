@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
@@ -28,7 +29,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public abstract class BaseUserCell extends AbstractCell<User> {
+public abstract class BaseUserCell<D extends CellDelegate<User>> extends AbstractDelegateCell<User, D> {
 
     @Inject
     Presenter.TabletAnalytic tabletAnalytic;

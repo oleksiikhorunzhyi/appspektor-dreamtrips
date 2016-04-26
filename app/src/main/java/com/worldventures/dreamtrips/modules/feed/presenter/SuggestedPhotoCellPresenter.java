@@ -49,6 +49,8 @@ public class SuggestedPhotoCellPresenter {
 
     private View view;
 
+    private Observable<Void> notificationObservable;
+
     private List<PhotoGalleryModel> selectedPhotos;
 
     private long syncTimestampLast = Long.MAX_VALUE;
@@ -57,6 +59,7 @@ public class SuggestedPhotoCellPresenter {
         checkView(view);
         this.view = view;
 
+        notificationObservable = view.notificationObservable();
         selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
     }
 
@@ -71,9 +74,14 @@ public class SuggestedPhotoCellPresenter {
                 });
     }
 
-    public void notifyNewSuggestions() {
-        view.bind(getSuggestionObservable(view.firstElement().getDateTaken(), false))
+    public void subscribeNewPhotoNotifications() {
+        view.bind(notificationObservable
+                .concatMap(aVoid -> {
+                    long startTimestamp = getStartTimestampOrDefault(view.firstElement());
+                    return getSuggestionObservable(startTimestamp, false);
+                }))
                 .subscribe(photoGalleryModels -> {
+                    Timber.d("New photos got");
                     view.pushForward(photoGalleryModels);
                 }, throwable -> {
                     Timber.e(throwable, "Cannot fetch new suggestion items");
@@ -83,6 +91,8 @@ public class SuggestedPhotoCellPresenter {
     public void sync() {
         view.setUser(appSessionHolder.get().get().getUser());
         setSuggestionTitle();
+
+        subscribeNewPhotoNotifications();
     }
 
     public long lastSyncTime() {
@@ -194,6 +204,10 @@ public class SuggestedPhotoCellPresenter {
         return model == null ? Long.MAX_VALUE : model.getDateTaken();
     }
 
+    private long getStartTimestampOrDefault(@Nullable PhotoGalleryModel model) {
+        return model == null ? Long.MIN_VALUE : model.getDateTaken();
+    }
+
     private void resetListState() {
         Queryable.from(selectedPhotos).forEachR(model -> model.setChecked(false));
         selectedPhotos.clear();
@@ -218,7 +232,10 @@ public class SuggestedPhotoCellPresenter {
 
         void showMaxSelectionMessage();
 
+        @Nullable
         PhotoGalleryModel firstElement();
+
+        Observable<Void> notificationObservable();
 
         <T> Observable<T> bind(Observable<T> observable);
     }

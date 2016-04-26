@@ -76,9 +76,9 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
                 .map(element -> element.getItems().get(0))
                 .toList());
         //
-        doRequest(new PhotoGalleryRequest(context, SUGGESTION_ITEM_CHUNK), photos -> {
+        doRequest(new PhotoGalleryRequest(context), photos -> {
             if (isHasNewPhotos(photos)) {
-                view.refreshFeedItems(feedItems, photos, !noMoreFeeds);
+                view.refreshFeedItems(feedItems, Queryable.from(photos).take(SUGGESTION_ITEM_CHUNK).toList(), !noMoreFeeds);
             } else {
                 view.refreshFeedItems(feedItems, !noMoreFeeds);
             }

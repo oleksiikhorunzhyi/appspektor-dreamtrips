@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,7 +140,7 @@ public class SuggestedPhotoCellPresenter {
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             projectionPhotos,
                             selection(reverse),
-                            new String[]{String.valueOf(toTimestamp)},
+                            new String[]{String.valueOf(toTimestamp), ImageUtils.MIME_TYPE_GIF},
                             MediaStore.Images.Media.DATE_TAKEN + " DESC LIMIT " + SUGGESTION_ITEM_CHUNK);
 
                     int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
@@ -175,7 +176,7 @@ public class SuggestedPhotoCellPresenter {
     private String selection(boolean reverse) {
         return MediaStore.Images.Media.DATE_TAKEN +
                 (reverse ? " < " : " > ") +
-                " ?";
+                " ? and " + MediaStore.Images.Media.MIME_TYPE + " != ?";
     }
 
     private void checkView(View view) {

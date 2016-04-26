@@ -42,6 +42,8 @@ import timber.log.Timber;
 
 public class ImageUtils {
 
+    public static final String MIME_TYPE_GIF = "image/gif";
+
     private static final String PATTERN = "%s?width=%d&height=%d";
 
     private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiveListener bitmapReciveListener) {

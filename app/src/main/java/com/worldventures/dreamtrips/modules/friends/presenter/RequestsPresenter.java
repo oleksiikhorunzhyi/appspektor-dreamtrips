@@ -78,7 +78,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
             List<User> incoming = Queryable.from(items).filter(item -> item.getRelationship() == INCOMING_REQUEST).toList();
             if (!incoming.isEmpty()) {
-                RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming), true);
+                RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming_long), true);
                 incomingHeader.setCount(incoming.size());
                 sortedItems.add(incomingHeader);
                 sortedItems.addAll(incoming);
@@ -88,7 +88,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                     (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
                     .toList();
             if (!outgoing.isEmpty()) {
-                sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing)));
+                sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing_long)));
                 sortedItems.addAll(outgoing);
             }
 

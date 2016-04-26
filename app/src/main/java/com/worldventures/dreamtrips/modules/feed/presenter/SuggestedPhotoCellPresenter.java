@@ -160,7 +160,7 @@ public class SuggestedPhotoCellPresenter {
                         String path = cursor.getString(dataColumn);
                         long dateTaken = cursor.getLong(dateColumn);
 
-                        if (!subscriber.isUnsubscribed()) {
+                        if (!subscriber.isUnsubscribed() && !ImageUtils.getImageExtensionFromPath(path).toLowerCase().contains("gif")) {
                             subscriber.onNext(new PhotoGalleryModel(path, dateTaken));
                         }
                     }

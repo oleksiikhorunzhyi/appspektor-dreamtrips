@@ -44,8 +44,10 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
                 while (cursor.moveToNext()) {
                     String path = cursor.getString(dataColumn);
                     long dateTaken = cursor.getLong(dateColumn);
-                    PhotoGalleryModel photo = new PhotoGalleryModel(path, dateTaken);
-                    photos.add(photo);
+                    if (!ImageUtils.getImageExtensionFromPath(path).toLowerCase().contains("gif")) {
+                        PhotoGalleryModel photo = new PhotoGalleryModel(path, dateTaken);
+                        photos.add(photo);
+                    }
                 }
             }
         } catch (Throwable e) {

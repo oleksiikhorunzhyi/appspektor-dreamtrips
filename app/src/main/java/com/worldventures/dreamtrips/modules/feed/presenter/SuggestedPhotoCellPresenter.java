@@ -52,7 +52,7 @@ public class SuggestedPhotoCellPresenter {
 
     private Observable<Void> notificationObservable;
 
-    private List<PhotoGalleryModel> selectedPhotos;
+    private ArrayList<PhotoGalleryModel> selectedPhotos;
 
     private long syncTimestampLast = Long.MAX_VALUE;
 
@@ -78,12 +78,15 @@ public class SuggestedPhotoCellPresenter {
     public void subscribeNewPhotoNotifications() {
         view.bind(notificationObservable
                 .concatMap(aVoid -> {
-                    long startTimestamp = getStartTimestampOrDefault(view.firstElement());
+                    long startTimestamp = getStartTimestampOrDefault(null);
                     return getSuggestionObservable(startTimestamp, false);
                 }))
                 .subscribe(photoGalleryModels -> {
-                    Timber.d("New photos got");
-                    view.pushForward(photoGalleryModels);
+                    clearSelection();
+                    resetSyncTimestamp();
+                    sync();
+
+                    view.replacePhotoSuggestions(photoGalleryModels);
                 }, throwable -> {
                     Timber.e(throwable, "Cannot fetch new suggestion items");
                 });
@@ -92,8 +95,6 @@ public class SuggestedPhotoCellPresenter {
     public void sync() {
         view.setUser(appSessionHolder.get().get().getUser());
         setSuggestionTitle();
-
-        subscribeNewPhotoNotifications();
     }
 
     public long lastSyncTime() {
@@ -101,7 +102,7 @@ public class SuggestedPhotoCellPresenter {
     }
 
     public void removeSuggestedPhotos() {
-        resetListState();
+        clearSelectionAndUpdate();
 
         db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
         resetSyncTimestamp();
@@ -209,11 +210,14 @@ public class SuggestedPhotoCellPresenter {
         return model == null ? Long.MIN_VALUE : model.getDateTaken();
     }
 
-    private void resetListState() {
+    private void clearSelectionAndUpdate() {
+        clearSelection();
+        view.notifyListChange();
+    }
+
+    private void clearSelection() {
         Queryable.from(selectedPhotos).forEachR(model -> model.setChecked(false));
         selectedPhotos.clear();
-
-        view.clearListState();
     }
 
     private void resetSyncTimestamp() {
@@ -223,18 +227,15 @@ public class SuggestedPhotoCellPresenter {
     public interface View {
         void appendPhotoSuggestions(List<PhotoGalleryModel> items);
 
-        void pushForward(List<PhotoGalleryModel> items);
+        void replacePhotoSuggestions(List<PhotoGalleryModel> items);
 
-        void clearListState();
+        void notifyListChange();
 
         void setUser(User user);
 
         void setSuggestionTitle(int sizeOfSelectedPhotos);
 
         void showMaxSelectionMessage();
-
-        @Nullable
-        PhotoGalleryModel firstElement();
 
         Observable<Void> notificationObservable();
 

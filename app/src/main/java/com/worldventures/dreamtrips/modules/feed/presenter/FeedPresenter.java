@@ -10,10 +10,14 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -42,6 +46,12 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     Circle filterCircle;
     @State
     int unreadConversationCount;
+
+    private UidItemDelegate uidItemDelegate;
+
+    public FeedPresenter() {
+        uidItemDelegate = new UidItemDelegate(this);
+    }
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -118,6 +128,17 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return circles;
     }
 
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getFlaggableView());
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
+                    event.getFlagReasonId(), event.getNameOfReason()), view);
+    }
+
     private Circle createDefaultFilterCircle() {
         return Circle.all(context.getString(R.string.all));
     }
@@ -152,7 +173,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         return unreadConversationCount;
     }
 
-    public interface View extends BaseFeedPresenter.View {
+    public interface View extends BaseFeedPresenter.View, UidItemDelegate.View {
 
         void setRequestsCount(int count);
 

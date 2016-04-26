@@ -11,9 +11,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -25,9 +23,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -55,13 +51,9 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     RouteCreator<Integer> routeCreator;
     protected boolean loading = true;
     protected boolean noMoreFeeds = false;
-    private UidItemDelegate uidItemDelegate;
+
     @Inject
     protected FeedEntityManager entityManager;
-
-    public BaseFeedPresenter() {
-        uidItemDelegate = new UidItemDelegate(this);
-    }
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -267,18 +259,6 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
-    public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.loadFlags(event.getFlaggableView());
-    }
-
-    public void onEvent(ItemFlaggedEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
-                    event.getFlagReasonId(), event.getNameOfReason()));
-    }
-
-
     public void onEvent(DownloadPhotoEvent event) {
         if (view.isVisibleOnScreen())
             doRequest(new DownloadImageCommand(context, event.url));
@@ -293,7 +273,5 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         void refreshFeedItems(List<FeedItem> events, boolean needLoader);
 
         void showEdit(BucketBundle bucketBundle);
-
     }
-
 }

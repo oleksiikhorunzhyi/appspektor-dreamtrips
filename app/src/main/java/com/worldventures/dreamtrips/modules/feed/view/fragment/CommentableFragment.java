@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
@@ -298,5 +300,4 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     protected int getAdditionalItemsCount() {
         return 1;
     }
-
 }

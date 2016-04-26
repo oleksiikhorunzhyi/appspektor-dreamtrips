@@ -29,8 +29,21 @@ public class UidItemDelegate {
         }
     }
 
-    public void flagItem(FlagData data) {
+    public void flagItem(FlagData data, View view) {
         requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
+            if (view != null) {
+                view.flagSentSuccess();
+            }
+        }, spiceException -> {
+            if (view != null) {
+                view.flagSentError(spiceException);
+            }
         });
+    }
+
+    public interface View {
+        void flagSentSuccess();
+
+        void flagSentError(Throwable throwable);
     }
 }

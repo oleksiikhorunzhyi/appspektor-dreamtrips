@@ -36,7 +36,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     @Inject
     FeedEntityManager entityManager;
 
-    UidItemDelegate uidItemDelegate;
+    private UidItemDelegate uidItemDelegate;
 
     public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
         super(photo, type);
@@ -96,7 +96,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     @Override
     public void sendFlagAction(int flagReasonId, String reason) {
         uidItemDelegate.flagItem(new FlagData(photo.getUid(),
-                flagReasonId, reason));
+                flagReasonId, reason), view);
     }
 
     @Override
@@ -160,7 +160,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         return photo;
     }
 
-    public interface View extends FullScreenPresenter.View {
+    public interface View extends FullScreenPresenter.View, UidItemDelegate.View {
 
         void showProgress();
 

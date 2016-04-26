@@ -2,6 +2,8 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singleful
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -283,5 +285,22 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         state.setContentWrapperVisible(showContent);
         state.setTagHolderVisible(showTag);
         db.saveSocialViewPagerState(state);
+    }
+
+    @Override
+    public void flagSentSuccess() {
+        showFlagSnackBar(R.string.chat_message_send_button_text);
+    }
+
+    @Override
+    public void flagSentError(Throwable throwable) {
+        showFlagSnackBar(R.string.chat_message_send_button_text);
+    }
+
+    private void showFlagSnackBar(@StringRes int messageResId) {
+        View rootView = getView();
+        if (rootView != null) {
+            Snackbar.make(rootView, messageResId, Snackbar.LENGTH_SHORT).show();
+        }
     }
 }

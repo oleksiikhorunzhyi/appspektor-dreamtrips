@@ -2,7 +2,7 @@ package com.messenger.di;
 
 import android.content.Context;
 
-import com.messenger.delegate.ChatMessagesEventDelegate;
+import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.CreateConversationHelper;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;

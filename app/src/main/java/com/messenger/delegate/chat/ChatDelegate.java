@@ -1,9 +1,13 @@
-package com.messenger.delegate;
+package com.messenger.delegate.chat;
 
 import android.text.TextUtils;
+import android.util.Pair;
 
+import com.messenger.delegate.PaginationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
@@ -20,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -35,13 +40,18 @@ public class ChatDelegate {
     public boolean haveMoreElements = true;
 
     private final MessageDAO messageDAO;
-    private ConversationsDAO conversationsDAO;
+    private final ConversationsDAO conversationsDAO;
     private final SessionHolder<UserSession> sessionHolder;
     private final PaginationDelegate paginationDelegate;
+    private final CreateChatHelper createChatHelper;
+
     private final PublishSubject<PaginationStatus> paginationStateObservable = PublishSubject.create();
 
     @Inject
-    ChatDelegate(MessageDAO messageDAO, ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder, PaginationDelegate paginationDelegate) {
+    ChatDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO,
+                 ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder,
+                 PaginationDelegate paginationDelegate) {
+        this.createChatHelper = createChatHelper;
         this.messageDAO = messageDAO;
         this.conversationsDAO = conversationsDAO;
         this.sessionHolder = sessionHolder;
@@ -49,10 +59,41 @@ public class ChatDelegate {
         paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
     }
 
+    public void sendMessage(Message message) {
+        chatObservable.subscribeOn(Schedulers.io())
+                .subscribe(chat -> chat.send(message).subscribe(),
+                        e -> Timber.e(e, "Fail to send message"));
+    }
+
+    public void setComposing() {
+        chatObservable.subscribeOn(Schedulers.io())
+                .subscribe(chat -> chat.setCurrentState(ChatState.COMPOSING),
+                        e -> Timber.e(e, "Fail to set state"));
+
+    }
+
+    public void setPaused() {
+        chatObservable.subscribeOn(Schedulers.io())
+                .subscribe(chat -> chat.setCurrentState(ChatState.PAUSE),
+                        e -> Timber.e(e, "Fail to set state"));
+    }
+
+    public void closeChat() {
+        chatObservable.subscribeOn(Schedulers.io()).subscribe(Chat::close,
+                e -> Timber.e(e, "Fail to close chat"));
+    }
+
     public Observable<PaginationStatus> bind(Observable<ConnectionStatus> connectionObservable,
-                                             Observable<Chat> chatObservable, Observable<DataConversation> conversationObservable) {
-        this.conversationObservable = conversationObservable.take(1).cacheWithInitialCapacity(1);
-        this.chatObservable = chatObservable;
+                                             Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantsObservable) {
+        this.conversationObservable = conversationWithParticipantsObservable
+                .map(pair -> pair.first).take(1).cacheWithInitialCapacity(1);
+        this.chatObservable = conversationWithParticipantsObservable
+                .take(1)
+                .flatMap(conversationListWithParticipants ->
+                        createChatHelper.createChat(conversationListWithParticipants.first,
+                                conversationListWithParticipants.second))
+                .replay(1)
+                .autoConnect();
         connectToChatConnection(connectionObservable);
 
         return paginationStateObservable;
@@ -73,7 +114,7 @@ public class ChatDelegate {
             return;
         }
 
-        chatObservable.take(1)
+        chatObservable
                 .flatMap(chat -> chat.sendReadStatus(lastMessage.getId()))
                 .flatMap(msgId -> markMessagesAsRead(lastMessage))
                 .flatMap(this::changeUnreadCounter)

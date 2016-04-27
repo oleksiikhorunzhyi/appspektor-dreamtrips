@@ -1,6 +1,6 @@
 package com.messenger.di;
 
-import com.messenger.delegate.ChatMessagesEventDelegate;
+import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.JoinedChatEventDelegate;
 import com.messenger.delegate.LoaderDelegate;

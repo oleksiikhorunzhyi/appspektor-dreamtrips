@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.messenger.delegate.ChatLeavingDelegate;
+import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;

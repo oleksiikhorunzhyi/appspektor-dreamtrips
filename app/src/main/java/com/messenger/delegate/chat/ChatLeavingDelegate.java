@@ -1,4 +1,4 @@
-package com.messenger.delegate;
+package com.messenger.delegate.chat;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;

@@ -28,13 +28,13 @@ public class MessageTranslationDelegate {
         this.localeHelper = localeHelper;
     }
 
-    public void translateMessage(DataMessage message, SessionHolder<UserSession> userSession) {
+    public void translateMessage(DataMessage message, SessionHolder<UserSession> sessionHolder) {
         translationsDAO.getTranslation(message.getId()).first()
                 .subscribe(dataTranslation -> {
                     if ((dataTranslation == null || dataTranslation.getTranslateStatus() == TranslationStatus.ERROR)
-                            && SessionHolderHelper.hasEntity(userSession)){
+                            && SessionHolderHelper.hasEntity(sessionHolder)){
                         translateMessageRequest(message, localeHelper.
-                                getAccountLocaleFormatted(userSession.get().get().getUser()));
+                                getAccountLocaleFormatted(sessionHolder.get().get().getUser()));
                         return;
                     }
                     if (dataTranslation != null && dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED){

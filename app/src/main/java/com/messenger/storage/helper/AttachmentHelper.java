@@ -11,6 +11,8 @@ import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Image;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 public class AttachmentHelper {
@@ -19,6 +21,7 @@ public class AttachmentHelper {
     private final MessageDAO messageDAO;
     private final UsersDAO usersDAO;
 
+    @Inject
     public AttachmentHelper(PhotoDAO photoDAO, MessageDAO messageDAO, UsersDAO usersDAO) {
         this.photoDAO = photoDAO;
         this.messageDAO = messageDAO;

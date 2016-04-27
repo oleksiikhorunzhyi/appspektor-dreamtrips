@@ -18,7 +18,7 @@ public class PermissionDispatcher {
         this.activityReference = new WeakReference<>(activity);
     }
 
-    public Observable<PermissionsResult> requestPermissionFor(String[] permissions) {
+    public Observable<PermissionsResult> requestPermission(String[] permissions) {
         Activity activity = activityReference.get();
         if (activity == null) return Observable.empty();
 

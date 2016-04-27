@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.picklocation.view;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.R;
@@ -55,7 +56,7 @@ public class PickLocationActivity extends BaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
         PickLocationActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);

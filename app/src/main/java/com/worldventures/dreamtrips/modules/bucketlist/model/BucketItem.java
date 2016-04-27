@@ -8,6 +8,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.model.BaseFeedEntity;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -85,6 +86,9 @@ public class BucketItem extends BaseFeedEntity {
     }
 
     public List<BucketPhoto> getPhotos() {
+        if (photos == null) {
+            photos = new ArrayList<>();
+        }
         return photos;
     }
 

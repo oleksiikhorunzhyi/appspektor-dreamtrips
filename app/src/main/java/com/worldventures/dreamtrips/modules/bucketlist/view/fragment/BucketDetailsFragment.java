@@ -29,9 +29,9 @@ import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
@@ -135,8 +135,8 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
+        super.onDestroyView();
         OrientationUtil.unlockOrientation(getActivity());
     }
 
@@ -286,12 +286,14 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
-    public void setImages(List<BucketPhoto> photos) {
+    public void setImages(List photos) {
         BaseStatePagerAdapter adapter = new BaseStatePagerAdapter(getChildFragmentManager()) {
             @Override
             public void setArgs(int position, Fragment fragment) {
-                BucketPhoto photo = photos.get(position);
-                ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+                if (photos.get(position) instanceof BucketPhoto) {
+                    BucketPhoto photo = (BucketPhoto) photos.get(position);
+                    ((TripImagePagerFragment) fragment).setArgs(new ImageBundle<>(photo));
+                }
             }
         };
         viewPagerBucketGallery.setAdapter(adapter);
@@ -310,7 +312,7 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     }
 
     @Override
-    public UploadTask getBucketPhotoUploadTask(long taskId) {
+    public BucketPhotoCreationItem getBucketPhotoUploadTask(String filePath) {
         return null;
     }
 

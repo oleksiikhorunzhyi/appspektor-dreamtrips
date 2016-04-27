@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPho
 import com.worldventures.dreamtrips.modules.feed.view.util.SuggestedPhotosListDecorator;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,6 +40,7 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 
 @Layout(R.layout.adapter_item_suggested_photos)
 public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, SuggestedPhotosDelegate>
@@ -66,6 +68,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     SuggestedPhotoCellPresenter presenter;
 
     private BaseDelegateAdapter suggestionAdapter;
+    private PublishSubject<Void> notificationSubject = PublishSubject.create();
 
     private ContentObserver contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
         @Override
@@ -73,7 +76,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
             super.onChange(selfChange);
 
             if (!selfChange) {
-                presenter.notifyNewSuggestions();
+                notificationSubject.onNext(null);
             }
         }
     };
@@ -85,14 +88,12 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     @Override
     public void afterInject() {
         super.afterInject();
-
         presenter.takeView(this);
     }
 
     @Override
     public void setCellDelegate(SuggestedPhotosDelegate cellDelegate) {
         super.setCellDelegate(cellDelegate);
-
         cellDelegate.onRegisterObserver(contentObserver);
     }
 
@@ -147,6 +148,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         }
 
         presenter.sync();
+        presenter.subscribeNewPhotoNotifications();
     }
 
     @Override
@@ -186,9 +188,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     }
 
     @Override
-    public void pushForward(List<PhotoGalleryModel> items) {
-        suggestionAdapter.addItems(0, items);
-        suggestedList.scrollToPosition(0);
+    public void replacePhotoSuggestions(List<PhotoGalleryModel> items) {
+        suggestionAdapter.clearAndUpdateItems(items);
     }
 
     @Override
@@ -222,13 +223,17 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     }
 
     @Override
-    public void clearListState() {
-        suggestionAdapter.clear();
+    public void notifyListChange() {
+        suggestionAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public PhotoGalleryModel firstElement() {
-        return (PhotoGalleryModel) suggestionAdapter.getItem(0);
+    public Observable<Void> notificationObservable() {
+        return notificationSubject
+                .asObservable()
+                .throttleLast(1, TimeUnit.SECONDS)
+                .replay(1)
+                .autoConnect();
     }
 
     @Override

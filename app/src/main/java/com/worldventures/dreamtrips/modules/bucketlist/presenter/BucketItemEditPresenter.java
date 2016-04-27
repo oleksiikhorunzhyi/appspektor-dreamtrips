@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
 
+import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
@@ -14,17 +16,18 @@ import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.UploadBucketPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
+import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,9 +35,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenterView> {
@@ -61,23 +63,27 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         priorityEventBus = 1;
         super.takeView(view);
         uploaderySubscription = uploaderyManager.getTaskChangingObservable()
+                .cache()
                 .compose(new IoToMainComposer<>())
                 .subscribe(state -> {
-                    UploadTask uploadTask = db.getUploadTask((state.action.getFilePath()));
-                    if (uploadTask != null && Objects.equals(uploadTask.getLinkedItemId(), bucketItem.getUid())) {
+                    BucketPhotoCreationItem uploadTask = db.getBucketPhotoCreationItem((state.action.getFilePath()));
+                    if (uploadTask != null && Objects.equals(uploadTask.getBucketId(), bucketItem.getUid())) {
+                        uploadTask.setStatus(state.status);
+                        BucketPhotoCreationItem bucketPhotoUploadTask = view.getBucketPhotoUploadTask(uploadTask.getFilePath());
+                        if (bucketPhotoUploadTask != null) {
+                            bucketPhotoUploadTask.setStatus(state.status);
+                        }
+
                         switch (state.status) {
                             case START:
                             case PROGRESS:
-                                uploadTask.setStatus(UploadTask.Status.STARTED);
                                 view.addImage(uploadTask);
                                 break;
                             case SUCCESS:
                                 uploadTask.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult().getPhotoUploadResponse().getLocation());
-                                uploadTask.setStatus(UploadTask.Status.COMPLETED);
                                 addPhotoToBucketItem(uploadTask);
                                 break;
                             case FAIL:
-                                uploadTask.setStatus(UploadTask.Status.FAILED);
                                 view.itemChanged(uploadTask);
                                 break;
                         }
@@ -144,6 +150,22 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         }
     }
 
+    @Nullable
+    @Override
+    protected List getBucketPhotos() {
+        List bucketPhotos = new ArrayList<>(super.getBucketPhotos());
+        List tasks = Queryable.from(db.getAllBucketPhotoCreationItem())
+                .map(element -> {
+                    element.setStatus(ActionState.Status.FAIL);
+                    return element;
+                })
+                .filter(element -> {
+                    return Objects.equals(bucketItemId, element.getBucketId());
+                }).toList();
+        bucketPhotos.addAll(bucketPhotos.isEmpty() ? 0 : 1, tasks);
+        return bucketPhotos;
+    }
+
     public void deletePhotoRequest(BucketPhoto bucketPhoto) {
         if (bucketItem.getPhotos().size() > 0 && bucketItem.getPhotos().contains(bucketPhoto)) {
             getBucketItemManager().deleteBucketItemPhoto(bucketPhoto,
@@ -175,31 +197,19 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
             return;
         }
         view.hideMediaPicker();
-        saveItem(false);
-
         Queryable.from(chosenImages).forEachR(choseImage ->
                 imageSelected(Uri.parse(choseImage.getThumbnailPath()), type));
     }
 
-    private void imageSelected(Uri uri, int requestType) {
-        String type = "";
-        switch (requestType) {
-            case PickImageDelegate.CAPTURE_PICTURE:
-                type = "camera";
-                break;
-            case PickImageDelegate.PICK_PICTURE:
-                type = "album";
-                break;
-            case PickImageDelegate.FACEBOOK:
-                type = "facebook";
-                break;
-        }
+    public void onEventMainThread(BucketItemUpdatedEvent event) {
+        // nothing to do. we already here
+    }
 
-        UploadTask task = new UploadTask();
-        task.setStatus(UploadTask.Status.STARTED);
+    private void imageSelected(Uri uri, int requestType) {
+        BucketPhotoCreationItem task = new BucketPhotoCreationItem();
+        task.setStatus(ActionState.Status.START);
         task.setFilePath(uri.toString());
-        task.setType(type);
-        task.setLinkedItemId(String.valueOf(bucketItemId));
+        task.setBucketId(String.valueOf(bucketItemId));
 
         doRequest(new CopyFileCommand(context, task.getFilePath()), filePath -> {
             task.setFilePath(filePath);
@@ -207,42 +217,43 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         });
     }
 
-    public void onUploadTaskClicked(UploadTask uploadTask) {
-        if (uploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
+    public void onUploadTaskClicked(BucketPhotoCreationItem uploadTask) {
+        if (uploadTask.getStatus().equals(ActionState.Status.FAIL)) {
             startUpload(uploadTask);
         } else {
             cancelUpload(uploadTask);
         }
     }
 
-    protected void startUpload(UploadTask uploadTask) {
-        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, uploadTask.getType(), bucketItem.getType());
+    protected void startUpload(BucketPhotoCreationItem uploadTask) {
+        TrackingHelper.bucketPhotoAction(TrackingHelper.ACTION_BUCKET_PHOTO_UPLOAD_START, "", bucketItem.getType());
         eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_UPLOAD_PHOTO, bucketItem.getUid()));
         uploaderyManager.upload(uploadTask.getFilePath());
-        uploadTask.setLinkedItemId(bucketItem.getUid());
-        db.saveUploadTask(uploadTask);
+        uploadTask.setBucketId(bucketItem.getUid());
+        db.saveBucketPhotoCreationItem(uploadTask);
     }
 
-    private void onError(long id, Exception ex) {
+    private void onError(String filePath, Exception ex) {
         if (view == null) return;
         //
-        UploadTask bucketPhotoUploadTask = view.getBucketPhotoUploadTask(id);
+        BucketPhotoCreationItem bucketPhotoUploadTask = view.getBucketPhotoUploadTask(filePath);
         if (bucketPhotoUploadTask != null) view.itemChanged(bucketPhotoUploadTask);
     }
 
-    private void addPhotoToBucketItem(UploadTask task) {
+    private void addPhotoToBucketItem(BucketPhotoCreationItem task) {
         doRequest(new UploadBucketPhotoCommand(bucketItemId, task),
                 photo -> photoAdded(task, photo),
-                spiceException -> onError(task.getId(), spiceException));
+                spiceException -> onError(task.getFilePath(), spiceException));
     }
 
-    private void photoAdded(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
+    private void photoAdded(BucketPhotoCreationItem bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
         view.replace(bucketPhotoUploadTask, bucketPhoto);
-        db.removeUploadTask(bucketPhotoUploadTask);
+        db.removeBucketPhotoCreationItem(bucketPhotoUploadTask);
         getBucketItemManager().updateBucketItemWithPhoto(bucketItem, bucketPhoto);
     }
 
-    protected void cancelUpload(UploadTask uploadTask) {
-        db.removeUploadTask(uploadTask);
+    protected void cancelUpload(BucketPhotoCreationItem uploadTask) {
+        db.removeBucketPhotoCreationItem(uploadTask);
+        view.deleteImage(uploadTask);
     }
 }

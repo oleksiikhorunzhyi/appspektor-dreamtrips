@@ -135,6 +135,12 @@
 
     <dimen name="dtlContentWidth">400dp</dimen>
 
+    <!-- dimen for DtlFilterButton -->
+    <dimen name="dtlfb_width">128dp</dimen>
+    <dimen name="dtlfb_height">48dp</dimen>
+    <dimen name="dtlfb_caption_text_size">14sp</dimen>
+    <dimen name="dtlfb_icon_padding">12dp</dimen>
+
     <!-- dimen for dtl points calculation dialog -->
     <dimen name="dtlCalculationCalculateButtonTextSize">14sp</dimen>
     <dimen name="dtlCalculationInputTextSize">18sp</dimen>

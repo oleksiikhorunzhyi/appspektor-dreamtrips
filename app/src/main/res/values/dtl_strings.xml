@@ -84,4 +84,6 @@
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Food &amp; Drinks</string>
+    <!-- DtlFilterButton strings -->
+    <string name="dtlfb_caption">Filters</string>
 </resources>

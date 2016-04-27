@@ -2,7 +2,10 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.database.ContentObserver;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
@@ -25,6 +28,7 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.view.cell.SuggestedPhotosCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.SuggestedPhotosDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.CirclesFilterPopupWindow;
@@ -34,14 +38,18 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.OnClick;
 import butterknife.Optional;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 @Layout(R.layout.fragment_feed)
 @MenuResource(R.menu.menu_activity_feed)
 public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
-        implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener, SuggestedPhotosDelegate {
+        implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener,
+        SuggestedPhotosDelegate, SuggestedPhotoCellPresenterHelper.OutViewBinder {
 
     BadgeImageView friendsBadge;
     BadgeImageView unreadConversationBadge;
@@ -49,6 +57,7 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     private CirclesFilterPopupWindow filterPopupWindow;
 
     private ContentObserver contentObserver;
+    private PublishSubject<Void> contentObserverSubject = PublishSubject.create();
 
     @Override
     public void afterCreateView(View rootView) {
@@ -234,21 +243,53 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     }
 
     @Override
-    public void onAttachClicked(List<PhotoGalleryModel> pickedItems) {
-        openSharePhoto(new CreateEntityBundle(new MediaAttachment(pickedItems, PickImageDelegate.PICK_PICTURE)));
+    public void onAttachClicked() {
+        openSharePhoto(new CreateEntityBundle(new MediaAttachment(getPresenter().getSelectedSuggestionPhotos(),
+                PickImageDelegate.PICK_PICTURE)));
         getPresenter().removeSuggestedPhotos();
     }
 
     @Override
-    public void onRegisterObserver(ContentObserver contentObserver) {
-        this.contentObserver = contentObserver;
-        getContext().getContentResolver()
-                .registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, contentObserver);
+    public void onOpenProfileClicked() {
+        getPresenter().openProfile();
+    }
+
+    @Override
+    public void onSuggestionViewCreated(@NonNull SuggestedPhotoCellPresenterHelper.View view) {
+        createSuggestionObserver();
+        getPresenter().takeSuggestionView(view, this, savedInstanceState, contentObserverSubject
+                .asObservable()
+                .throttleLast(1, TimeUnit.SECONDS));
+    }
+
+    @Override
+    public void onSyncViewState() {
+        getPresenter().syncSuggestionViewState();
+    }
+
+    @Override
+    public void onPreloadSuggestionPhotos(@NonNull PhotoGalleryModel model) {
+        getPresenter().preloadSuggestionChunk(model);
+    }
+
+    @Override
+    public void onSelectPhoto(@NonNull PhotoGalleryModel model) {
+        getPresenter().selectPhoto(model);
+    }
+
+    @Override
+    public long lastSyncTimestamp() {
+        return getPresenter().lastSyncTimestamp();
     }
 
     @Override
     public void onCellClicked(MediaAttachment model) {
         // nothing to do
+    }
+
+    @Override
+    public <T> Observable<T> bindOutLifecycle(Observable<T> observable) {
+        return bind(observable);
     }
 
     private boolean isNeedAddSuggestions(int suggestedPhotosSize) {
@@ -265,5 +306,20 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
     @Override
     public void flagSentSuccess() {
         informUser(R.string.flag_sent_success_msg);
+    }
+
+    private void createSuggestionObserver() {
+        contentObserver = new ContentObserver(new Handler(Looper.getMainLooper())) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+
+                if (!selfChange) {
+                    contentObserverSubject.onNext(null);
+                }
+            }
+        };
+        getContext().getContentResolver()
+                .registerContentObserver(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, contentObserver);
     }
 }

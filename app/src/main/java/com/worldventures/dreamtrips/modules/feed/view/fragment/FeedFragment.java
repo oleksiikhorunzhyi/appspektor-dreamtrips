@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.database.ContentObserver;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
@@ -269,18 +267,6 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public void flagSentSuccess() {
-        showFlagSnackBar(R.string.invite_add_message);
-    }
-
-    @Override
-    public void flagSentError(Throwable throwable) {
-        showFlagSnackBar(R.string.invite_add_message);
-    }
-
-    private void showFlagSnackBar(@StringRes int messageResId) {
-        View rootView = getView();
-        if (rootView != null) {
-            Snackbar.make(rootView, messageResId, Snackbar.LENGTH_SHORT).show();
-        }
+        informUser(R.string.flag_sent_success_msg);
     }
 }

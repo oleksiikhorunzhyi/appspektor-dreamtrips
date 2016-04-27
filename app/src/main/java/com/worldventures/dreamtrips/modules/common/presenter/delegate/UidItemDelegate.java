@@ -34,16 +34,10 @@ public class UidItemDelegate {
             if (view != null) {
                 view.flagSentSuccess();
             }
-        }, spiceException -> {
-            if (view != null) {
-                view.flagSentError(spiceException);
-            }
         });
     }
 
     public interface View {
         void flagSentSuccess();
-
-        void flagSentError(Throwable throwable);
     }
 }

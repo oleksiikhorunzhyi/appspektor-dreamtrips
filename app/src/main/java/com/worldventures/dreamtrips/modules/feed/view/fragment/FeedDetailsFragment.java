@@ -91,18 +91,6 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
 
     @Override
     public void flagSentSuccess() {
-        showFlagSnackBar(R.string.com_facebook_internet_permission_error_message);
-    }
-
-    @Override
-    public void flagSentError(Throwable throwable) {
-        showFlagSnackBar(R.string.com_facebook_internet_permission_error_message);
-    }
-
-    private void showFlagSnackBar(@StringRes int messageResId) {
-        View rootView = getView();
-        if (rootView != null) {
-            Snackbar.make(rootView, messageResId, Snackbar.LENGTH_SHORT).show();
-        }
+        informUser(R.string.flag_sent_success_msg);
     }
 }

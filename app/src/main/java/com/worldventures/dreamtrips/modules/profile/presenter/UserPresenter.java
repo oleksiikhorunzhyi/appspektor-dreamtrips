@@ -6,9 +6,13 @@ import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
+import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
@@ -43,12 +47,16 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     @Inject
     StartChatDelegate startSingleChatDelegate;
 
+    private UidItemDelegate uidItemDelegate;
+
     public UserPresenter(UserBundle userBundle) {
         super(userBundle.getUser());
         this.notificationId = userBundle.getNotificationId();
         this.acceptFriend = userBundle.isAcceptFriend();
         userBundle.resetNotificationId();
         userBundle.resetAcceptFriend();
+
+        uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
@@ -197,6 +205,17 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 new TripsImagesBundle(TripImagesType.ACCOUNT_IMAGES, user.getId()));
     }
 
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getFlaggableView());
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
+                    event.getFlagReasonId(), event.getNameOfReason()), view);
+    }
+
     public void onEvent(OnAcceptRequestEvent e) {
         acceptClicked();
     }
@@ -209,7 +228,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         addFriendClicked();
     }
 
-    public interface View extends ProfilePresenter.View {
+    public interface View extends ProfilePresenter.View, UidItemDelegate.View {
 
         void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
 

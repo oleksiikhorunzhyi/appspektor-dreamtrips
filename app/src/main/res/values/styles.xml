@@ -87,23 +87,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-
-    <style name="DtlTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">@color/dtl_tab_indicator</item>
-        <item name="tabMode">fixed</item>
-        <item name="tabPaddingStart">0dp</item>
-        <item name="tabPaddingEnd">0dp</item>
-        <item name="tabGravity">fill</item>
-        <item name="tabIndicatorHeight">2dp</item>
-    </style>
-
-    <style name="DtlTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/dtl_tab_text_normal</item>
-        <item name="textAllCaps">true</item>
-        <item name="android:textStyle">normal</item>
-    </style>
-
     <style name="Theme.DreamTripsTheme.Progress.White" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/white</item>
     </style>
@@ -131,18 +114,6 @@
         <item name="android:layout_marginBottom">@dimen/suggest_merchant_default_vertical_margin
         </item>
         <item name="requestFocusOnValidationFail">true</item>
-    </style>
-
-    <style name="SuggestMerchantBigCaption">
-        <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
-        <item name="android:textColor">@color/suggest_merchant_input_text</item>
-    </style>
-
-    <style name="SuggestMerchantFakeSpinner" parent="Widget.AppCompat.Spinner.Underlined">
-        <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
-        <item name="android:textColor">@color/suggest_merchant_input_text</item>
-        <item name="android:gravity">center</item>
-        <item name="android:singleLine">true</item>
     </style>
 
     <style name="SpinnerToolbarTitle">

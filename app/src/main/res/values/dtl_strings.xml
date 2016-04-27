@@ -81,4 +81,7 @@
     <string name="distance_caption_format" formatted="false" translatable="false">%1$.1f %2$s</string>
     <string name="details_collapsed_text_caption">Show More</string>
     <string name="details_expanded_text_caption">Show Less</string>
+
+    <!-- DtlToolbar strings -->
+    <string name="dtlt_search_hint">Food &amp; Drinks</string>
 </resources>

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -31,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableC
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
@@ -56,8 +56,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     DtlToolbar dtlToolbar;
     @InjectView(R.id.filterDiningsSwitch)
     SwitchCompat filterDiningsSwitch;
-    @InjectView(R.id.filtersCounter)
-    AppCompatTextView filtersCounter;
+    @InjectView(R.id.dtlfb_rootView)
+    DtlFilterButton filtersButton;
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
@@ -141,7 +141,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         }
     }
 
-    @OnClick(R.id.filtersCounter)
+    @OnClick(R.id.dtlfb_rootView)
     void onFiltersCounterClicked(View view) {
         ((FlowActivity) getActivity()).openRightDrawer();
     }

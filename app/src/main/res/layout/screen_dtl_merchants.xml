@@ -29,47 +29,32 @@
             <include layout="@layout/view_dtl_toolbar_content" />
         </com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar>
 
-        <RelativeLayout
+        <FrameLayout
             android:id="@+id/subToolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?android:attr/actionBarSize"
             android:background="@android:color/white"
             >
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/filtersCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/darker_gray"
-                android:textSize="20sp"
-                android:layout_margin="5dp"
-                android:layout_centerVertical="true"
-                android:text="Filters %d"
+            <include layout="@layout/view_dtl_filter_button"
+                     android:layout_gravity="start"
                 />
 
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/filterDiningsSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical|end"
                 android:layout_margin="8dp"
                 android:checked="false"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="5dp"
-                android:layout_toLeftOf="@id/filterDiningsSwitch"
                 android:text="@string/dtl_show_offers_only"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/dtlfb_caption_text_size"
                 android:textAllCaps="true"
-                android:textColor="@color/black"
-                android:textSize="14sp"
+                textAllCaps="true"
+                app:switchPadding="@dimen/dtlfb_icon_padding"
                 />
-        </RelativeLayout>
+        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout

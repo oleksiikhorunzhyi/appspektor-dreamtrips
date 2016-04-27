@@ -115,7 +115,9 @@
     <!-- dimen for dtl place items -->
     <dimen name="dtlPlaceItemMargin">8dp</dimen>
     <dimen name="dtlPlaceItemRoundRadius">5dp</dimen>
-    <dimen name="dtlPlaceImageHeight">172dp</dimen>
+    <dimen name="dtlMerchantCoverImageSize">96dp</dimen>
+    <dimen name="dtlOfferCoverImageHeight">50dp</dimen>
+    <dimen name="dtlOfferCoverImageWidth">75dp</dimen>
     <dimen name="dtlPlaceBadgeSize">65dp</dimen>
     <dimen name="dtlPlaceBadgeMargin">16dp</dimen>
     <dimen name="dtlPlaceNameTextSize">20sp</dimen>
@@ -129,11 +131,9 @@
     <dimen name="dtlReceiptHeight">326dp</dimen>
     <dimen name="dtlReceiptHeightSmall">300dp</dimen>
     <dimen name="dtlScanReceiptPadding">16dp</dimen>
+    <dimen name="dtlScanQrMerchantCoverSize">72dp</dimen>
 
     <dimen name="dtlContentWidth">400dp</dimen>
-
-    <dimen name="dtlOfferIconWidth">75dp</dimen>
-    <dimen name="dtlOfferIconHeight">50dp</dimen>
 
     <!-- dimen for dtl points calculation dialog -->
     <dimen name="dtlCalculationCalculateButtonTextSize">14sp</dimen>

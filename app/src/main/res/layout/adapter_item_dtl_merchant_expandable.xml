@@ -8,22 +8,25 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:layout_marginTop="5dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <android.support.v7.widget.CardView
         android:id="@+id/root_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
                 android:id="@+id/merchantCoverImage"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
+                android:layout_width="@dimen/dtlMerchantCoverImageSize"
+                android:layout_height="@dimen/dtlMerchantCoverImageSize"
                 app:actualImageScaleType="centerInside"
                 app:placeholderImage="@drawable/ic_trip_image_placeholder"
                 />
@@ -31,7 +34,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="12dp">
+                android:padding="12dp"
+                >
 
                 <TextView
                     android:id="@+id/merchantName"
@@ -59,7 +63,8 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|bottom">
+                    android:layout_gravity="start|bottom"
+                    >
 
                     <TextView
                         android:id="@+id/merchantOpenClosedStatus"
@@ -92,10 +97,7 @@
                         app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
                         app:prb_totalTicks="4"
                         />
-
                 </RelativeLayout>
-
-
             </FrameLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -103,7 +105,8 @@
     <RelativeLayout
         android:id="@+id/offers_container"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        >
 
         <TextView
             android:id="@+id/view_points"
@@ -116,7 +119,8 @@
             android:drawableLeft="@drawable/ic_points_dtl"
             android:drawablePadding="5dp"
             android:layout_centerVertical="true"
-            android:text="@string/points"/>
+            android:text="@string/points"
+            />
 
         <TextView
             android:id="@+id/view_perks"
@@ -129,7 +133,8 @@
             android:background="@drawable/background_badge_perk"
             android:drawableLeft="@drawable/ic_perk_dtl"
             android:drawablePadding="5dp"
-            android:text="@string/perks"/>
+            android:text="@string/perks"
+            />
 
         <ImageView
             android:id="@+id/perk_toggle_view"
@@ -138,7 +143,8 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/spacing_normal"
-            tools:src="@drawable/ic_arrow_down_grey"/>
+            tools:src="@drawable/ic_arrow_down_grey"
+            />
 
         <TextView
             android:id="@+id/perk_toggle_label"
@@ -149,12 +155,13 @@
             android:layout_marginRight="@dimen/spacing_normal"
             android:text="@string/friend_hide"
             android:visibility="gone"
-            tools:visibility="visible"/>
-
+            tools:visibility="visible"
+            />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/divider_list"/>
+        android:background="@drawable/divider_list"
+        />
 </LinearLayout>

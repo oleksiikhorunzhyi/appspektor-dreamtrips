@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:showIn="@layout/adapter_item_dtl_merchant">
+    tools:showIn="@layout/adapter_item_dtl_merchant"
+    >
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
         android:id="@+id/merchant_details_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,5 +17,5 @@
         fresco:actualImageScaleType="fitCenter"
         />
 
-    <include layout="@layout/include_dtl_place_details_header"/>
+    <include layout="@layout/include_dtl_place_details_header" />
 </FrameLayout>

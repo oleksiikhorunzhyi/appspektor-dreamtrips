@@ -1,13 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
-import android.net.Uri;
-import android.view.View;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 
@@ -18,7 +13,7 @@ import butterknife.InjectView;
 public class DtlMerchantSingleImageDataInflater extends DtlMerchantCommonDataInflater {
 
     @InjectView(R.id.merchant_details_cover)
-    SimpleDraweeView cover;
+    ImageryDraweeView cover;
 
     @Override
     protected void onMerchantApply(DtlMerchant merchant) {
@@ -32,16 +27,6 @@ public class DtlMerchantSingleImageDataInflater extends DtlMerchantCommonDataInf
             return;
         }
         //
-        cover.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (v.getWidth() == 0) return;
-                cover.removeOnLayoutChangeListener(this);
-                cover.setController(GraphicUtils.provideFrescoResizingController(
-                        Uri.parse(media.getImagePath()), cover.getController(),
-                        cover.getWidth(), cover.getHeight())
-                );
-            }
-        });
+        cover.setImageUrl(media.getImagePath());
     }
 }

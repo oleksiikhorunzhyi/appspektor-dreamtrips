@@ -30,5 +30,5 @@ public class SocialUploaderyManager {
     public Observable<ActionState<UploaderyImageCommand>> getTaskChangingObservable() {
         return uploaderyManager.getUploadImagePipe().observe();
     }
-    
+
 }

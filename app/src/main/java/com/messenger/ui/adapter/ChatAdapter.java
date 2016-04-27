@@ -117,7 +117,7 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
             }
         };
 
-        holder.getMessageView().setOnClickListener(listener);
+        holder.getTimestampClickableView().setOnClickListener(listener);
 
         TextView dateTextView = holder.dateTextView;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();

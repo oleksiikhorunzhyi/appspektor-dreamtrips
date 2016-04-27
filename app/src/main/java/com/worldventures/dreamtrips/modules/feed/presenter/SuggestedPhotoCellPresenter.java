@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,9 @@ public class SuggestedPhotoCellPresenter {
 
     private View view;
 
-    private List<PhotoGalleryModel> selectedPhotos;
+    private Observable<Void> notificationObservable;
+
+    private ArrayList<PhotoGalleryModel> selectedPhotos;
 
     private long syncTimestampLast = Long.MAX_VALUE;
 
@@ -57,6 +60,7 @@ public class SuggestedPhotoCellPresenter {
         checkView(view);
         this.view = view;
 
+        notificationObservable = view.notificationObservable();
         selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
     }
 
@@ -71,10 +75,18 @@ public class SuggestedPhotoCellPresenter {
                 });
     }
 
-    public void notifyNewSuggestions() {
-        view.bind(getSuggestionObservable(view.firstElement().getDateTaken(), false))
+    public void subscribeNewPhotoNotifications() {
+        view.bind(notificationObservable
+                .concatMap(aVoid -> {
+                    long startTimestamp = getStartTimestampOrDefault(null);
+                    return getSuggestionObservable(startTimestamp, false);
+                }))
                 .subscribe(photoGalleryModels -> {
-                    view.pushForward(photoGalleryModels);
+                    clearSelection();
+                    resetSyncTimestamp();
+                    sync();
+
+                    view.replacePhotoSuggestions(photoGalleryModels);
                 }, throwable -> {
                     Timber.e(throwable, "Cannot fetch new suggestion items");
                 });
@@ -90,7 +102,7 @@ public class SuggestedPhotoCellPresenter {
     }
 
     public void removeSuggestedPhotos() {
-        resetListState();
+        clearSelectionAndUpdate();
 
         db.saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
         resetSyncTimestamp();
@@ -139,7 +151,7 @@ public class SuggestedPhotoCellPresenter {
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             projectionPhotos,
                             selection(reverse),
-                            new String[]{String.valueOf(toTimestamp)},
+                            new String[]{String.valueOf(toTimestamp), ImageUtils.MIME_TYPE_GIF},
                             MediaStore.Images.Media.DATE_TAKEN + " DESC LIMIT " + SUGGESTION_ITEM_CHUNK);
 
                     int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
@@ -148,7 +160,7 @@ public class SuggestedPhotoCellPresenter {
                         String path = cursor.getString(dataColumn);
                         long dateTaken = cursor.getLong(dateColumn);
 
-                        if (!subscriber.isUnsubscribed()) {
+                        if (!subscriber.isUnsubscribed() && !ImageUtils.getImageExtensionFromPath(path).toLowerCase().contains("gif")) {
                             subscriber.onNext(new PhotoGalleryModel(path, dateTaken));
                         }
                     }
@@ -175,7 +187,7 @@ public class SuggestedPhotoCellPresenter {
     private String selection(boolean reverse) {
         return MediaStore.Images.Media.DATE_TAKEN +
                 (reverse ? " < " : " > ") +
-                " ?";
+                " ? and " + MediaStore.Images.Media.MIME_TYPE + " != ?";
     }
 
     private void checkView(View view) {
@@ -194,11 +206,18 @@ public class SuggestedPhotoCellPresenter {
         return model == null ? Long.MAX_VALUE : model.getDateTaken();
     }
 
-    private void resetListState() {
+    private long getStartTimestampOrDefault(@Nullable PhotoGalleryModel model) {
+        return model == null ? Long.MIN_VALUE : model.getDateTaken();
+    }
+
+    private void clearSelectionAndUpdate() {
+        clearSelection();
+        view.notifyListChange();
+    }
+
+    private void clearSelection() {
         Queryable.from(selectedPhotos).forEachR(model -> model.setChecked(false));
         selectedPhotos.clear();
-
-        view.clearListState();
     }
 
     private void resetSyncTimestamp() {
@@ -208,9 +227,9 @@ public class SuggestedPhotoCellPresenter {
     public interface View {
         void appendPhotoSuggestions(List<PhotoGalleryModel> items);
 
-        void pushForward(List<PhotoGalleryModel> items);
+        void replacePhotoSuggestions(List<PhotoGalleryModel> items);
 
-        void clearListState();
+        void notifyListChange();
 
         void setUser(User user);
 
@@ -218,7 +237,7 @@ public class SuggestedPhotoCellPresenter {
 
         void showMaxSelectionMessage();
 
-        PhotoGalleryModel firstElement();
+        Observable<Void> notificationObservable();
 
         <T> Observable<T> bind(Observable<T> observable);
     }

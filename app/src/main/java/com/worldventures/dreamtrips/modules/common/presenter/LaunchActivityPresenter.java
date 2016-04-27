@@ -82,7 +82,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         busWrapper = getGreenRobotBusWrapper(eventBus);
         networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
         networkEvents.register();
-
+        snappyRepository.removeAllBucketItemPhotoCreations();
         startPreloadChain();
     }
 

@@ -5,13 +5,13 @@
     android:layout_height="match_parent">
 
     <Space
+        android:id="@+id/feedDetailsLeftSpace"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
-        android:id="@+id/feedDetailsLeftSpace"
         android:visibility="gone"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
@@ -22,18 +22,24 @@
         <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent"
+            android:layout_above="@+id/input_container"
+            android:layout_alignParentTop="true"/>
 
-        <include layout="@layout/adapter_item_add_comment"/>
-    </LinearLayout>
+        <include
+            android:id="@+id/input_container"
+            layout="@layout/adapter_item_add_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
 
 
     <Space
+        android:id="@+id/feedDetailsRightSpace"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
-        android:id="@+id/feedDetailsRightSpace"
         android:visibility="gone"/>
 
     <FrameLayout

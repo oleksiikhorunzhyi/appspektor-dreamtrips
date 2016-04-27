@@ -176,16 +176,16 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     @Override
     public void showEdit(BucketBundle bucketBundle) {
         int containerId = R.id.container_details_floating;
+        bucketBundle.setLock(true);
         if (isTabletLandscape()) {
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(true)
                     .containerId(containerId)
-                    .fragmentManager(getActivity().getSupportFragmentManager())
+                    .fragmentManager(getChildFragmentManager())
                     .data(bucketBundle)
                     .build());
             showContainer(containerId);
         } else {
-            bucketBundle.setLock(true);
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
                     .data(bucketBundle)
                     .build());

@@ -37,7 +37,6 @@ import java.util.List;
 
 import butterknife.OnClick;
 import butterknife.Optional;
-import timber.log.Timber;
 
 @Layout(R.layout.fragment_feed)
 @MenuResource(R.menu.menu_activity_feed)
@@ -121,12 +120,10 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public void onDestroyView() {
-        try {
+        if (contentObserver != null) {
             getContext().getContentResolver().unregisterContentObserver(contentObserver);
-        } catch (Exception e) {
-            //hot fix solution to prevent crash on feed fragment. Will be fixed 26.04 12:00
-            Timber.e(e, "");
         }
+
         super.onDestroyView();
     }
 

@@ -42,6 +42,8 @@ import timber.log.Timber;
 
 public class ImageUtils {
 
+    public static final String MIME_TYPE_GIF = "image/gif";
+
     private static final String PATTERN = "%s?width=%d&height=%d";
 
     private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiveListener bitmapReciveListener) {
@@ -149,6 +151,15 @@ public class ImageUtils {
         } else {
             return drawableUtil.compressAndRotateImage(baseUri, DrawableUtil.THUMBNAIL_BIG);
         }
+    }
+
+    public static String getImageExtensionFromPath(String path) {
+        if (path == null) return "";
+        //
+        int index = path.lastIndexOf(".");
+        //
+        if (index < 0) return "";
+        return path.substring(index);
     }
 
     private interface BitmapReceiveListener {

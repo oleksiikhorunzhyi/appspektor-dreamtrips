@@ -1,19 +1,18 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
 import android.content.res.Resources;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.expandable.GroupDelegateCell;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -33,7 +32,7 @@ import rx.Observable;
 public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, DtlOfferData, CellDelegate<DtlMerchant>> {
 
     @InjectView(R.id.merchantCoverImage)
-    SimpleDraweeView merchantCoverImage;
+    ImageryDraweeView merchantCoverImage;
     @InjectView(R.id.merchantPricing)
     ProperRatingBar pricing;
     @InjectView(R.id.merchantName)
@@ -78,8 +77,8 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
         if (media == null) {
             return;
         }
-
-        merchantCoverImage.setImageURI(Uri.parse(media.getImagePath()));
+        //
+        merchantCoverImage.setImageUrl(media.getImagePath());
     }
 
     private void setDistance() {

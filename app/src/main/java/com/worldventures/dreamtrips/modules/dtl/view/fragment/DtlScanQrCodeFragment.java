@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
 import android.Manifest;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -11,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.zxing.Result;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
@@ -21,6 +19,7 @@ import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -55,7 +54,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
     @InjectView(R.id.address)
     TextView address;
     @InjectView(R.id.merchant_image)
-    SimpleDraweeView merchantImage;
+    ImageryDraweeView merchantImage;
     @InjectView(R.id.scanner_view)
     ZXingScannerView scanner;
     //
@@ -106,7 +105,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
                     dtlMerchant.getState(), dtlMerchant.getZip()));
         }
         if (!dtlMerchant.getImages().isEmpty()) {
-            merchantImage.setImageURI(Uri.parse(dtlMerchant.getImages().get(0).getImagePath()));
+            merchantImage.setImageUrl(dtlMerchant.getImages().get(0).getImagePath());
         }
     }
 

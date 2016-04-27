@@ -5,17 +5,19 @@
              android:id="@+id/points_view"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:background="@android:color/white">
+             android:background="@android:color/white"
+    >
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/pointsImage"
-        android:layout_width="@dimen/dtlOfferIconWidth"
-        android:layout_height="@dimen/dtlOfferIconHeight"
+        android:layout_width="@dimen/dtlOfferCoverImageWidth"
+        android:layout_height="@dimen/dtlOfferCoverImageHeight"
         android:layout_marginTop="@dimen/spacing_tiny"
         android:layout_marginBottom="@dimen/spacing_tiny"
         android:layout_marginLeft="@dimen/spacing_tiny"
         fresco:actualImageScaleType="centerInside"
-        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
+        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+        />
 
     <TextView
         android:id="@+id/pointsDescription"
@@ -24,7 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="90dp"
-        tools:text="Earn DreamTrips points"/>
+        tools:text="Earn DreamTrips points"
+        />
 
     <View
         android:layout_width="match_parent"
@@ -32,6 +35,4 @@
         android:layout_gravity="bottom"
         android:background="@drawable/divider_list"
         />
-
-
 </FrameLayout>

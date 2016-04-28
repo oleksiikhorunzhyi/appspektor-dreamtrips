@@ -20,7 +20,6 @@
             android:id="@+id/dtlToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/theme_main"
             app:dtlt_collapsed="true"
             app:dtlt_focused_mode="undefined"
             >

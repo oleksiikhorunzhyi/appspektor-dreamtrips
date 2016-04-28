@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -35,11 +36,12 @@ public class DtlFilterButton extends FrameLayout {
     public DtlFilterButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         enabledBackgroundColor =
-                getResources().getColor(R.color.dtlfb_enabled_background_color,null);
+                ContextCompat.getColor(context, R.color.dtlfb_enabled_background_color);
         disabledBackgroundColor =
-                getResources().getColor(R.color.dtlfb_disabled_background_color,null);
-        enabledCaptionColor = getResources().getColor(R.color.dtlfb_enabled_caption_color, null);
-        disabledCaptionColor = getResources().getColor(R.color.dtlfb_disabled_caption_color, null);
+                ContextCompat.getColor(context, R.color.dtlfb_disabled_background_color);
+        enabledCaptionColor = ContextCompat.getColor(context, R.color.dtlfb_enabled_caption_color);
+        disabledCaptionColor =
+                ContextCompat.getColor(context, R.color.dtlfb_disabled_caption_color);
     }
 
     @Override

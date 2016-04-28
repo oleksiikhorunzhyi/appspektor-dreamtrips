@@ -10,6 +10,7 @@ import android.content.res.TypedArray;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
@@ -89,7 +90,7 @@ public class DtlToolbar extends LinearLayout {
         setOrientation(VERTICAL);
         setGravity(Gravity.TOP);
         setFocusableInTouchMode(true);
-        setBackgroundColor(getResources().getColor(R.color.theme_main, null));
+        setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
         initAttributes(attrs);
     }
 

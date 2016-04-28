@@ -51,6 +51,7 @@ import timber.log.Timber;
 public class DtlToolbar extends LinearLayout {
 
     private static final boolean DEF_COLLAPSED = true;
+    private static final boolean DEF_MAP_ICON_VISIBLE = true;
     private static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
 
     @InjectView(R.id.dtlToolbarFirstRow)
@@ -63,6 +64,8 @@ public class DtlToolbar extends LinearLayout {
     AppCompatEditText topCaption;
     @InjectView(R.id.dtlToolbarSecondRow)
     ViewGroup secondRow;
+    @InjectView(R.id.dtlToolbarMapLayout)
+    ViewGroup dtlMapControl;
     @InjectView(R.id.dtlToolbarBottomCaption)
     AppCompatEditText bottomCaption;
     //
@@ -70,6 +73,7 @@ public class DtlToolbar extends LinearLayout {
     boolean collapsed;
     //
     private FocusedMode focusedMode;
+    boolean mapIconVisible;
     private String searchQuery;
     private String locationTitle;
     private String defaultEmptySearchCaption;
@@ -85,6 +89,7 @@ public class DtlToolbar extends LinearLayout {
         setOrientation(VERTICAL);
         setGravity(Gravity.TOP);
         setFocusableInTouchMode(true);
+        setBackgroundColor(getResources().getColor(R.color.theme_main, null));
         initAttributes(attrs);
     }
 
@@ -152,6 +157,8 @@ public class DtlToolbar extends LinearLayout {
     private void initAttributes(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
         collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
+        mapIconVisible =
+                a.getBoolean(R.styleable.DtlToolbar_dtlt_map_icon_visible, DEF_MAP_ICON_VISIBLE);
         focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
                 DEF_FOCUSED_MODE.id));
         a.recycle();
@@ -171,6 +178,7 @@ public class DtlToolbar extends LinearLayout {
             actionViewLayout.setVisibility(VISIBLE);
             actionView.setAction(new CloseAction(), false);
         }
+        dtlMapControl.setVisibility(mapIconVisible ? VISIBLE : INVISIBLE);
     }
 
     /**

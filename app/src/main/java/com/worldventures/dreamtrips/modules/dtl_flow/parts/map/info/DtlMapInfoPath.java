@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDe
 public class DtlMapInfoPath extends DtlMerchantDetailsPath {
 
     public DtlMapInfoPath(MasterDetailPath path, @NonNull String id) {
-        super(path, id);
+        super(path, id, null);
     }
 
     @Override

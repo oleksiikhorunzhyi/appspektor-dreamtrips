@@ -52,7 +52,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
     public void onMarkerClick() {
         eventBus.post(new ToggleMerchantSelectionEvent(merchant));
         trackIfNeeded();
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId()));
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId(), null));
     }
 
     private void trackIfNeeded() {

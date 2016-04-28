@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/points_view"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/points_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/spacing_tiny"
+        android:src="@drawable/ic_points_earn_badge"/>
+
+    <TextView
+        android:id="@+id/points_description"
+        style="@style/DreamMerchantHeaderTextAppearance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_alignTop="@+id/points_image"
+        android:maxLines="2"
+        android:layout_toRightOf="@+id/points_image"
+        tools:text="Earn DreamTrips points"/>
+
+    <LinearLayout
+        android:id="@+id/points_button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_alignStart="@+id/points_description"
+        android:layout_alignBottom="@+id/points_image"
+        android:layout_below="@+id/points_description">
+
+        <Button
+            android:id="@+id/merchant_details_earn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="@dimen/spacing_tiny"
+            android:text="@string/dtl_check_in"
+            android:theme="@style/DtlButtonGreenTheme"
+            />
+
+        <Button
+            android:id="@+id/merchant_details_estimate_points"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/point_estimator"
+            android:theme="@style/DtlButtonWhiteTheme"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/checked_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_tiny"
+        android:layout_alignLeft="@+id/points_button_container"
+        android:layout_below="@+id/points_button_container"
+        android:gravity="center"
+        android:text="@string/checked_in"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+</RelativeLayout>

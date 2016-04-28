@@ -140,9 +140,7 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
 
     @Override
     public List<DtlOfferData> getChildListCell() {
-        List<DtlOfferData> childSet = Queryable.from(getModelObject().getOffers()).map(DtlOffer::getOffer).toList();
-        Collections.sort(childSet);
-        return childSet;
+        return Queryable.from(getModelObject().getOffers()).map(DtlOffer::getOffer).sort().toList();
     }
 
     @Override

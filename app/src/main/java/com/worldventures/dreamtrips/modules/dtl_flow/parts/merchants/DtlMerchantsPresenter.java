@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
@@ -14,9 +15,9 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
 
     void merchantClicked(DtlMerchant merchant);
 
-    void perkClick(DtlOfferPerkData perk);
+    void perkClick(DtlOfferData perk);
 
-    void pointClicked(DtlOfferPointsData points);
+    void pointClicked(DtlOfferData points);
 
     void mapClicked();
 }

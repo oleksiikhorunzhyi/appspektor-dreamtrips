@@ -159,8 +159,7 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
     @Override
     public Observable<Boolean> getToggleObservable() {
-        return RxCompoundButton.checkedChanges(filterDiningsSwitch)
-                .compose(RxLifecycle.bindView(this));
+        return RxCompoundButton.checkedChanges(filterDiningsSwitch).compose(RxLifecycle.bindView(this));
     }
 
     @Override

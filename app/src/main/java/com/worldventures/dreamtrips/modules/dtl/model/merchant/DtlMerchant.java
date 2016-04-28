@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
@@ -187,16 +188,8 @@ public class DtlMerchant implements Parcelable {
         return offers != null && offers.contains(dtlOffer);
     }
 
-    public String getPerkDescription() {
-        DtlOffer<DtlOfferPerkData> dtlOffer = (DtlOffer<DtlOfferPerkData>)
-                Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_PERK));
-        return dtlOffer.getOffer().getDescription();
-    }
-
     public DtlCurrency getDefaultCurrency() {
-        DtlOffer<DtlOfferPointsData> dtlOffer = (DtlOffer<DtlOfferPointsData>)
-                Queryable.from(offers).first(element -> element.equals(DtlOffer.TYPE_POINTS));
-
+        DtlOffer<DtlOfferPointsData> dtlOffer = Queryable.from(getOffers()).filter(element -> element.getOffer().getType().equals(Offer.POINT_REWARD)).first();
         return Queryable.from(dtlOffer.getOffer().getCurrencies()).firstOrDefault(DtlCurrency::isDefault);
     }
 

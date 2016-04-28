@@ -25,14 +25,17 @@ public class ChatContextualMenuProvider {
     private Context context;
     private UsersDAO usersDAO;
     private TranslationsDAO translationsDAO;
+    private DataUser currentUser;
 
-    public ChatContextualMenuProvider(Context context, UsersDAO usersDAO, TranslationsDAO translationsDAO) {
+    public ChatContextualMenuProvider(Context context, DataUser currentUser,
+                                      UsersDAO usersDAO, TranslationsDAO translationsDAO) {
         this.context = context;
         this.usersDAO = usersDAO;
+        this.currentUser = currentUser;
         this.translationsDAO = translationsDAO;
     }
 
-    public Observable<Menu> provideMenu(DataMessage message, DataUser currentUser,
+    public Observable<Menu> provideMenu(DataMessage message,
                                         Observable<DataConversation> conversationObservable,
                                         Observable<DataAttachment> attachmentObservable) {
         return Observable

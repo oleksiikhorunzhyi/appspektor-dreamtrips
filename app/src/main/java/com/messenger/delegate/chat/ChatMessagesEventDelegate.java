@@ -1,5 +1,7 @@
-package com.messenger.delegate;
+package com.messenger.delegate.chat;
 
+import com.messenger.delegate.CreateConversationHelper;
+import com.messenger.delegate.LoaderDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;

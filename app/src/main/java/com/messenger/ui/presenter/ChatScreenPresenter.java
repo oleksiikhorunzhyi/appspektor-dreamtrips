@@ -3,7 +3,6 @@ package com.messenger.ui.presenter;
 import android.database.Cursor;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.model.AttachmentMenuItem;
@@ -17,8 +16,6 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
     boolean sendMessage(String message);
 
     void retrySendMessage(DataMessage message);
-
-    DataUser getUser();
 
     void onNextPageReached();
 

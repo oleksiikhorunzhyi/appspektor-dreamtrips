@@ -2,10 +2,13 @@ package com.messenger.di;
 
 
 import android.app.Activity;
+import android.content.Context;
 
-import com.messenger.delegate.ChatLeavingDelegate;
+import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.entities.DataUser;
+import com.messenger.storage.dao.TranslationsDAO;
+import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.holder.chat.ChatHolderModule;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
@@ -18,6 +21,7 @@ import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
 import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
+import com.messenger.ui.util.ChatContextualMenuProvider;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegateImpl;
 import com.messenger.ui.view.chat.ChatScreenImpl;
@@ -26,6 +30,7 @@ import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
 import com.messenger.ui.view.settings.GroupChatSettingsScreenImpl;
 import com.messenger.ui.view.settings.TripChatSettingsScreenImpl;
 import com.messenger.ui.widget.MessengerPhotoPickerLayout;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
@@ -79,6 +84,12 @@ public class MessengerActivityModule {
     @Provides
     DataUser provideUser(SessionHolder<UserSession> appSessionHolder) {
         return new DataUser(appSessionHolder.get().get().getUser().getUsername());
+    }
+
+    @Provides
+    ChatContextualMenuProvider providerMenuProvider(@ForApplication Context context, DataUser currentUser,
+                                                    UsersDAO usersDAO, TranslationsDAO translationsDAO) {
+        return new ChatContextualMenuProvider(context, currentUser, usersDAO, translationsDAO);
     }
 
     @Provides

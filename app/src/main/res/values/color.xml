@@ -72,6 +72,15 @@
     <color name="dtlt_input_hint_color">#9B9B9B</color>
     <!-- </DTL Toolbar dimens> -->
 
+    <!-- <DTL FilterButton colors> -->
+    <!-- these shall have 'dtlfb_' prefix -->
+    <color name="dtlfb_enabled_background_color">#53b5fe</color>
+    <color name="dtlfb_disabled_background_color">@android:color/white</color>
+    <color name="dtlfb_enabled_caption_color">@android:color/white</color>
+    <color name="dtlfb_disabled_caption_color">#222</color>
+    <color name="dtlfb_ceparator_color">#979797</color>
+    <!-- </DTL FilterButton dimens> -->
+
     <color name="facebook_color">#3C5A99</color>
     <color name="share_camera_color">#929292</color>
     <color name="share_photo_bg_color">#EEEEEE</color>

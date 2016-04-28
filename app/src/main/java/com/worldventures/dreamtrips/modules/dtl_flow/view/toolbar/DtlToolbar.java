@@ -72,7 +72,7 @@ public class DtlToolbar extends LinearLayout {
     private FocusedMode focusedMode;
     private String searchQuery;
     private String locationTitle;
-    private String defaultEmptySearchCaption = "Food & Drinks"; // TODO :: 4/11/16 move to resources
+    private String defaultEmptySearchCaption;
     private boolean showNavigation;
     //
     private List<CollapseListener> collapseListeners = new ArrayList<>();
@@ -157,6 +157,7 @@ public class DtlToolbar extends LinearLayout {
         a.recycle();
         if (focusedMode != FocusedMode.UNDEFINED) collapsed = false;
         showNavigation = !ViewUtils.isLandscapeOrientation(getContext());
+        defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
     }
 
     private void initState() {

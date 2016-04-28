@@ -22,12 +22,10 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_offer_perk)
 public class DtlPerkCell extends AbstractDelegateCell<DtlOfferPerkData, DtlMerchantsScreenImpl.PerkDelegate> {
 
-    @InjectView(R.id.perk_logo)
-    ImageryDraweeView image;
-    @InjectView(R.id.perks_description)
-    TextView description;
-    @InjectView(R.id.perks_operation_days)
-    TextView operationDays;
+
+    @InjectView(R.id.perk_logo) ImageryDraweeView image;
+    @InjectView(R.id.perks_description) TextView title;
+    @InjectView(R.id.perks_operation_days) TextView operationDays;
 
 
     public DtlPerkCell(View view) {
@@ -58,7 +56,7 @@ public class DtlPerkCell extends AbstractDelegateCell<DtlOfferPerkData, DtlMerch
     }
 
     private void bindDescription() {
-        if (getModelObject().getDescription() != null) description.setText(getModelObject().getDescription());
+        if (getModelObject().getDescription() != null) title.setText(getModelObject().getDescription());
     }
 
     private void bindOperationDays() {

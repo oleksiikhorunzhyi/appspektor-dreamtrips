@@ -8,6 +8,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -53,6 +55,8 @@ public class DtlToolbar extends LinearLayout {
 
     private static final boolean DEF_COLLAPSED = true;
     private static final boolean DEF_NAVIGATION_ICON_VISIBLE = true;
+    @DrawableRes
+    private static final int DEF_NAVIGATION_ICON = R.drawable.ic_menu_trip_map;
     private static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
 
     @InjectView(R.id.dtlToolbarFirstRow)
@@ -67,6 +71,8 @@ public class DtlToolbar extends LinearLayout {
     ViewGroup secondRow;
     @InjectView(R.id.dtlToolbarNavigationLayout)
     ViewGroup dtlNavigationControl;
+    @InjectView(R.id.dtlToolbarNavigationIcon)
+    ImageView dtlToolbarNavigationIcon;
     @InjectView(R.id.dtlToolbarBottomCaption)
     AppCompatEditText bottomCaption;
     //
@@ -75,6 +81,8 @@ public class DtlToolbar extends LinearLayout {
     //
     private FocusedMode focusedMode;
     boolean navigationControlVisible;
+    @DrawableRes
+    int navigationIconResource;
     private String searchQuery;
     private String locationTitle;
     private String defaultEmptySearchCaption;
@@ -158,8 +166,10 @@ public class DtlToolbar extends LinearLayout {
     private void initAttributes(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
         collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
-        navigationControlVisible =
-                a.getBoolean(R.styleable.DtlToolbar_dtlt_navigation_icon_visible, DEF_NAVIGATION_ICON_VISIBLE);
+        navigationControlVisible = a.getBoolean(R.styleable.DtlToolbar_dtlt_navigation_icon_visible,
+                DEF_NAVIGATION_ICON_VISIBLE);
+        navigationIconResource = a.getResourceId(R.styleable.DtlToolbar_dtlt_navigation_icon_src,
+                DEF_NAVIGATION_ICON);
         focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
                 DEF_FOCUSED_MODE.id));
         a.recycle();
@@ -179,6 +189,8 @@ public class DtlToolbar extends LinearLayout {
             actionViewLayout.setVisibility(VISIBLE);
             actionView.setAction(new CloseAction(), false);
         }
+        dtlToolbarNavigationIcon.setImageDrawable(ContextCompat.getDrawable(getContext(),
+                navigationIconResource));
         dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
     }
 

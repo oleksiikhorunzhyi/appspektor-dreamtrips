@@ -103,6 +103,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     @Override
     public DtlDetailsPresenter createPresenter() {
         return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId());
+        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId(), getPath().getPreExpandOffer());
     }
 
     @Override

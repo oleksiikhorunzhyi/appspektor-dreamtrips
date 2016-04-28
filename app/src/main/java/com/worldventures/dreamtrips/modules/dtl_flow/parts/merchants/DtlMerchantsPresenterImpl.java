@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -11,6 +12,8 @@ import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
@@ -156,23 +159,38 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                                 location);
                     });
         }
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId()));
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId(), null));
     }
 
     @Override
-    public void perkClick(DtlOfferPerkData perk) {
-        String merchantId = "e1c9b17e-72f3-4a28-a5fe-bbee8f9a49c6"; // TODO stub
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId));
+    public void perkClick(DtlOfferData perk) {
+        String merchantId = findMerchantId(perk);
+        if (!TextUtils.isEmpty(merchantId))
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId, perk));
     }
 
     @Override
-    public void pointClicked(DtlOfferPointsData points) {
-        String merchantId = "e1c9b17e-72f3-4a28-a5fe-bbee8f9a49c6"; // TODO stub
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId));
+    public void pointClicked(DtlOfferData points) {
+        String merchantId = findMerchantId(points);
+        if (!TextUtils.isEmpty(merchantId))
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId, points));
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {
         getView().toggleSelection(event.getDtlMerchant());
+    }
+
+    //TODO bad hack!!! find better solution needed
+    private String findMerchantId(DtlOfferData offer) {
+        List<DtlMerchant> merchants = dtlMerchantManager.getMerchants();
+
+        for (DtlMerchant merchant : merchants) {
+            if(!merchant.hasNoOffers()) {
+                DtlOffer dtlOffer = Queryable.from(merchant.getOffers()).filter(off -> off.getOffer().equals(offer)).firstOrDefault();
+                if(dtlOffer != null) return merchant.getId();
+            }
+        }
+        return null;
     }
 
     @Override

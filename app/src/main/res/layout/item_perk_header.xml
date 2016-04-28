@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/perks_view"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+    >
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/perk_logo"
+        android:layout_width="@dimen/dtlOfferIconWidth"
+        android:layout_height="@dimen/dtlOfferIconHeight"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="4dp"
+        fresco:actualImageScaleType="centerInside"
+        fresco:placeholderImage="@drawable/ic_trip_image_placeholder"/>
+
+    <LinearLayout
+        android:id="@+id/perk_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dtlOfferIconWidth"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:src="@drawable/perks_icon"/>
+
+            <TextView
+                android:id="@+id/perks_title"
+                style="@style/DreamMerchantHeaderTextAppearance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="31dp"
+                android:lineSpacingMultiplier="0.8"
+                android:maxLines="2"
+                tools:text="Complimentary Margarita"/>
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/perks_operation_days"
+            style="@style/DreamMerchantHeaderTextAppearance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="31dp"
+            android:textColor="@color/dtl_tab_indicator"
+            android:textSize="12sp"
+            tools:text="Everyday"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/perk_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/perk_logo"
+        android:layout_alignParentRight="true"
+        android:paddingRight="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_small"
+        android:src="@drawable/ic_arrow_down_grey"/>
+
+</RelativeLayout>

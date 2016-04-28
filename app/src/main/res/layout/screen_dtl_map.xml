@@ -2,6 +2,7 @@
 <com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dtl_map_screen_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,49 +14,63 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        >
 
-        <include layout="@layout/include_dtl_places_toolbar"/>
+        <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/dtlToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dtlt_navigation_icon_src="@drawable/ic_menu_trip_list"
+            >
 
+            <!-- Make additional wrapping to make layout editable and previewable in IDE -->
+            <include layout="@layout/view_dtl_toolbar_content" />
+        </com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar>
+
+        <FrameLayout
+            android:id="@+id/filterBarRoot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            >
+
+            <include layout="@layout/view_dtl_filter_button"
+                     android:layout_gravity="start"
+                />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/filterDiningsSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_margin="8dp"
+                android:checked="false"
+                android:text="@string/dtl_show_offers_only"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/dtlfb_caption_text_size"
+                android:textAllCaps="true"
+                textAllCaps="true"
+                app:switchPadding="@dimen/dtlfb_icon_padding"
+                />
+        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
+
+        <!-- TODO add new filter bar here once PR with it is merged -->
 
         <FrameLayout
-            android:id="@+id/filterToggleContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?android:attr/actionBarSize"
-            android:background="@android:color/white"
+            android:layout_height="match_parent"
             >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/dtl_show_offers_only"
-                android:textAllCaps="true"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/sw_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:layout_margin="8dp"
-                android:checked="false"/>
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <include layout="@layout/fragment_map_with_info"/>
+            <include layout="@layout/fragment_map_with_info" />
 
             <FrameLayout
                 android:id="@+id/redo_merchants"
@@ -76,7 +91,8 @@
                     android:text="@string/dtl_load_merchants_here_button_caption"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    tools:visibility="visible"/>
+                    tools:visibility="visible"
+                    />
 
                 <ProgressBar
                     android:id="@+id/redo_merchants_progress"
@@ -89,9 +105,7 @@
                     android:visibility="gone"
                     tools:visibility="visible"
                     />
-
             </FrameLayout>
-
         </FrameLayout>
     </LinearLayout>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl>

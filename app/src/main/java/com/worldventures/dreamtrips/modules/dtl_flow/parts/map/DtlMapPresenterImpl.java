@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 
 import android.content.Context;
-import android.view.MenuItem;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
@@ -23,7 +22,8 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -34,6 +34,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import techery.io.library.JobSubscriber;
@@ -101,7 +102,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         dtlLocationManager.getSelectedLocation()
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(getView()::updateToolbarTitle);
+                .subscribe(dtlLocation -> getView().updateToolbarTitle(dtlLocation,
+                        dtlMerchantManager.getCurrentQuery()));
     }
 
     private Observable<Boolean> prepareFilterToogle() {
@@ -163,21 +165,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     @Override
-    public int getToolbarMenuRes() {
-        return R.menu.menu_dtl_map;
-    }
-
-    @Override
-    public boolean onToolbarMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_list:
-                Flow.get(getContext()).goBack();
-                return true;
-            case R.id.action_dtl_filter:
-                getView().openFilter();
-                return true;
-        }
-        return super.onToolbarMenuItemClick(item);
+    public void onListClicked() {
+        History history = History.single(new DtlMerchantsPath());
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     private void checkPendingMapInfo() {
@@ -233,10 +223,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     @Override
-    public void onLocationCaptionClick() {
-        Flow.get(getContext()).set(DtlLocationsPath.builder()
-                .allowUserGoBack(true)
-                .build());
+    public void locationChangeRequested() {
+        History history = History.single(new DtlLocationChangePath());
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     @Override

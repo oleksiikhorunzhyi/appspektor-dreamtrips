@@ -29,6 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import icepick.State;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -122,8 +123,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
     @Override
     public void mapClicked() {
-        Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext()),
+        History history = History.single(new DtlMapPath(FlowUtil.currentMaster(getContext()),
                 getView().isToolbarCollapsed()));
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {
@@ -137,7 +139,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
     @Override
     public void locationChangeRequested() {
-        Flow.get(getContext()).set(new DtlLocationChangePath());
+        History history = History.single(new DtlLocationChangePath());
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     @Override

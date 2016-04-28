@@ -23,6 +23,7 @@
             android:background="@color/theme_main"
             app:dtlt_collapsed="false"
             app:dtlt_focused_mode="location"
+            app:dtlt_navigation_icon_visible="false"
             >
 
             <!-- Make additional wrapping to make layout editable and previewable in IDE -->

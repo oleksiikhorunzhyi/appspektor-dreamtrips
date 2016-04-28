@@ -57,10 +57,10 @@ public final class SuggestedPhotoCellPresenterHelper {
     private OutViewBinder binder;
 
     @State
-    ArrayList<PhotoGalleryModel> suggestionItems = new ArrayList<>(SUGGESTION_ITEM_CHUNK);
+    ArrayList<PhotoGalleryModel> suggestionItems;
 
     @State
-    ArrayList<PhotoGalleryModel> selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
+    ArrayList<PhotoGalleryModel> selectedPhotos;
 
     @State
     long syncTimestampLast = DEFAULT_START_SYNC_TIMESTAMP;
@@ -69,6 +69,9 @@ public final class SuggestedPhotoCellPresenterHelper {
         checkView(view);
         this.view = view;
         this.binder = binder;
+
+        suggestionItems = new ArrayList<>(SUGGESTION_ITEM_CHUNK);
+        selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
 
         restoreInstanceState(bundle);
 

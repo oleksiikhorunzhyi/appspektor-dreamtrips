@@ -43,6 +43,8 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         implements CellDelegate<PhotoGalleryModel>, SuggestedPhotoCellPresenterHelper.View {
     private static final int OFFSET = 5;
 
+    private static final String SUGGESTION_LIST_STATE_KEY = "suggestion.list.state";
+
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
@@ -66,7 +68,7 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     public SuggestedPhotosCell(View view) {
         super(view);
 
-        stateDelegate = new RecyclerViewStateDelegate();
+        stateDelegate = new RecyclerViewStateDelegate(SUGGESTION_LIST_STATE_KEY); //@see RecyclerViewStateDelegate
     }
 
     @Override

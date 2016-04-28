@@ -66,7 +66,7 @@ public class ConversationsDAO extends BaseDAO {
                 .build();
         return query(q, DataConversation.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
-                .compose(DaoTransformers.toDataConversation());
+                .compose(DaoTransformers.toEntity(DataConversation.class));
     }
 
     public Observable<Integer> conversationsCount() {

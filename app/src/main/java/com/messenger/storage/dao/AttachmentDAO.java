@@ -44,7 +44,7 @@ public class AttachmentDAO extends BaseAttachmentDAO<DataAttachment> {
                 .withSelectionArgs(new String[]{attachmentId})
                 .build();
         return query(q, DataAttachment.CONTENT_URI)
-                .compose(DaoTransformers.toAttachment(DataAttachment.class));
+                .compose(DaoTransformers.toEntity(DataAttachment.class));
     }
 
     public Observable<DataAttachment> getAttachmentByMessageId(String messageId) {
@@ -54,7 +54,7 @@ public class AttachmentDAO extends BaseAttachmentDAO<DataAttachment> {
                 .withSelectionArgs(new String[]{messageId})
                 .build();
         return query(q, DataAttachment.CONTENT_URI)
-                .compose(DaoTransformers.toAttachment(DataAttachment.class));
+                .compose(DaoTransformers.toEntity(DataAttachment.class));
     }
 
 }

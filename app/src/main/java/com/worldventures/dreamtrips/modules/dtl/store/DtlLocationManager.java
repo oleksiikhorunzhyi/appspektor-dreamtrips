@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlUpdateLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlUpdateLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
@@ -44,9 +44,9 @@ public class DtlLocationManager {
     @Inject
     Context context;
 
-    private ActionPipe<DtlNearbyLocationCommand> nearbyLocationPipe;
-    private ActionPipe<DtlSearchLocationCommand> searchLocationPipe;
-    private ActionPipe<DtlUpdateLocationCommand> updateLocationPipe;
+    private ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe;
+    private ActionPipe<DtlSearchLocationAction> searchLocationPipe;
+    private ActionPipe<DtlUpdateLocationAction> updateLocationPipe;
     private ActionPipe<DtlLocationCommand> locationPipe;
 
     public DtlLocationManager(Injector injector) {
@@ -64,9 +64,9 @@ public class DtlLocationManager {
         Janet janet = new Janet.Builder()
                 .addService(new SearchLocationWrapper(new CacheResultWrapper(new CommandActionService()), dtlApi))
                 .build();
-        nearbyLocationPipe = janet.createPipe(DtlNearbyLocationCommand.class, scheduler);
-        searchLocationPipe = janet.createPipe(DtlSearchLocationCommand.class, scheduler);
-        updateLocationPipe = janet.createPipe(DtlUpdateLocationCommand.class, scheduler);
+        nearbyLocationPipe = janet.createPipe(DtlNearbyLocationAction.class, scheduler);
+        searchLocationPipe = janet.createPipe(DtlSearchLocationAction.class, scheduler);
+        updateLocationPipe = janet.createPipe(DtlUpdateLocationAction.class, scheduler);
         locationPipe = janet.createPipe(DtlLocationCommand.class, scheduler);
         locationPipe.send(new DtlLocationCommand(db));
     }
@@ -76,26 +76,26 @@ public class DtlLocationManager {
     ///////////////////////////////////////////////////////////////////////////
 
 
-    public ReadActionPipe<DtlNearbyLocationCommand> nearbyLocationPipe() {
+    public ReadActionPipe<DtlNearbyLocationAction> nearbyLocationPipe() {
         return nearbyLocationPipe.asReadOnly();
     }
 
     public void loadNearbyLocations(Location location) {
-        nearbyLocationPipe.send(new DtlNearbyLocationCommand(dtlApi, location));
+        nearbyLocationPipe.send(new DtlNearbyLocationAction(dtlApi, location));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Search
     ///////////////////////////////////////////////////////////////////////////
 
-    public ReadActionPipe<DtlSearchLocationCommand> searchLocationPipe() {
+    public ReadActionPipe<DtlSearchLocationAction> searchLocationPipe() {
         return searchLocationPipe.asReadOnly();
     }
 
     public void searchLocations(String query) {
         nearbyLocationPipe.cancelLatest();
         searchLocationPipe.cancelLatest();
-        searchLocationPipe.send(DtlSearchLocationCommand.createEmpty(query));
+        searchLocationPipe.send(DtlSearchLocationAction.createEmpty(query));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -105,12 +105,12 @@ public class DtlLocationManager {
 
     public void cleanLocation() {
         locationPipe.send(new DtlLocationCommand(DtlLocation.UNDEFINED));
-        updateLocationPipe.send(new DtlUpdateLocationCommand(db, DtlLocation.UNDEFINED));
+        updateLocationPipe.send(new DtlUpdateLocationAction(db, DtlLocation.UNDEFINED));
     }
 
     public void persistLocation(DtlLocation location) {
         locationPipe.send(new DtlLocationCommand(location));
-        updateLocationPipe.send(new DtlUpdateLocationCommand(db, location));
+        updateLocationPipe.send(new DtlUpdateLocationAction(db, location));
     }
 
     public Observable<DtlLocationCommand> getSelectedLocation() {
@@ -133,17 +133,17 @@ public class DtlLocationManager {
         @SuppressWarnings("unchecked")
         @Override
         protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
-            if (holder.action() instanceof DtlSearchLocationCommand) {
+            if (holder.action() instanceof DtlSearchLocationAction) {
                 A newAction;
-                String query = ((DtlSearchLocationCommand) holder.action()).getQuery();
+                String query = ((DtlSearchLocationAction) holder.action()).getQuery();
                 if (query.length() < API_SEARCH_QUERY_LENGTH) {
-                    newAction = (A) DtlSearchLocationCommand.createEmpty(query);
+                    newAction = (A) DtlSearchLocationAction.createEmpty(query);
                     cache = null;
                 } else if (cache != null && query.toLowerCase().startsWith(cache.first)) {
-                    newAction = (A) DtlSearchLocationCommand.createWith(filter(cache.second, query), query);
+                    newAction = (A) DtlSearchLocationAction.createWith(filter(cache.second, query), query);
                 } else {
                     String apiQuery = query.substring(0, API_SEARCH_QUERY_LENGTH);
-                    newAction = (A) DtlSearchLocationCommand.createApiSearch(api, apiQuery, query);
+                    newAction = (A) DtlSearchLocationAction.createApiSearch(api, apiQuery, query);
                 }
                 holder.newAction(newAction);
             }
@@ -165,8 +165,8 @@ public class DtlLocationManager {
         @SuppressWarnings("unchecked")
         @Override
         protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
-            if (holder.action() instanceof DtlSearchLocationCommand) {
-                DtlSearchLocationCommand action = (DtlSearchLocationCommand) holder.action();
+            if (holder.action() instanceof DtlSearchLocationAction) {
+                DtlSearchLocationAction action = (DtlSearchLocationAction) holder.action();
                 if (action.isFromApi()) {
                     String query = action.getQuery().toLowerCase();
                     String key = query.substring(0, Math.min(query.length(), API_SEARCH_QUERY_LENGTH));

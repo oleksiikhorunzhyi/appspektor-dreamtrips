@@ -2,22 +2,26 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -34,9 +38,12 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import icepick.State;
+import io.techery.janet.Janet;
+import io.techery.janet.WriteActionPipe;
+import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import techery.io.library.JobSubscriber;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, ViewState.EMPTY>
         implements DtlMerchantsPresenter {
@@ -44,7 +51,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
+    Janet janet;
+    @Inject
+    DtlFilterMerchantStore filteredMerchantStore;
+    @Inject
+    DtlMerchantStore merchantStore;
     @Inject
     DtlLocationManager dtlLocationManager;
     //
@@ -52,10 +63,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     boolean initialized;
     //
     private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
+    private final WriteActionPipe<DtlMerchantStoreAction> merchantStoreActionPipe;
+    private final WriteActionPipe<DtlFilterMerchantStoreAction> filteredMerchantStoreActionPipe;
 
     public DtlMerchantsPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
+        merchantStoreActionPipe = janet.createPipe(DtlMerchantStoreAction.class);
+        filteredMerchantStoreActionPipe = janet.createPipe(DtlFilterMerchantStoreAction.class);
     }
 
     @Override
@@ -64,34 +79,39 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         apiErrorPresenter.setView(getView());
         getView().toggleDiningFilterSwitch(db.getLastSelectedOffersOnlyToggle());
         //
-        bindMerchantManager();
+        bindMerchantStores();
         bindFilteredStream();
         //
         if (!initialized) {
             dtlLocationManager.getSelectedLocation()
                     .map(DtlLocationCommand::getResult)
                     .compose(bindViewIoToMainComposer())
-                    .subscribe(location -> dtlMerchantManager.loadMerchants(
-                            location.getCoordinates().asAndroidLocation()));
+                    .subscribe(location -> merchantStoreActionPipe.send(
+                            DtlMerchantStoreAction.load(location.getCoordinates().asAndroidLocation())));
             initialized = true;
         }
         //
         if (!getView().isTabletLandscape())
-            dtlMerchantManager.getMerchantsExecutor.connectSuccessOnly()
+            filteredMerchantStore.filteredMerchantsChangesPipe().observeSuccess()
                     .compose(bindViewIoToMainComposer())
-                    .subscribe(new JobSubscriber<List<DtlMerchant>>()
-                            .onSuccess(this::tryRedirectToLocation));
+                    .map(DtlFilterMerchantsAction::getResult)
+                    .subscribe(this::tryRedirectToLocation);
         //
-        dtlMerchantManager.connectMerchantsWithCache()
+
+        filteredMerchantStore.filteredMerchantsChangesPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new JobSubscriber<List<DtlMerchant>>()
-                        .onError(apiErrorPresenter::handleError));
+                .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
+                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable)));
         //
-        dtlLocationManager.getSelectedLocation()
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(location -> getView().updateToolbarTitle(location,
-                        dtlMerchantManager.getCurrentQuery()));
+        Observable.combineLatest(
+                dtlLocationManager.getSelectedLocation().map(DtlLocationCommand::getResult),
+                filteredMerchantStore.getFilterDataState().map(DtlFilterData::getSearchQuery),
+                Pair::new
+        ).compose(bindViewIoToMainComposer())
+                .take(1)
+                .subscribe(pair -> {
+                    getView().updateToolbarTitle(pair.first, pair.second);
+                });
     }
 
     private void bindFilteredStream() {
@@ -109,13 +129,19 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .toList().toBlocking().firstOrDefault(Collections.emptyList());
     }
 
-    private void bindMerchantManager() {
-        dtlMerchantManager.connectMerchantsWithCache()
+    private void bindMerchantStores() {
+        merchantStore.merchantsActionPipe()
+                .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new JobSubscriber<List<DtlMerchant>>()
-                        .onSuccess(this.merchantsStream::onNext)
-                        .onProgress(getView()::showProgress)
-                        .onError(thr -> getView().hideProgress()));
+                .subscribe(new ActionStateSubscriber<DtlMerchantsAction>()
+                        .onStart(action -> getView().showProgress()));
+
+        filteredMerchantStore.filteredMerchantsChangesPipe()
+                .observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
+                        .onFail((action, throwable) -> getView().hideProgress())
+                        .onSuccess(action -> merchantsStream.onNext(action.getResult())));
     }
 
     private Observable<Boolean> prepareFilterToogle() {
@@ -132,12 +158,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {
-        if (merchants.isEmpty() && // TODO :: 4/14/16 also check applied filters number to be 0
-                TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery()))
-            Flow.get(getContext()).set(DtlLocationsPath.builder()
-                    .allowUserGoBack(true)
-                    .showNoMerchantsCaption(true)
-                    .build());
+        if (!merchants.isEmpty())
+            return; // TODO :: 4/14/16 also check applied filters number to be 0
+        filteredMerchantStore.getFilterDataState()
+                .map(DtlFilterData::getSearchQuery)
+                .filter(TextUtils::isEmpty)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(s ->
+                        Flow.get(getContext()).set(DtlLocationsPath.builder()
+                                .allowUserGoBack(true)
+                                .showNoMerchantsCaption(true)
+                                .build()));
     }
 
     @Override
@@ -148,36 +179,44 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
     @Override
     public void applySearch(String query) {
-        dtlMerchantManager.applySearch(query);
+        filteredMerchantStoreActionPipe.send(DtlFilterMerchantStoreAction.applySearch(query));
     }
 
     @Override
     public void merchantClicked(DtlMerchant merchant) {
-        if (!TextUtils.isEmpty(dtlMerchantManager.getCurrentQuery())) {
-            dtlLocationManager.getSelectedLocation()
-                    .map(DtlLocationCommand::getResult)
-                    .compose(bindViewIoToMainComposer())
-                    .subscribe(location -> {
-                        TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
-                                dtlMerchantManager.getCurrentQuery(),
-                                location);
-                    });
-        }
+        Observable.combineLatest(
+                filteredMerchantStore.getFilterDataState()
+                        .map(DtlFilterData::getSearchQuery),
+                dtlLocationManager.getSelectedLocation()
+                        .map(DtlLocationCommand::getResult),
+                Pair::new
+        ).compose(bindViewIoToMainComposer())
+                .take(1)
+                .subscribe(pair -> {
+                    if (TextUtils.isEmpty(pair.first)) return;
+                    TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
+                            pair.first,
+                            pair.second);
+                });
+//        }
         Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId(), null));
     }
 
     @Override
     public void perkClick(DtlOfferData perk) {
-        String merchantId = findMerchantId(perk);
-        if (!TextUtils.isEmpty(merchantId))
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId, perk));
+        showOfferData(perk);
     }
 
     @Override
     public void pointClicked(DtlOfferData points) {
-        String merchantId = findMerchantId(points);
-        if (!TextUtils.isEmpty(merchantId))
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId, points));
+        showOfferData(points);
+    }
+
+    private void showOfferData(DtlOfferData offer) {
+        findMerchantId(offer)
+                .filter(merchantId -> !TextUtils.isEmpty(merchantId))
+                .subscribe(merchantId -> Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId, offer)),
+                        Throwable::printStackTrace);
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {
@@ -185,16 +224,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     //TODO bad hack!!! find better solution needed
-    private String findMerchantId(DtlOfferData offer) {
-        List<DtlMerchant> merchants = dtlMerchantManager.getMerchants();
-
-        for (DtlMerchant merchant : merchants) {
-            if(!merchant.hasNoOffers()) {
-                DtlOffer dtlOffer = Queryable.from(merchant.getOffers()).filter(off -> off.getOffer().equals(offer)).firstOrDefault();
-                if(dtlOffer != null) return merchant.getId();
-            }
-        }
-        return null;
+    private Observable<String> findMerchantId(DtlOfferData offer) {
+        return merchantStore.getState()
+                .compose(new ActionStateToActionTransformer<>())
+                .flatMap(action -> Observable.from(action.getResult()))
+                .filter(merchant -> !merchant.hasNoOffers())
+                .filter(merchant ->
+                        Queryable.from(merchant.getOffers())
+                                .filter(off -> off.getOffer().equals(offer))
+                                .any())
+                .map(DtlMerchant::getId)
+                .take(1);
     }
 
     @Override

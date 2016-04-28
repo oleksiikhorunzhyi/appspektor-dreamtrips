@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -18,7 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
@@ -32,7 +33,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
+    DtlMerchantStore merchantStore;
     @Inject
     DtlJobManager jobManager;
     //
@@ -50,7 +51,9 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
+        merchantStore.getMerchantById(merchantId)
+                .compose(ImmediateComposer.instance())
+                .subscribe(merchant -> dtlMerchant = merchant);
     }
 
     @Override

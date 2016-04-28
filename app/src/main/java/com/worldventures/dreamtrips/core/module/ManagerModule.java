@@ -9,8 +9,8 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
+import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -18,16 +18,17 @@ import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
@@ -57,7 +58,8 @@ import io.techery.janet.Janet;
                 LogoutDelegate.class,
                 //
                 DtlLocationManager.class,
-                DtlMerchantManager.class,
+                DtlFilterMerchantStore.class,
+                DtlMerchantStore.class,
                 DtlJobManager.class,
 
                 GlobalConfigManager.class,
@@ -106,8 +108,14 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlMerchantManager dtlMerchantDelegate(@ForApplication Injector injector) {
-        return new DtlMerchantManager(injector);
+    DtlMerchantStore dtlMerchantStore(@ForApplication Injector injector) {
+        return new DtlMerchantStore(injector);
+    }
+
+    @Singleton
+    @Provides
+    DtlFilterMerchantStore dtlFilteredMerchantStore(@ForApplication Injector injector) {
+        return new DtlFilterMerchantStore(injector);
     }
 
     @Singleton

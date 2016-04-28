@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.action;
 
+import com.worldventures.dreamtrips.core.api.action.CallableCommandAction;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
@@ -14,7 +15,7 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlLocationCommand extends CallableCommand<DtlLocation> implements CachedAction<DtlLocation> {
+public class DtlLocationCommand extends CallableCommandAction<DtlLocation> implements CachedAction<DtlLocation> {
 
     private boolean fromDB;
 

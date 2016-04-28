@@ -9,6 +9,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
@@ -19,7 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import javax.inject.Inject;
 
@@ -28,7 +29,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
+    DtlMerchantStore merchantStore;
     @Inject
     DtlJobManager jobManager;
     //
@@ -44,7 +45,10 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
+        merchantStore.getMerchantById(merchantId)
+                .compose(ImmediateComposer.instance())
+                .subscribe(merchant -> dtlMerchant = merchant);
+//        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     @Override

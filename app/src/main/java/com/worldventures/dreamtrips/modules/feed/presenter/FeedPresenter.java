@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.activity.MessengerActivity;
@@ -11,11 +12,16 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
@@ -24,6 +30,8 @@ import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
+import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,13 +44,17 @@ import javax.inject.Provider;
 import icepick.State;
 import rx.Observable;
 import rx.Subscription;
+import timber.log.Timber;
 
 public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     private static final int SUGGESTION_ITEM_CHUNK = 15;
 
     @Inject
     SnappyRepository db;
-    //
+    @Inject
+    MediaPickerManager mediaPickerManager;
+    @Inject
+    DrawableUtil drawableUtil;
     @Inject
     UnreadConversationObservable observable;
 
@@ -226,6 +238,25 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
 
     public void selectPhoto(@NonNull PhotoGalleryModel model) {
         presenterHelper.selectPhoto(model);
+    }
+
+    public void attachSelectedSuggestionPhotos() {
+        Observable.from(getSelectedSuggestionPhotos())
+                .map(element -> {
+                    Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());
+                    return new PhotoGalleryModel(pair.first, pair.second);
+                })
+                .map(photoGalleryModel -> {
+                    ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
+                    chosenImages.add(photoGalleryModel);
+                    return new MediaAttachment(chosenImages, PickImageDelegate.PICK_PICTURE, CreateFeedPostPresenter.REQUEST_ID);
+                })
+                .compose(new IoToMainComposer<>())
+                .subscribe(mediaAttachment -> {
+                    mediaPickerManager.attach(mediaAttachment);
+                }, error -> {
+                    Timber.e(error, "");
+                });
     }
 
     public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {

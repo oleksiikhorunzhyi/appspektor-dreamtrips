@@ -244,8 +244,8 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
 
     @Override
     public void onAttachClicked() {
-        openSharePhoto(new CreateEntityBundle(new MediaAttachment(getPresenter().getSelectedSuggestionPhotos(),
-                PickImageDelegate.PICK_PICTURE)));
+        openSharePhoto(null);
+        getPresenter().attachSelectedSuggestionPhotos();
         getPresenter().removeSuggestedPhotos();
     }
 

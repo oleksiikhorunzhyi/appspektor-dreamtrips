@@ -1,20 +1,19 @@
 package com.messenger.messengerservers.xmpp.stanzas;
 
+import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
-public class ObtainConversationIQ extends IQ {
+public class ObtainConversationIQ extends DiscoverInfo {
 
-    public static final String NAMESPACE = "http://jabber.org/protocol/muc#admin";
-    public static final String ELEMENT_QUERY = "query";
+    public static final String NAMESPACE = DiscoverInfo.NAMESPACE;
+    public static final String ELEMENT = DiscoverInfo.QUERY_ELEMENT;
 
-    public ObtainConversationIQ() {
-        super(ELEMENT_QUERY, NAMESPACE);
-    }
-
-    @Override
-    protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.rightAngleBracket();
-        xml.append("<item affiliation='any'/>");
-        return xml;
+    public ObtainConversationIQ(String conversationId) {
+        super();
+        setType(IQ.Type.get);
+        setTo(JidCreatorHelper.obtainGroupJid(conversationId));
     }
 }
+

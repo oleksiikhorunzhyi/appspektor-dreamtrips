@@ -98,14 +98,27 @@ public class ParticipantsDAO extends BaseDAO {
         bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
     }
 
+    public void deleteBySyncTime(long time, @NonNull String conversationId) {
+        String query = DataParticipant$Table.SYNCTIME + " < " + "?" +
+                " AND " + DataParticipant$Table.CONVERSATIONID + " =? " +
+                " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
+                "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
+                " FROM " + DataConversation$Table.TABLE_NAME +
+                " WHERE " + DataParticipant$Table.CONVERSATIONID + " =? " +
+                " AND " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
+                DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
+        getContentResolver().delete(DataParticipant.CONTENT_URI, query,
+                new String[]{String.valueOf(time), conversationId, conversationId});
+    }
+
     public void deleteBySyncTime(long time) {
-        getContentResolver().delete(DataParticipant.CONTENT_URI,
-                DataParticipant$Table.SYNCTIME + " < " + "?" +
-                        " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
-                        "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
-                        " FROM " + DataConversation$Table.TABLE_NAME +
-                        " WHERE " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
-                        DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")",
+        String query = DataParticipant$Table.SYNCTIME + " < " + "?" +
+                " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
+                "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
+                " FROM " + DataConversation$Table.TABLE_NAME +
+                " WHERE " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
+                DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
+        getContentResolver().delete(DataParticipant.CONTENT_URI, query,
                 new String[]{String.valueOf(time)});
     }
 }

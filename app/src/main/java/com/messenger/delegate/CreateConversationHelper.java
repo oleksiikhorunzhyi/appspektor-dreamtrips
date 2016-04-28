@@ -28,8 +28,6 @@ public class CreateConversationHelper {
     private SessionHolder<UserSession> appSessionHolder;
     private final MessengerServerFacade messengerServerFacade;
 
-    private final ConversationIdHelper conversationIdHelper = new ConversationIdHelper();
-
     @Inject CreateConversationHelper(SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade) {
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
@@ -85,20 +83,6 @@ public class CreateConversationHelper {
         }
 
         return setMultiUserChatData(conversation, newChatUserIds, subject);
-    }
-
-    public Observable<DataConversation> createConversation(String conversationId, String currentUserId) {
-        return Observable.just(conversationId)
-                .map(convId -> {
-                    DataConversation conversation = new DataConversation.Builder()
-                            .id(convId)
-                            .lastActiveDate(System.currentTimeMillis())
-                            .status(ConversationStatus.PRESENT)
-                            .type(conversationIdHelper.obtainType(convId, getUsername()))
-                            .build();
-
-                    return conversation;
-                });
     }
 
     public DataConversation getExistingSingleConversation(String participantId) {

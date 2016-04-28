@@ -1,117 +1,30 @@
 package com.messenger.messengerservers.xmpp.providers;
 
-import android.text.TextUtils;
-
 import com.google.gson.Gson;
-import com.messenger.delegate.MessageBodyParser;
-import com.messenger.messengerservers.constant.ConversationStatus;
-import com.messenger.messengerservers.constant.ConversationType;
-import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Conversation;
-import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationsIQ;
-import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.stanzas.ConversationIQ;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.provider.IQProvider;
-import org.jivesoftware.smack.util.ParserUtils;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import java.util.List;
 
-import java.io.IOException;
+import timber.log.Timber;
 
-public class ConversationProvider extends IQProvider<ConversationsIQ> {
-    private final MessageBodyParser messageBodyParser;
+public class ConversationProvider extends BaseConversationProvider<ConversationIQ> {
 
     public ConversationProvider(Gson gson) {
-        this.messageBodyParser = new MessageBodyParser(gson);
+        super(gson);
     }
 
     @Override
-    public ConversationsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
-        ConversationsIQ conversationsIQ = new ConversationsIQ();
-
-        String thread = null;
-        String elementName;
-        Message.Builder messageBuilder = null;
-        Conversation.Builder conversationBuilder = null;
-
-        boolean done = false;
-        while (!done) {
-            int eventType = parser.next();
-            switch (eventType) {
-                case XmlPullParser.START_TAG:
-                    elementName = parser.getName();
-                    switch (elementName) {
-                        case "chat":
-                            thread = parser.getAttributeValue("", "thread");
-                            String type = getTypeByThread(thread);
-                            if (type == null) {
-                                type = parser.getAttributeValue("", "type");
-                            }
-                            String subject = parser.getAttributeValue("", "subject");
-                            String avatar = parser.getAttributeValue("", ChangeAvatarExtension.ELEMENT);
-                            int unreadMessegeCount = ParserUtils.getIntegerAttribute(parser, "unread-count");
-
-                            conversationBuilder = new Conversation.Builder()
-                                    .id(thread)
-                                    .type(type.toLowerCase())
-                                    .subject(subject)
-                                    .avatar(avatar)
-                                            //// TODO: 1/19/16 set status depends on status will be sent in future
-                                    .status(ConversationStatus.PRESENT)
-                                    .unreadMessageCount(unreadMessegeCount);
-                            break;
-                        case "last-message":
-                            long timestamp = ParserUtils.getLongAttribute(parser, "time");
-                            //noinspection all
-                            conversationBuilder.lastActiveDate(timestamp);
-
-                            Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
-                            String messageId = parser.getAttributeValue("", "client_msg_id");
-                            if (TextUtils.isEmpty(messageId)) {
-                                messageBuilder = null;
-                                continue;
-                            }
-                            String from = parser.getAttributeValue("", "from");
-
-                            messageBuilder = new Message.Builder()
-                                    .id(messageId)
-                                    .date(timestamp)
-                                    .fromId(JidCreatorHelper.obtainId(from))
-                                    .status(unread != null && unread ? MessageStatus.SENT  : MessageStatus.READ)
-                                    .messageBody(messageBodyParser.parseMessageBody(parser.nextText()));
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    elementName = parser.getName();
-                    switch (elementName) {
-                        case "chat":
-                            if (conversationBuilder == null) break;
-                            Conversation conversation = conversationBuilder
-                                    .lastMessage(messageBuilder != null ? messageBuilder.conversationId(thread).build() : null)
-                                    .build();
-                            //noinspection all // conversationBuilder cannot be null
-                            conversationsIQ.addConversation(conversation);
-                            messageBuilder = null;
-                            thread = null;
-                            conversationBuilder = null;
-                            break;
-                        case "list":
-                            done = true;
-                            break;
-                    }
-                    break;
-            }
+    protected ConversationIQ constructIQ(List<Conversation> data) {
+        ConversationIQ conversationIQ = new ConversationIQ();
+        if (!data.isEmpty()) {
+            conversationIQ.setConversation(data.get(0));
         }
-        return conversationsIQ;
+        return conversationIQ;
     }
 
-    private String getTypeByThread(String thread) {
-        if (thread.startsWith("dreamtrip_auto_gen")) {
-            return ConversationType.TRIP;
-        }
-        return null;
+    @Override
+    protected String getEndElement() {
+        return ConversationIQ.ELEMENT;
     }
 }

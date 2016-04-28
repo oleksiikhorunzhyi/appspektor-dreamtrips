@@ -14,6 +14,8 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
@@ -36,6 +38,8 @@ public class MessengerConnector {
     private final MessengerCacheSynchronizer messengerCacheSynchronizer;
     //
     private final BehaviorSubject<ConnectionStatus> connectionStream = BehaviorSubject.create(ConnectionStatus.DISCONNECTED);
+    //
+    private AtomicBoolean loadedGlobalConfigurations;
 
     private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                                SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
@@ -45,6 +49,7 @@ public class MessengerConnector {
         this.messengerServerFacade = messengerServerFacade;
         this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(loaderDelegate);
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
+        this.loadedGlobalConfigurations = new AtomicBoolean(false);
 
         messengerServerFacade.addAuthorizationListener(authListener);
         messengerServerFacade.addConnectionListener(connectionListener);
@@ -74,7 +79,21 @@ public class MessengerConnector {
         return connectionStream.asObservable();
     }
 
+    /**
+     * This method should be called after loading all global configurations.
+     * Also the one should be called if there is no need to load configurations
+     */
+    public void connectAfterGlobalConfig() {
+        loadedGlobalConfigurations.set(true);
+        connect();
+    }
+
+    /**
+     * Should be called when we need to reconnect connection.
+     */
     public void connect() {
+        if (!loadedGlobalConfigurations.get()) return;
+
         synchronized (messengerServerFacade) {
             if (isConnectingOrConnected() || !isUserSessionPresent()) return;
 

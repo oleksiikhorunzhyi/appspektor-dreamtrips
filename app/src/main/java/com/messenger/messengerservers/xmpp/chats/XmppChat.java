@@ -13,7 +13,6 @@ import org.jivesoftware.smack.SmackException;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public abstract class XmppChat implements Chat {
 
@@ -41,16 +40,16 @@ public abstract class XmppChat implements Chat {
         return Observable.just(message)
                 .doOnNext(msg -> msg.setConversationId(roomId))
                 .compose(new SendMessageTransformer(facade.getGlobalEventEmitter(),
-                        smackMsg -> trySendSmackMessage(smackMsg)));
+                        this::trySendSmackMessage));
 
     }
 
     @Override
-    public void setCurrentState(@ChatState.State String state) {
-        Observable.just(state)
+    public Observable<String> setCurrentState(@ChatState.State String state) {
+        return Observable.just(state)
                 .subscribeOn(Schedulers.io())
-                .compose(new ChatStateTransformer(message -> trySendSmackMessage(message)))
-                .subscribe(message -> {}, throwable -> Timber.e(throwable, "setCurrentState %s", state));
+                .compose(new ChatStateTransformer(this::trySendSmackMessage))
+                .map(message -> state);
     }
 
     protected abstract void trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException;

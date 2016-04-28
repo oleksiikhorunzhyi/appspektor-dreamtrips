@@ -61,20 +61,23 @@ public class ChatDelegate {
 
     public void sendMessage(Message message) {
         chatObservable.subscribeOn(Schedulers.io())
-                .subscribe(chat -> chat.send(message).subscribe(),
+                .flatMap(chat -> chat.send(message))
+                .subscribe(message1 -> {},
                         e -> Timber.e(e, "Fail to send message"));
     }
 
     public void setComposing() {
         chatObservable.subscribeOn(Schedulers.io())
-                .subscribe(chat -> chat.setCurrentState(ChatState.COMPOSING),
+                .flatMap(chat -> chat.setCurrentState(ChatState.COMPOSING))
+                .subscribe(state -> {},
                         e -> Timber.e(e, "Fail to set state"));
 
     }
 
     public void setPaused() {
         chatObservable.subscribeOn(Schedulers.io())
-                .subscribe(chat -> chat.setCurrentState(ChatState.PAUSE),
+                .flatMap(chat -> chat.setCurrentState(ChatState.PAUSE))
+                .subscribe(state -> {},
                         e -> Timber.e(e, "Fail to set state"));
     }
 

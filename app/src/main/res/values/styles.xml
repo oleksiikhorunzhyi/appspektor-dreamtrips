@@ -87,6 +87,27 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="DreamMerchantSubHeaderTextAppearance" parent="DreamMerchantTextAppearance">
+        <item name="android:textColor">@color/chat_grey_color</item>
+        <item name="android:textSize">@dimen/font_medium</item>
+    </style>
+
+    <style name="DtlTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/dtl_tab_indicator</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabPaddingStart">0dp</item>
+        <item name="tabPaddingEnd">0dp</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorHeight">2dp</item>
+    </style>
+
+    <style name="DtlTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/dtl_tab_text_normal</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
     <style name="Theme.DreamTripsTheme.Progress.White" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/white</item>
     </style>
@@ -123,8 +144,14 @@
         <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
     </style>
 
-    <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
-        <item name="colorButtonNormal">@color/selector_verify_button_color</item>
+    <style name="DtlButtonGreenTheme" parent="Theme.DreamTripsTheme.TripButton">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="DtlButtonWhiteTheme" parent="WhiteButtonTheme">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
     </style>
 
     <style name="DtlToolbarInput">

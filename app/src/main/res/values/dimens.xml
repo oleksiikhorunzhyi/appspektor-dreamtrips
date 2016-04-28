@@ -132,6 +132,7 @@
     <dimen name="dtlReceiptHeightSmall">300dp</dimen>
     <dimen name="dtlScanReceiptPadding">16dp</dimen>
     <dimen name="dtlScanQrMerchantCoverSize">72dp</dimen>
+    <dimen name="dtlInnerMapPadding">20dp</dimen>
 
     <dimen name="dtlContentWidth">400dp</dimen>
 

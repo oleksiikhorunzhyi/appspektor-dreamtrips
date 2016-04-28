@@ -1,10 +1,13 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -28,8 +31,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import icepick.State;
+import rx.Observable;
 import rx.Subscription;
 
 public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
@@ -46,6 +51,21 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     Circle filterCircle;
     @State
     int unreadConversationCount;
+
+    @Inject
+    @ForActivity
+    Provider<Injector> injectorProvider;
+
+    private SuggestedPhotoCellPresenterHelper presenterHelper;
+
+    @Override
+    public void saveInstanceState(Bundle outState) {
+        super.saveInstanceState(outState);
+
+        if (presenterHelper != null) {
+            presenterHelper.saveInstanceState(outState);
+        }
+    }
 
     private UidItemDelegate uidItemDelegate;
 
@@ -100,6 +120,7 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     public void removeSuggestedPhotos() {
+        presenterHelper.reset();
         view.refreshFeedItems(feedItems, !noMoreFeeds);
     }
 
@@ -180,5 +201,38 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
         void setUnreadConversationCount(int count);
 
         void refreshFeedItems(List<FeedItem> feedItems, List<PhotoGalleryModel> suggestedPhotos, boolean needLoader);
+    }
+
+    //new
+    public void takeSuggestionView(SuggestedPhotoCellPresenterHelper.View view, SuggestedPhotoCellPresenterHelper.OutViewBinder binder,
+                                   Bundle bundle, Observable<Void> notificationObservable) {
+        injectorProvider.get().inject(presenterHelper = new SuggestedPhotoCellPresenterHelper());
+
+        presenterHelper.takeView(view, binder, bundle);
+        presenterHelper.subscribeNewPhotoNotifications(notificationObservable);
+    }
+
+    public void preloadSuggestionChunk(@NonNull PhotoGalleryModel model) {
+        presenterHelper.preloadSuggestionPhotos(model);
+    }
+
+    public void syncSuggestionViewState() {
+        presenterHelper.sync();
+    }
+
+    public void openProfile() {
+        presenterHelper.openProfile();
+    }
+
+    public void selectPhoto(@NonNull PhotoGalleryModel model) {
+        presenterHelper.selectPhoto(model);
+    }
+
+    public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {
+        return presenterHelper.selectedPhotos();
+    }
+
+    public long lastSyncTimestamp() {
+        return presenterHelper.lastSyncTime();
     }
 }

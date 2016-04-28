@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.DrawableRes;
@@ -18,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
 import com.worldventures.dreamtrips.util.ImageTextItem;
+import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -45,24 +47,15 @@ public class DtlMerchantHelper {
 
     public static List<ImageTextItem> getContactsData(Context context, DtlMerchant merchant) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
-        addContactIfNotEmpty(context, items, String.format("%s, %s, %s, %s", merchant.getAddress1(), merchant.getCity(),
-                        merchant.getState(), merchant.getZip()),
-                R.drawable.address_icon,
-                IntentUtils.newMapIntent(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng()),
-                ImageTextItem.Type.ADDRESS);
-        addContactIfNotEmpty(context, items, merchant.getPhone(), R.drawable.phone_icon,
-                IntentUtils.newDialerIntent(merchant.getPhone()),
-                ImageTextItem.Type.PHONE_NUMBER);
-        addContactIfNotEmpty(context, items, merchant.getWebsite(), R.drawable.website_icon,
-                IntentUtils.browserIntent(merchant.getWebsite()),
-                ImageTextItem.Type.WEBSITE_URL);
+        Queryable.from(ImageTextItem.Type.values()).forEachR(type -> {
+            ImageTextItem contact = ImageTextItemFactory.create(context, merchant, type);
+            if (contact != null) items.add(contact);
+        });
         return items;
     }
 
-    private static void addContactIfNotEmpty(Context context, List<ImageTextItem> items, String contact, @DrawableRes int icon,
-                                      Intent intent, ImageTextItem.Type type) {
-        if (TextUtils.isEmpty(contact)) return;
-        items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type));
+    public static boolean isContactIntented(ImageTextItem contact, Activity activity) {
+        return contact.intent != null && contact.intent.resolveActivityInfo(activity.getPackageManager(), 0) != null;
     }
 
     public static Spannable getOperationalTime(Context context, DtlMerchant merchant) {

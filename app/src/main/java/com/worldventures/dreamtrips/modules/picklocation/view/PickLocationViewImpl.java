@@ -146,7 +146,7 @@ public class PickLocationViewImpl extends MvpLinearLayout<PickLocationView, Pick
 
     @Override
     public void showObtainLocationError() {
-        Snackbar.make(this, R.string.location_picker_could_not_get_location, Snackbar.LENGTH_SHORT);
+        Snackbar.make(this, R.string.location_picker_could_not_get_location, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

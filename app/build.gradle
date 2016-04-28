@@ -121,7 +121,7 @@ android {
         // possible "config"-dimension flavors:
         stage {
             dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://techery-dt-preprod.techery.io"'
+            buildConfigField 'String', 'DreamTripsApi', '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net/"'
         }
         perf {
             dimension "config"

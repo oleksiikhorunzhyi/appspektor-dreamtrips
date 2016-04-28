@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
@@ -24,8 +23,6 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -52,7 +49,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     private int page = 1;
     private int commentsCount = 0;
     private boolean loadInitiated;
-    private UidItemDelegate uidItemDelegate;
 
     @Inject
     FeedEntityManager entityManager;
@@ -61,7 +57,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
-        this.uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
@@ -201,17 +196,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         if (!view.isTabletLandscape()) {
             view.back();
         }
-    }
-
-    public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.loadFlags(event.getFlaggableView());
-    }
-
-    public void onEvent(ItemFlaggedEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
-                    event.getFlagReasonId(), event.getNameOfReason()));
     }
 
     private void sendAnalytic(String actionAttribute) {

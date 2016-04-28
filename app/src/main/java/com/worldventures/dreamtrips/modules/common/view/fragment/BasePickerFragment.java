@@ -50,19 +50,21 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
     @Override
     public void onResume() {
         super.onResume();
-        photoPickerDelegate.attachScrollableView(picker);
-        photoPickerDelegate.setSelectedPhotosProvider(new PhotoPickerDelegate.SelectedPhotosProvider() {
-            @Override
-            public List<BasePhotoPickerModel> provideSelectedPhotos() {
-                return getPresenter().getSelectedPhotos();
-            }
+        if (photoPickerDelegate != null) {
+            photoPickerDelegate.attachScrollableView(picker);
+            photoPickerDelegate.setSelectedPhotosProvider(new PhotoPickerDelegate.SelectedPhotosProvider() {
+                @Override
+                public List<BasePhotoPickerModel> provideSelectedPhotos() {
+                    return getPresenter().getSelectedPhotos();
+                }
 
-            @Override
-            public int getType() {
-                return getPhotosType();
-            }
+                @Override
+                public int getType() {
+                    return getPhotosType();
+                }
 
-        });
+            });
+        }
     }
 
     @Override

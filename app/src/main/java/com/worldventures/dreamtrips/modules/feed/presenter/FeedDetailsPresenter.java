@@ -37,6 +37,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
     public FeedDetailsPresenter(FeedItem feedItem) {
         super(feedItem.getItem());
         this.feedItem = feedItem;
+
         uidItemDelegate = new UidItemDelegate(this);
     }
 
@@ -134,11 +135,10 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
     public void onEvent(ItemFlaggedEvent event) {
         if (view.isVisibleOnScreen())
             uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
-                    event.getFlagReasonId(), event.getNameOfReason()));
+                    event.getFlagReasonId(), event.getNameOfReason()), view);
     }
 
-
-    public interface View extends BaseCommentPresenter.View {
+    public interface View extends BaseCommentPresenter.View, UidItemDelegate.View {
 
         void setFeedItem(FeedItem feedItem);
 

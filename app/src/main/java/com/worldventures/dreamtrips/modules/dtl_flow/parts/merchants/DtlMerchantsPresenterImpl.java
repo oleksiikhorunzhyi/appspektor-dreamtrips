@@ -122,7 +122,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
     @Override
     public void mapClicked() {
-        Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext())));
+        Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext()),
+                getView().isToolbarCollapsed()));
     }
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {

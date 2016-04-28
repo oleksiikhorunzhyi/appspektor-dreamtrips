@@ -185,6 +185,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     }
 
     @Override
+    public boolean isToolbarCollapsed() {
+        return dtlToolbar.isCollapsed();
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         selectionManager.release();
         super.onDetachedFromWindow();

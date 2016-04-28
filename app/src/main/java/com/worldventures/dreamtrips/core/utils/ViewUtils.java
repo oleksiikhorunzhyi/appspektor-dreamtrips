@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 
+import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.internal.Preconditions;
+
 public class ViewUtils {
 
     private ViewUtils() {
@@ -128,5 +131,14 @@ public class ViewUtils {
             return false;
         }
         return true;
+    }
+
+    public static void visibility(View view, int visibility) {
+        Preconditions.checkNotNull(view, "view is null");
+        if (view.getVisibility() != visibility) view.setVisibility(visibility);
+    }
+
+    public static void visibility(int visibility, View... views) {
+        Queryable.from(views).forEachR(view -> visibility(view, visibility));
     }
 }

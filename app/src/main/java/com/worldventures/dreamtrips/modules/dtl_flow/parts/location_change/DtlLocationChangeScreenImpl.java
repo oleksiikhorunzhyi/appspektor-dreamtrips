@@ -108,7 +108,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
 
     @Override
     public Observable<Void> provideMapClickObservable() {
-        return RxDtlToolbar.mapClicks(dtlToolbar)
+        return RxDtlToolbar.navigationClicks(dtlToolbar)
                 .throttleFirst(250L, TimeUnit.MILLISECONDS);
     }
 

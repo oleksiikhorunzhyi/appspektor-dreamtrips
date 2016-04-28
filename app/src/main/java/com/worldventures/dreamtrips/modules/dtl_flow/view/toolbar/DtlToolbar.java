@@ -52,7 +52,7 @@ import timber.log.Timber;
 public class DtlToolbar extends LinearLayout {
 
     private static final boolean DEF_COLLAPSED = true;
-    private static final boolean DEF_MAP_ICON_VISIBLE = true;
+    private static final boolean DEF_NAVIGATION_ICON_VISIBLE = true;
     private static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
 
     @InjectView(R.id.dtlToolbarFirstRow)
@@ -65,8 +65,8 @@ public class DtlToolbar extends LinearLayout {
     AppCompatEditText topCaption;
     @InjectView(R.id.dtlToolbarSecondRow)
     ViewGroup secondRow;
-    @InjectView(R.id.dtlToolbarMapLayout)
-    ViewGroup dtlMapControl;
+    @InjectView(R.id.dtlToolbarNavigationLayout)
+    ViewGroup dtlNavigationControl;
     @InjectView(R.id.dtlToolbarBottomCaption)
     AppCompatEditText bottomCaption;
     //
@@ -74,7 +74,7 @@ public class DtlToolbar extends LinearLayout {
     boolean collapsed;
     //
     private FocusedMode focusedMode;
-    boolean mapIconVisible;
+    boolean navigationControlVisible;
     private String searchQuery;
     private String locationTitle;
     private String defaultEmptySearchCaption;
@@ -82,7 +82,7 @@ public class DtlToolbar extends LinearLayout {
     //
     private List<CollapseListener> collapseListeners = new ArrayList<>();
     private List<ExpandListener> expandListeners = new ArrayList<>();
-    private List<MapClickListener> mapClickListeners = new ArrayList<>();
+    private List<NavigationClickListener> navigationClickListeners = new ArrayList<>();
     private List<NavigationControlListener> navigationControlListeners = new ArrayList<>();
 
     public DtlToolbar(Context context, AttributeSet attrs) {
@@ -158,8 +158,8 @@ public class DtlToolbar extends LinearLayout {
     private void initAttributes(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
         collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
-        mapIconVisible =
-                a.getBoolean(R.styleable.DtlToolbar_dtlt_map_icon_visible, DEF_MAP_ICON_VISIBLE);
+        navigationControlVisible =
+                a.getBoolean(R.styleable.DtlToolbar_dtlt_navigation_icon_visible, DEF_NAVIGATION_ICON_VISIBLE);
         focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
                 DEF_FOCUSED_MODE.id));
         a.recycle();
@@ -179,7 +179,7 @@ public class DtlToolbar extends LinearLayout {
             actionViewLayout.setVisibility(VISIBLE);
             actionView.setAction(new CloseAction(), false);
         }
-        dtlMapControl.setVisibility(mapIconVisible ? VISIBLE : INVISIBLE);
+        dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
     }
 
     /**
@@ -324,9 +324,9 @@ public class DtlToolbar extends LinearLayout {
         }
     }
 
-    @OnClick(R.id.dtlToolbarMapLayout)
-    void mapClicked(View view) {
-        Queryable.from(mapClickListeners).forEachR(listener -> listener.onMapClicked());
+    @OnClick(R.id.dtlToolbarNavigationLayout)
+    void navigationClicked(View view) {
+        Queryable.from(navigationClickListeners).forEachR(listener -> listener.onNavigationClicked());
     }
 
     /**
@@ -348,13 +348,13 @@ public class DtlToolbar extends LinearLayout {
     // Listeners
     ///////////////////////////////////////////////////////////////////////////
 
-    public void addMapClickListener(@NonNull MapClickListener listener) {
+    public void addNavigationClickListener(@NonNull NavigationClickListener listener) {
         if (checkListenerNull(listener)) return;
-        mapClickListeners.add(listener);
+        navigationClickListeners.add(listener);
     }
 
-    public void removeMapClickListener(MapClickListener listener) {
-        mapClickListeners.remove(listener);
+    public void removeNavigationClickListener(NavigationClickListener listener) {
+        navigationClickListeners.remove(listener);
     }
 
     public void addNavigationControlClickListener(@NonNull NavigationControlListener listener) {
@@ -394,9 +394,9 @@ public class DtlToolbar extends LinearLayout {
         void onExpanded();
     }
 
-    public interface MapClickListener {
+    public interface NavigationClickListener {
 
-        void onMapClicked();
+        void onNavigationClicked();
     }
 
     public interface NavigationControlListener {

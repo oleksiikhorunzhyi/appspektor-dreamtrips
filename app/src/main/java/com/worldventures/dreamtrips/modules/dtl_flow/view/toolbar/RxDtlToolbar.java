@@ -46,7 +46,7 @@ public class RxDtlToolbar {
     }
 
     /**
-     * Create an observable which emits on {@code DtlToolbar} map icon clicks. The emitted value is
+     * Create an observable which emits on {@code DtlToolbar} navigation icon clicks. The emitted value is
      * unspecified and should only be used as notification.
      * <p>
      * <em>Warning:</em> The created observable keeps a strong reference to {@code view}. Unsubscribe
@@ -54,9 +54,9 @@ public class RxDtlToolbar {
      */
     @CheckResult
     @NonNull
-    public static Observable<Void> mapClicks(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<Void> navigationClicks(@NonNull DtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
-        return Observable.create(new DtlToolbarMapClicksOnSubscribe(dtlToolbar));
+        return Observable.create(new DtlToolbarNavigationClicksOnSubscribe(dtlToolbar));
     }
 
     /**
@@ -68,7 +68,7 @@ public class RxDtlToolbar {
      */
     @CheckResult
     @NonNull
-    public static Observable<Void> navigationClicks(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<Void> actionViewClicks(@NonNull DtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         return Observable.create(new DtlToolbarNavigationControlClicksOnSubscribe(dtlToolbar));
     }

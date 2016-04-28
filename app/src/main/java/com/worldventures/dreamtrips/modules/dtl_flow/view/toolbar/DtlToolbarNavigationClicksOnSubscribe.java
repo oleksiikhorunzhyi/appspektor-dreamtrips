@@ -4,31 +4,31 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.MainThreadSubscription;
 
-public class DtlToolbarMapClicksOnSubscribe implements Observable.OnSubscribe<Void> {
+public class DtlToolbarNavigationClicksOnSubscribe implements Observable.OnSubscribe<Void> {
 
     private final DtlToolbar dtlToolbar;
 
-    public DtlToolbarMapClicksOnSubscribe(DtlToolbar dtlToolbar) {
+    public DtlToolbarNavigationClicksOnSubscribe(DtlToolbar dtlToolbar) {
         this.dtlToolbar = dtlToolbar;
     }
 
     @Override
     public void call(Subscriber<? super Void> subscriber) {
-        DtlToolbar.MapClickListener mapClickListener = new DtlToolbar.MapClickListener() {
+        DtlToolbar.NavigationClickListener navigationClickListener = new DtlToolbar.NavigationClickListener() {
             @Override
-            public void onMapClicked() {
+            public void onNavigationClicked() {
                 if (!subscriber.isUnsubscribed()) {
                     subscriber.onNext(null);
                 }
             }
         };
 
-        dtlToolbar.addMapClickListener(mapClickListener);
+        dtlToolbar.addNavigationClickListener(navigationClickListener);
 
         subscriber.add(new MainThreadSubscription() {
             @Override
             protected void onUnsubscribe() {
-                dtlToolbar.removeMapClickListener(mapClickListener);
+                dtlToolbar.removeNavigationClickListener(navigationClickListener);
             }
         });
     }

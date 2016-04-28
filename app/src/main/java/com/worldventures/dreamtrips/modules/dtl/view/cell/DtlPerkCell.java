@@ -22,11 +22,9 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_offer_perk)
 public class DtlPerkCell extends AbstractDelegateCell<DtlOfferPerkData, DtlMerchantsScreenImpl.PerkDelegate> {
 
-
     @InjectView(R.id.perk_logo) ImageryDraweeView image;
     @InjectView(R.id.perks_description) TextView title;
     @InjectView(R.id.perks_operation_days) TextView operationDays;
-
 
     public DtlPerkCell(View view) {
         super(view);

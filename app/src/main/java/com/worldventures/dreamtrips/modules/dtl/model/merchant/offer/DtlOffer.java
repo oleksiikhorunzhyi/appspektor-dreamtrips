@@ -34,14 +34,14 @@ public class DtlOffer<T extends DtlOfferData> implements Comparable<T>{
     public static final DtlOffer TYPE_PERK = new DtlOffer(Offer.PERKS);
 
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DtlOffer)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        DtlOffer<?> dtlOffer = (DtlOffer<?>) o;
+        DtlOffer dtlOffer = (DtlOffer) o;
 
-        if (type != null ? !type.equals(dtlOffer.type) : dtlOffer.type != null) return false;
-        return offer != null ? offer.equals(dtlOffer.offer) : dtlOffer.offer == null;
+        return !(type != null ? !type.equals(dtlOffer.type) : dtlOffer.type != null);
     }
 
     @Override

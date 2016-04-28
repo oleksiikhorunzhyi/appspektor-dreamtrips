@@ -79,11 +79,11 @@
     <style name="DreamMerchantTextAppearance">
         <item name="android:textSize">13sp</item>
         <item name="android:textColor">@color/perks_text_color</item>
-        <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
 
     <style name="DreamMerchantHeaderTextAppearance" parent="DreamMerchantTextAppearance">
+        <item name="android:maxLines">1</item>
         <item name="android:textStyle">bold</item>
     </style>
 

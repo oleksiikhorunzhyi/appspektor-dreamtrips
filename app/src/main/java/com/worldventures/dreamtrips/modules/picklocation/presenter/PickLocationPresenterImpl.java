@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView>
@@ -56,6 +57,7 @@ public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView
         super.attachView(view);
         locationSettingsDelegate
                 .getLocationSettingsStateObservable()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(locationSettingsEnabled -> {
                     if (locationSettingsEnabled) {
                         getView().initMap();
@@ -103,14 +105,12 @@ public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView
         getLastKnownLocationObservable()
                 .timeout(TIMEOUT_INITIAL_LOCATION_SEC, TimeUnit.SECONDS)
                 .take(1)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(location -> {
                     long timeElapsedToGetLocation = System.currentTimeMillis() - locationUpdateStartTime;
                     boolean animate = timeElapsedToGetLocation > MAP_ANIMATION_THRESHOLD_MS;
                     getView().setCurrentLocation(location, animate);
-                },e -> {
-                    getView().showObtainLocationError();
-                    onLocationError(e);
-                });
+                }, this::onLocationError);
     }
 
     private void onLocationError(Throwable e) {
@@ -133,19 +133,18 @@ public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView
         if (item.getItemId() != R.id.action_done) {
             return false;
         }
-        reportLocationPicked(item);
+        reportLocationPicked();
         return true;
     }
 
-    private void reportLocationPicked(MenuItem item) {
-        item.setEnabled(false);
+    private void reportLocationPicked() {
         getLastKnownLocationObservable()
                 .timeout(TIMEOUT_PICK_CURRENT_LOCATION_SEC, TimeUnit.SECONDS)
                 .take(1)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     location -> locationResultHandler.reportResultAndFinish(location, null),
                     e -> {
-                        item.setEnabled(true);
                         Timber.e(e, "Could not get last location");
                         getView().showObtainLocationError();
                     }

@@ -125,6 +125,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     private void loadNext() {
+        if (dreamSpiceManager == null) return;
+        //
         doRequest(getNextPageRequest(view.getAdapter().getCount()), list -> {
             photos.addAll(list);
             db.savePhotoEntityList(type, userId, Queryable.from(photos)

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -108,4 +107,8 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
+    }
 }

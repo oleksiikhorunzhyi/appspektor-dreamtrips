@@ -261,4 +261,9 @@ public class FeedFragment extends BaseFeedFragment<FeedPresenter, FeedBundle>
         return adapter.getCount() > 0 && adapter.getItem(0) instanceof MediaAttachment
                 && getPresenter().isHasNewPhotos(((MediaAttachment) adapter.getItem(0)).chosenImages);
     }
+
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
+    }
 }

@@ -284,4 +284,9 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         state.setTagHolderVisible(showTag);
         db.saveSocialViewPagerState(state);
     }
+
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
+    }
 }

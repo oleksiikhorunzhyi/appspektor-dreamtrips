@@ -127,7 +127,8 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     }
 
     private void loadNext() {
-        if (dreamSpiceManager == null) return;
+        if (dreamSpiceManager == null
+                || getNextPageRequest(view.getAdapter().getCount()) == null) return;
         //
         doRequest(getNextPageRequest(view.getAdapter().getCount()), list -> {
             photos.addAll(list);

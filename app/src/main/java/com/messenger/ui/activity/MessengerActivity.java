@@ -29,7 +29,6 @@ import com.worldventures.dreamtrips.core.flow.path.AttributedPath;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
@@ -76,10 +75,6 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected PathContainerView container;
     @InjectView(R.id.chat_photo_picker)
     PhotoPickerLayout photoPickerLayout;
-
-    // TODO: 4/27/16 create base activity
-    @Inject
-    PermissionDispatcher permissionDispatcher;
 
     private FlowActivityHelper flowActivityHelper;
 
@@ -278,11 +273,5 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     @Override
     protected MessengerActivityPresenter createPresentationModel(Bundle savedInstanceState) {
         return new MessengerActivityPresenter();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionDispatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

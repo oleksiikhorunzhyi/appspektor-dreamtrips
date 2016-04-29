@@ -54,4 +54,6 @@ public interface DtlMapScreen extends DtlScreen {
     void openFilter();
 
     boolean isToolbarCollapsed();
+
+    void setFilterButtonState(boolean enabled);
 }

@@ -68,6 +68,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     @Inject
     DtlMerchantStore merchantStore;
     @Inject
+    DtlFilterMerchantStore filterStore;
+    @Inject
     DtlFilterMerchantStore filteredMerchantStore;
     //
     private boolean mapReady;
@@ -91,6 +93,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         //
         bindFilteredStream();
         bindLocationStream();
+        bindFilterState();
     }
 
     protected void connectMerchants() {
@@ -99,13 +102,18 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlMerchantsAction>()
                         .onStart(action -> getView().showProgress(true)));
-
+        //
         filteredMerchantStore.filteredMerchantsChangesPipe()
                 .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
                         .onFail((action, throwable) -> getView().showProgress(false))
                         .onSuccess(action -> onMerchantsLoaded(action.getResult())));
+        //
+        filterStore.getFilterDataState()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(dtlFilterData ->
+                        getView().setFilterButtonState(!dtlFilterData.isDefault()));
     }
 
     protected void bindFilteredStream() {
@@ -131,6 +139,13 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .subscribe(pair -> {
                     getView().updateToolbarTitle(pair.first, pair.second);
                 });
+    }
+
+    private void bindFilterState() {
+        filterStore.observeStateChange()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(dtlFilterData ->
+                        getView().setFilterButtonState(!dtlFilterData.isDefault()));
     }
 
     private Observable<Boolean> prepareFilterToogle() {

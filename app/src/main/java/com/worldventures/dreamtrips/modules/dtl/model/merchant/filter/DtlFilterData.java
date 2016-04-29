@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.filter;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
@@ -51,5 +52,14 @@ public abstract class DtlFilterData {
     @Value.Derived
     public boolean hasAmenities() {
         return !getAmenities().isEmpty();
+    }
+
+    @Value.Derived
+    public boolean isDefault() {
+        return TextUtils.isEmpty(getSearchQuery()) &&
+                getMinPrice() == DtlFilterParameters.MIN_PRICE &&
+                getMaxPrice() == DtlFilterParameters.MAX_PRICE &&
+                getMaxDistance() == DtlFilterParameters.MAX_DISTANCE &&
+                getAmenities().size() == getSelectedAmenities().size();
     }
 }

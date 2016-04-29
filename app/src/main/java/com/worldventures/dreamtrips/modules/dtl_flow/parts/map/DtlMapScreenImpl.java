@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
@@ -74,6 +75,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     View loadMerchantsRoot;
     @InjectView(R.id.filterBarRoot)
     View filterBarLayout;
+    @InjectView(R.id.dtlfb_rootView)
+    DtlFilterButton filtersButton;
     //
     LatLng selectedLocation;
     @State
@@ -143,6 +146,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
                 .subscribe(aVoid -> getPresenter().onListClicked());
     }
 
+    @Override
+    public void setFilterButtonState(boolean enabled) {
+        filtersButton.setFilterEnabled(enabled);
+    }
+
     private void checkMapAvailable() {
         if (MapsInitializer.initialize(getContext()) == 0) {
             mapView.onCreate(null);
@@ -181,6 +189,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @OnClick(R.id.redo_merchants_button)
     public void onMechantsRedoClick() {
         getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
+    }
+
+    @OnClick(R.id.dtlfb_rootView)
+    void onFiltersCounterClicked(View view) {
+        ((FlowActivity) getActivity()).openRightDrawer();
     }
 
     @Override

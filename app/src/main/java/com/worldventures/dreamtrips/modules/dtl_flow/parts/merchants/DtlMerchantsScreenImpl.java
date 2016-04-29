@@ -125,6 +125,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     }
 
     @Override
+    public void setFilterButtonState(boolean enabled) {
+        filtersButton.setFilterEnabled(enabled);
+    }
+
+    @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
                                    @Nullable String actualSearchQuery) {
         if (dtlLocation == null) return;

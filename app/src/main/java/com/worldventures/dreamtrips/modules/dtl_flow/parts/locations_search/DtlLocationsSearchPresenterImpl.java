@@ -9,10 +9,11 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
@@ -22,6 +23,8 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import io.techery.janet.Janet;
+import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
@@ -30,11 +33,16 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
+    DtlFilterMerchantStore filterMerchantStore;
+    @Inject
+    Janet janet;
+
+    private final WriteActionPipe<DtlMerchantStoreAction> merchantStoreActionPipe;
 
     public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
+        merchantStoreActionPipe = janet.createPipe(DtlMerchantStoreAction.class);
         apiErrorPresenter.setView(getView());
     }
 
@@ -49,13 +57,13 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     private void connectLocationsSearch() {
         dtlLocationManager.searchLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlSearchLocationCommand>()
+                .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
                         .onStart(command -> getView().showProgress())
                         .onFail((command, throwable) -> onSearchError(throwable))
                         .onSuccess(this::onSearchFinished));
     }
 
-    private void onSearchFinished(DtlSearchLocationCommand command) {
+    private void onSearchFinished(DtlSearchLocationAction command) {
         List<DtlExternalLocation> locations = command.getResult();
         getView().hideProgress();
         getView().setItems(locations);
@@ -79,7 +87,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
         dtlLocationManager.persistLocation(location);
-        dtlMerchantManager.clean();
+        filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
         History history = History.single(new DtlMerchantsPath());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }

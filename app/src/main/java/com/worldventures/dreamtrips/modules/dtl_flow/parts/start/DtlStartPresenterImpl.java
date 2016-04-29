@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
@@ -36,7 +36,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
+    DtlFilterMerchantStore filterMerchantStore;
 
     public DtlStartPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -46,7 +46,6 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        dtlMerchantManager.initFilterData();
         bindLocationObtaining();
     }
 
@@ -86,14 +85,14 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                             case NEAR_ME:
                                 if (newLocation == null) { // we had location before, but not now - and we need it
                                     dtlLocationManager.cleanLocation();
-                                    dtlMerchantManager.clean();
+                                    filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
                                     navigatePath(DtlLocationsPath.getDefault());
                                     break;
                                 }
                                 //
                                 if (!DtlLocationHelper.checkLocation(0.5, newLocation,
                                         command.getResult().getCoordinates().asAndroidLocation(), DistanceType.MILES))
-                                    dtlMerchantManager.clean();
+                                    filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
                                 //
                                 navigatePath(new DtlMerchantsPath());
                                 break;
@@ -125,15 +124,15 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {
-                    // Determines whether we can proceed without locating device by GPS.
-                    if (location.getLocationSourceType() != LocationSourceType.NEAR_ME) {
-                        proceedNavigation(null);
-                    } else {
-                        if (e instanceof LocationDelegate.LocationException)
-                            getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
-                        else onLocationResolutionDenied();
-                    }
-                },
+                            // Determines whether we can proceed without locating device by GPS.
+                            if (location.getLocationSourceType() != LocationSourceType.NEAR_ME) {
+                                proceedNavigation(null);
+                            } else {
+                                if (e instanceof LocationDelegate.LocationException)
+                                    getView().locationResolutionRequired(((LocationDelegate.LocationException) e).getStatus());
+                                else onLocationResolutionDenied();
+                            }
+                        },
                         throwable -> navigatePath(DtlLocationsPath.getDefault()));
     }
 }

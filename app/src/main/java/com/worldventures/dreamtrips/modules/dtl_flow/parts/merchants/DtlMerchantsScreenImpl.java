@@ -112,8 +112,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(aVoid -> getPresenter().mapClicked());
         RxDtlToolbar.merchantSearchTextChanges(dtlToolbar)
-                .skip(1)
                 .debounce(250L, TimeUnit.MILLISECONDS)
+                .skipWhile(TextUtils::isEmpty)
                 .filter(s -> !dtlToolbar.isCollapsed())
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(getPresenter()::applySearch);

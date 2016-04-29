@@ -7,14 +7,15 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
@@ -29,6 +30,8 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import icepick.State;
+import io.techery.janet.Janet;
+import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 
@@ -38,7 +41,9 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
+    DtlFilterMerchantStore filterMerchantStore;
+    @Inject
+    Janet janet;
     @Inject
     LocationDelegate gpsLocationDelegate;
     //
@@ -48,10 +53,12 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
     //
     private Subscription locationRequestNoFallback;
+    private final WriteActionPipe<DtlMerchantStoreAction> merchantStoreActionPipe;
 
     public DtlLocationsPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
+        merchantStoreActionPipe = janet.createPipe(DtlMerchantStoreAction.class);
     }
 
     @Override
@@ -148,13 +155,13 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     private void connectNearbyLocations() {
         dtlLocationManager.nearbyLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlNearbyLocationCommand>()
+                .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
                         .onStart(command -> getView().showProgress())
                         .onFail((command, throwable) -> apiErrorPresenter.handleError(throwable))
                         .onSuccess(this::onLocationsLoaded));
     }
 
-    private void onLocationsLoaded(DtlNearbyLocationCommand command) {
+    private void onLocationsLoaded(DtlNearbyLocationAction command) {
         getView().hideProgress();
         showLoadedLocations(command.getResult());
     }
@@ -169,7 +176,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
         dtlLocationManager.persistLocation(location);
-        dtlMerchantManager.clean();
+        filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
         navigateToMerchants();
     }
 

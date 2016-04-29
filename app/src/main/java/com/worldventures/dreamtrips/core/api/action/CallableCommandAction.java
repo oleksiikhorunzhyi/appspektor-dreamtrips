@@ -1,14 +1,14 @@
-package com.worldventures.dreamtrips.modules.dtl.action;
+package com.worldventures.dreamtrips.core.api.action;
 
 import java.util.concurrent.Callable;
 
 import io.techery.janet.CommandActionBase;
 
-public class CallableCommand<T> extends CommandActionBase<T> {
+public class CallableCommandAction<T> extends CommandActionBase<T> {
 
     private final Callable<T> callable;
 
-    public CallableCommand(Callable<T> callable) {
+    public CallableCommandAction(Callable<T> callable) {
         this.callable = callable;
     }
 

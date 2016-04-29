@@ -70,12 +70,16 @@ public final class SuggestedPhotoCellPresenterHelper {
         this.view = view;
         this.binder = binder;
 
-        suggestionItems = new ArrayList<>(SUGGESTION_ITEM_CHUNK);
-        selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
-
         restoreInstanceState(bundle);
 
-        if (suggestionItems == null || suggestionItems.isEmpty()) {
+        if (suggestionItems == null) {
+            suggestionItems = new ArrayList<>(SUGGESTION_ITEM_CHUNK);
+        }
+        if (selectedPhotos == null) {
+            selectedPhotos = new ArrayList<>(MAX_SELECTION_SIZE);
+        }
+
+        if (suggestionItems.isEmpty()) {
             preloadSuggestionPhotos(null);
         } else {
             view.appendPhotoSuggestions(suggestionItems);
@@ -225,7 +229,7 @@ public final class SuggestedPhotoCellPresenterHelper {
     }
 
     private void setSuggestionTitle() {
-        view.setSuggestionTitle(selectedPhotos == null ? 0 : selectedPhotos.size());
+        view.setSuggestionTitle(selectedPhotos.size());
     }
 
     private long getLastSyncOrDefault(@Nullable PhotoGalleryModel model) {

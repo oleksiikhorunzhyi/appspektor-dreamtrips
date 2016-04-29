@@ -41,7 +41,7 @@ public class UsersDAO extends BaseDAO {
                         " WHERE " + DataUser$Table._ID + " in " + sb.toString())
                         .build();
         return query(q, DataUser.CONTENT_URI)
-                .compose(DaoTransformers.toDataUsers());
+                .compose(DaoTransformers.toEntityList(DataUser.class));
     }
 
     public Observable<DataUser> getUserById(String id) {
@@ -50,7 +50,7 @@ public class UsersDAO extends BaseDAO {
                 .withSelectionArgs(new String[]{String.valueOf(id)})
                 .build();
         return query(q, DataUser.CONTENT_URI)
-                .compose(DaoTransformers.toDataUser());
+                .compose(DaoTransformers.toEntity(DataUser.class));
     }
 
     public Observable<List<DataUser>> getFriends(String currentUserId) {
@@ -61,7 +61,7 @@ public class UsersDAO extends BaseDAO {
                 .withSortOrder("ORDER BY " + DataUser$Table.FIRSTNAME + ", " + DataUser$Table.LASTNAME + " COLLATE NOCASE ASC")
                 .build();
         return query(q, DataUser.CONTENT_URI)
-                .compose(DaoTransformers.toDataUsers());
+                .compose(DaoTransformers.toEntityList(DataUser.class));
     }
 
     public void deleteFriends() {

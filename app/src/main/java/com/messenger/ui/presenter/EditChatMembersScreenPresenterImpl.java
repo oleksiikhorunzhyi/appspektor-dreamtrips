@@ -1,7 +1,7 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
-import android.support.v4.util.Pair;
+import android.util.Pair;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;

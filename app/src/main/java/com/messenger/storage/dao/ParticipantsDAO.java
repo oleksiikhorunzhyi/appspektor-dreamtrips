@@ -3,7 +3,7 @@ package com.messenger.storage.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
+import android.util.Pair;
 
 import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataParticipant;
@@ -37,7 +37,7 @@ public class ParticipantsDAO extends BaseDAO {
 
         return query(q, DataUser.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
-                .compose(DaoTransformers.toDataUser());
+                .compose(DaoTransformers.toEntity(DataUser.class));
     }
 
     public Observable<List<Pair<DataUser, String>>> getParticipants(String conversationId) {
@@ -72,7 +72,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .compose(DaoTransformers.toDataUsers());
+                .compose(DaoTransformers.toEntityList(DataUser.class));
     }
 
     @NonNull

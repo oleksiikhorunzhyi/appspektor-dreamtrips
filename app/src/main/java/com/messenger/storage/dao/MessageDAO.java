@@ -23,14 +23,12 @@ import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
 
 public class MessageDAO extends BaseDAO {
-    private final int maximumYear = Calendar.getInstance().getMaximum(Calendar.YEAR);
 
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
     public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
@@ -48,7 +46,7 @@ public class MessageDAO extends BaseDAO {
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
-                .compose(DaoTransformers.toDataMessage());
+                .compose(DaoTransformers.toEntity(DataMessage.class));
     }
 
     public Observable<DataMessage> getMessageByAttachmentId(String attachmentId) {
@@ -62,7 +60,7 @@ public class MessageDAO extends BaseDAO {
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
-                .compose(DaoTransformers.toDataMessage());
+                .compose(DaoTransformers.toEntity(DataMessage.class));
     }
 
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
@@ -122,7 +120,7 @@ public class MessageDAO extends BaseDAO {
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
-                .compose(DaoTransformers.toDataMessage());
+                .compose(DaoTransformers.toEntity(DataMessage.class));
     }
 
     public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {

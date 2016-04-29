@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@android:color/black"
     >
@@ -16,16 +17,15 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            fresco:actualImageScaleType="centerInside"
             />
 
         <ImageView
-            android:id="@+id/closeControl"
+            android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:layout_margin="8dp"
-            android:src="@drawable/ic_close_light"
-            android:background="#44aaaaaa"
+            android:layout_margin="@dimen/spacing_medium"
+            android:src="@drawable/back_icon"
             />
 
         <android.support.v4.widget.ContentLoadingProgressBar

@@ -14,9 +14,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -31,7 +37,10 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.DtlMerchantInfoInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.OfferClickListener;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
@@ -53,6 +62,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
         implements DtlDetailsScreen {
 
     private static final int REQUEST_CHECK_SETTINGS = 1489;
+    private final static float MERCHANT_MAP_ZOOM = 15f;
 
     @Inject ActivityResultDelegate activityResultDelegate;
     @Inject Router router;
@@ -63,7 +73,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     @InjectView(R.id.merchant_details_additional) ViewGroup additionalContainer;
     @InjectView(R.id.merchant_address) TextView merchantAddress;
     //
-    DtlMerchantInfoInflater merchantInfoInflater;
+    MerchantOffersInflater merchantDataInflater;
+    MerchantDataInflater merchantInfoInflater;
     SupportMapFragment destinationMap;
     DtlMerchant merchant;
 
@@ -86,14 +97,28 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         //
-        merchantInfoInflater = new DtlMerchantInfoInflater();
+        merchantDataInflater = new MerchantOffersInflater();
+        merchantInfoInflater = new MerchantInfoInflater();
+        merchantDataInflater.registerOfferClickListener(offer -> getPresenter().onOfferClick(offer));
+        merchantDataInflater.setView(this);
         merchantInfoInflater.setView(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        if (merchantDataInflater != null) merchantDataInflater.release();
+        if (merchantInfoInflater != null) merchantInfoInflater.release();
+        super.onDetachedFromWindow();
     }
 
     @Override
     public void setMerchant(DtlMerchant merchant, DtlOfferData expandOffer) {
         this.merchant = merchant;
-        merchantInfoInflater.apply(merchant, expandOffer);
+        merchantDataInflater.setExpandedOffer(expandOffer);
+        merchantDataInflater.applyMerchant(merchant);
+        merchantInfoInflater.applyMerchant(merchant);
+        //
+        toolbar.setTitle(merchant.getDisplayName());
         //
         setContacts();
         setLocation();
@@ -107,7 +132,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
             contactView.setText(contact.text);
             //
-            if(DtlMerchantHelper.contactCanBeResolved(contact, getActivity()))
+            if (DtlMerchantHelper.contactCanBeResolved(contact, getActivity()))
                 RxView.clicks(contactView)
                         .compose(RxLifecycle.bindView(contactView))
                         .subscribe(aVoid -> onContactClick(contact));
@@ -118,7 +143,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
     private void setLocation() {
         ImageTextItem contact = ImageTextItemFactory.create(getContext(), merchant, ImageTextItem.Type.ADDRESS);
-        if(contact != null) merchantAddress.setText(contact.text);
+        if (contact != null) merchantAddress.setText(contact.text);
     }
 
     protected TextView inflateContactView() {
@@ -127,7 +152,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     }
 
     private void onContactClick(ImageTextItem contact) {
-        if (contact.type.equals(ImageTextItem.Type.ADDRESS)) getPresenter().routeToMerchantRequested(contact.intent);
+        if (contact.type.equals(ImageTextItem.Type.ADDRESS))
+            getPresenter().routeToMerchantRequested(contact.intent);
         else getContext().startActivity(contact.intent);
     }
 
@@ -141,15 +167,30 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
                 .replace(R.id.merchant_details_map, destinationMap)
                 .commit();
         //
-        destinationMap.getMapAsync(googleMap -> merchantInfoInflater.provideMap(googleMap));
+        destinationMap.getMapAsync(this::bindMap);
+    }
+
+    public void bindMap(GoogleMap map) {
+        Preconditions.checkNotNull(merchant, "set merchant before binding info inside map");
+        //
+        int paddingX = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_large);
+        int paddingY = getContext().getResources().getDimensionPixelOffset(R.dimen.spacing_normal);
+        LatLng pos = new LatLng(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
+        //
+        map.getUiSettings().setMapToolbarEnabled(false);
+        map.setPadding(paddingX, paddingY, paddingX, paddingY);
+        map.addMarker(new MarkerOptions().position(pos).icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin)));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, MERCHANT_MAP_ZOOM));
     }
 
     private void setClicks() {
         View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
         View estimate = ButterKnife.findById(this, R.id.merchant_details_estimate_points);
         //
-        if (earn != null) RxView.clicks(earn).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
-        if (estimate != null) RxView.clicks(estimate).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onEstimationClick());
+        if (earn != null)
+            RxView.clicks(earn).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onCheckInClicked());
+        if (estimate != null)
+            RxView.clicks(estimate).compose(RxLifecycle.bindView(this)).subscribe(aVoid -> getPresenter().onEstimationClick());
     }
 
     @Override
@@ -187,8 +228,10 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
         Button earn = ButterKnife.findById(this, R.id.merchant_details_earn);
         TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
         //
-        if (earn != null) earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
-        if (checkedIn != null) ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+        if (earn != null)
+            earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
+        if (checkedIn != null)
+            ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -216,12 +259,14 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
         }).show();
     }
 
-    @OnTouch(R.id.dtl_merchant_details_map_click_interceptor) boolean onMapTouched() {
+    @OnTouch(R.id.dtl_merchant_details_map_click_interceptor)
+    boolean onMapTouched() {
         getPresenter().routeToMerchantRequested(null);
         return false;
     }
 
-    @OnClick(R.id.merchant_details_suggest_merchant) void suggestMerchantClick() {
+    @OnClick(R.id.merchant_details_suggest_merchant)
+    void suggestMerchantClick() {
         getPresenter().onMerchantClick();
     }
 
@@ -233,13 +278,13 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     @Override
     public void enableCheckinButton() {
         View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
-        if(earn != null) earn.setEnabled(true);
+        if (earn != null) earn.setEnabled(true);
     }
 
     @Override
     public void disableCheckinButton() {
         View earn = ButterKnife.findById(this, R.id.merchant_details_earn);
-        if(earn != null) earn.setEnabled(false);
+        if (earn != null) earn.setEnabled(false);
     }
 
     @Override

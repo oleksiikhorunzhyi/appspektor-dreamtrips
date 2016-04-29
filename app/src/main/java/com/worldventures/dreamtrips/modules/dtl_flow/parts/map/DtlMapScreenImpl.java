@@ -370,8 +370,4 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         EventBus.getDefault().post(new DtlShowMapInfoEvent());
     }
 
-    private boolean isGooglePlayServicesAvailable() {
-        return GooglePlayServicesUtil.isGooglePlayServicesAvailable(getContext()) != ConnectionResult.SUCCESS;
-    }
-
 }

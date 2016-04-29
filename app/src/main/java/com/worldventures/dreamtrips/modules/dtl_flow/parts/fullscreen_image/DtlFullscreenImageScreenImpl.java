@@ -18,16 +18,15 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class DtlFullscreenImageScreenImpl extends DtlLayout<DtlFullscreenImageScreen,
         DtlFullscreenImagePresenter, DtlFullscreenImagePath>
         implements DtlFullscreenImageScreen {
 
-    @InjectView(R.id.imageView)
-    SimpleDraweeView imageView;
-    @InjectView(R.id.progressBar)
-    View progressBar;
+    @InjectView(R.id.imageView) SimpleDraweeView imageView;
+    @InjectView(R.id.progressBar) View progressBar;
 
     @Override
     public void showImage(String url) {
@@ -37,6 +36,11 @@ public class DtlFullscreenImageScreenImpl extends DtlLayout<DtlFullscreenImageSc
                 .build();
         imageView.setController(controller);
 //        imageView.setImageUrl(url); // TODO :: 4/27/16 no image resizing here
+    }
+
+    @OnClick(R.id.back)
+    protected void onBackClick() {
+        getActivity().onBackPressed();
     }
 
     private ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {

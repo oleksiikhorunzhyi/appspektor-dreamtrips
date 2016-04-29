@@ -80,18 +80,12 @@
                 android:src="@drawable/ic_close_gray"/>
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/photos"
             android:layout_below="@+id/container_user"
-            android:layout_above="@+id/container_post">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/photos"
-                android:layout_below="@+id/post"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </RelativeLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/divider"/>
 
         <include
             android:id="@+id/divider"

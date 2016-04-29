@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -97,7 +97,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             }
         });
         adapter.registerDelegate(PhotoCreationItem.class, this);
-        StaggeredGridLayoutManager layout = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         photosList.setLayoutManager(layout);
         photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
         photosList.setAdapter(adapter);

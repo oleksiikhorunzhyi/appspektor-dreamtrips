@@ -225,7 +225,7 @@ public final class SuggestedPhotoCellPresenterHelper {
     }
 
     private void setSuggestionTitle() {
-        view.setSuggestionTitle(selectedPhotos.size());
+        view.setSuggestionTitle(selectedPhotos == null ? 0 : selectedPhotos.size());
     }
 
     private long getLastSyncOrDefault(@Nullable PhotoGalleryModel model) {

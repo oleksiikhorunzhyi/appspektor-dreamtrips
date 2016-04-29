@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
@@ -184,8 +185,24 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
         bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perk_disclaimer), perk.getDisclaimer());
         bindImage(ButterKnife.<SimpleDraweeView>findById(perkView, R.id.perk_logo), perk);
         bindOperationDays(ButterKnife.<TextView>findById(perkView, R.id.perks_operation_days), perk, resources);
+        patchExpiringBar(perkView, perk);
         if (expandedOffer != null && expandedOffer.equals(perk)) perkView.showWithoutAnimation();
         return perkView;
+    }
+
+    private void patchExpiringBar(ViewGroup perkView, DtlOfferData offerData) {
+        ViewGroup expirationBarLayout =
+                ButterKnife.<ViewGroup>findById(perkView, R.id.expirationBarLayout);
+        AppCompatTextView expirationBarCaption =
+                ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
+//        if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
+        if (Math.random() >= 0.5d) {
+            expirationBarLayout.setVisibility(View.VISIBLE);
+            expirationBarCaption.setText(DtlMerchantHelper.
+                    getOfferExpiringCaption(resources, offerData));
+        } else {
+            expirationBarLayout.setVisibility(View.GONE);
+        }
     }
 
     private static void bindImage(SimpleDraweeView image, DtlOfferData perk) {

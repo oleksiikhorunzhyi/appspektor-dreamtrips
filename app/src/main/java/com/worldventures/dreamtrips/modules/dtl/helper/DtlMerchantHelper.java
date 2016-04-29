@@ -2,19 +2,20 @@ package com.worldventures.dreamtrips.modules.dtl.helper;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.res.ResourcesCompat;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
@@ -23,6 +24,7 @@ import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
 import org.joda.time.DurationFieldType;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -62,18 +64,40 @@ public class DtlMerchantHelper {
         return getOperationalTime(context, merchant, true);
     }
 
-    public static Spannable getOperationalTime(Context context, DtlMerchant DtlMerchant, boolean includeTime) {
+    public static boolean isOfferExpiringSoon(DtlOfferData offerData) {
+        DateTime currentDate = DateTime.now();
+        DateTime expirationDate = new DateTime(offerData.getEndDdate().getTime());
+        return Days.daysBetween(currentDate, expirationDate).isGreaterThan(Days.SEVEN);
+    }
+
+    public static Spannable getOfferExpiringCaption(Context context, DtlOfferData offerData) {
+        return getOfferExpiringCaption(context.getResources(), offerData);
+    }
+
+    public static Spannable getOfferExpiringCaption(Resources resources, DtlOfferData offerData) {
+        String format = resources.getString(R.string.offer_expiration_format);
+        DateTime expiringDate = new DateTime(offerData.getEndDdate().getTime());
+        String caption = expiringDate.toString(DateTimeFormat.forPattern("d MMM"));
+        String captionFormatted = String.format(format, caption);
+        Spannable spanned = new SpannableString(captionFormatted);
+        spanned.setSpan(new StyleSpan(Typeface.BOLD),
+                captionFormatted.length() - caption.length(), captionFormatted.length(),
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return spanned;
+    }
+
+    public static Spannable getOperationalTime(Context context, DtlMerchant dtlMerchant, boolean includeTime) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 
         DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-        OperationDay operationDay = Queryable.from(DtlMerchant.getOperationDays())
+        OperationDay operationDay = Queryable.from(dtlMerchant.getOperationDays())
                 .firstOrDefault(element -> element.getDayOfWeek() == current);
 
         if (operationDay != null && operationDay.getOperationHours() != null) {
             for (OperationHours hours : operationDay.getOperationHours()) {
-                DateTimeZone timeZone = DateTimeZone.forOffsetHours(DtlMerchant.getOffsetHours());
+                DateTimeZone timeZone = DateTimeZone.forOffsetHours(dtlMerchant.getOffsetHours());
                 LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
                 LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
                 //
@@ -117,5 +141,4 @@ public class DtlMerchantHelper {
                 context.getString(R.string.dtl_open_now) :
                 context.getString(R.string.dtl_closed);
     }
-
 }

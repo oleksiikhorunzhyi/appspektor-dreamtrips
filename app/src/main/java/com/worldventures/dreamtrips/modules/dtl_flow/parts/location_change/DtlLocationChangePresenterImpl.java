@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
@@ -182,7 +183,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
                         .onStart(command -> getView().showProgress())
-                        .onFail((command, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onFail((command, throwable) -> onSearchError(throwable))
                         .onSuccess(this::onSearchFinished));
     }
 
@@ -198,6 +199,14 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     private void navigateAway() {
         History history = History.single(new DtlMerchantsPath()); // TODO :: 4/28/16 proper previous screen
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+    }
+
+    public void onSearchError(Throwable e) {
+        // TODO :: 3/16/16 TEMPORARY NOT TO BULK USER WITH ERRORS
+        // TODO :: 3/16/16 RELATED TO DtlLocationManager bug:
+        // when we perform local search. e.g. we enter 4th symbol right after 3rd, when API-call is
+        // still going - we get "Smth went wrong error" and then it presents loading results as expected
+        if (e instanceof DtApiException) apiErrorPresenter.handleError(e);
     }
 
     private void search(String query) {

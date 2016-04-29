@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.stanzas;
+package com.messenger.messengerservers.xmpp.stanzas.outgoing;
 
 
 import com.messenger.messengerservers.xmpp.chats.Status;

@@ -2,8 +2,8 @@ package com.messenger.messengerservers.xmpp.loaders;
 
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationListIQ;
-import com.messenger.messengerservers.xmpp.stanzas.ObtainConversationListIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationListIQ;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.ObtainConversationListIQ;
 import com.messenger.messengerservers.xmpp.providers.ConversationListProvider;
 
 import org.jivesoftware.smack.SmackException;

@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.stanzas;
+package com.messenger.messengerservers.xmpp.stanzas.outgoing;
 
 import org.jivesoftware.smack.packet.IQ;
 

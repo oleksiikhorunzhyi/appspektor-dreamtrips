@@ -15,7 +15,7 @@ import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
-import com.messenger.messengerservers.xmpp.stanzas.InitialPresence;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.InitialPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGenerator;
 import com.messenger.util.CrashlyticsTracker;

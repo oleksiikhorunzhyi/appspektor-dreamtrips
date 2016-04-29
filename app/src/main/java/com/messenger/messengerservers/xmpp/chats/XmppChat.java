@@ -6,7 +6,7 @@ import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.stanzas.StatusMessageStanza;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.StatusMessageStanza;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;

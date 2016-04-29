@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.stanzas.MessagePageIQ;
-import com.messenger.messengerservers.xmpp.stanzas.ObtainMessageListIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.MessagePageIQ;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.ObtainMessageListIQ;
 import com.messenger.messengerservers.xmpp.providers.MessagePageProvider;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;

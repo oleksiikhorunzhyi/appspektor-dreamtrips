@@ -2,11 +2,9 @@ package com.messenger.messengerservers.xmpp.loaders;
 
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.providers.ConversationListProvider;
 import com.messenger.messengerservers.xmpp.providers.ConversationProvider;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationIQ;
-import com.messenger.messengerservers.xmpp.stanzas.ObtainConversationIQ;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationListIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationIQ;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.ObtainConversationIQ;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.ProviderManager;

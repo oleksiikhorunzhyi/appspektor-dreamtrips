@@ -2,11 +2,9 @@ package com.messenger.messengerservers.xmpp.providers;
 
 import com.google.gson.Gson;
 import com.messenger.messengerservers.model.Conversation;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationIQ;
 
 import java.util.List;
-
-import timber.log.Timber;
 
 public class ConversationProvider extends BaseConversationProvider<ConversationIQ> {
 

@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.stanzas;
+package com.messenger.messengerservers.xmpp.stanzas.incoming;
 
 import com.messenger.messengerservers.model.Conversation;
 

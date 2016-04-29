@@ -2,7 +2,7 @@ package com.messenger.messengerservers.xmpp.providers;
 
 import com.google.gson.Gson;
 import com.messenger.messengerservers.model.Conversation;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationListIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationListIQ;
 
 import java.util.List;
 

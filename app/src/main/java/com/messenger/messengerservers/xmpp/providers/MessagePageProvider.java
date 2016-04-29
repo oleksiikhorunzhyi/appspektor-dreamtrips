@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.messenger.delegate.MessageBodyParser;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.xmpp.stanzas.MessagePageIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.MessagePageIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;

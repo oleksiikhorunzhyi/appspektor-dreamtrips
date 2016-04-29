@@ -103,11 +103,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     }
 
     private void initDtlToolbar() {
-        RxDtlToolbar.navigationClicks(dtlToolbar)
+        RxDtlToolbar.actionViewClicks(dtlToolbar)
                 .throttleFirst(250L, TimeUnit.MILLISECONDS)
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(aVoid -> ((FlowActivity) getActivity()).openLeftDrawer());
-        RxDtlToolbar.mapClicks(dtlToolbar)
+        RxDtlToolbar.navigationClicks(dtlToolbar)
                 .throttleFirst(250L, TimeUnit.MILLISECONDS)
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(aVoid -> getPresenter().mapClicked());
@@ -181,6 +181,11 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     public void toggleSelection(DtlMerchant DtlMerchant) {
         int index = baseDelegateAdapter.getItems().indexOf(DtlMerchant);
         if (index != -1) selectionManager.toggleSelection(index);
+    }
+
+    @Override
+    public boolean isToolbarCollapsed() {
+        return dtlToolbar.isCollapsed();
     }
 
     @Override

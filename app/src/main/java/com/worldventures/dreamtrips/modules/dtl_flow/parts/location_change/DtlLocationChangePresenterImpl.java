@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
@@ -84,11 +86,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     private void connectToolbarCollapses() {
         getView().provideDtlToolbarCollapsesObservable()
                 .compose(bindView())
-                .subscribe(aVoid -> toolbarCollapsed());
+                .subscribe(aVoid -> navigateAway());
         // below: treat merchant search input focus gain as location search exit (collapsing)
         getView().provideMerchantInputFocusLossObservable()
                 .compose(bindView())
-                .subscribe(aVoid -> toolbarCollapsed());
+                .subscribe(aVoid -> navigateAway());
     }
 
     private void connectToolbarLocationSearch(Observable<DtlLocation> dtlLocationObservable) {
@@ -134,7 +136,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                         .build();
                 dtlLocationManager.persistLocation(dtlLocation);
                 dtlMerchantManager.clean();
-                Flow.get(getContext()).goBack();
+                navigateAway();
                 break;
             case SEARCH: break;
         }
@@ -174,11 +176,13 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private void mapClicked() {
-        Flow.get(getContext()).set(new DtlMapPath(FlowUtil.currentMaster(getContext())));
+        History history = History.single(new DtlMapPath(FlowUtil.currentMaster(getContext())));
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
-    private void toolbarCollapsed() {
-        Flow.get(getContext()).goBack();
+    private void navigateAway() {
+        History history = History.single(new DtlMerchantsPath()); // TODO :: 4/28/16 proper previous screen
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     private void search(String query) {
@@ -240,7 +244,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         dtlLocationManager.persistLocation(dtlExternalLocation);
         dtlMerchantManager.clean();
         dtlMerchantManager.loadMerchants(dtlExternalLocation.getCoordinates().asAndroidLocation());
-        Flow.get(getContext()).goBack();
+        navigateAway();
     }
 
     /**

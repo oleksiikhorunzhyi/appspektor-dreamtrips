@@ -25,4 +25,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
     void toggleDiningFilterSwitch(boolean checked);
 
     Observable<Boolean> getToggleObservable();
+
+    boolean isToolbarCollapsed();
 }

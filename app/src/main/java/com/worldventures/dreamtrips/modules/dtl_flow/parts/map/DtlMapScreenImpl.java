@@ -4,14 +4,13 @@ import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -37,11 +36,15 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -63,14 +66,14 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     FrameLayout infoContainer;
     @InjectView(R.id.container_no_google)
     FrameLayout noGoogleContainer;
-    @InjectView(R.id.toolbar_actionbar)
-    Toolbar toolbar;
-    @InjectView(R.id.sw_filter)
-    SwitchCompat swHideDinings;
+    @InjectView(R.id.dtlToolbar)
+    DtlToolbar dtlToolbar;
+    @InjectView(R.id.filterDiningsSwitch)
+    SwitchCompat filterDiningsSwitch;
     @InjectView(R.id.redo_merchants)
     View loadMerchantsRoot;
-    @InjectView(R.id.filterToggleContainer)
-    View toggleRootView;
+    @InjectView(R.id.filterBarRoot)
+    View filterBarLayout;
     //
     LatLng selectedLocation;
     @State
@@ -95,8 +98,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     protected void onPostAttachToWindowView() {
-        inflateToolbarMenu(toolbar);
-        //
         checkMapAvailable();
         prepareMap();
         prepareView();
@@ -117,18 +118,29 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     private void initToggle() {
         int visibility = isTabletLandscape() ? View.GONE : VISIBLE;
-        toggleRootView.setVisibility(visibility);
+        filterBarLayout.setVisibility(visibility);
     }
 
     protected void initToolbar() {
-        if (isTabletLandscape()) {
-            ButterKnife.findById(toolbar, R.id.spinnerStyledTitle).setVisibility(View.GONE);
-            ButterKnife.findById(toolbar, R.id.locationModeCaption).setVisibility(View.GONE);
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_menu_hamburger);
-            toolbar.setNavigationOnClickListener(view -> ((FlowActivity) getActivity()).openLeftDrawer());
-            toolbar.findViewById(R.id.titleContainer).setOnClickListener(v -> getPresenter().onLocationCaptionClick());
-        }
+        RxDtlToolbar.actionViewClicks(dtlToolbar)
+                .throttleFirst(250L, TimeUnit.MILLISECONDS)
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(aVoid -> ((FlowActivity) getActivity()).openLeftDrawer());
+        RxDtlToolbar.merchantSearchTextChanges(dtlToolbar)
+                .skip(1)
+                .debounce(250L, TimeUnit.MILLISECONDS)
+                .filter(s -> !dtlToolbar.isCollapsed())
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(getPresenter()::applySearch);
+        RxDtlToolbar.locationInputFocusChanges(dtlToolbar)
+                .skip(1)
+                .compose(RxLifecycle.bindView(this))
+                .filter(Boolean::booleanValue) // only true -> only focus gains
+                .subscribe(aBoolean -> getPresenter().locationChangeRequested());
+        RxDtlToolbar.navigationClicks(dtlToolbar)
+                .throttleFirst(200L, TimeUnit.MILLISECONDS)
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(aVoid -> getPresenter().onListClicked());
     }
 
     private void checkMapAvailable() {
@@ -162,7 +174,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public Observable<Boolean> getToggleObservable() {
-        return RxCompoundButton.checkedChanges(swHideDinings)
+        return RxCompoundButton.checkedChanges(filterDiningsSwitch)
                 .compose(RxLifecycle.bindView(this));
     }
 
@@ -181,6 +193,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         //
         loadMerchantsBtn.setText(textResId);
         loadMerchantsBtn.setEnabled(!show);
+    }
+
+    @Override
+    public boolean isToolbarCollapsed() {
+        return dtlToolbar.isCollapsed();
     }
 
     @Override
@@ -203,7 +220,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void prepareInfoWindow(int height) {
-        int ownHeight = getHeight() - ButterKnife.findById(this, R.id.filterToggleContainer).getBottom();
+        int ownHeight = getHeight() - ButterKnife.findById(this, R.id.filterBarRoot).getBottom();
         int centerY = ownHeight / 2;
         int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;
@@ -222,7 +239,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void hideDinings(boolean hide) {
-        swHideDinings.setChecked(hide);
+        filterDiningsSwitch.setChecked(hide);
     }
 
     @Override
@@ -267,30 +284,18 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     @Override
-    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation) {
-        if (dtlLocation == null || toolbar == null) return; // for safety reasons
-        // TODO :: where isTabletLandscape()) ?? return; // no showing in landscape
-        //
-        TextView locationTitle = ButterKnife.<TextView>findById(toolbar, R.id.spinnerStyledTitle);
-        TextView locationModeCaption = ButterKnife.<TextView>findById(toolbar, R.id.locationModeCaption);
-        //
-        if (locationTitle == null || locationModeCaption == null)
-            return; // for safety reasons on samsung
-        //
+    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
+                                   @Nullable String actualSearchQuery) {
+        if (dtlLocation == null) return;
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:
-                locationTitle.setText(dtlLocation.getLongName());
-                locationModeCaption.setVisibility(View.GONE);
+                dtlToolbar.setToolbarCaptions(actualSearchQuery, dtlLocation.getLongName());
                 break;
             case FROM_MAP:
-                if (dtlLocation.getLongName() == null) {
-                    locationModeCaption.setVisibility(View.GONE);
-                    locationTitle.setText(R.string.dtl_nearby_caption);
-                } else {
-                    locationModeCaption.setVisibility(View.VISIBLE);
-                    locationTitle.setText(dtlLocation.getLongName());
-                }
+                String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
+                        getContext().getString(R.string.dtl_nearby_caption) : dtlLocation.getLongName();
+                dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
                 break;
         }
     }

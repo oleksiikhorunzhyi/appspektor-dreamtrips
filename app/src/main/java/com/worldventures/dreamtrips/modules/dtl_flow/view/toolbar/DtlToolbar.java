@@ -8,8 +8,10 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -51,6 +54,9 @@ import timber.log.Timber;
 public class DtlToolbar extends LinearLayout {
 
     private static final boolean DEF_COLLAPSED = true;
+    private static final boolean DEF_NAVIGATION_ICON_VISIBLE = true;
+    @DrawableRes
+    private static final int DEF_NAVIGATION_ICON = R.drawable.ic_menu_trip_map;
     private static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
 
     @InjectView(R.id.dtlToolbarFirstRow)
@@ -63,6 +69,10 @@ public class DtlToolbar extends LinearLayout {
     AppCompatEditText topCaption;
     @InjectView(R.id.dtlToolbarSecondRow)
     ViewGroup secondRow;
+    @InjectView(R.id.dtlToolbarNavigationLayout)
+    ViewGroup dtlNavigationControl;
+    @InjectView(R.id.dtlToolbarNavigationIcon)
+    ImageView dtlToolbarNavigationIcon;
     @InjectView(R.id.dtlToolbarBottomCaption)
     AppCompatEditText bottomCaption;
     //
@@ -70,6 +80,9 @@ public class DtlToolbar extends LinearLayout {
     boolean collapsed;
     //
     private FocusedMode focusedMode;
+    boolean navigationControlVisible;
+    @DrawableRes
+    int navigationIconResource;
     private String searchQuery;
     private String locationTitle;
     private String defaultEmptySearchCaption;
@@ -77,7 +90,7 @@ public class DtlToolbar extends LinearLayout {
     //
     private List<CollapseListener> collapseListeners = new ArrayList<>();
     private List<ExpandListener> expandListeners = new ArrayList<>();
-    private List<MapClickListener> mapClickListeners = new ArrayList<>();
+    private List<NavigationClickListener> navigationClickListeners = new ArrayList<>();
     private List<NavigationControlListener> navigationControlListeners = new ArrayList<>();
 
     public DtlToolbar(Context context, AttributeSet attrs) {
@@ -85,6 +98,7 @@ public class DtlToolbar extends LinearLayout {
         setOrientation(VERTICAL);
         setGravity(Gravity.TOP);
         setFocusableInTouchMode(true);
+        setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
         initAttributes(attrs);
     }
 
@@ -152,6 +166,10 @@ public class DtlToolbar extends LinearLayout {
     private void initAttributes(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
         collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
+        navigationControlVisible = a.getBoolean(R.styleable.DtlToolbar_dtlt_navigation_icon_visible,
+                DEF_NAVIGATION_ICON_VISIBLE);
+        navigationIconResource = a.getResourceId(R.styleable.DtlToolbar_dtlt_navigation_icon_src,
+                DEF_NAVIGATION_ICON);
         focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
                 DEF_FOCUSED_MODE.id));
         a.recycle();
@@ -171,6 +189,9 @@ public class DtlToolbar extends LinearLayout {
             actionViewLayout.setVisibility(VISIBLE);
             actionView.setAction(new CloseAction(), false);
         }
+        dtlToolbarNavigationIcon.setImageDrawable(ContextCompat.getDrawable(getContext(),
+                navigationIconResource));
+        dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
     }
 
     /**
@@ -315,9 +336,9 @@ public class DtlToolbar extends LinearLayout {
         }
     }
 
-    @OnClick(R.id.dtlToolbarMapLayout)
-    void mapClicked(View view) {
-        Queryable.from(mapClickListeners).forEachR(listener -> listener.onMapClicked());
+    @OnClick(R.id.dtlToolbarNavigationLayout)
+    void navigationClicked(View view) {
+        Queryable.from(navigationClickListeners).forEachR(listener -> listener.onNavigationClicked());
     }
 
     /**
@@ -339,13 +360,13 @@ public class DtlToolbar extends LinearLayout {
     // Listeners
     ///////////////////////////////////////////////////////////////////////////
 
-    public void addMapClickListener(@NonNull MapClickListener listener) {
+    public void addNavigationClickListener(@NonNull NavigationClickListener listener) {
         if (checkListenerNull(listener)) return;
-        mapClickListeners.add(listener);
+        navigationClickListeners.add(listener);
     }
 
-    public void removeMapClickListener(MapClickListener listener) {
-        mapClickListeners.remove(listener);
+    public void removeNavigationClickListener(NavigationClickListener listener) {
+        navigationClickListeners.remove(listener);
     }
 
     public void addNavigationControlClickListener(@NonNull NavigationControlListener listener) {
@@ -385,9 +406,9 @@ public class DtlToolbar extends LinearLayout {
         void onExpanded();
     }
 
-    public interface MapClickListener {
+    public interface NavigationClickListener {
 
-        void onMapClicked();
+        void onNavigationClicked();
     }
 
     public interface NavigationControlListener {

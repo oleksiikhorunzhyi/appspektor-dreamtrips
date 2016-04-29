@@ -41,7 +41,7 @@ public interface DtlMapScreen extends DtlScreen {
 
     void zoom(float zoom);
 
-    void updateToolbarTitle(@Nullable DtlLocation dtlLocation);
+    void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String actualSearchQuery);
 
     void tryHideMyLocationButton(boolean hide);
 
@@ -52,4 +52,6 @@ public interface DtlMapScreen extends DtlScreen {
     void showPinInfo(String merchantId);
 
     void openFilter();
+
+    boolean isToolbarCollapsed();
 }

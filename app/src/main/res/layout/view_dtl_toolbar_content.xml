@@ -50,22 +50,22 @@
             />
 
         <FrameLayout
-            android:id="@+id/dtlToolbarMapLayout"
+            android:id="@+id/dtlToolbarNavigationLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             >
 
             <ImageView
-                android:id="@+id/dtlToolbarMap"
+                android:id="@+id/dtlToolbarNavigationIcon"
                 android:layout_width="@dimen/dtlt_icon_size"
                 android:layout_height="@dimen/dtlt_icon_size"
                 android:layout_marginLeft="@dimen/dtlt_icon_side_margin"
                 android:layout_marginTop="@dimen/dtlt_icon_vertical_margin"
                 android:layout_marginRight="@dimen/dtlt_icon_side_margin"
                 android:layout_marginBottom="@dimen/dtlt_icon_vertical_margin"
-                android:src="@drawable/ic_menu_trip_map"
                 android:scaleType="center"
                 android:layout_gravity="center"
+                tools:src="@drawable/ic_menu_trip_map"
                 />
         </FrameLayout>
     </LinearLayout>

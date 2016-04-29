@@ -188,6 +188,10 @@ public class FullScreenPhotoWrapperFragment
     }
 
     @Override
+    public void addAll(int position, List<? extends IFullScreenObject> items) {
+    }
+
+    @Override
     public void clear() {
     }
 

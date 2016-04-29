@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.Acc
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.MembersImagesPresenter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -253,6 +255,14 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
             photos.add(0, photo);
             db.savePhotoEntityList(type, userId, photos);
             view.add(0, photo);
+        } else if (event.getFeedItem().getItem() instanceof TextualPost
+                && ((TextualPost) event.getFeedItem().getItem()).getAttachments().size() > 0) {
+            List<Photo> addedPhotos = Queryable.from(((TextualPost) event.getFeedItem().getItem()).getAttachments())
+                    .map(holder -> (Photo) holder.getItem()).toList();
+            Collections.reverse(addedPhotos);
+            photos.addAll(0, addedPhotos);
+            db.savePhotoEntityList(type, userId, photos);
+            view.addAll(0, addedPhotos);
         }
     }
 

@@ -70,7 +70,10 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         //
         getView().setMerchant(merchant, expandOffer);
         //
-        if (merchant.hasNoOffers()) getView().setSuggestMerchantButtonAvailable(featureManager.available(Feature.REP_SUGGEST_MERCHANT));
+        if (merchant.hasNoOffers()) {
+            getView().setSuggestMerchantButtonAvailable(
+                    featureManager.available(Feature.REP_SUGGEST_MERCHANT));
+        }
         else processTransaction();
     }
 

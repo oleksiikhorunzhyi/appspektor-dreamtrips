@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.support.annotation.Nullable;
+import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
@@ -49,11 +51,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     private DtlTransaction dtlTransaction;
     protected DtlMerchant merchant;
     protected final String merchantId;
+    protected final DtlOfferData expandOffer;
 
-    public DtlDetailsPresenterImpl(Context context, Injector injector, String merchantId) {
+
+    public DtlDetailsPresenterImpl(Context context, Injector injector, String merchantId, DtlOfferData expandOffer) {
         super(context);
         injector.inject(this);
         this.merchantId = merchantId;
+        this.expandOffer = expandOffer;
         merchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
@@ -61,12 +66,20 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         //
-        getView().setMerchant(merchant);
+        getView().setMerchant(merchant, expandOffer);
         //
-        if (merchant.hasNoOffers()) {
-            boolean canSuggest = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
-            getView().setSuggestMerchantButtonAvailable(canSuggest);
-        } else processTransaction();
+        if (merchant.hasNoOffers()) getView().setSuggestMerchantButtonAvailable(featureManager.available(Feature.REP_SUGGEST_MERCHANT));
+        else processTransaction();
+    }
+
+    @Override
+    public int getToolbarMenuRes() {
+        return R.menu.menu_detailed_merchant;
+    }
+
+    @Override public boolean onToolbarMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.action_share) onShareClick();
+        return super.onToolbarMenuItemClick(item);
     }
 
     private void processTransaction() {
@@ -81,8 +94,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     }
 
     private void checkSucceedEvent() {
-        DtlTransactionSucceedEvent event =
-                EventBus.getDefault().getStickyEvent(DtlTransactionSucceedEvent.class);
+        DtlTransactionSucceedEvent event = EventBus.getDefault().getStickyEvent(DtlTransactionSucceedEvent.class);
         if (event != null) {
             EventBus.getDefault().removeStickyEvent(event);
             getView().showSucceed(merchant, dtlTransaction);
@@ -153,7 +165,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         getView().openSuggestMerchant(new MerchantIdBundle(merchant.getId()));
     }
 
-    @Override
     public void onShareClick() {
         getView().share(merchant);
     }

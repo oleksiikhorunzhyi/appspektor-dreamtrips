@@ -16,5 +16,4 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, View
     void onCheckInClicked();
     void onEstimationClick();
     void onMerchantClick();
-    void onShareClick();
 }

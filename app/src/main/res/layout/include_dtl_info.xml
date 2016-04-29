@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:padding="@dimen/spacing_normal">
+
+    <LinearLayout
+        android:id="@+id/info_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignLeft="@+id/distance_holder"
+        android:paddingRight="@dimen/spacing_medium"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:layout_toStartOf="@+id/distance_holder">
+
+        <TextView
+            android:id="@+id/categories"
+            style="@style/DreamMerchantSubHeaderTextAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="French boulangerie"
+            />
+
+        <TextView
+            android:id="@+id/operational_time"
+            style="@style/DreamMerchantSubHeaderTextAppearance"
+            android:maxLines="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="9:00 AM - 9:30 PM, Open now"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/distance_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        >
+
+        <io.techery.properratingbar.ProperRatingBar
+            android:id="@+id/merchant_details_pricing"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            app:prb_symbolicTick="$"
+            app:prb_symbolicTickNormalColor="@color/grey"
+            app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
+            app:prb_totalTicks="4"
+            />
+
+        <TextView
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:drawablePadding="@dimen/spacing_tiny"
+            android:textColor="@color/black"
+            tools:text="20.97 mi"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

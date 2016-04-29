@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
 @SuppressWarnings("unused")
-public class DtlOffer<T extends DtlOfferData> {
+public class DtlOffer<T extends DtlOfferData> implements Comparable<T>{
 
     @Offer.OfferType
     String type;
@@ -33,6 +33,7 @@ public class DtlOffer<T extends DtlOfferData> {
     public static final DtlOffer TYPE_POINTS = new DtlOffer(Offer.POINT_REWARD);
     public static final DtlOffer TYPE_PERK = new DtlOffer(Offer.PERKS);
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,4 +49,7 @@ public class DtlOffer<T extends DtlOfferData> {
         return type != null ? type.hashCode() : 0;
     }
 
+    @Override public int compareTo(T another) {
+        return getOffer().compareTo(another);
+    }
 }

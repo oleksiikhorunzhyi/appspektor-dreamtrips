@@ -1,319 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:background="@color/dtl_cities_background"
-        android:fillViewport="true"
+
         >
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@drawable/list_divider"
-            android:orientation="vertical"
-            android:showDividers="middle">
+            android:background="@color/dtl_cities_background"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            >
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                >
-
-                <!--<android.support.v4.view.ViewPager-->
-                    <!--android:id="@+id/merchant_details_cover_pager"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--/>-->
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
                     android:id="@+id/merchant_details_cover"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/white"
                     fresco:actualImageScaleType="fitCenter"
                     fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-                    fresco:placeholderImageScaleType="centerCrop"
+                    fresco:placeholderImageScaleType="centerInside"
                     />
 
-                <include layout="@layout/include_dtl_place_details_header" />
+                <include layout="@layout/include_dtl_info"/>
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_actionbar"
-                    style="@style/ToolBarStyle.Transient"
+                <View
                     android:layout_width="match_parent"
-                    />
-
-            </FrameLayout>
-
-            <include layout="@layout/include_dtl_place_details_category"
-                />
-
-            <LinearLayout
-                android:id="@+id/merchant_details_earn_wrapper"
-                style="@style/Widget.AppCompat.ButtonBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/dtl_cities_background"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_normal"
-                >
+                    android:layout_height="1dp"
+                    android:background="@drawable/divider_list"/>
 
                 <LinearLayout
+                    android:id="@+id/merchant_details_earn_wrapper"
+                    style="@style/Widget.AppCompat.ButtonBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/dtl_cities_background"
+                    android:divider="@drawable/divider_list"
+                    android:orientation="vertical"
+                    android:showDividers="middle">
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/perk_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/divider_list"/>
+
+                <FrameLayout
+                    android:id="@+id/merchant_details_merchant_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#eeeeee"
                     android:orientation="horizontal"
+                    android:padding="@dimen/spacing_normal"
                     >
 
                     <Button
-                        android:id="@+id/merchant_details_earn"
+                        android:id="@+id/merchant_details_suggest_merchant"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="@string/dtl_check_in"
-                        android:textColor="@color/white"
-                        android:theme="@style/DtlButtonTheme"
-                        />
-
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        />
-
-                    <Button
-                        android:id="@+id/merchant_details_estimate_points"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="@string/point_estimator"
+                        android:layout_gravity="center"
+                        android:text="@string/suggest_merchant"
                         android:textColor="@color/black"
                         android:theme="@style/WhiteButtonTheme"
                         />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/checked_in"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:gravity="center"
-                    android:text="@string/checked_in"
-                    android:visibility="gone"
-                    />
-            </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/merchant_details_merchant_wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#eeeeee"
-                android:orientation="horizontal"
-                android:padding="@dimen/spacing_normal"
-                android:visibility="gone"
-                >
-
-                <Button
-                    android:id="@+id/merchant_details_suggest_merchant"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/suggest_merchant"
-                    android:textColor="@color/black"
-                    android:theme="@style/WhiteButtonTheme"
-                    />
-            </FrameLayout>
-
-            <LinearLayout
-                android:id="@+id/perks_description_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_normal"
-                >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/perks_icon"
-                    android:drawablePadding="@dimen/spacing_small"
-                    android:drawableStart="@drawable/perks_icon"
-                    android:text="@string/dtl_perks_description"
-                    android:textColor="@color/dtl_cities_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    />
-
-                <TextView
-                    android:id="@+id/merchant_details_perks_description"
-                    style="@style/TextAppearance.AppCompat.Body1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_small"
-                    android:textColor="@color/perks_text_color"
-                    android:textSize="14sp"
-                    tools:text="It is a Family owned breakfast and lunch restaurant with more than generous plate servings."
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/description_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/dtl_cities_background"
-                android:orientation="vertical"
-                android:padding="@dimen/spacing_normal"
-                >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/spacing_tiny"
-                    android:text="@string/dtl_description"
-                    android:textColor="@color/dtl_cities_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    />
-
-                <TextView
-                    android:id="@+id/merchant_details_description"
-                    style="@style/TextAppearance.AppCompat.Body1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@drawable/list_divider_vertical"
-                android:orientation="horizontal"
-                android:showDividers="middle"
-                >
+                </FrameLayout>
 
                 <LinearLayout
-                    android:id="@+id/merchant_details_additional"
-                    android:layout_width="0dp"
+                    android:id="@+id/description_header"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.75"
                     android:background="@color/dtl_cities_background"
-                    android:divider="@drawable/list_divider_with_padding"
-                    android:gravity="top"
-                    android:minHeight="140dp"
                     android:orientation="vertical"
-                    android:showDividers="middle"
-                    />
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:minHeight="140dp"
+                    android:padding="@dimen/spacing_normal"
                     >
-
-                    <FrameLayout
-                        android:id="@+id/merchant_details_map"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:background="@color/white_semi_transparent"
-                        android:gravity="center"
-                        android:padding="@dimen/spacing_small"
-                        android:text="@string/directions"
-                        android:textAllCaps="true"
-                        android:textColor="#005e92"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/dtl_description"
+                        android:textColor="@color/black"
                         android:textSize="14sp"
                         />
 
-                    <!-- Next layer is just to get clicks on map -->
-                    <FrameLayout
-                        android:id="@+id/dtl_merchant_details_map_click_interceptor"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/transparent"
-                        />
-                </FrameLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/dtl_cities_background"
-                >
-
-                <LinearLayout
-                    android:id="@+id/merchant_details_share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/spacing_normal"
-                    android:minWidth="160dp"
-                    android:orientation="horizontal"
-                    android:padding="0dp"
-                    android:paddingBottom="@dimen/spacing_small"
-                    android:paddingTop="@dimen/spacing_small"
-                    android:theme="@style/WhiteButtonTheme"
-                    tools:background="@android:color/holo_orange_dark"
-                    >
-
-                    <View
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:background="@drawable/share_icon"
-                        />
-
                     <TextView
-                        style="@style/Base.Widget.AppCompat.Button.Borderless"
+                        android:id="@+id/merchant_details_description"
+                        style="@style/TextAppearance.AppCompat.Body1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:clickable="false"
-                        android:text="@string/action_share"
+                        android:fontFamily="sans-serif"
+                        android:textSize="14sp"
+                        tools:text="Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo et quasi architecto beatae vitae sunt explicabo. "
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/list_divider_vertical"
+                    android:orientation="vertical"
+                    >
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="170dp"
+                        >
+
+                        <FrameLayout
+                            android:id="@+id/merchant_details_map"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            />
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginBottom="@dimen/spacing_medium"
+                            android:layout_marginLeft="@dimen/dtlInnerMapPadding"
+                            android:layout_marginRight="@dimen/dtlInnerMapPadding"
+                            android:background="@color/white"
+                            android:padding="@dimen/spacing_tiny">
+
+                            <TextView
+                                android:id="@+id/merchant_address"
+                                style="@style/DreamMerchantTextAppearance"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/merchant_direction"
+                                android:maxLines="2"
+                                android:padding="@dimen/spacing_small"
+                                tools:text="402 Mission Street San Francisco CA 94001"/>
+
+                            <Button
+                                android:id="@+id/merchant_direction"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:clickable="false"
+                                android:text="@string/directions"
+                                android:textAllCaps="true"
+                                android:textColor="@color/white"/>
+
+                        </RelativeLayout>
+
+                        <!-- Next layer is just to get clicks on map -->
+                        <FrameLayout
+                            android:id="@+id/dtl_merchant_details_map_click_interceptor"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@android:color/transparent"
+                            />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/merchant_details_additional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/dtl_cities_background"
+                        android:divider="@drawable/list_divider_with_left_padding"
+                        android:gravity="top"
+                        android:orientation="vertical"
+                        android:showDividers="middle"
                         />
                 </LinearLayout>
 
-                <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
-                    android:id="@+id/legal_text"
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:smtv_symbolsLimit="240"
-                    app:smtv_captionCollapsed="@string/details_collapsed_text_caption"
-                    app:smtv_captionExpanded="@string/details_expanded_text_caption"
-                    app:smtv_captionColor="#005e92"
-                    app:smtv_separatorCollapsed="... "
-                    app:smtv_separatorExpanded=" "
-                    app:smtv_extendClickableArea="true"
-                    android:clickable="true"
-                    android:textColor="#929292"
-                    android:textSize="12sp"
-                    android:visibility="gone"
-                    tools:text="DreamTrips Points are offered based on a varying percentage of transaction amount at each individual merchant. Offers are subject to change at any time and may vary based on day of the week. Earning DreamTrips Points through DreamTrips Local offers is capped at a maximum of 200 points per transaction and 500 points per day. Variable minimum spend applies before DreamTrips Points will be awarded. Transaction amounts in local currencies are converted to US Dollar based on a conversion rate fixed by WorldVentures at its sole discretion and DreamTrips Points are allocated based on the converted US Dollar amount."
-                    tools:visibility="visible"
-                    />
+                    android:background="@drawable/list_divider_with_right_padding"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/dtl_cities_background"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_normal"
+                    >
+
+                    <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
+                        android:id="@+id/legal_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:textColor="#929292"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        app:smtv_captionCollapsed="@string/details_collapsed_text_caption"
+                        app:smtv_captionColor="#005e92"
+                        app:smtv_captionExpanded="@string/details_expanded_text_caption"
+                        app:smtv_extendClickableArea="true"
+                        app:smtv_separatorCollapsed="... "
+                        app:smtv_separatorExpanded=" "
+                        app:smtv_symbolsLimit="240"
+                        tools:text="DreamTrips Points are offered based on a varying percentage of transaction amount at each individual merchant. Offers are subject to change at any time and may vary based on day of the week. Earning DreamTrips Points through DreamTrips Local offers is capped at a maximum of 200 points per transaction and 500 points per day. Variable minimum spend applies before DreamTrips Points will be awarded. Transaction amounts in local currencies are converted to US Dollar based on a conversion rate fixed by WorldVentures at its sole discretion and DreamTrips Points are allocated based on the converted US Dollar amount."
+                        tools:visibility="visible"
+                        />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_actionbar"
+                style="@style/ToolBarStyle"/>  <!-- app:layout_scrollFlags="scroll|enterAlways" for collapsing toolbar-->
+        </android.support.design.widget.AppBarLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlDetailsScreenImpl>

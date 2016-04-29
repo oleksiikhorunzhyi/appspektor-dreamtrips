@@ -10,6 +10,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.composer.StubSubscriber;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
@@ -43,6 +44,8 @@ public class DtlLocationManager {
     @ForApplication
     @Inject
     Context context;
+    @Inject
+    RetryLoginComposer retryLoginComposer;
 
     private ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe;
     private ActionPipe<DtlSearchLocationAction> searchLocationPipe;
@@ -80,8 +83,11 @@ public class DtlLocationManager {
         return nearbyLocationPipe.asReadOnly();
     }
 
+    @SuppressWarnings("unchecked")
     public void loadNearbyLocations(Location location) {
-        nearbyLocationPipe.send(new DtlNearbyLocationAction(dtlApi, location));
+        nearbyLocationPipe.createObservableSuccess(new DtlNearbyLocationAction(dtlApi, location))
+                .compose(retryLoginComposer)
+                .subscribe(new StubSubscriber<>());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -92,10 +98,13 @@ public class DtlLocationManager {
         return searchLocationPipe.asReadOnly();
     }
 
+    @SuppressWarnings("unchecked")
     public void searchLocations(String query) {
         nearbyLocationPipe.cancelLatest();
         searchLocationPipe.cancelLatest();
-        searchLocationPipe.send(DtlSearchLocationAction.createEmpty(query));
+        searchLocationPipe.createObservableSuccess(DtlSearchLocationAction.createEmpty(query))
+                .compose(retryLoginComposer)
+                .subscribe(new StubSubscriber<>());
     }
 
     ///////////////////////////////////////////////////////////////////////////

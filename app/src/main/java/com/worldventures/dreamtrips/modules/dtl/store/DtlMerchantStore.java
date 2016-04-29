@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.store;
 
+import android.annotation.SuppressLint;
 import android.location.Location;
 
-import com.messenger.api.temp.RetryLoginComposer;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DtlApi;
@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.janet.ResultOnlyFilter;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.core.rx.composer.StubSubscriber;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
@@ -43,6 +44,8 @@ import static com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAc
 
 public class DtlMerchantStore {
 
+    @Inject
+    RetryLoginComposer retryLoginComposer;
     @Inject
     SnappyRepository db;
     @Inject
@@ -108,13 +111,15 @@ public class DtlMerchantStore {
                         filterStorePipe.send(DtlFilterMerchantStoreAction.amenitiesUpdate(action.getResult())));
     }
 
+    @SuppressLint("DefaultLocale")
+    @SuppressWarnings("unchecked")
     private void onLoadMerchants(DtlMerchantStoreAction action) {
         Location location = action.getLocation();
         String locationArg = String.format("%1$f,%2$f",
                 location.getLatitude(), location.getLongitude());
         loadMerchantsPipe.createObservableSuccess(new DtlMerchantsAction(dtlApi, locationArg))
-                .compose(new RetryLoginComposer<>(appSessionHolder, janet))
-                .subscribe();
+                .compose(retryLoginComposer)
+                .subscribe(new StubSubscriber());
     }
 
     private void onClear(DtlMerchantStoreAction action) {

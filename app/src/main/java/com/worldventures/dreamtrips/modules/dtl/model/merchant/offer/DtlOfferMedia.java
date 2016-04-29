@@ -16,6 +16,9 @@ public class DtlOfferMedia implements Parcelable, ImagePathHolder {
     private int width;
     private int height;
 
+    public DtlOfferMedia() {
+    }
+
     @Override
     public String getImagePath() {
         return url;

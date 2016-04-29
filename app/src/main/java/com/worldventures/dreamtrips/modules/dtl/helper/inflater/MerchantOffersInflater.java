@@ -154,8 +154,7 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
                 ButterKnife.<ViewGroup>findById(perkView, R.id.expirationBarLayout);
         AppCompatTextView expirationBarCaption =
                 ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
-//        if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
-        if (Math.random() >= 0.5d) {
+        if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
             expirationBarLayout.setVisibility(View.VISIBLE);
             expirationBarCaption.setText(DtlMerchantHelper.
                     getOfferExpiringCaption(rootView.getResources(), offerData));

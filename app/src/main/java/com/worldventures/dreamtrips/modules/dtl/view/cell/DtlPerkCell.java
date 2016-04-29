@@ -61,8 +61,7 @@ public class DtlPerkCell
     }
 
     private void bindExpirationBar() {
-//        if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
-        if (Math.random() >= 0.5d) {
+        if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
             expirationBarLayout.setVisibility(View.VISIBLE);
             expirationBarCaption.setText(DtlMerchantHelper.
                     getOfferExpiringCaption(itemView.getContext(), getModelObject()));

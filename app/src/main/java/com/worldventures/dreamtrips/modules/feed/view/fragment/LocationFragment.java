@@ -212,8 +212,9 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
                 .requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
                 .compose(this::bind)
                 .subscribe(new PermissionSubscriber()
-                .onPermissionDeniedAction(this::showDeniedForLocation)
-                .onPermissionGrandedAction(this::locationPermission));
+                        .onPermissionDeniedAction(this::showDeniedForLocation)
+                        .onPermissionGrantedAction(this::locationPermissionGranted)
+                        .onPermissionRationaleAction(this::showRationaleForLocation));
     }
 
     @Override
@@ -225,13 +226,13 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         }
     }
 
-    void locationPermission() {
+    void locationPermissionGranted() {
         getPresenter().onPermissionGranted();
     }
 
-//    void showRationaleForLocation() {
-//        Snackbar.make(getView(), R.string.permission_location_rationale, Snackbar.LENGTH_SHORT).show();
-//    }
+    void showRationaleForLocation() {
+        Snackbar.make(getView(), R.string.permission_location_rationale, Snackbar.LENGTH_SHORT).show();
+    }
 
     void showDeniedForLocation() {
         Snackbar.make(getView(), R.string.no_location_permission, Snackbar.LENGTH_SHORT).show();

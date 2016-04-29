@@ -77,10 +77,11 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
     public void onResume() {
         super.onResume();
         ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_barcode_title);
-        permissionDispatcher.requestPermission(PermissionConstants.CAMERA_GROUP_PERMISSION)
+        permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
                 .compose(this::bind)
                 .subscribe(new PermissionSubscriber()
-                        .onPermissionGrandedAction(this::startCamera)
+                        .onPermissionGrantedAction(this::startCamera)
+                        .onPermissionRationaleAction(this::showRationaleForCamera)
                         .onPermissionDeniedAction(this::showDeniedForCamera));
         scanner.setResultHandler(this);
     }
@@ -89,9 +90,9 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
         scanner.startCamera();
     }
 
-//    void showRationaleForCamera() {
-//        Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
-//    }
+    void showRationaleForCamera() {
+        Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
+    }
 
     void showDeniedForCamera() {
         Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();

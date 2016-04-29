@@ -59,10 +59,11 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> impl
     @Override
     public void checkPermissions() {
         permissionSubscription = permissionDispatcher
-                .requestPermission(PermissionConstants.CAMERA_GROUP_PERMISSION)
+                .requestPermission(PermissionConstants.CAMERA_STORE_PERMISSIONS)
                 .subscribe(new PermissionSubscriber()
-                    .onPermissionDeniedAction(this::cameraPermission)
-                    .onPermissionDeniedAction(this::showDeniedForCamera));
+                        .onPermissionRationaleAction(this::showRationaleForCamera)
+                        .onPermissionGrantedAction(this::cameraPermissionGranted)
+                        .onPermissionDeniedAction(this::showDeniedForCamera));
     }
 
     @Override
@@ -73,13 +74,13 @@ public class DtGalleryFragment extends BasePickerFragment<GalleryPresenter> impl
         }
     }
 
-    void cameraPermission() {
+    void cameraPermissionGranted() {
         getPresenter().openCamera();
     }
 
-//    void showRationaleForCamera() {
-//        Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
-//    }
+    void showRationaleForCamera() {
+        Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
+    }
 
     void showDeniedForCamera() {
         Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();

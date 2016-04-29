@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.navigation.router.RouterImpl;
+import com.worldventures.dreamtrips.core.permission.PermissionModule;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import dagger.Module;
@@ -15,7 +16,8 @@ import dagger.Provides;
         complete = false,
         library = true,
         includes = {
-                UiUtilModule.class
+                UiUtilModule.class,
+                PermissionModule.class
         }
 )
 public class ActivityModule {

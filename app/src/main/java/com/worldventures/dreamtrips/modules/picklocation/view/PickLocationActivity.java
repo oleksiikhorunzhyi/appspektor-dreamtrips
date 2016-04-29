@@ -36,17 +36,18 @@ public class PickLocationActivity extends BaseActivity {
         permissionSubscription = permissionDispatcher
                 .requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
                 .subscribe(new PermissionSubscriber()
-                    .onPermissionDeniedAction(this::showDeniedForLocation)
-                    .onPermissionGrandedAction(this::locationPermission));
+                        .onPermissionRationaleAction(this::showRationaleForLocation)
+                        .onPermissionDeniedAction(this::showDeniedForLocation)
+                        .onPermissionGrantedAction(this::locationPermissionGranted));
     }
 
-    void locationPermission() {
+    void locationPermissionGranted() {
         view.getPresenter().onLocationPermissionGranted();
     }
 
-//    void showRationaleForLocation(PermissionRequest request) {
-//        view.getPresenter().onRationalForLocationPermissionRequired();
-//    }
+    void showRationaleForLocation() {
+        view.getPresenter().onRationalForLocationPermissionRequired();
+    }
 
     void showDeniedForLocation() {
         view.getPresenter().onLocationPermissionDenied();

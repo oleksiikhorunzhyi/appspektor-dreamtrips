@@ -148,10 +148,10 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     }
 
     public void openPicker() {
-        permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS)
+        permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
                 .compose(bindView())
                 .subscribe(new PermissionSubscriber()
-                        .onPermissionGrandedAction(() -> getView().showAvatarPhotoPicker())
+                        .onPermissionGrantedAction(() -> getView().showAvatarPhotoPicker())
                 );
     }
 }

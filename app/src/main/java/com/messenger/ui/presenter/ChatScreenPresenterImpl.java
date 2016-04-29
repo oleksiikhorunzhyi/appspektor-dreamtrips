@@ -662,7 +662,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void showPhotoPicker() {
         //noinspection ConstantConditions
         permissionDispatcher
-                .requestPermission(PermissionConstants.STORE_PERMISSIONS)
+                .requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
                 .compose(new PermissionGrantedComposer())
                 .compose(bindView())
                 .subscribe(aVoid -> getView().showPhotoPicker());

@@ -59,7 +59,7 @@ android {
             'MESSENGER_API_URL' : '"dtmsgapp-dev.worldventures.biz"',
     ]
     def CONFIG_MAP_DTL = [
-            'DreamTripsApi' : '"http://techery-dt-dtl.techery.io"',
+            'DreamTripsApi' : '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
     ]
     def CONFIG_MAP_PERF = [
             'DreamTripsApi' : '"http://dtapp-perf.worldventures.biz"',
@@ -148,14 +148,8 @@ android {
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
-        stage {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://techery-dt-preprod.techery.io"'
-        }
-        perf {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz"'
-        }
+        stage { dimension "config" }
+        perf { dimension "config" }
         prod {
             dimension "config"
             //

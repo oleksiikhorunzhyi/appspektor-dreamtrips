@@ -28,10 +28,11 @@
             android:src="@drawable/back_icon"
             />
 
-        <android.support.v4.widget.ContentLoadingProgressBar
+        <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             />
     </FrameLayout>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImageScreenImpl>

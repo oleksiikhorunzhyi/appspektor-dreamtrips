@@ -109,6 +109,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
                         .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable)));
+
+        merchantStore.merchantsActionPipe().observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlMerchantsAction>()
+                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable)));
         //
         Observable.combineLatest(
                 dtlLocationManager.getSelectedLocation().map(DtlLocationCommand::getResult),

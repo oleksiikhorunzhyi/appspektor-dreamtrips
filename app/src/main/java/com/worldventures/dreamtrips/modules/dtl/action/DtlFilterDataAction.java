@@ -18,29 +18,27 @@ import rx.functions.Func1;
 public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> implements CachedAction<DtlFilterData> {
 
 
-    private final boolean updating;
-    private final Func1<DtlFilterData, DtlFilterData> updateAction;
+    private final Func1<DtlFilterData, DtlFilterData> updateFunc;
 
-    private DtlFilterDataAction(Func1<DtlFilterData, DtlFilterData> updateAction, boolean updating) {
-        this(ImmutableDtlFilterData.builder().build(), updateAction, updating);
+    private DtlFilterDataAction(Func1<DtlFilterData, DtlFilterData> updateFunc) {
+        this(ImmutableDtlFilterData.builder().build(), updateFunc);
     }
 
-    private DtlFilterDataAction(DtlFilterData data, Func1<DtlFilterData, DtlFilterData> updateAction, boolean updating) {
-        super(() -> updateAction != null ? updateAction.call(data) : data);
-        this.updateAction = updateAction;
-        this.updating = updating;
+    private DtlFilterDataAction(DtlFilterData data, Func1<DtlFilterData, DtlFilterData> updateFunc) {
+        super(() -> updateFunc != null ? updateFunc.call(data) : data);
+        this.updateFunc = updateFunc;
     }
 
-    public boolean isUpdating() {
-        return updating;
+    public boolean withUpdateFunc() {
+        return updateFunc != null;
     }
 
     public static DtlFilterDataAction update(Func1<DtlFilterData, DtlFilterData> updateAction) {
-        return new DtlFilterDataAction(updateAction, true);
+        return new DtlFilterDataAction(updateAction);
     }
 
-    public static DtlFilterDataAction get() {
-        return new DtlFilterDataAction(null, false);
+    public static DtlFilterDataAction read() {
+        return new DtlFilterDataAction(null);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -58,7 +56,7 @@ public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> im
 
     @Override
     public void onRestore(ActionHolder holder, List<DtlFilterData> cache) {
-        holder.newAction(new DtlFilterDataAction(cache.get(0), updateAction, updating));
+        holder.newAction(new DtlFilterDataAction(cache.get(0), updateFunc));
     }
 
     @Override

@@ -214,7 +214,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     @NonNull
     private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel) {
         return ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getThumbnailPath()), 300, 300)
-                .subscribeOn(Schedulers.io())
                 .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable), bitmapObservable, (photoTags, bitmap) -> new Pair<>(bitmap, photoTags)))
                 .map(pair -> {
                     PhotoCreationItem item = new PhotoCreationItem();

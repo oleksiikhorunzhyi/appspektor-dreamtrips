@@ -100,6 +100,7 @@ public class DrawableUtil {
             return new Pair<>(fileImage, new Size(0, 0));
         } finally {
             try {
+                bitmap.recycle();
                 StreamHelper.close(bstream);
                 StreamHelper.flush(stream);
                 StreamHelper.close(stream);

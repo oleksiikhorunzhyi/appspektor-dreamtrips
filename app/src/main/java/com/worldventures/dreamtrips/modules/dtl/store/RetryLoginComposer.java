@@ -84,6 +84,8 @@ public class RetryLoginComposer<T> implements Observable.Transformer<T, T> {
         } else if (error.getCause() instanceof RetrofitError) {
             RetrofitError cause = (RetrofitError) error.getCause();
             return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
+        } else if (error.getCause() != null) {
+            return isLoginError(error.getCause());
         }
         return true;
     }

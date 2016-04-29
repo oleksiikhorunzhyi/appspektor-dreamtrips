@@ -136,12 +136,12 @@ public class DtlFilterMerchantStore {
 
     public Observable<DtlFilterData> observeStateChange() {
         return filterDataPipe.observeSuccess()
-                .filter(DtlFilterDataAction::isUpdating)
+                .filter(DtlFilterDataAction::withUpdateFunc)
                 .map(CommandActionBase::getResult);
     }
 
     public Observable<DtlFilterData> getFilterDataState() {
-        return filterDataPipe.createObservableSuccess(DtlFilterDataAction.get())
+        return filterDataPipe.createObservableSuccess(DtlFilterDataAction.read())
                 .map(CommandActionBase::getResult);
     }
 

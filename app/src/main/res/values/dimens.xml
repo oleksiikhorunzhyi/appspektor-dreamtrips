@@ -118,6 +118,10 @@
     <dimen name="dtlMerchantCoverImageSize">96dp</dimen>
     <dimen name="dtlOfferCoverImageHeight">50dp</dimen>
     <dimen name="dtlOfferCoverImageWidth">75dp</dimen>
+    <dimen name="dtlOfferExpirationWidth">59dp</dimen>
+    <dimen name="dtlOfferExpirationHeight">19dp</dimen>
+    <dimen name="dtlOfferExpirationTopMargin">10dp</dimen>
+    <dimen name="dtlOfferExpirationTextSize">9sp</dimen>
     <dimen name="dtlPlaceBadgeSize">65dp</dimen>
     <dimen name="dtlPlaceBadgeMargin">16dp</dimen>
     <dimen name="dtlPlaceNameTextSize">20sp</dimen>

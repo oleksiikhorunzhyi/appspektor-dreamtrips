@@ -310,11 +310,12 @@ public class DateTimeUtils {
     }
 
     public static String concatOperationDays(Resources res, List<OperationDay> operationDays, Locale locale) {
-        if (operationDays.size() == Calendar.DAY_OF_WEEK || operationDays.isEmpty()) return res.getString(R.string.everyday);
+        List<OperationDay> days = Queryable.from(operationDays).filter(OperationDay::isHaveOperationHours).toList();
+        if (days.size() == Calendar.DAY_OF_WEEK) return res.getString(R.string.everyday);
         //
-        String delimiter = operationDays.size() == 2 ? " & " : " "; // TODO need translations??
-        List<String> days = Queryable.from(operationDays).map(day -> getDisplayWeekDay(day.getDayOfWeek().getDay(), Calendar.SHORT, locale)).toList();
-        return android.text.TextUtils.join(delimiter, days);
+        String delimiter = days.size() == 2 ? " & " : " "; // TODO need translations??
+        List<String> names = Queryable.from(days).map(day -> getDisplayWeekDay(day.getDayOfWeek().getDay(), Calendar.SHORT, locale)).toList();
+        return android.text.TextUtils.join(delimiter, names);
     }
 
     public static CharSequence getRelativeTimeSpanString(Resources res, long startTime) {

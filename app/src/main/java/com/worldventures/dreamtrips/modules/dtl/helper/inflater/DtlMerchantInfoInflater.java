@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
 import android.content.res.Resources;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -118,9 +117,9 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
     }
 
     private void setType() {
-        ViewUtils.visibility(earnWrapper, !merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
-        ViewUtils.visibility(merchantWrapper, merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
-        ViewUtils.visibility(perkDivider, merchant.hasNoOffers() ? View.GONE : View.VISIBLE);
+        ViewUtils.setViewVisibility(earnWrapper, !merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
+        ViewUtils.setViewVisibility(merchantWrapper, merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
+        ViewUtils.setViewVisibility(perkDivider, merchant.hasNoOffers() ? View.GONE : View.VISIBLE);
     }
 
     private void setImage() {
@@ -145,8 +144,8 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
         description.setText(Html.fromHtml(merchant.getDescription()));
         description.setMovementMethod(new LinkMovementMethod());
         //
-        ViewUtils.visibility(descriptionHeader, TextUtils.isEmpty(merchant.getDescription()) ? View.GONE : View.VISIBLE);
-        ViewUtils.visibility(legalTextView, merchant.getDisclaimers().isEmpty() ? View.GONE : View.VISIBLE);
+        ViewUtils.setViewVisibility(descriptionHeader, TextUtils.isEmpty(merchant.getDescription()) ? View.GONE : View.VISIBLE);
+        ViewUtils.setViewVisibility(legalTextView, merchant.getDisclaimers().isEmpty() ? View.GONE : View.VISIBLE);
         //
         if (legalTextView.getVisibility() == View.GONE) return;
 
@@ -210,8 +209,8 @@ public class DtlMerchantInfoInflater extends DtlMerchantDataInflater {
 
     private static void bindTextOrHideView(TextView textView, CharSequence text) {
         if (!TextUtils.isEmpty(text)) {
-            ViewUtils.visibility(textView, View.VISIBLE);
+            ViewUtils.setViewVisibility(textView, View.VISIBLE);
             textView.setText(text);
-        } else ViewUtils.visibility(textView, View.GONE);
+        } else ViewUtils.setViewVisibility(textView, View.GONE);
     }
 }

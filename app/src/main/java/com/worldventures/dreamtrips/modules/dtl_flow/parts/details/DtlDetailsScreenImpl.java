@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -37,15 +36,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -113,7 +107,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
             contactView.setCompoundDrawablesWithIntrinsicBounds(contact.icon, null, null, null);
             contactView.setText(contact.text);
             //
-            if(DtlMerchantHelper.isContactIntented(contact, getActivity()))
+            if(DtlMerchantHelper.contactCanBeResolved(contact, getActivity()))
                 RxView.clicks(contactView)
                         .compose(RxLifecycle.bindView(contactView))
                         .subscribe(aVoid -> onContactClick(contact));
@@ -194,7 +188,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
         TextView checkedIn = ButterKnife.findById(this, R.id.checked_in);
         //
         if (earn != null) earn.setText(dtlTransaction != null ? R.string.dtl_earn : R.string.dtl_check_in);
-        if (checkedIn != null) ViewUtils.visibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
+        if (checkedIn != null) ViewUtils.setViewVisibility(checkedIn, dtlTransaction != null ? View.VISIBLE : View.GONE);
     }
 
     @Override

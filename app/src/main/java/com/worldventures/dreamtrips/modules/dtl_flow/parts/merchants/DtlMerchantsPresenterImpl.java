@@ -57,6 +57,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     @Inject
     DtlMerchantStore merchantStore;
     @Inject
+    DtlFilterMerchantStore filterStore;
+    @Inject
     DtlLocationManager dtlLocationManager;
     //
     @State
@@ -81,6 +83,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         //
         bindMerchantStores();
         bindFilteredStream();
+        bindFilterState();
         //
         if (!initialized) {
             dtlLocationManager.getSelectedLocation()
@@ -97,7 +100,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                     .map(DtlFilterMerchantsAction::getResult)
                     .subscribe(this::tryRedirectToLocation);
         //
-
+        filterStore.getFilterDataState()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(dtlFilterData ->
+                getView().setFilterButtonState(!dtlFilterData.isDefault()));
+        //
         filteredMerchantStore.filteredMerchantsChangesPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
@@ -120,6 +127,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                         this::filterMerchantsByType);
         merchantsStream.asObservable().compose(bindView())
                 .subscribe(getView()::setItems);
+    }
+
+    private void bindFilterState() {
+        filterStore.observeStateChange()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(dtlFilterData ->
+                        getView().setFilterButtonState(!dtlFilterData.isDefault()));
     }
 
     private List<DtlMerchant> filterMerchantsByType(List<DtlMerchant> merchants, boolean hideDinings) {

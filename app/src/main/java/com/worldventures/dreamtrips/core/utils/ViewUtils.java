@@ -133,12 +133,12 @@ public class ViewUtils {
         return true;
     }
 
-    public static void visibility(View view, int visibility) {
+    public static void setViewVisibility(View view, int visibility) {
         Preconditions.checkNotNull(view, "view is null");
         if (view.getVisibility() != visibility) view.setVisibility(visibility);
     }
 
-    public static void visibility(int visibility, View... views) {
-        Queryable.from(views).forEachR(view -> visibility(view, visibility));
+    public static void setViewVisibility(int visibility, View... views) {
+        Queryable.from(views).forEachR(view -> setViewVisibility(view, visibility));
     }
 }

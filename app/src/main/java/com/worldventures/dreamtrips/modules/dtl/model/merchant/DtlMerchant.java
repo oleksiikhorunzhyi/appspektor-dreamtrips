@@ -189,7 +189,8 @@ public class DtlMerchant implements Parcelable {
     }
 
     public DtlCurrency getDefaultCurrency() {
-        DtlOffer<DtlOfferPointsData> dtlOffer = Queryable.from(getOffers()).filter(element -> element.getOffer().getType().equals(Offer.POINT_REWARD)).first();
+        DtlOffer<DtlOfferPointsData> dtlOffer = Queryable.from(getOffers()).filter(element -> element.getOffer().getType().equals(Offer.POINT_REWARD)).firstOrDefault();
+        if (dtlOffer == null) return null;
         return Queryable.from(dtlOffer.getOffer().getCurrencies()).firstOrDefault(DtlCurrency::isDefault);
     }
 

@@ -54,7 +54,7 @@ public class DtlMerchantHelper {
         return items;
     }
 
-    public static boolean isContactIntented(ImageTextItem contact, Activity activity) {
+    public static boolean contactCanBeResolved(ImageTextItem contact, Activity activity) {
         return contact.intent != null && contact.intent.resolveActivityInfo(activity.getPackageManager(), 0) != null;
     }
 

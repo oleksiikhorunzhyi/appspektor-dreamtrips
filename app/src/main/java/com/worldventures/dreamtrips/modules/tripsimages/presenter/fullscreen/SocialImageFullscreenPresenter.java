@@ -90,6 +90,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         userIds.add(tag.getUser().getId());
         doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
             photo.getPhotoTags().remove(tag);
+            photo.setPhotoTagsCount(photo.getPhotoTags().size());
         });
     }
 
@@ -151,7 +152,6 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
             if (photo.equals(temp)) {
                 this.photo = temp;
                 setupActualViewState();
-                view.redrawTags();
             }
         }
     }
@@ -169,7 +169,5 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         void showContentWrapper();
 
         void openEdit(EditPhotoBundle bundle);
-
-        void redrawTags();
     }
 }

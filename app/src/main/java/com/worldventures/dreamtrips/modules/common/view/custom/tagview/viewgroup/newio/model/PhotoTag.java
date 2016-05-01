@@ -76,7 +76,9 @@ public class PhotoTag implements Parcelable, Serializable, Cloneable {
 
         PhotoTag photoTag = (PhotoTag) o;
 
-        if (targetUserId != photoTag.targetUserId) return false;
+        if (targetUserId != photoTag.targetUserId &&
+                (user == null || photoTag.getUser() == null || user.getId() != photoTag.getUser().getId()))
+            return false;
         Timber.v("-------------");
         Timber.v(photoTag.getProportionalPosition().toString());
         Timber.v(position.toString());

@@ -121,11 +121,6 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
                     ? View.VISIBLE
                     : View.GONE);
             photoTitle.setEnabled(titleChangesEnabled);
-
-            photoTagHolder.removeAllViews();
-            if (getModelObject().getStatus() == ActionState.Status.SUCCESS && getModelObject().isCanEdit()) {
-                showTagViewGroup();
-            }
             invalidateAddTagBtn();
             invalidateDeleteBtn();
 

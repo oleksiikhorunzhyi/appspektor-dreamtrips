@@ -35,7 +35,8 @@ import static com.worldventures.dreamtrips.modules.common.view.util.CoordinatesT
 
 public class PhotoTagHolder extends RelativeLayout {
 
-    public static final int MAX_HEIGHT = 1;
+    private static final int MAX_WIDTH = 1;
+
     @State
     boolean isShown;
     @State
@@ -84,11 +85,12 @@ public class PhotoTagHolder extends RelativeLayout {
         isShown = false;
     }
 
-    protected void addExistsTagView(PhotoTag photoTag, boolean deleteEnabled) {
+    protected ExistsTagView addExistsTagView(PhotoTag photoTag, boolean deleteEnabled) {
         ExistsTagView view = new ExistsTagView(getContext());
         view.setDeleteEnabled(deleteEnabled);
         view.setTagListener(tag -> manager.notifyTagDeleted(tag));
         addTagView(view, photoTag);
+        return view;
     }
 
     protected void addSuggestionTagView(PhotoTag photoTag, TagSuggestionActionListener tagSuggestionActionListener) {
@@ -231,7 +233,7 @@ public class PhotoTagHolder extends RelativeLayout {
     }
 
     private PhotoTag findNextSuggestion(TagPosition pos) {
-        if (!isSuggestionViewExists()) return null;
+        if (!isSuggestionViewExists() || index++ > 100) return null;
         //
         float cX = getCenterX(pos);
         float cY = getCenterY(pos);
@@ -259,7 +261,7 @@ public class PhotoTagHolder extends RelativeLayout {
         int wtY = (int) (way.getTopLeft().getY() * 100);
         int wbY = (int) (way.getBottomRight().getY() * 100);
         //
-        Rect r1 = new Rect(wbX, wtY, MAX_HEIGHT * 100, wbY);
+        Rect r1 = new Rect(wbX, wtY, MAX_WIDTH * 100, wbY);
         int tX = (int) (barricade.getTopLeft().getX() * 100);
         int tY = (int) (barricade.getTopLeft().getY() * 100);
         int bX = (int) (barricade.getBottomRight().getX() * 100);
@@ -277,16 +279,16 @@ public class PhotoTagHolder extends RelativeLayout {
     }
 
     private PhotoTag findTagOnNextLine(TagPosition lastTagPosition) {
-        TagPosition tagPosition = new TagPosition(0,
-                lastTagPosition.getBottomRight().getY(),
-                lastTagPosition.getBottomRight().getX() - lastTagPosition.getTopLeft().getX(),
-                lastTagPosition.getBottomRight().getY() + (lastTagPosition.getBottomRight().getY() - lastTagPosition.getTopLeft().getY()));
-        if (tagPosition.getTopLeft().getY() > MAX_HEIGHT)
-            return findNextSuggestion(new TagPosition(0,
-                    0,
-                    lastTagPosition.getBottomRight().getX() - lastTagPosition.getTopLeft().getX(),
-                    lastTagPosition.getBottomRight().getY() - lastTagPosition.getTopLeft().getY()));
-        //
-        return findNextSuggestion(tagPosition);
+        TagPosition tagPosition = new TagPosition(0, lastTagPosition.getBottomRight().getY(),
+                0, lastTagPosition.getBottomRight().getY() + (lastTagPosition.getBottomRight().getY() - lastTagPosition.getTopLeft().getY()));
+        if (tagPosition.getTopLeft().getY() >= MAX_WIDTH) {
+            TagPosition restartTagPos = new TagPosition(0, 0, 0,
+                    lastTagPosition.getBottomRight().getY() - lastTagPosition.getTopLeft().getY());
+            return findNextSuggestion(restartTagPos);
+        } else {
+            return findNextSuggestion(tagPosition);
+        }
     }
+
+    private static int index = 0;
 }

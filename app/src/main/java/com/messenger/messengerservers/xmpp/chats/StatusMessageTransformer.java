@@ -1,7 +1,7 @@
 package com.messenger.messengerservers.xmpp.chats;
 
 import com.messenger.messengerservers.ConnectionException;
-import com.messenger.messengerservers.xmpp.stanzas.StatusMessageStanza;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.StatusMessageStanza;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Stanza;

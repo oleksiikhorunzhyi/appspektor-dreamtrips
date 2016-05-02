@@ -1,4 +1,4 @@
-package com.messenger.messengerservers.xmpp.stanzas;
+package com.messenger.messengerservers.xmpp.stanzas.incoming;
 
 import com.messenger.messengerservers.model.Conversation;
 
@@ -8,23 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ConversationsIQ extends IQ {
+public class ConversationListIQ extends IQ {
 
     public static final String NAMESPACE = "urn:xmpp:archive";
     public static final String ELEMENT_LIST = "list";
 
-    private List<Conversation> conversations;
+    private List<Conversation> conversations = new ArrayList<>();
 
-    public ConversationsIQ() {
+    public ConversationListIQ() {
         super(ELEMENT_LIST, NAMESPACE);
         conversations = new ArrayList<>();
     }
 
-    public void addConversation(Conversation conversation) {
-        // TODO: 1/29/16 remove  if (!conversations.contains(conversation))
-        if (!conversations.contains(conversation)) {
-            conversations.add(conversation);
-        }
+    public void addConversations(List<Conversation> conversations) {
+        this.conversations.clear();
+        this.conversations.addAll(conversations);
     }
 
     public List<Conversation> getConversations() {

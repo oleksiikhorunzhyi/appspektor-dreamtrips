@@ -10,8 +10,8 @@ import com.messenger.messengerservers.chat.MultiUserChat;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
-import com.messenger.messengerservers.xmpp.stanzas.LeavePresence;
-import com.messenger.messengerservers.xmpp.stanzas.StatusMessageStanza;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.LeavePresence;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.StatusMessageStanza;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;

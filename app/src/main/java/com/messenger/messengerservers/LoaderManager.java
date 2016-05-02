@@ -10,7 +10,9 @@ public interface LoaderManager {
 
     Loader<MessengerUser> createContactLoader();
 
-    Loader<Conversation> createConversationLoader();
+    Loader<Conversation> createConversationLoader(String conversationId);
+
+    Loader<Conversation> createConversationsLoader();
 
     ParticipantsLoader createParticipantsLoader();
 }

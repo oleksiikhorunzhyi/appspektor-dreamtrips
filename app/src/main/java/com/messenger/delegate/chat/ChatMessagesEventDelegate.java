@@ -1,7 +1,6 @@
 package com.messenger.delegate.chat;
 
-import com.messenger.delegate.CreateConversationHelper;
-import com.messenger.delegate.LoaderDelegate;
+import com.messenger.delegate.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -12,14 +11,11 @@ import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Collections;
 
 import javax.inject.Inject;
 
-import dagger.Lazy;
 import rx.Notification;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -30,16 +26,11 @@ public class ChatMessagesEventDelegate {
     ConversationsDAO conversationsDAO;
     @Inject
     MessageDAO messageDAO;
-    @Inject
-    SessionHolder<UserSession> currentUserSession;
     //
     @Inject
-    LoaderDelegate loaderDelegate;
+    LoadConversationDelegate loadConversationDelegate;
     @Inject
-
     DecomposeMessagesHelper decomposeMessagesHelper;
-
-    Lazy<CreateConversationHelper> createConversationHelperLazy;
 
     private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
@@ -74,15 +65,8 @@ public class ChatMessagesEventDelegate {
     private void trySaveReceivedMessage(Message message, DataConversation conversationFromBD) {
         if (conversationFromBD == null) {
             String conversationId = message.getConversationId();
-            String currentUserId = currentUserSession.get().get().getUser().getUsername();
-            createConversationHelperLazy.get()
-                    .createConversation(conversationId, currentUserId)
-                    .flatMap(conversation -> {
-                        conversationsDAO.save(conversation);
-                        saveReceivedMessage(message);
-                        return loaderDelegate.loadParticipants(conversationId);
-                    }).subscribe(dataUsers -> {},
-                    error -> Timber.d(error, ""));
+            loadConversationDelegate.loadConversationFromNetwork(conversationId)
+                    .subscribe(dataConversation -> saveReceivedMessage(message));
         } else {
             saveReceivedMessage(message);
         }

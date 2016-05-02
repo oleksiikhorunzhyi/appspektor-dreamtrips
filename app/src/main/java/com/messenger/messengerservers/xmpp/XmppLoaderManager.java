@@ -6,8 +6,9 @@ import com.messenger.messengerservers.loaders.ParticipantsLoader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.messengerservers.xmpp.loaders.XmppContactLoader;
-import com.messenger.messengerservers.xmpp.loaders.XmppConversationLoader;
+import com.messenger.messengerservers.xmpp.loaders.XmppConversationListLoader;
 import com.messenger.messengerservers.xmpp.loaders.XmppParticipantsLoader;
+import com.messenger.messengerservers.xmpp.loaders.XmppConversationLoader;
 
 
 public class XmppLoaderManager implements LoaderManager {
@@ -24,8 +25,13 @@ public class XmppLoaderManager implements LoaderManager {
     }
 
     @Override
-    public Loader<Conversation> createConversationLoader() {
-        return new XmppConversationLoader(facade);
+    public Loader<Conversation> createConversationLoader(String conversationId) {
+        return new XmppConversationLoader(facade, conversationId);
+    }
+
+    @Override
+    public Loader<Conversation> createConversationsLoader() {
+        return new XmppConversationListLoader(facade);
     }
 
     @Override

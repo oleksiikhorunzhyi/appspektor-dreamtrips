@@ -1,5 +1,7 @@
 package com.messenger.delegate;
 
+import android.support.annotation.NonNull;
+
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
@@ -61,43 +63,21 @@ public class LoaderDelegate {
                 .subscribe(listener::onSynchronized, t -> Timber.e(t, "Error while synchronizing cache"));
     }
 
+    public Observable<Void> loadConversation(String conversationId) {
+        return loadConversations(messengerServerFacade.getLoaderManager().createConversationLoader(conversationId));
+    }
+
     public Observable<Void> loadConversations() {
+        return loadConversations(messengerServerFacade.getLoaderManager().createConversationsLoader());
+    }
+
+    @NonNull
+    private Observable<Void> loadConversations(Loader<Conversation> conversationLoader) {
         Observable<List<MessengerUser>> loader = Observable.<List<MessengerUser>>create(subscriber -> {
-            Loader<Conversation> conversationLoader = messengerServerFacade.getLoaderManager().createConversationLoader();
-            conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<Conversation, MessengerUser>(subscriber) {
+            conversationLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<List<MessengerUser>, Conversation>(subscriber) {
                 @Override
                 protected List<MessengerUser> process(List<Conversation> data) {
-                    final long syncTime = System.currentTimeMillis();
-                    List<DataConversation> convs = from(data).map(DataConversation::new).toList();
-                    from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
-
-                    List<Message> serverMessages = from(data).map(conv -> conv.getLastMessage()).notNulls().toList();
-                    DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(serverMessages);
-                    from(result.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
-
-                    List<DataParticipant> relationships = new ArrayList<>();
-                    if (!data.isEmpty()) {
-                        from(data)
-                                .filter(conversation -> conversation.getParticipants() != null)
-                                .map(conversation -> conversation.getParticipants())
-                                .map(participants -> from(participants).map(DataParticipant::new).toList())
-                                .forEachR(bunchRelationships -> relationships.addAll(bunchRelationships));
-                        from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
-                    }
-
-                    conversationsDAO.save(convs);
-                    conversationsDAO.deleteBySyncTime(syncTime);
-                    decomposeMessagesHelper.saveDecomposeMessage(result);
-                    participantsDAO.save(relationships);
-                    participantsDAO.deleteBySyncTime(syncTime);
-
-                    List<MessengerUser> messengerUsers = data.isEmpty() ? Collections.emptyList() : from(relationships)
-                            .map((elem, idx) -> new MessengerUser(elem.getUserId()))
-                            .distinct()
-                            .toList();
-                    Timber.d("ConversationLoader %s", messengerUsers);
-                    return messengerUsers;
-
+                    return processConversationsData(data);
                 }
             });
             conversationLoader.load();
@@ -106,10 +86,49 @@ public class LoaderDelegate {
                 .map(var -> (Void) null);
     }
 
+    private List<MessengerUser> processConversationsData(List<Conversation> data) {
+        final long syncTime = System.currentTimeMillis();
+        List<DataConversation> convs = from(data).map(DataConversation::new).toList();
+        from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
+
+        List<Message> serverMessages = from(data).map(Conversation::getLastMessage).notNulls().toList();
+        DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(serverMessages);
+        from(result.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
+
+        List<DataParticipant> relationships = new ArrayList<>();
+        if (!data.isEmpty()) {
+            from(data)
+                    .filter(conversation -> conversation.getParticipants() != null)
+                    .map(Conversation::getParticipants)
+                    .map(participants -> from(participants).map(DataParticipant::new).toList())
+                    .forEachR(relationships::addAll);
+            from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
+        }
+
+        conversationsDAO.save(convs);
+        boolean singleConversationData = data.size() == 1;
+        if (!singleConversationData) {
+            conversationsDAO.deleteBySyncTime(syncTime);
+        }
+        decomposeMessagesHelper.saveDecomposeMessage(result);
+        participantsDAO.save(relationships);
+        if (singleConversationData) {
+            participantsDAO.deleteBySyncTime(syncTime, data.get(0).getId());
+        } else {
+            participantsDAO.deleteBySyncTime(syncTime);
+        }
+
+        List<MessengerUser> messengerUsers = data.isEmpty() ? Collections.emptyList() : from(relationships)
+                .map((elem, idx) -> new MessengerUser(elem.getUserId()))
+                .distinct()
+                .toList();
+        return messengerUsers;
+    }
+
     public Observable<List<DataUser>> loadContacts() {
         Observable<List<MessengerUser>> loader = Observable.<List<MessengerUser>>create(subscriber -> {
             Loader<MessengerUser> contactLoader = messengerServerFacade.getLoaderManager().createContactLoader();
-            contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<MessengerUser, MessengerUser>(subscriber) {
+            contactLoader.setOnEntityLoadedListener(new SubscriberLoaderListener<List<MessengerUser>, MessengerUser>(subscriber) {
                 @Override
                 protected List<MessengerUser> process(List<MessengerUser> entities) {
                     usersDAO.deleteFriends();
@@ -122,27 +141,19 @@ public class LoaderDelegate {
         return userProcessor.connectToUserProvider(loader);
     }
 
-    public Observable<List<DataUser>> loadParticipants(String conversationId) {
-        return userProcessor.connectToUserProvider(messengerServerFacade.getLoaderManager().createParticipantsLoader()
-                .load(conversationId)
-                .doOnNext(participants -> participantsDAO.save(from(participants).map(DataParticipant::new).toList()))
-                .map(participants -> from(participants).map(p -> new MessengerUser(p.getUserId())).toList()))
-                .doOnNext(usersDAO::save);
-    }
+    private static abstract class SubscriberLoaderListener<R, I> implements OnLoadedListener<I> {
 
-    private static abstract class SubscriberLoaderListener<I, R> implements OnLoadedListener<I> {
+        private Subscriber subscriber;
 
-        private Subscriber<? super List<R>> subscriber;
-
-        public SubscriberLoaderListener(Subscriber<? super List<R>> subscriber) {
+        public SubscriberLoaderListener(Subscriber subscriber) {
             this.subscriber = subscriber;
         }
 
-        protected abstract List<R> process(List<I> entities);
+        protected abstract R process(List<I> entities);
 
         @Override
         public void onLoaded(List<I> entities) {
-            List<R> result = process(entities);
+            R result = process(entities);
             if (subscriber.isUnsubscribed()) return;
             //
             subscriber.onNext(result);

@@ -16,14 +16,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
+import com.worldventures.dreamtrips.modules.picklocation.presenter.LocationPickerToolbarPresenter;
 import com.worldventures.dreamtrips.modules.picklocation.presenter.PickLocationPresenter;
 import com.worldventures.dreamtrips.modules.picklocation.presenter.PickLocationPresenterImpl;
-import com.worldventures.dreamtrips.modules.picklocation.presenter.LocationPickerToolbarPresenter;
 import com.worldventures.dreamtrips.modules.picklocation.util.LocationPermissionHelper;
 
 import javax.inject.Inject;
@@ -70,7 +72,7 @@ public class PickLocationViewImpl extends MvpLinearLayout<PickLocationView, Pick
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.screen_pick_location, this, true);
         ButterKnife.inject(this, this);
-        ((Injector)getContext()).inject(this);
+        ((Injector) getContext()).inject(this);
         mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.pick_location_map_fragment);
         toolbarPresenter = new LocationPickerToolbarPresenter(toolbar, getContext());
     }
@@ -116,17 +118,27 @@ public class PickLocationViewImpl extends MvpLinearLayout<PickLocationView, Pick
             this.map = map;
             MapsInitializer.initialize(getContext());
             map.setMyLocationEnabled(true);
+            map.setOnMyLocationChangeListener(location -> {
+                showLocationMarker(new LatLng(location.getLatitude(), location.getLongitude()));
+            });
             MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16, RelativeLayout.ALIGN_PARENT_END,
                     RelativeLayout.ALIGN_PARENT_BOTTOM);
             getPresenter().onMapInitialized(map);
         });
     }
 
+    private void showLocationMarker(LatLng latLng) {
+        map.clear();
+        map.addMarker(new MarkerOptions().position(latLng)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+    }
+
     @Override
     public void setCurrentLocation(Location location, boolean animated) {
         isCurrentLocationSet = true;
-        LatLng loc = new LatLng (location.getLatitude(), location.getLongitude());
+        LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(loc, DEFAULT_MAP_ZOOM);
+        showLocationMarker(loc);
         if (animated) {
             map.animateCamera(cameraUpdate);
         } else {

@@ -39,17 +39,17 @@ public class PickLocationActivity extends BaseActivity {
         PickLocationActivityPermissionsDispatcher.locationPermissionWithCheck(this);
     }
 
-    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
     void locationPermission() {
         view.getPresenter().onLocationPermissionGranted();
     }
 
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
     void showRationaleForLocation(PermissionRequest request) {
         view.getPresenter().onRationalForLocationPermissionRequired();
     }
 
-    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
     void showDeniedForLocation() {
         view.getPresenter().onLocationPermissionDenied();
     }

@@ -99,12 +99,13 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     private void fetchAndSetLocation() {
         if (!TextUtils.isEmpty(input.getText())) return;
         showProgress();
-        getPresenter().getLocation().subscribe((Action1<Location>) location -> {
-            if (location != null) {
-                obtainedLocation = location;
-                setInputLocation(obtainedLocation.getName());
-            }
-        });
+        bind(getPresenter().getLocation())
+                .subscribe((Action1<Location>) location -> {
+                    if (location != null) {
+                        obtainedLocation = location;
+                        setInputLocation(obtainedLocation.getName());
+                    }
+                }, e -> {});
     }
 
     private void initToolbar() {

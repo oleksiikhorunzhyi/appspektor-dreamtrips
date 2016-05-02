@@ -61,8 +61,6 @@ public class PickLocationPresenterImpl extends MvpBasePresenter<PickLocationView
                 .subscribe(locationSettingsEnabled -> {
                     if (locationSettingsEnabled) {
                         getView().initMap();
-                    } else {
-                        getView().showObtainLocationError();
                     }
                 });
     }

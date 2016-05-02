@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -115,6 +116,11 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         toolbar.setNavigationContentDescription(R.string.back);
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(v -> cancelClicked());
+        setToolbarAlpha(255);
+    }
+
+    private void setToolbarAlpha(int percentage) {
+        toolbar.getBackground().mutate().setAlpha(percentage);
     }
 
     protected boolean onToolBarMenuItemClicked(MenuItem item) {

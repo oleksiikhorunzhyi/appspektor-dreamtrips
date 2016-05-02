@@ -45,6 +45,12 @@ public class FragmentNavigationConfigBuilder extends NavigationConfigBuilder {
         return this;
     }
 
+    /**
+     * WILL BE REMOVED in NEXT(1.11) version. Don't use
+     * @param fragment
+     * @return
+     */
+    @Deprecated()
     public FragmentNavigationConfigBuilder targetFragment(Fragment fragment) {
         navigationConfig.targetFragment = fragment;
         return this;

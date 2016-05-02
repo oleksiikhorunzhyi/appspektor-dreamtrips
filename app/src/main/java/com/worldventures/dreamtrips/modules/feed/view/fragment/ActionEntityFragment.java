@@ -48,8 +48,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View,
-        LocationFragment.Callback, PhotoPostCreationDelegate {
+        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
 
     @Inject
     BackStackDelegate backStackDelegate;
@@ -248,14 +247,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.additional_page_container)
-                .targetFragment(this)
                 .data(location)
                 .build());
-    }
-
-    @Override
-    public void onLocationDone(Location location) {
-        getPresenter().updateLocation(location);
     }
 
     @Override

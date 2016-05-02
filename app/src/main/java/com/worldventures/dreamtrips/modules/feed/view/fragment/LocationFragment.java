@@ -126,10 +126,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     protected boolean onToolBarMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                if (getTargetFragment() instanceof Callback) {
-                    SoftInputUtil.hideSoftInputMethod(getActivity());
-                    ((Callback) getTargetFragment()).onLocationDone(composeLocation());
-                }
+                SoftInputUtil.hideSoftInputMethod(getActivity());
+                getPresenter().onDone(composeLocation());
                 router.back();
         }
         return true;
@@ -243,9 +241,5 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
     void showDeniedForLocation() {
         Snackbar.make(getView(), R.string.no_location_permission, Snackbar.LENGTH_SHORT).show();
-    }
-
-    public interface Callback {
-        void onLocationDone(Location location);
     }
 }

@@ -114,6 +114,11 @@ public class ImageUtils {
     }
 
     public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
+        return getRecognizedFacesInternal(context, bitmapObservable)
+                .onErrorResumeNext(e -> Observable.just(new ArrayList<>()));
+    }
+
+    private static Observable<ArrayList<PhotoTag>> getRecognizedFacesInternal(Context context, Observable<Bitmap> bitmapObservable) {
         Detector detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.NO_LANDMARKS)
@@ -122,7 +127,9 @@ public class ImageUtils {
                 .build();
 
         return bitmapObservable
-                .filter(b -> detector.isOperational())
+                .doOnNext(bitmap -> {
+                    if (!detector.isOperational()) throw new IllegalStateException();
+                })
                 .map(bitmap -> new Frame.Builder().setBitmap(bitmap).build())
                 .map(frame -> new Pair<>(detector.detect(frame), new RectF(0, 0, frame.getMetadata().getWidth(), frame.getMetadata().getHeight())))
                 .map(pair -> {

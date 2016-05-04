@@ -29,8 +29,15 @@ public class UidItemDelegate {
         }
     }
 
-    public void flagItem(FlagData data) {
+    public void flagItem(FlagData data, View view) {
         requestingPresenter.doRequest(new FlagItemCommand(data), aVoid -> {
+            if (view != null) {
+                view.flagSentSuccess();
+            }
         });
+    }
+
+    public interface View {
+        void flagSentSuccess();
     }
 }

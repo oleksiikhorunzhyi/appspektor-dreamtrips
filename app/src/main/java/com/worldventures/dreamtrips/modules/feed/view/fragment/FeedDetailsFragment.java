@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.techery.spares.ui.fragment.FragmentHelper;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -84,5 +87,10 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
     @Override
     protected int getLoadMorePosition() {
         return super.getLoadMorePosition() + loadMoreOffset;
+    }
+
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
     }
 }

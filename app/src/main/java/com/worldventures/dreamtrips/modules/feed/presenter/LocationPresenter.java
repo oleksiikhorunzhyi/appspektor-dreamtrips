@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,7 +28,8 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
 
     @Inject
     LocationDelegate gpsLocationDelegate;
-
+    @Inject
+    PostLocationPickerCallback postLocationPickerCallback;
     private boolean isCanceled;
 
     @Override
@@ -95,6 +97,12 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
 
     public void locationNotGranted() {
         gpsLocationDelegate.onLocationObtained(null);
+    }
+
+    public void onDone(Location location) {
+        if (postLocationPickerCallback != null) {
+            postLocationPickerCallback.onLocationPicked(location);
+        }
     }
 
     public interface View extends RxView, PermissionView {

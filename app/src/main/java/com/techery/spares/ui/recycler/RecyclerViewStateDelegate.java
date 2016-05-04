@@ -6,10 +6,24 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 public class RecyclerViewStateDelegate {
+    private static final String DEFAULT_KEY = "view.recycler.state";
 
-    private static final String KEY = "classname.recycler.layout";
     private RecyclerView recyclerView;
     private Parcelable savedRecyclerLayoutState;
+
+    private final String key;
+
+    public RecyclerViewStateDelegate() {
+        this(DEFAULT_KEY);
+    }
+
+    /**
+     * Use in case when you have to save state for more than one list inside the bundle (not rewrite by single key)
+     * @param key
+     */
+    public RecyclerViewStateDelegate(String key) {
+        this.key = key;
+    }
 
     public void setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
@@ -17,7 +31,7 @@ public class RecyclerViewStateDelegate {
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            savedRecyclerLayoutState = savedInstanceState.getParcelable("classname.recycler.layout");
+            savedRecyclerLayoutState = savedInstanceState.getParcelable(key);
         }
     }
 
@@ -26,7 +40,7 @@ public class RecyclerViewStateDelegate {
             savedRecyclerLayoutState = recyclerView.getLayoutManager().onSaveInstanceState();
         }
         if (savedRecyclerLayoutState != null) {
-            outState.putParcelable(KEY, savedRecyclerLayoutState);
+            outState.putParcelable(key, savedRecyclerLayoutState);
         }
     }
 

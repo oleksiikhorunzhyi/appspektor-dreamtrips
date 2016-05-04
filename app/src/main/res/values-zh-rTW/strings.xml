@@ -639,5 +639,6 @@
     <string name="request_outgoing_long">傳出</string>
 
     <string name="add_title">添加標題</string>
+    <string name="flag_sent_success_msg">無法檢舉項目</string>
 
 </resources>

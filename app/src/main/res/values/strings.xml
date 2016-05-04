@@ -639,5 +639,6 @@
     <string name="request_outgoing_long">Outgoing Requests</string>
 
     <string name="add_title">Add a title</string>
+    <string name="flag_sent_success_msg">Content has been flagged</string>
 
 </resources>

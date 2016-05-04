@@ -8,12 +8,13 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,11 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
 
     @Inject
     EditPhotoTagsCallback editPhotoTagsCallback;
+    @Inject
+    PostLocationPickerCallback postLocationPickerCallback;
 
     private Subscription editTagsSubscription;
+    private Subscription locationPickerSubscription;
 
     @Override
     public void takeView(V view) {
@@ -49,6 +53,12 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         }, error -> {
             Timber.e(error, "");
         });
+
+        locationPickerSubscription = postLocationPickerCallback.toObservable().subscribe((loc) -> {
+            updateLocation(loc);
+        }, error -> {
+            Timber.e(error, "");
+        });
     }
 
     @Override
@@ -57,6 +67,9 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         //
         if (editTagsSubscription != null && !editTagsSubscription.isUnsubscribed())
             editTagsSubscription.unsubscribe();
+
+        if (locationPickerSubscription != null && !locationPickerSubscription.isUnsubscribed())
+            locationPickerSubscription.unsubscribe();
     }
 
     protected void updateUi() {
@@ -123,7 +136,7 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         return location;
     }
 
-    public void updateLocation(Location location) {
+    protected void updateLocation(Location location) {
         this.location = location;
         invalidateDynamicViews();
         view.updateLocationButtonState();

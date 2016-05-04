@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInf
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
@@ -74,6 +75,7 @@ import de.greenrobot.event.EventBus;
         injects = {
                 TripFeedItemDetailsCell.class,
                 FeedPresenter.class,
+                SuggestedPhotoCellPresenterHelper.class,
                 FeedFragment.class,
                 BucketFeedItemDetailsCell.class,
                 LoadMoreCell.class,

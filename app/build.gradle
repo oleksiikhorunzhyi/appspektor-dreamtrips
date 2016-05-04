@@ -148,19 +148,8 @@ android {
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
-<<<<<<< HEAD
         stage { dimension "config" }
         perf { dimension "config" }
-=======
-        stage {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net/"'
-        }
-        perf {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz"'
-        }
->>>>>>> release/1.10
         prod {
             dimension "config"
             //

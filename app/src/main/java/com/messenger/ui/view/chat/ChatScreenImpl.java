@@ -1,6 +1,8 @@
 package com.messenger.ui.view.chat;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -37,12 +40,14 @@ import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
 
@@ -89,6 +94,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     View sendMessageButton;
     @InjectView(R.id.input_holder)
     ViewGroup inputHolder;
+
+    private ProgressDialog flaggingProgressDialog;
 
     private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -171,6 +178,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     protected void onDetachedFromWindow() {
+        hideFlaggingProgressDialog();
         handler.removeCallbacks(openPikerTask);
         try {
             photoPickerLayoutDelegate.hidePicker();
@@ -295,7 +303,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void showMessages(Cursor cursor, DataConversation conversation) {
-        Timber.i("Show Cursor with size " + cursor.getCount());
         adapter.setConversation(conversation);
 
         int firstVisibleViewTop = 0;
@@ -349,6 +356,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                     break;
                 case R.id.action_start_chat:
                     getPresenter().onStartNewChatForMessageOwner(message);
+                    break;
+                case R.id.action_flag:
+                    getPresenter().onFlagMessageAttempt(message);
                     break;
             }
         }))
@@ -428,5 +438,67 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         photoPickerLayoutDelegate.hidePicker();
         //
         getPresenter().onImagesPicked(images);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Flagging
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void showFlagsListDialog(DataMessage message, List<Flag> flags) {
+        String[] items = Queryable.from(flags).map(Flag::getName).toArray();
+        new AlertDialog.Builder(getContext())
+                .setItems(items, (dialog, i) -> {
+                    getPresenter().onFlagTypeChosen(message, flags.get(i));
+                })
+                .show();
+    }
+
+    @Override
+    public void showFlagReasonDialog(DataMessage message, Flag flag) {
+        final View dialogView = inflate(getContext(), R.layout.dialog_messenger_input, null);
+        EditText reasonEditText = (EditText) dialogView.findViewById(R.id.et_input);
+        reasonEditText.setHint(R.string.type_your_reason);
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setView(dialogView)
+                .setNegativeButton(R.string.chat_flag_dialog_reason_negative_button, null)
+                .setPositiveButton(R.string.chat_flag_dialog_reason_positive_button, (d, i) -> {
+                    SoftInputUtil.hideSoftInputMethod(reasonEditText);
+                    getPresenter().onFlagReasonProvided(message, flag,
+                            reasonEditText.getText().toString());
+                })
+                .setTitle(R.string.chat_flag_dialog_reason_title)
+                .create();
+        dialog.show();
+        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        RxTextView.textChangeEvents(reasonEditText)
+                .subscribe(event -> positiveButton.setEnabled(event.count() > 0));
+    }
+
+    @Override
+    public void showFlagConfirmationDialog(DataMessage message, Flag flag, String reason) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.chat_flag_dialog_confirmation_title)
+                .setMessage(String.format(getContext()
+                        .getString(R.string.chat_flag_dialog_confirmation_message_format), flag.getName()))
+                .setNegativeButton(R.string.chat_flag_dialog_confirmation_negative_button, null)
+                .setPositiveButton(R.string.chat_flag_dialog_confirmation_positive_button, (dialog, which) -> {
+                    getPresenter().onFlagMessageConfirmation(message, flag, reason);
+                })
+                .show();
+    }
+
+    @Override
+    public void showFlaggingProgressDialog() {
+        flaggingProgressDialog = ProgressDialog.show(getContext(), "",
+                getContext().getString(R.string.chat_flag_dialog_flagging_progress), true);
+    }
+
+    @Override
+    public void hideFlaggingProgressDialog() {
+        if (flaggingProgressDialog != null && flaggingProgressDialog.isShowing()) {
+            flaggingProgressDialog.dismiss();
+            flaggingProgressDialog = null;
+        }
     }
 }

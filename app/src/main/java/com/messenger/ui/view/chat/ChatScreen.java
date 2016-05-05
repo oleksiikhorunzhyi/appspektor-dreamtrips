@@ -10,6 +10,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 import com.messenger.ui.model.AttachmentMenuItem;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
 
@@ -36,6 +37,16 @@ public interface ChatScreen extends MessengerScreen {
     void showMessages(Cursor cursor, DataConversation conversation);
 
     void showAttachmentMenu(AttachmentMenuItem[] items);
+
+    void showFlagsListDialog(DataMessage message, List<Flag> flags);
+
+    void showFlagReasonDialog(DataMessage message, Flag flag);
+
+    void showFlagConfirmationDialog(DataMessage message, Flag flag, String reason);
+
+    void showFlaggingProgressDialog();
+
+    void hideFlaggingProgressDialog();
 
     void showPhotoPicker();
 

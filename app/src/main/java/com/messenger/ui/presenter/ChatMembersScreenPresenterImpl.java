@@ -23,7 +23,6 @@ import com.messenger.util.ContactsHeaderCreator;
 import com.messenger.util.StringUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 
 import java.util.List;
@@ -49,8 +48,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     RouteCreator<Integer> routeCreator;
     @Inject
     MessengerServerFacade messengerServerFacade;
-    @Inject
-    DreamSpiceManager dreamSpiceManager;
     @Inject
     CreateConversationHelper createConversationHelper;
     @Inject
@@ -80,14 +77,12 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        dreamSpiceManager.start(getContext());
         connectToContacts();
     }
 
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        dreamSpiceManager.shouldStop();
     }
 
     protected Observable<List<DataUser>> createContactListObservable() {

@@ -3,6 +3,7 @@ package com.messenger.ui.presenter;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Menu;
@@ -44,6 +45,7 @@ import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.util.AttachmentMenuProvider;
 import com.messenger.ui.util.ChatContextualMenuProvider;
+import com.messenger.delegate.FlagsDelegate;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
@@ -70,6 +72,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -83,6 +86,7 @@ import flow.Flow;
 import flow.History;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.subjects.PublishSubject;
@@ -119,6 +123,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject LocationDAO locationDAO;
     @Inject TranslationsDAO translationsDAO;
     @Inject AttachmentHelper attachmentHelper;
+    @Inject FlagsDelegate flagsProvider;
 
 
     protected String conversationId;
@@ -129,6 +134,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private boolean imageAttachmentClicked = false;
 
     private Subscription messageStreamSubscription;
+    // TODO remove when flags getting functionality is reimplemented with caching from @alex.ko
+    private Subscription getFlagsSubscription;
     private Observable<Pair<DataConversation, List<DataUser>>> conversationObservable;
     private PublishSubject<DataMessage> lastVisibleItemStream = PublishSubject.create();
 
@@ -644,6 +651,45 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void disconnectFromPhotoPicker() {
         legacyPhotoPickerDelegate.unregister();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Flagging
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onFlagMessageAttempt(DataMessage message) {
+        if (getFlagsSubscription != null) getFlagsSubscription.unsubscribe();
+        getFlagsSubscription = flagsProvider.getFlags()
+            .observeOn(AndroidSchedulers.mainThread())
+            .compose(bindView())
+            .subscribe(actionState -> {
+                getView().showFlagsListDialog(message, actionState.getFlags());
+        }, e -> Timber.e(e, "Could not get flags"));
+    }
+
+    @Override
+    public void onFlagTypeChosen(DataMessage message, Flag flag) {
+        if (flag.isRequireDescription()) {
+            getView().showFlagReasonDialog(message, flag);
+        } else {
+            getView().showFlagConfirmationDialog(message, flag, null);
+        }
+    }
+
+    @Override
+    public void onFlagReasonProvided(DataMessage message, Flag flag, String reason) {
+        getView().showFlagConfirmationDialog(message, flag, reason);
+    }
+
+    @Override
+    public void onFlagMessageConfirmation(DataMessage message, Flag flag, String reason) {
+        //TODO Temp code until flagging is implemented
+        final Handler handler = new Handler();
+        getView().showFlaggingProgressDialog();
+        handler.postDelayed(() -> {
+            if (getView() != null) getView().hideFlaggingProgressDialog();
+        }, 2000);
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -12,6 +12,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
@@ -31,28 +32,17 @@ import rx.Observable;
 @Layout(R.layout.adapter_item_dtl_merchant_expandable)
 public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, DtlOfferData, CellDelegate<DtlMerchant>> {
 
-    @InjectView(R.id.merchantCoverImage)
-    ImageryDraweeView merchantCoverImage;
-    @InjectView(R.id.merchantPricing)
-    ProperRatingBar pricing;
-    @InjectView(R.id.merchantName)
-    TextView merchantName;
-    @InjectView(R.id.merchantCategories)
-    TextView merchantCategories;
-    @InjectView(R.id.merchantOpenClosedStatus)
-    TextView merchantOperationalStatus;
-    @InjectView(R.id.view_points)
-    TextView points;
-    @InjectView(R.id.view_perks)
-    TextView perks;
-    @InjectView(R.id.merchantDistance)
-    TextView merchantDistance;
-    @InjectView(R.id.offers_container)
-    View offersContainer;
-    @InjectView(R.id.perk_toggle_view)
-    ImageView perkToggleImage;
-    @InjectView(R.id.perk_toggle_label)
-    TextView perkToggleText;
+    @InjectView(R.id.merchantCoverImage) ImageryDraweeView merchantCoverImage;
+    @InjectView(R.id.merchantPricing) ProperRatingBar pricing;
+    @InjectView(R.id.merchantName) TextView merchantName;
+    @InjectView(R.id.merchantCategories) TextView merchantCategories;
+    @InjectView(R.id.merchantOpenClosedStatus) TextView merchantOperationalStatus;
+    @InjectView(R.id.view_points) TextView points;
+    @InjectView(R.id.view_perks) TextView perks;
+    @InjectView(R.id.merchantDistance) TextView merchantDistance;
+    @InjectView(R.id.offers_container) View offersContainer;
+    @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
+    @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
 
 
     public DtlMerchantExpandableCell(View view) {
@@ -83,59 +73,52 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
 
     private void setDistance() {
         Resources res = merchantDistance.getResources();
-        if (getModelObject().getDistance() != 0.0d) {
-            merchantDistance.setVisibility(View.VISIBLE);
-            merchantDistance.setText(res.getString(
-                    R.string.distance_caption_format,
-                    getModelObject().getDistance(),
-                    res.getString(getModelObject().getDistanceType() == DistanceType.MILES ?
-                            R.string.mi : R.string.km)));
-        } else merchantDistance.setVisibility(View.GONE);
+        ViewUtils.setTextOrHideView(merchantDistance, res.getString(
+                R.string.distance_caption_format,
+                getModelObject().getDistance(),
+                res.getString(getModelObject().getDistanceType() == DistanceType.MILES ?
+                        R.string.mi : R.string.km)));
     }
 
     private void setCategories() {
         String categoriesString = DtlMerchantHelper.getCategories(getModelObject());
-        if (!TextUtils.isEmpty(categoriesString)) {
-            merchantCategories.setVisibility(View.VISIBLE);
-            merchantCategories.setText(categoriesString);
-        } else merchantCategories.setVisibility(View.GONE);
+        ViewUtils.setTextOrHideView(merchantCategories, categoriesString);
     }
 
     private void setOperationalStatus() {
         if (getModelObject().hasOffer(DtlOffer.TYPE_POINTS) &&
                 getModelObject().getOperationDays() != null && !getModelObject().getOperationDays().isEmpty()) {
-            merchantOperationalStatus.setVisibility(View.VISIBLE);
-            merchantOperationalStatus.setText(DtlMerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false));
-        } else merchantOperationalStatus.setVisibility(View.INVISIBLE);
+            ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
+            this.merchantOperationalStatus.setText(DtlMerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false));
+        } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
     }
 
     private void setOffersSection() {
         List<DtlOffer> offers = getModelObject().getOffers();
         if (!offers.isEmpty()) {
-            offersContainer.setVisibility(View.VISIBLE);
+            ViewUtils.setViewVisibility(offersContainer, View.VISIBLE);
             Observable.from(offers)
                     .compose(RxLifecycle.bindView(itemView))
                     .filter(offer -> offer.getType().equals(Offer.PERKS))
                     .count().subscribe(perks -> setOffersTypes(perks, offers.size() - perks));
-        } else offersContainer.setVisibility(View.GONE);
+        } else ViewUtils.setViewVisibility(offersContainer, View.GONE);
     }
 
     private void setOffersTypes(int perks, int points) {
         if (perks > 0) {
-            this.perks.setVisibility(View.VISIBLE);
+            ViewUtils.setViewVisibility(this.perks, View.VISIBLE);
             this.perks.setText(itemView.getContext().getString(R.string.perks_formatted, perks));
-        } else this.perks.setVisibility(View.GONE);
+        } else ViewUtils.setViewVisibility(this.perks, View.GONE);
 
-        int visibility = points > 0 ? View.VISIBLE : View.GONE;
-        this.points.setVisibility(visibility);
+        ViewUtils.setViewVisibility(this.points, points > 0 ? View.VISIBLE : View.GONE);
     }
 
     private void setToggleView() {
         int toggleDrawable = isExpanded() ? R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey;
         perkToggleImage.setBackgroundResource(toggleDrawable);
-        perkToggleText.setVisibility(isExpanded() ? View.VISIBLE : View.GONE);
-        perks.setVisibility(isExpanded() ? View.GONE : View.VISIBLE);
-        points.setVisibility(isExpanded() ? View.GONE : View.VISIBLE);
+        //
+        ViewUtils.setViewVisibility(perkToggleText, isExpanded() ? View.VISIBLE : View.GONE);
+        ViewUtils.setViewVisibility(isExpanded() ? View.GONE : View.VISIBLE, perks, points);
     }
 
     @Override

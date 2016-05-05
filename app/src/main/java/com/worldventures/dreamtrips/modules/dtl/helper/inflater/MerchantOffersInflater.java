@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferDat
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
 import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
 
     @Override
     public void release() {
-        offerClickListeners.clear();
+        this.offerClickListeners.clear();
         super.release();
     }
 
@@ -138,7 +139,7 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
     }
 
     private View createAndBindPerkView(DtlOfferData perk) {
-        ExpandableLayout perkView = (ExpandableLayout) LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_perk_view, earnWrapper, false);
+        ExpandableOfferView perkView = (ExpandableOfferView) LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_perk_view, earnWrapper, false);
         bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perk_description), perk.getDescription());
         bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perks_title), perk.getDescription());
         bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perk_disclaimer), perk.getDisclaimer());
@@ -150,10 +151,8 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
     }
 
     private void patchExpiringBar(ViewGroup perkView, DtlOfferData offerData) {
-        ViewGroup expirationBarLayout =
-                ButterKnife.<ViewGroup>findById(perkView, R.id.expirationBarLayout);
-        AppCompatTextView expirationBarCaption =
-                ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
+        ViewGroup expirationBarLayout = ButterKnife.<ViewGroup>findById(perkView, R.id.expirationBarLayout);
+        AppCompatTextView expirationBarCaption = ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
         if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
             expirationBarLayout.setVisibility(View.VISIBLE);
             expirationBarCaption.setText(DtlMerchantHelper.

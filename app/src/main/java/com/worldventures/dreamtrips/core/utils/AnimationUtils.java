@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.core.utils;
 
+import android.animation.ValueAnimator;
 import android.os.Build;
 import android.view.View;
 
@@ -36,6 +37,14 @@ public class AnimationUtils {
             view.animate().translationY(0).setDuration(200).withLayer();
         } else {
             view.animate().translationY(0).setDuration(200);
+        }
+    }
+
+    public static void rotateByDegrees(View view, float degrees, int duration) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.animate().rotation(degrees).setDuration(duration).withLayer();
+        } else {
+            view.animate().rotation(degrees).setDuration(duration);
         }
     }
 }

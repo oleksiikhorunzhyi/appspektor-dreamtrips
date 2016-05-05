@@ -12,11 +12,13 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 public class ExpandableLayout extends RelativeLayout {
-    private Boolean isAnimationRunning = false;
-    private Boolean isOpened = false;
-    private Integer duration;
+
     private FrameLayout contentLayout;
     private FrameLayout headerLayout;
+    //
+    private Integer duration;
+    private Boolean isAnimationRunning = false;
+    private Boolean isOpened = false;
 
     public ExpandableLayout(Context context) {
         super(context);
@@ -70,7 +72,7 @@ public class ExpandableLayout extends RelativeLayout {
         typedArray.recycle();
     }
 
-    private void expand(final View v) {
+    protected void expand(final View v) {
         v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         final int targetHeight = v.getMeasuredHeight();
         v.getLayoutParams().height = 0;
@@ -95,7 +97,7 @@ public class ExpandableLayout extends RelativeLayout {
         v.startAnimation(animation);
     }
 
-    private void collapse(final View v) {
+    protected void collapse(final View v) {
         final int initialHeight = v.getMeasuredHeight();
         Animation animation = new Animation() {
             @Override
@@ -121,6 +123,14 @@ public class ExpandableLayout extends RelativeLayout {
 
     public Boolean isOpened() {
         return isOpened;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public Boolean isAnimationRunning() {
+        return isAnimationRunning;
     }
 
     public void show() {

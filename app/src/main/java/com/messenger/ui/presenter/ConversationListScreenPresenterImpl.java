@@ -14,7 +14,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
@@ -152,7 +152,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     private void waitForSyncAndTrack(){
         connectionStatusStream
-                .filter(status -> status == ConnectionStatus.CONNECTED)
+                .filter(status -> status == SyncStatus.CONNECTED)
                 .flatMap(status -> conversationsDAO.conversationsCount())
                 .take(1)
                 .compose(bindView())

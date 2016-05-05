@@ -11,10 +11,10 @@ import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
@@ -178,7 +178,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     @Override
     public void onLeaveButtonClick() {
-        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) return;
+        if (currentConnectivityStatus != SyncStatus.CONNECTED) return;
 
         conversationObservable
                 .map(this::getLeaveConversationMessage)
@@ -201,8 +201,8 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
             return;
         }
 
-        Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
-                .createMultiUserChatObservable(conversationId, facade.getUsername())
+        Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
+                .createGroupChatObservable(conversationId, facade.getUsername())
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .map(multiUserChat -> {
                     multiUserChat.close();

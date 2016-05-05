@@ -1,12 +1,10 @@
 package com.messenger.messengerservers.chat;
 
-
 import java.util.List;
 
 import rx.Observable;
 
-
-public interface MultiUserChat extends Chat {
+public interface GroupChat extends Chat {
 
     void invite(List<String> userIds);
 
@@ -16,7 +14,7 @@ public interface MultiUserChat extends Chat {
 
     void leave();
 
-    Observable<MultiUserChat> setSubject(String subject);
+    Observable<GroupChat> setSubject(String subject);
 
-    Observable<MultiUserChat> setAvatar(String avatar);
+    Observable<GroupChat> setAvatar(String avatar);
 }

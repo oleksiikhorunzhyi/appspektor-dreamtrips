@@ -1,8 +1,8 @@
 package com.messenger.ui.view.layout;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 
 public interface MessengerScreen extends MvpView {
-    void onConnectionChanged(ConnectionStatus connectionStatus);
+    void onConnectionChanged(SyncStatus syncStatus);
 }

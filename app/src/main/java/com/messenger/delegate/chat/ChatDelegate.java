@@ -13,7 +13,7 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
@@ -57,6 +57,9 @@ public class ChatDelegate {
         this.sessionHolder = sessionHolder;
         this.paginationDelegate = paginationDelegate;
         paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
+
+        paginationDelegate.getPageObservable()
+                .subscribe(this::paginationPageLoaded, throwable -> pageLoadFailed());
     }
 
     public void sendMessage(Message message) {
@@ -86,7 +89,7 @@ public class ChatDelegate {
                 e -> Timber.e(e, "Fail to close chat"));
     }
 
-    public Observable<PaginationStatus> bind(Observable<ConnectionStatus> connectionObservable,
+    public Observable<PaginationStatus> bind(Observable<SyncStatus> connectionObservable,
                                              Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantsObservable) {
         this.conversationObservable = conversationWithParticipantsObservable
                 .map(pair -> pair.first).take(1).cacheWithInitialCapacity(1);
@@ -99,17 +102,18 @@ public class ChatDelegate {
                 .autoConnect();
         connectToChatConnection(connectionObservable);
 
+
         return paginationStateObservable;
     }
 
 
-    private void connectToChatConnection(Observable<ConnectionStatus> connectionObservable) {
+    private void connectToChatConnection(Observable<SyncStatus> connectionObservable) {
         connectionObservable
                 .subscribe(this::handleConnectionState);
     }
 
-    private void handleConnectionState(ConnectionStatus state) {
-        if (state == ConnectionStatus.CONNECTED && page == 0) loadNextPage();
+    private void handleConnectionState(SyncStatus state) {
+        if (state == SyncStatus.CONNECTED && page == 0) loadNextPage();
     }
 
     public void tryMarkAsReadMessage(DataMessage lastMessage) {
@@ -152,9 +156,7 @@ public class ChatDelegate {
         );
         conversationObservable
                 .subscribe(conversation -> {
-                    paginationDelegate.loadConversationHistoryPage(conversation, ++page, before,
-                            (loadedPage, loadedMessage) -> paginationPageLoaded(loadedMessage),
-                            this::pageLoadFailed);
+                    paginationDelegate.loadConversationHistoryPage(conversation, ++page, before);
                 }, e -> Timber.w("Unable to get conversation"));
     }
 

@@ -8,7 +8,7 @@ import com.messenger.delegate.RxSearchHelper;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.util.UserSectionHelper;
@@ -195,13 +195,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     @Override
     public void onDeleteUserFromChatConfirmed(DataUser user) {
         messengerServerFacade.getChatManager()
-                .createMultiUserChatObservable(conversationId, this.user.getId())
+                .createGroupChatObservable(conversationId, this.user.getId())
                 .compose(bindViewIoToMainComposer())
                 .subscribe(chat -> kickUser(chat, user.getId()),
                         e -> Timber.e(e, "Failed to create chat"));
     }
 
-    private void kickUser(MultiUserChat chat, String userId) {
+    private void kickUser(GroupChat chat, String userId) {
         chat.kick(Collections.singletonList(userId))
                 .map(users -> users.get(0))
                 .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))

@@ -2,7 +2,6 @@ package com.messenger.messengerservers.xmpp;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.GlobalEventEmitter;
-import com.messenger.messengerservers.listeners.AuthorizeListener;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
@@ -11,7 +10,6 @@ import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 import com.messenger.messengerservers.xmpp.util.XmppPacketDetector;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -43,24 +41,20 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     public XmppGlobalEventEmitter(XmppServerFacade facade) {
         this.facade = facade;
         this.messageConverter = new XmppMessageConverter(facade.getGson());
-        facade.addAuthorizationListener(authorizeListener);
+        facade.getConnectionObservable()
+                .subscribe(this::prepareManagers);
     }
 
-    AuthorizeListener authorizeListener = new AuthorizeListener() {
-        @Override
-        public void onSuccess() {
-            super.onSuccess();
-            AbstractXMPPConnection abstractXMPPConnection = facade.getConnection();
-            abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingMessage, StanzaTypeFilter.MESSAGE);
-            abstractXMPPConnection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
+    private void prepareManagers(XMPPConnection connection) {
+        connection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingMessage, StanzaTypeFilter.MESSAGE);
+        connection.addAsyncStanzaListener(XmppGlobalEventEmitter.this::interceptIncomingPresence, StanzaTypeFilter.PRESENCE);
 
-            ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT, ChatStateExtension.NAMESPACE, new ChatStateExtension.Provider());
-            ProviderManager.addExtensionProvider(ChangeAvatarExtension.ELEMENT, ChangeAvatarExtension.NAMESPACE, ChangeAvatarExtension.PROVIDER);
-            MultiUserChatManager.getInstanceFor(abstractXMPPConnection).addInvitationListener(XmppGlobalEventEmitter.this::onChatInvited);
+        ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT, ChatStateExtension.NAMESPACE, new ChatStateExtension.Provider());
+        ProviderManager.addExtensionProvider(ChangeAvatarExtension.ELEMENT, ChangeAvatarExtension.NAMESPACE, ChangeAvatarExtension.PROVIDER);
+        MultiUserChatManager.getInstanceFor(connection).addInvitationListener(XmppGlobalEventEmitter.this::onChatInvited);
 
-            Roster.getInstanceFor(abstractXMPPConnection).addRosterListener(rosterListener);
-        }
-    };
+        Roster.getInstanceFor(connection).addRosterListener(rosterListener);
+    }
 
     private RosterListener rosterListener = new RosterListener() {
         @Override

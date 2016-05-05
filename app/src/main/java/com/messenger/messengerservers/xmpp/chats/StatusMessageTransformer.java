@@ -4,27 +4,25 @@ import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.StatusMessageStanza;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Stanza;
 
 import rx.Observable;
 
-class StatusMessageTransformer implements Observable.Transformer<String, String> {
+class StatusMessageTransformer implements Observable.Transformer<XMPPConnection, String> {
     private final StatusMessageStanza statusMessageStanza;
-    private final SendAction<Stanza> sendAction;
 
-    StatusMessageTransformer(StatusMessageStanza statusMessageStanza, SendAction<Stanza> sendAction) {
+    StatusMessageTransformer(StatusMessageStanza statusMessageStanza) {
         this.statusMessageStanza = statusMessageStanza;
-        this.sendAction = sendAction;
     }
 
     @Override
-    public Observable<String> call(Observable<String> messageIdObservable) {
-        return messageIdObservable
-                .flatMap(message -> Observable.<String>create(subscriber -> {
-                    subscriber.onStart();
+    public Observable<String> call(Observable<XMPPConnection> connectionObservable) {
+        return connectionObservable
+                .flatMap(connection -> Observable.create(subscriber -> {
                     try {
-                        sendAction.call(statusMessageStanza);
-                        subscriber.onNext(message);
+                        connection.sendStanza(statusMessageStanza);
+                        subscriber.onNext(statusMessageStanza.messageId);
                         subscriber.onCompleted();
                     } catch (SmackException.NotConnectedException e) {
                         subscriber.onError(new ConnectionException(e));

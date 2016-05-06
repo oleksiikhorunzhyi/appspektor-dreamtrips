@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.presenter.MessengerPresenter;
 import com.worldventures.dreamtrips.R;
 
@@ -39,8 +39,8 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
     }
 
     @Override
-    public void onConnectionChanged(ConnectionStatus connectionStatus) {
-        overlayHandler.processOverlayConnectionStatus(connectionStatus);
+    public void onConnectionChanged(SyncStatus syncStatus) {
+        overlayHandler.processOverlayConnectionStatus(syncStatus);
     }
 
     private class OverlayHandler extends Handler {
@@ -51,7 +51,7 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
         private View disconnectedView;
         private View connectingView;
 
-        private ConnectionStatus lastConnectionStatus;
+        private SyncStatus lastSyncStatus;
         private boolean delayedStatusPending;
 
         private void attachDisconnectedOverlayIfNeeded() {
@@ -71,7 +71,7 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
         @Override
         public void handleMessage(Message msg) {
             attachDisconnectedOverlayIfNeeded();
-            ConnectionStatus status = ConnectionStatus.values()[msg.what];
+            SyncStatus status = SyncStatus.values()[msg.what];
             switch (status) {
                 case CONNECTED:
                     overlay.setVisibility(GONE);
@@ -92,26 +92,26 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
             // delay to message set as arg1
             if (msg.arg1 > 0) {
                 delayedStatusPending = false;
-                processOverlayConnectionStatus(lastConnectionStatus);
+                processOverlayConnectionStatus(lastSyncStatus);
             }
         }
 
-        public void processOverlayConnectionStatus(ConnectionStatus connectionStatus) {
+        public void processOverlayConnectionStatus(SyncStatus syncStatus) {
             // apply delayed state first, then the last state
             if (!delayedStatusPending) {
                 int delay = 0;
-                if (lastConnectionStatus != null
-                        && lastConnectionStatus == ConnectionStatus.CONNECTING
-                        && connectionStatus != ConnectionStatus.CONNECTING) {
+                if (lastSyncStatus != null
+                        && lastSyncStatus == SyncStatus.CONNECTING
+                        && syncStatus != SyncStatus.CONNECTING) {
                     delay = SHOW_CONNECTING_VIEW_MIN_DURATION;
                     delayedStatusPending = true;
                 }
                 Message message = new Message();
-                message.what = connectionStatus.ordinal();
+                message.what = syncStatus.ordinal();
                 message.arg1 = delay;
                 sendMessageDelayed(message, delay);
             }
-            this.lastConnectionStatus = connectionStatus;
+            this.lastSyncStatus = syncStatus;
         }
     }
 

@@ -1,18 +1,15 @@
 package com.messenger.messengerservers;
 
 
-import com.messenger.messengerservers.loaders.Loader;
-import com.messenger.messengerservers.loaders.ParticipantsLoader;
-import com.messenger.messengerservers.model.Conversation;
-import com.messenger.messengerservers.model.MessengerUser;
+import com.messenger.messengerservers.loaders.ContactsLoader;
+import com.messenger.messengerservers.loaders.ConversationLoader;
+import com.messenger.messengerservers.loaders.ConversationsLoader;
 
 public interface LoaderManager {
 
-    Loader<MessengerUser> createContactLoader();
+    ContactsLoader createContactLoader();
 
-    Loader<Conversation> createConversationLoader(String conversationId);
+    ConversationLoader createConversationLoader(String conversationId);
 
-    Loader<Conversation> createConversationsLoader();
-
-    ParticipantsLoader createParticipantsLoader();
+    ConversationsLoader createConversationsLoader();
 }

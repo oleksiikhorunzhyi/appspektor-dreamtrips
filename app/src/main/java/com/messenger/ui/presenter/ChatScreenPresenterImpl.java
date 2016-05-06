@@ -37,7 +37,7 @@ import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.storage.helper.AttachmentHelper;
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.adapter.inflater.LiteMapInflater;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
@@ -189,11 +189,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         messageStreamSubscription.unsubscribe();
                     }
 
-                    long syncTime = connectionStatus == ConnectionStatus.CONNECTED ? openScreenTime : 0;
+                    long syncTime = connectionStatus == SyncStatus.CONNECTED ? openScreenTime : 0;
                     messageStreamSubscription = connectMessagesStream(syncTime);
 
                     // TODO Feb 29, 2016 Implement it in more Rx way
-                    if (connectionStatus != ConnectionStatus.CONNECTED) {
+                    if (connectionStatus != SyncStatus.CONNECTED) {
                         getView().removeAllTypingUsers();
                     }
                 }, e -> Timber.w("Unable to connect connectivity status"));
@@ -329,7 +329,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindVisibility())
                 .skip(1)
                 .filter(textViewTextChangeEvent -> textViewTextChangeEvent.count() > 0
-                        && currentConnectivityStatus == ConnectionStatus.CONNECTED)
+                        && currentConnectivityStatus == SyncStatus.CONNECTED)
                 .throttleFirst(START_TYPING_DELAY, TimeUnit.MILLISECONDS)
                 .filter(textViewTextChangeEvent -> !typing)
                 .subscribe(chat -> {

@@ -1,8 +1,6 @@
-package com.messenger.synchmechanism;
-
+package com.messenger.messengerservers;
 
 public enum ConnectionStatus {
-
     CONNECTED,
     CONNECTING,
     DISCONNECTED,

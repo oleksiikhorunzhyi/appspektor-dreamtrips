@@ -1,14 +1,13 @@
 package com.messenger.di;
 
-import android.content.Context;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.XmppServerParams;
-import com.messenger.storage.dao.UsersDAO;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.messenger.messengerservers.xmpp.providers.GsonAttachmentAdapter;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 
 import javax.inject.Singleton;
 
@@ -23,8 +22,9 @@ public class MessengerServerModule {
 
     @Singleton
     @Provides
-    MessengerServerFacade provideXmppServerFacade(@ForApplication Context context, DreamSpiceManager requester, UsersDAO usersDAO) {
+    MessengerServerFacade provideXmppServerFacade() {
+        Gson gson = new GsonBuilder().registerTypeAdapter(AttachmentHolder.class, new GsonAttachmentAdapter()).create();
         return new XmppServerFacade(
-                new XmppServerParams(BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT));
+                new XmppServerParams(BuildConfig.MESSENGER_API_URL, BuildConfig.MESSENGER_API_PORT), gson);
     }
 }

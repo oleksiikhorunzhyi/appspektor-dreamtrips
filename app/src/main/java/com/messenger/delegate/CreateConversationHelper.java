@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.ConversationIdHelper;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
@@ -94,7 +93,7 @@ public class CreateConversationHelper {
     private Observable<DataConversation> setMultiUserChatData(DataConversation conversation,
                                                               List<DataUser> newParticipants, @Nullable String subject) {
         return messengerServerFacade.getChatManager()
-                .createMultiUserChatObservable(conversation.getId(), getUsername())
+                .createGroupChatObservable(conversation.getId(), getUsername())
                 .doOnNext(multiUserChat -> multiUserChat.invite(getUserIds(newParticipants)))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .map(chat -> conversation);

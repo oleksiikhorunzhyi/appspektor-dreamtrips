@@ -11,6 +11,7 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 import java.util.ArrayList;
@@ -21,13 +22,13 @@ import timber.log.Timber;
 
 public class ParticipantProvider {
 
-    private AbstractXMPPConnection connection;
+    private XMPPConnection connection;
 
     public interface OnGroupChatParticipantsLoaded {
         void onLoaded(Participant owner, List<Participant> participants, boolean abandoned);
     }
 
-    public ParticipantProvider(AbstractXMPPConnection connection) {
+    public ParticipantProvider(XMPPConnection connection) {
         this.connection = connection;
         ProviderManager.addIQProvider(
                 ConversationParticipantsIQ.ELEMENT_QUERY, ConversationParticipantsIQ.NAMESPACE,

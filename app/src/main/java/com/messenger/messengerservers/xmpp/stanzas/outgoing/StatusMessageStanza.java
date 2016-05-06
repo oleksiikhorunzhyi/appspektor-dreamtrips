@@ -10,9 +10,9 @@ public class StatusMessageStanza extends Stanza {
 
     public static final String ELEMENT = "message";
 
-    private String messageId;
-    private String status;
-    private org.jivesoftware.smack.packet.Message.Type type;
+    public final String messageId;
+    public final String status;
+    public final org.jivesoftware.smack.packet.Message.Type type;
 
     public StatusMessageStanza(String messageId, @Status.MessageStatus String status, String to,
                                org.jivesoftware.smack.packet.Message.Type type) {

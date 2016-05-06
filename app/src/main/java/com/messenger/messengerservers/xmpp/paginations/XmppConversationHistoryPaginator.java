@@ -8,82 +8,74 @@ import com.messenger.messengerservers.xmpp.stanzas.incoming.MessagePageIQ;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.ObtainMessageListIQ;
 import com.messenger.messengerservers.xmpp.providers.MessagePageProvider;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 import java.util.List;
 
+import rx.Observable;
 import timber.log.Timber;
 
 public class XmppConversationHistoryPaginator extends PagePagination<Message> {
-    private AbstractXMPPConnection connection;
-    private String conversationId;
-    private Gson gson;
+    private final Observable<XMPPConnection> connectionObservable;
+    private final Gson gson;
 
-    public XmppConversationHistoryPaginator(XmppServerFacade facade, String conversationId,
-                                            int pageSize) {
+    public XmppConversationHistoryPaginator(XmppServerFacade facade, int pageSize) {
         super(pageSize);
         this.gson = facade.getGson();
-        this.connection = facade.getConnection();
-        this.conversationId = conversationId;
+        this.connectionObservable = facade.getConnectionObservable();
     }
 
     @Override
-    public void loadPage(int page, long sinceSecs) {
+    public void loadPage(String conversationId, int page, long sinceSecs) {
         ObtainMessageListIQ packet = new ObtainMessageListIQ();
-        packet.setMax(getSizePerPage());
+        packet.setMax(getPageSize());
         packet.setConversationId(conversationId);
         packet.setPage(page);
         packet.setSinceSec(sinceSecs);
         Timber.i("Send XMPP Packet: %s", packet.toString());
 
+        ProviderManager.addIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE, new MessagePageProvider(gson));
+        connectionObservable
+                .take(1)
+                .doOnNext(connection -> connectionPrepared(connection, packet, conversationId))
+                .subscribe(connection -> {
+                }, this::notifyError);
+    }
+
+    public void connectionPrepared(XMPPConnection connection, Stanza packet, String conversationId) {
         try {
-            ProviderManager.addIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE, new MessagePageProvider(gson));
             connection.sendStanzaWithResponseCallback(packet,
-                    stanza -> stanza instanceof MessagePageIQ
-                            || (stanza.getStanzaId() != null && stanza.getStanzaId().startsWith("page")),
-                    stanzaPacket -> {
-                        if (!(stanzaPacket instanceof MessagePageIQ)){
-                            notifyError(new SmackException("No history"));
-                        } else {
-                            notifyLoaded(((MessagePageIQ) stanzaPacket).getMessages());
-                        }
-                        ProviderManager.removeIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE);
-                    },
-                    exception -> {
-                        Timber.e(exception, getClass().getName());
-                        notifyError(exception);
-                    });
-        } catch (SmackException.NotConnectedException e) {
-            Timber.i(e, "%s, Loading error", getClass().getSimpleName());
+                    this::stanzaFilter, stanza -> stanzaCallback(stanza, conversationId), this::notifyError);
+        } catch (Throwable e) {
             notifyError(e);
         }
     }
 
-    private void notifyLoaded(List<Message> messages){
+    private boolean stanzaFilter(Stanza stanza) {
+        return stanza instanceof MessagePageIQ
+                || (stanza.getStanzaId() != null && stanza.getStanzaId().startsWith("page"));
+    }
+
+    private void stanzaCallback(Stanza stanza, String conversationId) {
+        if (!(stanza instanceof MessagePageIQ)) {
+            notifyError(new IllegalArgumentException());
+        } else {
+            notifyLoaded(((MessagePageIQ) stanza).getMessages(), conversationId);
+        }
+        ProviderManager.removeIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE);
+    }
+
+    private void notifyLoaded(List<Message> messages, String conversationId) {
         for (Message message : messages) {
             message.setConversationId(conversationId);
         }
 
-        if (persister != null) {
-            persister.save(messages);
-        }
-
-        if (onEntityLoadedListener != null) {
-            onEntityLoadedListener.onLoaded(messages);
-        }
+        publishSubject.onNext(messages);
     }
 
-    private void notifyError(Exception e) {
-        if (onEntityLoadedListener != null) {
-            onEntityLoadedListener.onError(e);
-        }
-    }
-
-    @Override
-    public void close() {
-        onEntityLoadedListener = null;
-        persister = null;
+    private void notifyError(Throwable throwable) {
+        publishSubject.onError(throwable);
     }
 }

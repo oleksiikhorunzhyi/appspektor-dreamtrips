@@ -52,7 +52,7 @@ public class CreateChatHelper {
     private Observable<Chat> provideGroupChat(DataConversation conversation) {
         DataUser dataUser = new DataUser(appSessionHolder.get().get().getUsername());
         boolean isOwner = ConversationHelper.isOwner(conversation, dataUser);
-        return Observable.defer(() -> Observable.just(chatManager.createMultiUserChat(conversation.getId(),
+        return Observable.defer(() -> Observable.just(chatManager.createGroupChat(conversation.getId(),
                 dataUser.getId(), isOwner)));
     }
 }

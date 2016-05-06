@@ -5,9 +5,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.messenger.messengerservers.ChatManager;
-import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.messengerservers.chat.SingleUserChat;
-import com.messenger.messengerservers.xmpp.chats.XmppMultiUserChat;
+import com.messenger.messengerservers.xmpp.chats.XmppGroupChat;
 import com.messenger.messengerservers.xmpp.chats.XmppSingleUserChat;
 
 import rx.Observable;
@@ -25,18 +25,18 @@ public class XmppChatManager implements ChatManager {
     }
 
     @Override
-    public MultiUserChat createMultiUserChat(@Nullable String roomId, String ownerId) {
+    public GroupChat createGroupChat(@Nullable String roomId, String ownerId) {
         boolean isOwner = TextUtils.equals(ownerId, facade.getUsername());
-        return createMultiUserChat(roomId, ownerId, isOwner);
+        return createGroupChat(roomId, ownerId, isOwner);
     }
 
     @Override
-    public MultiUserChat createMultiUserChat(@Nullable String roomId, @NonNull String ownerId, boolean isOwner) {
-        return new XmppMultiUserChat(facade, roomId, ownerId, isOwner);
+    public GroupChat createGroupChat(@Nullable String roomId, @NonNull String ownerId, boolean isOwner) {
+        return new XmppGroupChat(facade, roomId, ownerId, isOwner);
     }
 
     @Override
-    public Observable<MultiUserChat> createMultiUserChatObservable(@Nullable String roomId, String ownerId) {
-        return Observable.defer(() -> Observable.just(createMultiUserChat(roomId, ownerId)));
+    public Observable<GroupChat> createGroupChatObservable(@Nullable String roomId, String ownerId) {
+        return Observable.defer(() -> Observable.just(createGroupChat(roomId, ownerId)));
     }
 }

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import com.innahema.collections.query.functions.Converter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -67,7 +65,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                 .compose(new IoToMainComposer<>())
                 .subscribe(state -> {
                     BucketPhotoCreationItem uploadTask = db.getBucketPhotoCreationItem((state.action.getFilePath()));
-                    if (uploadTask != null && Objects.equals(uploadTask.getBucketId(), bucketItem.getUid())) {
+                    if (uploadTask != null && uploadTask.getBucketId().equals(bucketItem.getUid())) {
                         uploadTask.setStatus(state.status);
                         BucketPhotoCreationItem bucketPhotoUploadTask = view.getBucketPhotoUploadTask(uploadTask.getFilePath());
                         if (bucketPhotoUploadTask != null) {
@@ -160,7 +158,7 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                     return element;
                 })
                 .filter(element -> {
-                    return Objects.equals(bucketItemId, element.getBucketId());
+                    return bucketItemId.equals(element.getBucketId());
                 }).toList();
         bucketPhotos.addAll(bucketPhotos.isEmpty() ? 0 : 1, tasks);
         return bucketPhotos;

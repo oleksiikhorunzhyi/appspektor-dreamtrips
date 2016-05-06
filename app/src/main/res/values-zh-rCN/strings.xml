@@ -639,5 +639,6 @@
     <string name="request_outgoing_long">传出</string>
 
     <string name="add_title">添加标题</string>
+    <string name="flag_sent_success_msg">无法检举项目</string>
 
 </resources>

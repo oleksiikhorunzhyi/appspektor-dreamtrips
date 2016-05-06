@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.util.Pair;
 
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
@@ -15,15 +14,20 @@ import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.internal.util.RxThreadFactory;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
 
     public static final int REQUESTER_ID = -10;
+    private static final String THREAD_NAME_PREFIX = "MEDIA_PICKER_THREAD";
 
     private int requestId;
 
@@ -47,6 +51,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                         return new PhotoGalleryModel(pair.first, pair.second);
                     })
                     .toList()
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(photoGalleryModels -> {
                         mediaPickerManager.attach(new MediaAttachment(photoGalleryModels, event.getRequestType(), requestId));
                         eventBus.post(new PickerDoneEvent(new MediaAttachment(photoGalleryModels, event.getRequestType(), requestId)));
@@ -67,7 +73,8 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                     chosenImages.add(photoGalleryModel);
                     return new MediaAttachment(chosenImages, type, requestId);
                 })
-                .compose(new IoToMainComposer<>())
+                .subscribeOn(Schedulers.from(Executors.newScheduledThreadPool(5, new RxThreadFactory(THREAD_NAME_PREFIX))))
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mediaAttachment -> {
                     mediaPickerManager.attach(mediaAttachment);
                 }, error -> {

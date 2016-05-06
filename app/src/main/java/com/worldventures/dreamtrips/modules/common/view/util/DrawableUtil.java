@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.util.Pair;
 
-import com.kbeanie.imagechooser.exceptions.ChooserException;
 import com.kbeanie.imagechooser.helpers.StreamHelper;
 
 import java.io.BufferedInputStream;
@@ -43,7 +42,6 @@ public class DrawableUtil {
 
     public Pair<String, Size> compressAndRotateImage(String fileImage, int scale) {
         FileOutputStream stream = null;
-        BufferedInputStream bstream = null;
         Bitmap bitmap = null;
         try {
             BitmapFactory.Options optionsForGettingDimensions = new BitmapFactory.Options();
@@ -100,10 +98,10 @@ public class DrawableUtil {
             return new Pair<>(fileImage, new Size(0, 0));
         } finally {
             try {
-                StreamHelper.close(bstream);
+                if (bitmap != null) bitmap.recycle();
                 StreamHelper.flush(stream);
                 StreamHelper.close(stream);
-            } catch (ChooserException e) {
+            } catch (Exception e) {
                 Timber.e(e.getMessage());
             }
         }
@@ -113,7 +111,7 @@ public class DrawableUtil {
         int what = width > height ? width : height;
         int sampleSize;
         if (what > FULL_HD_WIDTH) {
-            sampleSize = scale * (int)Math.round((double)what / FULL_HD_WIDTH);
+            sampleSize = scale * (int) Math.round((double) what / FULL_HD_WIDTH);
         } else {
             sampleSize = scale;
         }

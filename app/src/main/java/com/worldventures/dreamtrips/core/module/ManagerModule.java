@@ -9,8 +9,8 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
-import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
+import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -18,9 +18,9 @@ import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
@@ -30,6 +30,8 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 
@@ -172,5 +174,17 @@ public class ManagerModule {
     SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context,
                                                       DreamSpiceManager dreamSpiceManager) {
         return new SocialCropImageManager(context, dreamSpiceManager);
+    }
+
+    @Provides
+    @Singleton
+    EditPhotoTagsCallback provideEditPhotoTagsCallback() {
+        return new EditPhotoTagsCallback();
+    }
+
+    @Provides
+    @Singleton
+    PostLocationPickerCallback providePostLocationPickerCallback() {
+        return new PostLocationPickerCallback();
     }
 }

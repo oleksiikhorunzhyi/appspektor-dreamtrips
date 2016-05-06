@@ -113,10 +113,4 @@ public class TripsImagesModule {
         return new DrawableUtil(context);
     }
 
-    @Provides
-    @Singleton
-    EditPhotoTagsCallback provideEditPhotoTagsCallback() {
-        return new EditPhotoTagsCallback();
-    }
-
 }

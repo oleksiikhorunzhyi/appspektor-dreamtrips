@@ -53,7 +53,7 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
-    private BaseArrayListAdapter<IFullScreenObject> arrayListAdapter;
+    private BaseArrayListAdapter arrayListAdapter;
     private LinearLayoutManager layoutManager;
 
     RecyclerViewStateDelegate stateDelegate;
@@ -187,6 +187,13 @@ public class TripImagesListFragment<T extends TripImagesListPresenter>
         recyclerView.scrollToPosition(0);
         arrayListAdapter.addItem(position, item);
         arrayListAdapter.notifyItemInserted(position);
+    }
+
+    @Override
+    public void addAll(int position, List<? extends IFullScreenObject> items) {
+        recyclerView.scrollToPosition(0);
+        arrayListAdapter.addItems(0, items);
+        arrayListAdapter.notifyDataSetChanged();
     }
 
     @Override

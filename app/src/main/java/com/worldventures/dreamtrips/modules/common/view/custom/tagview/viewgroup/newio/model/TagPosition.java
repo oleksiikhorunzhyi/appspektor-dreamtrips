@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model;
 
+import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -41,11 +42,20 @@ public class TagPosition implements Parcelable, Serializable {
 
 
     public boolean intersected(TagPosition tagPosition) {
-        if (this.getTopLeft().getX() > tagPosition.getBottomRight().getX() || this.getBottomRight().getX() < tagPosition.getTopLeft().getX() ||
-                this.getTopLeft().getY() > tagPosition.getBottomRight().getY() || this.getBottomRight().getY() < tagPosition.getTopLeft().getY()) {
-            return false;
-        }
-        return true;
+
+        int l = (int) (this.getTopLeft().getX() * 100);
+        int t = (int) (this.getTopLeft().getY() * 100);
+        int r = (int) (this.getBottomRight().getX() * 100);
+        int b = (int) (this.getBottomRight().getY() * 100);
+        Rect thisRect = new Rect(l, t, r, b);
+
+        int l2 = (int) (tagPosition.getTopLeft().getX() * 100);
+        int t2 = (int) (tagPosition.getTopLeft().getY() * 100);
+        int r2 = (int) (tagPosition.getBottomRight().getX() * 100);
+        int b2 = (int) (tagPosition.getBottomRight().getY() * 100);
+        Rect obj = new Rect(l2, t2, r2, b2);
+
+        return thisRect.intersect(obj) || obj.intersect(thisRect) || thisRect.contains(obj) || obj.contains(thisRect);
     }
 
     @Override

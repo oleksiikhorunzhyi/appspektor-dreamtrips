@@ -39,17 +39,17 @@ public class PickLocationActivity extends BaseActivity {
         PickLocationActivityPermissionsDispatcher.locationPermissionWithCheck(this);
     }
 
-    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void locationPermission() {
         view.getPresenter().onLocationPermissionGranted();
     }
 
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnShowRationale({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void showRationaleForLocation(PermissionRequest request) {
         view.getPresenter().onRationalForLocationPermissionRequired();
     }
 
-    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
+    @OnPermissionDenied({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     void showDeniedForLocation() {
         view.getPresenter().onLocationPermissionDenied();
     }
@@ -63,7 +63,7 @@ public class PickLocationActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!locationSettingsDelegate.onActivityResult(requestCode,resultCode, data)) {
+        if (!locationSettingsDelegate.onActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }

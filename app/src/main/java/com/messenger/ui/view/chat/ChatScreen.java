@@ -7,6 +7,7 @@ import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
+import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 import com.messenger.ui.model.AttachmentMenuItem;
@@ -38,16 +39,6 @@ public interface ChatScreen extends MessengerScreen {
 
     void showAttachmentMenu(AttachmentMenuItem[] items);
 
-    void showFlagsListDialog(DataMessage message, List<Flag> flags);
-
-    void showFlagReasonDialog(DataMessage message, Flag flag);
-
-    void showFlagConfirmationDialog(DataMessage message, Flag flag, String reason);
-
-    void showFlaggingProgressDialog();
-
-    void hideFlaggingProgressDialog();
-
     void showPhotoPicker();
 
     void hidePhotoPicker();
@@ -59,4 +50,6 @@ public interface ChatScreen extends MessengerScreen {
     void enableSendMessageButton(boolean enable);
 
     void showPickLocationError();
+
+    FlaggingView getFlaggingView();
 }

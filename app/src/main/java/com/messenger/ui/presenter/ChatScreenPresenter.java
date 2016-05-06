@@ -45,11 +45,5 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
     void onStartNewChatForMessageOwner(DataMessage message);
 
     void onFlagMessageAttempt(DataMessage message);
-
-    void onFlagTypeChosen(DataMessage message, Flag flag);
-
-    void onFlagReasonProvided(DataMessage message, Flag flag, String reason);
-
-    void onFlagMessageConfirmation(DataMessage message, Flag flag, String reason);
 }
 

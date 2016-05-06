@@ -12,7 +12,6 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.core.api.ConfigApi;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
@@ -139,12 +138,6 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    ConfigApi provideS3Api(GsonConverter gsonConverter) {
-        return createRestAdapter(BuildConfig.S3Api, gsonConverter).create(ConfigApi.class);
-    }
-
-    @Provides
-    @Singleton
     DtlApi provideDtlApi(RestAdapter.Builder builder, DTErrorHandler errorHandler) {
         return builder.setErrorHandler(errorHandler).build()
                 .create(DtlApi.class);
@@ -186,9 +179,13 @@ public class ApiModule {
     }
 
     @Provides
-    OkHttpClient provideOkHttpClient(Context context) {
+    CookieManager provideCookieManager(Context context) {
+        return new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
+    }
+
+    @Provides
+    OkHttpClient provideOkHttpClient(CookieManager cookieManager) {
         OkHttpClient okHttpClient = new OkHttpClient();
-        CookieManager cookieManager = new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL);
         okHttpClient.setCookieHandler(cookieManager);
         //Currently `api/{uid}/likes` (10k+ms)
         okHttpClient.setConnectTimeout(BuildConfig.API_TIMEOUT_SEC, TimeUnit.SECONDS);

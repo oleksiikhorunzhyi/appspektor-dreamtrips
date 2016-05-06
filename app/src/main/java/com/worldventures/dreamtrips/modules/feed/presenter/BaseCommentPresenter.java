@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
@@ -24,8 +23,6 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -52,7 +49,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     private int page = 1;
     private int commentsCount = 0;
     private boolean loadInitiated;
-    private UidItemDelegate uidItemDelegate;
 
     @Inject
     FeedEntityManager entityManager;
@@ -61,7 +57,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
-        this.uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
@@ -130,8 +125,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             case ADDED:
                 if (event.getSpiceException() == null) {
                     view.addComment(event.getComment());
-                    feedEntity.getComments().add(event.getComment());
-                    feedEntity.setCommentsCount(feedEntity.getCommentsCount() + 1);
                     sendAnalytic(TrackingHelper.ATTRIBUTE_COMMENT);
                 } else {
                     view.onPostError();
@@ -140,13 +133,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                 break;
             case REMOVED:
                 view.removeComment(event.getComment());
-                feedEntity.getComments().remove(event.getComment());
-                feedEntity.setCommentsCount(feedEntity.getCommentsCount() - 1);
                 sendAnalytic(TrackingHelper.ATTRIBUTE_DELETE_COMMENT);
                 break;
             case EDITED:
                 view.updateComment(event.getComment());
-                feedEntity.getComments().set(feedEntity.getComments().indexOf(event.getComment()), event.getComment());
                 break;
 
         }
@@ -159,12 +149,12 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public void onEvent(DeleteCommentRequestEvent event) {
         if (!view.isVisibleOnScreen()) return;
-        entityManager.deleteComment(event.getComment());
+        entityManager.deleteComment(feedEntity, event.getComment());
     }
 
 
     public void onEvent(EditCommentRequestEvent event) {
-        view.editComment(event.getComment());
+        view.editComment(feedEntity, event.getComment());
         sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
     }
 
@@ -202,18 +192,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     private void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         //
-        view.back();
-    }
 
-    public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.loadFlags(event.getFlaggableView());
-    }
-
-    public void onEvent(ItemFlaggedEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
-                    event.getFlagReasonId(), event.getNameOfReason()));
+        if (!view.isTabletLandscape()) {
+            view.back();
+        }
     }
 
     private void sendAnalytic(String actionAttribute) {
@@ -283,7 +265,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         void setLoading(boolean loading);
 
-        void editComment(Comment comment);
+        void editComment(FeedEntity feedEntity, Comment comment);
 
         void hideViewMore();
 

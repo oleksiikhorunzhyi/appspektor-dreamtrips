@@ -42,7 +42,7 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
 
     @Override protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-       presenter.onDetachedFromWindow();
+        presenter.onDetachedFromWindow();
     }
 
     @Override

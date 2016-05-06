@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
@@ -12,6 +11,7 @@ import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -56,6 +56,7 @@ public class SnappyRepository {
     public static final String SETTINGS_KEY = "settings";
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
+    public static final String BUCKET_PHOTO_CREATION_ITEM = "BUCKET_PHOTO_CREATION_ITEM";
     public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
     public static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
@@ -79,6 +80,7 @@ public class SnappyRepository {
     public static final String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
     public static final String DTL_AMENITIES = "DTL_AMENITIES";
     public static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
+    public static final String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
     private Context context;
     private ExecutorService executorService;
@@ -181,7 +183,7 @@ public class SnappyRepository {
     /**
      * Method is intended to delete all records for given keys.
      *
-     * @param key keys array to be deleted.
+     * @param keys keys array to be deleted.
      */
     public void clearAllForKeys(String... keys) {
         Queryable.from(keys).forEachR(key -> {
@@ -334,8 +336,21 @@ public class SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Settings
+    ///////////////////////////////////////////////////////////////////////////
+
+    public void saveLastSuggestedPhotosSyncTime(long time) {
+        act(db -> db.putLong(SUGGESTED_PHOTOS_SYNC_TIME, time));
+    }
+
+    public long getLastSuggestedPhotosSyncTime() {
+        return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(0L);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Image Tasks
     ///////////////////////////////////////////////////////////////////////////
+
     /**
      * Use it from PhotoUploadManager
      */
@@ -359,6 +374,42 @@ public class SnappyRepository {
                 Timber.e(e, "Error while deleting");
             }
         }));
+    }
+
+    /**
+     * Use it from Buclet photos
+     */
+    public void saveBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
+        act(db -> db.put(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath(), uploadTask));
+    }
+
+    public BucketPhotoCreationItem getBucketPhotoCreationItem(String filePath) {
+        return actWithResult(db -> db.get(BUCKET_PHOTO_CREATION_ITEM + filePath, BucketPhotoCreationItem.class)).orNull();
+    }
+
+    public void removeBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
+        act(db -> db.del(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath()));
+    }
+
+    public void removeAllBucketItemPhotoCreations() {
+        act(db -> Queryable.from(db.findKeys(BUCKET_PHOTO_CREATION_ITEM)).forEachR(key -> {
+            try {
+                db.del(key);
+            } catch (SnappydbException e) {
+                Timber.e(e, "Error while deleting");
+            }
+        }));
+    }
+
+    public List<BucketPhotoCreationItem> getAllBucketPhotoCreationItem() {
+        return actWithResult(db -> {
+            List<BucketPhotoCreationItem> tasks = new ArrayList<>();
+            String[] keys = db.findKeys(BUCKET_PHOTO_CREATION_ITEM);
+            for (String key : keys) {
+                tasks.add(db.get(key, BucketPhotoCreationItem.class));
+            }
+            return tasks;
+        }).or(Collections.emptyList());
     }
 
     public List<UploadTask> getAllUploadTask() {
@@ -527,7 +578,10 @@ public class SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     public void saveDtlLocation(DtlLocation dtlLocation) {
-        act(db -> db.put(DTL_SELECTED_LOCATION, dtlLocation));
+        // list below is a hack to allow manipulating DtlLocation class since it is an interface
+        List<DtlLocation> location = new ArrayList<>();
+        location.add(dtlLocation);
+        putList(DTL_SELECTED_LOCATION, location);
     }
 
     public void cleanDtlLocation() {
@@ -536,8 +590,10 @@ public class SnappyRepository {
 
     @Nullable
     public DtlLocation getDtlLocation() {
-        return actWithResult(db -> db.getObject(DTL_SELECTED_LOCATION, DtlLocation.class))
-                .orNull();
+        // list below is a hack to allow manipulating DtlLocation class since it is an interface
+        List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
+        if (location.isEmpty()) return null;
+        else return location.get(0);
     }
 
     public void saveDtlMerhants(List<DtlMerchant> merchants) {
@@ -562,27 +618,27 @@ public class SnappyRepository {
         clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
     }
 
-    public void saveLastMapCameraPosition(Location location){
+    public void saveLastMapCameraPosition(Location location) {
         act(db -> db.put(DTL_LAST_MAP_POSITION, location));
     }
 
-    public Location getLastMapCameraPosition(){
+    public Location getLastMapCameraPosition() {
         return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
     }
 
-    public void cleanLastMapCameraPosition(){
+    public void cleanLastMapCameraPosition() {
         clearAllForKey(DTL_LAST_MAP_POSITION);
     }
 
-    public void saveLastSelectedOffersOnlyToogle(boolean state){
+    public void saveLastSelectedOffersOnlyToogle(boolean state) {
         act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
     }
 
-    public Boolean getLastSelectedOffersOnlyToggle(){
+    public Boolean getLastSelectedOffersOnlyToggle() {
         return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
     }
 
-    public void cleanLastSelectedOffersOnlyToggle(){
+    public void cleanLastSelectedOffersOnlyToggle() {
         clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
     }
 

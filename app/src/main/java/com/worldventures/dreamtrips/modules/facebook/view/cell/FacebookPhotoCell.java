@@ -40,6 +40,7 @@ public class FacebookPhotoCell extends AbstractCell<FacebookPhoto> {
 
         itemView.setOnClickListener(v -> {
             getModelObject().setChecked(!getModelObject().isChecked());
+            getModelObject().setPickedTime(getModelObject().isChecked() ? System.currentTimeMillis() : -1);
 
             getEventBus().post(new PhotoPickedEvent(getModelObject()));
         });

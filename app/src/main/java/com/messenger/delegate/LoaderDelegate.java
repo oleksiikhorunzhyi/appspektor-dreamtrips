@@ -1,8 +1,6 @@
 package com.messenger.delegate;
 
-import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -11,18 +9,21 @@ import com.messenger.messengerservers.loaders.Loader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessengerUser;
-import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.util.DecomposeMessagesHelper;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -32,33 +33,32 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 
 public class LoaderDelegate {
 
-    private final MessengerServerFacade messengerServerFacade;
-    private final UserProcessor userProcessor;
+    @Inject
+    MessengerServerFacade messengerServerFacade;
+    @Inject
+    UserProcessor userProcessor;
 
-    private final ConversationsDAO conversationsDAO;
-    private final ParticipantsDAO participantsDAO;
-    private final MessageDAO messageDAO;
-    private final UsersDAO usersDAO;
-    private final AttachmentDAO attachmentDAO;
+    @Inject
+    ConversationsDAO conversationsDAO;
+    @Inject
+    ParticipantsDAO participantsDAO;
+    @Inject
+    MessageDAO messageDAO;
+    @Inject
+    UsersDAO usersDAO;
+    @Inject
+    DecomposeMessagesHelper decomposeMessagesHelper;
 
-    public LoaderDelegate(MessengerServerFacade messengerServerFacade, UserProcessor userProcessor,
-                          ConversationsDAO conversationsDAO, ParticipantsDAO participantsDAO,
-                          MessageDAO messageDAO, UsersDAO usersDAO, AttachmentDAO attachmentDAO) {
-        this.messengerServerFacade = messengerServerFacade;
-        this.userProcessor = userProcessor;
-        this.conversationsDAO = conversationsDAO;
-        this.participantsDAO = participantsDAO;
-        this.messageDAO = messageDAO;
-        this.usersDAO = usersDAO;
-        this.attachmentDAO = attachmentDAO;
-
+    @Inject
+    public LoaderDelegate(@ForApplication Injector injector) {
+        injector.inject(this);
     }
 
     public void synchronizeCache(@NotNull OnSynchronized listener) {
         Observable
                 .zip(loadConversations(), loadContacts(), (o, o2) -> Boolean.TRUE)
                 .onErrorReturn(e -> Boolean.FALSE)
-                .subscribe(listener::onSynchronized);
+                .subscribe(listener::onSynchronized, t -> Timber.e(t, "Error while synchronizing cache"));
     }
 
     public Observable<Void> loadConversations() {
@@ -71,10 +71,9 @@ public class LoaderDelegate {
                     List<DataConversation> convs = from(data).map(DataConversation::new).toList();
                     from(convs).forEachR(conversation -> conversation.setSyncTime(syncTime));
 
-                    List<DataMessage> messages = from(data)
-                            .filter(c -> c.getLastMessage() != null)
-                            .map(c -> new DataMessage(c.getLastMessage())).notNulls().toList();
-                    from(messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
+                    List<Message> serverMessages = from(data).map(conv -> conv.getLastMessage()).notNulls().toList();
+                    DecomposeMessagesHelper.Result result = decomposeMessagesHelper.decomposeMessages(serverMessages);
+                    from(result.messages).forEachR(msg -> msg.setSyncTime(System.currentTimeMillis()));
 
                     List<DataParticipant> relationships = new ArrayList<>();
                     if (!data.isEmpty()) {
@@ -86,12 +85,9 @@ public class LoaderDelegate {
                         from(relationships).forEachR(relationship -> relationship.setSyncTime(syncTime));
                     }
 
-                    List<DataAttachment> attachments = getDataAttachments(data);
-
                     conversationsDAO.save(convs);
                     conversationsDAO.deleteBySyncTime(syncTime);
-                    attachmentDAO.save(attachments);
-                    messageDAO.save(messages);
+                    decomposeMessagesHelper.saveDecomposeMessage(result);
                     participantsDAO.save(relationships);
                     participantsDAO.deleteBySyncTime(syncTime);
 
@@ -108,16 +104,6 @@ public class LoaderDelegate {
         });
         return userProcessor.connectToUserProvider(loader)
                 .map(var -> (Void) null);
-    }
-
-    private List<DataAttachment> getDataAttachments(List<Conversation> conversations) {
-        List<DataAttachment> attachments = new LinkedList<>();
-        for (Conversation c : conversations) {
-            Message message = c.getLastMessage();
-            if (message != null) attachments.addAll(DataAttachment.fromMessage(message));
-        }
-
-        return attachments;
     }
 
     public Observable<List<DataUser>> loadContacts() {

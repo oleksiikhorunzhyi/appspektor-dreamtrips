@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.DeleteRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetRequestsQuery;
 import com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequestCommand;
-import com.worldventures.dreamtrips.modules.friends.events.AcceptAllRequestsEvent;
 import com.worldventures.dreamtrips.modules.friends.events.AcceptRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.CancelRequestEvent;
 import com.worldventures.dreamtrips.modules.friends.events.HideRequestEvent;
@@ -73,7 +72,31 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
             view.openUser(new UserBundle(event.getUser()));
     }
 
-    public void onEvent(AcceptAllRequestsEvent event) {
+    private void setItems(List<User> items) {
+        if (items != null) {
+            List<Object> sortedItems = new ArrayList<>();
+
+            List<User> incoming = Queryable.from(items).filter(item -> item.getRelationship() == INCOMING_REQUEST).toList();
+            if (!incoming.isEmpty()) {
+                RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming_long), true);
+                incomingHeader.setCount(incoming.size());
+                sortedItems.add(incomingHeader);
+                sortedItems.addAll(incoming);
+            }
+
+            List<User> outgoing = Queryable.from(items).filter(item ->
+                    (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
+                    .toList();
+            if (!outgoing.isEmpty()) {
+                sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing_long)));
+                sortedItems.addAll(outgoing);
+            }
+
+            view.getAdapter().setItems(sortedItems);
+        }
+    }
+
+    public void acceptAllRequests() {
         view.showAddFriendDialog(circles, position -> {
             if (view.isVisibleOnScreen()) {
                 view.startLoading();
@@ -81,8 +104,8 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                         .filter(e -> e instanceof User && ((User) e).getRelationship() == INCOMING_REQUEST)
                         .map(element -> {
                             return new RequestEntity(((User) element).getId(),
-                                    ActOnRequestCommand.Action.CONFIRM.name()
-                                    , circles.get(position).getId());
+                                    ActOnRequestCommand.Action.CONFIRM.name(),
+                                    circles.get(position).getId());
                         }).toList();
                 doRequest(new ResponseBatchRequestCommand(responses), jsonObject -> {
                     reloadRequests();
@@ -95,60 +118,54 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         });
     }
 
-    private void setItems(List<User> items) {
-        if (items != null) {
-            List<User> incoming = Queryable.from(items).filter(item -> item.getRelationship() == INCOMING_REQUEST).toList();
-            List<Object> sortedItems = new ArrayList<>();
-            RequestHeaderModel incomingHeader = new RequestHeaderModel(context.getString(R.string.request_incoming), true);
-            incomingHeader.setCount(incoming.size());
-            sortedItems.add(incomingHeader);
-            sortedItems.addAll(incoming);
-
-            sortedItems.add(new RequestHeaderModel(context.getString(R.string.request_outgoing)));
-            sortedItems.addAll(Queryable.from(items).filter(item ->
-                    (item.getRelationship() == OUTGOING_REQUEST || item.getRelationship() == REJECTED))
-                    .toList());
-            view.getAdapter().setItems(sortedItems);
-        }
-    }
-
-    public void onEvent(AcceptRequestEvent event) {
+    public void acceptRequest(User user) {
+        eventBus.post(new AcceptRequestEvent(user));
         view.showAddFriendDialog(circles, position -> {
             view.startLoading();
-            doRequest(new ActOnRequestCommand(event.getUser().getId(),
+            doRequest(new ActOnRequestCommand(user.getId(),
                             ActOnRequestCommand.Action.CONFIRM.name(),
                             circles.get(position).getId()),
                     object -> {
                         eventBus.post(new ReloadFriendListEvent());
-                        onSuccess(event.getUser());
+                        onSuccess(user);
+                        reloadRequests();
                         updateRequestsCount();
                     },
                     this::onError);
         });
     }
 
-    public void onEvent(CancelRequestEvent event) {
-        deleteRequest(event.getUser(), event.getPosition(), DeleteRequestCommand.Action.CANCEL);
-    }
-
-    public void onEvent(HideRequestEvent event) {
-        deleteRequest(event.getUser(), event.getPosition(), DeleteRequestCommand.Action.HIDE);
-    }
-
-    private void deleteRequest(User user, int position, DeleteRequestCommand.Action action) {
+    public void rejectRequest(User user) {
+        eventBus.post(new RejectRequestEvent(user));
         view.startLoading();
-        doRequest(new DeleteRequestCommand(user.getId(), action),
-                object -> onSuccess(user),
+        doRequest(new ActOnRequestCommand(user.getId(),
+                        ActOnRequestCommand.Action.REJECT.name()),
+                object -> {
+                    onSuccess(user);
+                    updateRequestsCount();
+                    reloadRequests();
+                },
                 this::onError);
     }
 
-    public void onEvent(RejectRequestEvent event) {
+    public void hideRequest(User user) {
+        eventBus.post(new HideRequestEvent(user));
+        deleteRequest(user, DeleteRequestCommand.Action.HIDE);
+        reloadRequests();
+    }
+
+    public void cancelRequest(User user) {
+        eventBus.post(new CancelRequestEvent(user));
+        deleteRequest(user, DeleteRequestCommand.Action.CANCEL);
+        reloadRequests();
+    }
+
+    private void deleteRequest(User user, DeleteRequestCommand.Action action) {
         view.startLoading();
-        doRequest(new ActOnRequestCommand(event.getUser().getId(),
-                        ActOnRequestCommand.Action.REJECT.name()),
+        doRequest(new DeleteRequestCommand(user.getId(), action),
                 object -> {
-                    onSuccess(event.getUser());
-                    updateRequestsCount();
+                    onSuccess(user);
+                    reloadRequests();
                 },
                 this::onError);
     }

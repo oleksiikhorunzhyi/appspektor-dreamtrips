@@ -17,6 +17,7 @@ import com.messenger.ui.view.edit_member.EditChatMembersScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.ui.viewstate.EditChatMembersViewState;
 import com.messenger.ui.viewstate.LceViewState;
+import com.messenger.util.StringUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -119,7 +120,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                         throwable -> Timber.d(throwable, ""));
 
         rxSearchHelper.search(membersObservable, searchObservable,
-                (pair, searchFilter) -> rxSearchHelper.contains(pair.first.getDisplayedName(), searchFilter))
+                (pair, searchFilter) -> StringUtils.containsIgnoreCase(pair.first.getDisplayedName(), searchFilter))
                 .compose(userSectionHelper.groupTransformer(conversationObservable))
                 .compose(bindView())
                 .observeOn(AndroidSchedulers.mainThread())

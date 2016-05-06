@@ -7,16 +7,17 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.techery.janet.ActionState;
 import mbanje.kurt.fabbutton.CircleImageView;
 import mbanje.kurt.fabbutton.FabButton;
 
 @Layout(R.layout.adapter_item_bucket_photo_upload_cell)
-public class BucketPhotoUploadCell extends AbstractDelegateCell<UploadTask, BucketPhotoUploadCellDelegate> {
+public class BucketPhotoUploadCell extends AbstractDelegateCell<BucketPhotoCreationItem, BucketPhotoUploadCellDelegate> {
 
     @InjectView(R.id.imageViewPhoto)
     protected SimpleDraweeView ivPhoto;
@@ -33,7 +34,7 @@ public class BucketPhotoUploadCell extends AbstractDelegateCell<UploadTask, Buck
     protected void syncUIStateWithModel() {
         ivPhoto.setImageURI(Uri.parse(getModelObject().getFilePath()));
 
-        if (getModelObject().getStatus().equals(UploadTask.Status.FAILED)) {
+        if (getModelObject().getStatus().equals(ActionState.Status.FAIL)) {
             fabProgress.showProgress(false);
             fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
             int color = fabProgress.getContext().getResources().getColor(R.color.bucket_red);

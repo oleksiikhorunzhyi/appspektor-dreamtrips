@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <View
@@ -23,8 +23,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="@string/filter_region_header"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/textViewSelectAllRegion"
@@ -34,9 +33,7 @@
             android:gravity="center_vertical|end"
             android:textColor="@color/grey"
             android:paddingLeft="20dp"
-            android:text="@string/filter_select_all"
-            />
-
+            android:text="@string/filter_select_all"/>
 
         <CheckBox
             android:id="@+id/checkBoxSelectAllRegion"
@@ -45,6 +42,4 @@
             android:checked="true"
             android:paddingRight="15dp" />
     </LinearLayout>
-
-
 </LinearLayout>

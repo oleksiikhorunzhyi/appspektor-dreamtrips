@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.infopages.view.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
@@ -14,7 +13,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
 import butterknife.InjectView;
 

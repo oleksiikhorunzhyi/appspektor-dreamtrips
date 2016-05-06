@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -24,6 +23,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -33,7 +33,7 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_bucket_popular)
 @MenuResource(R.menu.menu_bucket_popular)
 public class BucketListPopularFragment extends BaseFragment<BucketPopularPresenter>
-        implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener, BucketPopularCellDelegate {
 
     @InjectView(R.id.recyclerViewBuckets)
     protected EmptyRecyclerView recyclerView;
@@ -77,6 +77,7 @@ public class BucketListPopularFragment extends BaseFragment<BucketPopularPresent
         this.recyclerView.setEmptyView(emptyView);
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         this.adapter.registerCell(PopularBucketItem.class, BucketPopularCell.class);
+        this.adapter.registerDelegate(PopularBucketItem.class, this);
         this.recyclerView.setAdapter(this.adapter);
         stateDelegate.setRecyclerView(recyclerView);
 
@@ -156,4 +157,18 @@ public class BucketListPopularFragment extends BaseFragment<BucketPopularPresent
         }
     }
 
+    @Override
+    public void onCellClicked(PopularBucketItem model) {
+
+    }
+
+    @Override
+    public void addClicked(PopularBucketItem popularBucketItem, int position) {
+        getPresenter().onAdd(popularBucketItem, position);
+    }
+
+    @Override
+    public void doneClicked(PopularBucketItem popularBucketItem, int position) {
+        getPresenter().onDone(popularBucketItem, position);
+    }
 }

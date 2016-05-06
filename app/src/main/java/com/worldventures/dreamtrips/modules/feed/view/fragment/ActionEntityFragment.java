@@ -3,16 +3,15 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -21,20 +20,22 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
-import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PostCreationTextDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
-import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,58 +44,62 @@ import javax.inject.Provider;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import mbanje.kurt.fabbutton.CircleImageView;
-import mbanje.kurt.fabbutton.FabButton;
+
+import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, EditPhotoTagsFragment.Callback, LocationFragment.Callback {
+        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
 
     @Inject
     BackStackDelegate backStackDelegate;
-
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
 
     @InjectView(R.id.avatar)
     protected SmartAvatarView avatar;
-    @InjectView(R.id.attached_photo)
-    protected SimpleDraweeView attachedPhoto;
     @InjectView(R.id.name)
     protected TextView name;
-    @InjectView(R.id.post)
-    protected KeyCallbackEditText post;
     @InjectView(R.id.post_button)
     protected Button postButton;
-    @InjectView(R.id.fab_progress)
-    protected FabButton fabProgress;
-    @InjectView(R.id.fabbutton_circle)
-    protected CircleImageView circleView;
-    @InjectView(R.id.shadow)
-    protected View shadow;
-    @InjectView(R.id.image_container)
-    protected FrameLayout imageContainer;
     @InjectView(R.id.image)
     protected ImageView image;
-    @InjectView(R.id.tag_btn)
-    protected TextView tagBtn;
     @InjectView(R.id.location)
     protected ImageView locationBtn;
+    @InjectView(R.id.photos)
+    protected RecyclerView photosList;
 
+    BaseDelegateAdapter adapter;
     SweetAlertDialog dialog;
-
-    private TextWatcherAdapter textWatcher = new TextWatcherAdapter() {
-        @Override
-        public void onTextChanged(CharSequence constraint, int start, int before, int count) {
-            super.onTextChanged(constraint, start, before, count);
-            getPresenter().postInputChanged(constraint.toString().trim());
-        }
-    };
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         postButton.setText(getPostButtonText());
+        //
+        adapter = new BaseDelegateAdapter(getContext(), this);
+        adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
+        adapter.registerCell(PostDescription.class, PostCreationTextCell.class);
+        adapter.registerDelegate(PostDescription.class, new PostCreationTextDelegate() {
+            @Override
+            public void onTextChanged(String text) {
+                getPresenter().postInputChanged(text);
+            }
+
+            @Override
+            public void onFocusChanged(boolean hasFocus) {
+                onTitleFocusChanged(hasFocus);
+            }
+
+            @Override
+            public void onCellClicked(PostDescription model) {
+            }
+        });
+        adapter.registerDelegate(PhotoCreationItem.class, this);
+        LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        photosList.setLayoutManager(layout);
+        photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
+        photosList.setAdapter(adapter);
     }
 
     @Override
@@ -117,55 +122,33 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     public void onResume() {
         super.onResume();
         backStackDelegate.setListener(this::onBack);
-        setupTextField();
         updateLocationButtonState();
+        getPresenter().invalidateDynamicViews();
     }
 
-    public void attachPhoto(Uri uri) {
-        if (uri != null) {
-            PipelineDraweeController controller = GraphicUtils.provideFrescoResizingController(uri, attachedPhoto.getController());
-            attachedPhoto.setController(controller);
-            post.setHint(R.string.photo_hint);
-            imageContainer.setVisibility(View.VISIBLE);
-            image.setImageResource(R.drawable.ic_post_add_image_selected);
-            locationBtn.setVisibility(View.VISIBLE);
-            updateLocationButtonState();
-        } else {
-            attachedPhoto.setController(null);
-            post.setHint(R.string.post_hint);
-            imageContainer.setVisibility(View.GONE);
-            image.setImageResource(R.drawable.ic_post_add_image_normal);
-            locationBtn.setVisibility(View.GONE);
-            updateLocationButtonState(false);
-        }
-
-        updateLocationButtonState();
-        getPresenter().invalidateAddTagBtn();
+    @Override
+    public void attachPhotos(List<PhotoCreationItem> images) {
+        adapter.addItems(images);
+        adapter.notifyDataSetChanged();
     }
 
-    private void updateLocationButtonState() {
-        updateLocationButtonState(!TextUtils.isEmpty(getPresenter().getLocation().getName()));
+    @Override
+    public void attachPhoto(PhotoCreationItem image) {
+        adapter.addItem(image);
+        adapter.notifyDataSetChanged();
     }
 
-    private void updateLocationButtonState(boolean isSelected) {
+    @Override
+    public void updateLocationButtonState() {
+        boolean isSelected = getPresenter().getLocation() != null && !TextUtils.isEmpty(getPresenter().getLocation().getName());
         locationBtn.setSelected(isSelected);
-    }
-
-    protected void setupTextField() {
-        post.addTextChangedListener(textWatcher);
-        post.setOnKeyPreImeListener((keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_BACK) {
-                post.clearFocus();
-            }
-        });
+        locationBtn.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        post.removeTextChangedListener(textWatcher);
         backStackDelegate.setListener(null);
-        post.setOnFocusChangeListener(null);
         SoftInputUtil.hideSoftInputMethod(getActivity());
     }
 
@@ -182,7 +165,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     @Override
     public void setText(String text) {
-        post.setText(text);
+        adapter.addItem(new PostDescription(text));
     }
 
     @Override
@@ -207,7 +190,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     public void cancel() {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
 
-        SoftInputUtil.hideSoftInputMethod(post);
         router.moveTo(getRoute(), NavigationConfigBuilder.forRemoval()
                 .fragmentManager(getFragmentManager())
                 .build());
@@ -228,19 +210,17 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
     @Override
     public void onPostError() {
         postButton.setEnabled(true);
-        post.setFocusable(true);
-        post.setFocusableInTouchMode(true);
     }
 
     @OnClick(R.id.post_button)
     void onPost() {
-        SoftInputUtil.hideSoftInputMethod(post);
         postButton.setEnabled(false);
-        post.setFocusable(false);
         getPresenter().post();
     }
 
     protected boolean onBack() {
+        if (getChildFragmentManager().popBackStackImmediate()) return true;
+        //
         getPresenter().cancelClicked();
         return true;
     }
@@ -260,59 +240,93 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         if (ViewUtils.isTablet(getActivity())) getPresenter().cancelClicked();
     }
 
-    @OnClick(R.id.tag_btn)
-    void onTagClicked() {
-        getPresenter().onTagClicked();
-    }
-
-    @Override
-    public void showPhotoTagView(EditPhotoTagsBundle.PhotoEntity photoEntity, List<PhotoTag> photoTags) {
-        router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder
-                .forFragment()
-                .backStackEnabled(true)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_details_floating)
-                .targetFragment(this)
-                .data(new EditPhotoTagsBundle(photoEntity, photoTags))
-                .build());
-    }
-
-    @Override
-    public void redrawTagButton(boolean isViewShown, boolean someTagSets) {
-        if (!someTagSets) {
-            tagBtn.setText(R.string.tag_people);
-            tagBtn.setSelected(false);
-        } else {
-            tagBtn.setText(R.string.empty);
-            tagBtn.setSelected(true);
-        }
-        tagBtn.setVisibility(isViewShown ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onTagSelected(ArrayList<PhotoTag> addedTags, ArrayList<PhotoTag> removedTags) {
-        getPresenter().onTagSelected(addedTags, removedTags);
-        getPresenter().invalidateAddTagBtn();
-    }
-
     @Override
     public void openLocation(Location location) {
         router.moveTo(Route.ADD_LOCATION, NavigationConfigBuilder
                 .forFragment()
                 .backStackEnabled(true)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_details_floating)
-                .targetFragment(ActionEntityFragment.this)
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.additional_page_container)
                 .data(location)
                 .build());
     }
 
     @Override
-    public void onLocationDone(Location location) {
-        getPresenter().updateLocation(location);
+    public void updateItem(PhotoCreationItem item) {
+        adapter.notifyItemChanged(adapter.getItems().indexOf(item));
+    }
+
+    //////////////////////////////////////////
+    // Cell callbacks
+    //////////////////////////////////////////
+
+    @Override
+    public void onCellClicked(PhotoCreationItem model) {
+        // nothing to do
+    }
+
+    @Override
+    public void onTagIconClicked(PhotoCreationItem item) {
+        openTagEditScreen(item, null);
+    }
+
+    @Override
+    public void onSuggestionClicked(PhotoCreationItem item, PhotoTag suggestion) {
+        openTagEditScreen(item, suggestion);
+    }
+
+    protected void openTagEditScreen(PhotoCreationItem item, PhotoTag activeSuggestion) {
+        SoftInputUtil.hideSoftInputMethod(getView());
+
+        PhotoEntity photoEntity = new PhotoEntity(item.getOriginUrl(), item.getFilePath());
+        EditPhotoTagsBundle bundle = new EditPhotoTagsBundle();
+        bundle.setPhoto(photoEntity);
+        bundle.setActiveSuggestion(activeSuggestion);
+        bundle.setPhotoTags(item.getCombinedTags());
+        bundle.setSuggestions(item.getSuggestions());
+        bundle.setRequestId(item.getId());
+        router.moveTo(Route.EDIT_PHOTO_TAG_FRAGMENT, NavigationConfigBuilder
+                .forFragment()
+                .backStackEnabled(true)
+                .fragmentManager(getChildFragmentManager())
+                .containerId(R.id.additional_page_container)
+                .data(bundle)
+                .build());
+    }
+
+    @Override
+    public void onProgressClicked(PhotoCreationItem uploadTask) {
+        // nothing to do
+    }
+
+    @Override
+    public void onRemoveClicked(PhotoCreationItem uploadTask) {
+
+    }
+
+    @Override
+    public void onPhotoTitleFocusChanged(boolean hasFocus) {
+        onTitleFocusChanged(hasFocus);
+    }
+
+    @Override
+    public void onTagsChanged() {
+        getPresenter().invalidateDynamicViews();
+    }
+
+    ///////////////////////////////////////////////////////////////
+
+    protected void onTitleFocusChanged(boolean hasFocus) {
+
+    }
+
+    @Override
+    public void onPhotoTitleChanged(String title) {
+        getPresenter().invalidateDynamicViews();
     }
 
     protected abstract int getPostButtonText();
 
     protected abstract Route getRoute();
+
 }

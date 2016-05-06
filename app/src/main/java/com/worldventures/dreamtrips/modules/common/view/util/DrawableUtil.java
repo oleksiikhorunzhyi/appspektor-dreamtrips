@@ -7,14 +7,15 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.util.Pair;
 
-import com.kbeanie.imagechooser.exceptions.ChooserException;
 import com.kbeanie.imagechooser.helpers.StreamHelper;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 
 import timber.log.Timber;
 
@@ -39,7 +40,7 @@ public class DrawableUtil {
         return bitmap.copy(bitmap.getConfig(), true);
     }
 
-    public String compressAndRotateImage(String fileImage, int scale) {
+    public Pair<String, Size> compressAndRotateImage(String fileImage, int scale) {
         FileOutputStream stream = null;
         BufferedInputStream bstream = null;
         Bitmap bitmap = null;
@@ -72,14 +73,8 @@ public class DrawableUtil {
                     break;
             }
 
-            int what = w > l ? w : l;
-
             BitmapFactory.Options options = new BitmapFactory.Options();
-            if (what > FULL_HD_WIDTH) {
-                options.inSampleSize = scale * (int)Math.round((double)what / FULL_HD_WIDTH);
-            } else {
-                options.inSampleSize = scale;
-            }
+            options.inSampleSize = getInSampleSize(w, l, scale);
 
             options.inJustDecodeBounds = false;
 
@@ -97,19 +92,46 @@ public class DrawableUtil {
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
 
-            return file.getAbsolutePath();
+            return new Pair<>(file.getAbsolutePath(), new Size(bitmap.getWidth(), bitmap.getHeight()));
         } catch (IOException e) {
-            return fileImage;
+            return new Pair<>(fileImage, new Size(0, 0));
         } catch (Exception e) {
-            return fileImage;
+            return new Pair<>(fileImage, new Size(0, 0));
         } finally {
             try {
+                if (bitmap != null) bitmap.recycle();
                 StreamHelper.close(bstream);
                 StreamHelper.flush(stream);
                 StreamHelper.close(stream);
-            } catch (ChooserException e) {
+            } catch (Exception e) {
                 Timber.e(e.getMessage());
             }
+        }
+    }
+
+    private int getInSampleSize(int width, int height, int scale) {
+        int what = width > height ? width : height;
+        int sampleSize;
+        if (what > FULL_HD_WIDTH) {
+            sampleSize = scale * (int) Math.round((double) what / FULL_HD_WIDTH);
+        } else {
+            sampleSize = scale;
+        }
+
+        return sampleSize;
+    }
+
+    public Size getImageSizeFromUrl(String baseUrl, int scale) {
+        try {
+            URL url = new URL(baseUrl);
+            Bitmap bitmap = BitmapFactory.decodeStream(url.openStream());
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            int inSampleSize = getInSampleSize(width, height, scale);
+            return new Size(width / inSampleSize, height / inSampleSize);
+        } catch (IOException e) {
+            Timber.e(e.getMessage());
+            return null;
         }
     }
 
@@ -124,5 +146,12 @@ public class DrawableUtil {
         File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
         cacheDir.mkdir();
         return cacheDir;
+    }
+
+    public static boolean isFileImage(File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(file.getPath(), options);
+        return options.outWidth != -1 && options.outHeight != -1;
     }
 }

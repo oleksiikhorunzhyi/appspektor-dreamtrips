@@ -1,61 +1,96 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.net.Uri;
-import android.text.TextUtils;
+import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
-import com.worldventures.dreamtrips.core.api.PhotoUploadSubscriber;
-import com.worldventures.dreamtrips.core.api.UploadPurpose;
+import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
+import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
+import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
+import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
-import com.worldventures.dreamtrips.modules.feed.api.NewPostCommand;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.modules.feed.api.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.feed.api.UploadPhotosCommand;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
+import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.tripsimages.api.AddTripPhotoCommand;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
+import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import icepick.State;
+import io.techery.janet.ActionState;
+import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View> extends ActionEntityPresenter<V> {
 
-    @State
-    UploadTask cachedUploadTask;
+    public static final int MAX_PHOTOS_COUNT = 15;
 
     @Inject
     MediaPickerManager mediaPickerManager;
 
-    PhotoUploadSubscriber photoUploadSubscriber;
+    @Inject
+    protected SocialUploaderyManager photoUploadManager;
+
     private Subscription mediaSubscription;
+    private Subscription uploaderySubscription;
+    private List<Subscription> mediaAttachmentSubscriptions = new ArrayList<>();
 
     @Override
     public void takeView(V view) {
         super.takeView(view);
-        photoUploadSubscriber = new PhotoUploadSubscriber();
-        photoUploadingManager.getTaskChangingObservable(UploadPurpose.TRIP_IMAGE).subscribe(photoUploadSubscriber);
-        photoUploadSubscriber.afterEach(uploadTask -> {
-            if (cachedUploadTask != null && cachedUploadTask.getId() == uploadTask.getId()) {
-                cachedUploadTask.setStatus(uploadTask.getStatus());
-                processUploadTask();
-            }
-        });
-        Queryable.from(photoUploadingManager.getUploadTasks(UploadPurpose.TRIP_IMAGE)).forEachR(photoUploadSubscriber::onNext);
         //
-        mediaSubscription = mediaPickerManager.toObservable()
+        mediaSubscription = mediaPickerManager
+                .toObservable()
                 .filter(attachment -> attachment.requestId == getMediaRequestId())
-                .subscribe(mediaAttachment -> {
-                    attachImages(mediaAttachment.chosenImages, mediaAttachment.type);
-                });
+                .subscribe(this::attachImages,
+                        error -> {
+                            Timber.e(error, "");
+                        });
+        //
+        Observable<ActionState<UploaderyImageCommand>> observable = photoUploadManager
+                .getTaskChangingObservable()
+                .compose(new IoToMainComposer<>());
+        //
+        uploaderySubscription = observable.subscribe(state -> {
+            PhotoCreationItem item = getPhotoCreationItemById(state.action.getCommandId());
+            if (item != null) {
+                item.setStatus(state.status);
+                if (state.status == ActionState.Status.SUCCESS) {
+                    item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult().getPhotoUploadResponse().getLocation());
+                    invalidateDynamicViews();
+                    updatePickerState();
+                } else if (state.status == ActionState.Status.FAIL) {
+                    invalidateDynamicViews();
+                    updatePickerState();
+                }
+                view.updateItem(item);
+            }
+        }, error -> {
+            Timber.e(error, "");
+        });
+    }
+
+    protected PhotoCreationItem getPhotoCreationItemById(int id) {
+        return Queryable.from(cachedCreationItems).firstOrDefault(cachedTask -> cachedTask.getId() == id);
     }
 
     public abstract int getMediaRequestId();
@@ -63,58 +98,63 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     @Override
     public void dropView() {
         super.dropView();
-        if (!photoUploadSubscriber.isUnsubscribed()) photoUploadSubscriber.unsubscribe();
         //
-        if (!mediaSubscription.isUnsubscribed()) mediaSubscription.unsubscribe();
+        if (mediaSubscription != null && !mediaSubscription.isUnsubscribed())
+            mediaSubscription.unsubscribe();
+        if (uploaderySubscription != null && !uploaderySubscription.isUnsubscribed())
+            uploaderySubscription.unsubscribe();
+        Queryable.from(mediaAttachmentSubscriptions).forEachR(subscription -> {
+            if (subscription != null && !subscription.isUnsubscribed())
+                subscription.unsubscribe();
+        });
     }
 
     @Override
     protected void updateUi() {
         super.updateUi();
-
-        if (!isCachedUploadTaskEmpty()) {
-            view.attachPhoto(Uri.parse(cachedUploadTask.getFilePath()));
-
-            if (!cachedUploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
-                view.showProgress();
-
-            if (cachedUploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
-                view.imageError();
-            }
-        }
-
+        //
+        if (!isCachedUploadTaskEmpty()) view.attachPhotos(cachedCreationItems);
+        //
         invalidateDynamicViews();
     }
 
-
     @Override
     protected boolean isChanged() {
-        return !TextUtils.isEmpty(cachedText)
-                || (cachedUploadTask != null && cachedUploadTask.getStatus().equals(UploadTask.Status.COMPLETED))
-                || !cachedAddedPhotoTags.isEmpty() || !cachedRemovedPhotoTags.isEmpty();
+        return !isCachedTextEmpty()
+                || (cachedCreationItems.size() > 0 && isEntitiesReadyToPost());
     }
 
     @Override
     public void post() {
-        if (!isCachedUploadTaskEmpty() && UploadTask.Status.COMPLETED.equals(cachedUploadTask.getStatus())) {
-            cachedUploadTask.setTitle(cachedText);
-            cachedUploadTask.setShotAt(Calendar.getInstance().getTime());
-
-            doRequest(new AddTripPhotoCommand(cachedUploadTask), this::processPhotoSuccess, spiceException -> {
-                handleError(spiceException);
-                view.onPostError();
-            });
-        } else if (!isCachedTextEmpty() && isCachedUploadTaskEmpty()) {
-            postTextualUpdate();
+        if (!isCachedTextEmpty() && isCachedUploadTaskEmpty()) {
+            createPost(null);
+        } else {
+            CreatePhotoEntity createPhotoEntity = new CreatePhotoEntity();
+            Queryable.from(cachedCreationItems).forEachR(item -> createPhotoEntity
+                    .addPhoto(new CreatePhotoEntity.PhotoEntity.Builder()
+                            .originUrl(item.getOriginUrl())
+                            .title(item.getTitle())
+                            .width(item.getWidth())
+                            .height(item.getHeight())
+                            .date(Calendar.getInstance().getTime())
+                            .coordinates(location != null ? new CreatePhotoEntity.Coordinates(location.getLat(), location.getLng()) : null)
+                            .locationName(location != null ? location.getName() : null)
+                            .photoTags(item.getCachedAddedPhotoTags())
+                            .build()));
+            if (!createPhotoEntity.isEmpty()) {
+                doRequest(new UploadPhotosCommand(createPhotoEntity), this::createPost);
+            }
         }
     }
 
-    protected void postTextualUpdate() {
-        doRequest(new NewPostCommand(cachedText),
-                this::processPostSuccess, spiceException -> {
-                    handleError(spiceException);
-                    view.onPostError();
-                });
+    private void createPost(List<Photo> photos) {
+        CreatePhotoPostEntity createPhotoPostEntity = new CreatePhotoPostEntity();
+        createPhotoPostEntity.setDescription(cachedText);
+        createPhotoPostEntity.setLocation(location);
+        if (photos != null)
+            Queryable.from(photos).forEachR(photo -> createPhotoPostEntity
+                    .addAttachment(new CreatePhotoPostEntity.Attachment(photo.getUid())));
+        doRequest(new CreatePostCommand(createPhotoPostEntity), this::processPostSuccess);
     }
 
     @Override
@@ -123,158 +163,106 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
     }
 
-    protected void processTagUploadSuccess(FeedEntity feedEntity) {
-        super.processTagUploadSuccess(feedEntity); //Firstly update tags, then notify everyone else
-        eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
+    public int getRemainingPhotosCount() {
+        return MAX_PHOTOS_COUNT - cachedCreationItems.size();
     }
 
-    @Override
-    protected void invalidateDynamicViews() {
-        super.invalidateDynamicViews();
-        if (isChanged()) {
-            view.enableButton();
-        } else {
-            view.disableButton();
+    public boolean removeImage(PhotoCreationItem item) {
+        boolean removed = cachedCreationItems.remove(item);
+        if (removed) {
+            invalidateDynamicViews();
+            updatePickerState();
         }
+        return removed;
     }
 
-    @Override
-    public Location getLocation() {
-        Location location = new Location();
-        if (cachedUploadTask != null) {
-            location.setLat(cachedUploadTask.getLatitude());
-            location.setLng(cachedUploadTask.getLongitude());
-            location.setName(cachedUploadTask.getLocationName());
-        }
-        return location;
-    }
-
-    @Override
-    public void updateLocation(Location location) {
-        cachedUploadTask.setLocationName(location.getName());
-        cachedUploadTask.setLongitude((float) location.getLng());
-        cachedUploadTask.setLatitude((float) location.getLat());
-    }
-
-    public void attachImages(List<ChosenImage> photos, int requestType) {
-        if (photos.size() == 0 || (!isCachedUploadTaskEmpty() && cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED
-                && photos.get(0).getFileThumbnail().equals(cachedUploadTask.getFilePath()))) {
+    public void attachImages(MediaAttachment mediaAttachment) {
+        if (mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0) {
             return;
         }
-
-        String fileThumbnail = photos.get(0).getFileThumbnail();
-        imageSelected(Uri.parse(fileThumbnail).toString(), requestType);
+        //
+        view.disableImagePicker();
+        //
+        imageSelected(mediaAttachment);
     }
 
-    private void imageSelected(String filePath, int requestType) {
+    private void imageSelected(MediaAttachment mediaAttachment) {
         if (view != null) {
-            UploadTask imageUploadTask = new UploadTask();
-            imageUploadTask.setFilePath(filePath);
-            imageUploadTask.setStatus(UploadTask.Status.STARTED);
-            String type = "";
-            switch (requestType) {
-                case PickImageDelegate.CAPTURE_PICTURE:
-                    type = "camera";
-                    break;
-                case PickImageDelegate.PICK_PICTURE:
-                    type = "album";
-                    break;
-                case PickImageDelegate.FACEBOOK:
-                    type = "facebook";
-                    break;
-            }
-            imageUploadTask.setType(type);
-            //
-            cachedUploadTask = imageUploadTask;
-            view.attachPhoto(Uri.parse(filePath));
-            doRequest(new CopyFileCommand(context, cachedUploadTask.getFilePath()), s -> {
-                imageUploadTask.setFilePath(s);
-                startUpload(imageUploadTask);
-            });
+            mediaAttachmentSubscriptions.add(Observable.from(mediaAttachment.chosenImages)
+                    .concatMap(this::convertPhotoCreationItem)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(newImage -> {
+                        cachedCreationItems.add(newImage);
+                        if (view != null) {
+                            view.attachPhoto(newImage);
+                            if (ValidationUtils.isUrl(newImage.getFilePath())) {
+                                doRequest(new CopyFileCommand(context, newImage.getFilePath()), s -> {
+                                    newImage.setFilePath(s);
+                                    startUpload(newImage);
+                                });
+                            } else {
+                                startUpload(newImage);
+                            }
+                        }
+                    }, throwable -> {
+                        Timber.e(throwable, "");
+                    }));
         }
     }
 
-    public void onProgressClicked() {
-        if (cachedUploadTask.getStatus().equals(UploadTask.Status.FAILED)) {
-            startUpload(cachedUploadTask);
-        }
-    }
-
-    protected EditPhotoTagsBundle.PhotoEntity getImageForTagging() {
-        return new EditPhotoTagsBundle.PhotoEntity(cachedUploadTask.getOriginUrl(), cachedUploadTask.getFilePath());
+    @NonNull
+    private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel) {
+        return ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getThumbnailPath()), 300, 300)
+                .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable), bitmapObservable, (photoTags, bitmap) -> new Pair<>(bitmap, photoTags)))
+                .map(pair -> {
+                    PhotoCreationItem item = new PhotoCreationItem();
+                    item.setFilePath(photoGalleryModel.getThumbnailPath());
+                    item.setStatus(ActionState.Status.START);
+                    Size imageSize = photoGalleryModel.getSize();
+                    item.setWidth(imageSize != null ? imageSize.getWidth() : pair.first.getWidth());
+                    item.setHeight(imageSize != null ? imageSize.getHeight() : pair.first.getHeight());
+                    item.setSuggestions(pair.second);
+                    item.setCanDelete(true);
+                    item.setCanEdit(true);
+                    return item;
+                });
     }
 
     protected boolean isCachedUploadTaskEmpty() {
-        return cachedUploadTask == null;
+        return cachedCreationItems.size() == 0;
     }
 
-    protected boolean isCachedTextEmpty() {
-        return TextUtils.isEmpty(cachedText);
+    protected boolean isEntitiesReadyToPost() {
+        return Queryable.from(cachedCreationItems).firstOrDefault(item -> item.getStatus() != ActionState.Status.SUCCESS) == null;
     }
 
-    public void invalidateAddTagBtn() {
-        boolean isViewShown = cachedUploadTask != null &&
-                cachedUploadTask.getStatus() == UploadTask.Status.COMPLETED;
-        boolean someTagSets = !cachedAddedPhotoTags.isEmpty();
-        if (view != null) {
-            view.redrawTagButton(isViewShown, someTagSets);
+    private void updatePickerState() {
+        if (isAllAttachmentsCompleted() && getRemainingPhotosCount() > 0) {
+            view.enableImagePicker();
+        } else {
+            view.disableImagePicker();
         }
     }
 
+    private boolean isAllAttachmentsCompleted() {
+        return Queryable.from(cachedCreationItems).count(item -> item.getStatus() == ActionState.Status.PROGRESS) == 0;
+    }
 
     ////////////////////////////////////////
     /////// Photo upload
     ////////////////////////////////////////
 
-    private void startUpload(UploadTask uploadTask) {
-        view.showProgress();
-        long upload = photoUploadingManager.upload(uploadTask, UploadPurpose.TRIP_IMAGE);
-        cachedUploadTask.setId(upload);
-    }
-
-    private void processUploadTask() {
-        if (!isCachedUploadTaskEmpty()) {
-            switch (cachedUploadTask.getStatus()) {
-                case STARTED:
-                    photoInProgress();
-                    break;
-                case FAILED:
-                    photoFailed();
-                    break;
-                case COMPLETED:
-                    photoCompleted();
-                    break;
-            }
-        }
-    }
-
-    private void photoInProgress() {
-        if (view != null) {
-            view.showProgress();
-            invalidateDynamicViews();
-        }
-    }
-
-    protected void photoCompleted() {
-        if (view != null) {
-            view.hideProgress();
-            invalidateDynamicViews();
-        }
-    }
-
-    private void photoFailed() {
-        if (view != null) {
-            view.imageError();
-            invalidateDynamicViews();
-        }
+    public void startUpload(PhotoCreationItem item) {
+        UploadTask uploadTask = item.toUploadTask();
+        photoUploadManager.upload(uploadTask.getFilePath());
+        item.setId(uploadTask.getFilePath().hashCode());
     }
 
     public interface View extends ActionEntityPresenter.View {
 
-        void showProgress();
+        void enableImagePicker();
 
-        void hideProgress();
-
-        void imageError();
+        void disableImagePicker();
     }
 }

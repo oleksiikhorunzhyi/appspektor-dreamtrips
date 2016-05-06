@@ -42,9 +42,6 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
     @InjectView(R.id.iv_image)
     ScaleImageView ivImage;
 
-    @State
-    protected IFullScreenObject photo;
-
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;

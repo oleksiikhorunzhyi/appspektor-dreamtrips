@@ -1,7 +1,8 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
@@ -19,9 +20,9 @@ import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
@@ -46,6 +47,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_comments)
 public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends BaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
@@ -98,7 +100,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
         //
-        likersPanelHelper = new LikersPanelHelper(View.GONE);
+        likersPanelHelper = new LikersPanelHelper();
         likersNavigationWrapper = new NavigationWrapperFactory().componentOrDialogNavigationWrapper(
                 router, getFragmentManager(), tabletAnalytic
         );
@@ -128,7 +130,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         recyclerView.setAdapter(adapter);
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
-        if (getArgs().isOpenKeyboard()) {
+        if (getArgs().isOpenKeyboard() && getArgs().getFeedEntity().getCommentsCount() == 0) {
             showKeyboard();
         }
         restorePostIfNeeded();
@@ -146,8 +148,13 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     }
 
-    private void showKeyboard(){
-        input.post(() -> SoftInputUtil.showSoftInputMethod(input));
+    private void showKeyboard() {
+        recyclerView.postDelayed(() -> {
+            recyclerView.scrollBy(0, Integer.MAX_VALUE);
+            inputContainer.setVisibility(View.VISIBLE);
+            input.requestFocus();
+            SoftInputUtil.showSoftInputMethod(input);
+        }, 500);
     }
 
     @Override
@@ -160,13 +167,14 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     public void onPause() {
         super.onPause();
         input.removeTextChangedListener(inputWatcher);
+        SoftInputUtil.hideSoftInputMethod(getActivity());
     }
 
     @Override
     public void setLikersPanel(FeedEntity entity) {
         if (likersPanel == null || !getArgs().showLikersPanel()) return;
         likersPanelHelper.setup(likersPanel, entity);
-        likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid())));
+        likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid(), entity.getLikesCount())));
     }
 
     @Override
@@ -179,9 +187,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         boolean commentsEmpty = layout.getItemCount() <= getAdditionalItemsCount();
         adapter.addItems(getAdditionalItemsCount(), commentList);
         if (commentsEmpty && getArgs().isOpenKeyboard()) {
-            recyclerView.post(() -> {
-                recyclerView.scrollToPosition(layout.getItemCount() - 1);
-            });
+            showKeyboard();
         }
     }
 
@@ -216,11 +222,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     }
 
     @Override
-    public void editComment(Comment comment) {
+    public void editComment(FeedEntity feedEntity, Comment comment) {
         router.moveTo(Route.EDIT_COMMENT, NavigationConfigBuilder.forDialog()
                 .fragmentManager(getChildFragmentManager())
                 .gravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP)
-                .data(new SingleCommentBundle(comment)).build());
+                .data(new SingleCommentBundle(feedEntity, comment)).build());
     }
 
     @Override
@@ -239,6 +245,12 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     @Override
     public void showEdit(BucketBundle bucketBundle) {
         int containerId = R.id.container_details_floating;
+        bucketBundle.setLock(true);
+        try {
+            bucketBundle.setOwnerId(getArgs().getFeedEntity().getOwner().getId());
+        } catch (Exception e) {
+            Timber.e(e, "");
+        }
         if (isTabletLandscape()) {
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(true)
@@ -248,7 +260,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
                     .build());
             showContainer(containerId);
         } else {
-            bucketBundle.setLock(true);
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
                     .data(bucketBundle)
                     .build());
@@ -295,5 +306,4 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     protected int getAdditionalItemsCount() {
         return 1;
     }
-
 }

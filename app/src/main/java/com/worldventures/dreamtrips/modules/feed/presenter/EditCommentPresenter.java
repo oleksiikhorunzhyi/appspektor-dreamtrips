@@ -4,20 +4,24 @@ import android.net.Uri;
 
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import javax.inject.Inject;
 
 public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
+    private FeedEntity feedEntity;
 
     private Comment comment;
 
     @Inject
     FeedEntityManager entityManager;
 
-    public EditCommentPresenter(Comment comment) {
-        this.comment = comment;
+    public EditCommentPresenter(SingleCommentBundle bundle) {
+        this.feedEntity = bundle.getFeedEntity();
+        this.comment = bundle.getComment();
     }
 
     @Override
@@ -38,7 +42,7 @@ public class EditCommentPresenter extends Presenter<EditCommentPresenter.View> {
     public void onSave() {
         if (comment != null && view != null) {
             comment.setMessage(view.getText());
-            entityManager.updateComment(comment);
+            entityManager.updateComment(feedEntity, comment);
         }
     }
 

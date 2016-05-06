@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.tripsimages.model;
 
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+
 import java.util.ArrayList;
 import java.util.List;
 

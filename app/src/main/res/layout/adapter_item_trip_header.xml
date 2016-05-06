@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
@@ -17,7 +17,6 @@
                 android:id="@+id/viewPagerGallery"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
         </FrameLayout>
 
         <LinearLayout
@@ -60,8 +59,6 @@
                 android:textColor="@color/tripPlaceColor"
                 android:textSize="22sp"
                 android:textStyle="bold" />
-
-
         </LinearLayout>
 
         <View
@@ -101,8 +98,6 @@
                 android:gravity="end"
                 android:padding="@dimen/spacing_medium"
                 android:textColor="@color/black" />
-
-
         </LinearLayout>
 
         <TextView
@@ -115,5 +110,4 @@
             android:textColor="@color/black" />
 
     </LinearLayout>
-
 </LinearLayout>

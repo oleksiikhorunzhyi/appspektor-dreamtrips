@@ -135,7 +135,6 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
         });
     }
 
-
     public void onEvent(CommentIconClickedEvent event) {
         if (isVisibleOnScreen()) {
             Route detailsRoute = Route.FEED_ITEM_DETAILS;
@@ -164,8 +163,10 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
 
     @Override
     public void refreshFeedItems(List<FeedItem> events, boolean needLoader) {
-        adapter.clearAndUpdateItems(events);
+        adapter.clear();
+        adapter.addItems(events);
         if (needLoader) adapter.addItem(new LoadMoreModel());
+        adapter.notifyDataSetChanged();
     }
 
     private boolean isPhoneLandscape() {
@@ -175,16 +176,16 @@ public abstract class BaseFeedFragment<P extends BaseFeedPresenter, T extends Pa
     @Override
     public void showEdit(BucketBundle bucketBundle) {
         int containerId = R.id.container_details_floating;
+        bucketBundle.setLock(true);
         if (isTabletLandscape()) {
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(true)
                     .containerId(containerId)
-                    .fragmentManager(getActivity().getSupportFragmentManager())
+                    .fragmentManager(getChildFragmentManager())
                     .data(bucketBundle)
                     .build());
             showContainer(containerId);
         } else {
-            bucketBundle.setLock(true);
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forActivity()
                     .data(bucketBundle)
                     .build());

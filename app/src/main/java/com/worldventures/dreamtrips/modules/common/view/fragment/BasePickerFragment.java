@@ -6,13 +6,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.presenter.BasePickerPresenter;
+import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.GridAutofitLayoutManager;
 
@@ -27,7 +27,7 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
         implements BasePickerPresenter.View {
 
     @InjectView(R.id.picker)
-    protected  RecyclerView picker;
+    protected RecyclerView picker;
     @InjectView(R.id.progress)
     protected ProgressBar progressBar;
 
@@ -43,26 +43,28 @@ public abstract class BasePickerFragment<T extends BasePickerPresenter> extends 
         adapter = new BaseArrayListAdapter<>(getContext(), this);
         registerCells();
 
-        picker.setLayoutManager(new GridAutofitLayoutManager(getContext(),
-                getContext().getResources().getDimension(R.dimen.photo_picker_size)));
+        picker.setLayoutManager(new GridAutofitLayoutManager(getContext(), getContext().getResources().getDimension(R.dimen.photo_picker_size)));
         picker.setAdapter(adapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        photoPickerDelegate.attachScrollableView(picker);
-        photoPickerDelegate.setSelectedPhotosProvider(new PhotoPickerDelegate.SelectedPhotosProvider() {
-            @Override
-            public List<ChosenImage> provideSelectedPhotos() {
-                return getPresenter().getSelectedPhotos();
-            }
+        if (photoPickerDelegate != null) {
+            photoPickerDelegate.attachScrollableView(picker);
+            photoPickerDelegate.setSelectedPhotosProvider(new PhotoPickerDelegate.SelectedPhotosProvider() {
+                @Override
+                public List<BasePhotoPickerModel> provideSelectedPhotos() {
+                    return getPresenter().getSelectedPhotos();
+                }
 
-            @Override
-            public int getType() {
-                return getPhotosType();
-            }
-        });
+                @Override
+                public int getType() {
+                    return getPhotosType();
+                }
+
+            });
+        }
     }
 
     @Override

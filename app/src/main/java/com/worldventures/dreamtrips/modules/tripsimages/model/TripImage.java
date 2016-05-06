@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 public class TripImage implements IFullScreenObject {
 
@@ -25,7 +26,7 @@ public class TripImage implements IFullScreenObject {
     }
 
     public String getUrl(int width, int height) {
-        return getUrl() + String.format(Image.PATTERN, width, height);
+        return ImageUtils.getParametrizedUrl(getUrl(), width, height);
     }
 
     public String getType() {

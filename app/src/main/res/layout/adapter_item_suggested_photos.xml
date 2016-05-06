@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view_wrapper"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_small"
+    app:cardCornerRadius="0dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/suggestion_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/suggestion_cancel"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView
+                android:id="@+id/suggestion_avatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="@dimen/spacing_normal"
+                fresco:placeholderImage="@drawable/ic_avatar_placeholder"
+                fresco:roundAsCircle="true"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_normal"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/suggested_photos_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/spacing_normal"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:singleLine="false"
+                    android:textSize="@dimen/abc_text_size_subhead_material"
+                    tools:text="John Doe"/>
+
+                <TextView
+                    android:id="@+id/suggested_photos_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/suggested_photo"
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    tools:text="You have 15 new photos"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/suggestion_cancel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/spacing_medium"
+            android:padding="@dimen/spacing_tiny"
+            android:src="@drawable/suggestion_close"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/suggested_photos"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/suggested_size"
+            android:layout_below="@+id/suggestion_header"
+            android:layout_marginBottom="@dimen/spacing_small"/>
+
+        <Button
+            android:id="@+id/btn_attach"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/suggested_photos"
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            android:layout_marginLeft="13dp"
+            android:layout_marginRight="13dp"
+            android:text="@string/share_recent_photos"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

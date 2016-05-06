@@ -24,20 +24,27 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.Position;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.TagPosition;
 import com.worldventures.dreamtrips.modules.common.view.util.CoordinatesTransformer;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.util.ArrayList;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
+import rx.Subscriber;
 
 public class ImageUtils {
 
-    private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiveListener bitmapReciveListener) {
+    public static final String MIME_TYPE_GIF = "image/gif";
+
+    private static final String PATTERN = "%s?width=%d&height=%d";
+
+    private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiverListener bitmapReciveListener,
+                                          BitmapErrorReceiverListener errorReceiverListener) {
         DataSubscriber dataSubscriber = new BaseDataSubscriber<CloseableReference<CloseableBitmap>>() {
             @Override
             public void onNewResultImpl(
@@ -66,6 +73,9 @@ public class ImageUtils {
 
             @Override
             protected void onFailureImpl(DataSource<CloseableReference<CloseableBitmap>> dataSource) {
+                if (errorReceiverListener != null) {
+                    errorReceiverListener.onError();
+                }
             }
         };
         getBitmap(context, uri, width, height, dataSubscriber);
@@ -85,25 +95,33 @@ public class ImageUtils {
     }
 
     public static Observable<Bitmap> getBitmap(Context context, Uri uri, int width, int height) {
-        return Observable.create(subscriber -> setDataSubscriber(context, uri, width, height, bitmap -> {
-            subscriber.onNext(bitmap);
-            subscriber.onCompleted();
-            subscriber.unsubscribe();
-        }));
+        return Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                setDataSubscriber(context, uri, width, height, bitmap -> {
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onNext(bitmap);
+                        subscriber.onCompleted();
+                    }
+                }, () -> {
+                    subscriber.onError(new RuntimeException());
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.unsubscribe();
+                    }
+                });
+            }
+        });
     }
 
     public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
-
         Detector detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.NO_LANDMARKS)
-                .setMode(FaceDetector.FAST_MODE)
                 .setClassificationType(FaceDetector.NO_CLASSIFICATIONS)
+                .setMode(FaceDetector.FAST_MODE)
                 .build();
 
         return bitmapObservable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .filter(b -> detector.isOperational())
                 .map(bitmap -> new Frame.Builder().setBitmap(bitmap).build())
                 .map(frame -> new Pair<>(detector.detect(frame), new RectF(0, 0, frame.getMetadata().getWidth(), frame.getMetadata().getHeight())))
@@ -115,24 +133,50 @@ public class ImageUtils {
                         PointF position = face.getPosition();
                         float absoluteX = Math.max(position.x, 0.0f);
                         float absoluteY = Math.max(position.y, 0.0f);
-                        PhotoTag.TagPosition absolute = new PhotoTag.TagPosition(
+                        TagPosition absolute = new TagPosition(
                                 (int) absoluteX,
                                 (int) absoluteY,
                                 (int) absoluteX + (int) face.getWidth(),
                                 (int) absoluteY + (int) face.getHeight());
-                        PhotoTag.TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
+                        TagPosition proportional = CoordinatesTransformer.convertToProportional(absolute, pair.second);
                         float bottomXProportional = Math.min(0.95f, proportional.getBottomRight().getX());
                         float bottomYProportional = Math.min(0.95f, proportional.getBottomRight().getY());
-                        proportional = new PhotoTag.TagPosition(proportional.getTopLeft(), new PhotoTag.Position(bottomXProportional, bottomYProportional));
-                        result.add(new PhotoTag(proportional, new User()));
+                        proportional = new TagPosition(proportional.getTopLeft(), new Position(bottomXProportional, bottomYProportional));
+                        result.add(new PhotoTag(proportional, 0));
                     }
                     return result;
                 })
-                .doOnCompleted(detector::release)
-                .doOnError(throwable -> Timber.d(throwable, ""));
+                .doOnUnsubscribe(() -> detector.release())
+                .doOnCompleted(() -> detector.release())
+                .doOnError(throwable -> detector.release());
     }
 
-    private interface BitmapReceiveListener {
+    public static Pair<String, Size> generateUri(DrawableUtil drawableUtil, String baseUri) {
+        if (ValidationUtils.isUrl(baseUri)) {
+            return new Pair<>(baseUri, drawableUtil.getImageSizeFromUrl(baseUri, DrawableUtil.THUMBNAIL_BIG));
+        } else {
+            return drawableUtil.compressAndRotateImage(baseUri, DrawableUtil.THUMBNAIL_BIG);
+        }
+    }
+
+    public static String getImageExtensionFromPath(String path) {
+        if (path == null) return "";
+        //
+        int index = path.lastIndexOf(".");
+        //
+        if (index < 0) return "";
+        return path.substring(index);
+    }
+
+    private interface BitmapReceiverListener {
         void onBitmapReceived(Bitmap bitmap);
+    }
+
+    private interface BitmapErrorReceiverListener {
+        void onError();
+    }
+
+    public static String getParametrizedUrl(String url, int width, int height) {
+        return String.format(PATTERN, url, width, height);
     }
 }

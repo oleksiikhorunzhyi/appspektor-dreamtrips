@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
 import org.apache.http.HttpStatus;
@@ -68,6 +69,8 @@ public class DreamSpiceManager extends SpiceManager {
     DTErrorHandler dtErrorHandler;
     @Inject
     LogoutDelegate logoutDelegate;
+    @Inject
+    GlobalConfigManager globalConfigManager;
     //
     private final ErrorParser errorParser;
 
@@ -144,18 +147,21 @@ public class DreamSpiceManager extends SpiceManager {
 
     private void processError(SpiceRequest request, SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
         if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
+            reloadGlobalConfig(onLoginSuccess, getParcedException(request, error));
+        } else {
+            failureListener.handleError(getParcedException(request, error));
+        }
+    }
+
+    private void reloadGlobalConfig(OnLoginSuccess onLoginSuccess, SpiceException error) {
+        globalConfigManager.loadGlobalConfig(() -> {
             final UserSession userSession = appSessionHolder.get().get();
             final String username = userSession.getUsername();
             final String userPassword = userSession.getUserPassword();
 
             loginUser(userPassword, username, onLoginSuccess);
-        } else {
-            String detailMessage = errorParser.parseErrorMessage(request, error);
-            Throwable handledError = dtErrorHandler.handleSpiceError(error);
-            failureListener.handleError(new SpiceException(detailMessage, handledError));
-        }
+        }, () -> onLoginSuccess.result(null, error));
     }
-
 
     public void login(RequestListener<LoginResponse> requestListener) {
         if (isCredentialExist(appSessionHolder)) {
@@ -185,9 +191,7 @@ public class DreamSpiceManager extends SpiceManager {
             authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
         }, error -> {
-            String detailMessage = errorParser.parseErrorMessage(request, error);
-            Throwable handledError = dtErrorHandler.handleSpiceError(error);
-            onLoginSuccess.result(null, new SpiceException(detailMessage, handledError));
+            onLoginSuccess.result(null, getParcedException(request, error));
         });
     }
 
@@ -245,7 +249,6 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
 
-
     @Override
     public synchronized void start(Context context) {
         super.start(context);
@@ -287,6 +290,10 @@ public class DreamSpiceManager extends SpiceManager {
                     Throwable t = retrofitError.getCause();
                     if (t instanceof UnknownHostException || t instanceof ConnectException) {
                         errorMessage = context.getResources().getString(R.string.no_connection);
+                    } else {
+                        if (isShouldToBeProcessedLocally(request, retrofitError)) {
+                            errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
+                        }
                     }
                 } else if (isShouldToBeProcessedLocally(request, retrofitError)) {
                     errorMessage = context.getString(((DreamTripsRequest) request).getErrorMessage());
@@ -300,7 +307,7 @@ public class DreamSpiceManager extends SpiceManager {
         }
 
         private boolean isShouldToBeProcessedLocally(SpiceRequest request, RetrofitError retrofitError) {
-            return retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY
+            return (retrofitError.getResponse() == null || retrofitError.getResponse().getStatus() != HttpStatus.SC_UNPROCESSABLE_ENTITY)
                     && request instanceof DreamTripsRequest && ((DreamTripsRequest) request).getErrorMessage() != 0;
         }
 
@@ -348,5 +355,11 @@ public class DreamSpiceManager extends SpiceManager {
             }
             return result;
         }
+    }
+
+    private SpiceException getParcedException(SpiceRequest request, SpiceException error) {
+        String detailMessage = errorParser.parseErrorMessage(request, error);
+        Throwable handledError = dtErrorHandler.handleSpiceError(error);
+        return new SpiceException(detailMessage, handledError);
     }
 }

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 import android.os.Bundle;
 import android.view.View;
 
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 
 import java.util.List;
@@ -11,8 +12,8 @@ public class PhotoPickerDelegate {
 
     private PhotoPickerLayout photoPickerLayout;
     //
-    private PhotoPickerLayout.OnDoneClickListener onDoneClickListener;
     private SelectedPhotosProvider selectedPhotosProvider;
+    private PhotoPickerLayout.OnDoneClickListener doneClickListener;
 
     public boolean isMultiPickEnabled() {
         return photoPickerLayout.isMultiPickEnabled();
@@ -43,12 +44,14 @@ public class PhotoPickerDelegate {
     }
 
     public void onDone() {
-        if (onDoneClickListener != null && selectedPhotosProvider != null)
-            onDoneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos(), selectedPhotosProvider.getType());
+        if (doneClickListener != null && selectedPhotosProvider != null) {
+            doneClickListener.onDone(selectedPhotosProvider.provideSelectedPhotos(),
+                    selectedPhotosProvider.getType());
+        }
     }
 
-    public void setOnDoneClickListener(PhotoPickerLayout.OnDoneClickListener onDoneClickListener) {
-        this.onDoneClickListener = onDoneClickListener;
+    public void setDoneClickListener(PhotoPickerLayout.OnDoneClickListener doneClickListener) {
+        this.doneClickListener = doneClickListener;
     }
 
     public void setSelectedPhotosProvider(SelectedPhotosProvider selectedPhotosProvider) {
@@ -57,7 +60,7 @@ public class PhotoPickerDelegate {
 
     public interface SelectedPhotosProvider {
 
-        List provideSelectedPhotos();
+        List<BasePhotoPickerModel> provideSelectedPhotos();
 
         int getType();
     }

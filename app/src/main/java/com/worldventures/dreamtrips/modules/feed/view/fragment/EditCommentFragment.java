@@ -91,6 +91,6 @@ public class EditCommentFragment extends BaseFragmentWithArgs<EditCommentPresent
 
     @Override
     protected EditCommentPresenter createPresenter(Bundle savedInstanceState) {
-        return new EditCommentPresenter(getArgs().getComment());
+        return new EditCommentPresenter(getArgs());
     }
 }

@@ -73,7 +73,7 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
         LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
         switch (item.getType()) {
             case POST:
-                return new PostFeedItemDetailsCell(inflater.inflate(R.layout.adapter_post_event, null));
+                return new PostFeedItemCell(inflater.inflate(R.layout.adapter_item_feed_post_event, null));
             case PHOTO:
                 return new PhotoFeedItemDetailsCell(inflater.inflate(R.layout.adapter_item_feed_photo_event, null));
             case TRIP:

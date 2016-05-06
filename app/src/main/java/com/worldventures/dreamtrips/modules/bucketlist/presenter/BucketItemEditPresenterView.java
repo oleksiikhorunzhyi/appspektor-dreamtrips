@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
-import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 
 import java.util.List;
 
@@ -34,17 +34,14 @@ public interface BucketItemEditPresenterView extends BucketDetailsBasePresenter.
 
     void hideLoading();
 
-    void addImages(List<UploadTask> tasks);
-
-    void addImage(UploadTask uploadTask);
-
-    void deleteImage(UploadTask task);
+    void addImage(BucketPhotoCreationItem uploadTask);
 
     void deleteImage(BucketPhoto bucketPhoto);
 
-    void itemChanged(UploadTask uploadTask);
+    void itemChanged(BucketPhotoCreationItem uploadTask);
 
-    void replace(UploadTask bucketPhotoUploadTask, BucketPhoto bucketPhoto);
+    void replace(BucketPhotoCreationItem bucketPhotoUploadTask, BucketPhoto bucketPhoto);
 
+    void deleteImage(BucketPhotoCreationItem task);
 
 }

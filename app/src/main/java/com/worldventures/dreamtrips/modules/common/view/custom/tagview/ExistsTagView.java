@@ -7,13 +7,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.ExistsTagViewListener;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class ExistsTagView extends TagView implements View.OnClickListener {
+public class ExistsTagView extends TagView<ExistsTagViewListener> implements View.OnClickListener {
 
     @InjectView(R.id.tagged_user_name)
     protected TextView taggedUserName;
@@ -21,6 +22,7 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
     protected View divider;
     @InjectView(R.id.tagged_user_delete_tag)
     protected View btnDeleteTag;
+    private boolean isDeleteEnabled;
 
     public ExistsTagView(Context context) {
         super(context);
@@ -43,10 +45,14 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
     }
 
     @Override
+    public void setPhotoTag(PhotoTag photoTag) {
+        super.setPhotoTag(photoTag);
+        taggedUserName.setText(photoTag.getTitle());
+    }
+
+    @Override
     public void onClick(View v) {
-        boolean isAccountOnPhoto = account.getId() == photoTag.getUser().getId();
-        boolean isCreationState = photo == null || photo.getOwner() == null;
-        if (isCreationState || isAccountOnPhoto || account.getId() == photo.getOwner().getId()) {
+        if (isDeleteEnabled) {
             if (btnDeleteTag.getVisibility() == VISIBLE) {
                 hideDeleteButton();
             } else {
@@ -65,10 +71,12 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
         divider.setVisibility(View.GONE);
     }
 
-    @Override
-    public void setPhotoTag(PhotoTag photoTag) {
-        super.setPhotoTag(photoTag);
-        taggedUserName.setText(photoTag.getUser().getFullName());
+    public void setText(String title) {
+        taggedUserName.setText(title);
+    }
+
+    public void setDeleteEnabled(boolean isDeleteEnabled) {
+        this.isDeleteEnabled = isDeleteEnabled;
     }
 
     @OnClick({R.id.tagged_user_delete_tag})
@@ -76,4 +84,5 @@ public class ExistsTagView extends TagView implements View.OnClickListener {
         deleteTag();
         tagListener.onTagDeleted(photoTag);
     }
+
 }

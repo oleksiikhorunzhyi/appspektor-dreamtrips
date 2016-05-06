@@ -13,6 +13,10 @@ public class AttachmentHolder {
         return new AttachmentHolder(AttachmentType.IMAGE, new ImageAttachment(url));
     }
 
+    public static AttachmentHolder newLocationAttachment(double lat, double lng){
+        return new AttachmentHolder(AttachmentType.LOCATION, new LocationAttachment(lat, lng));
+    }
+
     protected AttachmentHolder(@AttachmentType.Type String type, Attachment item) {
         this.type = type;
         this.item = item;

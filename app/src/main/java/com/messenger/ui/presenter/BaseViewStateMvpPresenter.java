@@ -6,18 +6,23 @@ import android.view.View;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import icepick.Icepick;
 import icepick.State;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
         implements ViewStateMvpPresenter<V, S> {
 
     @State S state;
+
+    PublishSubject<Void> detachStopper = PublishSubject.create();
+
+    PublishSubject<Void> visibilityStopper = PublishSubject.create();
+
 
     @Override public void onSaveInstanceState(Bundle bundle) {
         Icepick.saveInstanceState(this, bundle);
@@ -43,14 +48,18 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
         if (visibility == View.GONE) visibilityStopper.onNext(null);
     }
 
-    PublishSubject<Void> visibilityStopper = PublishSubject.create();
+    @Override
+    public void detachView(boolean retainInstance) {
+        detachStopper.onNext(null);
+        super.detachView(retainInstance);
+    }
 
     protected <T> Observable.Transformer<T, T> bindVisibility() {
         return input -> input.takeUntil(visibilityStopper);
     }
 
     protected <T> Observable.Transformer<T, T> bindView() {
-        return input -> input.compose(RxLifecycle.bindView(((View) getView())));
+        return input -> input.takeUntil(detachStopper);
     }
 
     @Override public S getViewState() {
@@ -70,7 +79,6 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
         return input -> input
                 .compose(new IoToMainComposer<>())
-                .compose(RxLifecycle.bindView((View) getView()));
+                .compose(bindView());
     }
-
 }

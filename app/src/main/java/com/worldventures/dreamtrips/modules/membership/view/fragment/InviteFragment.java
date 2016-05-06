@@ -217,7 +217,7 @@ public class InviteFragment
     public void openTemplateView() {
         router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forFragment()
                 .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
+                .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.container_templates)
                 .build());
     }
@@ -225,7 +225,7 @@ public class InviteFragment
     @Override
     public void continueAction2() {
         router.moveTo(Route.SELECT_INVITE_TEMPLATE, NavigationConfigBuilder.forRemoval()
-                .fragmentManager(getActivity().getSupportFragmentManager())
+                .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.container_templates)
                 .build());
         if (isTabletLandscape()) {

@@ -16,12 +16,12 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.feed.bundle.EditEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -123,17 +123,16 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem>
 
     @Override
     protected void onEdit() {
-        super.onEdit();
         int containerId = R.id.container_details_floating;
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forRemoval()
+        router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
                 .containerId(containerId)
                 .fragmentManager(fragmentManager)
                 .build());
-        router.moveTo(Route.ENTITY_EDIT, NavigationConfigBuilder.forFragment()
+        router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forFragment()
                 .containerId(containerId)
                 .backStackEnabled(false)
                 .fragmentManager(fragmentManager)
-                .data(new EditEntityBundle(getModelObject().getItem(), FeedEntityHolder.Type.PHOTO))
+                .data(new EditPhotoBundle(getModelObject().getItem()))
                 .build());
     }
 

@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -17,6 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -188,6 +188,10 @@ public class FullScreenPhotoWrapperFragment
     }
 
     @Override
+    public void addAll(int position, List<? extends IFullScreenObject> items) {
+    }
+
+    @Override
     public void clear() {
     }
 
@@ -209,7 +213,7 @@ public class FullScreenPhotoWrapperFragment
     }
 
     @Override
-    public void attachImages(List<ChosenImage> photos, int requestType) {
+    public void openCreatePhoto(MediaAttachment mediaAttachment) {
         /**
          * Temporary. Need to refactor. Need to create own presenter for {@link FullScreenPhotoWrapperFragment}
          */

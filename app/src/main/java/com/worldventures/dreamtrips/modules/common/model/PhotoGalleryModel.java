@@ -1,37 +1,37 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
-public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel {
+import com.worldventures.dreamtrips.modules.common.view.util.Size;
+import com.worldventures.dreamtrips.util.ValidationUtils;
+
+import java.io.Serializable;
+
+public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel, Serializable {
 
     private String originalPath;
     private String thumbnailPath;
     private boolean checked;
+    private long dateTaken;
+    private Size size;
+    private long pickedTime;
 
     public PhotoGalleryModel(String originalPath) {
+        this(originalPath, 0);
+    }
+
+    public PhotoGalleryModel(String originalPath, Size size) {
+        this(originalPath);
+        this.size = size;
+    }
+
+    public PhotoGalleryModel(String originalPath, long dateTaken) {
         this.originalPath = originalPath;
-        this.thumbnailPath = "file://" + this.originalPath;
+        this.thumbnailPath = ValidationUtils.isUrl(originalPath) ? this.originalPath : "file://" + this.originalPath;
+        this.dateTaken = dateTaken;
     }
-
-    protected PhotoGalleryModel(Parcel in) {
-        originalPath = in.readString();
-        thumbnailPath = in.readString();
-        checked = in.readByte() != 0;
-    }
-
-    public static final Creator<PhotoGalleryModel> CREATOR = new Creator<PhotoGalleryModel>() {
-        @Override
-        public PhotoGalleryModel createFromParcel(Parcel in) {
-            return new PhotoGalleryModel(in);
-        }
-
-        @Override
-        public PhotoGalleryModel[] newArray(int size) {
-            return new PhotoGalleryModel[size];
-        }
-    };
 
     @Override
     public String getOriginalPath() {
@@ -53,6 +53,24 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel {
         this.checked = checked;
     }
 
+    public long getDateTaken() {
+        return dateTaken;
+    }
+
+    @Nullable
+    public Size getSize() {
+        return size;
+    }
+
+    @Override
+    public long getPickedTime() {
+        return pickedTime;
+    }
+
+    public void setPickedTime(long pickedTime) {
+        this.pickedTime = pickedTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,7 +79,6 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel {
         PhotoGalleryModel that = (PhotoGalleryModel) o;
 
         return originalPath.equals(that.originalPath);
-
     }
 
     @Override
@@ -76,8 +93,28 @@ public class PhotoGalleryModel implements Parcelable, BasePhotoPickerModel {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(originalPath);
-        dest.writeString(thumbnailPath);
-        dest.writeByte((byte) (checked ? 1 : 0));
+        dest.writeString(this.originalPath);
+        dest.writeString(this.thumbnailPath);
+        dest.writeByte(checked ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.dateTaken);
     }
+
+    protected PhotoGalleryModel(Parcel in) {
+        this.originalPath = in.readString();
+        this.thumbnailPath = in.readString();
+        this.checked = in.readByte() != 0;
+        this.dateTaken = in.readLong();
+    }
+
+    public static final Creator<PhotoGalleryModel> CREATOR = new Creator<PhotoGalleryModel>() {
+        @Override
+        public PhotoGalleryModel createFromParcel(Parcel source) {
+            return new PhotoGalleryModel(source);
+        }
+
+        @Override
+        public PhotoGalleryModel[] newArray(int size) {
+            return new PhotoGalleryModel[size];
+        }
+    };
 }

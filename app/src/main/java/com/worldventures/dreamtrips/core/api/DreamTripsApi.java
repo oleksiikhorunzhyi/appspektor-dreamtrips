@@ -1,16 +1,12 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.messenger.api.ShortProfilesBody;
-import com.messenger.api.TranslateTextBody;
-import com.messenger.api.TranslatedText;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.PhotoUploadResponse;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
@@ -18,6 +14,9 @@ import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.api.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
+import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -40,7 +39,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.tripsimages.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 
@@ -90,9 +89,6 @@ public interface DreamTripsApi {
     @GET("/api/profiles/{id}")
     User getPublicProfile(@Path("id") int id);
 
-    @POST("/api/users/profiles/short")
-    ArrayList<User> getShortProfiles(@Body ShortProfilesBody body);
-
     @GET("/api/trips")
     List<TripModel> getTrips();
 
@@ -132,6 +128,12 @@ public interface DreamTripsApi {
 
     @PUT("/api/photos/{uid}")
     Photo editTripPhoto(@Path("uid") String uid, @Body UploadTask uploadTask);
+
+    @POST("/api/photos")
+    ArrayList<Photo> uploadPhotos(@Body CreatePhotoEntity entity);
+
+    @POST("/api/social/posts")
+    TextualPost createPhotoPost(@Body CreatePhotoPostEntity createPhotoPostEntity);
     /* *** END PHOTOS *****************************/
 
     @GET("/api/success_stories")
@@ -307,9 +309,8 @@ public interface DreamTripsApi {
     @POST("/api/social/posts")
     TextualPost post(@Field("description") String description);
 
-    @FormUrlEncoded
     @PUT("/api/social/posts/{uid}")
-    TextualPost editPost(@Path("uid") String uid, @Field("description") String description);
+    TextualPost editPost(@Path("uid") String uid, @Body CreatePhotoPostEntity createPhotoPostEntity);
 
     @DELETE("/api/social/posts/{uid}")
     Void deletePost(@Path("uid") String uid);
@@ -390,8 +391,5 @@ public interface DreamTripsApi {
 
     @POST("/api/feedbacks")
     Void sendFeedback(@Body FeedbackBody feedbackBody);
-
-    @POST("/api/translate")
-    TranslatedText translateText(@Body TranslateTextBody body);
 
 }

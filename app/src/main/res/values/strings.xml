@@ -18,6 +18,7 @@
     <string name="action_quick_input">Quick Add</string>
     <string name="action_popular_string">Add From Popular</string>
     <string name="action_done">Done</string>
+    <string name="action_cancel">Cancel</string>
     <string name="action_enroll">Enroll</string>
     <string name="action_filter">Filter</string>
     <string name="action_map">Map</string>
@@ -622,5 +623,22 @@
     <string name="who_is_this">Who is this?</string>
     <string name="dream_trips_points">DreamTrip points:</string>
     <string name="rovia_bucks">Rovia Bucks:</string>
+
+    <string name="suggested_photo">You have new photos</string>
+    <string name="suggested_photo_selected_one">%d photo selected</string>
+    <string name="suggested_photo_selected_multiple">%d photos selected</string>
+    <string name="share_recent_photos">Share photos</string>
+
+    <string name="legal_terms">Legal Terms</string>
+
+    <string name="location_picker_title">Pick location</string>
+    <string name="location_picker_no_play_services">Sorry, but to see the map you should have Google Play services installed on your device.</string>
+    <string name="location_picker_could_not_get_location">Could not get current location</string>
+
+    <string name="request_incoming_long">Incoming Requests</string>
+    <string name="request_outgoing_long">Outgoing Requests</string>
+
+    <string name="add_title">Add a title</string>
+    <string name="flag_sent_success_msg">Content has been flagged</string>
 
 </resources>

@@ -6,13 +6,13 @@ import android.widget.TextView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.friends.events.AddUserRequestEvent;
+import com.worldventures.dreamtrips.modules.friends.view.cell.delegate.UserSearchCellDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_user_search)
-public class UserSearchCell extends BaseUserCell {
+public class UserSearchCell extends BaseUserCell<UserSearchCellDelegate> {
 
     @InjectView(R.id.add)
     TextView add;
@@ -39,6 +39,6 @@ public class UserSearchCell extends BaseUserCell {
 
     @OnClick(R.id.add)
     void onAccept() {
-        getEventBus().post(new AddUserRequestEvent(getModelObject()));
+        cellDelegate.addUserRequest(getModelObject());
     }
 }

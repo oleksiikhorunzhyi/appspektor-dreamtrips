@@ -3,18 +3,17 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocationUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.PermissionView;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +28,8 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
 
     @Inject
     LocationDelegate gpsLocationDelegate;
-
+    @Inject
+    PostLocationPickerCallback postLocationPickerCallback;
     private boolean isCanceled;
 
     @Override
@@ -47,20 +47,7 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
     }
 
     public boolean isGpsOn() {
-        int locationMode = 0;
-        String locationProviders;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
-            } catch (Settings.SettingNotFoundException e) {
-                Timber.e(e, "");
-            }
-            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-        } else {
-            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-            return !TextUtils.isEmpty(locationProviders);
-        }
+        return LocationUtils.isGpsOn(context);
     }
 
     public void stopDetectLocation() {
@@ -110,6 +97,12 @@ public class LocationPresenter<V extends LocationPresenter.View> extends Present
 
     public void locationNotGranted() {
         gpsLocationDelegate.onLocationObtained(null);
+    }
+
+    public void onDone(Location location) {
+        if (postLocationPickerCallback != null) {
+            postLocationPickerCallback.onLocationPicked(location);
+        }
     }
 
     public interface View extends RxView, PermissionView {

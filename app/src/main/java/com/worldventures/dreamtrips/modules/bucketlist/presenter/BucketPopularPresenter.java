@@ -3,8 +3,6 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.app.Activity;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
-import com.worldventures.dreamtrips.core.utils.events.AddPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.DonePressedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocationQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
@@ -61,18 +59,12 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         view.getAdapter().flushFilter();
     }
 
-    public void onEvent(AddPressedEvent event) {
-        if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
-            add(event.getPopularBucketItem(), false, event.getPosition());
-            eventBus.cancelEventDelivery(event);
-        }
+    public void onAdd(PopularBucketItem popularBucketItem, int position){
+        add(popularBucketItem, false, position);
     }
 
-    public void onEvent(DonePressedEvent event) {
-        if (event.getPopularBucketItem().getType().equalsIgnoreCase(type.getName())) {
-            add(event.getPopularBucketItem(), true, event.getPosition());
-            eventBus.cancelEventDelivery(event);
-        }
+    public void onDone(PopularBucketItem popularBucketItem, int position){
+        add(popularBucketItem, true, position);
     }
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {

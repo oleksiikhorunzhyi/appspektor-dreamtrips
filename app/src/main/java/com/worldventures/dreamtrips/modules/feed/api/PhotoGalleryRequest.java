@@ -6,12 +6,13 @@ import android.provider.MediaStore;
 
 import com.octo.android.robospice.request.SpiceRequest;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 
 import timber.log.Timber;
 
-public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryModel>>{
+public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryModel>> {
 
     private Context context;
 
@@ -27,24 +28,26 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
 
     private ArrayList<PhotoGalleryModel> getGalleryPhotos() {
         Cursor cursor = null;
-        String[] projectionPhotos = {MediaStore.Images.Media.DATA};
+        String[] projectionPhotos = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_TAKEN};
         ArrayList<PhotoGalleryModel> photos = new ArrayList<>();
-
+        //
         try {
             cursor = MediaStore.Images.Media.query(context.getContentResolver(),
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     projectionPhotos,
-                    "",
-                    null,
+                    MediaStore.Images.Media.MIME_TYPE + " != ?",
+                    new String[]{ImageUtils.MIME_TYPE_GIF},
                     MediaStore.Images.Media.DATE_TAKEN + " DESC");
-
             if (cursor != null) {
                 int dataColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-
+                int dateColumn = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN);
                 while (cursor.moveToNext()) {
                     String path = cursor.getString(dataColumn);
-                    PhotoGalleryModel photo = new PhotoGalleryModel(path);
-                    photos.add(photo);
+                    long dateTaken = cursor.getLong(dateColumn);
+                    if (!ImageUtils.getImageExtensionFromPath(path).toLowerCase().contains("gif")) {
+                        PhotoGalleryModel photo = new PhotoGalleryModel(path, dateTaken);
+                        photos.add(photo);
+                    }
                 }
             }
         } catch (Throwable e) {
@@ -58,7 +61,6 @@ public class PhotoGalleryRequest extends SpiceRequest<ArrayList<PhotoGalleryMode
                 }
             }
         }
-
         return photos;
     }
 }

@@ -54,8 +54,8 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
         singleChatAvatarView.setImageURI(Uri.parse(addressee.getAvatarUrl()));
         chatNameTextView.setText(addressee.getName());
         chatDescriptionTextView.setText(addressee.isOnline()
-                        ? R.string.chat_settings_single_chat_online
-                        : R.string.chat_settings_single_chat_offline);
+                ? R.string.chat_settings_single_chat_online
+                : R.string.chat_settings_single_chat_offline);
     }
 
     @Override

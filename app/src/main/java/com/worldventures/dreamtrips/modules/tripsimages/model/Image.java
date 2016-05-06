@@ -7,13 +7,12 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.io.Serializable;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class Image implements Parcelable, Serializable {
-
-    public static final String PATTERN = "?width=%d&height=%d";
 
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         public Image createFromParcel(Parcel source) {
@@ -41,14 +40,12 @@ public class Image implements Parcelable, Serializable {
 
     public String getUrl(int width, int height) {
         int size = Math.max(width, height);
-        return url + String.format(PATTERN,
-                size, size);
+        return ImageUtils.getParametrizedUrl(url, size, size);
     }
 
     public String getThumbUrl(Resources resources) {
         int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.photo_thumb_size);
-        return url + String.format(PATTERN,
-                dimensionPixelSize, dimensionPixelSize);
+        return ImageUtils.getParametrizedUrl(url, dimensionPixelSize, dimensionPixelSize);
     }
 
     public void setUrl(String url) {

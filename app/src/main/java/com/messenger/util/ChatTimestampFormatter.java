@@ -3,10 +3,13 @@ package com.messenger.util;
 import android.content.Context;
 import android.text.format.DateUtils;
 
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import javax.inject.Inject;
 
 public class ChatTimestampFormatter {
 
@@ -16,7 +19,8 @@ public class ChatTimestampFormatter {
     private SimpleDateFormat dayOfTheWeekDateFormatter;
     private SimpleDateFormat dayOfTheMonthDateFormatter;
 
-    public ChatTimestampFormatter(Context context) {
+    @Inject
+    public ChatTimestampFormatter(@ForApplication Context context) {
         this.context = context;
         this.timeDateFormatter = new SimpleDateFormat("h:mm aa");
         this.dayOfTheWeekDateFormatter = new SimpleDateFormat("EEEE");

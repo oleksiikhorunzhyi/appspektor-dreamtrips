@@ -15,12 +15,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
 
@@ -50,8 +50,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @Inject
     PhotoPickerDelegate photoPickerDelegate;
 
-    @State
-    boolean isShown;
+    @State boolean isShown;
+    @State boolean multiPickEnabled;
+    @State int pickLimit;
 
     private WeakHandler handler = new WeakHandler();
 
@@ -60,9 +61,6 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     private View draggableView;
 
     private FragmentManager fragmentManager;
-
-    private boolean multiPickEnabled;
-    private int pickLimit;
 
     private PhotoPickerListener photoPickerListener;
 
@@ -105,8 +103,9 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
-        if (isShown)
-            post(() -> showPanel());
+        if (isShown) {
+            post(() -> this.showPanel(multiPickEnabled, pickLimit));
+        }
     }
 
     @Override
@@ -137,18 +136,12 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         }
     }
 
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled) {
-        this.setup(fragmentManager, multiPickEnabled, true);
+    public void setup(FragmentManager fragmentManager) {
+        this.setup(fragmentManager, true);
     }
 
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, int pickLimit) {
-        this.setup(fragmentManager, multiPickEnabled);
-        this.pickLimit = pickLimit;
-    }
-
-    public void setup(FragmentManager fragmentManager, boolean multiPickEnabled, boolean isVisible) {
+    public void setup(FragmentManager fragmentManager, boolean isVisible) {
         this.fragmentManager = fragmentManager;
-        this.multiPickEnabled = multiPickEnabled;
         if (isVisible) updatePickerDelegate();
     }
 
@@ -240,6 +233,17 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     }
 
     public void showPanel() {
+        showPanel(false, 0);
+    }
+
+    public void showPanel(boolean multiPickEnabled) {
+        showPanel(multiPickEnabled, Integer.MAX_VALUE);
+    }
+
+    public void showPanel(boolean multiPickEnabled, int pickLimit) {
+        this.multiPickEnabled = multiPickEnabled;
+        this.pickLimit = pickLimit;
+
         if (photoPickerListener != null) photoPickerListener.onOpened();
         isShown = true;
         boolean isKeyboardClosed = inputMethodManager.hideSoftInputFromWindow(getWindowToken(), 0);
@@ -279,13 +283,12 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
         return draggableView;
     }
 
-    public void setOnDoneClickListener(OnDoneClickListener onDoneClickListener) {
-        photoPickerDelegate.setOnDoneClickListener(onDoneClickListener);
+    public void setOnDoneClickListener(OnDoneClickListener onDoneClickListenerObservable) {
+        photoPickerDelegate.setDoneClickListener(onDoneClickListenerObservable);
     }
 
     public interface OnDoneClickListener {
-
-        void onDone(List<ChosenImage> chosenImages, int type);
+        void onDone(List<BasePhotoPickerModel> chosenImages, int type);
     }
 
     private void clearAllBackStack() {

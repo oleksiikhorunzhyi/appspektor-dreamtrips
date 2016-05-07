@@ -7,9 +7,6 @@ import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.techery.janet.ActionHolder;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
@@ -46,23 +43,18 @@ public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> im
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<DtlFilterData> getData() {
-        return new ArrayList<DtlFilterData>() {{
-            if (getResult() != null) {
-                add(getResult());
-            }
-        }};
+    public DtlFilterData getData() {
+        return getResult();
     }
 
     @Override
-    public void onRestore(ActionHolder holder, List<DtlFilterData> cache) {
-        holder.newAction(new DtlFilterDataAction(cache.get(0), updateFunc));
+    public void onRestore(ActionHolder holder, DtlFilterData cache) {
+        holder.newAction(new DtlFilterDataAction(cache, updateFunc));
     }
 
     @Override
     public CacheOptions getOptions() {
         return ImmutableCacheOptions.builder()
-                .restoreFromCache(true)
                 .build();
     }
 }

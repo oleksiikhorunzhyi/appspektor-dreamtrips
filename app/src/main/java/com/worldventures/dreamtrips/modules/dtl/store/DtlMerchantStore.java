@@ -8,7 +8,9 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.janet.ResultOnlyFilter;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
+import com.worldventures.dreamtrips.core.janet.cache.storage.Storage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.rx.composer.StubSubscriber;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -16,7 +18,6 @@ import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAct
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantsAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlPersistedMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlUpdateAmenitiesAction;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -24,7 +25,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,21 +58,21 @@ public class DtlMerchantStore {
     Janet janet;
 
     private final ActionPipe<DtlUpdateAmenitiesAction> updateAmenitiesPipe;
-    private final ActionPipe<DtlMerchantsAction> loadMerchantsPipe;
-    private final ActionPipe<DtlPersistedMerchantsAction> persistMerchantsPipe;
+    private final ActionPipe<DtlMerchantsAction> merchantsPipe;
     private final WriteActionPipe<DtlFilterMerchantStoreAction> filterStorePipe;
 
-    private ActionState<DtlMerchantsAction> state;
+    private volatile ActionState<DtlMerchantsAction> state;
 
     public DtlMerchantStore(Injector injector) {
         injector.inject(this);
 
         Janet privateJanet = new Janet.Builder()
-                .addService(new CacheResultWrapper(new CommandActionService()))
+                .addService(new CacheResultWrapper(new CommandActionService())
+                        .bindStorage(DtlMerchantsAction.class, new MerchantsCacheStorage(db)))
                 .build();
+
         updateAmenitiesPipe = privateJanet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
-        loadMerchantsPipe = privateJanet.createPipe(DtlMerchantsAction.class, Schedulers.io());
-        persistMerchantsPipe = privateJanet.createPipe(DtlPersistedMerchantsAction.class, Schedulers.io());
+        merchantsPipe = privateJanet.createPipe(DtlMerchantsAction.class);
         filterStorePipe = janet.createPipe(DtlFilterMerchantStoreAction.class);
 
         ReadActionPipe<DtlMerchantStoreAction> storePipe = janet.createPipe(DtlMerchantStoreAction.class);
@@ -94,12 +94,12 @@ public class DtlMerchantStore {
     }
 
     private void connectMerchantsPipe() {
-        loadMerchantsPipe.observe()
+        merchantsPipe.observe()
                 .compose(ResultOnlyFilter.instance())
                 .doOnNext(actionState -> state = actionState)
                 .compose(new ActionStateToActionTransformer<>())
+                .filter(DtlMerchantsAction::isFromApi)
                 .subscribe(action -> {
-                    db.saveDtlMerhants(action.getResult());
                     tryUpdateLocation(action.getResult());
                     updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(db, action.getResult()));
                 }, Throwable::printStackTrace);
@@ -117,13 +117,14 @@ public class DtlMerchantStore {
         Location location = action.getLocation();
         String locationArg = String.format("%1$f,%2$f",
                 location.getLatitude(), location.getLongitude());
-        loadMerchantsPipe.createObservableSuccess(new DtlMerchantsAction(dtlApi, locationArg))
+        merchantsPipe.createObservableSuccess(DtlMerchantsAction.fromApi(dtlApi, locationArg))
+                .subscribeOn(Schedulers.io())
                 .compose(retryLoginComposer)
                 .subscribe(new StubSubscriber());
     }
 
     private void onClear(DtlMerchantStoreAction action) {
-        loadMerchantsPipe.clearReplays();
+        merchantsPipe.clearReplays();
         db.clearMerchantData();
         state = null;
     }
@@ -151,25 +152,14 @@ public class DtlMerchantStore {
         return Observable.just(state)
                 .compose(new NonNullFilter<>())
                 .switchIfEmpty(
-                        getPersistedState()
+                        merchantsPipe.createObservable(DtlMerchantsAction.fromCache())
+                                .compose(ImmediateComposer.instance())
                                 .compose(ResultOnlyFilter.instance())
-                                .flatMap(actionState -> {
-                                    List<DtlMerchant> merchants = actionState.action.getResult();
-                                    if (merchants == null) {
-                                        merchants = Collections.emptyList();
-                                    }
-                                    return loadMerchantsPipe.createObservable(new DtlMerchantsAction(actionState.action.getResult()))
-                                            .compose(ResultOnlyFilter.instance());
-                                })
                 );
     }
 
-    public Observable<ActionState<DtlPersistedMerchantsAction>> getPersistedState() {
-        return persistMerchantsPipe.createObservable(new DtlPersistedMerchantsAction(db));
-    }
-
     public ReadActionPipe<DtlMerchantsAction> merchantsActionPipe() {
-        return loadMerchantsPipe;
+        return merchantsPipe;
     }
 
     public Observable<DtlMerchant> getMerchantById(String merchantId) {
@@ -178,5 +168,23 @@ public class DtlMerchantStore {
                 .map(DtlMerchantsAction::getResult)
                 .flatMap(Observable::from)
                 .filter(merchant -> merchant.getId().equals(merchantId));
+    }
+
+    private final static class MerchantsCacheStorage implements Storage<List<DtlMerchant>> {
+        private final SnappyRepository db;
+
+        private MerchantsCacheStorage(SnappyRepository db) {
+            this.db = db;
+        }
+
+        @Override
+        public void save(List<DtlMerchant> data) {
+            db.saveDtlMerhants(data);
+        }
+
+        @Override
+        public List<DtlMerchant> get() {
+            return db.getDtlMerchants();
+        }
     }
 }

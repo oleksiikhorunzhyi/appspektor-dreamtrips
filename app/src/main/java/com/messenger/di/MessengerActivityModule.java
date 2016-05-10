@@ -12,6 +12,7 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.holder.chat.ChatHolderModule;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
+import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
@@ -69,6 +70,7 @@ import dagger.Provides;
                 MultiChatSettingsScreenPresenter.class,
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,
+                FlaggingPresenterImpl.class,
         },
         complete = false, library = true
 )

@@ -170,9 +170,10 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
     @Override
     public void showSubjectDialog(String currentSubject) {
         Context context = getContext();
-        final View dialogView = inflate(context, R.layout.dialog_change_subject, null);
-        EditText etSubject = (EditText) dialogView.findViewById(R.id.et_subject);
+        final View dialogView = inflate(context, R.layout.dialog_messenger_input, null);
+        EditText etSubject = (EditText) dialogView.findViewById(R.id.et_input);
         etSubject.setText(currentSubject);
+        etSubject.setHint(R.string.subject);
         if (currentSubject != null) {
             etSubject.setSelection(currentSubject.length());
         }

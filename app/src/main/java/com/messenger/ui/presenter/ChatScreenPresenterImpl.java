@@ -42,8 +42,12 @@ import com.messenger.ui.adapter.inflater.LiteMapInflater;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.model.AttachmentMenuItem;
+import com.messenger.ui.module.flagging.FlaggingPresenter;
+import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
+import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.util.AttachmentMenuProvider;
 import com.messenger.ui.util.ChatContextualMenuProvider;
+import com.messenger.delegate.FlagsDelegate;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
@@ -83,6 +87,7 @@ import flow.Flow;
 import flow.History;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.subjects.PublishSubject;
@@ -120,6 +125,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject TranslationsDAO translationsDAO;
     @Inject AttachmentHelper attachmentHelper;
 
+    private FlaggingPresenter flaggingPresenter;
 
     protected String conversationId;
 
@@ -132,9 +138,12 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Observable<Pair<DataConversation, List<DataUser>>> conversationObservable;
     private PublishSubject<DataMessage> lastVisibleItemStream = PublishSubject.create();
 
+    private Injector injector;
+
     public ChatScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context);
         this.conversationId = conversationId;
+        this.injector = injector;
         openScreenTime = System.currentTimeMillis();
 
         injector.inject(this);
@@ -143,6 +152,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        this.flaggingPresenter = new FlaggingPresenterImpl(getView().getFlaggingView(), injector);
         connectConnectivityStatusStream();
         connectConversationStream();
         connectChatTypingStream();
@@ -644,6 +654,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void disconnectFromPhotoPicker() {
         legacyPhotoPickerDelegate.unregister();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Flagging
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onFlagMessageAttempt(DataMessage message) {
+        flaggingPresenter.flagMessage(message);
     }
 
     ///////////////////////////////////////////////////////////////////////////

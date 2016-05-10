@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.app.Application;
 import android.content.Context;
 
+import com.messenger.di.FlaggingModule;
 import com.messenger.di.MessengerModule;
 import com.techery.spares.application.BaseApplicationWithInjector;
 import com.techery.spares.module.DebugModule;
@@ -53,7 +54,9 @@ import dagger.Provides;
                 //
                 MessengerModule.class,
                 //
-                JanetModule.class
+                JanetModule.class,
+                //
+                FlaggingModule.class
         },
         library = true,
         complete = false,

@@ -30,6 +30,8 @@ import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.model.AttachmentMenuItem;
+import com.messenger.ui.module.flagging.FlaggingView;
+import com.messenger.ui.module.flagging.FlaggingViewImpl;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
@@ -62,10 +64,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-    @Inject
-    LocaleHelper localeHelper;
-    @Inject
-    SessionHolder<UserSession> sessionHolder;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -99,6 +97,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private final Runnable openPikerTask = () -> photoPickerLayoutDelegate.showPicker(true,
             getResources().getInteger(R.integer.messenger_pick_image_limit));
 
+    private FlaggingView flaggingView;
+
     public ChatScreenImpl(Context context) {
         super(context);
     }
@@ -116,7 +116,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @NonNull
     @Override
     public ChatScreenPresenter createPresenter() {
-        return new ChatScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
+        return new ChatScreenPresenterImpl(getContext(), injector,
+                getPath().getConversationId());
     }
 
     @SuppressWarnings("Deprecated")
@@ -295,7 +296,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void showMessages(Cursor cursor, DataConversation conversation) {
-        Timber.i("Show Cursor with size " + cursor.getCount());
         adapter.setConversation(conversation);
 
         int firstVisibleViewTop = 0;
@@ -349,6 +349,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                     break;
                 case R.id.action_start_chat:
                     getPresenter().onStartNewChatForMessageOwner(message);
+                    break;
+                case R.id.action_flag:
+                    getPresenter().onFlagMessageAttempt(message);
                     break;
             }
         }))
@@ -428,5 +431,13 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         photoPickerLayoutDelegate.hidePicker();
         //
         getPresenter().onImagesPicked(images);
+    }
+
+    @Override
+    public FlaggingView getFlaggingView() {
+        if (flaggingView == null) {
+            flaggingView = new FlaggingViewImpl(this);
+        }
+        return flaggingView;
     }
 }

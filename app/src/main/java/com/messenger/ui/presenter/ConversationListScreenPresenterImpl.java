@@ -24,7 +24,6 @@ import com.messenger.ui.viewstate.ConversationListViewState;
 import com.messenger.util.OpenedConversationTracker;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.rx.composer.DelayedComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
@@ -53,8 +52,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Inject
     DataUser user;
     @Inject
-    DreamSpiceManager dreamSpiceManager;
-    @Inject
     ConversationsDAO conversationsDAO;
     @Inject
     NotificationDelegate notificationDelegate;
@@ -81,18 +78,10 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
-        dreamSpiceManager.start(getContext());
         getViewState().setLoadingState(ConversationListViewState.LoadingState.LOADING);
         applyViewState();
         connectData();
         trackConversations();
-    }
-
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (dreamSpiceManager.isStarted()) {
-            dreamSpiceManager.shouldStop();
-        }
     }
 
     @Override

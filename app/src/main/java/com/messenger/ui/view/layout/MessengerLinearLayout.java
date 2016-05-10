@@ -76,6 +76,7 @@ public abstract class MessengerLinearLayout<V extends MessengerScreen, P extends
                 case CONNECTED:
                     overlay.setVisibility(GONE);
                     break;
+                case SYNC_DATA:
                 case CONNECTING:
                     overlay.setVisibility(VISIBLE);
                     connectingView.setVisibility(VISIBLE);

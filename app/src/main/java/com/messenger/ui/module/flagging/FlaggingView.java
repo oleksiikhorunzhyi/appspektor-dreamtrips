@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface FlaggingView extends ModuleView<FlaggingPresenter> {
 
+    void showFlagsLoadingDialog();
+
+    void hideFlagsLoadingDialog();
+
     void showFlagsListDialog(List<Flag> flags);
 
     void showFlagReasonDialog(Flag flag);

@@ -2,6 +2,7 @@ package com.messenger.ui.module.flagging;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class FlaggingViewImpl extends ModuleViewImpl<FlaggingPresenter> implements FlaggingView {
 
-    private ProgressDialog flaggingProgressDialog;
+    private ProgressDialog progressDialog;
 
     public FlaggingViewImpl(View view) {
         super(view);
@@ -28,6 +29,16 @@ public class FlaggingViewImpl extends ModuleViewImpl<FlaggingPresenter> implemen
     ///////////////////////////////////////////////////////////////////////////
     // Flagging flow
     ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void showFlagsLoadingDialog() {
+        showProgressDialog(R.string.chat_flag_dialog_progress_loading_flags);
+    }
+
+    @Override
+    public void hideFlagsLoadingDialog() {
+        hideProgressDialog();
+    }
 
     @Override
     public void showFlagsListDialog(List<Flag> flags) {
@@ -74,21 +85,33 @@ public class FlaggingViewImpl extends ModuleViewImpl<FlaggingPresenter> implemen
 
     @Override
     public void showFlaggingProgressDialog() {
-        flaggingProgressDialog = ProgressDialog.show(getContext(), "",
-                getContext().getString(R.string.chat_flag_dialog_flagging_progress), true);
+        showProgressDialog(R.string.chat_flag_dialog_flagging_progress);
     }
 
     @Override
     public void hideFlaggingProgressDialog() {
-        if (flaggingProgressDialog != null && flaggingProgressDialog.isShowing()) {
-            flaggingProgressDialog.dismiss();
-            flaggingProgressDialog = null;
-        }
+        hideProgressDialog();
     }
 
     @Override
     protected void onParentViewDetachedFromWindow() {
         super.onParentViewDetachedFromWindow();
-        hideFlaggingProgressDialog();
+        hideProgressDialog();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void showProgressDialog(@StringRes int message) {
+        progressDialog = ProgressDialog.show(getContext(), "",
+                getContext().getString(message), true);
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
     }
 }

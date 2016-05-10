@@ -72,6 +72,7 @@
     <string name="chat_share_dialog_cancel">Cancel</string>
     <string name="chat_could_not_share_location">Could not share location</string>
     <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Loading...</string>
     <string name="chat_flag_dialog_reason_title">Flag</string>
     <string name="chat_flag_dialog_reason_hint">Type your reason</string>
     <string name="chat_flag_dialog_reason_positive_button">Accept</string>

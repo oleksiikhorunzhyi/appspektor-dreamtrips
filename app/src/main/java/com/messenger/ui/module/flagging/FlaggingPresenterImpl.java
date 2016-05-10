@@ -35,18 +35,26 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     @Override
     public void flagMessage(DataMessage message) {
         getState().setMessage(message);
-        getState().setDialogState(FlaggingState.DialogState.FLAGS_LIST);
-        showFlagListDialog();
+        getState().setDialogState(FlaggingState.DialogState.LOADING_FLAGS);
+        loadFlags();
     }
 
-    private void showFlagListDialog() {
+    private void loadFlags() {
+        getView().showFlagsLoadingDialog();
         if (getFlagsSubscription != null) getFlagsSubscription.unsubscribe();
         getFlagsSubscription = flagsDelegate.getFlags()
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
-                .subscribe(actionState -> {
-                    getView().showFlagsListDialog(actionState.getFlags());
+                .subscribe(flagsAction -> {
+                    getView().hideFlagsLoadingDialog();
+                    getState().setDialogState(FlaggingState.DialogState.FLAGS_LIST);
+                    getState().setFlags(flagsAction.getFlags());
+                    showFlagsListDialog();
                 }, e -> Timber.e(e, "Could not get flags"));
+    }
+
+    private void showFlagsListDialog() {
+        getView().showFlagsListDialog(getState().getFlags());
     }
 
     @Override
@@ -103,8 +111,11 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     public void applyState(FlaggingState state) {
         setState(state);
         switch (state.getDialogState()) {
+            case LOADING_FLAGS:
+                loadFlags();
+                break;
             case FLAGS_LIST:
-                showFlagListDialog();
+                showFlagsListDialog();
                 break;
             case REASON:
                 showFlagReasonDialog();

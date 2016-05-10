@@ -1,6 +1,7 @@
-package com.messenger.delegate;
+package com.messenger.delegate.chat;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.UsersDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.model.Message;
@@ -15,14 +16,15 @@ import rx.Observable;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
 
-public class PaginationDelegate {
+public class ChatPaginationDelegate {
     private final DecomposeMessagesHelper decomposeMessagesHelper;
     private final UsersDelegate usersDelegate;
 
     private final PagePagination<Message> messagePagePagination;
     private final Observable<List<Message>> pageObservable;
 
-    @Inject PaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
+    @Inject
+    ChatPaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
         this.messagePagePagination = messengerServerFacade.getPaginationManager()
                 .getConversationHistoryPagination();
         this.decomposeMessagesHelper = decomposeMessagesHelper;

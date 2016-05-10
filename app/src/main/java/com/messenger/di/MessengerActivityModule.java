@@ -4,8 +4,9 @@ package com.messenger.di;
 import android.app.Activity;
 import android.content.Context;
 
-import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.delegate.CropImageDelegate;
+import com.messenger.delegate.chat.ChatLeavingDelegate;
+
 import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -31,6 +32,8 @@ import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
 import com.messenger.ui.view.settings.GroupChatSettingsScreenImpl;
 import com.messenger.ui.view.settings.TripChatSettingsScreenImpl;
 import com.messenger.ui.widget.MessengerPhotoPickerLayout;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -104,4 +107,5 @@ public class MessengerActivityModule {
     CropImageDelegate provideCropImageDelegate(Activity activity, DreamSpiceManager dreamSpiceManager) {
         return new CropImageDelegate(activity, dreamSpiceManager);
     }
+
 }

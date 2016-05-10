@@ -3,6 +3,7 @@ package com.messenger.ui.module.flagging;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,5 +114,17 @@ public class FlaggingViewImpl extends ModuleViewImpl<FlaggingPresenter> implemen
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+
+    @Override
+    public void showSuccess() {
+        Snackbar.make(getParentView(), R.string.flag_sent_success_msg, Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
+    public void showError() {
+        Snackbar.make(getParentView(), R.string.chat_flag_failed, Snackbar.LENGTH_SHORT)
+                .show();
     }
 }

@@ -3,7 +3,6 @@ package com.messenger.delegate.chat;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.messenger.delegate.PaginationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
@@ -42,7 +41,7 @@ public class ChatDelegate {
     private final MessageDAO messageDAO;
     private final ConversationsDAO conversationsDAO;
     private final SessionHolder<UserSession> sessionHolder;
-    private final PaginationDelegate paginationDelegate;
+    private final ChatPaginationDelegate chatPaginationDelegate;
     private final CreateChatHelper createChatHelper;
 
     private final PublishSubject<PaginationStatus> paginationStateObservable = PublishSubject.create();
@@ -50,15 +49,15 @@ public class ChatDelegate {
     @Inject
     ChatDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO,
                  ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder,
-                 PaginationDelegate paginationDelegate) {
+                 ChatPaginationDelegate chatPaginationDelegate) {
         this.createChatHelper = createChatHelper;
         this.messageDAO = messageDAO;
         this.conversationsDAO = conversationsDAO;
         this.sessionHolder = sessionHolder;
-        this.paginationDelegate = paginationDelegate;
-        paginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
+        this.chatPaginationDelegate = chatPaginationDelegate;
+        chatPaginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
 
-        paginationDelegate.getPageObservable()
+        chatPaginationDelegate.getPageObservable()
                 .subscribe(this::paginationPageLoaded, throwable -> pageLoadFailed());
     }
 
@@ -156,7 +155,7 @@ public class ChatDelegate {
         );
         conversationObservable
                 .subscribe(conversation -> {
-                    paginationDelegate.loadConversationHistoryPage(conversation, ++page, before);
+                    chatPaginationDelegate.loadConversationHistoryPage(conversation, ++page, before);
                 }, e -> Timber.w("Unable to get conversation"));
     }
 

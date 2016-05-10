@@ -1,15 +1,18 @@
 package com.messenger.ui.module.flagging;
 
-import android.os.Handler;
+import android.text.TextUtils;
 
 import com.messenger.delegate.FlagsDelegate;
-import com.messenger.entities.DataMessage;
+import com.messenger.delegate.chat.flagging.FlagMessageAction;
+import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
+import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.ui.module.ModuleStatefulPresenterImpl;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -17,7 +20,10 @@ import timber.log.Timber;
 public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingView, FlaggingState>
         implements FlaggingPresenter {
 
-    @Inject FlagsDelegate flagsDelegate;
+    @Inject
+    FlagsDelegate flagsDelegate;
+    @Inject
+    FlagMessageDelegate flagMessageDelegate;
 
     private Subscription getFlagsSubscription;
 
@@ -25,6 +31,37 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         super(view);
         injector.inject(this);
         view.setPresenter(this);
+        bindToFlagging();
+    }
+
+    private void bindToFlagging() {
+        flagMessageDelegate.observeOngoingFlagging()
+                .compose(bindView())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ActionStateSubscriber<FlagMessageAction>()
+                        .onStart(this::onFlaggingStarted)
+                        .onSuccess(this::onFlaggingSuccess)
+                        .onFail(this::onFlagginError)
+                );
+    }
+
+    private void onFlaggingSuccess(FlagMessageAction action) {
+        Timber.d("[Flagging] Result obtained, stop progress");
+        getView().hideFlaggingProgressDialog();
+        if (TextUtils.equals(action.getResult().messageId(), getState().getMessageId())) {
+            getView().showSuccess();
+        }
+    }
+
+    private void onFlagginError(FlagMessageAction action, Throwable e) {
+        Timber.e(e, "Smth went wrong while flagging");
+        getView().hideFlaggingProgressDialog();
+        getView().showError();
+    }
+
+    private void onFlaggingStarted(FlagMessageAction action) {
+        Timber.d("[Flagging] Flagging is in progress, wait");
+        getView().showFlaggingProgressDialog();
     }
 
     @Override
@@ -33,8 +70,9 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     }
 
     @Override
-    public void flagMessage(DataMessage message) {
-        getState().setMessage(message);
+    public void flagMessage(String conversationId, String messageId) {
+        getState().setMessageId(messageId);
+        getState().setConversationId(conversationId);
         getState().setDialogState(FlaggingState.DialogState.LOADING_FLAGS);
         loadFlags();
     }
@@ -73,7 +111,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
     @Override
     public void onFlagReasonProvided(String reason) {
-        getState().setReason(reason);
+        getState().setReasonDescription(reason);
         showFlagConfirmationDialog();
     }
 
@@ -87,24 +125,20 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     }
 
     private void sendFlag() {
-        //TODO Temp code until flagging is implemented
+        FlaggingState flaggingState = getState();
+        flaggingState.setDialogState(FlaggingState.DialogState.PROGRESS);
         Timber.d("Sending flag %s with custom reason %s for message %s",
-                getState().getFlag().getName(), getState().getReason(), getState().getMessage());
-        getState().setDialogState(FlaggingState.DialogState.PROGRESS);
-        showFlaggingProgressDialog();
-        final Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            reportFlaggingCompleted();
-        }, 2000);
-    }
-
-    private void showFlaggingProgressDialog() {
-        getView().showFlaggingProgressDialog();
-    }
-
-    private void reportFlaggingCompleted() {
-        if (getView() != null) getView().hideFlaggingProgressDialog();
-        setState(createNewState());
+                flaggingState.getFlag().getName(),
+                flaggingState.getReasonDescription(),
+                flaggingState.getMessageId());
+        //
+        flagMessageDelegate.flagMessage(ImmutableFlagMessageDTO.builder()
+                .messageId(flaggingState.getMessageId())
+                .groupId(flaggingState.getConversationId())
+                .reasonId(String.valueOf(flaggingState.getFlag().getId()))
+                .reasonDescription(flaggingState.getReasonDescription())
+                .build()
+        );
     }
 
     @Override
@@ -124,7 +158,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
                 showFlagConfirmationDialog();
                 break;
             case PROGRESS:
-                showFlaggingProgressDialog();
+                getView().showFlaggingProgressDialog();
                 break;
         }
     }

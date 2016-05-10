@@ -16,7 +16,7 @@ import rx.Observable;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
 
-public class ChatPaginationDelegate {
+public class PaginationHistoryDelegate {
     private final DecomposeMessagesHelper decomposeMessagesHelper;
     private final UsersDelegate usersDelegate;
 
@@ -24,13 +24,14 @@ public class ChatPaginationDelegate {
     private final Observable<List<Message>> pageObservable;
 
     @Inject
-    ChatPaginationDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
+    PaginationHistoryDelegate(MessengerServerFacade messengerServerFacade, DecomposeMessagesHelper decomposeMessagesHelper, UsersDelegate usersDelegate) {
         this.messagePagePagination = messengerServerFacade.getPaginationManager()
                 .getConversationHistoryPagination();
         this.decomposeMessagesHelper = decomposeMessagesHelper;
         this.usersDelegate = usersDelegate;
 
         pageObservable = messagePagePagination.getPageObservable()
+                .compose(this::filterMessageList)
                 .flatMap(this::prepareUsers)
                 .doOnNext(this::saveMessages);
     }
@@ -57,5 +58,12 @@ public class ChatPaginationDelegate {
 
     public Observable<List<Message>> getPageObservable() {
         return pageObservable;
+    }
+
+    private Observable<List<Message>> filterMessageList(Observable<List<Message>> messagesObservable) {
+        return messagesObservable
+                .flatMap(Observable::from)
+                .filter(message -> message.getDeleted() == null)
+                .toList();
     }
 }

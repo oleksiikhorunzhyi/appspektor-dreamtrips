@@ -1,6 +1,7 @@
 package com.messenger.delegate.chat;
 
-import com.innahema.collections.query.queriables.Queryable;
+import android.support.annotation.NonNull;
+
 import com.messenger.delegate.UsersDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -51,7 +52,7 @@ public class PaginationHistoryDelegate {
     }
 
     private Observable<List<Message>> prepareUsers(List<Message> messages) {
-        List<String> usersIds = Queryable.from(messages).map(Message::getFromId).toList();
+        List<String> usersIds = from(messages).map(Message::getFromId).toList();
         if (!usersIds.isEmpty()) return usersDelegate.loadIfNeedUsers(usersIds).map(users -> messages);
         return Observable.just(messages);
     }
@@ -62,8 +63,10 @@ public class PaginationHistoryDelegate {
 
     private Observable<List<Message>> filterMessageList(Observable<List<Message>> messagesObservable) {
         return messagesObservable
-                .flatMap(Observable::from)
-                .filter(message -> message.getDeleted() == null)
-                .toList();
+                .map(this::filter);
+    }
+
+    private List<Message> filter(@NonNull List<Message> messages) {
+        return messages.isEmpty() ? messages : from(messages).filter(message -> message.getDeleted() == null).toList();
     }
 }

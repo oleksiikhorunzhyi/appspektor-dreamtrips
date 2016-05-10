@@ -45,8 +45,11 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                             String jid = parser.getAttributeValue("", "jid");
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
+                            String deleted = parser.getAttributeValue("", "deleted");
+
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
+                                    .deleted(deleted)
                                     .status((unread == null || !unread) ? MessageStatus.READ : MessageStatus.SENT)
                                     .date(timestamp)
                                     .fromId(JidCreatorHelper.obtainId(jid));

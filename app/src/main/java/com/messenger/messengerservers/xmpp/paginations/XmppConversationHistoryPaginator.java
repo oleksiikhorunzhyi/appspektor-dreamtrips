@@ -77,5 +77,6 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
 
     private void notifyError(Throwable throwable) {
         publishSubject.onError(throwable);
+        ProviderManager.removeIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE);
     }
 }

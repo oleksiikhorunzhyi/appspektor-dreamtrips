@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -137,7 +138,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                             .width(item.getWidth())
                             .height(item.getHeight())
                             .date(Calendar.getInstance().getTime())
-                            .coordinates(location != null ? new CreatePhotoEntity.Coordinates(location.getLat(), location.getLng()) : null)
+                            .coordinates(location != null ? new Coordinates(location.getLat(), location.getLng()) : null)
                             .locationName(location != null ? location.getName() : null)
                             .photoTags(item.getCachedAddedPhotoTags())
                             .build()));

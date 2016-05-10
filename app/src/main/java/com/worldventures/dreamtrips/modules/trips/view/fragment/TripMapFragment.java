@@ -6,8 +6,11 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
@@ -99,7 +102,7 @@ public class TripMapFragment extends MapFragment<TripMapPresenter> implements Tr
         googleMap.addMarker(new MarkerOptions()
                 .snippet(String.valueOf(id))
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.blue_pin_icon_big)));
     }
 
     @Override
@@ -129,6 +132,16 @@ public class TripMapFragment extends MapFragment<TripMapPresenter> implements Tr
     @Override
     public void back() {
         router.back();
+    }
+
+    @Override
+    public void zoomToBounds(LatLngBounds latLngBounds) {
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 0));
+    }
+
+    @Override
+    public GoogleMap getMap() {
+        return googleMap;
     }
 
     @Override

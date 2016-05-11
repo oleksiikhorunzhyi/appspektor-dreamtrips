@@ -26,9 +26,8 @@ public class ApiFactoryModule {
 
     @Provides
     @Singleton
-    RetryLoginComposer provideRetryLoginComposer(@ForApplication Context context,
-                                                 DreamTripsApi dreamTripsApi,
+    RetryLoginComposer provideRetryLoginComposer(DreamTripsApi dreamTripsApi,
                                                  SessionHolder<UserSession> appSessionHolder) {
-        return new RetryLoginComposer(context, dreamTripsApi, appSessionHolder);
+        return new RetryLoginComposer(dreamTripsApi, appSessionHolder);
     }
 }

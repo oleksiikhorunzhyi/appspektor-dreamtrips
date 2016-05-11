@@ -321,7 +321,6 @@ android {
 }
 
 def googleLibrariesVersion = '23.3.0'
-def janetVersion = '0.2.3'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -330,12 +329,12 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // janet
-    compile "com.github.techery.janet:http-service:${janetVersion}"
-    apt "com.github.techery.janet:http-service-compiler:${janetVersion}"
-    compile "com.github.techery.janet:janet:${janetVersion}"
-    compile "com.github.techery.janet:command-service:${janetVersion}"
-    compile "com.github.techery.janet:okhttp:${janetVersion}"
-    compile "com.github.techery.janet:gson:${janetVersion}"
+    compile "com.github.techery:janet:1.0.2"
+    compile "com.github.techery:janet-command:1.0.1"
+    compile "com.github.techery.janet-http:service:1.0.2"
+    apt "com.github.techery.janet-http:service-compiler:1.0.2"
+    compile "com.github.techery.janet-http:client-okhttp:1.0.2"
+    compile "com.github.techery.janet-converters:gson:1.0.1"
     compile 'com.squareup.okhttp:logging-interceptor:2.+'
     // Data storage, flow
     compile 'de.greenrobot:eventbus:2.4.0'

@@ -1,6 +1,5 @@
 package com.messenger.ui.module.flagging;
 
-import com.messenger.entities.DataMessage;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
@@ -16,41 +15,35 @@ public class FlaggingState {
         PROGRESS
     }
 
-    private DataMessage message;
     private List<Flag> flags;
+    private String messageId;
+    private String conversationId;
     private Flag flag;
-    private String reason;
+    private String reasonDescription;
     private DialogState dialogState;
 
     public FlaggingState() {
         dialogState = DialogState.NONE;
     }
 
-    public FlaggingState(DialogState dialogState) {
-        this.dialogState = dialogState;
-    }
-
-    public void refresh(DialogState dialogState, DataMessage message, Flag flag) {
-        refresh(dialogState, message, flag, null);
-    }
-
-    public void refresh(DialogState dialogState, DataMessage message, Flag flag, String reason) {
-        this.message = message;
-        this.dialogState = dialogState;
-        this.flag = flag;
-        this.reason = reason;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Getters and setters
     ///////////////////////////////////////////////////////////////////////////
 
-    public DataMessage getMessage() {
-        return message;
+    public String getMessageId() {
+        return messageId;
     }
 
-    public void setMessage(DataMessage message) {
-        this.message = message;
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
+
+    public String getConversationId() {
+        return conversationId;
     }
 
     public List<Flag> getFlags() {
@@ -69,12 +62,12 @@ public class FlaggingState {
         this.flag = flag;
     }
 
-    public String getReason() {
-        return reason;
+    public String getReasonDescription() {
+        return reasonDescription;
     }
 
-    public void setReason(String reason) {
-        this.reason = reason;
+    public void setReasonDescription(String reasonDescription) {
+        this.reasonDescription = reasonDescription;
     }
 
     public DialogState getDialogState() {

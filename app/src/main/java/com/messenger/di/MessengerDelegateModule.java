@@ -2,12 +2,13 @@ package com.messenger.di;
 
 import android.content.Context;
 
-import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.CreateConversationHelper;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.UserProcessor;
+import com.messenger.delegate.chat.ChatMessagesEventDelegate;
+import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.notification.UnhandledMessageWatcher;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -104,5 +105,11 @@ public class MessengerDelegateModule {
     @Singleton
     ChatMessagesEventDelegate provideChatMessagesEventDelegate(@ForApplication Injector injector) {
         return new ChatMessagesEventDelegate(injector);
+    }
+
+    @Provides
+    @Singleton
+    FlagMessageDelegate provideFlagMessageDelegate(Janet janet) {
+        return new FlagMessageDelegate(janet);
     }
 }

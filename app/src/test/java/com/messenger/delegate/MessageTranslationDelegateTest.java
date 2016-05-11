@@ -49,7 +49,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
     private ArrayList<DataTranslation> localeCache;
 
     @Before
-    public void setup(){
+    public void setup() {
         testUser = obtainMockUser();
         userSessionHolder = obtainMockUserSession(testUser);
         localeHelper = obtainMockLocaleHelper();
@@ -167,12 +167,12 @@ public class MessageTranslationDelegateTest extends BaseTest {
     //////// Helper methods
     //////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void translateMessage(){
+    private void translateMessage() {
         MessageTranslationDelegate delegate = new MessageTranslationDelegate(janet, translationsDAO, localeHelper);
         delegate.translateMessage(testMessage, userSessionHolder);
     }
 
-    private void mockMessengerDataBase(){
+    private void mockMessengerDataBase() {
         PowerMockito.mockStatic(MessengerDatabase.class);
         when(MessengerDatabase.buildUri(any())).thenReturn(null);
     }
@@ -194,7 +194,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
         return new MockHttpActionService.Response(500).reason("Internal Server Error");
     }
 
-    private void mockTranslationDAO(DataTranslation translationFromDB, String messageId, TestSubscriber<DataTranslation> testSubscriber){
+    private void mockTranslationDAO(DataTranslation translationFromDB, String messageId, TestSubscriber<DataTranslation> testSubscriber) {
         localeCache = new ArrayList<>();
         translationsDAO = mock(TranslationsDAO.class);
         doAnswer(invocation -> {
@@ -212,7 +212,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
         doReturn(translationObservable).when(translationsDAO).getTranslation(messageId);
     }
 
-    private DataTranslation copyDataTranslation(DataTranslation dataTranslation){
+    private DataTranslation copyDataTranslation(DataTranslation dataTranslation) {
         return new DataTranslation(dataTranslation.getId(), dataTranslation.getTranslation(), dataTranslation.getTranslateStatus());
     }
 
@@ -222,13 +222,13 @@ public class MessageTranslationDelegateTest extends BaseTest {
         assertNull(dataTranslation.getTranslation());
     }
 
-    private void checkTranslationWithTranslatedStatus (DataTranslation dataTranslation) {
+    private void checkTranslationWithTranslatedStatus(DataTranslation dataTranslation) {
         assertEquals(dataTranslation.getId(), testMessage.getId());
         assertEquals(dataTranslation.getTranslateStatus(), TranslationStatus.TRANSLATED);
         assertNotNull(dataTranslation.getTranslation());
     }
 
-    private void checkTranslationWithErrorStatus (DataTranslation dataTranslation) {
+    private void checkTranslationWithErrorStatus(DataTranslation dataTranslation) {
         assertEquals(dataTranslation.getId(), testMessage.getId());
         assertEquals(dataTranslation.getTranslateStatus(), TranslationStatus.ERROR);
         assertNull(dataTranslation.getTranslation());
@@ -259,7 +259,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
         return userHolderMock;
     }
 
-    private LocaleHelper obtainMockLocaleHelper(){
+    private LocaleHelper obtainMockLocaleHelper() {
         LocaleHelper localeHelperMock = mock(LocaleHelper.class);
         doReturn("en-us").when(localeHelperMock).getAccountLocaleFormatted(testUser);
         return localeHelperMock;

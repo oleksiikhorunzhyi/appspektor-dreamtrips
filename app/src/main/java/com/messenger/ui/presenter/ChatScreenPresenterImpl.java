@@ -44,10 +44,8 @@ import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingPresenter;
 import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
-import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.util.AttachmentMenuProvider;
 import com.messenger.ui.util.ChatContextualMenuProvider;
-import com.messenger.delegate.FlagsDelegate;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
@@ -87,7 +85,6 @@ import flow.Flow;
 import flow.History;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import rx.subjects.PublishSubject;
@@ -153,6 +150,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         this.flaggingPresenter = new FlaggingPresenterImpl(getView().getFlaggingView(), injector);
+        //
         connectConnectivityStatusStream();
         connectConversationStream();
         connectChatTypingStream();
@@ -604,7 +602,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         if (imageAttachmentClicked) return;
         else imageAttachmentClicked = true;
 
-        attachmentHelper.obtainPhotoAttachment(attachmentImageId)
+        attachmentHelper.obtainPhotoAttachment(attachmentImageId, user)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photoAttachment -> {
                     ArrayList<IFullScreenObject> items = new ArrayList<>();
@@ -656,13 +654,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         legacyPhotoPickerDelegate.unregister();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+
+   ///////////////////////////////////////////////////////////////////////////
     // Flagging
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onFlagMessageAttempt(DataMessage message) {
-        flaggingPresenter.flagMessage(message);
+        flaggingPresenter.flagMessage(conversationId, message.getId());
     }
 
     ///////////////////////////////////////////////////////////////////////////

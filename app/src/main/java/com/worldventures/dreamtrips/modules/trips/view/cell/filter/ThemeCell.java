@@ -7,9 +7,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.ThemeSetChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 
 import javax.inject.Inject;
@@ -18,7 +18,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class ThemeCell extends AbstractCell<ActivityModel> {
+public class ThemeCell extends AbstractDelegateCell<ActivityModel, ThemeCell.Delegate> {
 
     @InjectView(R.id.cell)
     protected LinearLayout cell;
@@ -45,18 +45,23 @@ public class ThemeCell extends AbstractCell<ActivityModel> {
     @OnClick(R.id.checkBox)
     void checkBoxClick() {
         getModelObject().setChecked(checkBox.isChecked());
-        getEventBus().post(new ThemeSetChangedEvent());
+        cellDelegate.onThemeSetChangedEvent();
     }
 
     @OnClick(R.id.textViewAttributeCaption)
     void textViewRegionClick() {
         checkBox.setChecked(!checkBox.isChecked());
         getModelObject().setChecked(checkBox.isChecked());
-        getEventBus().post(new ThemeSetChangedEvent());
+        cellDelegate.onThemeSetChangedEvent();
     }
 
     @Override
     public void prepareForReuse() {
         textViewName.setText("");
+    }
+
+    public interface Delegate extends CellDelegate<ActivityModel> {
+
+        void onThemeSetChangedEvent();
     }
 }

@@ -7,9 +7,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.RegionSetChangedEvent;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
 import javax.inject.Inject;
@@ -19,7 +19,7 @@ import butterknife.OnClick;
 
 
 @Layout(R.layout.adapter_item_filter_checkbox)
-public class RegionCell extends AbstractCell<RegionModel> {
+public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Delegate> {
 
     @InjectView(R.id.textViewAttributeCaption)
     protected TextView textViewName;
@@ -46,18 +46,22 @@ public class RegionCell extends AbstractCell<RegionModel> {
     @OnClick(R.id.checkBox)
     void checkBoxClick() {
         getModelObject().setChecked(checkBox.isChecked());
-        getEventBus().post(new RegionSetChangedEvent());
+        cellDelegate.onRegionSetChangedEvent();
     }
 
     @OnClick(R.id.textViewAttributeCaption)
     void textViewRegionClick() {
         checkBox.setChecked(!checkBox.isChecked());
         getModelObject().setChecked(checkBox.isChecked());
-        getEventBus().post(new RegionSetChangedEvent());
+        cellDelegate.onRegionSetChangedEvent();
     }
 
     @Override
     public void prepareForReuse() {
         textViewName.setText("");
+    }
+
+    public interface Delegate extends CellDelegate<RegionModel> {
+        void onRegionSetChangedEvent();
     }
 }

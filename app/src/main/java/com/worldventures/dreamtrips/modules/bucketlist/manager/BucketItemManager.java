@@ -31,8 +31,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPostItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +39,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
@@ -203,17 +200,6 @@ public class BucketItemManager {
         tempItems.remove(bucketItem);
         dreamSpiceManager.execute(new DeleteBucketItemCommand(bucketItem.getUid()),
                 jsonObject -> {
-                    if (bucketType.equals(BucketType.LOCATION)) {
-                        dreamSpiceManager.execute(new GetTripsQuery(snapper, prefs, false), tripModels -> {
-                            TripModel tripFromBucket = Queryable.from(tripModels).firstOrDefault(element ->
-                                    element.getGeoLocation().getName().equals(bucketItem.getName()));
-                            if (tripFromBucket != null) {
-                                tripFromBucket.setInBucketList(false);
-                                snapper.saveTrip(tripFromBucket);
-                            }
-                        }, spiceException -> {
-                        });
-                    }
                     saveBucketItems(tempItems, bucketType);
                     if (successListener != null) {
                         successListener.onRequestSuccess(jsonObject);

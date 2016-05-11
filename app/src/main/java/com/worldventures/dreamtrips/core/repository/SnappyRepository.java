@@ -247,46 +247,6 @@ public class SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Trips
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveTrip(TripModel trip) {
-        act(db -> db.put(TRIP_KEY + trip.getTripId(), trip));
-    }
-
-    public void saveTrips(List<TripModel> list) {
-        act(db -> {
-            clearTrips(db);
-            for (TripModel trip : list) {
-                db.put(TRIP_KEY + trip.getTripId(), trip);
-            }
-        });
-    }
-
-    public List<TripModel> getTrips() {
-        return actWithResult(db -> {
-            List<TripModel> trips = new ArrayList<>();
-            String[] keys = db.findKeys(TRIP_KEY);
-            for (String key : keys) {
-                trips.add(db.get(key, TripModel.class));
-            }
-            Collections.sort(trips, (lhs, rhs) -> {
-                if (lhs.getStartDateMillis() < rhs.getStartDateMillis()) return -1;
-                else if (lhs.getStartDateMillis() == rhs.getStartDateMillis()) return 0;
-                else return 1;
-            });
-            return trips;
-        }).or(Collections.emptyList());
-    }
-
-    public void clearTrips(DB snappyDb) throws SnappydbException {
-        String[] tripKeys = snappyDb.findKeys(TRIP_KEY);
-        for (String key : tripKeys) {
-            snappyDb.del(key);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
     // Video
     ///////////////////////////////////////////////////////////////////////////
 

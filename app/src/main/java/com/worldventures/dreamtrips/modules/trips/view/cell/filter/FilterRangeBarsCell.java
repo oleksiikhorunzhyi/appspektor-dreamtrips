@@ -4,19 +4,16 @@ import android.view.View;
 
 import com.appyvet.rangebar.RangeBar;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.RangeBarDurationEvent;
-import com.worldventures.dreamtrips.core.utils.events.RangeBarPriceEvent;
-import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.modules.trips.model.FilterModel;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 
 @Layout(R.layout.adapter_item_filters)
-public class FilterRangeBarsCell extends AbstractCell<FilterModel> {
+public class FilterRangeBarsCell extends AbstractDelegateCell<FilterModel, FilterRangeBarsCell.Delegate> {
 
     @InjectView(R.id.rangeBarDay)
     protected RangeBar rangeBarDay;
@@ -40,14 +37,14 @@ public class FilterRangeBarsCell extends AbstractCell<FilterModel> {
             maxNights = i2 == (rangeBarDay.getTickCount() - 1) ? Integer.MAX_VALUE : Integer.valueOf(s2);
             getModelObject().setIndexLeftDuration(i);
             getModelObject().setIndexRightDuration(i2);
-            getEventBus().post(new RangeBarDurationEvent(minNights, maxNights));
+            cellDelegate.rangeBarDurationEvent(minNights, maxNights);
         });
         this.rangeBarPrice.setOnRangeBarChangeListener((rangeBar, i, i2, s, s2) -> {
             minPrice = Double.valueOf(s);
             maxPrice = i2 == (rangeBarPrice.getTickCount() - 1) ? Double.MAX_VALUE : Double.valueOf(s2);
             getModelObject().setIndexLeftPrice(i);
             getModelObject().setIndexRightPrice(i2);
-            getEventBus().post(new RangeBarPriceEvent(minPrice, maxPrice));
+            cellDelegate.rangeBarPriceEvent(minPrice, maxPrice);
         });
         this.rangeBarDay.setRangePinsByIndices(getModelObject().getIndexLeftDuration(), getModelObject().getIndexRightDuration());
         this.rangeBarPrice.setRangePinsByIndices(getModelObject().getIndexLeftPrice(), getModelObject().getIndexRightPrice());
@@ -56,5 +53,11 @@ public class FilterRangeBarsCell extends AbstractCell<FilterModel> {
     @Override
     public void prepareForReuse() {
         //nothing to do here
+    }
+
+    public interface Delegate extends CellDelegate<FilterModel> {
+        void rangeBarDurationEvent(int minNights, int maxNights);
+
+        void rangeBarPriceEvent(double minPrice, double maxPrice);
     }
 }

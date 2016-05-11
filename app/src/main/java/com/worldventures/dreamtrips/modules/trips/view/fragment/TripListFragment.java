@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -23,15 +26,15 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
-
-import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -52,7 +55,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
-    private FilterableArrayListAdapter<TripModel> adapter;
+    private BaseArrayListAdapter<TripModel> adapter;
 
     private SearchView searchView;
     RecyclerViewStateDelegate stateDelegate;
@@ -74,15 +77,14 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         stateDelegate.saveStateIfNeeded(outState);
-        if (adapter != null)
-            adapter.saveState(outState);
     }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), getSpanCount()));
+        GridLayoutManager layout = new GridLayoutManager(getActivity(), getSpanCount());
+        recyclerView.setLayoutManager(layout);
         recyclerView.setEmptyView(emptyView);
 
         adapter = new FilterableArrayListAdapter<>(getActivity(), this);
@@ -94,6 +96,15 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
 
         showFilters();
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int itemCount = recyclerView.getLayoutManager().getItemCount();
+                int lastVisibleItemPosition = layout.findLastVisibleItemPosition();
+                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
+            }
+        });
     }
 
     private void showFilters() {
@@ -118,7 +129,6 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     @Override
     protected void restoreState(Bundle savedInstanceState) {
         super.restoreState(savedInstanceState);
-        adapter.restoreState(savedInstanceState);
     }
 
     @Override
@@ -128,7 +138,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     @Override
     public boolean onQueryTextChange(String s) {
-        adapter.setFilter(s);
+        getPresenter().search(s);
         return false;
     }
 
@@ -174,9 +184,9 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
             });
             searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
             searchView.setQueryHint(getString(R.string.search_trips));
-            searchView.setQuery(adapter.getQuery(), false);
+            searchView.setQuery(getPresenter().getQuery(), false);
             searchView.setOnCloseListener(() -> {
-                adapter.flushFilter();
+                getPresenter().search("");
                 return false;
             });
             searchView.setOnQueryTextListener(this);
@@ -201,6 +211,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     @OnClick(R.id.textViewResetFilters)
     public void resetFilters() {
         getEventBus().post(new ResetFiltersEvent());
+        clearSearch();
     }
 
 
@@ -213,7 +224,7 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
 
     @Override
     public void onRefresh() {
-        getPresenter().loadFromApi();
+        getPresenter().reload();
     }
 
     @Override
@@ -242,13 +253,18 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
     }
 
     @Override
-    public void setFilteredItems(List<TripModel> items) {
-        adapter.clear();
-        adapter.addItems(items);
-        adapter.notifyDataSetChanged();
+    public void itemLiked(FeedEntity feedEntity) {
+        TripModel trip = Queryable.from(adapter.getItems()).firstOrDefault(element -> element.getUid().equals(feedEntity.getUid()));
+        if (trip != null) {
+            trip.syncLikeState(feedEntity);
+            dataSetChanged();
+            if (isVisibleOnScreen()) {
+                new SweetDialogHelper().notifyTripLiked(getActivity(), trip);
+            }
+        }
+
     }
 
-    @Override
     public void clearSearch() {
         if (searchView != null) {
             searchView.setQuery("", true);

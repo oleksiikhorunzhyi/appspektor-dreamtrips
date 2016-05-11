@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -39,7 +39,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 
@@ -90,7 +89,24 @@ public interface DreamTripsApi {
     User getPublicProfile(@Path("id") int id);
 
     @GET("/api/trips")
-    List<TripModel> getTrips();
+    ArrayList<TripModel> getTrips();
+
+    @GET("/api/trips")
+    ArrayList<TripModel> getTripsPaginated(
+            @Query("page") int page,
+            @Query("per_page") int perPage,
+            @Query("query") String query,
+            @Query("duration_min") long durationMin,
+            @Query("duration_max") long durationMax,
+            @Query("price_min") double priceMin,
+            @Query("price_max") double priceMax,
+            @Query("start_date") String startDate,
+            @Query("end_date") String endDate,
+            @Query("regions") String regions,
+            @Query("activities") String activities,
+            @Query("sold_out") int soldOut,
+            @Query("recent") int recent,
+            @Query("liked") int liked);
 
     @GET("/api/regions")
     List<RegionModel> getRegions();

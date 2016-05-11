@@ -55,7 +55,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
             trip.setInBucketList(true);
             view.setup(trip);
-            onSuccessTripAction();
             sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
         }, this);
     }
@@ -72,7 +71,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         if (event.getFeedEntity().getUid().equals(trip.getUid())) {
             trip.syncLikeState(event.getFeedEntity());
             view.setup(trip);
-            onSuccessTripAction();
             if (view.isVisibleOnScreen()) {
                 sweetDialogHelper.notifyTripLiked(activity, trip);
             }
@@ -80,10 +78,6 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     }
 
     private void toggleTripLike() {
-    }
-
-    private void onSuccessTripAction() {
-        db.saveTrip(trip);
     }
 
     public interface View extends Presenter.View {

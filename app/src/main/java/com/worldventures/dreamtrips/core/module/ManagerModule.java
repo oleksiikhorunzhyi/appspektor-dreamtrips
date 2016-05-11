@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.messenger.storage.dao.PhotoDAO;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
@@ -191,7 +192,7 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    TripMapManager provideTripMapManager(Janet janet) {
-        return new TripMapManager(janet);
+    TripMapManager provideTripMapManager(@ForApplication Context context, Janet janet, Gson gson) {
+        return new TripMapManager(janet, context, gson);
     }
 }

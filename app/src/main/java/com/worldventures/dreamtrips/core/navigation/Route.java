@@ -76,10 +76,10 @@ import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettin
 import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.SettingsGroupFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
@@ -102,7 +102,7 @@ public enum Route {
     DETAILED_TRIP(TripDetailsFragment.class),
     PICK_FB_ALBUM(FacebookAlbumFragment.class),
     PICK_FB_PHOTO(FacebookPhotoFragment.class),
-    MAP_INFO(TripMapInfoFragment.class),
+    MAP_INFO(TripMapListFragment.class),
     BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.book_it),
     SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),

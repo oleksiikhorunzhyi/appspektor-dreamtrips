@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
+import android.graphics.Bitmap;
+import android.util.Pair;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -12,20 +15,18 @@ import com.worldventures.dreamtrips.core.utils.events.ShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.manager.TripMapManager;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
-import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
+import com.worldventures.dreamtrips.modules.trips.model.MapObject;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapInfoBundle;
+import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapListBundle;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import icepick.State;
 
-public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> {
+public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
-    private List<TripModel> filteredTrips = new ArrayList<>();
     private boolean mapReady;
     private MapInfoReadyEvent pendingMapInfoEvent;
 
@@ -48,7 +49,7 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
 
     public void onEvent(FilterBusEvent event) {
         if (event != null) {
-            setFilters(event);
+//            setFilters(event);
             performFiltering();
         }
     }
@@ -58,12 +59,12 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
     }
 
     private void performFiltering() {
-        if (cachedTrips != null && cachedTrips.size() > 0) {
-            List<TripModel> filteredFromCache = performFiltering(cachedTrips);
-            this.filteredTrips.clear();
-            this.filteredTrips.addAll(Queryable.from(filteredFromCache).filter((input) -> input.containsQuery(query)).toList());
-            reloadPins();
-        }
+//        if (cachedTrips != null && cachedTrips.size() > 0) {
+//            List<TripModel> filteredFromCache = performFiltering(cachedTrips);
+//            this.filteredTrips.clear();
+//            this.filteredTrips.addAll(Queryable.from(filteredFromCache).filter((input) -> input.containsQuery(query)).toList());
+//            reloadPins();
+//        }
     }
 
     public void applySearch(String query) {
@@ -74,22 +75,21 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
 
     public void onMapLoaded() {
         mapReady = true;
-        cachedTrips.clear();
-        cachedTrips.addAll(db.getTrips());
-        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
+//        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
         performFiltering();
         checkPendingMapInfo();
         //
         tripMapManager.subscribe(view.getMap(), new TripMapManager.Callback() {
 
             @Override
-            public void onMapObjectsLoaded(List<MapObjectHolder> mapObjects) {
-                // TODO draw clusters and trips on map
+            public void onMapObjectsLoaded(List<Pair<Bitmap, MapObject>> mapObjects) {
+                view.clearMap();
+                Queryable.from(mapObjects).forEachR(pair -> view.addPin(pair.first, pair.second));
             }
 
             @Override
             public void onTripsLoaded(List<TripModel> trips) {
-                // TODO show trip list
+                view.moveTo(Route.MAP_INFO, new TripMapListBundle(trips));
             }
 
             @Override
@@ -110,29 +110,8 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
         }
     }
 
-    private void reloadPins() {
-        if (view != null) {
-            view.clearMap();
-            for (TripModel trip : filteredTrips) {
-                view.addPin(new LatLng(trip.getGeoLocation().getLat(), trip.getGeoLocation().getLng()), trip.getTripId());
-            }
-        }
-    }
-
     public void onEvent(MenuPressedEvent event) {
         removeInfoIfNeeded();
-    }
-
-    public void onMarkerClick(String id) {
-        openTrip(id);
-    }
-
-    private void openTrip(String id) {
-        TripModel resultTrip = Queryable
-                .from(filteredTrips)
-                .firstOrDefault(t -> t.getTripId().equals(id));
-        TripMapInfoBundle bundle = new TripMapInfoBundle(resultTrip);
-        view.moveTo(Route.MAP_INFO, bundle);
     }
 
     public void onEvent(MapInfoReadyEvent event) {
@@ -162,13 +141,13 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
 
     public interface View extends Presenter.View {
 
-        void addPin(LatLng latLng, String id);
+        void addPin(Bitmap pinBitmap, MapObject mapObject);
 
         void clearMap();
 
         void prepareInfoWindow(int offset);
 
-        void moveTo(Route route, TripMapInfoBundle bundle);
+        void moveTo(Route route, TripMapListBundle bundle);
 
         void removeIfNeeded(Route route);
 

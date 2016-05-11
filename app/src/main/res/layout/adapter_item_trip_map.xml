@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="100dp"
+              android:orientation="horizontal">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/trip_cover"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/trip_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            tools:text="NYC TV AND MOVIE TOUR"/>
+
+        <TextView
+            android:id="@+id/trip_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trip_title"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:drawableLeft="@drawable/ic_location_grey"
+            android:drawablePadding="@dimen/spacing_small"
+            android:gravity="center_vertical"
+            android:textColor="@color/connecting_overlay_text_color"
+            android:textSize="@dimen/font_medium"
+            tools:text="New York, NY, United States"/>
+
+        <TextView
+            android:id="@+id/trip_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/font_medium"
+            tools:text="Aug 26-29, 2016"/>
+
+        <TextView
+            android:id="@+id/trip_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/tripPlaceColor"
+            android:textSize="@dimen/font_normal"
+            tools:text="$569"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

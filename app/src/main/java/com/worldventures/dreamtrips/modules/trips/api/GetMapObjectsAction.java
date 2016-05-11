@@ -8,6 +8,7 @@ import java.util.List;
 
 import io.techery.janet.http.annotations.Body;
 import io.techery.janet.http.annotations.HttpAction;
+import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
 //TODO change endpoint
@@ -15,6 +16,19 @@ import io.techery.janet.http.annotations.Response;
 public class GetMapObjectsAction extends BaseHttpAction {
 
     @Body MapObjectsBody mapObjectsBody;
+
+    @Query("query") String query;
+    @Query("duration_min") long durationMin;
+    @Query("duration_max") long durationMax;
+    @Query("price_min") double priceMin;
+    @Query("price_max") double priceMax;
+    @Query("start_date") String startDate;
+    @Query("end_date") String endDate;
+    @Query("regions") String regions;
+    @Query("activities") String activities;
+    @Query("sold_out") int soldOut;
+    @Query("recent") int recent;
+    @Query("liked") int liked;
 
     @Response List<MapObjectHolder> mapObjects;
 

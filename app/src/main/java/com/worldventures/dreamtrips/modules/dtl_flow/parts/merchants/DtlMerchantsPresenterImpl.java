@@ -57,8 +57,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     @Inject
     DtlMerchantStore merchantStore;
     @Inject
-    DtlFilterMerchantStore filterStore;
-    @Inject
     DtlLocationManager dtlLocationManager;
     //
     @State
@@ -100,10 +98,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                     .map(DtlFilterMerchantsAction::getResult)
                     .subscribe(this::tryRedirectToLocation);
         //
-        filterStore.getFilterDataState()
+        filteredMerchantStore.getFilterDataState()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(dtlFilterData ->
-                getView().setFilterButtonState(!dtlFilterData.isDefault()));
+                        getView().setFilterButtonState(!dtlFilterData.isDefault()));
         //
         filteredMerchantStore.filteredMerchantsChangesPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
@@ -135,7 +133,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     private void bindFilterState() {
-        filterStore.observeStateChange()
+        filteredMerchantStore.observeStateChange()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(dtlFilterData ->
                         getView().setFilterButtonState(!dtlFilterData.isDefault()));
@@ -177,13 +175,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     private void tryRedirectToLocation(List<DtlMerchant> merchants) {
-        if (!merchants.isEmpty())
-            return; // TODO :: 4/14/16 also check applied filters number to be 0
         filteredMerchantStore.getFilterDataState()
-                .map(DtlFilterData::getSearchQuery)
-                .filter(TextUtils::isEmpty)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(s ->
+                .filter(dtlFilterData -> merchants.isEmpty())
+                .filter(dtlFilterData -> TextUtils.isEmpty(dtlFilterData.getSearchQuery()))
+                .filter(DtlFilterData::isDefault)
+                .subscribe(dtlFilterData ->
                         Flow.get(getContext()).set(DtlLocationsPath.builder()
                                 .allowUserGoBack(true)
                                 .showNoMerchantsCaption(true)

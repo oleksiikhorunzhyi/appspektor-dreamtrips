@@ -24,7 +24,7 @@ import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.ChatState;
+import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.messengerservers.model.Message;

@@ -87,6 +87,6 @@ public class HistoryPaginationDelegate {
 
     private void removeDeletedMessages(@Nullable Collection<Message> messages) {
         if (messages == null || messages.isEmpty()) return;
-        messageDAO.deleteById(from(messages).map(Message::getId).toList());
+        messageDAO.deleteMessageByIds(from(messages).map(Message::getId).toList());
     }
 }

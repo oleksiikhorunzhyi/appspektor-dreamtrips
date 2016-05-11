@@ -1,5 +1,8 @@
 package com.messenger.util;
 
+import org.junit.Before;
+import org.mockito.MockitoAnnotations;
+
 import rx.Scheduler;
 import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
@@ -16,4 +19,8 @@ public class BaseTest {
         });
     }
 
+    @Before
+    public void initMocks() {
+        MockitoAnnotations.initMocks(this);
+    }
 }

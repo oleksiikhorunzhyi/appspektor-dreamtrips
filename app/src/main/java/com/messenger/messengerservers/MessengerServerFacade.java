@@ -1,5 +1,7 @@
 package com.messenger.messengerservers;
 
+import com.messenger.messengerservers.chat.ChatManager;
+
 import rx.Observable;
 
 public interface MessengerServerFacade {

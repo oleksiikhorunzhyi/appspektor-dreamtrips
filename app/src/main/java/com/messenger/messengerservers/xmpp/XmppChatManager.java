@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.ChatManager;
+import com.messenger.messengerservers.chat.ChatManager;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.messengerservers.chat.SingleUserChat;
 import com.messenger.messengerservers.xmpp.chats.XmppGroupChat;

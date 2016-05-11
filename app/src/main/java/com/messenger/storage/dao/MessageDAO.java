@@ -23,7 +23,6 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import java.util.Collections;
 import java.util.List;
@@ -139,18 +138,14 @@ public class MessageDAO extends BaseDAO {
     }
 
     public void delete(List<DataMessage> messages) {
-        deleteById(Queryable.from(messages).map(DataMessage::getId).toList());
+        deleteMessageByIds(Queryable.from(messages).map(DataMessage::getId).toList());
     }
 
-    public void deleteById(List<String> messageIds) {
+    public void deleteMessageByIds(List<String> messageIds) {
         getContentResolver().delete(DataMessage.CONTENT_URI,
                 DataMessage$Table._ID + " IN (?)",
                 new String[] {TextUtils.join(",", messageIds)}
         );
-    }
-
-    public void deleteById(String messageId) {
-        new Delete().from(DataMessage.class).byIds(messageId).query();
     }
 
     public void updateStatus(String msgId, int messageStatus, long time) {

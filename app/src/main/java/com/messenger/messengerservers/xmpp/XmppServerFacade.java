@@ -4,11 +4,11 @@ import android.net.SSLCertificateSocketFactory;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.messenger.messengerservers.ChatManager;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
+import com.messenger.messengerservers.chat.ChatManager;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.InitialPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGenerator;

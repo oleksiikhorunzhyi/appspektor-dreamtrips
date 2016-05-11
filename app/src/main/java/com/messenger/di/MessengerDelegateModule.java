@@ -103,12 +103,6 @@ public class MessengerDelegateModule {
 
     @Provides
     @Singleton
-    ChatMessagesEventDelegate provideChatMessagesEventDelegate(@ForApplication Injector injector) {
-        return new ChatMessagesEventDelegate(injector);
-    }
-
-    @Provides
-    @Singleton
     FlagMessageDelegate provideFlagMessageDelegate(Janet janet) {
         return new FlagMessageDelegate(janet);
     }

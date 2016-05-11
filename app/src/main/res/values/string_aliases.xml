@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dialog_add_bucket_photo">
+        <item>@string/choose_fb</item>
+        <item>@string/choose_camera</item>
+        <item>@string/choose_gallery</item>
+    </string-array>
+
+    <string-array name="dialog_action_bucket_photo">
+        <item>@string/bucket_photo_cover</item>
+        <item>@string/bucket_photo_delete</item>
+    </string-array>
+
+    <string-array name="dialog_add_bucket_photo_multiselect">
+        <item>@string/choose_fb</item>
+        <item>@string/choose_camera</item>
+        <item>@string/choose_multiselect</item>
+    </string-array>
+
+    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
+    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
+    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
+
+    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
+    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
+    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
+
+</resources>

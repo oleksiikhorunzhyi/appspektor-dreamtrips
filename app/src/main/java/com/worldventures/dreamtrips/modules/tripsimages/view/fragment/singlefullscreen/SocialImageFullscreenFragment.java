@@ -114,11 +114,6 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
     }
 
     @Override
-    public void redrawTags() {
-        //todo
-    }
-
-    @Override
     public void showFlagDialog(List<Flag> flags) {
         hideProgress();
         flag.showFlagsPopup(flags, (flagReasonId, reason) -> getPresenter().sendFlagAction(flagReasonId, reason));
@@ -283,5 +278,10 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
         state.setContentWrapperVisible(showContent);
         state.setTagHolderVisible(showTag);
         db.saveSocialViewPagerState(state);
+    }
+
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
     }
 }

@@ -36,7 +36,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
     @Inject
     FeedEntityManager entityManager;
 
-    UidItemDelegate uidItemDelegate;
+    private UidItemDelegate uidItemDelegate;
 
     public SocialImageFullscreenPresenter(Photo photo, TripImagesType type) {
         super(photo, type);
@@ -90,13 +90,14 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         userIds.add(tag.getUser().getId());
         doRequest(new DeletePhotoTagsCommand(photo.getFSId(), userIds), aVoid -> {
             photo.getPhotoTags().remove(tag);
+            photo.setPhotoTagsCount(photo.getPhotoTags().size());
         });
     }
 
     @Override
     public void sendFlagAction(int flagReasonId, String reason) {
         uidItemDelegate.flagItem(new FlagData(photo.getUid(),
-                flagReasonId, reason));
+                flagReasonId, reason), view);
     }
 
     @Override
@@ -151,7 +152,6 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
             if (photo.equals(temp)) {
                 this.photo = temp;
                 setupActualViewState();
-                view.redrawTags();
             }
         }
     }
@@ -160,7 +160,7 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         return photo;
     }
 
-    public interface View extends FullScreenPresenter.View {
+    public interface View extends FullScreenPresenter.View, UidItemDelegate.View {
 
         void showProgress();
 
@@ -169,7 +169,5 @@ public class SocialImageFullscreenPresenter extends FullScreenPresenter<Photo, S
         void showContentWrapper();
 
         void openEdit(EditPhotoBundle bundle);
-
-        void redrawTags();
     }
 }

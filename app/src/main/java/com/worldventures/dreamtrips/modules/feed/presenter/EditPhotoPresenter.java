@@ -1,14 +1,26 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.net.Uri;
+import android.util.Pair;
+
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.tripsimages.api.EditPhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
+import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
+
+import java.util.ArrayList;
+
+import rx.Observable;
+import rx.Subscription;
+import timber.log.Timber;
 
 public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter.View> {
 
     private Photo photo;
+    private Subscription faceSuggestionSubscription;
 
     public EditPhotoPresenter(Photo photo) {
         this.photo = photo;
@@ -29,6 +41,31 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
         view.setName(getAccount().getFullName());
         view.setAvatar(getAccount());
         view.attachPhotos(cachedCreationItems);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        faceSuggestionSubscription = Observable.from(cachedCreationItems)
+                .flatMap(photoCreationItem -> ImageUtils.getRecognizedFaces(context, ImageUtils.getBitmap(context, Uri.parse(photoCreationItem.getOriginUrl()), 300, 300))
+                        .flatMap(photoTags -> Observable.just(new Pair<PhotoCreationItem, ArrayList>(photoCreationItem, photoTags))))
+                .compose(new IoToMainComposer<>())
+                .subscribe(pair -> {
+                    pair.first.setSuggestions(pair.second);
+                    if (view != null) {
+                        view.updateItem(pair.first);
+                    }
+                }, e -> {
+                    Timber.e(e, "");
+                });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (faceSuggestionSubscription != null && !faceSuggestionSubscription.isUnsubscribed()) {
+            faceSuggestionSubscription.unsubscribe();
+        }
     }
 
     @Override

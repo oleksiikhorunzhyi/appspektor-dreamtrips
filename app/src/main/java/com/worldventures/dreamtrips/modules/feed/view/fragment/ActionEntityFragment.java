@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -48,8 +48,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import static com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle.PhotoEntity;
 
 public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P extends Parcelable>
-        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View,
-        LocationFragment.Callback, PhotoPostCreationDelegate {
+        extends RxBaseFragmentWithArgs<PM, P> implements ActionEntityPresenter.View, PhotoPostCreationDelegate {
 
     @Inject
     BackStackDelegate backStackDelegate;
@@ -97,7 +96,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
             }
         });
         adapter.registerDelegate(PhotoCreationItem.class, this);
-        StaggeredGridLayoutManager layout = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
+        LinearLayoutManager layout = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         photosList.setLayoutManager(layout);
         photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
         photosList.setAdapter(adapter);
@@ -248,14 +247,8 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
                 .backStackEnabled(true)
                 .fragmentManager(getChildFragmentManager())
                 .containerId(R.id.additional_page_container)
-                .targetFragment(this)
                 .data(location)
                 .build());
-    }
-
-    @Override
-    public void onLocationDone(Location location) {
-        getPresenter().updateLocation(location);
     }
 
     @Override

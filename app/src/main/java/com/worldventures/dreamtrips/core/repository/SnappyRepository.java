@@ -344,9 +344,7 @@ public class SnappyRepository {
     }
 
     public long getLastSuggestedPhotosSyncTime() {
-        if (isEmpty(SUGGESTED_PHOTOS_SYNC_TIME))
-            saveLastSuggestedPhotosSyncTime(System.currentTimeMillis());
-        return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(System.currentTimeMillis());
+        return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(0L);
     }
 
     ///////////////////////////////////////////////////////////////////////////

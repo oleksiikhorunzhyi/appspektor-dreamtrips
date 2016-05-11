@@ -101,7 +101,7 @@
     <string-array name="photo_dialog_items">
         <item>照相</item>
         <item>选择照片</item>
-        <item>@string/choose_fb</item>
+        <item>从脸书选择</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>脸书</item>
@@ -112,7 +112,7 @@
         <item>推特</item>
         <item>保存到相册</item>
     </string-array>
-    <string name="buffering">缓冲...</string>
+    <string name="buffering">缓冲…</string>
     <string name="profile_select_avatar_header">选择化身</string>
     <string name="profile_select_cover_header">选择封面</string>
     <string name="error_internal_server">内部服务器错误</string>
@@ -200,20 +200,11 @@
         <item>在6个月</item>
         <item>今年</item>
         <item>明年</item>
-        <item>@string/someday</item>
-    </string-array>
-    <string-array name="dialog_add_bucket_photo">
-        <item>@string/choose_fb</item>
-        <item>@string/choose_camera</item>
-        <item>@string/choose_gallery</item>
+        <item>日后</item>
     </string-array>
     <string name="choose_fb">从脸书选择</string>
     <string name="choose_camera">拍个照</string>
     <string name="choose_gallery">选择一张照片</string>
-    <string-array name="dialog_action_bucket_photo">
-        <item>@string/bucket_photo_cover</item>
-        <item>@string/bucket_photo_delete</item>
-    </string-array>
     <string name="uploading_photo">上传照片</string>
     <string name="bucket_photo_cover">设为封面</string>
     <string name="bucket_photo_delete">删除</string>
@@ -266,12 +257,6 @@
     <string name="last_sent">最后发送</string>
     <string name="search_trips">搜索旅游</string>
     <string name="search">搜索</string>
-
-    <string-array name="dialog_add_bucket_photo_multiselect">
-        <item>@string/choose_fb</item>
-        <item>@string/choose_camera</item>
-        <item>@string/choose_multiselect</item>
-    </string-array>
 
     <string name="profile_update_info">更新信息</string>
     <string name="profile_zero_trip_images">旅行图片</string>
@@ -333,7 +318,7 @@
     <string name="feed_photo">照片</string>
     <string name="feed_bucket">人生愿望清单项目</string>
     <string name="coming_soon">即将推出</string>
-    <string name="loading">载入中...</string>
+    <string name="loading">载入中…</string>
     <string name="filter_video_title_language">选择语言</string>
     <string name="filter_video_title_country">选择国家</string>
     <string name="comments_title">评论</string>
@@ -347,7 +332,7 @@
     <string name="comment_delete_confirm">是的，删除它！</string>
     <string name="post_visibility_public">公开的</string>
     <string name="post_hint">您要做什么？</string>
-    <string name="photo_hint">说说照片...</string>
+    <string name="photo_hint">说说照片…</string>
     <string name="post">帖子</string>
 
     /////////Date time relative strings
@@ -387,14 +372,6 @@
     <string name="configuration_acitve_button">再试一次</string>
     <string name="configuration_failed">配置加载失败</string>
     <string name="email_app_choose_dialog_title">选择应用程序</string>
-
-    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
-    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
-    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
-
-    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
-    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
-    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
     <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;点赞这个</string>
     <string name="users_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;点赞这个</string>
@@ -490,13 +467,13 @@
     <string name="no_mutual_friends">您没有任何共同的朋友</string>
 
     <string name="photo_limitation_message">请选择最多%1$d张照片</string>
-    <string name="pending">待处理...</string>
+    <string name="pending">待处理…</string>
 
     <string name="back">回去</string>
     <string name="logout_component">退出</string>
     <string name="start_typing_name">开始键入名称</string>
 
-    <string name="multiple_dates">多个日期， %1$s ...</string>
+    <string name="multiple_dates">多个日期， %1$s …</string>
 
     <string name="tag_photo">对您进行了标记</string>
 
@@ -635,8 +612,8 @@
     <string name="location_picker_no_play_services">很抱歉，若需要查看地图，您必须先在您的设备上安装Google Play服务。</string>
     <string name="location_picker_could_not_get_location">无法获取当前位置</string>
 
-    <string name="request_incoming_long">传入</string>
-    <string name="request_outgoing_long">传出</string>
+    <string name="request_incoming_long">传入的​​请求</string>
+    <string name="request_outgoing_long">传出的请求</string>
 
     <string name="add_title">添加标题</string>
 

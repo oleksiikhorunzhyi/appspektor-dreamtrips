@@ -31,6 +31,8 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
+import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
 
@@ -180,5 +182,17 @@ public class ManagerModule {
     SocialCropImageManager provideGlobalConfigManager(@ForApplication Context context,
                                                       DreamSpiceManager dreamSpiceManager) {
         return new SocialCropImageManager(context, dreamSpiceManager);
+    }
+
+    @Provides
+    @Singleton
+    EditPhotoTagsCallback provideEditPhotoTagsCallback() {
+        return new EditPhotoTagsCallback();
+    }
+
+    @Provides
+    @Singleton
+    PostLocationPickerCallback providePostLocationPickerCallback() {
+        return new PostLocationPickerCallback();
     }
 }

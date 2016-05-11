@@ -77,8 +77,10 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                 if (state.status == ActionState.Status.SUCCESS) {
                     item.setOriginUrl(((SimpleUploaderyCommand) state.action).getResult().getPhotoUploadResponse().getLocation());
                     invalidateDynamicViews();
+                    updatePickerState();
                 } else if (state.status == ActionState.Status.FAIL) {
                     invalidateDynamicViews();
+                    updatePickerState();
                 }
                 view.updateItem(item);
             }
@@ -169,7 +171,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
         boolean removed = cachedCreationItems.remove(item);
         if (removed) {
             invalidateDynamicViews();
-            view.enableImagePicker();
+            updatePickerState();
         }
         return removed;
     }
@@ -179,8 +181,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
             return;
         }
         //
-        if (cachedCreationItems.size() + mediaAttachment.chosenImages.size() == MAX_PHOTOS_COUNT)
-            view.disableImagePicker();
+        view.disableImagePicker();
         //
         imageSelected(mediaAttachment);
     }
@@ -213,7 +214,6 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     @NonNull
     private Observable<PhotoCreationItem> convertPhotoCreationItem(PhotoGalleryModel photoGalleryModel) {
         return ImageUtils.getBitmap(context, Uri.parse(photoGalleryModel.getThumbnailPath()), 300, 300)
-                .subscribeOn(Schedulers.io())
                 .compose(bitmapObservable -> Observable.zip(ImageUtils.getRecognizedFaces(context, bitmapObservable), bitmapObservable, (photoTags, bitmap) -> new Pair<>(bitmap, photoTags)))
                 .map(pair -> {
                     PhotoCreationItem item = new PhotoCreationItem();
@@ -235,6 +235,18 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     protected boolean isEntitiesReadyToPost() {
         return Queryable.from(cachedCreationItems).firstOrDefault(item -> item.getStatus() != ActionState.Status.SUCCESS) == null;
+    }
+
+    private void updatePickerState() {
+        if (isAllAttachmentsCompleted() && getRemainingPhotosCount() > 0) {
+            view.enableImagePicker();
+        } else {
+            view.disableImagePicker();
+        }
+    }
+
+    private boolean isAllAttachmentsCompleted() {
+        return Queryable.from(cachedCreationItems).count(item -> item.getStatus() == ActionState.Status.PROGRESS) == 0;
     }
 
     ////////////////////////////////////////

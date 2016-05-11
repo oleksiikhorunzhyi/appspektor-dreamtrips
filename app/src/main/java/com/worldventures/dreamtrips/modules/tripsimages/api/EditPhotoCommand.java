@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditPhotoCommand extends DreamTripsRequest<Photo> {
@@ -28,28 +29,26 @@ public class EditPhotoCommand extends DreamTripsRequest<Photo> {
 
     @Override
     public Photo loadDataFromNetwork() throws Exception {
-        FeedEntity entity = getService().editTripPhoto(uid, task);
+        Photo entity = getService().editTripPhoto(uid, task);
 
-        return (Photo) pushTags(entity);
-    }
-
-    private FeedEntity pushTags(FeedEntity entity) {
-        addedTags.removeAll(((Photo) entity).getPhotoTags());
+        addedTags.removeAll(entity.getPhotoTags());
         if (addedTags.size() > 0) {
-            getService().addPhotoTags(entity.getUid(), new AddPhotoTag(addedTags));
-            if (removedTags.size() > 0) {
-                return postRemovedPhotoTags(entity);
-            } else {
-                return entity;
-            }
-        } else if (removedTags.size() > 0) {
-            return postRemovedPhotoTags(entity);
-        } else {
-            return entity;
+            pushPhotoTags(entity);
         }
+        if (removedTags.size() > 0) {
+            deletePhotoTags(entity);
+        }
+        entity.getPhotoTags().addAll(addedTags);
+        entity.getPhotoTags().removeAll(removedTags);
+        entity.setPhotoTagsCount(entity.getPhotoTags().size());
+        return entity;
     }
 
-    private FeedEntity postRemovedPhotoTags(FeedEntity feedEntity) {
+    private ArrayList<PhotoTag> pushPhotoTags(FeedEntity entity) {
+        return getService().addPhotoTags(entity.getUid(), new AddPhotoTag(addedTags));
+    }
+
+    private FeedEntity deletePhotoTags(FeedEntity feedEntity) {
         List<Integer> userIds = Queryable.from(removedTags)
                 .concat(((Photo) feedEntity).getPhotoTags()).map(photo -> photo.getUser().getId()).toList();
         getService().deletePhotoTags(feedEntity.getUid(), new DeletePhotoTag(userIds));

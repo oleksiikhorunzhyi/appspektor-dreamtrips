@@ -101,7 +101,7 @@
     <string-array name="photo_dialog_items">
         <item>照相</item>
         <item>選擇照片</item>
-        <item>@string/choose_fb</item>
+        <item>從臉書選擇</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>臉書</item>
@@ -112,7 +112,7 @@
         <item>推特</item>
         <item>保存到相冊</item>
     </string-array>
-    <string name="buffering">緩衝...</string>
+    <string name="buffering">緩衝…</string>
     <string name="profile_select_avatar_header">選擇化身</string>
     <string name="profile_select_cover_header">選擇封面</string>
     <string name="error_internal_server">內部服務器錯誤</string>
@@ -200,20 +200,11 @@
         <item>半年</item>
         <item>今年</item>
         <item>明年</item>
-        <item>@string/someday</item>
-    </string-array>
-    <string-array name="dialog_add_bucket_photo">
-        <item>@string/choose_fb</item>
-        <item>@string/choose_camera</item>
-        <item>@string/choose_gallery</item>
+        <item>日後</item>
     </string-array>
     <string name="choose_fb">從臉書選擇</string>
     <string name="choose_camera">照相</string>
     <string name="choose_gallery">選擇照片</string>
-    <string-array name="dialog_action_bucket_photo">
-        <item>@string/bucket_photo_cover</item>
-        <item>@string/bucket_photo_delete</item>
-    </string-array>
     <string name="uploading_photo">上傳照片</string>
     <string name="bucket_photo_cover">設為封面</string>
     <string name="bucket_photo_delete">刪除</string>
@@ -266,12 +257,6 @@
     <string name="last_sent">最近發送</string>
     <string name="search_trips">搜索旅遊</string>
     <string name="search">搜索</string>
-
-    <string-array name="dialog_add_bucket_photo_multiselect">
-        <item>@string/choose_fb</item>
-        <item>@string/choose_camera</item>
-        <item>@string/choose_multiselect</item>
-    </string-array>
 
     <string name="profile_update_info">更新信息</string>
     <string name="profile_zero_trip_images">旅行圖片</string>
@@ -333,7 +318,7 @@
     <string name="feed_photo">照片</string>
     <string name="feed_bucket">人生願望清單項目</string>
     <string name="coming_soon">即將推出</string>
-    <string name="loading">載入中...</string>
+    <string name="loading">載入中…</string>
     <string name="filter_video_title_language">選擇語言</string>
     <string name="filter_video_title_country">選擇國家</string>
     <string name="comments_title">評論</string>
@@ -347,7 +332,7 @@
     <string name="comment_delete_confirm">是的，刪除它！</string>
     <string name="post_visibility_public">公開</string>
     <string name="post_hint">您要做什麼？</string>
-    <string name="photo_hint">說說照片...</string>
+    <string name="photo_hint">說說照片…</string>
     <string name="post">帖子</string>
 
     /////////Date time relative strings
@@ -387,14 +372,6 @@
     <string name="configuration_acitve_button">再試一次</string>
     <string name="configuration_failed">配置加載失敗</string>
     <string name="email_app_choose_dialog_title">選擇應用程序</string>
-
-    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
-    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
-    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
-
-    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
-    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
-    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
     <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;點贊這個</string>
     <string name="users_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;點贊這個</string>
@@ -496,7 +473,7 @@
     <string name="logout_component">退出</string>
     <string name="start_typing_name">開始鍵入名稱</string>
 
-    <string name="multiple_dates">多個日期， %1$s ...</string>
+    <string name="multiple_dates">多個日期， %1$s …</string>
 
     <string name="tag_photo">標記了您</string>
 
@@ -635,8 +612,8 @@
     <string name="location_picker_no_play_services">很抱歉，若需要查看地圖，您必須先在您的設備上安裝Google Play服務。</string>
     <string name="location_picker_could_not_get_location">無法獲取當前位置</string>
 
-    <string name="request_incoming_long">傳入</string>
-    <string name="request_outgoing_long">傳出</string>
+    <string name="request_incoming_long">傳入的請求</string>
+    <string name="request_outgoing_long">傳出的請求</string>
 
     <string name="add_title">添加標題</string>
 

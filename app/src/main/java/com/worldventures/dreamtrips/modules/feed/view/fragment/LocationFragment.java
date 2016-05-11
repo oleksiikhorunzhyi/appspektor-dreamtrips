@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -99,12 +100,13 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     private void fetchAndSetLocation() {
         if (!TextUtils.isEmpty(input.getText())) return;
         showProgress();
-        getPresenter().getLocation().subscribe((Action1<Location>) location -> {
-            if (location != null) {
-                obtainedLocation = location;
-                setInputLocation(obtainedLocation.getName());
-            }
-        });
+        bind(getPresenter().getLocation())
+                .subscribe((Action1<Location>) location -> {
+                    if (location != null) {
+                        obtainedLocation = location;
+                        setInputLocation(obtainedLocation.getName());
+                    }
+                }, e -> {});
     }
 
     private void initToolbar() {
@@ -114,15 +116,18 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         toolbar.setNavigationContentDescription(R.string.back);
         toolbar.setNavigationIcon(R.drawable.back_icon);
         toolbar.setNavigationOnClickListener(v -> cancelClicked());
+        setToolbarAlpha(255);
+    }
+
+    private void setToolbarAlpha(int percentage) {
+        toolbar.getBackground().mutate().setAlpha(percentage);
     }
 
     protected boolean onToolBarMenuItemClicked(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_done:
-                if (getTargetFragment() instanceof Callback) {
-                    SoftInputUtil.hideSoftInputMethod(getActivity());
-                    ((Callback) getTargetFragment()).onLocationDone(composeLocation());
-                }
+                SoftInputUtil.hideSoftInputMethod(getActivity());
+                getPresenter().onDone(composeLocation());
                 router.back();
         }
         return true;
@@ -236,9 +241,5 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
     @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
     void showDeniedForLocation() {
         Snackbar.make(getView(), R.string.no_location_permission, Snackbar.LENGTH_SHORT).show();
-    }
-
-    public interface Callback {
-        void onLocationDone(Location location);
     }
 }

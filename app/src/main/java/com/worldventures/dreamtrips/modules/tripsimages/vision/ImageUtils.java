@@ -36,9 +36,6 @@ import java.util.ArrayList;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class ImageUtils {
 
@@ -46,7 +43,8 @@ public class ImageUtils {
 
     private static final String PATTERN = "%s?width=%d&height=%d";
 
-    private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiveListener bitmapReciveListener) {
+    private static void setDataSubscriber(Context context, Uri uri, int width, int height, BitmapReceiverListener bitmapReciveListener,
+                                          BitmapErrorReceiverListener errorReceiverListener) {
         DataSubscriber dataSubscriber = new BaseDataSubscriber<CloseableReference<CloseableBitmap>>() {
             @Override
             public void onNewResultImpl(
@@ -75,6 +73,9 @@ public class ImageUtils {
 
             @Override
             protected void onFailureImpl(DataSource<CloseableReference<CloseableBitmap>> dataSource) {
+                if (errorReceiverListener != null) {
+                    errorReceiverListener.onError();
+                }
             }
         };
         getBitmap(context, uri, width, height, dataSubscriber);
@@ -98,15 +99,26 @@ public class ImageUtils {
             @Override
             public void call(Subscriber<? super Bitmap> subscriber) {
                 setDataSubscriber(context, uri, width, height, bitmap -> {
-                    subscriber.onNext(bitmap);
-                    subscriber.onCompleted();
-                    subscriber.unsubscribe();
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.onNext(bitmap);
+                        subscriber.onCompleted();
+                    }
+                }, () -> {
+                    subscriber.onError(new RuntimeException());
+                    if (!subscriber.isUnsubscribed()) {
+                        subscriber.unsubscribe();
+                    }
                 });
             }
         });
     }
 
     public static Observable<ArrayList<PhotoTag>> getRecognizedFaces(Context context, Observable<Bitmap> bitmapObservable) {
+        return getRecognizedFacesInternal(context, bitmapObservable)
+                .onErrorResumeNext(e -> Observable.just(new ArrayList<>()));
+    }
+
+    private static Observable<ArrayList<PhotoTag>> getRecognizedFacesInternal(Context context, Observable<Bitmap> bitmapObservable) {
         Detector detector = new FaceDetector.Builder(context)
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.NO_LANDMARKS)
@@ -115,9 +127,9 @@ public class ImageUtils {
                 .build();
 
         return bitmapObservable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(b -> detector.isOperational())
+                .doOnNext(bitmap -> {
+                    if (!detector.isOperational()) throw new IllegalStateException();
+                })
                 .map(bitmap -> new Frame.Builder().setBitmap(bitmap).build())
                 .map(frame -> new Pair<>(detector.detect(frame), new RectF(0, 0, frame.getMetadata().getWidth(), frame.getMetadata().getHeight())))
                 .map(pair -> {
@@ -141,8 +153,9 @@ public class ImageUtils {
                     }
                     return result;
                 })
-                .doOnCompleted(detector::release)
-                .doOnError(throwable -> Timber.d(throwable, ""));
+                .doOnUnsubscribe(() -> detector.release())
+                .doOnCompleted(() -> detector.release())
+                .doOnError(throwable -> detector.release());
     }
 
     public static Pair<String, Size> generateUri(DrawableUtil drawableUtil, String baseUri) {
@@ -162,8 +175,12 @@ public class ImageUtils {
         return path.substring(index);
     }
 
-    private interface BitmapReceiveListener {
+    private interface BitmapReceiverListener {
         void onBitmapReceived(Bitmap bitmap);
+    }
+
+    private interface BitmapErrorReceiverListener {
+        void onError();
     }
 
     public static String getParametrizedUrl(String url, int width, int height) {

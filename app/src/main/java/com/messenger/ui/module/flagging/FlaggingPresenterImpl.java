@@ -47,6 +47,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
     private void onFlaggingSuccess(FlagMessageAction action) {
         Timber.d("[Flagging] Result obtained, stop progress");
+        setState(createNewState());
         getView().hideFlaggingProgressDialog();
         if (TextUtils.equals(action.getResult().messageId(), getState().getMessageId())) {
             getView().showSuccess();
@@ -55,6 +56,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
     private void onFlagginError(FlagMessageAction action, Throwable e) {
         Timber.e(e, "Smth went wrong while flagging");
+        setState(createNewState());
         getView().hideFlaggingProgressDialog();
         getView().showError();
     }

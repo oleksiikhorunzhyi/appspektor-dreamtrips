@@ -41,7 +41,7 @@ public class ChatDelegate {
     private final MessageDAO messageDAO;
     private final ConversationsDAO conversationsDAO;
     private final SessionHolder<UserSession> sessionHolder;
-    private final PaginationHistoryDelegate paginationHistoryDelegate;
+    private final HistoryPaginationDelegate historyPaginationDelegate;
     private final CreateChatHelper createChatHelper;
 
     private final PublishSubject<PaginationStatus> paginationStateObservable = PublishSubject.create();
@@ -49,15 +49,15 @@ public class ChatDelegate {
     @Inject
     ChatDelegate(CreateChatHelper createChatHelper, MessageDAO messageDAO,
                  ConversationsDAO conversationsDAO, SessionHolder<UserSession> sessionHolder,
-                 PaginationHistoryDelegate paginationHistoryDelegate) {
+                 HistoryPaginationDelegate historyPaginationDelegate) {
         this.createChatHelper = createChatHelper;
         this.messageDAO = messageDAO;
         this.conversationsDAO = conversationsDAO;
         this.sessionHolder = sessionHolder;
-        this.paginationHistoryDelegate = paginationHistoryDelegate;
-        paginationHistoryDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
+        this.historyPaginationDelegate = historyPaginationDelegate;
+        historyPaginationDelegate.setPageSize(MAX_MESSAGE_PER_PAGE);
 
-        paginationHistoryDelegate.getPageObservable()
+        historyPaginationDelegate.getPageObservable()
                 .subscribe(this::paginationPageLoaded, throwable -> pageLoadFailed());
     }
 
@@ -161,7 +161,7 @@ public class ChatDelegate {
         );
         conversationObservable
                 .subscribe(conversation -> {
-                    paginationHistoryDelegate.loadConversationHistoryPage(conversation, ++page, beforeTimestamp);
+                    historyPaginationDelegate.loadConversationHistoryPage(conversation, ++page, beforeTimestamp);
                 }, e -> Timber.w("Unable to get conversation"));
     }
 

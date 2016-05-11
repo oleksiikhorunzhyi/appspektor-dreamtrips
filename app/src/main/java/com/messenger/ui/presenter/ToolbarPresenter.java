@@ -7,9 +7,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 
-import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 
@@ -60,7 +60,7 @@ public class ToolbarPresenter {
         toolbar.setSubtitle(name);
     }
 
-    public void attachPathAttrs(StyledPath.PathAttrs pathAttrs) {
+    public void attachPathAttrs(PathAttrs pathAttrs) {
         initToolbar();
         //
         if (pathAttrs.isDrawerEnabled()) enableDrawerNavigationButton();

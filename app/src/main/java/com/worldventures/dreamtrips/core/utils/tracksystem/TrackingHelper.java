@@ -533,13 +533,17 @@ public class TrackingHelper {
     public static final String MESSENGER_ACTION_CONVERSATION_SORT = "Messenger:Conversation Type";
     public static final String MESSENGER_ACTION_GROUP_CHAT_SETINGS = "Messenger:Group Chat Settings";
     public static final String MESSENGER_ACTION_LEAVE = "Messenger:Leave Group Chat";
+    public static final String MESSENGER_ACTION_TRANSLATION = "Messenger:Translation";
 
     // ---------------- Messenger attributes
     public static final String MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS = "numberconvo";
     public static final String MESSENGER_ATTRIBUTE_CONVERSATION_TYPE = "convotype";
+    public static final String MESSENGER_ATTRIBUTE_GROUP_CHAT_NAME = "groupchatname";
     public static final String MESSENGER_ATTRIBUTE_CONVERSATION_SORT_TYPE = "chatsort";
+    public static final String MESSENGER_ATTRIBUTE_TRANSLATED = "translated";
 
     public static final String MESSENGER_VALUE_INDIVIDUAL = "Individual";
+    public static final String MESSENGER_VALUE_IN_DESTINATION_INDIVIDUAL = "InDestination-Individual";
     public static final String MESSENGER_VALUE_GROUP = "Group-%d";
 
     public static final String MESSENGER_VALUE_ALL = "All Chats";
@@ -550,15 +554,16 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_INBOX, MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS, count);
     }
 
-    public static void openSingleConversation() {
+    public static void openSingleConversation(boolean host) {
         sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_VIEW_CONVERSATION,
-                MESSENGER_ATTRIBUTE_CONVERSATION_TYPE, MESSENGER_VALUE_INDIVIDUAL);
+                MESSENGER_ATTRIBUTE_CONVERSATION_TYPE, host? MESSENGER_VALUE_IN_DESTINATION_INDIVIDUAL : MESSENGER_VALUE_INDIVIDUAL);
     }
 
-    public static void openGroupConversation(int count) {
-        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_VIEW_CONVERSATION,
-                MESSENGER_ATTRIBUTE_CONVERSATION_TYPE,
-                String.format(MESSENGER_VALUE_GROUP, count));
+    public static void openGroupConversation(String conversationName, int count) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(MESSENGER_ATTRIBUTE_CONVERSATION_TYPE, String.format(MESSENGER_VALUE_GROUP, count));
+        data.put(MESSENGER_ATTRIBUTE_GROUP_CHAT_NAME, conversationName);
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, MESSENGER_ACTION_VIEW_CONVERSATION, data);
     }
 
     public static void addPeopleToChat() {
@@ -581,6 +586,10 @@ public class TrackingHelper {
 
     public static void conversationSearchSelected() {
         sendActionToAdobeTracker(MESSENGER_ACTION_CONVERSATION_FILTER);
+    }
+
+    public static void translateMessage(String toLanguage) {
+        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_TRANSLATION, MESSENGER_ATTRIBUTE_TRANSLATED, toLanguage);
     }
 
     // ---------------- Tracking helper methods

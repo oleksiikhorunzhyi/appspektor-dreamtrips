@@ -29,7 +29,7 @@ public class ConversationHelper {
             default:
                 initialTitle = conversation.getSubject();
                 if (TextUtils.isEmpty(initialTitle)) {
-                    initialTitle = Queryable.from(members).map(u -> u.getFirstName()).joinStrings(", ");
+                    initialTitle = obtainDefaultGroupChatSubject(members);
                 }
                 break;
         }
@@ -118,5 +118,9 @@ public class ConversationHelper {
 
     public static boolean isOwner(DataConversation conversation, DataUser user) {
         return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
+    }
+
+    public static String obtainDefaultGroupChatSubject(List<DataUser> members) {
+        return Queryable.from(members).map(DataUser::getFirstName).joinStrings(", ");
     }
 }

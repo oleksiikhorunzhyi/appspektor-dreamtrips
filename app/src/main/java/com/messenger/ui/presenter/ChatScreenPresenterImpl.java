@@ -228,12 +228,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
         source.compose(new NonNullFilter<>())
                 .take(1)
-                .subscribe(conversationUsersPair -> {
-                    if (ConversationHelper.isSingleChat(conversationUsersPair.first))
-                        TrackingHelper.openSingleConversation();
-                    else
-                        TrackingHelper.openGroupConversation(conversationUsersPair.second.size());
-                }, throwable -> Timber.e(throwable, ""));
+                .subscribe(conversationUsersPair -> trackOpenedConversation(conversationUsersPair.first, conversationUsersPair.second),
+                throwable -> Timber.e(throwable, ""));
 
         source.doOnSubscribe(() -> getView().showLoading());
 
@@ -711,5 +707,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         return conversationObservable
                 .take(1)
                 .map(dataConversationListPair -> dataConversationListPair.first);
+    }
+
+    private void trackOpenedConversation(DataConversation openedConversation, List<DataUser> participants) {
+        if (ConversationHelper.isSingleChat(openedConversation)) {
+            boolean chatWithHost = participants.get(0).isHost();
+            TrackingHelper.openSingleConversation(chatWithHost);
+        } else {
+            String conversationSubject = openedConversation.getSubject();
+            if (TextUtils.isEmpty(conversationSubject)){
+                conversationSubject = ConversationHelper.obtainDefaultGroupChatSubject(participants);
+            }
+            TrackingHelper.openGroupConversation(conversationSubject, participants.size());
+        }
     }
 }

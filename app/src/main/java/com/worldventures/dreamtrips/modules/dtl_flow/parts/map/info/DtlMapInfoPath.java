@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 
@@ -16,6 +17,6 @@ public class DtlMapInfoPath extends DtlMerchantDetailsPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return WITHOUT_DRAWER;
+        return PathAttrs.WITHOUT_DRAWER;
     }
 }

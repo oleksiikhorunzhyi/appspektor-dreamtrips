@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlDetailPath;
@@ -34,6 +35,6 @@ public class DtlMerchantDetailsPath extends DtlDetailPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return WITHOUT_DRAWER;
+        return PathAttrs.WITHOUT_DRAWER;
     }
 }

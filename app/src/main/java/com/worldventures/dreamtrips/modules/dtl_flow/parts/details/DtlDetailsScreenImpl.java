@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -40,12 +41,12 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.OfferClickListener;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
@@ -58,10 +59,10 @@ import butterknife.OnClick;
 import butterknife.OnTouch;
 import timber.log.Timber;
 
-public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
-        implements DtlDetailsScreen {
+public class DtlDetailsScreenImpl
+        extends DtlLayout<DtlDetailsScreen, DtlDetailsPresenter, DtlMerchantDetailsPath>
+        implements DtlDetailsScreen, ActivityResultDelegate.ActivityResultListener {
 
-    private static final int REQUEST_CHECK_SETTINGS = 1489;
     private final static float MERCHANT_MAP_ZOOM = 15f;
 
     @Inject ActivityResultDelegate activityResultDelegate;
@@ -80,7 +81,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
 
     @Override
     public DtlDetailsPresenter createPresenter() {
-        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId(), getPath().getPreExpandOffer());
+        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId(),
+                getPath().getPreExpandOffer());
     }
 
     @Override
@@ -97,6 +99,8 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         //
+        activityResultDelegate.addListener(this);
+        //
         merchantDataInflater = new MerchantOffersInflater();
         merchantInfoInflater = new MerchantInfoInflater();
         merchantDataInflater.registerOfferClickListener(offer -> getPresenter().onOfferClick(offer));
@@ -108,6 +112,7 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     protected void onDetachedFromWindow() {
         if (merchantDataInflater != null) merchantDataInflater.release();
         if (merchantInfoInflater != null) merchantInfoInflater.release();
+        activityResultDelegate.removeListener(this);
         super.onDetachedFromWindow();
     }
 
@@ -295,10 +300,28 @@ public class DtlDetailsScreenImpl extends DtlLayout<DtlDetailsScreen, DtlDetails
     @Override
     public void locationResolutionRequired(Status status) {
         try {
-            status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
+            status.startResolutionForResult(getActivity(), DtlActivity.GPS_LOCATION_RESOLUTION_REQUEST);
         } catch (IntentSender.SendIntentException th) {
             Timber.e(th, "Error opening settings activity.");
         }
+    }
+
+    @Override
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == DtlActivity.GPS_LOCATION_RESOLUTION_REQUEST) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    // All required changes were successfully made
+                    getPresenter().onCheckInClicked();
+                    break;
+                case Activity.RESULT_CANCELED:
+                    // The user was asked to change settings, but chose not to
+                    getPresenter().locationNotGranted();
+                    break;
+            }
+            return true;
+        }
+        return false;
     }
 
     // TODO :: 4/3/16 need onBackPressedDelegate

@@ -15,6 +15,7 @@ public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, View
     void trackSharing(@ShareType String type);
     void routeToMerchantRequested(@Nullable final Intent intent);
     void onCheckInClicked();
+    void locationNotGranted();
     void onEstimationClick();
     void onMerchantClick();
     void onOfferClick(DtlOfferData offer);

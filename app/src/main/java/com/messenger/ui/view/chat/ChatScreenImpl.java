@@ -28,7 +28,7 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
-import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.module.flagging.FlaggingViewImpl;
@@ -87,7 +87,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private Handler handler = new Handler();
@@ -162,7 +161,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     protected void onAttachedToWindow() {
         flaggingView = new FlaggingViewImpl(this);
-        conversationHelper = new ConversationHelper();
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
         inflateToolbarMenu(toolbar);
@@ -268,8 +266,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void setTitle(DataConversation conversation, List<DataUser> members) {
-        conversationHelper.setTitle(title, conversation, members, false);
-        conversationHelper.setSubtitle(subtitle, conversation, members);
+        ConversationUIHelper.setTitle(title, conversation, members, false);
+        ConversationUIHelper.setSubtitle(subtitle, conversation, members);
     }
 
     @Override

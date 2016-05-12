@@ -59,7 +59,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     OpenedConversationTracker openedConversationTracker;
 
     private final ChatLeavingDelegate chatLeavingDelegate;
-    private final ConversationHelper conversationHelper;
     //
     private PublishSubject<String> filterStream;
     private BehaviorSubject<String> typeStream;
@@ -68,7 +67,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     public ConversationListScreenPresenterImpl(Context context, Injector injector) {
         super(context);
-        this.conversationHelper = new ConversationHelper();
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, null);
         injector.inject(this);
@@ -246,7 +244,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onDeletionConfirmed(DataConversation conversation) {
-        if (conversationHelper.isGroup(conversation)) {
+        if (ConversationHelper.isGroup(conversation)) {
             chatLeavingDelegate.leave(conversation);
         } else {
             Toast.makeText(getContext(), "Delete not yet implemented", Toast.LENGTH_SHORT).show();

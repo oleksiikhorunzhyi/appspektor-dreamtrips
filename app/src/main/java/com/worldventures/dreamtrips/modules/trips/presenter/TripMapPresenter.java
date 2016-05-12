@@ -38,8 +38,6 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
     @Override
     public void dropView() {
-        removeInfoIfNeeded();
-        //
         super.dropView();
         //
         tripMapManager.unsubscribe();

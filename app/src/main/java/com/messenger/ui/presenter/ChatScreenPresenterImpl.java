@@ -200,8 +200,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     long syncTime = connectionStatus == SyncStatus.CONNECTED ? openScreenTime : 0;
                     messageStreamSubscription = connectMessagesStream(syncTime);
 
-                    // TODO Feb 29, 2016 Implement it in more Rx way
-                    if (connectionStatus != SyncStatus.CONNECTED) {
+                    if (connectionStatus == SyncStatus.CONNECTED) {
+                        chatDelegate.loadFirstPage();
+                    } else {
+                        // TODO Feb 29, 2016 Implement it in more Rx way
                         getView().removeAllTypingUsers();
                     }
                 }, e -> Timber.w("Unable to connect connectivity status"));

@@ -5,6 +5,7 @@ import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 
 @Layout(R.layout.screen_conversation_list)
 public class ConversationsPath extends StyledPath {

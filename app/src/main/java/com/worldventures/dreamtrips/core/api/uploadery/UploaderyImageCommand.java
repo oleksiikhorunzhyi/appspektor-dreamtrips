@@ -8,6 +8,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -16,7 +17,6 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 @CommandAction
 public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T> {
@@ -62,9 +62,13 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
         }
 
         String uploaderyUrl = userSessionHolder.get().get().getGlobalConfig().getUrls().getProduction().getUploaderyBaseURL();
-        return janet
-                .createPipe(UploadImageAction.class, Schedulers.io())
-                .createObservable(new UploadImageAction(uploaderyUrl, file));
+        try {
+            return janet
+                    .createPipe(UploadImageAction.class, Schedulers.io())
+                    .createObservable(new UploadImageAction(uploaderyUrl, file));
+        } catch (IOException e) {
+            return Observable.error(e);
+        }
     }
 
     protected abstract Observable.Transformer<ActionState<UploadImageAction>, T> nextAction();

@@ -21,7 +21,6 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.ActionService;
 import io.techery.janet.CommandActionService;
-import io.techery.janet.HttpActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.http.HttpClient;
 
@@ -76,8 +75,8 @@ public class JanetModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    ActionService provideHttpUploaderService(@ForApplication Context appContext,  HttpClient httpClient, Gson gson) {
-        return new AuthHttpServiceWrapper(new HttpActionService(BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson)), appContext );
+    ActionService provideHttpUploaderService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
+        return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson));
     }
 
 }

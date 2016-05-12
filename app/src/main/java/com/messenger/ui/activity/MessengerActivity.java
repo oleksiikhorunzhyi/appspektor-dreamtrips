@@ -11,10 +11,10 @@ import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.util.PickLocationDelegate;
-import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
+import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -124,5 +124,4 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
             photoPickerLayoutDelegate.hidePicker();
         }
     }
-
 }

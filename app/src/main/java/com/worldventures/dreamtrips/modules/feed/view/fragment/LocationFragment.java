@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -18,6 +16,9 @@ import com.google.android.gms.common.api.Status;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
@@ -30,15 +31,9 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import icepick.Icepick;
 import icepick.State;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-@RuntimePermissions
 @Layout(R.layout.fragment_add_location)
 public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, Location> implements LocationPresenter.View {
 
@@ -46,6 +41,8 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
 
     @Inject
     ActivityResultDelegate activityResultDelegate;
+    @Inject
+    PermissionDispatcher permissionDispatcher;
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -211,12 +208,13 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
 
     @Override
     public void checkPermissions() {
-        LocationFragmentPermissionsDispatcher.locationPermissionWithCheck(this);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        LocationFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        permissionDispatcher
+                .requestPermission(PermissionConstants.LOCATION_PERMISSIONS)
+                .compose(this::bind)
+                .subscribe(new PermissionSubscriber()
+                        .onPermissionDeniedAction(this::showDeniedForLocation)
+                        .onPermissionGrantedAction(this::locationPermissionGranted)
+                        .onPermissionRationaleAction(this::showRationaleForLocation));
     }
 
     @Override
@@ -228,17 +226,14 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
         }
     }
 
-    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    void locationPermission() {
+    void locationPermissionGranted() {
         getPresenter().onPermissionGranted();
     }
 
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showRationaleForLocation(PermissionRequest request) {
+    void showRationaleForLocation() {
         Snackbar.make(getView(), R.string.permission_location_rationale, Snackbar.LENGTH_SHORT).show();
     }
 
-    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
     void showDeniedForLocation() {
         Snackbar.make(getView(), R.string.no_location_permission, Snackbar.LENGTH_SHORT).show();
     }

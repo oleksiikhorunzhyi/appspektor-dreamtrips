@@ -1,6 +1,7 @@
 package com.messenger.api;
 
 
+import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -12,7 +13,7 @@ import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/users/profiles/short", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.POST)
-public class GetShortProfileAction extends BaseHttpAction {
+public class GetShortProfileAction extends AuthorizedHttpAction {
 
     @Body ShortProfilesBody shortProfilesBody;
 

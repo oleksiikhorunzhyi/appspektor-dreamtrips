@@ -320,8 +320,8 @@ android {
     useLibrary 'org.apache.http.legacy'
 }
 
-def janetVersion = '0.2.4'
 def googleLibrariesVersion = '23.3.0'
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // Di
@@ -329,16 +329,14 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // janet
-    compile "com.github.techery.janet:http-service:${janetVersion}"
-    apt "com.github.techery.janet:http-service-compiler:${janetVersion}"
-    compile "com.github.techery.janet:janet:${janetVersion}"
-    compile "com.github.techery.janet:command-service:${janetVersion}"
-    compile "com.github.techery.janet:okhttp:${janetVersion}"
-    compile "com.github.techery.janet:gson:${janetVersion}"
+    compile "com.github.techery:janet:1.0.2"
+    compile "com.github.techery:janet-command:1.0.1"
+    compile "com.github.techery.janet-http:service:1.0.2"
+    apt "com.github.techery.janet-http:service-compiler:1.0.2"
+    compile "com.github.techery.janet-http:client-okhttp:1.0.2"
+    compile "com.github.techery.janet-converters:gson:1.0.1"
     compile 'com.squareup.okhttp:logging-interceptor:2.+'
     // Data storage, flow
-    compile "com.github.techery.janet:janet:${janetVersion}"
-    compile "com.github.techery.janet:command-service:${janetVersion}"
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
@@ -411,8 +409,6 @@ dependencies {
     compile 'com.sothree.slidinguppanel:library:3.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     // Util
-    compile "com.github.hotchemi:permissionsdispatcher:2.0.8"
-    apt "com.github.hotchemi:permissionsdispatcher-processor:2.0.8"
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.intellij:annotations:12.0'

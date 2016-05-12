@@ -1,10 +1,12 @@
 package com.messenger.ui.view.chat;
 
+import android.Manifest;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -96,8 +98,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private Handler handler = new Handler();
-    private final Runnable openPikerTask = () -> photoPickerLayoutDelegate.showPicker(true,
-            getResources().getInteger(R.integer.messenger_pick_image_limit));
+    private final Runnable openPikerTask = this::openPicker;
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -409,7 +410,13 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
     }
 
+    private void openPicker() {
+        //noinspection all
+        photoPickerLayoutDelegate.showPicker(true, getResources().getInteger(R.integer.messenger_pick_image_limit));
+    }
+
     @Override
+    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
     public void showPhotoPicker() {
         if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
         else {

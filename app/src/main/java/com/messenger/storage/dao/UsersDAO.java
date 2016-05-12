@@ -31,7 +31,7 @@ public class UsersDAO extends BaseDAO {
         //
         StringBuilder sb = new StringBuilder("(");
         for (String id: ids) {
-            sb.append(String.format(" %s,", id));
+            sb.append(String.format(" '%s',", id));
         }
         sb.setCharAt(sb.length() - 1, ')');
 

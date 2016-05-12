@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
@@ -83,8 +84,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
             @Override
             public void onMapObjectsLoaded(List<Pair<Bitmap, MapObject>> mapObjects) {
-                view.clearMap();
-                Queryable.from(mapObjects).forEachR(pair -> view.addPin(pair.first, pair.second));
+                Queryable.from(mapObjects).forEachR(pair -> tripMapManager.addMarker(view.addPin(pair.first, pair.second)));
             }
 
             @Override
@@ -141,7 +141,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
     public interface View extends Presenter.View {
 
-        void addPin(Bitmap pinBitmap, MapObject mapObject);
+        Marker addPin(Bitmap pinBitmap, MapObject mapObject);
 
         void clearMap();
 

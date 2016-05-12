@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
+import com.worldventures.dreamtrips.modules.trips.model.Pin;
 
 public class TripPinFactory {
 
@@ -22,7 +23,12 @@ public class TripPinFactory {
                 return createClusterBitmap(context, R.drawable.cluster_pin,
                         String.valueOf(((Cluster) mapObjectHolder.getItem()).getTripCount()));
             case PIN:
-                return BitmapFactory.decodeResource(context.getResources(), R.drawable.dt_pin_icon);
+                Pin pin = (Pin) mapObjectHolder.getItem();
+                if (pin.getTripUids().size() > 1)
+                    return createClusterBitmap(context, R.drawable.cluster_pin,
+                            String.valueOf(pin.getTripUids().size()));
+                else
+                    return BitmapFactory.decodeResource(context.getResources(), R.drawable.dt_pin_icon);
         }
         return null;
     }

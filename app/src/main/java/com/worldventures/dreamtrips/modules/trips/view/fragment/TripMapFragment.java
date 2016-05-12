@@ -19,6 +19,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -215,8 +216,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
-    public void addPin(Bitmap pinBitmap, MapObject mapObject) {
-        googleMap.addMarker(new MarkerOptions()
+    public Marker addPin(Bitmap pinBitmap, MapObject mapObject) {
+        return googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mapObject.getCoordinates().getLat(), mapObject.getCoordinates().getLng()))
                 .icon(BitmapDescriptorFactory.fromBitmap(pinBitmap)));
     }

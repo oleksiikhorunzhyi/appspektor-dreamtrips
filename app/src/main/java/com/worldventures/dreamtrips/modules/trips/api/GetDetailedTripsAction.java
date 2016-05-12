@@ -4,32 +4,23 @@ import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.List;
 
-import io.techery.janet.http.annotations.Body;
 import io.techery.janet.http.annotations.HttpAction;
+import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-//TODO change method and endpoint
-@HttpAction(value = "/api/users/profiles/short", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.POST)
+@HttpAction(value = "/api/trips/details", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
 public class GetDetailedTripsAction  {
 
-    @Body DetailedTripsBody detailedTripsBody;
+    @Query("ids") List<String> ids;
 
     @Response List<TripModel> tripList;
 
     public GetDetailedTripsAction(List<String> tripUids) {
-        detailedTripsBody = new DetailedTripsBody(tripUids);
+        ids = tripUids;
     }
 
     public List<TripModel> getTripList() {
         return tripList;
     }
 
-    private class DetailedTripsBody {
-
-        private List<String> tripUids;
-
-        public DetailedTripsBody(List<String> tripUids) {
-            this.tripUids = tripUids;
-        }
-    }
 }

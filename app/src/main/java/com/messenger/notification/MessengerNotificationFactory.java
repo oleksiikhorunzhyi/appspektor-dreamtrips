@@ -28,6 +28,8 @@ public class MessengerNotificationFactory extends NotificationFactory {
 
     public static final String MESSENGER_TAG = "messenger_tag";
 
+    public static final int MESSAGE_NOTIFICATION_ID = 0x55a;
+
     public MessengerNotificationFactory(Context context) {
         super(context);
     }

@@ -731,7 +731,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         } else {
             String conversationSubject = openedConversation.getSubject();
             if (TextUtils.isEmpty(conversationSubject)){
-                conversationSubject = ConversationHelper.obtainDefaultGroupChatSubject(participants);
+                conversationSubject = ConversationHelper.obtainConversationSubject(openedConversation, participants);
             }
             TrackingHelper.openGroupConversation(conversationSubject, participants.size());
         }

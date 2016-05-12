@@ -12,13 +12,12 @@ import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.google.gson.Gson;
+import com.messenger.delegate.CropImageDelegate;
 import com.messenger.di.MessengerActivityModule;
-import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
 import com.messenger.flow.util.GsonParceler;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
-import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.util.PickLocationDelegate;
@@ -27,6 +26,8 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
+import com.worldventures.dreamtrips.core.flow.path.AttributedPath;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -265,8 +266,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
 
     void setNavigation(Path path) {
         boolean enabled = false;
-        if (path instanceof StyledPath) {
-            StyledPath.PathAttrs attrs = ((StyledPath) path).getAttrs();
+        if (path instanceof AttributedPath) {
+            PathAttrs attrs = ((AttributedPath) path).getAttrs();
             enabled = attrs.isDrawerEnabled();
         }
         //

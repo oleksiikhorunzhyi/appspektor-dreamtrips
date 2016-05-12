@@ -8,6 +8,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 
 import java.net.CookieManager;
 import java.util.Set;
@@ -39,7 +40,9 @@ public class JanetModule {
     Janet provideJanet(Set<ActionService> services) {
         Janet.Builder builder = new Janet.Builder();
         for (ActionService service : services) {
-            builder.addService(new TimberServiceWrapper(service));
+            service = new TimberServiceWrapper(service);
+            service = new CacheResultWrapper(service);
+            builder.addService(service);
         }
         return builder.build();
     }

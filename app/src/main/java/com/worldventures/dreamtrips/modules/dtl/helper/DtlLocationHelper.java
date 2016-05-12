@@ -21,9 +21,14 @@ public class DtlLocationHelper {
      * @return LatLng object preferable for filtering purposes
      */
     public static LatLng selectAcceptableLocation(Location deviceLocation, DtlLocation dtlLocation) {
+        if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {
+            return dtlLocation.getCoordinates().asLatLng();
+        }
+        //
         if (dtlLocation.getLocationSourceType() == LocationSourceType.NEAR_ME
-                || dtlLocation.getLocationSourceType() == LocationSourceType.UNDEFINED)
+                || dtlLocation.getLocationSourceType() == LocationSourceType.UNDEFINED) {
             return new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
+        }
         //
         LatLng deviceLatLng = new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
         LatLng cityLatLng = dtlLocation.getCoordinates().asLatLng();

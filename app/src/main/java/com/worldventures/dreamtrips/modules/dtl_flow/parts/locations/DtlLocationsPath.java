@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.locations;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 
@@ -43,7 +44,7 @@ public class DtlLocationsPath extends DtlMasterPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return allowUserGoBack ? WITH_DRAWER : WITHOUT_DRAWER;
+        return allowUserGoBack ? PathAttrs.WITH_DRAWER : PathAttrs.WITHOUT_DRAWER;
     }
 
     public static class Builder {

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 
@@ -24,6 +25,6 @@ public class DtlFullscreenImagePath extends DtlMasterPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return WITHOUT_DRAWER;
+        return PathAttrs.WITHOUT_DRAWER;
     }
 }

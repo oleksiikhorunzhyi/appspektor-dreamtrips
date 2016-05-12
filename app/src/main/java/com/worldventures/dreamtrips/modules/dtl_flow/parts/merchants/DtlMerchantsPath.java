@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
@@ -12,7 +13,7 @@ public class DtlMerchantsPath extends DtlMasterPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return WITH_DRAWER;
+        return PathAttrs.WITH_DRAWER;
     }
 
     @Override

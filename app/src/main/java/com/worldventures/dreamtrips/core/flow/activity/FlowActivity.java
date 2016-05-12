@@ -14,7 +14,8 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.flow.path.StyledPath;
+import com.worldventures.dreamtrips.core.flow.path.AttributedPath;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.FlowActivityHelper;
 import com.worldventures.dreamtrips.core.flow.util.GsonParceler;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -211,8 +212,8 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
 
     void setNavigation(Path path) {
         boolean enabled = false;
-        if (path instanceof StyledPath) {
-            StyledPath.PathAttrs attrs = ((StyledPath) path).getAttrs();
+        if (path instanceof AttributedPath) {
+            PathAttrs attrs = ((AttributedPath) path).getAttrs();
             enabled = attrs.isDrawerEnabled();
         }
         //

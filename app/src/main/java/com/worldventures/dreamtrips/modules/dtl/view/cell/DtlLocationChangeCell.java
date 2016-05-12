@@ -30,14 +30,16 @@ public class DtlLocationChangeCell
         StringBuilder sb = new StringBuilder();
         sb.append(getModelObject().getLongName());
         Queryable.from(getModelObject().getLocatedIn())
-                .filter(temp -> (temp.getType() != DtlLocationType.METRO) &&
-                        (temp.getType() != DtlLocationType.COUNTRY))
+                .filter(temp -> (temp.getType() != DtlLocationType.METRO))
                 .sort(DtlExternalLocation.CATEGORY_COMPARATOR)
                 .forEachR(tempLocation -> {
                     sb.append(", ");
                     sb.append(tempLocation.getLongName());
                 });
         locationName.setText(sb.toString());
+        locationName.setCompoundDrawablesWithIntrinsicBounds(
+                getModelObject().getType() == DtlLocationType.CITY ?
+                        R.drawable.city_icon : R.drawable.metro_area_icon, 0, 0, 0);
     }
 
     @OnClick(R.id.dtlLocationCellRoot)

@@ -1,6 +1,7 @@
 package com.messenger.ui.view.conversation;
 
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.R;
@@ -16,7 +17,7 @@ public class ConversationsPath extends StyledPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return WITH_DRAWER;
+        return PathAttrs.WITH_DRAWER;
     }
 
     @Override

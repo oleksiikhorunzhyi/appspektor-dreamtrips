@@ -1,7 +1,10 @@
 package com.worldventures.dreamtrips.util;
 
+import android.text.TextUtils;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
@@ -61,40 +64,40 @@ public class TripsFilterData implements Serializable {
         this.maxPrice = maxPrice;
     }
 
-    public ArrayList<RegionModel> getAcceptedRegions() {
-        return acceptedRegions;
+    public String getAcceptedRegions() {
+        return TextUtils.join(",", acceptedRegions);
     }
 
     public void setAcceptedRegions(ArrayList<RegionModel> acceptedRegions) {
         this.acceptedRegions = acceptedRegions;
     }
 
-    public ArrayList<ActivityModel> getAcceptedActivities() {
-        return acceptedActivities;
+    public String getAcceptedActivities() {
+        return TextUtils.join(",", acceptedActivities);
     }
 
     public void setAcceptedActivities(ArrayList<ActivityModel> acceptedActivities) {
         this.acceptedActivities = acceptedActivities;
     }
 
-    public boolean isShowSoldOut() {
-        return showSoldOut;
+    public int isShowSoldOut() {
+        return showSoldOut ? 1 : 0;
     }
 
     public void setShowSoldOut(boolean showSoldOut) {
         this.showSoldOut = showSoldOut;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public String getStartDate() {
+        return DateTimeUtils.convertDateToUTCString(startDate);
     }
 
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public String getEndDate() {
+        return DateTimeUtils.convertDateToUTCString(endDate);
     }
 
     public void setEndDate(Date endDate) {
@@ -105,16 +108,16 @@ public class TripsFilterData implements Serializable {
         this.showFavorites = showFavorites;
     }
 
-    public boolean isShowFavorites() {
-        return showFavorites;
+    public int isShowFavorites() {
+        return showFavorites ? 1 : 0;
     }
 
     public void setShowRecentlyAdded(boolean showRecentlyAdded) {
         this.showRecentlyAdded = showRecentlyAdded;
     }
 
-    public boolean isShowRecentlyAdded() {
-        return showRecentlyAdded;
+    public int isShowRecentlyAdded() {
+        return showRecentlyAdded ? 1 : 0;
     }
 
     public static TripsFilterData createDefault(SnappyRepository db) {

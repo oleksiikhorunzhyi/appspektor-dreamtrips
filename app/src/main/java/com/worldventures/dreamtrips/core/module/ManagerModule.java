@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
+import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
 import com.worldventures.dreamtrips.modules.trips.manager.TripMapManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
@@ -192,7 +193,13 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    TripMapManager provideTripMapManager(@ForApplication Context context, Janet janet, Gson gson) {
-        return new TripMapManager(janet, context, gson);
+    TripMapManager provideTripMapManager(@ForApplication Context context, Janet janet, Gson gson, TripFilterDataProvider dataProvider) {
+        return new TripMapManager(janet, context, gson, dataProvider);
+    }
+
+    @Provides
+    @Singleton
+    TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
+        return new TripFilterDataProvider(eventBus, repository);
     }
 }

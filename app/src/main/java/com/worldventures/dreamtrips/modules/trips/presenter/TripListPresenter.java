@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.app.Activity;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
@@ -15,18 +13,15 @@ import com.worldventures.dreamtrips.core.utils.events.LikeTripPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
-import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
+import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripQueryData;
 import com.worldventures.dreamtrips.util.TripsFilterData;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,7 +39,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
     @Inject
     FeedEntityManager entityManager;
     @Inject
-    SnappyRepository db;
+    TripFilterDataProvider tripFilterDataProvider;
     @State
     String query;
 
@@ -107,13 +102,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
     }
 
     protected GetTripsQuery createGetTripsQuery() {
-        FilterBusEvent filterBusEvent = eventBus.getStickyEvent(FilterBusEvent.class);
-        TripsFilterData tripsFilterData;
-        if (filterBusEvent == null || filterBusEvent.getTripsFilterData() == null) {
-            tripsFilterData = TripsFilterData.createDefault(db);
-        } else {
-            tripsFilterData = filterBusEvent.getTripsFilterData();
-        }
+        TripsFilterData tripsFilterData = tripFilterDataProvider.get();
         TripQueryData b = new TripQueryData();
         b.setPage(page);
         b.setPerPage(PER_PAGE);
@@ -125,24 +114,13 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
             b.setPriceMax(tripsFilterData.getMaxPrice());
             b.setStartDate(tripsFilterData.getStartDate());
             b.setEndDate(tripsFilterData.getEndDate());
-            b.setRegions(getAcceptedRegions(tripsFilterData));
-            b.setActivities(getAcceptedActivities(tripsFilterData));
+            b.setRegions(tripsFilterData.getAcceptedRegions());
+            b.setActivities(tripsFilterData.getAcceptedActivities());
             b.setSoldOut(tripsFilterData.isShowSoldOut());
             b.setRecent(tripsFilterData.isShowRecentlyAdded());
             b.setLiked(tripsFilterData.isShowFavorites());
         }
         return new GetTripsQuery(b);
-    }
-
-    private List<Integer> getAcceptedRegions(TripsFilterData tripsFilterData) {
-        return Queryable.from(tripsFilterData.getAcceptedRegions())
-                .map(BaseEntity::getId).toList();
-    }
-
-    private ArrayList<Integer> getAcceptedActivities(TripsFilterData tripsFilterData) {
-        return new ArrayList<>(Queryable.from(tripsFilterData.getAcceptedActivities())
-                .map(BaseEntity::getId)
-                .toList());
     }
 
     @Override

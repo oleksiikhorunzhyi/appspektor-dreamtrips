@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.trips.api.GetMapObjectsAction;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
 import com.worldventures.dreamtrips.modules.trips.model.MapObject;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
-import com.worldventures.dreamtrips.modules.trips.model.Pin;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripPinFactory;
 
@@ -42,12 +41,13 @@ public class TripMapManager {
     private List<MapObjectHolder> mapObjects;
     private Context context;
     private Gson gson;
-
+    private TripFilterDataProvider tripFilterDataProvider;
     private List<Marker> existsMarkers;
 
-    public TripMapManager(Janet janet, Context context, Gson gson) {
+    public TripMapManager(Janet janet, Context context, Gson gson, TripFilterDataProvider tripFilterDataProvider) {
         this.context = context;
         this.gson = gson;
+        this.tripFilterDataProvider = tripFilterDataProvider;
         mapObjectsActionPipe = janet.createPipe(GetMapObjectsAction.class, Schedulers.io());
         detailedTripsActionPipe = janet.createPipe(GetDetailedTripsAction.class, Schedulers.io());
         subscriptions = new CompositeSubscription();
@@ -102,7 +102,10 @@ public class TripMapManager {
                 .throttleLast(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cameraPosition -> {
-//                    mapObjectsActionPipe.send(new GetMapObjectsAction(googleMap.getProjection().getVisibleRegion().latLngBounds));
+
+                    // todo query handler
+                    // GetMapObjectsAction action = new GetMapObjectsAction(tripFilterDataProvider.get(), googleMap.getProjection().getVisibleRegion().latLngBounds, "");
+                    // mapObjectsActionPipe.send(action);
                     Observable.just(getHoldersMock())
                             .flatMap(getMapObjectsAction -> {
                                 mapObjects = new ArrayList<>();

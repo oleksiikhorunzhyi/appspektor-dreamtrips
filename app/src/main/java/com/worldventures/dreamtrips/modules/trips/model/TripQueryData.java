@@ -1,12 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
-import android.text.TextUtils;
-
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-
-import java.util.Date;
-import java.util.List;
-
 public class TripQueryData {
 
     int page;
@@ -16,13 +9,13 @@ public class TripQueryData {
     long durationMax;
     double priceMin;
     double priceMax;
-    Date startDate;
-    Date endDate;
-    List<Integer> regions;
-    List<Integer> activities;
-    boolean soldOut;
-    boolean recent;
-    boolean liked;
+    String startDate;
+    String endDate;
+    String regions;
+    String activities;
+    int soldOut;
+    int recent;
+    int liked;
 
     public int page() {
         return page;
@@ -53,31 +46,31 @@ public class TripQueryData {
     }
 
     public String startDate() {
-        return DateTimeUtils.convertDateToUTCString(startDate);
+        return startDate;
     }
 
     public String endDate() {
-        return DateTimeUtils.convertDateToUTCString(endDate);
+        return endDate;
     }
 
     public String regions() {
-        return TextUtils.join(",", regions);
+        return regions;
     }
 
     public String activities() {
-        return TextUtils.join(",", activities);
+        return activities;
     }
 
     public int soldOut() {
-        return soldOut ? 1 : 0;
+        return soldOut;
     }
 
     public int recent() {
-        return recent ? 1 : 0;
+        return recent;
     }
 
     public int liked() {
-        return liked ? 1 : 0;
+        return liked;
     }
 
     public void setPage(int page) {
@@ -108,31 +101,31 @@ public class TripQueryData {
         this.priceMax = priceMax;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
-    public void setRegions(List<Integer> regions) {
+    public void setRegions(String regions) {
         this.regions = regions;
     }
 
-    public void setActivities(List<Integer> activities) {
+    public void setActivities(String activities) {
         this.activities = activities;
     }
 
-    public void setSoldOut(boolean soldOut) {
+    public void setSoldOut(int soldOut) {
         this.soldOut = soldOut;
     }
 
-    public void setRecent(boolean recent) {
+    public void setRecent(int recent) {
         this.recent = recent;
     }
 
-    public void setLiked(boolean liked) {
+    public void setLiked(int liked) {
         this.liked = liked;
     }
 }

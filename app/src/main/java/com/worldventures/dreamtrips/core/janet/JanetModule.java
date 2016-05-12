@@ -9,6 +9,7 @@ import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
+import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 
 import java.net.CookieManager;
 import java.util.Set;
@@ -31,15 +32,16 @@ public class JanetModule {
     public static final String JANET_QUALIFIER = "JANET";
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionService provideCommandService(@ForApplication Context context) {
-        return new DaggerCommandServiceWrapper(new CommandActionService(), context);
+    ActionService provideCommandService() {
+        return new CommandActionService();
     }
 
     @Singleton
     @Provides
-    Janet provideJanet(Set<ActionService> services) {
+    Janet provideJanet(Set<ActionService> services, @ForApplication Context context) {
         Janet.Builder builder = new Janet.Builder();
         for (ActionService service : services) {
+            service = new DaggerActionServiceWrapper(service, context);
             service = new TimberServiceWrapper(service);
             service = new CacheResultWrapper(service);
             builder.addService(service);

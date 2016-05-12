@@ -113,7 +113,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
                 return null;
             });
             if (shouldRetry) {
-                Timber.d("Action % will be sent again", action);
+                Timber.d("Action %s will be sent again", action);
                 retriedActions.add(action);
             }
             return shouldRetry;

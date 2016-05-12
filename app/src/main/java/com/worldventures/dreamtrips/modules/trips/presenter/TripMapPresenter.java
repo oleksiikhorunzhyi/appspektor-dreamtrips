@@ -131,8 +131,10 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
     }
 
     private void removeInfoIfNeeded() {
-        if (view != null)
+        if (view != null) {
             view.removeIfNeeded(Route.MAP_INFO);
+            tripMapManager.removeAlphaFromMarkers();
+        }
     }
 
     public void actionList() {
@@ -142,8 +144,6 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
     public interface View extends Presenter.View {
 
         Marker addPin(Bitmap pinBitmap, MapObject mapObject);
-
-        void clearMap();
 
         void prepareInfoWindow(int offset);
 

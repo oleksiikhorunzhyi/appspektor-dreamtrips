@@ -620,4 +620,7 @@
 
     <string name="location_name_length_message">地點名稱不得超過255個字符。</string>
 
+    <string name="featured_trip">Featured Trip</string>
+    <string name="sold_out_trip">Sold Out</string>
+
 </resources>

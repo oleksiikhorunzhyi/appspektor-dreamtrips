@@ -6,10 +6,27 @@
               android:background="@color/white"
               android:orientation="horizontal">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/trip_cover"
+    <FrameLayout
         android:layout_width="100dp"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/trip_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/trip_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_small"
+            android:textColor="@color/white"
+            android:layout_marginTop="6dp"
+            android:padding="6dp"
+            tools:background="@color/blue"
+            tools:text="Featured trip"/>
+
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

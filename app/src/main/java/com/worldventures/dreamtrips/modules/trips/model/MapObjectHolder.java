@@ -18,6 +18,10 @@ public class MapObjectHolder<T extends MapObject> implements Parcelable {
         return item;
     }
 
+    public void setType(Type type) {
+        this.type = type;
+    }
+
     public enum Type {
 
         @SerializedName("pin")

@@ -209,13 +209,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void clearMap() {
-        if (googleMap != null) {
-            googleMap.clear();
-        }
-    }
-
-    @Override
     public Marker addPin(Bitmap pinBitmap, MapObject mapObject) {
         return googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mapObject.getCoordinates().getLat(), mapObject.getCoordinates().getLng()))

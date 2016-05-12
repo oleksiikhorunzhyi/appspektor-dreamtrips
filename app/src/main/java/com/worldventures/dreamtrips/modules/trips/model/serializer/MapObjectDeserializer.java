@@ -36,6 +36,7 @@ public class MapObjectDeserializer<T extends MapObjectHolder> implements JsonDes
         }
         if (type == null) type = UNDEFINED;
         MapObjectHolder model = context.deserialize(json, modelByType.get(type));
+        if (model != null) model.setType(type);
         return (T) model;
     }
 }

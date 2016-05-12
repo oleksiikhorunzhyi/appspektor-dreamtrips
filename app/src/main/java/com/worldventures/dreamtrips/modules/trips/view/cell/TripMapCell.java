@@ -26,6 +26,8 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
     TextView date;
     @InjectView(R.id.trip_price)
     TextView price;
+    @InjectView(R.id.trip_mark)
+    TextView mark;
 
     public TripMapCell(View view) {
         super(view);
@@ -40,6 +42,17 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
                 ? String.format(date.getResources().getString(R.string.multiple_dates), getModelObject().getAvailabilityDates().getStartDateString())
                 : getModelObject().getAvailabilityDates().toString());
         price.setText(getModelObject().getPrice().toString());
+        if (getModelObject().isFeatured()) {
+            mark.setBackgroundColor(itemView.getResources().getColor(R.color.bucket_blue, null));
+            mark.setText(R.string.featured_trip);
+            mark.setVisibility(View.VISIBLE);
+        } else if (getModelObject().isSoldOut()) {
+            mark.setBackgroundColor(itemView.getResources().getColor(R.color.bucket_red, null));
+            mark.setText(R.string.sold_out_trip);
+            mark.setVisibility(View.VISIBLE);
+        } else {
+            mark.setVisibility(View.GONE);
+        }
         //
         itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
     }

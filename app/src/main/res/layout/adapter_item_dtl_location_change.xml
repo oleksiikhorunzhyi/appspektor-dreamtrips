@@ -14,12 +14,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:paddingLeft="@dimen/spacing_large"
-        android:paddingTop="@dimen/spacing_normal"
-        android:paddingRight="@dimen/spacing_normal"
-        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_normal"
+        android:paddingTop="@dimen/spacing_medium"
+        android:paddingRight="@dimen/spacing_medium"
+        android:paddingBottom="@dimen/spacing_medium"
+        android:drawablePadding="@dimen/spacing_small"
         android:textColor="@color/dtlt_location_change_city_name"
         android:textSize="@dimen/font_normal"
         tools:text="Dallas, Texas"
+        tools:drawableLeft="@drawable/city_icon"
         />
 </LinearLayout>

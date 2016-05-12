@@ -3,7 +3,9 @@ package com.messenger.storage.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataLocationAttachment;
@@ -106,23 +108,6 @@ public class MessageDAO extends BaseDAO {
                 DataAttachment.CONTENT_URI, DataPhotoAttachment.CONTENT_URI, DataLocationAttachment.CONTENT_URI);
     }
 
-    public Observable<DataMessage> findNewestUnreadMessage(String conversationId, String currentUserId, long syncTime) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME +
-                        " WHERE " + DataMessage$Table.CONVERSATIONID + " =?" +
-                        " AND " + DataMessage$Table.FROMID + " <>?" +
-                        " AND " + DataMessage$Table.SYNCTIME + " >=?" +
-                        " ABD " + DataMessage$Table.STATUS + "<>" + MessageStatus.READ +
-                        " ORDER BY " + DataMessage$Table.DATE + " DESC " +
-                        " LIMIT 1")
-                .withSelectionArgs(new String[]{conversationId, currentUserId,
-                        Long.toString(syncTime)})
-                .build();
-
-        return query(q, DataMessage.CONTENT_URI)
-                .compose(DaoTransformers.toEntity(DataMessage.class));
-    }
-
     public Observable<Integer> markMessagesAsRead(String conversationId, String userId, long visibleTime) {
         return Observable.create(subscriber -> {
             subscriber.onStart();
@@ -144,23 +129,6 @@ public class MessageDAO extends BaseDAO {
         });
     }
 
-    public Observable<Integer> unreadCount(String conversationId, String userId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT COUNT(_id) FROM " + DataMessage.TABLE_NAME + " " +
-                        "WHERE " + DataMessage$Table.CONVERSATIONID + " = ? "
-                        + "AND " + DataMessage$Table.FROMID + " <> ? "
-                        + "AND " + DataMessage$Table.STATUS + " = ? ")
-                .withSelectionArgs(new String[]{conversationId, userId, String.valueOf(MessageStatus.SENT)})
-                .build();
-
-        return query(q, DataMessage.CONTENT_URI)
-                .map(cursor -> {
-                    int res = cursor.moveToFirst() ? cursor.getInt(0) : 0;
-                    cursor.close();
-                    return res;
-                });
-    }
-
     public void save(List<DataMessage> messages) {
         bulkInsert(messages, new DataMessage$Adapter(), DataMessage.CONTENT_URI);
     }
@@ -170,7 +138,18 @@ public class MessageDAO extends BaseDAO {
         save(Collections.singletonList(message));
     }
 
-    public void deleteMessageById(String messageId) {
+    public void delete(List<DataMessage> messages) {
+        deleteById(Queryable.from(messages).map(DataMessage::getId).toList());
+    }
+
+    public void deleteById(List<String> messageIds) {
+        getContentResolver().delete(DataMessage.CONTENT_URI,
+                DataMessage$Table._ID + " IN (?)",
+                new String[] {TextUtils.join(",", messageIds)}
+        );
+    }
+
+    public void deleteById(String messageId) {
         new Delete().from(DataMessage.class).byIds(messageId).query();
     }
 

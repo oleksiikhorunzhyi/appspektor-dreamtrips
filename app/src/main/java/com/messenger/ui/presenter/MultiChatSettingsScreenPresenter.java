@@ -15,6 +15,9 @@ import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState.UploadingState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.io.File;
@@ -28,12 +31,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> {
-
     @Inject
     CropImageDelegate cropImageDelegate;
 
     @Inject
     ConversationAvatarDelegate conversationAvatarDelegate;
+
+    @Inject
+    PermissionDispatcher permissionDispatcher;
 
     public MultiChatSettingsScreenPresenter(Context context, Injector injector, String conversationId) {
         super(context, injector, conversationId);
@@ -131,7 +136,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_change_chat_avatar:
-                getView().showAvatarPhotoPicker();
+                openPicker();
                 return true;
             case R.id.action_remove_chat_avatar:
                 getView().hideAvatarPhotoPicker();
@@ -140,5 +145,13 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
 
         }
         return super.onToolbarMenuItemClick(item);
+    }
+
+    public void openPicker() {
+        permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
+                .compose(bindView())
+                .subscribe(new PermissionSubscriber()
+                        .onPermissionGrantedAction(() -> getView().showAvatarPhotoPicker())
+                );
     }
 }

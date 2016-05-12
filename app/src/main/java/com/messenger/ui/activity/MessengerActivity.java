@@ -280,5 +280,4 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected MessengerActivityPresenter createPresentationModel(Bundle savedInstanceState) {
         return new MessengerActivityPresenter();
     }
-
 }

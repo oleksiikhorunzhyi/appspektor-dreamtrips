@@ -70,6 +70,9 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
+import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.permission.PermissionGrantedComposer;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -133,6 +136,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
     @Inject
     AttachmentMenuProvider attachmentMenuProvider;
+    @Inject
+    PermissionDispatcher permissionDispatcher;
 
     protected ProfileCrosser profileCrosser;
     protected ConversationHelper conversationHelper;
@@ -644,13 +649,23 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onAttachmentMenuItemChosen(AttachmentMenuItem attachmentMenuItem) {
         switch (attachmentMenuItem.getType()) {
             case AttachmentMenuItem.LOCATION:
+                //noinspection ConstantConditions
                 getView().hidePhotoPicker();
                 pickLocationDelegate.pickLocation();
                 break;
             case AttachmentMenuItem.IMAGE:
-                getView().showPhotoPicker();
+                showPhotoPicker();
                 break;
         }
+    }
+
+    private void showPhotoPicker() {
+        //noinspection ConstantConditions
+        permissionDispatcher
+                .requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
+                .compose(new PermissionGrantedComposer())
+                .compose(bindView())
+                .subscribe(aVoid -> getView().showPhotoPicker());
     }
 
     ///////////////////////////////////////////////////////////////////////////

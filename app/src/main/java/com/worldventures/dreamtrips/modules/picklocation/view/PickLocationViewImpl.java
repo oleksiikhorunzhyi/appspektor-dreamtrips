@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.location.Location;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -94,6 +95,7 @@ public class PickLocationViewImpl extends MvpLinearLayout<PickLocationView, Pick
         if (map != null) map.clear();
     }
 
+    @NonNull
     @Override
     public PickLocationPresenter createPresenter() {
         return new PickLocationPresenterImpl(getContext(), locationPermissionHelper);

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
+import android.Manifest;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.EditText;
@@ -51,14 +53,19 @@ public class PhotoPickerLayoutDelegate {
         else Timber.d("Photo picker was not initialized");
     }
 
+    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
     public void showPicker() {
+        //noinspection all
         showPicker(false, Integer.MAX_VALUE);
     }
 
+    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
     public void showPicker(boolean multiPickEnabled) {
+        //noinspection all
         showPicker(multiPickEnabled, Integer.MAX_VALUE);
     }
 
+    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
     public void showPicker(boolean multiPickEnabled, int pickerLimit) {
         if (photoPickerLayout != null) {
             photoPickerLayout.showPanel(multiPickEnabled, pickerLimit);

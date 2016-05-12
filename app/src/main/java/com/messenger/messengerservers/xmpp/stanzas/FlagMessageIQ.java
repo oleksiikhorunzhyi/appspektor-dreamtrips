@@ -1,5 +1,7 @@
 package com.messenger.messengerservers.xmpp.stanzas;
 
+import android.text.TextUtils;
+
 import org.jivesoftware.smack.packet.IQ;
 
 public class FlagMessageIQ extends IQ {
@@ -56,11 +58,16 @@ public class FlagMessageIQ extends IQ {
         xml.halfOpenElement(MESSAGE_ELEMENT_NAME);
         xml.attribute(MESSAGE_ID_ATTRIBUTE, messageId);
         xml.attribute(REASON_ID_ATTRIBUTE, reasonId);
-        xml.rightAngleBracket();
-        //
-        xml.append(reasonDescription);
-        //
-        xml.closeElement(MESSAGE_ELEMENT_NAME);
+
+        if (TextUtils.isEmpty(reasonDescription)) {
+            xml.closeEmptyElement();
+        } else {
+            xml.rightAngleBracket();
+            //
+            xml.append(reasonDescription);
+            //
+            xml.closeElement(MESSAGE_ELEMENT_NAME);
+        }
         //
         xml.closeElement(FLAG_MESSAGES_ELEMENT_NAME);
         return xml;

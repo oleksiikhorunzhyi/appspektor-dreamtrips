@@ -22,4 +22,8 @@ public class FlagMessageDelegate {
     public Observable<ActionState<FlagMessageAction>> observeOngoingFlagging() {
         return flaggingPipe.observeWithReplay();
     }
+
+    public void clearReplays() {
+        flaggingPipe.clearReplays();
+    }
 }

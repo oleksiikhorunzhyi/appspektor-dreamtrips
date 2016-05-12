@@ -39,8 +39,8 @@ public class ChatPaginationDelegate {
         messagePagePagination.setPageSize(pageSize);
     }
 
-    public void loadConversationHistoryPage(DataConversation conversation, int page, long before) {
-        messagePagePagination.loadPage(conversation.getId(), page, before);
+    public void loadConversationHistoryPage(DataConversation conversation, int page, long beforeTimestamp) {
+        messagePagePagination.loadPage(conversation.getId(), page, beforeTimestamp);
     }
 
     private void saveMessages(List<Message> messages) {

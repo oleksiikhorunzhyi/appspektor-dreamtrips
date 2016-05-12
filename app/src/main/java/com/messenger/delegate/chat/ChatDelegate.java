@@ -33,10 +33,10 @@ public class ChatDelegate {
     private Observable<DataConversation> conversationObservable;
     private Observable<Chat> chatObservable;
 
-    private long before;
-    public int page;
-    public final AtomicBoolean loading = new AtomicBoolean(false);
-    public boolean haveMoreElements = true;
+    private long beforeTimestamp;
+    private int page;
+    private final AtomicBoolean loading = new AtomicBoolean(false);
+    private boolean haveMoreElements = true;
 
     private final MessageDAO messageDAO;
     private final ConversationsDAO conversationsDAO;
@@ -144,6 +144,12 @@ public class ChatDelegate {
                 );
     }
 
+    public void loadFirstPage() {
+        page = 0;
+        beforeTimestamp = 0;
+        loadNextPage();
+    }
+
     public void loadNextPage() {
         if (!haveMoreElements || loading.get()) return;
 
@@ -155,7 +161,7 @@ public class ChatDelegate {
         );
         conversationObservable
                 .subscribe(conversation -> {
-                    chatPaginationDelegate.loadConversationHistoryPage(conversation, ++page, before);
+                    chatPaginationDelegate.loadConversationHistoryPage(conversation, ++page, beforeTimestamp);
                 }, e -> Timber.w("Unable to get conversation"));
     }
 
@@ -185,7 +191,7 @@ public class ChatDelegate {
 
         int loadedCount = loadedMessages.size();
         Message lastMessage = loadedMessages.get(loadedCount - 1);
-        before = lastMessage.getDate();
+        beforeTimestamp = lastMessage.getDate();
 
         if (!isLastLoadedMessageRead(loadedMessages)) {
             loadNextPage();

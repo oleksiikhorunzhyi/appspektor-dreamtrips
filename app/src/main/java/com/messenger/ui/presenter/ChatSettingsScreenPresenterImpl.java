@@ -81,21 +81,19 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantObservable =
                 conversationsDAO.getConversationWithParticipants(conversationId)
                 .compose(new NonNullFilter<>())
-                .take(1)
                 .compose(bindViewIoToMainComposer());
 
-        conversationObservable = conversationWithParticipantObservable
-                .map(conversationWithParticipant -> conversationWithParticipant.first)
-                .replay(1)
-                .autoConnect();
-
-        participantsObservable = conversationWithParticipantObservable
-                .map(conversationWithParticipant -> conversationWithParticipant.second)
-                .replay(1)
-                .autoConnect();
-
         conversationWithParticipantObservable
-                .subscribe(conversation -> onConversationLoaded(conversation.first, conversation.second));
+                .subscribe(conversation -> onConversationChanged(conversation.first, conversation.second));
+
+        Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantReplayObservable =
+                conversationWithParticipantObservable.take(1).replay(1).autoConnect();
+
+        conversationObservable = conversationWithParticipantReplayObservable
+                .map(conversationWithParticipant -> conversationWithParticipant.first);
+
+        participantsObservable = conversationWithParticipantReplayObservable
+                .map(conversationWithParticipant -> conversationWithParticipant.second);
     }
 
     @Override
@@ -116,7 +114,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         }
     }
 
-    protected void onConversationLoaded(DataConversation conversation, List<DataUser> participants) {
+    protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
         ChatSettingsScreen screen = getView();
         screen.prepareViewForOwner(isUserOwner(conversation));
         screen.setConversation(conversation);

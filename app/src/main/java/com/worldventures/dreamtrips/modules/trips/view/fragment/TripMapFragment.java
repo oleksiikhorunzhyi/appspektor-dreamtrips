@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
@@ -15,7 +14,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -44,11 +42,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
     private static final String KEY_MAP = "map";
 
-    protected Integer cameraAnimationDuration = 1000;
-
     protected ToucheableMapView mapView;
-    @InjectView(R.id.container_info)
-    protected FrameLayout infoContainer;
     @InjectView(R.id.container_no_google)
     protected FrameLayout noGoogleContainer;
 
@@ -146,23 +140,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         });
     }
 
-    protected void animateToMarker(LatLng latLng, int offset) {
-        Projection projection = googleMap.getProjection();
-        Point screenLocation = projection.toScreenLocation(latLng);
-        screenLocation.y -= offset;
-        LatLng offsetTarget = projection.fromScreenLocation(screenLocation);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget), cameraAnimationDuration, new GoogleMap.CancelableCallback() {
-            @Override
-            public void onFinish() {
-                onMarkerFocused();
-            }
-
-            @Override
-            public void onCancel() {
-            }
-        });
-    }
-
     @Override
     protected void onMenuInflated(Menu menu) {
         super.onMenuInflated(menu);
@@ -216,11 +193,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
-    public void prepareInfoWindow(int offset) {
-        animateToMarker(selectedLocation, offset);
-    }
-
-    @Override
     public void moveTo(Route route, TripMapListBundle bundle) {
         router.moveTo(route, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
@@ -256,10 +228,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
     protected void onMapLoaded() {
         getPresenter().onMapLoaded();
-    }
-
-    protected void onMarkerFocused() {
-        getPresenter().onMarkerInfoPositioned();
     }
 
     protected void onMapTouched() {

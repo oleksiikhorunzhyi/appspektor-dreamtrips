@@ -10,9 +10,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
-import com.worldventures.dreamtrips.core.utils.events.MapInfoReadyEvent;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.ShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.manager.TripMapManager;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
@@ -28,9 +26,6 @@ import icepick.State;
 
 public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
-    private boolean mapReady;
-    private MapInfoReadyEvent pendingMapInfoEvent;
-
     @State
     String query;
 
@@ -43,6 +38,8 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
     @Override
     public void dropView() {
+        removeInfoIfNeeded();
+        //
         super.dropView();
         //
         tripMapManager.unsubscribe();
@@ -75,10 +72,8 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
     }
 
     public void onMapLoaded() {
-        mapReady = true;
 //        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
         performFiltering();
-        checkPendingMapInfo();
         //
         tripMapManager.subscribe(view.getMap(), new TripMapManager.Callback() {
 
@@ -103,27 +98,8 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
         });
     }
 
-    private void checkPendingMapInfo() {
-        if (pendingMapInfoEvent != null) {
-            view.prepareInfoWindow(pendingMapInfoEvent.getOffset());
-            pendingMapInfoEvent = null;
-        }
-    }
-
     public void onEvent(MenuPressedEvent event) {
         removeInfoIfNeeded();
-    }
-
-    public void onEvent(MapInfoReadyEvent event) {
-        if (!mapReady) pendingMapInfoEvent = event;
-        else {
-            pendingMapInfoEvent = null;
-            view.prepareInfoWindow(event.getOffset());
-        }
-    }
-
-    public void onMarkerInfoPositioned() {
-        eventBus.post(new ShowMapInfoEvent());
     }
 
     public void onCameraChanged() {
@@ -144,8 +120,6 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
     public interface View extends Presenter.View {
 
         Marker addPin(Bitmap pinBitmap, MapObject mapObject);
-
-        void prepareInfoWindow(int offset);
 
         void moveTo(Route route, TripMapListBundle bundle);
 

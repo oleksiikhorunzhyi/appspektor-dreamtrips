@@ -235,11 +235,15 @@ public class DtlToolbar extends LinearLayout {
         if (collapsed) {
             final String searchQueryTitle =
                     TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
+            // sometimes we need to show location title lowercase
+            final String patchedLocationTitle =
+                    locationTitle.equals(getResources().getString(R.string.dtl_near_me_caption)) ?
+                            locationTitle.toLowerCase() : locationTitle;
             if (TextUtils.isEmpty(searchQuery)) {
-                topCaption.setHint(searchQueryTitle + " " + locationTitle);
+                topCaption.setHint(searchQueryTitle + " " + patchedLocationTitle);
                 topCaption.setText("");
             } else {
-                topCaption.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
+                topCaption.setText(prepareSpannedTopCaption(searchQueryTitle, patchedLocationTitle));
             }
         } else {
             if (TextUtils.isEmpty(searchQuery)) {

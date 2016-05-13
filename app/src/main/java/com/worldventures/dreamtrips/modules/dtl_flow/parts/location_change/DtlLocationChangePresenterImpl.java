@@ -212,7 +212,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
     private void search(String query) {
         screenMode = ScreenMode.SEARCH;
-        dtlLocationManager.searchLocations(query);
+        dtlLocationManager.searchLocations(query.trim());
     }
 
     @Override

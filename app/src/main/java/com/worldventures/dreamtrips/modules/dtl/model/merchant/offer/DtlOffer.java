@@ -1,7 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
+import java.util.Comparator;
+
 @SuppressWarnings("unused")
-public class DtlOffer<T extends DtlOfferData> implements Comparable<T>{
+public class DtlOffer<T extends DtlOfferData> implements Comparable<T> {
 
     @Offer.OfferType
     String type;
@@ -33,6 +35,22 @@ public class DtlOffer<T extends DtlOfferData> implements Comparable<T>{
     public static final DtlOffer TYPE_POINTS = new DtlOffer(Offer.POINT_REWARD);
     public static final DtlOffer TYPE_PERK = new DtlOffer(Offer.PERKS);
 
+    public boolean isPerk() {
+        return type.equals(TYPE_PERK.getType());
+    }
+
+    public boolean isPointReward() {
+        return type.equals(TYPE_POINTS.getType());
+    }
+
+    public static final Comparator<DtlOffer> END_DATE_COMPARATOR = new Comparator<DtlOffer>() {
+
+        @Override
+        public int compare(DtlOffer lhs, DtlOffer rhs) {
+            if (lhs.getOffer().getEndTimestamp() == rhs.getOffer().getEndTimestamp()) return 0;
+            return lhs.getOffer().getEndTimestamp() > rhs.getOffer().getEndTimestamp() ? 1 : -1;
+        }
+    };
 
     @Override
     public boolean equals(Object o) {

@@ -33,8 +33,15 @@ public abstract class DtlOfferData implements Comparable<DtlOfferData> {
         return startDate;
     }
 
-    public Date getEndDdate() {
+    public Date getEndDate() {
         return endDate;
+    }
+
+    /**
+     * Pure sugar for {@link DtlOfferData#getEndDate()}
+     */
+    public long getEndTimestamp() {
+        return getEndDate().getTime();
     }
 
     public List<DtlOfferMedia> getImages() {

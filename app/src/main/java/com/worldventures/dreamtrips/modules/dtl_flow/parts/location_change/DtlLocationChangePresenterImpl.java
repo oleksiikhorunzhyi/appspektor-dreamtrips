@@ -212,7 +212,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
     private void search(String query) {
         screenMode = ScreenMode.SEARCH;
-        dtlLocationManager.searchLocations(query);
+        dtlLocationManager.searchLocations(query.trim());
     }
 
     @Override
@@ -248,7 +248,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
                         .onStart(command -> getView().showProgress())
-                        .onFail((command, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onFail((command, throwable) -> onSearchError(throwable))
                         .onSuccess(this::onLocationsLoaded));
     }
 

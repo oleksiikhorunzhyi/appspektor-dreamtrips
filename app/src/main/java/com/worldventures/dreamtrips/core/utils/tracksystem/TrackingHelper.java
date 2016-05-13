@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import org.intellij.lang.annotations.MagicConstant;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class TrackingHelper {
@@ -975,10 +976,10 @@ public class TrackingHelper {
 
     public static void dtlMerchantFilter(DtlFilterData filterData) {
         Map data = new HashMap<>();
-        String price = String.format("%d-%d",
+        String price = String.format(Locale.getDefault(), "%d-%d",
                 filterData.getMinPrice(), filterData.getMaxPrice());
-        String distance = String.format("10-%s%s",
-                Double.valueOf(filterData.getMaxDistance()).intValue(),
+        String distance = String.format(Locale.getDefault(), "10-%.0f%s",
+                filterData.getMaxDistance(),
                 filterData.getDistanceType().getTypeNameForAnalytics());
         data.put(DTL_ATTRIBUTE_FILTER_PRICE, price);
         data.put(DTL_ATTRIBUTE_FILTER_DISTANCE, distance);

@@ -80,7 +80,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     @Override
     public void search(String query) {
         getView().toggleDefaultCaptionVisibility(query.isEmpty());
-        dtlLocationManager.searchLocations(query);
+        dtlLocationManager.searchLocations(query.trim());
     }
 
     @Override

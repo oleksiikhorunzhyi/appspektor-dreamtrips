@@ -2,12 +2,15 @@ package com.messenger.ui.module.flagging;
 
 import android.text.TextUtils;
 
+import com.messenger.api.ErrorParser;
+import com.messenger.api.GetFlagsAction;
 import com.messenger.delegate.FlagsDelegate;
 import com.messenger.delegate.chat.flagging.FlagMessageAction;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.ui.module.ModuleStatefulPresenterImpl;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import javax.inject.Inject;
@@ -24,6 +27,8 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     FlagsDelegate flagsDelegate;
     @Inject
     FlagMessageDelegate flagMessageDelegate;
+    @Inject
+    ErrorParser errorParser;
 
     private Subscription getFlagsSubscription;
 
@@ -50,7 +55,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         flagMessageDelegate.clearReplays();
         getView().hideFlaggingProgressDialog();
         if (TextUtils.equals(action.getResult().messageId(), getState().getMessageId())) {
-            getView().showSuccess();
+            getView().showFlaggingSuccess();
         }
         //
         setState(createNewState());
@@ -60,7 +65,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         Timber.e(e, "Smth went wrong while flagging");
         flagMessageDelegate.clearReplays();
         getView().hideFlaggingProgressDialog();
-        getView().showError();
+        getView().showFlaggingError();
         //
         setState(createNewState());
     }
@@ -89,12 +94,22 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         getFlagsSubscription = flagsDelegate.getFlags()
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
-                .subscribe(flagsAction -> {
-                    getView().hideFlagsLoadingDialog();
-                    getState().setDialogState(FlaggingState.DialogState.FLAGS_LIST);
-                    getState().setFlags(flagsAction.getFlags());
-                    showFlagsListDialog();
-                }, e -> Timber.e(e, "Could not get flags"));
+                .subscribe(new ActionStateSubscriber<GetFlagsAction>()
+                    .onSuccess(this::onFlagsLoadingSuccess)
+                        .onFail(this::onFlagsLoadingError));
+    }
+
+    private void onFlagsLoadingSuccess(GetFlagsAction action) {
+        getView().hideFlagsLoadingDialog();
+        getState().setDialogState(FlaggingState.DialogState.FLAGS_LIST);
+        getState().setFlags(action.getFlags());
+        showFlagsListDialog();
+    }
+
+    private void onFlagsLoadingError(BaseHttpAction action, Throwable e) {
+        getView().hideFlagsLoadingDialog();
+        getView().showError(errorParser.getErrorMessage(action, e));
+        Timber.e(e, "[Flagging] Could not load flags");
     }
 
     private void showFlagsListDialog() {

@@ -117,14 +117,20 @@ public class FlaggingViewImpl extends ModuleViewImpl<FlaggingPresenter> implemen
     }
 
     @Override
-    public void showSuccess() {
+    public void showFlaggingSuccess() {
         Snackbar.make(getParentView(), R.string.flag_sent_success_msg, Snackbar.LENGTH_SHORT)
                 .show();
     }
 
     @Override
-    public void showError() {
+    public void showFlaggingError() {
         Snackbar.make(getParentView(), R.string.chat_flag_failed, Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
+    public void showError(String message) {
+        Snackbar.make(getParentView(), message, Snackbar.LENGTH_SHORT)
                 .show();
     }
 }

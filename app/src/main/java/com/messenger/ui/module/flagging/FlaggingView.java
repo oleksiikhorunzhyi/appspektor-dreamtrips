@@ -22,7 +22,9 @@ public interface FlaggingView extends ModuleView<FlaggingPresenter> {
 
     void hideFlaggingProgressDialog();
 
-    void showSuccess();
+    void showFlaggingSuccess();
 
-    void showError();
+    void showFlaggingError();
+
+    void showError(String message);
 }

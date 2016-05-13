@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.manager.TripMapManager;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
 import com.worldventures.dreamtrips.modules.trips.model.MapObject;
+import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import java.util.List;
@@ -67,7 +69,11 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
             @Override
             public void onTripsLoaded(List<TripModel> trips) {
-                view.moveTo(trips);
+                TripMapDetailsAnchor anchor = null;
+                if (view.isTabletLandscape())
+                    anchor = view.updateContainerParams(tripMapManager.getSelectedMarkerPoint(), trips.size());
+                //
+                view.moveTo(trips, anchor);
             }
 
             @Override
@@ -110,12 +116,14 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
         Marker addPin(Bitmap pinBitmap, MapObject mapObject);
 
-        void moveTo(List<TripModel> bundle);
+        void moveTo(List<TripModel> tripList, TripMapDetailsAnchor anchor);
 
         void removeTripsPopupInfo();
 
         void zoomToBounds(LatLngBounds latLngBounds);
 
         GoogleMap getMap();
+
+        TripMapDetailsAnchor updateContainerParams(Point markerPoint, int tripCount);
     }
 }

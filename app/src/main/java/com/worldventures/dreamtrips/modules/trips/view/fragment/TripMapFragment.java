@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
 import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,10 +32,12 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.trips.model.MapObject;
+import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapListBundle;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
+import com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +50,7 @@ import icepick.State;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_trips_map)
 @MenuResource(R.menu.menu_map)
@@ -53,6 +59,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     private static final String KEY_MAP = "map";
 
     protected ToucheableMapView mapView;
+    @InjectView(R.id.container_info)
+    protected FrameLayout containerInfo;
     @InjectView(R.id.container_no_google)
     protected FrameLayout noGoogleContainer;
 
@@ -222,12 +230,12 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
-    public void moveTo(List<TripModel> trips) {
+    public void moveTo(List<TripModel> trips, TripMapDetailsAnchor anchor) {
         router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(new TripMapListBundle(trips))
+                .data(new TripMapListBundle(trips, anchor))
                 .build());
     }
 
@@ -250,6 +258,17 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         return googleMap;
     }
 
+    @Override
+    public TripMapDetailsAnchor updateContainerParams(Point markerPoint, int tripCount) {
+        Rect rect = new Rect();
+        mapView.getLocalVisibleRect(rect);
+        Pair<FrameLayout.LayoutParams, TripMapDetailsAnchor> pair = new ContainerDetailsMapParamsBuilder()
+                .mapRect(rect).markerPoint(markerPoint)
+                .context(getContext()).tripsCount(tripCount).build();
+        containerInfo.setLayoutParams(pair.first);
+        return pair.second;
+    }
+
     protected void onMapLoaded() {
         getPresenter().onMapLoaded();
         mapChangesSubscription = subscribeToCameraChanges();
@@ -265,7 +284,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                     Timber.e(error.getMessage());
                 });
     }
-
 
     protected void onMapTouched() {
         getPresenter().onCameraChanged();

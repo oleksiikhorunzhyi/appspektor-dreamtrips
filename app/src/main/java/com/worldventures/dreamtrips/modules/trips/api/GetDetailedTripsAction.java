@@ -12,15 +12,12 @@ import io.techery.janet.http.annotations.Response;
 @HttpAction(value = "/api/trips/details", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
 public class GetDetailedTripsAction extends BaseHttpAction {
 
-    @Query("ids")
-    String ids;
+    @Query("ids") String ids;
 
-    @Response
-    List<TripModel> tripList;
+    @Response List<TripModel> tripList;
 
     public GetDetailedTripsAction(List<String> tripUids) {
         ids = android.text.TextUtils.join(",", tripUids);
-
     }
 
     public List<TripModel> getTripList() {

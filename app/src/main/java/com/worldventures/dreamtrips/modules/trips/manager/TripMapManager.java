@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +45,8 @@ public class TripMapManager {
     private List<Marker> existsMarkers;
     private GoogleMap googleMap;
 
+    private Point selectedMarkerPoint;
+
     public TripMapManager(Janet janet, Context context, TripFilterDataProvider tripFilterDataProvider) {
         this.context = context;
         this.tripFilterDataProvider = tripFilterDataProvider;
@@ -76,7 +79,8 @@ public class TripMapManager {
                     Timber.e(error, error.getMessage());
                 }));
         //
-        subscriptions.add(detailedTripsActionPipe.observeSuccess().subscribe(getDetailedTripsAction -> {
+        subscriptions.add(detailedTripsActionPipe.observeSuccess()
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(getDetailedTripsAction -> {
             if (this.tripMapCallback != null)
                 this.tripMapCallback.onTripsLoaded(getDetailedTripsAction.getTripList());
         }, error -> {
@@ -102,6 +106,10 @@ public class TripMapManager {
         Queryable.from(existsMarkers).forEachR(existMarker -> existMarker.setAlpha(1f));
     }
 
+    public Point getSelectedMarkerPoint() {
+        return selectedMarkerPoint;
+    }
+
     public void reloadMapObjects() {
         LatLngBounds latLngBounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
         GetMapObjectsAction action = new GetMapObjectsAction(tripFilterDataProvider.get(), latLngBounds, tripMapCallback.getQuery());
@@ -117,6 +125,7 @@ public class TripMapManager {
                     //
                     switch (holder.getType()) {
                         case PIN:
+                            selectedMarkerPoint = googleMap.getProjection().toScreenLocation(marker.getPosition());
                             detailedTripsActionPipe.send(new GetDetailedTripsAction(((Pin) holder.getItem()).getTripUids()));
                             addAlphaToMarkers(marker);
                             break;

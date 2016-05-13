@@ -56,19 +56,18 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
     protected <A> boolean onInterceptSend(ActionHolder<A> holder) {
         A action = holder.action();
         if (!(action instanceof BaseHttpAction)) return false;
-        BaseHttpAction baseHttpAction = (BaseHttpAction) action;
-        fillBaseData(baseHttpAction);
-        if (action instanceof AuthorizedHttpAction
-                && appSessionHolder.get().isPresent()) {
-            UserSession userSession = appSessionHolder.get().get();
-            ((AuthorizedHttpAction) baseHttpAction).setAuthorizationHeader("Token token=" + userSession.getApiToken());
-        }
+        prepareHttpAction((BaseHttpAction) action);
         return false;
     }
 
-    private void fillBaseData(BaseHttpAction baseHttpAction) {
-        baseHttpAction.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
-        baseHttpAction.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
+    private void prepareHttpAction(BaseHttpAction action){
+        action.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
+        action.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
+        if (action instanceof AuthorizedHttpAction
+                && appSessionHolder.get().isPresent()) {
+            UserSession userSession = appSessionHolder.get().get();
+            ((AuthorizedHttpAction) action).setAuthorizationHeader("Token token=" + userSession.getApiToken());
+        }
     }
 
     @Override
@@ -101,7 +100,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
                 String username = userSession.getUsername();
                 String userPassword = userSession.getUserPassword();
                 LoginAction loginAction = new LoginAction(username, userPassword);
-                fillBaseData(loginAction);
+                prepareHttpAction(loginAction);
                 ActionState<LoginAction> loginState = loginActionPipe.createObservable(loginAction)
                         .toBlocking()
                         .last();

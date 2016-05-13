@@ -329,7 +329,7 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // janet
-    compile "com.github.techery:janet:1.0.2"
+    compile "com.github.techery:janet:1.0.3"
     compile "com.github.techery:janet-command:1.0.1"
     compile "com.github.techery.janet-http:service:1.0.2"
     apt "com.github.techery.janet-http:service-compiler:1.0.2"
@@ -370,7 +370,7 @@ dependencies {
     compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'io.reactivex:rxjava:1.1.1'
+    compile 'io.reactivex:rxjava:1.1.5'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
     compile 'com.trello:rxlifecycle:0.4.0'

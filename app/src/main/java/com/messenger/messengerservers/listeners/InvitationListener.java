@@ -1,4 +1,4 @@
-package com.messenger.messengerservers;
+package com.messenger.messengerservers.listeners;
 
 public interface InvitationListener {
 

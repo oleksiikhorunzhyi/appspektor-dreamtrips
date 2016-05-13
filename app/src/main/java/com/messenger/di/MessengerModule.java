@@ -34,7 +34,6 @@ import dagger.Module;
                 SwipeableContactsAdapter.class,
 
                 LoaderDelegate.class,
-                ChatMessagesEventDelegate.class,
                 GroupChatEventDelegate.class,
                 JoinedChatEventDelegate.class,
 

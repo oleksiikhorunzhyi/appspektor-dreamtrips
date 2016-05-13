@@ -6,7 +6,7 @@ import android.util.Pair;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.ChatState;
+import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;

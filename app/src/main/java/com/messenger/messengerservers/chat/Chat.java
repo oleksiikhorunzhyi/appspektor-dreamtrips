@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.chat;
 
-import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.model.Message;
 
 import rx.Observable;

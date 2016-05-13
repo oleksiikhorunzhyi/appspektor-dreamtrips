@@ -1,12 +1,15 @@
 package com.messenger.util;
 
 
-import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.JoinedChatEventDelegate;
+import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.messengerservers.event.JoinedEvent;
+import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
 import com.techery.spares.module.Injector;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,6 +42,10 @@ public class ChatFacadeManager {
 
     public void onErrorMessage(Message message) {
         chatMessagesDelegate.onErrorMessage(message);
+    }
+
+    public void onMessagesDeleted(List<DeletedMessage> deletedMessages) {
+        chatMessagesDelegate.onMessagesDeleted(deletedMessages);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

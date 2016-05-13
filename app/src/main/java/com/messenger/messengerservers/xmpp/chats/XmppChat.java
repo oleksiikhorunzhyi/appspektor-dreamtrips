@@ -1,7 +1,7 @@
 package com.messenger.messengerservers.xmpp.chats;
 
-import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.chat.Chat;
+import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.StatusMessageStanza;

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.ChatManager;
+import com.messenger.messengerservers.chat.ChatManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.ConversationType;

@@ -1,4 +1,4 @@
-package com.messenger.messengerservers;
+package com.messenger.messengerservers.chat;
 
 import android.support.annotation.Nullable;
 

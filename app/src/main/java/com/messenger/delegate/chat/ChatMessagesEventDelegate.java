@@ -4,6 +4,7 @@ import com.messenger.delegate.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -13,39 +14,46 @@ import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Notification;
+import rx.Observable;
+import rx.observables.ConnectableObservable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
+@Singleton
 public class ChatMessagesEventDelegate {
 
-    @Inject
-    ConversationsDAO conversationsDAO;
-    @Inject
-    MessageDAO messageDAO;
-    //
-    @Inject
-    LoadConversationDelegate loadConversationDelegate;
-    @Inject
-    DecomposeMessagesHelper decomposeMessagesHelper;
+    private ConversationsDAO conversationsDAO;
+    private MessageDAO messageDAO;
+    private LoadConversationDelegate loadConversationDelegate;
+    private DecomposeMessagesHelper decomposeMessagesHelper;
 
     private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
-    public ChatMessagesEventDelegate(@ForApplication Injector injector) {
-        injector.inject(this);
+    @Inject
+    public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO, MessageDAO messageDAO,
+                                     LoadConversationDelegate loadConversationDelegate,
+                                     DecomposeMessagesHelper decomposeMessagesHelper) {
+        this.conversationsDAO = conversationsDAO;
+        this.messageDAO = messageDAO;
+        this.loadConversationDelegate = loadConversationDelegate;
+        this.decomposeMessagesHelper = decomposeMessagesHelper;
     }
 
-    public void onReceivedMessage(Message message){
+    public void onReceivedMessage(Message message) {
         conversationsDAO
                 .getConversation(message.getConversationId())
                 .take(1)
                 .subscribe(conversation -> trySaveReceivedMessage(message, conversation));
     }
 
-    public void onPreSendMessage(Message message){
+    public void onPreSendMessage(Message message) {
         saveMessage(message, MessageStatus.SENDING);
     }
 
@@ -57,7 +65,20 @@ public class ChatMessagesEventDelegate {
         updateMessage(message, ChatDateUtils.getErrorMessageDate());
     }
 
-    private void updateMessage(Message message, long time){
+    public Observable<List<String>> onMessagesDeleted(List<DeletedMessage> deletedMessages) {
+        ConnectableObservable<List<String>> observable = Observable.from(deletedMessages)
+                .map(DeletedMessage::messageId)
+                .toList()
+                .doOnNext(messageDAO::deleteMessageByIds)
+                .subscribeOn(Schedulers.io())
+                .publish();
+        observable.subscribe(deletedMessageIds -> {},
+                e -> Timber.e(e, "Something went wrong while messages were deleting"));
+        observable.connect();
+        return observable;
+    }
+
+    private void updateMessage(Message message, long time) {
         messageDAO.updateStatus(message.getId(), message.getStatus(), time);
         conversationsDAO.updateDate(message.getConversationId(), time);
     }
@@ -100,4 +121,5 @@ public class ChatMessagesEventDelegate {
     public PublishSubject<Notification<DataMessage>> getReceivedSavedMessageStream() {
         return receivedSavedMessageStream;
     }
+
 }

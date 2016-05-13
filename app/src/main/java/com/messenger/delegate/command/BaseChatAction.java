@@ -5,19 +5,17 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.ui.helper.ConversationHelper;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 
 import io.techery.janet.CommandActionBase;
 import rx.Observable;
 
-public abstract class BaseChatAction<Result> extends CommandActionBase<Result> {
+public abstract class BaseChatAction<Result> extends CommandActionBase<Result> implements InjectableAction {
     protected final DataConversation conversation;
 
     @Inject MessengerServerFacade messengerServerFacade;
-    @Inject SessionHolder<UserSession> sessionHolder;
 
     protected BaseChatAction(DataConversation conversation) {
         this.conversation = conversation;

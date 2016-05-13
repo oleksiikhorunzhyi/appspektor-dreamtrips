@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.messenger.api.GetShortProfileAction;
-import com.messenger.api.temp.RetryLoginComposer;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
@@ -56,8 +55,6 @@ public class UserProcessor {
         List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
         return shortProfilePipe
                 .createObservableSuccess(new GetShortProfileAction(userNames))
-                .compose(new RetryLoginComposer<>(sessionHolder, janet))
-                .take(1)
                 .flatMap(action -> syncCashedUser(messengerUsers, action.getShortUsers()));
     }
 

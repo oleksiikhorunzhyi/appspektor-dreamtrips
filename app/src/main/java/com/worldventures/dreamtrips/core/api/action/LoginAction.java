@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.core.api.action;
 
-import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 
 import io.techery.janet.http.annotations.Body;
@@ -9,7 +8,7 @@ import io.techery.janet.http.annotations.Response;
 
 
 @HttpAction(value = "/api/sessions", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.POST)
-public class LoginAction extends BaseHttpAction {
+public class LoginAction extends BaseHttpAction{
 
     @Body LoginBody loginBody;
     @Response Session loginResponse;

@@ -1,35 +1,32 @@
-package com.worldventures.dreamtrips.core.janet;
+package com.worldventures.dreamtrips.core.janet.dagger;
 
 import android.content.Context;
 
 import com.techery.spares.module.Injector;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 import dagger.ObjectGraph;
 import io.techery.janet.ActionHolder;
+import io.techery.janet.ActionService;
 import io.techery.janet.ActionServiceWrapper;
-import io.techery.janet.CommandActionBase;
-import io.techery.janet.CommandActionService;
 import io.techery.janet.JanetException;
 import timber.log.Timber;
 
-public class DaggerCommandServiceWrapper extends ActionServiceWrapper {
+public class DaggerActionServiceWrapper extends ActionServiceWrapper {
 
     private final CommandInjector injector;
 
-    public DaggerCommandServiceWrapper(CommandActionService service, Context appContext) {
+    public DaggerActionServiceWrapper(ActionService service, Context appContext) {
         super(service);
         this.injector = new CommandInjector(((Injector) appContext).getObjectGraph());
     }
 
     @Override protected <A> boolean onInterceptSend(ActionHolder<A> holder) {
+        A action = holder.action();
+        if (!(action instanceof InjectableAction)) return false;
         try {
-            injector.inject((CommandActionBase) holder.action());
+            injector.inject(action);
         } catch (Throwable throwable) {
-            Timber.e(throwable, "Can't inject command %s", holder.action());
+            Timber.e(throwable, "Can't inject action %s", action);
         }
         return false;
     }
@@ -42,23 +39,24 @@ public class DaggerCommandServiceWrapper extends ActionServiceWrapper {
 
     @Override protected <A> void onInterceptSuccess(ActionHolder<A> holder) {}
 
-    @Override protected <A> void onInterceptFail(ActionHolder<A> holder, JanetException e) {}
+    @Override protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
+        return false;
+    }
 
     private static class CommandInjector {
 
-        private static final Map<Class<? extends CommandActionBase>, Method> cache = new HashMap<>();
         private ObjectGraph objectGraph;
 
         private CommandInjector(ObjectGraph objectGraph) {
             this.objectGraph = objectGraph;
         }
 
-        public void inject(CommandActionBase command) {
-            Class<? extends CommandActionBase> commandClass = command.getClass();
+        public void inject(Object action) {
             try {
-                objectGraph.inject(command);
+                objectGraph.inject(action);
             } catch (Throwable e) {
-                String detailMessage = "No graph method found to inject " + commandClass.getSimpleName() + ". Check your component";
+                String detailMessage = "No graph method found to inject " + action.getClass()
+                        .getSimpleName() + ". Check your component";
                 Timber.e(e, detailMessage);
                 throw e;
             }

@@ -68,7 +68,7 @@ public class FlaggingViewImpl extends ModuleViewImpl<FlaggingPresenter> implemen
         dialog.show();
         Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
         RxTextView.textChangeEvents(reasonEditText)
-                .subscribe(event -> positiveButton.setEnabled(event.count() > 0));
+                .subscribe(event -> positiveButton.setEnabled(event.text().toString().trim().length() > 0));
     }
 
     @Override

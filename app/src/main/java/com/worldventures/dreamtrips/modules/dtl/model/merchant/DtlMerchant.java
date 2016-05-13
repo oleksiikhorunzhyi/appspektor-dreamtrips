@@ -195,7 +195,6 @@ public class DtlMerchant implements Parcelable {
     public void sortPerks() {
         if (!hasPerks()) return;
         offers = Queryable.from(offers)
-                .filter(DtlOffer::isPerk)
                 .sort(DtlOffer.END_DATE_COMPARATOR)
                 .toList();
     }

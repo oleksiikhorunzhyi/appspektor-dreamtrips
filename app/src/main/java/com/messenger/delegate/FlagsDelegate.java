@@ -1,6 +1,8 @@
 package com.messenger.delegate;
 
+import com.messenger.api.ErrorParser;
 import com.messenger.api.GetFlagsAction;
+import com.messenger.api.exception.UiMessageException;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import io.techery.janet.ActionPipe;
@@ -14,9 +16,11 @@ public class FlagsDelegate {
 
     private ActionPipe<GetFlagsAction> flagsPipe;
     private ActionState<GetFlagsAction> getFlagsActionState;
+    private ErrorParser errorParser;
 
-    public FlagsDelegate(Janet janet) {
+    public FlagsDelegate(Janet janet, ErrorParser errorParser) {
         flagsPipe = janet.createPipe(GetFlagsAction.class, Schedulers.io());
+        this.errorParser = errorParser;
     }
 
     public Observable<ActionState<GetFlagsAction>> getFlags() {
@@ -26,6 +30,12 @@ public class FlagsDelegate {
                 .filter(actionState ->
                     actionState != null && (actionState.status == ActionState.Status.SUCCESS
                             || actionState.status == ActionState.Status.FAIL))
+                .doOnNext(state -> {
+                    if (state.status == ActionState.Status.FAIL) {
+                        String message = errorParser.getErrorMessage(state.action, state.exception);
+                        state.exception = new UiMessageException(message, state.exception);
+                    }
+                })
                 .take(1)
                 .publish()
                 .refCount();

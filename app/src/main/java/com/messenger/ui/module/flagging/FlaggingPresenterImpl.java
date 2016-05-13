@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.messenger.api.ErrorParser;
 import com.messenger.api.GetFlagsAction;
+import com.messenger.api.exception.UiMessageException;
 import com.messenger.delegate.FlagsDelegate;
 import com.messenger.delegate.chat.flagging.FlagMessageAction;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
@@ -27,8 +28,6 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     FlagsDelegate flagsDelegate;
     @Inject
     FlagMessageDelegate flagMessageDelegate;
-    @Inject
-    ErrorParser errorParser;
 
     private Subscription getFlagsSubscription;
 
@@ -108,7 +107,9 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
     private void onFlagsLoadingError(BaseHttpAction action, Throwable e) {
         getView().hideFlagsLoadingDialog();
-        getView().showError(errorParser.getErrorMessage(action, e));
+        if (e instanceof UiMessageException) {
+            getView().showError(((UiMessageException) e).getUiMessage());
+        }
         Timber.e(e, "[Flagging] Could not load flags");
     }
 

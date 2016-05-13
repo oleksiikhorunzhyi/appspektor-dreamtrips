@@ -1,5 +1,6 @@
 package com.messenger.di;
 
+import com.messenger.api.ErrorParser;
 import com.messenger.delegate.FlagsDelegate;
 
 import javax.inject.Singleton;
@@ -16,7 +17,7 @@ public class FlaggingModule {
 
     @Provides
     @Singleton
-    FlagsDelegate provideFlagsProvider(Janet janet) {
-        return new FlagsDelegate(janet);
+    FlagsDelegate provideFlagsProvider(Janet janet, ErrorParser errorParser) {
+        return new FlagsDelegate(janet, errorParser);
     }
 }

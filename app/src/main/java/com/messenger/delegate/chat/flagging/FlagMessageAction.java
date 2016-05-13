@@ -1,6 +1,7 @@
 package com.messenger.delegate.chat.flagging;
 
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 
@@ -8,7 +9,7 @@ import io.techery.janet.CommandActionBase;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class FlagMessageAction extends CommandActionBase<FlagMessageDTO> {
+public class FlagMessageAction extends CommandActionBase<FlagMessageDTO> implements InjectableAction {
 
     @Inject
     MessengerServerFacade messengerServerFacade;

@@ -308,10 +308,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ChatScreen view = getView();
         switch (paginationStatus.status) {
             case START:
-                if (paginationStatus.page == 0) view.setShowMarkUnreadMessage(true);
+                if (paginationStatus.page == 1) view.setShowMarkUnreadMessage(true);
                 view.showLoading();
                 getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
                 break;
+            case SUCCESS:
+                if (paginationStatus.page == 1 && paginationStatus.loadedElementsCount == 0) {
+                    view.setShowMarkUnreadMessage(false);
+                }
             default:
                 view.showContent();
         }

@@ -156,12 +156,12 @@ public class ChatDelegate {
         loading.set(true);
         paginationStateObservable.onNext(PaginationStatus.builder()
                 .status(Status.START)
-                .page(page)
+                .page(++page)
                 .build()
         );
         conversationObservable
                 .subscribe(conversation -> {
-                    historyPaginationDelegate.loadConversationHistoryPage(conversation, ++page, beforeTimestamp);
+                    historyPaginationDelegate.loadConversationHistoryPage(conversation, page, beforeTimestamp);
                 }, e -> Timber.w("Unable to get conversation"));
     }
 
@@ -181,10 +181,11 @@ public class ChatDelegate {
             loading.set(false);
             haveMoreElements = false;
             paginationStateObservable.onNext(PaginationStatus.builder()
-                    .haveMoreElements(false)
-                    .page(page)
-                    .status(Status.SUCCESS)
-                    .build()
+                            .haveMoreElements(false)
+                            .loadedElementsCount(0)
+                            .page(page)
+                            .status(Status.SUCCESS)
+                            .build()
             );
             return;
         }
@@ -200,10 +201,11 @@ public class ChatDelegate {
         }
 
         paginationStateObservable.onNext(PaginationStatus.builder()
-                .haveMoreElements(true)
-                .status(Status.SUCCESS)
-                .page(page)
-                .build()
+                        .haveMoreElements(true)
+                        .status(Status.SUCCESS)
+                        .page(page)
+                        .loadedElementsCount(loadedCount)
+                        .build()
         );
     }
 
@@ -227,12 +229,13 @@ public class ChatDelegate {
         public final Status status;
         public final boolean haveMoreElements;
         public final int page;
-
+        public final int loadedElementsCount;
 
         private PaginationStatus(Builder builder) {
             status = builder.status;
             page = builder.page;
             haveMoreElements = builder.haveMoreElements;
+            loadedElementsCount = builder.loadedElementsCount;
         }
 
         private static Builder builder() {
@@ -243,6 +246,7 @@ public class ChatDelegate {
             private Status status;
             private boolean haveMoreElements;
             private int page;
+            private int loadedElementsCount = 0;
 
             public Builder status(Status val) {
                 this.status = val;
@@ -256,6 +260,11 @@ public class ChatDelegate {
 
             public Builder page(int var) {
                 this.page = var;
+                return this;
+            }
+
+            public Builder loadedElementsCount(int var) {
+                this.loadedElementsCount = var;
                 return this;
             }
 

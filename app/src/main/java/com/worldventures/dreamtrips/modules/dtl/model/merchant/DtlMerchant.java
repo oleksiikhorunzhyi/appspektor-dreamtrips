@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.DtlDisclaimer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
@@ -186,6 +185,19 @@ public class DtlMerchant implements Parcelable {
 
     public boolean hasOffer(DtlOffer dtlOffer) {
         return offers != null && offers.contains(dtlOffer);
+    }
+
+    public boolean hasPerks() {
+        return !hasNoOffers() &&
+                Queryable.from(offers).count(offer -> offer.isPerk()) > 0;
+    }
+
+    public void sortPerks() {
+        if (!hasPerks()) return;
+        offers = Queryable.from(offers)
+                .filter(DtlOffer::isPerk)
+                .sort(DtlOffer.END_DATE_COMPARATOR)
+                .toList();
     }
 
     public DtlCurrency getDefaultCurrency() {

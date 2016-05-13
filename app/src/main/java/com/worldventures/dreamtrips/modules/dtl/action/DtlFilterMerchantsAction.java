@@ -51,6 +51,9 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
                                             .filter(predicate)
                                             .sort(DtlMerchant.DISTANCE_COMPARATOR::compare)
                                             .toList();
+                                    Queryable.from(merchants)
+                                            .filter(DtlMerchant::hasPerks)
+                                            .forEachR(DtlMerchant::sortPerks);
                                     return merchants;
                                 }))
                 .subscribe(callback::onSuccess, callback::onFail);

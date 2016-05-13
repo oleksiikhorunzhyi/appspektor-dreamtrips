@@ -66,7 +66,7 @@ public class DtlMerchantHelper {
 
     public static boolean isOfferExpiringSoon(DtlOfferData offerData) {
         DateTime currentDate = DateTime.now();
-        DateTime expirationDate = new DateTime(offerData.getEndDdate().getTime());
+        DateTime expirationDate = new DateTime(offerData.getEndDate().getTime());
         return Days.daysBetween(currentDate, expirationDate).isLessThan(Days.SEVEN);
     }
 
@@ -76,7 +76,7 @@ public class DtlMerchantHelper {
 
     public static Spannable getOfferExpiringCaption(Resources resources, DtlOfferData offerData) {
         String format = resources.getString(R.string.offer_expiration_format);
-        DateTime expiringDate = new DateTime(offerData.getEndDdate().getTime());
+        DateTime expiringDate = new DateTime(offerData.getEndDate().getTime());
         String caption = expiringDate.toString(DateTimeFormat.forPattern("d MMM"));
         String captionFormatted = String.format(format, caption);
         Spannable spanned = new SpannableString(captionFormatted);

@@ -37,7 +37,7 @@ public class BaseCommandActionServiceWrapper extends ActionServiceWrapper {
     }
 
     @Override
-    protected <A> void onInterceptFail(ActionHolder<A> holder, JanetException e) {
-
+    protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
+        return false;
     }
 }

@@ -8,9 +8,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.techery.janet.ActionHolder;
 import io.techery.janet.command.annotations.CommandAction;
 
@@ -37,19 +34,14 @@ public class DtlLocationCommand extends CallableCommandAction<DtlLocation> imple
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public List<DtlLocation> getData() {
-        return new ArrayList<DtlLocation>() {{
-            if (getResult() != null) {
-                add(getResult());
-            }
-        }};
+    public DtlLocation getData() {
+        return getResult();
     }
 
     @Override
-    public void onRestore(ActionHolder holder, List<DtlLocation> cache) {
-        DtlLocation location = cache.get(0);
-        if (location.getLocationSourceType() != LocationSourceType.UNDEFINED) {
-            holder.newAction(new DtlLocationCommand(location));
+    public void onRestore(ActionHolder holder, DtlLocation cache) {
+        if (cache.getLocationSourceType() != LocationSourceType.UNDEFINED) {
+            holder.newAction(new DtlLocationCommand(cache));
         }
     }
 

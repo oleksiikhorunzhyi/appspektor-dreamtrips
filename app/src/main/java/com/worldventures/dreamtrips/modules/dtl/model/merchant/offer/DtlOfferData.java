@@ -37,11 +37,8 @@ public abstract class DtlOfferData implements Comparable<DtlOfferData> {
         return endDate;
     }
 
-    /**
-     * Pure sugar for {@link DtlOfferData#getEndDate()}
-     */
-    public long getEndTimestamp() {
-        return getEndDate().getTime();
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public List<DtlOfferMedia> getImages() {
@@ -76,7 +73,6 @@ public abstract class DtlOfferData implements Comparable<DtlOfferData> {
         if (operationDays != null ? !operationDays.equals(that.operationDays) : that.operationDays != null)
             return false;
         return images != null ? images.equals(that.images) : that.images == null;
-
     }
 
     @Override public int hashCode() {

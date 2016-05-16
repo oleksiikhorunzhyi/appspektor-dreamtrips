@@ -47,8 +47,16 @@ public class DtlOffer<T extends DtlOfferData> implements Comparable<T> {
 
         @Override
         public int compare(DtlOffer lhs, DtlOffer rhs) {
-            if (lhs.getOffer().getEndTimestamp() == rhs.getOffer().getEndTimestamp()) return 0;
-            return lhs.getOffer().getEndTimestamp() > rhs.getOffer().getEndTimestamp() ? 1 : -1;
+            if (lhs.getOffer().getEndDate() == null && rhs.getOffer().getEndDate() == null)
+                return 0;
+            if (lhs.getOffer().getEndDate() == null && rhs.getOffer().getEndDate() != null)
+                return 1;
+            if (rhs.getOffer().getEndDate() == null && lhs.getOffer().getEndDate() != null)
+                return -1;
+            if (lhs.getOffer().getEndDate().getTime() == rhs.getOffer().getEndDate().getTime())
+                return 0;
+            return lhs.getOffer().getEndDate().getTime() >
+                    rhs.getOffer().getEndDate().getTime() ? 1 : -1;
         }
     };
 

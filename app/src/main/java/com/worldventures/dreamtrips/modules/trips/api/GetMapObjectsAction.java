@@ -5,14 +5,15 @@ import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-//TODO change endpoint
-@HttpAction(value = "/api/users/profiles/short", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
+
+@HttpAction(value = "/api/trip_clusters", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
 public class GetMapObjectsAction extends BaseHttpAction {
 
     @Query("query")
@@ -39,18 +40,24 @@ public class GetMapObjectsAction extends BaseHttpAction {
     int recent;
     @Query("liked")
     int liked;
-
-    @Query("top_left")
-    MapPoint topLeftPoint;
-    @Query("bottom_right")
-    MapPoint bottomRightPoint;
+    @Query("top_left_lat")
+    double top_left_lat;
+    @Query("bottom_right_lat")
+    double bottom_right_lat;
+    @Query("top_left_lng")
+    double top_left_lng;
+    @Query("bottom_right_lng")
+    double bottom_right_lng;
 
     @Response
     List<MapObjectHolder> mapObjects;
 
     public GetMapObjectsAction(TripsFilterData tripsFilterData, LatLngBounds latLngBounds, String query) {
-        topLeftPoint = new MapPoint(latLngBounds.northeast.latitude, latLngBounds.northeast.longitude);
-        bottomRightPoint = new MapPoint(latLngBounds.southwest.latitude, latLngBounds.southwest.longitude);
+        top_left_lat = latLngBounds.northeast.latitude;
+        top_left_lng = latLngBounds.southwest.longitude;
+        bottom_right_lat = latLngBounds.southwest.latitude;
+        bottom_right_lng = latLngBounds.northeast.longitude;
+
 
         this.query = query;
         durationMin = tripsFilterData.getMinNights();
@@ -67,17 +74,10 @@ public class GetMapObjectsAction extends BaseHttpAction {
     }
 
     public List<MapObjectHolder> getMapObjects() {
+        if (mapObjects == null) {
+            mapObjects = new ArrayList<>();
+        }
         return mapObjects;
     }
 
-    private static class MapPoint {
-
-        private double lat;
-        private double lng;
-
-        public MapPoint(double lat, double lng) {
-            this.lat = lat;
-            this.lng = lng;
-        }
-    }
 }

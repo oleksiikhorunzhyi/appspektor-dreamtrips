@@ -44,34 +44,21 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
     }
 
     public void onEvent(FilterBusEvent event) {
-        if (event != null) {
-//            setFilters(event);
-            performFiltering();
-        }
+        tripMapManager.reloadMapObjects();
     }
 
     public String getQuery() {
         return query;
     }
 
-    private void performFiltering() {
-//        if (cachedTrips != null && cachedTrips.size() > 0) {
-//            List<TripModel> filteredFromCache = performFiltering(cachedTrips);
-//            this.filteredTrips.clear();
-//            this.filteredTrips.addAll(Queryable.from(filteredFromCache).filter((input) -> input.containsQuery(query)).toList());
-//            reloadPins();
-//        }
-    }
 
     public void applySearch(String query) {
         this.query = query;
-        performFiltering();
         removeInfoIfNeeded();
+        tripMapManager.reloadMapObjects();
     }
 
     public void onMapLoaded() {
-//        setFilters(eventBus.getStickyEvent(FilterBusEvent.class));
-        performFiltering();
         //
         tripMapManager.subscribe(view.getMap(), new TripMapManager.Callback() {
 
@@ -93,6 +80,12 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
                 //
                 view.zoomToBounds(latLngBounds);
             }
+
+            @Override
+            public String getQuery() {
+                return query;
+            }
+
         });
     }
 

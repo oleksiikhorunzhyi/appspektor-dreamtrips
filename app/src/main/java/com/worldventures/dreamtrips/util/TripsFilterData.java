@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.modules.common.model.BaseEntity;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
@@ -65,7 +66,7 @@ public class TripsFilterData implements Serializable {
     }
 
     public String getAcceptedRegions() {
-        return TextUtils.join(",", acceptedRegions);
+        return TextUtils.join(",", Queryable.from(acceptedRegions).map(BaseEntity::getId).toList());
     }
 
     public void setAcceptedRegions(ArrayList<RegionModel> acceptedRegions) {
@@ -73,7 +74,7 @@ public class TripsFilterData implements Serializable {
     }
 
     public String getAcceptedActivities() {
-        return TextUtils.join(",", acceptedActivities);
+        return TextUtils.join(",", Queryable.from(acceptedActivities).map(BaseEntity::getId).toList());
     }
 
     public void setAcceptedActivities(ArrayList<ActivityModel> acceptedActivities) {

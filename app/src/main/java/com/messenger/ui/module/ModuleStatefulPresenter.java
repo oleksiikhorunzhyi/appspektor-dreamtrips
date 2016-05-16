@@ -1,8 +1,16 @@
 package com.messenger.ui.module;
 
-public interface ModuleStatefulPresenter<V extends ModuleView, S> extends ModulePresenter<V> {
+import android.os.Bundle;
+import android.os.Parcelable;
+
+public interface ModuleStatefulPresenter<V extends ModuleView, S extends Parcelable>
+        extends ModulePresenter<V> {
 
     void applyState(S state);
 
     S getState();
+
+    void onSaveInstanceState(Parcelable parcelable);
+
+    void onRestoreInstanceState(Parcelable parcelable);
 }

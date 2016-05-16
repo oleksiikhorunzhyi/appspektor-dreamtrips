@@ -3,6 +3,7 @@ package com.messenger.ui.view.chat;
 import android.Manifest;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -157,11 +158,15 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             if (hasFocus) photoPickerLayoutDelegate.hidePicker();
         });
         photoPickerLayoutDelegate.disableEditTextUntilPickerIsShown(messageEditText);
+
+        // Mosby's presenter is created in super.onAttachedToWindow()
+        // and restore instace state is called before onAttachedToWindow() also.
+        // Make sure to have the view prepared before this.
+        flaggingView = new FlaggingViewImpl(this);
     }
 
     @Override
     protected void onAttachedToWindow() {
-        flaggingView = new FlaggingViewImpl(this);
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
         inflateToolbarMenu(toolbar);
@@ -367,7 +372,15 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public Parcelable onSaveInstanceState() {
-        return scrollStatePersister.saveScrollState(super.onSaveInstanceState(), linearLayoutManager);
+        Parcelable parcelable = scrollStatePersister.saveScrollState(super.onSaveInstanceState(), linearLayoutManager);
+        flaggingView.onSaveInstanceState(parcelable);
+        return parcelable;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+        flaggingView.onRestoreInstanceState(state);
     }
 
     ////////////////////////////////////////

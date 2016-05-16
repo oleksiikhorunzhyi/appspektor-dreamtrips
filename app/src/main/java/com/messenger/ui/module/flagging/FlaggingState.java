@@ -1,10 +1,14 @@
 package com.messenger.ui.module.flagging;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FlaggingState {
+public class FlaggingState implements Parcelable {
 
     public enum DialogState {
         NONE,
@@ -77,4 +81,46 @@ public class FlaggingState {
     public void setDialogState(DialogState dialogState) {
         this.dialogState = dialogState;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(this.flags);
+        dest.writeString(this.messageId);
+        dest.writeString(this.conversationId);
+        dest.writeParcelable(this.flag, 0);
+        dest.writeString(this.reasonDescription);
+        dest.writeInt(this.dialogState == null ? -1 : this.dialogState.ordinal());
+    }
+
+    protected FlaggingState(Parcel in) {
+        this.flags = new ArrayList<Flag>();
+        in.readList(this.flags, Flag.class.getClassLoader());
+        this.messageId = in.readString();
+        this.conversationId = in.readString();
+        this.flag = in.readParcelable(Flag.class.getClassLoader());
+        this.reasonDescription = in.readString();
+        int tmpDialogState = in.readInt();
+        this.dialogState = tmpDialogState == -1 ? null : DialogState.values()[tmpDialogState];
+    }
+
+    public static final Creator<FlaggingState> CREATOR = new Creator<FlaggingState>() {
+        @Override
+        public FlaggingState createFromParcel(Parcel source) {
+            return new FlaggingState(source);
+        }
+
+        @Override
+        public FlaggingState[] newArray(int size) {
+            return new FlaggingState[size];
+        }
+    };
 }

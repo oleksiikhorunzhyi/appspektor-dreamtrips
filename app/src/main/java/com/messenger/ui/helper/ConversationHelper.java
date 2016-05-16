@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class ConversationHelper {
 
-    private ConversationHelper(){
+    private ConversationHelper() {
     }
 
     /**
@@ -22,7 +22,7 @@ public final class ConversationHelper {
     public static String obtainConversationSubject(DataConversation conversation, List<DataUser> participants) {
         switch (conversation.getType()) {
             case ConversationType.CHAT:
-                 return participants.get(0).getName();
+                return participants.get(0).getName();
             case ConversationType.GROUP:
             default:
                 return !TextUtils.isEmpty(conversation.getSubject()) ?
@@ -43,10 +43,11 @@ public final class ConversationHelper {
     }
 
     public static boolean isTripChat(DataConversation conversation) {
-        return TextUtils.equals(conversation.getType() , ConversationType.TRIP);
+        return TextUtils.equals(conversation.getType(), ConversationType.TRIP);
     }
 
     public static boolean isOwner(DataConversation conversation, DataUser user) {
         return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
+
 }

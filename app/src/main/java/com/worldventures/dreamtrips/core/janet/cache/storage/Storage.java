@@ -1,10 +1,8 @@
 package com.worldventures.dreamtrips.core.janet.cache.storage;
 
-import java.util.List;
-
 public interface Storage<T> {
 
-    void save(List<T> data);
+    void save(T data);
 
-    List<T> get();
+    T get();
 }

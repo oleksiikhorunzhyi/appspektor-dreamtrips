@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.Storage;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.techery.janet.ActionHolder;
@@ -20,8 +19,9 @@ public class CacheResultWrapper extends ActionServiceWrapper {
         super(actionService);
     }
 
-    public void bindStorage(Class<? extends CachedAction> actionClass, Storage storage) {
+    public CacheResultWrapper bindStorage(Class<? extends CachedAction> actionClass, Storage storage) {
         storageMap.put(actionClass, storage);
+        return this;
     }
 
     @Override
@@ -31,8 +31,8 @@ public class CacheResultWrapper extends ActionServiceWrapper {
             CacheOptions options = action.getOptions();
             if (options.restoreFromCache()) {
                 Class actionClass = holder.action().getClass();
-                List data = getStorage(actionClass).get();
-                if (data != null && !data.isEmpty()) {
+                Object data = getStorage(actionClass).get();
+                if (data != null) {
                     action.onRestore(holder, data);
                     return !options.sendAfterRestore();
                 }

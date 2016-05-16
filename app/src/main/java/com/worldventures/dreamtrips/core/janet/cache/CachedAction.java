@@ -1,14 +1,12 @@
 package com.worldventures.dreamtrips.core.janet.cache;
 
-import java.util.List;
-
 import io.techery.janet.ActionHolder;
 
 public interface CachedAction<T> {
 
-    List<T> getData();
+    T getData();
 
-    void onRestore(ActionHolder holder, List<T> cache);
+    void onRestore(ActionHolder holder, T cache);
 
     CacheOptions getOptions();
 }

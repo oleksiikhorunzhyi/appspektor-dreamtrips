@@ -1,20 +1,16 @@
 package com.worldventures.dreamtrips.core.janet.cache.storage;
 
-import java.util.List;
-
-import static java.util.Collections.emptyList;
-
 public class MemoryStorage<T> implements Storage<T> {
 
-    private List<T> data = emptyList();
+    private volatile T data;
 
     @Override
-    public void save(List<T> data) {
+    public void save(T data) {
         this.data = data;
     }
 
     @Override
-    public List<T> get() {
+    public T get() {
         return data;
     }
 }

@@ -22,19 +22,29 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
+import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.trips.model.MapObject;
+import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapListBundle;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import icepick.Icepick;
-
 import icepick.State;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 @Layout(R.layout.fragment_trips_map)
 @MenuResource(R.menu.menu_map)
@@ -49,10 +59,13 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     protected GoogleMap googleMap;
     private Bundle mapBundle;
 
+    @Inject
+    BackStackDelegate backStackDelegate;
     @State
     LatLng selectedLocation;
     @State
     boolean searchOpened;
+    private Subscription mapChangesSubscription;
 
     @Override
     protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
@@ -95,12 +108,25 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         super.onResume();
         mapView.onResume();
         getActivity().setTitle(R.string.trips);
+        backStackDelegate.setListener(this::onBackPressed);
+    }
+
+    private boolean onBackPressed() {
+        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment) {
+            router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
+                    .containerId(R.id.container_info)
+                    .fragmentManager(getChildFragmentManager())
+                    .build());
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
+        backStackDelegate.setListener(null);
     }
 
     @Override
@@ -111,6 +137,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         if (googleMap != null) {
             googleMap.clear();
             googleMap.setOnMarkerClickListener(null);
+        }
+        if (mapChangesSubscription != null && !mapChangesSubscription.isUnsubscribed()) {
+            mapChangesSubscription.unsubscribe();
         }
         super.onDestroyView();
     }
@@ -175,7 +204,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                 ((MainActivity) getActivity()).openRightDrawer();
                 break;
             case R.id.action_list:
-                getPresenter().actionList();
+                router.back();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -193,27 +222,22 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
-    public void moveTo(Route route, TripMapListBundle bundle) {
-        router.moveTo(route, NavigationConfigBuilder.forFragment()
+    public void moveTo(List<TripModel> trips) {
+        router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
-                .fragmentManager(getFragmentManager())
+                .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(bundle)
+                .data(new TripMapListBundle(trips))
                 .build());
     }
 
     @Override
-    public void removeIfNeeded(Route route) {
-        if (getFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment)
-            router.moveTo(route, NavigationConfigBuilder.forRemoval()
+    public void removeTripsPopupInfo() {
+        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment)
+            router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
                     .containerId(R.id.container_info)
-                    .fragmentManager(getFragmentManager())
+                    .fragmentManager(getChildFragmentManager())
                     .build());
-    }
-
-    @Override
-    public void back() {
-        router.back();
     }
 
     @Override
@@ -228,7 +252,20 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
     protected void onMapLoaded() {
         getPresenter().onMapLoaded();
+        mapChangesSubscription = subscribeToCameraChanges();
     }
+
+    private Subscription subscribeToCameraChanges() {
+        return MapObservableFactory.createCameraChangeObservable(googleMap)
+                .throttleLast(2000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(cameraPosition -> {
+                    getPresenter().reloadMapObjects();
+                }, error -> {
+                    Timber.e(error.getMessage());
+                });
+    }
+
 
     protected void onMapTouched() {
         getPresenter().onCameraChanged();

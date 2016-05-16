@@ -8,7 +8,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.gson.Gson;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
@@ -23,7 +22,6 @@ import com.worldventures.dreamtrips.modules.trips.view.util.TripPinFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
@@ -42,14 +40,12 @@ public class TripMapManager {
     private Callback tripMapCallback;
     private List<MapObjectHolder> mapObjects;
     private Context context;
-    private Gson gson;
     private TripFilterDataProvider tripFilterDataProvider;
     private List<Marker> existsMarkers;
     private GoogleMap googleMap;
 
-    public TripMapManager(Janet janet, Context context, Gson gson, TripFilterDataProvider tripFilterDataProvider) {
+    public TripMapManager(Janet janet, Context context, TripFilterDataProvider tripFilterDataProvider) {
         this.context = context;
-        this.gson = gson;
         this.tripFilterDataProvider = tripFilterDataProvider;
         mapObjectsActionPipe = janet.createPipe(GetMapObjectsAction.class, Schedulers.io());
         detailedTripsActionPipe = janet.createPipe(GetDetailedTripsAction.class, Schedulers.io());
@@ -61,7 +57,6 @@ public class TripMapManager {
         this.tripMapCallback = tripMapCallback;
         existsMarkers = new ArrayList<>();
         //
-        subscriptions.add(subscribeToCameraChanges(googleMap));
         subscriptions.add(subscribeToPinClicks(googleMap));
         //
         subscriptions.add(mapObjectsActionPipe.observe()
@@ -106,18 +101,6 @@ public class TripMapManager {
     public void removeAlphaFromMarkers() {
         Queryable.from(existsMarkers).forEachR(existMarker -> existMarker.setAlpha(1f));
     }
-
-    private Subscription subscribeToCameraChanges(GoogleMap googleMap) {
-        return MapObservableFactory.createCameraChangeObservable(googleMap)
-                .throttleLast(2000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(cameraPosition -> {
-                    reloadMapObjects();
-                }, error -> {
-                    Timber.e(error.getMessage());
-                });
-    }
-
 
     public void reloadMapObjects() {
         LatLngBounds latLngBounds = googleMap.getProjection().getVisibleRegion().latLngBounds;

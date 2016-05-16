@@ -194,7 +194,7 @@ public class ManagerModule {
     @Provides
     @Singleton
     TripMapManager provideTripMapManager(@ForApplication Context context, Janet janet, Gson gson, TripFilterDataProvider dataProvider) {
-        return new TripMapManager(janet, context, gson, dataProvider);
+        return new TripMapManager(janet, context, dataProvider);
     }
 
     @Provides

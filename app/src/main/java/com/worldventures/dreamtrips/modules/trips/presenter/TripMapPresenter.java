@@ -8,7 +8,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
@@ -16,7 +15,6 @@ import com.worldventures.dreamtrips.modules.trips.manager.TripMapManager;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
 import com.worldventures.dreamtrips.modules.trips.model.MapObject;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapListBundle;
 
 import java.util.List;
 
@@ -69,7 +67,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
             @Override
             public void onTripsLoaded(List<TripModel> trips) {
-                view.moveTo(Route.MAP_INFO, new TripMapListBundle(trips));
+                view.moveTo(trips);
             }
 
             @Override
@@ -99,24 +97,22 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
     private void removeInfoIfNeeded() {
         if (view != null) {
-            view.removeIfNeeded(Route.MAP_INFO);
+            view.removeTripsPopupInfo();
             tripMapManager.removeAlphaFromMarkers();
         }
     }
 
-    public void actionList() {
-        view.back();
+    public void reloadMapObjects() {
+        tripMapManager.reloadMapObjects();
     }
 
     public interface View extends Presenter.View {
 
         Marker addPin(Bitmap pinBitmap, MapObject mapObject);
 
-        void moveTo(Route route, TripMapListBundle bundle);
+        void moveTo(List<TripModel> bundle);
 
-        void removeIfNeeded(Route route);
-
-        void back();
+        void removeTripsPopupInfo();
 
         void zoomToBounds(LatLngBounds latLngBounds);
 

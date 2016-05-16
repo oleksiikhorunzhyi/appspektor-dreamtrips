@@ -5,7 +5,6 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
-import com.messenger.ui.helper.ConversationHelper;
 import com.techery.spares.module.Injector;
 
 import javax.inject.Inject;
@@ -38,10 +37,7 @@ public class ChatLeavingDelegate {
 
     public void leave(DataConversation conversation) {
         GroupChat chat = facade.getChatManager().createGroupChat(
-                conversation.getId(),
-                facade.getUsername(),
-                ConversationHelper.isOwner(conversation, user)
-        );
+                conversation.getId(), conversation.getOwnerId());
         chat.leave();
         chat.close();
     }

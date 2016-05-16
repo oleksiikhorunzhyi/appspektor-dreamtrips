@@ -37,9 +37,9 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
     private final Action1<Object> defaultOnNextAction = o -> {};
     private final ChatPreconditions chatPreconditions;
 
-    public XmppGroupChat(XmppServerFacade facade, String roomId, String userId, boolean isOwner) {
+    public XmppGroupChat(XmppServerFacade facade, String roomId, boolean isOwner) {
         super(facade, roomId);
-        this.userId = userId;
+        this.userId = facade.getUsername();
         chatPreconditions = new ChatPreconditions(isOwner);
     }
 

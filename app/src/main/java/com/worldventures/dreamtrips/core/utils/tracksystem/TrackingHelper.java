@@ -527,7 +527,6 @@ public class TrackingHelper {
 
     // ---------------- Messenger actions
     public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
-    public static final String MESSENGER_ACTION_VIEW_CONVERSATION = "Messenger:View Conversation";
     public static final String MESSENGER_ACTION_ADD_FRIEND_TO_CHAT = "Messenger:Add Friends to Chat";
     public static final String MESSENGER_ACTION_CONVERSATION_FILTER = "Messenger:Conversation Filter";
     public static final String MESSENGER_ACTION_CONVERSATION_SORT = "Messenger:Conversation Type";
@@ -537,14 +536,9 @@ public class TrackingHelper {
 
     // ---------------- Messenger attributes
     public static final String MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS = "numberconvo";
-    public static final String MESSENGER_ATTRIBUTE_CONVERSATION_TYPE = "convotype";
-    public static final String MESSENGER_ATTRIBUTE_GROUP_CHAT_NAME = "groupchatname";
     public static final String MESSENGER_ATTRIBUTE_CONVERSATION_SORT_TYPE = "chatsort";
     public static final String MESSENGER_ATTRIBUTE_TRANSLATED = "translated";
-
-    public static final String MESSENGER_VALUE_INDIVIDUAL = "Individual";
-    public static final String MESSENGER_VALUE_IN_DESTINATION_INDIVIDUAL = "InDestination-Individual";
-    public static final String MESSENGER_VALUE_GROUP = "Group-%d";
+    public static final String MESSENGER_ATTRIBUTE_TRANSLATION = "translation";
 
     public static final String MESSENGER_VALUE_ALL = "All Chats";
     public static final String MESSENGER_VALUE_GROUPS = "Group Chats";
@@ -552,18 +546,6 @@ public class TrackingHelper {
     // Action/ViewState=Messenger:Inbox
     public static void setConversationCount(int count) {
         sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_INBOX, MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS, count);
-    }
-
-    public static void openSingleConversation(boolean host) {
-        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_VIEW_CONVERSATION,
-                MESSENGER_ATTRIBUTE_CONVERSATION_TYPE, host? MESSENGER_VALUE_IN_DESTINATION_INDIVIDUAL : MESSENGER_VALUE_INDIVIDUAL);
-    }
-
-    public static void openGroupConversation(String conversationName, int count) {
-        Map<String, Object> data = new HashMap<>();
-        data.put(MESSENGER_ATTRIBUTE_CONVERSATION_TYPE, String.format(MESSENGER_VALUE_GROUP, count));
-        data.put(MESSENGER_ATTRIBUTE_GROUP_CHAT_NAME, conversationName);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, MESSENGER_ACTION_VIEW_CONVERSATION, data);
     }
 
     public static void addPeopleToChat() {
@@ -589,7 +571,11 @@ public class TrackingHelper {
     }
 
     public static void translateMessage(String toLanguage) {
-        sendSimpleAttributetoAdobeTracker(MESSENGER_ACTION_TRANSLATION, MESSENGER_ATTRIBUTE_TRANSLATED, toLanguage);
+        Map<String, Object> data = new HashMap<>();
+        data.put(MESSENGER_ATTRIBUTE_TRANSLATED, toLanguage);
+        data.put(MESSENGER_ATTRIBUTE_TRANSLATION, "1");
+
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, MESSENGER_ACTION_TRANSLATION, data);
     }
 
     // ---------------- Tracking helper methods
@@ -598,6 +584,10 @@ public class TrackingHelper {
         HashMap<String, String> headerData = new HashMap<>(1);
         headerData.put("member_id", userId);
         trackers.get(KEY_ADOBE_TRACKER).setHeaderData(headerData);
+    }
+
+    public static void sendActionToAdobe(String actionName, Map<String, Object> actionArgs) {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, actionName, actionArgs);
     }
 
     private static void sendSimpleAttributetoAdobeTracker(String action, String attribute) {
@@ -1027,12 +1017,12 @@ public class TrackingHelper {
         Map data = prepareAttributeMap(ATTRIBUTE_MERCHANT);
         if (place != null) {
             data.put(DTL_ATTRIBUTE_MERCHANT, new StringBuilder()
-                            .append(place.getId())
-                            .append(place.getDisplayName())
-                            .append(":")
-                            .append(place.getCity())
-                            .append(":")
-                            .append(place.getState()).toString()
+                    .append(place.getId())
+                    .append(place.getDisplayName())
+                    .append(":")
+                    .append(place.getCity())
+                    .append(":")
+                    .append(place.getState()).toString()
             );
         }
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_MERCHANT, data);

@@ -12,6 +12,7 @@ import android.view.View;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
+import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.AttachmentManager;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
@@ -125,6 +126,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject TranslationsDAO translationsDAO;
     @Inject AttachmentHelper attachmentHelper;
     @Inject PermissionDispatcher permissionDispatcher;
+    @Inject ConversationAnalyticsDelegate conversationAnalyticsDelegate;
     private FlaggingPresenter flaggingPresenter;
 
     protected String conversationId;
@@ -729,15 +731,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void trackOpenedConversation(DataConversation openedConversation, List<DataUser> participants) {
-        if (ConversationHelper.isSingleChat(openedConversation)) {
-            boolean chatWithHost = participants.get(0).isHost();
-            TrackingHelper.openSingleConversation(chatWithHost);
-        } else {
-            String conversationSubject = openedConversation.getSubject();
-            if (TextUtils.isEmpty(conversationSubject)){
-                conversationSubject = ConversationHelper.obtainConversationSubject(openedConversation, participants);
-            }
-            TrackingHelper.openGroupConversation(conversationSubject, participants.size());
-        }
+        conversationAnalyticsDelegate.trackOpenedConversation(openedConversation, participants);
     }
 }

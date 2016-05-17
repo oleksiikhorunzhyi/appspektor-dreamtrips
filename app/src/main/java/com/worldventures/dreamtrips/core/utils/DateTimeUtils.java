@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.core.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.text.*;
 import android.text.format.DateUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import org.joda.time.DateTime;
@@ -18,7 +16,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.text.DateFormat;
-import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -309,12 +306,23 @@ public class DateTimeUtils {
         return concatOperationDays(res, operationDays, Locale.getDefault());
     }
 
-    public static String concatOperationDays(Resources res, List<OperationDay> operationDays, Locale locale) {
-        List<OperationDay> days = Queryable.from(operationDays).filter(OperationDay::isHaveOperationHours).toList();
+    public static String concatOperationDays(Resources res, List<OperationDay> operationDays,
+                                             Locale locale) {
+        if (operationDays == null || operationDays.isEmpty()) return "";
+        //
+        List<OperationDay> days = Queryable.from(operationDays)
+                .filter(OperationDay::isHaveOperationHours)
+                .filter(operationDay -> operationDay.getDayOfWeek() != null)
+                .toList();
+        //
+        if (days.isEmpty()) return "";
+        //
         if (days.size() == Calendar.DAY_OF_WEEK) return res.getString(R.string.everyday);
         //
         String delimiter = days.size() == 2 ? " & " : " "; // TODO need translations??
-        List<String> names = Queryable.from(days).map(day -> getDisplayWeekDay(day.getDayOfWeek().getDay(), Calendar.SHORT, locale)).toList();
+        List<String> names = Queryable.from(days)
+                .map(day -> getDisplayWeekDay(day.getDayOfWeek().getDay(), Calendar.SHORT, locale))
+                .toList();
         return android.text.TextUtils.join(delimiter, names);
     }
 

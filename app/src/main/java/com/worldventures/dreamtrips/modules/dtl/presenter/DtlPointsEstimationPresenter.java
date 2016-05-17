@@ -7,12 +7,15 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimationPresenter.View> {
 
@@ -49,17 +52,19 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.estimatePointsExecutor)
-                .onProgress(view::showProgress)
-                .onSuccess(dataHolder -> view.showEstimatedPoints(dataHolder.getPointsInteger()))
-                .onError(throwable -> apiErrorPresenter.handleError(throwable));
+        jobManager.estimatePointsActionPipe.observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
+                        .onStart(action -> view.showProgress())
+                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onSuccess(action -> view.showEstimatedPoints(action.getEstimationPointsHolder().getPointsInteger())));
     }
 
     public void onCalculateClicked(String userInput) {
         if (!validateInput(userInput)) return;
         //
-        jobManager.estimatePointsExecutor.createJobWith(merchantId, Double.valueOf(userInput),
-                dtlMerchant.getDefaultCurrency().getCode()).subscribe();
+        jobManager.estimatePointsActionPipe
+                .send(new DtlEstimatePointsAction(merchantId, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
     }
 
     protected boolean validateInput(String pointsInput) {

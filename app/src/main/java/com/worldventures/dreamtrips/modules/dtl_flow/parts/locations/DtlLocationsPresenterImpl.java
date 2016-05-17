@@ -161,9 +161,9 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
                         .onSuccess(this::onLocationsLoaded));
     }
 
-    private void onLocationsLoaded(DtlNearbyLocationAction command) {
+    private void onLocationsLoaded(DtlNearbyLocationAction action) {
         getView().hideProgress();
-        showLoadedLocations(command.getResult());
+        showLoadedLocations(action.getResult());
     }
 
     private void showLoadedLocations(List<DtlExternalLocation> locations) {

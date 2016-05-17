@@ -43,7 +43,7 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
                 .flatMap(latLng ->
                         merchantStore.getState()
                                 .compose(new ActionStateToActionTransformer<>())
-                                .map(CommandActionBase::getResult)
+                                .map(DtlMerchantsAction::getCacheData)
                                 .map(merchants -> {
                                     Queryable.from(merchants)
                                             .filter(DtlMerchant::hasPerks)

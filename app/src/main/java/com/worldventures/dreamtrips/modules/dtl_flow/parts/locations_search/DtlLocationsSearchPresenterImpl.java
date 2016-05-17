@@ -9,7 +9,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
@@ -23,8 +22,6 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
-import io.techery.janet.Janet;
-import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
@@ -34,15 +31,10 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     DtlLocationManager dtlLocationManager;
     @Inject
     DtlFilterMerchantStore filterMerchantStore;
-    @Inject
-    Janet janet;
-
-    private final WriteActionPipe<DtlMerchantStoreAction> merchantStoreActionPipe;
 
     public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
-        merchantStoreActionPipe = janet.createPipe(DtlMerchantStoreAction.class);
         apiErrorPresenter.setView(getView());
     }
 
@@ -63,11 +55,11 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
                         .onSuccess(this::onSearchFinished));
     }
 
-    private void onSearchFinished(DtlSearchLocationAction command) {
-        List<DtlExternalLocation> locations = command.getResult();
+    private void onSearchFinished(DtlSearchLocationAction action) {
+        List<DtlExternalLocation> locations = action.getResult();
         getView().hideProgress();
         getView().setItems(locations);
-        if (TextUtils.isEmpty(command.getQuery()) && !locations.isEmpty())
+        if (TextUtils.isEmpty(action.getQuery()) && !locations.isEmpty())
             getView().toggleDefaultCaptionVisibility(false);
     }
 

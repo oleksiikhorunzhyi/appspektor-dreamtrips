@@ -188,8 +188,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                         .onSuccess(this::onSearchFinished));
     }
 
-    private void onSearchFinished(DtlSearchLocationAction command) {
-        getView().setItems(command.getResult());
+    private void onSearchFinished(DtlSearchLocationAction action) {
+        getView().setItems(action.getResult());
     }
 
     private void mapClicked() {
@@ -252,9 +252,9 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                         .onSuccess(this::onLocationsLoaded));
     }
 
-    private void onLocationsLoaded(DtlNearbyLocationAction command) {
+    private void onLocationsLoaded(DtlNearbyLocationAction action) {
         getView().hideProgress();
-        showLoadedLocations(command.getResult());
+        showLoadedLocations(action.getResult());
     }
 
     private void showLoadedLocations(List<DtlExternalLocation> locations) {

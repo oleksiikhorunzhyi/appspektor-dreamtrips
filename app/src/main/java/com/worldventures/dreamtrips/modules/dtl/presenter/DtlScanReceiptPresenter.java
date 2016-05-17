@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
 
@@ -91,10 +93,12 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.estimatePointsExecutor)
-                .onProgress(view::showProgress)
-                .onSuccess(dataHolder -> attachDtPoints(dataHolder.getPoints()))
-                .onError(apiErrorPresenter::handleError);
+        jobManager.estimatePointsActionPipe.observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
+                        .onStart(action -> view.showProgress())
+                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onSuccess(action -> attachDtPoints(action.getEstimationPointsHolder().getPoints())));
     }
 
     public void verify() {
@@ -102,8 +106,9 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                 .withBillTotal(Double.parseDouble(amount));
         TrackingHelper.dtlVerifyAmountUser(amount);
         //
-        jobManager.estimatePointsExecutor.createJobWith(merchantId, dtlTransaction.getBillTotal(),
-                dtlMerchant.getDefaultCurrency().getCode()).subscribe();
+        jobManager.estimatePointsActionPipe.send(
+                new DtlEstimatePointsAction(merchantId, dtlTransaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode())
+        );
     }
 
     private void attachDtPoints(Double points) {

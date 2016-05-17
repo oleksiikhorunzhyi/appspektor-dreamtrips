@@ -243,7 +243,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     private Observable<String> findMerchantId(DtlOfferData offer) {
         return merchantStore.getState()
                 .compose(new ActionStateToActionTransformer<>())
-                .flatMap(action -> Observable.from(action.getResult()))
+                .flatMap(action -> Observable.from(action.getCacheData()))
                 .filter(merchant -> !merchant.hasNoOffers())
                 .filter(merchant ->
                         Queryable.from(merchant.getOffers())

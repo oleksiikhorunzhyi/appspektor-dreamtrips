@@ -1,43 +1,43 @@
 package com.worldventures.dreamtrips.modules.dtl.action;
 
-import com.worldventures.dreamtrips.core.api.DtlApi;
-import com.worldventures.dreamtrips.core.api.action.CallableCommandAction;
+import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-import java.util.Collections;
 import java.util.List;
 
 import io.techery.janet.ActionHolder;
-import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.http.annotations.HttpAction;
+import io.techery.janet.http.annotations.Query;
+import io.techery.janet.http.annotations.Response;
 
-@CommandAction
-public class DtlMerchantsAction extends CallableCommandAction<List<DtlMerchant>> implements CachedAction<List<DtlMerchant>> {
+@HttpAction("/api/dtl/v2/merchants")
+public class DtlMerchantsAction extends AuthorizedHttpAction implements CachedAction<List<DtlMerchant>> {
 
-    private boolean restoreFromCache, fromApi;
+    @Query("ll")
+    String ll;
 
-    private DtlMerchantsAction(DtlApi dtlApi, String location) {
-        super(() -> dtlApi.getNearbyDtlMerchants(location));
-        fromApi = true;
+    @Response
+    List<DtlMerchant> merchants;
+
+    private boolean fromCache;
+
+    private DtlMerchantsAction(String location) {
+        this.ll = location;
     }
 
     private DtlMerchantsAction() {
-        super(Collections::emptyList);
-        restoreFromCache = true;
-    }
-
-    private DtlMerchantsAction(List<DtlMerchant> merchants) {
-        super(() -> merchants);
+        fromCache = true;
     }
 
     public boolean isFromApi() {
-        return fromApi;
+        return !fromCache;
     }
 
-    public static DtlMerchantsAction fromApi(DtlApi dtlApi, String location) {
-        return new DtlMerchantsAction(dtlApi, location);
+    public static DtlMerchantsAction fromApi(String location) {
+        return new DtlMerchantsAction(location);
     }
 
     public static DtlMerchantsAction fromCache() {
@@ -45,19 +45,20 @@ public class DtlMerchantsAction extends CallableCommandAction<List<DtlMerchant>>
     }
 
     @Override
-    public List<DtlMerchant> getData() {
-        return getResult();
+    public List<DtlMerchant> getCacheData() {
+        return this.merchants;
     }
 
     @Override
     public void onRestore(ActionHolder holder, List<DtlMerchant> cache) {
-        holder.newAction(new DtlMerchantsAction(cache));
+        this.merchants = cache;
     }
 
     @Override
-    public CacheOptions getOptions() {
+    public CacheOptions getCacheOptions() {
         return ImmutableCacheOptions.builder()
-                .restoreFromCache(restoreFromCache)
+                .restoreFromCache(fromCache)
+                .sendAfterRestore(false)
                 .build();
     }
 }

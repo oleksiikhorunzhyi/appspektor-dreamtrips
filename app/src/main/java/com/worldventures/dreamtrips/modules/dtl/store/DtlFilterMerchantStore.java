@@ -25,7 +25,6 @@ import io.techery.janet.Janet;
 import io.techery.janet.ReadActionPipe;
 import rx.Observable;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 import static com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction.Action.AMENITIES_UPDATE;
 import static com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction.Action.APPLY_PARAMS;
@@ -128,7 +127,6 @@ public class DtlFilterMerchantStore {
                 data -> {
                     data = DtlFilterData.merge(action.getFilterParameters(), data);
                     TrackingHelper.dtlMerchantFilter(data);
-                    Timber.w("MYTAG :: Filtering tracked");
                     return data;
                 }));
     }

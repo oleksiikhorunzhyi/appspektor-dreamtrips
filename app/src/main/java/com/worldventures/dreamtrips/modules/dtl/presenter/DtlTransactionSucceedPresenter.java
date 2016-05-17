@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlRateAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
@@ -16,6 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
 
@@ -55,9 +57,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
 
     public void done() {
         if (stars != 0) {
-            jobManager.rateExecutor.createJobWith(merchantId, stars,
-                    dtlTransaction.getDtlTransactionResult().getId())
-                    .subscribe();
+            jobManager.rateActionPipe.send(new DtlRateAction(merchantId, stars, dtlTransaction.getDtlTransactionResult().getId()));
         }
     }
 
@@ -71,8 +71,9 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.rateExecutor)
-                .onError(throwable -> apiErrorPresenter.handleError(throwable));
+        jobManager.rateActionPipe.observe()
+                .subscribe(new ActionStateSubscriber<DtlRateAction>()
+                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable)));
     }
 
     /**

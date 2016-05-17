@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlEarnPointsAction;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -23,6 +24,8 @@ import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
@@ -48,7 +51,6 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         merchantStore.getMerchantById(merchantId)
                 .compose(ImmediateComposer.instance())
                 .subscribe(merchant -> dtlMerchant = merchant);
-//        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
     }
 
     @Override
@@ -65,10 +67,12 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.earnPointsExecutor)
-                .onProgress(() -> view.showProgress(R.string.dtl_wait_for_earn))
-                .onError(apiErrorPresenter::handleError)
-                .onSuccess(this::processTransactionResult);
+        jobManager.earnPointsActionPipe.observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>()
+                        .onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
+                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onSuccess(action -> processTransactionResult(action.getResult())));
     }
 
     public void codeScanned(String scannedQr) {
@@ -89,9 +93,9 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     private void onReceiptUploaded() {
         dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
                 .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(dtlTransaction.getUploadTask()));
-        jobManager.earnPointsExecutor.createJobWith(dtlMerchant.getId(),
-                dtlMerchant.getDefaultCurrency().getCode(),
-                dtlTransaction).subscribe();
+        jobManager.earnPointsActionPipe.send(
+                new DtlEarnPointsAction(dtlMerchant.getId(), dtlTransaction.asTransactionRequest(dtlMerchant.getDefaultCurrency().getCode()))
+        );
     }
 
     @Override

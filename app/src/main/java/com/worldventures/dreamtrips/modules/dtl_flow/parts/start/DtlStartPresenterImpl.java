@@ -50,11 +50,12 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     }
 
     private void bindLocationObtaining() {
-        gpsLocationDelegate.requestLocationUpdate()
-                .compose(bindViewIoToMainComposer())
-                .take(1)
-                .doOnSubscribe(getView()::showProgress)
-                .subscribe(this::proceedNavigation, this::onLocationError);
+        navigatePath(DtlLocationsPath.getDefault());
+//        gpsLocationDelegate.requestLocationUpdate()
+//                .compose(bindViewIoToMainComposer())
+//                .take(1)
+//                .doOnSubscribe(getView()::showProgress)
+//                .subscribe(this::proceedNavigation, this::onLocationError);
     }
 
     public void onLocationResolutionGranted() {

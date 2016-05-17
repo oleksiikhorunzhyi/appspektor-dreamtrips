@@ -43,7 +43,7 @@ public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> im
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public DtlFilterData getData() {
+    public DtlFilterData getCacheData() {
         return getResult();
     }
 
@@ -53,7 +53,7 @@ public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> im
     }
 
     @Override
-    public CacheOptions getOptions() {
+    public CacheOptions getCacheOptions() {
         return ImmutableCacheOptions.builder()
                 .build();
     }

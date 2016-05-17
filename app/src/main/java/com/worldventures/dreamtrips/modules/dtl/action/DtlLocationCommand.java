@@ -34,7 +34,7 @@ public class DtlLocationCommand extends CallableCommandAction<DtlLocation> imple
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public DtlLocation getData() {
+    public DtlLocation getCacheData() {
         return getResult();
     }
 
@@ -46,7 +46,7 @@ public class DtlLocationCommand extends CallableCommandAction<DtlLocation> imple
     }
 
     @Override
-    public CacheOptions getOptions() {
+    public CacheOptions getCacheOptions() {
         return ImmutableCacheOptions.builder()
                 .restoreFromCache(fromDB)
                 .build();

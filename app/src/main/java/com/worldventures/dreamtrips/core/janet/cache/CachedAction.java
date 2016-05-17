@@ -4,9 +4,9 @@ import io.techery.janet.ActionHolder;
 
 public interface CachedAction<T> {
 
-    T getData();
+    T getCacheData();
 
     void onRestore(ActionHolder holder, T cache);
 
-    CacheOptions getOptions();
+    CacheOptions getCacheOptions();
 }

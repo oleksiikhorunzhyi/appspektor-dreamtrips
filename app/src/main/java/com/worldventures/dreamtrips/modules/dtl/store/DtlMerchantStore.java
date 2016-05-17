@@ -5,14 +5,11 @@ import android.location.Location;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.janet.ResultOnlyFilter;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
-import com.worldventures.dreamtrips.core.janet.cache.storage.Storage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.rx.composer.StubSubscriber;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
@@ -49,8 +46,6 @@ public class DtlMerchantStore {
     @Inject
     SnappyRepository db;
     @Inject
-    DtlApi dtlApi;
-    @Inject
     DtlLocationManager dtlLocationManager;
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -67,12 +62,11 @@ public class DtlMerchantStore {
         injector.inject(this);
 
         Janet privateJanet = new Janet.Builder()
-                .addService(new CacheResultWrapper(new CommandActionService())
-                        .bindStorage(DtlMerchantsAction.class, new MerchantsCacheStorage(db)))
+                .addService(new CacheResultWrapper(new CommandActionService()))
                 .build();
 
         updateAmenitiesPipe = privateJanet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
-        merchantsPipe = privateJanet.createPipe(DtlMerchantsAction.class);
+        merchantsPipe = janet.createPipe(DtlMerchantsAction.class);
         filterStorePipe = janet.createPipe(DtlFilterMerchantStoreAction.class);
 
         ReadActionPipe<DtlMerchantStoreAction> storePipe = janet.createPipe(DtlMerchantStoreAction.class);
@@ -100,8 +94,8 @@ public class DtlMerchantStore {
                 .compose(new ActionStateToActionTransformer<>())
                 .filter(DtlMerchantsAction::isFromApi)
                 .subscribe(action -> {
-                    tryUpdateLocation(action.getResult());
-                    updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(db, action.getResult()));
+                    tryUpdateLocation(action.getCacheData());
+                    updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(db, action.getCacheData()));
                 }, Throwable::printStackTrace);
     }
 
@@ -117,10 +111,7 @@ public class DtlMerchantStore {
         Location location = action.getLocation();
         String locationArg = String.format("%1$f,%2$f",
                 location.getLatitude(), location.getLongitude());
-        merchantsPipe.createObservableSuccess(DtlMerchantsAction.fromApi(dtlApi, locationArg))
-                .subscribeOn(Schedulers.io())
-                .compose(retryLoginComposer)
-                .subscribe(new StubSubscriber());
+        merchantsPipe.send(DtlMerchantsAction.fromApi(locationArg), Schedulers.io());
     }
 
     private void onClear(DtlMerchantStoreAction action) {
@@ -165,26 +156,8 @@ public class DtlMerchantStore {
     public Observable<DtlMerchant> getMerchantById(String merchantId) {
         return getState()
                 .compose(new ActionStateToActionTransformer<>())
-                .map(DtlMerchantsAction::getResult)
+                .map(DtlMerchantsAction::getCacheData)
                 .flatMap(Observable::from)
                 .filter(merchant -> merchant.getId().equals(merchantId));
-    }
-
-    private final static class MerchantsCacheStorage implements Storage<List<DtlMerchant>> {
-        private final SnappyRepository db;
-
-        private MerchantsCacheStorage(SnappyRepository db) {
-            this.db = db;
-        }
-
-        @Override
-        public void save(List<DtlMerchant> data) {
-            db.saveDtlMerhants(data);
-        }
-
-        @Override
-        public List<DtlMerchant> get() {
-            return db.getDtlMerchants();
-        }
     }
 }

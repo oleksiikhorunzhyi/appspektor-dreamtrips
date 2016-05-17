@@ -47,4 +47,8 @@ public class FlagsDelegate {
                 e -> Timber.e(e, "Could not get flags"));
         return observable;
     }
+
+    public void clearCache() {
+        getFlagsActionState = null;
+    }
 }

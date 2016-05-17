@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
@@ -141,14 +142,14 @@ public class FiltersCallbackHandler {
     }
 
     protected void setFilterRecentlyAddedModelDelegate(BaseDelegateAdapter adapter, final FiltersPresenter presenter) {
-        adapter.registerDelegate(FilterRecentlyAddedModel.class, new FavoritesCell.Delegate() {
+        adapter.registerDelegate(FilterRecentlyAddedModel.class, new FilterRecentlyAddedCell.Delegate() {
             @Override
-            public void onCellClicked(FilterFavoriteModel model) {
+            public void onCellClicked(FilterRecentlyAddedModel model) {
 
             }
 
             @Override
-            public void onFilterShowFavoritesEvent(boolean enabled) {
+            public void onFilterShowRecentlyAddedEvent(boolean enabled) {
                 presenter.onFilterShowRecentlyAddedEvent(enabled);
             }
         });

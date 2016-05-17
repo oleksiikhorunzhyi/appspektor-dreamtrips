@@ -222,7 +222,11 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                 ((MainActivity) getActivity()).openRightDrawer();
                 break;
             case R.id.action_list:
-                router.back();
+                router.moveTo(Route.TRIPLIST, NavigationConfigBuilder.forFragment()
+                        .fragmentManager(getFragmentManager())
+                        .containerId(R.id.container_main)
+                        .backStackEnabled(false)
+                        .build());
                 break;
         }
         return super.onOptionsItemSelected(item);

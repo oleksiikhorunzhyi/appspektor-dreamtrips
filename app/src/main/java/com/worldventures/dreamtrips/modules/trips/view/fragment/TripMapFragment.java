@@ -142,6 +142,14 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         return false;
     }
 
+
+    private void moveToListView() {
+        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment) {
+            removeTripsPopupInfo();
+        }
+        containerInfo.post(() -> router.back());
+    }
+
     @Override
     public void onDestroyView() {
         FragmentHelper.resetChildFragmentManagerField(this);
@@ -222,11 +230,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                 ((MainActivity) getActivity()).openRightDrawer();
                 break;
             case R.id.action_list:
-                router.moveTo(Route.TRIPLIST, NavigationConfigBuilder.forFragment()
-                        .fragmentManager(getFragmentManager())
-                        .containerId(R.id.container_main)
-                        .backStackEnabled(false)
-                        .build());
+                moveToListView();
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -3,6 +3,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
+apply plugin: 'newrelic'
 //
 apply from: 'helper-methods.gradle'
 
@@ -106,6 +107,7 @@ android {
 
         buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
+        buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
         ext.enableCrashlytics = true
         //
         buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
@@ -159,6 +161,7 @@ android {
             //
             manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
+            buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'true'
         }
     }
 
@@ -369,6 +372,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.newrelic.agent.android:android-agent:5.6.0'
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
     compile 'com.github.techery:job-executor:0.1.1'
     compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'

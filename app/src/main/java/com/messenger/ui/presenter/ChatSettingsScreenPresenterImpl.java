@@ -194,14 +194,16 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     @Override
     public void applyNewChatSubject(String subject) {
-        if (TextUtils.isEmpty(subject)) {
+        final String newSubject = subject == null? null : subject.trim();
+
+        if (TextUtils.isEmpty(newSubject)) {
             getView().showEmptySubjectDialog();
             return;
         }
 
         Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
                 .createGroupChatObservable(conversationId, facade.getUsername())
-                .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
+                .flatMap(multiUserChat -> multiUserChat.setSubject(newSubject))
                 .map(multiUserChat -> {
                     multiUserChat.close();
                     return multiUserChat;
@@ -211,7 +213,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                 (multiUserChat, conversation) -> conversation)
                 .compose(new IoToMainComposer<>())
                 .subscribe(conversation -> {
-                    conversation.setSubject(subject);
+                    conversation.setSubject(newSubject);
                     conversationsDAO.save(conversation);
                     getView().setConversation(conversation);
                 }, throwable -> {

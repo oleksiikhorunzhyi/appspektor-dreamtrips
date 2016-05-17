@@ -94,7 +94,7 @@ public class XmppServerFacade implements MessengerServerFacade {
             }
         })
                 .subscribeOn(Schedulers.from(executor))
-                .subscribe(this::connected, this::connectionError);
+                .subscribe(this::connected, e ->  Timber.e(e, "connection error"));
     }
 
     private void connect(Subscriber<? super AbstractXMPPConnection> subscriber, String username, String password) {
@@ -120,11 +120,6 @@ public class XmppServerFacade implements MessengerServerFacade {
         this.connection = connection;
         connectionSubject.onNext(connection);
         Timber.d("connected");
-    }
-
-    private void connectionError(Throwable throwable) {
-        connectionSubject.onError(throwable);
-        Timber.e(throwable, "connection error");
     }
 
     @Override

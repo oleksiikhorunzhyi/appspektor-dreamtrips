@@ -36,7 +36,7 @@ public class MessageImageFullscreenPresenter extends FullScreenPresenter<PhotoAt
         //
         view.setShowFlag(photo.isFlaggingEnabled());
         if (photo.getDate() != null) {
-            String dateLabel = timestampFormatter.getMessageDateDividerTimestamp(photo.getDate().getTime());
+            String dateLabel = timestampFormatter.getMessageTimestamp(photo.getDate().getTime());
             view.setDateLabel(dateLabel);
         }
     }

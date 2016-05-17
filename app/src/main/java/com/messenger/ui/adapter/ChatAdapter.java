@@ -98,7 +98,7 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
                 || manualTimestampPositionToRemove == position;
         String dateDivider;
         if (manualTimestamp) {
-            dateDivider = timestampFormatter.getMessageDateManualTimestamp(cursor
+            dateDivider = timestampFormatter.getMessageTimestamp(cursor
                     .getLong(cursor.getColumnIndex(DataMessage$Table.DATE)));
         } else {
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
@@ -196,7 +196,7 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
                     .calendarDaysBetweenDates(previousDate, currentDate);
         }
         if ((previousDate != 0 && calendarDaysSincePreviousDate > 0) || previousDate == 0) {
-            return timestampFormatter.getMessageDateDividerTimestamp(currentDate);
+            return timestampFormatter.getMessageTimestamp(currentDate);
         }
         return null;
     }

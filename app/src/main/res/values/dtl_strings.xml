@@ -4,8 +4,9 @@
     <string name="dtl_locations_try_search">We could not locate a City close to you.\nTry our city search</string>
     <string name="dtl_merchant_tab_offers">Offers</string>
     <string name="dtl_merchant_tab_dining">Dining</string>
-    <string name="dtl_near_me_caption">Near me</string>
-    <string name="dtl_nearby_caption">Nearby</string>
+    <string name="dtl_near_me_caption">near me</string>
+    <string name="dtl_nearby_caption_format">nearby %s</string>
+    <string name="dtl_nearby_caption_empty">nearby</string>
     <string name="dtl_autodetect_location">Auto-detect my location</string>
     <string name="dtl_no_merchants_caption">There are no merchants here</string>
     <string name="dtl_load_merchants_here_button_caption">Redo merchant search</string>

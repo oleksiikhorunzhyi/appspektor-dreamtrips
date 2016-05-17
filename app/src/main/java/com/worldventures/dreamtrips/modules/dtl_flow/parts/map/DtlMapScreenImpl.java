@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -307,7 +305,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
                 break;
             case FROM_MAP:
                 String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
-                        getContext().getString(R.string.dtl_nearby_caption) : dtlLocation.getLongName();
+                        getResources().getString(R.string.dtl_nearby_caption_empty) :
+                        getResources().getString(R.string.dtl_nearby_caption_format,
+                                dtlLocation.getLongName());
                 dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
                 break;
         }

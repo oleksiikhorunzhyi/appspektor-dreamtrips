@@ -140,7 +140,9 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
                 break;
             case FROM_MAP:
                 String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
-                        getContext().getString(R.string.dtl_nearby_caption) : dtlLocation.getLongName();
+                        getResources().getString(R.string.dtl_nearby_caption_empty) :
+                        getResources().getString(R.string.dtl_nearby_caption_format,
+                                dtlLocation.getLongName());
                 dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
                 break;
         }

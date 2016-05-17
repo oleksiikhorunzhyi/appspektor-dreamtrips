@@ -138,7 +138,6 @@ public class XmppServerFacade implements MessengerServerFacade {
         if (connection != null) {
             connection.disconnect();
             connectionStatusSubject.onNext(ConnectionStatus.DISCONNECTED);
-            connection = null;
         }
         active = false;
         subscriber.onCompleted();

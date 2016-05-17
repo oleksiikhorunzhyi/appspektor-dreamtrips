@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.view.fragment;
 
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -17,13 +16,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.techery.spares.ui.fragment.FragmentHelper;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -31,7 +29,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
-import com.worldventures.dreamtrips.modules.trips.model.MapObject;
 import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
@@ -49,7 +46,6 @@ import icepick.Icepick;
 import icepick.State;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_trips_map)
@@ -73,7 +69,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     LatLng selectedLocation;
     @State
     boolean searchOpened;
+
     private Subscription mapChangesSubscription;
+    private Subscription markersClickSubscription;
 
     @Override
     protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
@@ -139,6 +137,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
     @Override
     public void onDestroyView() {
+        FragmentHelper.resetChildFragmentManagerField(this);
+        //
         if (mapView != null) {
             mapView.removeAllViews();
         }
@@ -148,6 +148,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         }
         if (mapChangesSubscription != null && !mapChangesSubscription.isUnsubscribed()) {
             mapChangesSubscription.unsubscribe();
+        }
+        if (markersClickSubscription != null && !markersClickSubscription.isUnsubscribed()) {
+            markersClickSubscription.unsubscribe();
         }
         super.onDestroyView();
     }
@@ -223,10 +226,8 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public Marker addPin(Bitmap pinBitmap, MapObject mapObject) {
-        return googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(mapObject.getCoordinates().getLat(), mapObject.getCoordinates().getLng()))
-                .icon(BitmapDescriptorFactory.fromBitmap(pinBitmap)));
+    public void addMarker(MarkerOptions options) {
+        getPresenter().addMarker(googleMap.addMarker(options));
     }
 
     @Override
@@ -272,6 +273,7 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     protected void onMapLoaded() {
         getPresenter().onMapLoaded();
         mapChangesSubscription = subscribeToCameraChanges();
+        markersClickSubscription = subscribeToMarkersClicks();
     }
 
     private Subscription subscribeToCameraChanges() {
@@ -282,6 +284,15 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                     getPresenter().reloadMapObjects();
                 }, error -> {
                     Timber.e(error.getMessage());
+                });
+    }
+
+    private Subscription subscribeToMarkersClicks() {
+        return MapObservableFactory.createMarkerClickObservable(googleMap)
+                .subscribe(marker -> {
+                    getPresenter().onMarkerClicked(marker);
+                }, error -> {
+                    Timber.e(error, error.getMessage());
                 });
     }
 

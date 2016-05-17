@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.xmpp;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -27,16 +26,11 @@ public class XmppChatManager implements ChatManager {
     @Override
     public GroupChat createGroupChat(@Nullable String roomId, String ownerId) {
         boolean isOwner = TextUtils.equals(ownerId, facade.getUsername());
-        return createGroupChat(roomId, ownerId, isOwner);
-    }
-
-    @Override
-    public GroupChat createGroupChat(@Nullable String roomId, @NonNull String ownerId, boolean isOwner) {
-        return new XmppGroupChat(facade, roomId, ownerId, isOwner);
+        return new XmppGroupChat(facade, roomId, isOwner);
     }
 
     @Override
     public Observable<GroupChat> createGroupChatObservable(@Nullable String roomId, String ownerId) {
-        return Observable.defer(() -> Observable.just(createGroupChat(roomId, ownerId)));
+        return Observable.fromCallable(() -> createGroupChat(roomId, ownerId));
     }
 }

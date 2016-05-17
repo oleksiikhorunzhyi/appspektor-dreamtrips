@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="100dp"
@@ -13,7 +14,10 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/trip_cover"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+            fresco:placeholderImageScaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/trip_mark"
@@ -38,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/black"
             android:textSize="@dimen/font_normal"
@@ -52,6 +57,7 @@
             android:layout_marginTop="@dimen/spacing_tiny"
             android:drawableLeft="@drawable/ic_location_grey"
             android:drawablePadding="@dimen/spacing_small"
+            android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/connecting_overlay_text_color"

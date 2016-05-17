@@ -11,11 +11,11 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.manager.functions.MapObjectConverter;
+import com.worldventures.dreamtrips.modules.trips.manager.TripMapManager;
 import com.worldventures.dreamtrips.modules.trips.manager.functions.ExistsMarkerFilterer;
+import com.worldventures.dreamtrips.modules.trips.manager.functions.MapObjectConverter;
 import com.worldventures.dreamtrips.modules.trips.manager.functions.MarkerOptionsConverter;
 import com.worldventures.dreamtrips.modules.trips.manager.functions.RemoveOldMarkersAction;
-import com.worldventures.dreamtrips.modules.trips.manager.TripMapManager;
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
@@ -42,6 +42,11 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
 
     private Point selectedMarkerPoint;
 
+    public TripMapPresenter() {
+        mapObjects = new ArrayList<>();
+        existsMarkers = new ArrayList<>();
+    }
+
     @Override
     public void dropView() {
         super.dropView();
@@ -65,8 +70,6 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
     }
 
     public void onMapLoaded() {
-        mapObjects = new ArrayList<>();
-        existsMarkers = new ArrayList<>();
         //
         tripMapManager.subscribe(this);
     }

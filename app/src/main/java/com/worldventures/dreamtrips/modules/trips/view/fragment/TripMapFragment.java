@@ -82,7 +82,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
-        if (savedInstanceState != null) mapBundle = savedInstanceState.getBundle(KEY_MAP);
+        if (savedInstanceState != null) {
+            mapBundle = savedInstanceState.getBundle(KEY_MAP);
+        }
     }
 
     @Override
@@ -110,6 +112,14 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            getPresenter().removeInfoIfNeeded();
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         mapView.onResume();
@@ -117,22 +127,19 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         backStackDelegate.setListener(this::onBackPressed);
     }
 
-    private boolean onBackPressed() {
-        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment) {
-            router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
-                    .containerId(R.id.container_info)
-                    .fragmentManager(getChildFragmentManager())
-                    .build());
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
         backStackDelegate.setListener(null);
+    }
+
+    private boolean onBackPressed() {
+        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment) {
+            removeTripsPopupInfo();
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -64,7 +64,7 @@ public class TripMapListFragment extends BaseFragmentWithArgs<TripMapListPresent
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getArgs().getAnchor() != null) {
+        if (isTabletLandscape() && getArgs().getAnchor() != null) {
             switch (getArgs().getAnchor().getPointerPosition()) {
                 case BOTTOM:
                     bottomPointer.setVisibility(View.VISIBLE);

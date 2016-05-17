@@ -97,7 +97,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
                         .onStart(action -> view.showProgress())
-                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onFail(apiErrorPresenter::handleActionError)
                         .onSuccess(action -> attachDtPoints(action.getEstimationPointsHolder().getPoints())));
     }
 

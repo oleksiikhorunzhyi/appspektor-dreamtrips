@@ -73,7 +73,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     private void bindApiJob() {
         jobManager.rateActionPipe.observe()
                 .subscribe(new ActionStateSubscriber<DtlRateAction>()
-                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable)));
+                        .onFail(apiErrorPresenter::handleActionError));
     }
 
     /**

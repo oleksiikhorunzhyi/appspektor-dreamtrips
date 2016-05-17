@@ -157,7 +157,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
                         .onStart(command -> getView().showProgress())
-                        .onFail((command, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onFail(apiErrorPresenter::handleActionError)
                         .onSuccess(this::onLocationsLoaded));
     }
 

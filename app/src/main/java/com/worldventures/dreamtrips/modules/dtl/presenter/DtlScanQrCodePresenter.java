@@ -71,7 +71,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>()
                         .onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
-                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onFail(apiErrorPresenter::handleActionError)
                         .onSuccess(action -> processTransactionResult(action.getResult())));
     }
 

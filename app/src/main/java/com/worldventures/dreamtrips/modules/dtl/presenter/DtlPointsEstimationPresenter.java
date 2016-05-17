@@ -56,7 +56,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
                         .onStart(action -> view.showProgress())
-                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onFail(apiErrorPresenter::handleActionError)
                         .onSuccess(action -> view.showEstimatedPoints(action.getEstimationPointsHolder().getPointsInteger())));
     }
 

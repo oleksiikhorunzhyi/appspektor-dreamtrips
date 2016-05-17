@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
@@ -35,7 +34,6 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
-        apiErrorPresenter.setView(getView());
     }
 
     @Override
@@ -44,6 +42,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
         getView().toggleDefaultCaptionVisibility(true);
         //
         connectLocationsSearch();
+        apiErrorPresenter.setView(getView());
     }
 
     private void connectLocationsSearch() {
@@ -51,7 +50,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
                         .onStart(command -> getView().showProgress())
-                        .onFail((command, throwable) -> onSearchError(throwable))
+                        .onFail(apiErrorPresenter::handleActionError)
                         .onSuccess(this::onSearchFinished));
     }
 
@@ -82,14 +81,6 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
         filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
         History history = History.single(new DtlMerchantsPath());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-    }
-
-    public void onSearchError(Throwable e) {
-        // TODO :: 3/16/16 TEMPORARY NOT TO BULK USER WITH ERRORS
-        // TODO :: 3/16/16 RELATED TO DtlLocationManager bug:
-        // when we perform local search. e.g. we enter 4th symbol right after 3rd, when API-call is
-        // still going - we get "Smth went wrong error" and then it presents loading results as expected
-        if (e instanceof DtApiException) apiErrorPresenter.handleError(e);
     }
 
     /**

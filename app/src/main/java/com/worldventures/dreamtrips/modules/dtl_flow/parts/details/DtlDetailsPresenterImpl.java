@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
@@ -79,6 +80,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                     featureManager.available(Feature.REP_SUGGEST_MERCHANT));
         }
         else processTransaction();
+    }
+
+    @Override
+    public void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        if (visibility == View.VISIBLE && !merchant.hasNoOffers()) {
+            processTransaction();
+        }
     }
 
     @Override

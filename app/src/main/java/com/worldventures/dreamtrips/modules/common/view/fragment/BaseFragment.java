@@ -16,6 +16,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
@@ -52,6 +53,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        MonitoringHelper.setInteractionName(this);
         super.onCreate(savedInstanceState);
         this.presenter = createPresenter(savedInstanceState);
         if (this.presenter == null) {

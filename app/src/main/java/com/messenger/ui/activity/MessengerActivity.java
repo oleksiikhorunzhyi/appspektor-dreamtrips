@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
@@ -84,6 +85,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //
+        MonitoringHelper.setInteractionName(this);
         //
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         // if we launch activity from push we don't load global configurations.

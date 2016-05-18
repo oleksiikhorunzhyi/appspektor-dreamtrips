@@ -13,7 +13,7 @@
     <string name="conversation_list_spinner_item_all_chats">所有聊天</string>
     <string name="conversation_list_spinner_item_group_chats">群聊</string>
 
-    <string name="conversation_list_search_hint">搜索会话…</string>
+    <string name="conversation_list_search_hint">搜索会话...</string>
     <string name="conversation_list_search_edittext_hint">搜索小组和人员</string>
     <string name="conversation_list_item_last_message_text_format_you">您： %1$s</string>
     <string name="conversation_list_item_last_message_image_format_you">您发送了照片</string>
@@ -64,10 +64,23 @@
     <string name="chat_contextual_translate_message">翻译</string>
     <string name="chat_contextual_revert_translate_message">显示最初的</string>
     <string name="chat_contextual_start_chat_format">信息%1$s</string>
+    <string name="chat_contextual_flag">检举</string>
     <string name="chat_share_dialog_location">分享位置</string>
     <string name="chat_share_dialog_image">分享图像</string>
     <string name="chat_share_dialog_cancel">取消</string>
     <string name="chat_could_not_share_location">无法分享位置</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">载入中...</string>
+    <string name="chat_flag_dialog_reason_title">检举</string>
+    <string name="chat_flag_dialog_reason_hint">输入您的理由</string>
+    <string name="chat_flag_dialog_reason_positive_button">接受</string>
+    <string name="chat_flag_dialog_reason_negative_button">取消</string>
+    <string name="chat_flag_dialog_confirmation_title">确认</string>
+    <string name="chat_flag_dialog_confirmation_message_format">WorldVentures相关人员将会为%1$s审查该信息。您想继续吗？</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">发送</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">取消</string>
+    <string name="chat_flag_dialog_flagging_progress">标记中…</string>
+    <string name="chat_flag_failed">未能标记该信息</string>
 
     <!---->
     <!--Chat Settings -->
@@ -103,7 +116,7 @@
     <!--Edit chat members -->
     <!---->
     <string name="edit_chat_members_title">会员（ %1$d ）</string>
-    <string name="edit_chat_members_search_hint">搜索会员…</string>
+    <string name="edit_chat_members_search_hint">搜索会员...</string>
     <string name="edit_chat_members_row_button_delete">删除</string>
     <string name="edit_chat_dialog_confirm_user_deletion_message">您想从聊天室删除此用户吗？</string>
     <string name="edit_chat_dialog_confirm_user_deletion_button_delete">删除</string>
@@ -122,7 +135,7 @@
     <string name="unread_conversation">对话</string>
 
     <string name="disconnected_overlay_disconnected_message">失去连接</string>
-    <string name="disconnected_overlay_connecting_message">连接中…</string>
+    <string name="disconnected_overlay_connecting_message">连接中...</string>
 
     <string name="warning_no_internet_connection">互联网连接不存在</string>
 

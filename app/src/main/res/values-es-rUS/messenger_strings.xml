@@ -13,7 +13,7 @@
     <string name="conversation_list_spinner_item_all_chats">Todos los chats</string>
     <string name="conversation_list_spinner_item_group_chats">Chats de grupo</string>
 
-    <string name="conversation_list_search_hint">Buscar conversaciones …</string>
+    <string name="conversation_list_search_hint">Buscar conversaciones ...</string>
     <string name="conversation_list_search_edittext_hint">Buscar grupos y personas</string>
     <string name="conversation_list_item_last_message_text_format_you">Tú: %1$s</string>
     <string name="conversation_list_item_last_message_image_format_you">Has enviado una foto</string>
@@ -64,10 +64,23 @@
     <string name="chat_contextual_translate_message">Traducir</string>
     <string name="chat_contextual_revert_translate_message">Mostrar original</string>
     <string name="chat_contextual_start_chat_format">Mensaje %1$s</string>
+    <string name="chat_contextual_flag">Flag</string>
     <string name="chat_share_dialog_location">Compartir ubicación</string>
     <string name="chat_share_dialog_image">Compartir imagen</string>
     <string name="chat_share_dialog_cancel">Cancelar</string>
     <string name="chat_could_not_share_location">No se pudo compartir ubicación</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Cargando...</string>
+    <string name="chat_flag_dialog_reason_title">Flag</string>
+    <string name="chat_flag_dialog_reason_hint">Escribe el motivo</string>
+    <string name="chat_flag_dialog_reason_positive_button">Aceptar</string>
+    <string name="chat_flag_dialog_reason_negative_button">Cancelar</string>
+    <string name="chat_flag_dialog_confirmation_title">Confirmar</string>
+    <string name="chat_flag_dialog_confirmation_message_format">El personal de WorldVentures recibirá una notificación para revisar este mensaje para%1$s. ¿Quieres continuar?</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Enviar</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Cancelar</string>
+    <string name="chat_flag_dialog_flagging_progress">Marcando…</string>
+    <string name="chat_flag_failed">No se pudo marcar el mensaje</string>
 
     <!---->
     <!--Chat Settings -->
@@ -122,7 +135,7 @@
     <string name="unread_conversation">Conversaciones</string>
 
     <string name="disconnected_overlay_disconnected_message">Conexión perdida</string>
-    <string name="disconnected_overlay_connecting_message">Conectando …</string>
+    <string name="disconnected_overlay_connecting_message">Conectando ...</string>
 
     <string name="warning_no_internet_connection">La conexión al Internet está ausente</string>
 

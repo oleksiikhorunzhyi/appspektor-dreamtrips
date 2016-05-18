@@ -64,10 +64,23 @@
     <string name="chat_contextual_translate_message">Fordítás</string>
     <string name="chat_contextual_revert_translate_message">Eredeti mutatása</string>
     <string name="chat_contextual_start_chat_format">Üzenet %1$s</string>
+    <string name="chat_contextual_flag">Jelölés</string>
     <string name="chat_share_dialog_location">Helyzet megosztása</string>
     <string name="chat_share_dialog_image">Kép megosztása</string>
     <string name="chat_share_dialog_cancel">Törlés</string>
     <string name="chat_could_not_share_location">Nem sikerült megosztani a helyzetet</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Betöltés…</string>
+    <string name="chat_flag_dialog_reason_title">Jelölés</string>
+    <string name="chat_flag_dialog_reason_hint">Írja be az okot</string>
+    <string name="chat_flag_dialog_reason_positive_button">Elfogadás</string>
+    <string name="chat_flag_dialog_reason_negative_button">Mégse</string>
+    <string name="chat_flag_dialog_confirmation_title">Megerősítés</string>
+    <string name="chat_flag_dialog_confirmation_message_format">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt az üzenetet %1$s számára. Folytatod?</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Küldés</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Mégse</string>
+    <string name="chat_flag_dialog_flagging_progress">Megjelölés ...</string>
+    <string name="chat_flag_failed">Üzenet megjelölés sikertelen</string>
 
     <!---->
     <!--Chat Settings -->

@@ -64,10 +64,23 @@
     <string name="chat_contextual_translate_message">Μετάφραση</string>
     <string name="chat_contextual_revert_translate_message">Δείξε αρχικό</string>
     <string name="chat_contextual_start_chat_format">Μήνυμα%1$s</string>
+    <string name="chat_contextual_flag">Σημαία</string>
     <string name="chat_share_dialog_location">Κοινοποίηση τοποθεσίας</string>
     <string name="chat_share_dialog_image">Κοινοποίηση εικόνας</string>
     <string name="chat_share_dialog_cancel">Ακύρωση</string>
     <string name="chat_could_not_share_location">Δεν μπορεί να γίνει κοινοποίηση τοποθεσίας</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Φόρτωση…</string>
+    <string name="chat_flag_dialog_reason_title">Σημαία</string>
+    <string name="chat_flag_dialog_reason_hint">Πληκτρολογήστε τον λόγο</string>
+    <string name="chat_flag_dialog_reason_positive_button">Αποδοχή</string>
+    <string name="chat_flag_dialog_reason_negative_button">Ακύρωση</string>
+    <string name="chat_flag_dialog_confirmation_title">Επιβεβαίωση</string>
+    <string name="chat_flag_dialog_confirmation_message_format">Το προσωπικό της WorldVentures θα ειδοποιηθεί για να αναθεωρήσει αυτό το μήνυμα για %1$s. Θέλετε να συνεχίσετε;</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Αποστολή</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Ακύρωση</string>
+    <string name="chat_flag_dialog_flagging_progress">Επισημαίνεται...</string>
+    <string name="chat_flag_failed">Αποτυχία επισήμανσης μηνύματος</string>
 
     <!---->
     <!--Chat Settings -->

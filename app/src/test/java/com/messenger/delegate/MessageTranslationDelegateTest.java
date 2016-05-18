@@ -79,7 +79,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
 
         verify(translationsDAO, times(0)).save(any(DataTranslation.class));
         verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
-        verify(localeHelper, times(0)).getAccountLocaleFormatted(testUser);
+        verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
 
         TestSubscriberAssertUtils.isNoErrorAndUnsubscribed(testSubscriber);
     }
@@ -126,7 +126,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
 
         verify(translationsDAO, times(1)).save(any(DataTranslation.class));
         verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
-        verify(localeHelper, times(0)).getAccountLocaleFormatted(testUser);
+        verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
 
         TestSubscriberAssertUtils.isNoErrorAndUnsubscribed(testSubscriber);
     }

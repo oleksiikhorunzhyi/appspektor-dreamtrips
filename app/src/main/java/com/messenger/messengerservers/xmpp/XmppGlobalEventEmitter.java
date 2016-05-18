@@ -1,8 +1,9 @@
 package com.messenger.messengerservers.xmpp;
 
+import android.text.TextUtils;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.GlobalEventEmitter;
-import com.messenger.messengerservers.listeners.MessagesDeletedListener;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
@@ -168,7 +169,16 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         String fromJid = stanza.getFrom();
         boolean processed = processGroupChatParticipantsActions(presence, fromJid);
         if (!processed && (Type.available == presenceType || Type.unavailable == presenceType)) {
-            notifyUserPresenceChanged(JidCreatorHelper.obtainId(fromJid), Type.available == presenceType);
+            processIncomingPresence(JidCreatorHelper.obtainId(fromJid), Type.available == presenceType);
+        }
+    }
+
+    private void processIncomingPresence(String userId, boolean online ) {
+        // if our offline presence from another device and the current device is online we should resend online presence
+        if (TextUtils.equals(facade.getUsername(), userId) && !online && facade.isConnected()) {
+            facade.sendInitialPresence();
+        } else {
+            notifyUserPresenceChanged(userId, online);
         }
     }
 

@@ -1,16 +1,22 @@
 package com.messenger.ui.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.messenger.entities.PhotoAttachment;
 import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.module.flagging.FullScreenFlaggingViewImpl;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
+import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.FullScreenPhotoFragment;
 
 import butterknife.InjectView;
@@ -56,5 +62,16 @@ public class MessageImageFullscreenFragment extends FullScreenPhotoFragment<Mess
     @Override
     public void setShowFlag(boolean showFlag) {
         flagView.setVisibility(showFlag ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setContent(IFullScreenObject photo) {
+        if (!TextUtils.isEmpty(photo.getFSImage().getUrl())) {
+            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                    .setUri(photo.getFSImage().getUrl())
+                    .build();
+
+            ivImage.setController(draweeController);
+        }
     }
 }

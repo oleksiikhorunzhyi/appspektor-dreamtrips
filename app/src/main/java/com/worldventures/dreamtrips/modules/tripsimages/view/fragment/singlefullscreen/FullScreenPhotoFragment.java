@@ -40,7 +40,7 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
         extends BaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements FullScreenPresenter.View {
 
     @InjectView(R.id.iv_image)
-    ScaleImageView ivImage;
+    protected ScaleImageView ivImage;
 
     @Inject
     @Named(RouteCreatorModule.PROFILE)

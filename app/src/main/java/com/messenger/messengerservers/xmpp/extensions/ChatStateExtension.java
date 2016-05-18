@@ -2,7 +2,7 @@ package com.messenger.messengerservers.xmpp.extensions;
 
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.ChatState;
+import com.messenger.messengerservers.chat.ChatState;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;

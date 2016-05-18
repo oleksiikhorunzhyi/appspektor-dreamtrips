@@ -14,8 +14,10 @@ import com.badoo.mobile.util.WeakHandler;
 import com.google.gson.Gson;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.di.MessengerActivityModule;
+import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
 import com.messenger.flow.util.GsonParceler;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
@@ -25,11 +27,11 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.core.flow.path.AttributedPath;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.activity.ActivityWithPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
@@ -84,7 +86,14 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //
+        MonitoringHelper.setInteractionName(this);
+        //
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
+        // if we launch activity from push we don't load global configurations.
+        // So we should notify MessengerConnector that there won't be loading configs
+        if (!TextUtils.isEmpty(conversationId)) {
+            MessengerConnector.getInstance().connectAfterGlobalConfig();
+        }
         //
         initPickerLayout();
         initNavDrawer();
@@ -260,8 +269,8 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
 
     void setNavigation(Path path) {
         boolean enabled = false;
-        if (path instanceof AttributedPath) {
-            PathAttrs attrs = ((AttributedPath) path).getAttrs();
+        if (path instanceof StyledPath) {
+            PathAttrs attrs = ((StyledPath) path).getAttrs();
             enabled = attrs.isDrawerEnabled();
         }
         //

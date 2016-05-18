@@ -148,7 +148,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             UserSession userSession = appSessionHolder.get().get();
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
-            MessengerConnector.getInstance().connect();
+
+            MessengerConnector.getInstance().connectAfterGlobalConfig();
         } else {
             router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

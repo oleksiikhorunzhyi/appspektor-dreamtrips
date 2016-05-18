@@ -52,7 +52,7 @@ public abstract class BaseAttachmentDAO<E extends BaseProviderModel> extends Bas
                 .withSelectionArgs(new String[]{attachmentId})
                 .build();
         return query(q, getModelTableUri())
-                .compose(DaoTransformers.toAttachment(clazz));
+                .compose(DaoTransformers.toEntity(clazz));
     }
 
     public Observable<E> getAttachmentByMessageId(String messageId) {
@@ -65,7 +65,7 @@ public abstract class BaseAttachmentDAO<E extends BaseProviderModel> extends Bas
                 .withSelectionArgs(new String[]{messageId})
                 .build();
         return query(q, getModelTableUri())
-                .compose(DaoTransformers.toAttachment(clazz));
+                .compose(DaoTransformers.toEntity(clazz));
     }
 
     public void delete(E attachment) {

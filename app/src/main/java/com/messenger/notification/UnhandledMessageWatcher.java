@@ -8,7 +8,7 @@ import android.text.Html;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.ChatMessagesEventDelegate;
+import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;

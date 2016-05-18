@@ -3,6 +3,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
+apply plugin: 'newrelic'
 //
 apply from: 'helper-methods.gradle'
 
@@ -28,7 +29,7 @@ android {
     def versionMajor = 1
     def versionMinor = 11
     def versionPatch = 0
-    def versionBuild = 0  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 1  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"
@@ -54,8 +55,8 @@ android {
     def BUILD_LOG_TAG = "BUILD_LOG"
     //
     def CONFIG_MAP_DEFAULT = [
-            'DreamTripsApi' : '"http://techery-dt-staging.techery.io"',
-            'S3Api' : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config"',
+            'DreamTripsApi' : '"http://techery-dt-preprod.techery.io"',
+            'S3Api' : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
             'MESSENGER_API_URL' : '"dtmsgapp-dev.worldventures.biz"',
     ]
     def CONFIG_MAP_DTL = [
@@ -106,6 +107,7 @@ android {
 
         buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
+        buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
         ext.enableCrashlytics = true
         //
         buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
@@ -119,6 +121,10 @@ android {
         manifestPlaceholders = [:]
         manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
         manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 
     flavorDimensions "build", "stream", "config"
@@ -155,6 +161,7 @@ android {
             //
             manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
+            buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'true'
         }
     }
 
@@ -365,6 +372,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.newrelic.agent.android:android-agent:5.6.0'
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
     compile 'com.github.techery:job-executor:0.1.1'
     compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'
@@ -448,4 +456,9 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.assertj:assertj-core:1.7.1'
+    //
+    testCompile "org.powermock:powermock-module-junit4:1.6.4"
+    testCompile "org.powermock:powermock-module-junit4-rule:1.6.4"
+    testCompile "org.powermock:powermock-api-mockito:1.6.4"
+    testCompile "org.powermock:powermock-classloading-xstream:1.6.4"
 }

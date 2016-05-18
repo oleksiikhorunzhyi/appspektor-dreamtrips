@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
@@ -30,7 +30,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     ProgressBar groupAvatarsViewProgressBar;
 
     private ChatSettingsRow membersSettingsRow;
-    private ConversationHelper conversationHelper;
 
     @Inject
     MessengerMediaPickerDelegate messengerMediaPickerDelegate;
@@ -46,7 +45,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     protected void initUi() {
         injector.inject(this);
-        conversationHelper = new ConversationHelper();
         super.initUi();
     }
 
@@ -75,7 +73,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
 
     @Override
     public void setParticipants(DataConversation conversation, List<DataUser> participants) {
-        conversationHelper.setTitle(chatNameTextView, conversation, participants, false);
+        ConversationUIHelper.setTitle(chatNameTextView, conversation, participants, false);
         String chatDescriptionFormat = getContext()
                 .getString(R.string.chat_settings_group_chat_description);
         int onlineCount = 0;

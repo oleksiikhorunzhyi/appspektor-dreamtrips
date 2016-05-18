@@ -8,14 +8,14 @@ import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
 import java.util.UUID;
 
 import rx.Observable;
-import timber.log.Timber;
+import rx.functions.Func1;
 
 class SendMessageTransformer implements Observable.Transformer<Message, Message> {
     private XmppGlobalEventEmitter emitter;
-    private final SendAction<org.jivesoftware.smack.packet.Message> sendAction;
+    private final Func1<org.jivesoftware.smack.packet.Message, Observable<Void>> sendAction;
     private final XmppMessageConverter messageConverter;
 
-    public SendMessageTransformer(XmppGlobalEventEmitter emitter, SendAction<org.jivesoftware.smack.packet.Message> sendAction) {
+    public SendMessageTransformer(XmppGlobalEventEmitter emitter, Func1<org.jivesoftware.smack.packet.Message, Observable<Void>> sendAction) {
         messageConverter = new XmppMessageConverter();
         this.emitter = emitter;
         this.sendAction = sendAction;
@@ -28,21 +28,17 @@ class SendMessageTransformer implements Observable.Transformer<Message, Message>
                     if (message.getId() == null) message.setId(UUID.randomUUID().toString());
                     emitter.interceptPreOutgoingMessages(message);
                 })
-                .flatMap(message -> Observable.<Message>create(subscriber -> {
-                    try {
-                        sendAction.call(messageConverter.convert(message));
-                    } catch (Throwable throwable) {
-                        Timber.e(throwable, "send message");
-
-                        message.setStatus(MessageStatus.ERROR);
-                        emitter.interceptErrorMessage(message);
-
-                        subscriber.onError(throwable);
-                    }
-                    message.setStatus(MessageStatus.SENT);
-                    subscriber.onNext(message);
-                    subscriber.onCompleted();
-                }))
-                .doOnNext(emitter::interceptOutgoingMessages);
+                .flatMap(message ->
+                        sendAction.call(messageConverter.convert(message))
+                                .doOnError(throwable -> {
+                                    message.setStatus(MessageStatus.ERROR);
+                                    emitter.interceptErrorMessage(message);
+                                })
+                                .doOnNext(aVoid -> {
+                                    message.setStatus(MessageStatus.SENT);
+                                    emitter.interceptOutgoingMessages(message);
+                                })
+                                .map(o -> message)
+                );
     }
-    }
+}

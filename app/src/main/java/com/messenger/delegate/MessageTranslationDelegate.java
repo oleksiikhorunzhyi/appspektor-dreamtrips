@@ -10,6 +10,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -28,17 +29,17 @@ public class MessageTranslationDelegate {
         this.localeHelper = localeHelper;
     }
 
-    public void translateMessage(DataMessage message, SessionHolder<UserSession> userSession) {
+    public void translateMessage(DataMessage message, SessionHolder<UserSession> sessionHolder) {
         translationsDAO.getTranslation(message.getId()).first()
                 .subscribe(dataTranslation -> {
+                    String translateToLocale = localeHelper.getAccountLocaleFormatted(sessionHolder.get().get().getUser());
                     if ((dataTranslation == null || dataTranslation.getTranslateStatus() == TranslationStatus.ERROR)
-                            && SessionHolderHelper.hasEntity(userSession)){
-                        translateMessageRequest(message, localeHelper.
-                                getAccountLocaleFormatted(userSession.get().get().getUser()));
-
+                            && SessionHolderHelper.hasEntity(sessionHolder)){
+                        translateMessageRequest(message, translateToLocale);
                         return;
                     }
                     if (dataTranslation != null && dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED){
+                        TrackingHelper.translateMessage(translateToLocale);
                         dataTranslation.setTranslateStatus(TranslationStatus.TRANSLATED);
                         translationsDAO.save(dataTranslation);
                     }
@@ -52,7 +53,10 @@ public class MessageTranslationDelegate {
         janet.createPipe(TranslateTextAction.class, Schedulers.io())
                 .createObservable(new TranslateTextAction(dataMessage.getText(), toLocale))
                 .subscribe(new ActionStateSubscriber<TranslateTextAction>()
-                        .onSuccess(translateTextAction -> onTranslatedText(dataTranslation, translateTextAction.getTranslatedText()))
+                        .onSuccess(translateTextAction -> {
+                            TrackingHelper.translateMessage(toLocale);
+                            onTranslatedText(dataTranslation, translateTextAction.getTranslatedText());
+                        })
                         .onFail((translateTextAction, throwable) -> onError(dataTranslation, throwable)));
     }
 

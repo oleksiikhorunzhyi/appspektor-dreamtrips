@@ -29,8 +29,7 @@ public class MessengerConnection extends XMPPTCPConnection {
             } else {
                 stanza = PacketParserUtils.parseStanza(parser);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
                     parserDepth);
             UnparsablePacket message = new UnparsablePacket(content, e);

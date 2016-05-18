@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.view.layout.MessengerScreen;
 import com.worldventures.dreamtrips.R;
@@ -21,8 +21,8 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
 
     protected Context context;
 
-    protected Observable<ConnectionStatus> connectionStatusStream;
-    protected ConnectionStatus currentConnectivityStatus = ConnectionStatus.DISCONNECTED;
+    protected Observable<SyncStatus> connectionStatusStream;
+    protected SyncStatus currentConnectivityStatus = SyncStatus.DISCONNECTED;
 
     public MessengerPresenterImpl(Context context) {
         this.context = context;
@@ -46,7 +46,7 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
     }
 
     protected boolean isConnectionPresent() {
-        return currentConnectivityStatus == ConnectionStatus.CONNECTED;
+        return currentConnectivityStatus == SyncStatus.CONNECTED;
     }
 
     protected void showAbsentConnectionMessage(Context context) {

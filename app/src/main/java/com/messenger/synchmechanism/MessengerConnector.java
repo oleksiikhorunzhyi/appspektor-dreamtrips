@@ -6,13 +6,14 @@ import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.messenger.delegate.LoaderDelegate;
+import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.listeners.AuthorizeListener;
-import com.messenger.messengerservers.listeners.ConnectionListener;
 import com.messenger.util.EventBusWrapper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -20,10 +21,6 @@ import rx.subjects.BehaviorSubject;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
-import static com.messenger.synchmechanism.ConnectionStatus.CONNECTED;
-import static com.messenger.synchmechanism.ConnectionStatus.CONNECTING;
-import static com.messenger.synchmechanism.ConnectionStatus.DISCONNECTED;
-import static com.messenger.synchmechanism.ConnectionStatus.ERROR;
 
 public class MessengerConnector {
 
@@ -35,7 +32,9 @@ public class MessengerConnector {
     private final MessengerServerFacade messengerServerFacade;
     private final MessengerCacheSynchronizer messengerCacheSynchronizer;
     //
-    private final BehaviorSubject<ConnectionStatus> connectionStream = BehaviorSubject.create(ConnectionStatus.DISCONNECTED);
+    private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
+    //
+    private AtomicBoolean loadedGlobalConfigurations;
 
     private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                                SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
@@ -45,14 +44,34 @@ public class MessengerConnector {
         this.messengerServerFacade = messengerServerFacade;
         this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(loaderDelegate);
         this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
+        this.loadedGlobalConfigurations = new AtomicBoolean(false);
 
-        messengerServerFacade.addAuthorizationListener(authListener);
-        messengerServerFacade.addConnectionListener(connectionListener);
+        messengerServerFacade
+                .getStatusObservable()
+                .subscribe(this::handleFacadeStatus);
 
         activityWatcher.addOnStartStopListener(startStopAppListener);
 
         eventBusWrapper.register(this);
         networkEvents.register();
+    }
+
+    private void handleFacadeStatus(ConnectionStatus status) {
+        switch (status) {
+            case DISCONNECTED:
+                connectionStream.onNext(SyncStatus.DISCONNECTED);
+                break;
+            case CONNECTING:
+                connectionStream.onNext(SyncStatus.CONNECTING);
+                break;
+            case ERROR:
+                connectionStream.onNext(SyncStatus.ERROR);
+                break;
+            case CONNECTED:
+                syncData();
+                break;
+            default:
+        }
     }
 
     public static MessengerConnector getInstance() {
@@ -70,26 +89,32 @@ public class MessengerConnector {
                 loaderDelegate, eventBusWrapper);
     }
 
-    public Observable<ConnectionStatus> status() {
+    public Observable<SyncStatus> status() {
         return connectionStream.asObservable();
     }
 
-    public void connect() {
-        synchronized (messengerServerFacade) {
-            if (isConnectingOrConnected() || !isUserSessionPresent()) return;
+    /**
+     * This method should be called after loading all global configurations.
+     * Also the one should be called if there is no need to load configurations
+     */
+    public void connectAfterGlobalConfig() {
+        loadedGlobalConfigurations.set(true);
+        connect();
+    }
 
-            connectionStream.onNext(CONNECTING);
-            UserSession userSession = appSessionHolder.get().get();
-            if (userSession.getUser() == null) return;
-            messengerServerFacade.authorizeAsync(userSession.getUsername(), userSession.getLegacyApiToken());
-        }
+    /**
+     * Should be called when we need to reconnect connection.
+     */
+    public void connect() {
+        if (!loadedGlobalConfigurations.get()) return;
+        if (messengerServerFacade.isConnected() || !isUserSessionPresent()) return;
+        UserSession userSession = appSessionHolder.get().get();
+        if (userSession.getUser() == null) return;
+        messengerServerFacade.connect(userSession.getUsername(), userSession.getLegacyApiToken());
     }
 
     public void disconnect() {
-        synchronized (messengerServerFacade) {
-            if (!isConnectingOrConnected()) return;
-            messengerServerFacade.disconnectAsync(() -> connectionStream.onNext(DISCONNECTED));
-        }
+        messengerServerFacade.disconnect();
     }
 
     public void onEvent(ConnectivityChanged event) {
@@ -102,41 +127,25 @@ public class MessengerConnector {
         }
     }
 
-    private boolean isConnectingOrConnected() {
-        ConnectionStatus status = connectionStream.getValue();
-        return status == CONNECTING || status == CONNECTED;
-    }
-
     private boolean isUserSessionPresent() {
         return appSessionHolder != null && appSessionHolder.get() != null
                 && appSessionHolder.get().isPresent();
     }
 
-    private final AuthorizeListener authListener = new AuthorizeListener() {
-        @Override
-        public void onSuccess() {
+    private void syncData() {
+        // TODO: 4/28/16 is this make sense?
+        if (messengerServerFacade.sendInitialPresence()) {
+            connectionStream.onNext(SyncStatus.SYNC_DATA);
             if (messengerServerFacade.sendInitialPresence()) {
                 messengerCacheSynchronizer.updateCache(success -> {
                     messengerServerFacade.setActive(success);
-                    connectionStream.onNext(success ? CONNECTED : ERROR);
+                    connectionStream.onNext(SyncStatus.CONNECTED);
                 });
             } else {
-                connectionStream.onNext(ERROR);
+                connectionStream.onNext(SyncStatus.ERROR);
             }
         }
-
-        @Override
-        public void onFailed(Exception exception) {
-            connectionStream.onNext(ERROR);
-        }
-    };
-
-    private final ConnectionListener connectionListener = new ConnectionListener() {
-        @Override
-        public void onDisconnected() {
-            connectionStream.onNext(DISCONNECTED);
-        }
-    };
+    }
 
     private final ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
         @Override

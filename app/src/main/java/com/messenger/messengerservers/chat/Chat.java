@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.chat;
 
-import com.messenger.messengerservers.ChatState;
 import com.messenger.messengerservers.model.Message;
 
 import rx.Observable;
@@ -10,7 +9,7 @@ public interface Chat {
 
     Observable<String> sendReadStatus(String messageId);
 
-    void setCurrentState(@ChatState.State String state);
+    Observable<String> setCurrentState(@ChatState.State String state);
 
     void close();
 }

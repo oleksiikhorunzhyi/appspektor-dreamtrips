@@ -3,7 +3,7 @@ package com.messenger.delegate.command;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
-import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.ui.helper.ConversationHelper;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
@@ -25,16 +25,16 @@ public abstract class BaseChatAction<Result> extends CommandActionBase<Result> i
         return conversation;
     }
 
-    protected Observable<MultiUserChat> createMultiChat() {
+    protected Observable<GroupChat> createMultiChat() {
       return messengerServerFacade.getChatManager()
-              .createMultiUserChatObservable(conversation.getId(), messengerServerFacade.getUsername());
+              .createGroupChatObservable(conversation.getId(), messengerServerFacade.getUsername());
     }
 
     protected Chat getChat() {
         if (ConversationHelper.isSingleChat(conversation)) {
             return messengerServerFacade.getChatManager().createSingleUserChat(null, conversation.getId());
         } else {
-            return messengerServerFacade.getChatManager().createMultiUserChat(conversation.getId(), conversation.getOwnerId());
+            return messengerServerFacade.getChatManager().createGroupChat(conversation.getId(), conversation.getOwnerId());
         }
     }
 }

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationParticipantsIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationParticipantsIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;

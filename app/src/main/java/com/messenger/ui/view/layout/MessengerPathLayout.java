@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import com.messenger.flow.path.PathView;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.presenter.MessengerPresenter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 
 import flow.path.Path;
 
@@ -20,6 +21,7 @@ public abstract class MessengerPathLayout<V extends MessengerScreen, P extends M
 
     public MessengerPathLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        MonitoringHelper.startInteractionName(this);
     }
 
     @Override
@@ -28,8 +30,8 @@ public abstract class MessengerPathLayout<V extends MessengerScreen, P extends M
         onPrepared();
     }
 
+    /** Safe method to init UI with path provided */
     protected void onPrepared() {
-        // safe method to init UI with path provided
     }
 
     @Override

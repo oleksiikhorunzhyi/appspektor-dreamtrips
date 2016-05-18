@@ -68,7 +68,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     public ChatMembersScreenPresenterImpl(Context context, Injector injector) {
         super(context);
 
-       injector.inject(this);
+        injector.inject(this);
 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);
@@ -93,24 +93,22 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     }
 
     protected void connectToContacts() {
-        Observable<CharSequence> selectedContactsWithSearchQuery = getView().getSearchQueryObservable();
-
-        selectedContactsWithSearchQuery.subscribe(this::processSelectedContactsHeaderChange);
-
-        Observable<CharSequence> searchQueryObservable = selectedContactsWithSearchQuery
+        Observable<CharSequence> searchQueryObservable = getView().getSearchQueryObservable()
                 .compose(bindView())
+                .doOnNext(this::processSelectedContactsHeaderChange)
                 .filter(this::searchFilterAvailable)
                 .map(this::prepareSearchQuery);
 
         getExistingAndFutureParticipants()
                 .compose(bindView())
                 .flatMap(existingAndFutureParticipantsPair ->
-                    searchHelper.search(createContactListObservable(), searchQueryObservable,
-                            (user, filter) -> StringUtils.containsIgnoreCase(user.getDisplayedName(), filter))
-                    .compose(userSectionHelper.prepareItemInCheckableList(
-                             existingAndFutureParticipantsPair.first,
-                             existingAndFutureParticipantsPair.second))
-                    .map(pair -> pair.first))
+                        searchHelper.search(createContactListObservable(), searchQueryObservable,
+                                (user, filter) -> StringUtils.containsIgnoreCase(user.getDisplayedName(), filter))
+                                .compose(userSectionHelper.prepareItemInCheckableList(
+                                        existingAndFutureParticipantsPair.first,
+                                        existingAndFutureParticipantsPair.second))
+                                .map(pair -> pair.first)
+                )
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::addListItems);
     }
@@ -123,7 +121,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
 
     private CharSequence prepareSearchQuery(CharSequence textInChosenContactsEditTextWithSearchQuery) {
         String contactsWithQuery = textInChosenContactsEditTextWithSearchQuery.toString();
-        return TextUtils.isEmpty(lastChosenContacts) ? contactsWithQuery : contactsWithQuery.substring(lastChosenContacts.length());
+        return TextUtils.isEmpty(lastChosenContacts)
+                ? contactsWithQuery
+                : contactsWithQuery.substring(lastChosenContacts.length());
     }
 
     private boolean searchFilterAvailable(CharSequence text) {
@@ -211,7 +211,8 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
             ContactsHeaderCreator.ContactsHeaderInfo headerInfo = contactsHeaderCreator
                     .createHeader(existingAndFutureParticipants, currentSearchFilter);
             lastChosenContacts = headerInfo.getContactsList();
-            getView().setSelectedUsersHeaderText(headerInfo.getSelectedContactsFormattedCount(), headerInfo.getContactsListWithSearchQuery());
+            getView().setSelectedUsersHeaderText(headerInfo.getSelectedContactsFormattedCount(),
+                    headerInfo.getContactsListWithSearchQuery());
         }, e -> Timber.e(e, "Could not get participants"));
     }
 

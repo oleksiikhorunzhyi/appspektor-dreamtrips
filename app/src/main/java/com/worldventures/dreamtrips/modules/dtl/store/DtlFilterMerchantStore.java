@@ -39,7 +39,7 @@ public class DtlFilterMerchantStore {
     @Inject
     DtlMerchantStore dtlMerchantStore;
     @Inject
-    DtlLocationManager dtlLocationManager;
+    DtlActionPipesHolder pipesHolder;
     @Inject
     LocationDelegate locationDelegate;
     @Inject
@@ -88,7 +88,7 @@ public class DtlFilterMerchantStore {
     private void connectFilterMerchantsPipe() {
         observeStateChange()
                 .subscribe(data -> {
-                    filterMerchantsPipe.send(new DtlFilterMerchantsAction(data, dtlMerchantStore, dtlLocationManager, locationDelegate));
+                    filterMerchantsPipe.send(new DtlFilterMerchantsAction(data, dtlMerchantStore, pipesHolder.locationPipe, locationDelegate));
                 });
     }
 

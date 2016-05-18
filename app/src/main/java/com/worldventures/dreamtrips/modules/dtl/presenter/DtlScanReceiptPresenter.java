@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
@@ -37,7 +37,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     @Inject
     DtlMerchantStore merchantStore;
     @Inject
-    DtlJobManager jobManager;
+    DtlActionPipesHolder jobManager;
     //
     @State
     String amount;

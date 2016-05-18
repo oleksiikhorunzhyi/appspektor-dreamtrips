@@ -4,13 +4,10 @@ import android.annotation.SuppressLint;
 import android.location.Location;
 
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.ResultOnlyFilter;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
@@ -36,21 +33,14 @@ import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction.Action.CLEAN;
 import static com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction.Action.LOAD;
 
 public class DtlMerchantStore {
 
     @Inject
-    RetryLoginComposer retryLoginComposer;
-    @Inject
-    SnappyRepository db;
-    @Inject
-    DtlLocationManager dtlLocationManager;
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
     Janet janet;
+    @Inject
+    DtlActionPipesHolder pipesHolder;
 
     private final ActionPipe<DtlUpdateAmenitiesAction> updateAmenitiesPipe;
     private final ActionPipe<DtlMerchantsAction> merchantsPipe;
@@ -81,10 +71,6 @@ public class DtlMerchantStore {
         storePipe.observeSuccess()
                 .filter(action -> action.getResult() == LOAD)
                 .subscribe(this::onLoadMerchants);
-
-        storePipe.observeSuccess()
-                .filter(action -> action.getResult() == CLEAN)
-                .subscribe(this::onClear);
     }
 
     private void connectMerchantsPipe() {
@@ -95,7 +81,7 @@ public class DtlMerchantStore {
                 .filter(DtlMerchantsAction::isFromApi)
                 .subscribe(action -> {
                     tryUpdateLocation(action.getCacheData());
-                    updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(db, action.getCacheData()));
+                    updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(action.getCacheData()));
                 }, Throwable::printStackTrace);
     }
 
@@ -114,14 +100,8 @@ public class DtlMerchantStore {
         merchantsPipe.send(DtlMerchantsAction.fromApi(locationArg), Schedulers.io());
     }
 
-    private void onClear(DtlMerchantStoreAction action) {
-        merchantsPipe.clearReplays();
-        db.clearMerchantData();
-        state = null;
-    }
-
     private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-        dtlLocationManager.getSelectedLocation()
+        pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
                 .filter(command -> {
                     LocationSourceType sourceType = command.getResult().getLocationSourceType();
                     return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)
@@ -135,7 +115,7 @@ public class DtlMerchantStore {
                             .withLongName(location.getLocationSourceType() == LocationSourceType.FROM_MAP
                                     ? nearestMerchant.getCity() : location.getLongName())
                             .withAnalyticsName(nearestMerchant.getAnalyticsName());
-                    dtlLocationManager.persistLocation(updatedLocation);
+                    pipesHolder.locationPipe.send(DtlLocationCommand.change(updatedLocation));
                 });
     }
 

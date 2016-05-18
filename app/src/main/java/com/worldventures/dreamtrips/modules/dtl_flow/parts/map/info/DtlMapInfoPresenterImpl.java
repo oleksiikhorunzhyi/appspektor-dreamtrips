@@ -13,8 +13,8 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -32,7 +32,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
     @Inject
     DtlFilterMerchantStore filteredMerchantStore;
     @Inject
-    DtlLocationManager dtlLocationManager;
+    DtlActionPipesHolder pipesHolder;
     //
     protected DtlMerchant merchant;
 
@@ -67,7 +67,7 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
         filteredMerchantStore.getFilterDataState()
                 .map(DtlFilterData::getSearchQuery)
                 .filter(query -> !TextUtils.isEmpty(query))
-                .flatMap(query -> dtlLocationManager.getSelectedLocation()
+                .flatMap(query -> pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
                         .map(DtlLocationCommand::getResult)
                         .map(location -> new Pair<>(query, location)))
                 .subscribe(pair -> {

@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -57,7 +57,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     @Inject
     DtlMerchantStore merchantStore;
     @Inject
-    DtlLocationManager dtlLocationManager;
+    DtlActionPipesHolder pipesHolder;
     //
     @State
     boolean initialized;
@@ -84,7 +84,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         bindFilterState();
         //
         if (!initialized) {
-            dtlLocationManager.getSelectedLocation()
+            pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
                     .map(DtlLocationCommand::getResult)
                     .compose(bindViewIoToMainComposer())
                     .subscribe(location -> merchantStoreActionPipe.send(
@@ -114,7 +114,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                         .onFail(apiErrorPresenter::handleActionError));
         //
         Observable.combineLatest(
-                dtlLocationManager.getSelectedLocation().map(DtlLocationCommand::getResult),
+                pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
+                        .map(DtlLocationCommand::getResult),
                 filteredMerchantStore.getFilterDataState().map(DtlFilterData::getSearchQuery),
                 Pair::new
         ).compose(bindViewIoToMainComposer())
@@ -203,7 +204,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         Observable.combineLatest(
                 filteredMerchantStore.getFilterDataState()
                         .map(DtlFilterData::getSearchQuery),
-                dtlLocationManager.getSelectedLocation()
+                pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
                         .map(DtlLocationCommand::getResult),
                 Pair::new
         ).compose(bindViewIoToMainComposer())

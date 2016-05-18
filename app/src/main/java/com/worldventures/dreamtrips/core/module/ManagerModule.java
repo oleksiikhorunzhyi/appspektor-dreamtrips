@@ -25,9 +25,8 @@ import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
@@ -59,10 +58,9 @@ import io.techery.janet.Janet;
 
                 LogoutDelegate.class,
                 //
-                DtlLocationManager.class,
                 DtlFilterMerchantStore.class,
                 DtlMerchantStore.class,
-                DtlJobManager.class,
+                DtlActionPipesHolder.class,
 
                 GlobalConfigManager.class,
         },
@@ -104,12 +102,6 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlLocationManager dtlLocationStore(@ForApplication Injector injector) {
-        return new DtlLocationManager(injector);
-    }
-
-    @Singleton
-    @Provides
     DtlMerchantStore dtlMerchantStore(@ForApplication Injector injector) {
         return new DtlMerchantStore(injector);
     }
@@ -122,8 +114,8 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlJobManager provideDtlJobManager(@ForApplication Injector injector) {
-        return new DtlJobManager(injector);
+    DtlActionPipesHolder provideDtlActionPipesHolder(Janet janet) {
+        return new DtlActionPipesHolder(janet);
     }
 
 

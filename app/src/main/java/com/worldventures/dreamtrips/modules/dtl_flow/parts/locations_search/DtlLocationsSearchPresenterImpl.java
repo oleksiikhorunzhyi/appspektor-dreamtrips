@@ -8,10 +8,11 @@ import android.view.MenuItem;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
@@ -27,9 +28,9 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
         implements DtlLocationsSearchPresenter {
 
     @Inject
-    DtlLocationManager dtlLocationManager;
-    @Inject
     DtlFilterMerchantStore filterMerchantStore;
+    @Inject
+    DtlActionPipesHolder pipesHolder;
 
     public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -46,7 +47,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     }
 
     private void connectLocationsSearch() {
-        dtlLocationManager.searchLocationPipe().observeWithReplay()
+        pipesHolder.searchLocationPipe.observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
                         .onStart(command -> getView().showProgress())
@@ -64,20 +65,25 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
 
     @Override
     public void searchClosed() {
-        dtlLocationManager.searchLocations("");
+        sendSearchAction("");
         Flow.get(getContext()).goBack();
     }
 
     @Override
     public void search(String query) {
         getView().toggleDefaultCaptionVisibility(query.isEmpty());
-        dtlLocationManager.searchLocations(query.trim());
+        sendSearchAction(query);
+    }
+
+    private void sendSearchAction(String query) {
+        pipesHolder.searchLocationPipe.cancelLatest();
+        pipesHolder.searchLocationPipe.send(new DtlSearchLocationAction(query.trim()));
     }
 
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
-        dtlLocationManager.persistLocation(location);
+        pipesHolder.locationPipe.send(DtlLocationCommand.change(location));
         filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
         History history = History.single(new DtlMerchantsPath());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);

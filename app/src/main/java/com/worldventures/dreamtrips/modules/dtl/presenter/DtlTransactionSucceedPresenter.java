@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.action.DtlRateAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import javax.inject.Inject;
@@ -26,7 +26,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     @Inject
     DtlMerchantStore merchantStore;
     @Inject
-    DtlJobManager jobManager;
+    DtlActionPipesHolder jobManager;
     //
     @State
     int stars;

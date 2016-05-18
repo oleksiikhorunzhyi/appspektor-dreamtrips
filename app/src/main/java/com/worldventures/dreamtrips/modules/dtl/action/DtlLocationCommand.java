@@ -1,10 +1,9 @@
 package com.worldventures.dreamtrips.modules.dtl.action;
 
-import com.worldventures.dreamtrips.core.api.action.CallableCommandAction;
+import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 
@@ -12,21 +11,29 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlLocationCommand extends CallableCommandAction<DtlLocation> implements CachedAction<DtlLocation> {
+public class DtlLocationCommand extends ValueCommandAction<DtlLocation> implements CachedAction<DtlLocation> {
 
-    private boolean fromDB;
+    private boolean fromCache;
 
-    public DtlLocationCommand(SnappyRepository db) {
-        super(db::getDtlLocation);
-        fromDB = true;
+    private DtlLocationCommand() {
+        super(null);
+        fromCache = true;
+    }
+
+    private DtlLocationCommand(DtlLocation location) {
+        super(location);
+    }
+
+    public static DtlLocationCommand get() {
+        return new DtlLocationCommand();
+    }
+
+    public static DtlLocationCommand change(DtlLocation location) {
+        return new DtlLocationCommand(location);
     }
 
     public boolean isResultDefined() {
         return getResult() != null && getResult().getLocationSourceType() != LocationSourceType.UNDEFINED;
-    }
-
-    public DtlLocationCommand(DtlLocation location) {
-        super(() -> location);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -48,7 +55,8 @@ public class DtlLocationCommand extends CallableCommandAction<DtlLocation> imple
     @Override
     public CacheOptions getCacheOptions() {
         return ImmutableCacheOptions.builder()
-                .restoreFromCache(fromDB)
+                .restoreFromCache(fromCache)
+                .saveToCache(!fromCache)
                 .build();
     }
 }

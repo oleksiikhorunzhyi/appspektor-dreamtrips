@@ -17,8 +17,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocati
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -46,8 +46,6 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         implements DtlLocationChangePresenter {
 
     @Inject
-    DtlLocationManager dtlLocationManager;
-    @Inject
     DtlFilterMerchantStore filterMerchantStore;
     @Inject
     LocationDelegate gpsLocationDelegate;
@@ -55,6 +53,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     Janet janet;
     @Inject
     DtlFilterMerchantStore filteredMerchantStore;
+    @Inject
+    DtlActionPipesHolder pipesHolder;
     //
     @State
     ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
@@ -115,7 +115,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private Observable<DtlLocation> connectDtlLocationUpdate() {
-        Observable<DtlLocation> locationObservable = dtlLocationManager.getSelectedLocation()
+        Observable<DtlLocation> locationObservable = pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer());
         Observable.combineLatest(
@@ -141,7 +141,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     private void onLocationObtained(Location location) {
         switch (screenMode) {
             case NEARBY_LOCATIONS:
-                dtlLocationManager.loadNearbyLocations(location);
+                pipesHolder.nearbyLocationPipe.send(new DtlNearbyLocationAction(location));
                 break;
             case AUTO_NEAR_ME:
                 DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -149,7 +149,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                         .longName(context.getString(R.string.dtl_near_me_caption))
                         .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                         .build();
-                dtlLocationManager.persistLocation(dtlLocation);
+                pipesHolder.locationPipe.send(DtlLocationCommand.change(dtlLocation));
                 filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
                 navigateAway();
                 break;
@@ -172,14 +172,15 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private void tryHideNearMeButton() {
-        dtlLocationManager.getSelectedLocation()
+        pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
+
                 .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> getView().hideNearMeButton());
     }
 
     private void connectLocationsSearch() {
-        dtlLocationManager.searchLocationPipe().observeWithReplay()
+        pipesHolder.searchLocationPipe.observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
                         .onStart(command -> getView().showProgress())
@@ -203,7 +204,8 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
     private void search(String query) {
         screenMode = ScreenMode.SEARCH;
-        dtlLocationManager.searchLocations(query.trim());
+        pipesHolder.searchLocationPipe.cancelLatest();
+        pipesHolder.searchLocationPipe.send(new DtlSearchLocationAction(query.trim()));
     }
 
     @Override
@@ -235,7 +237,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private void connectNearbyLocations() {
-        dtlLocationManager.nearbyLocationPipe().observeWithReplay()
+        pipesHolder.nearbyLocationPipe.observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
                         .onStart(command -> getView().showProgress())
@@ -257,7 +259,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     @Override
     public void locationSelected(DtlExternalLocation dtlExternalLocation) {
 //        trackLocationSelection(location); // TODO :: 4/20/16 new analytics
-        dtlLocationManager.persistLocation(dtlExternalLocation);
+        pipesHolder.locationPipe.send(DtlLocationCommand.change(dtlExternalLocation));
         filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
         merchantStoreActionPipe.send(DtlMerchantStoreAction.load(dtlExternalLocation.getCoordinates().asAndroidLocation()));
         navigateAway();

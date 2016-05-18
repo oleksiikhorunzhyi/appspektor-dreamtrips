@@ -9,12 +9,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.CommandActionBase;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateToActionTransformer;
@@ -24,15 +24,15 @@ import rx.Observable;
 public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant>> {
 
     private final DtlMerchantStore merchantStore;
-    private final DtlLocationManager dtlLocationManager;
+    private final ActionPipe<DtlLocationCommand> locationActionPipe;
     private final LocationDelegate locationDelegate;
     private final DtlFilterData filterData;
 
 
     public DtlFilterMerchantsAction(DtlFilterData filterData, DtlMerchantStore merchantStore,
-                                    DtlLocationManager dtlLocationManager, LocationDelegate locationDelegate) {
+                                    ActionPipe<DtlLocationCommand> locationActionPipe, LocationDelegate locationDelegate) {
         this.merchantStore = merchantStore;
-        this.dtlLocationManager = dtlLocationManager;
+        this.locationActionPipe = locationActionPipe;
         this.locationDelegate = locationDelegate;
         this.filterData = filterData;
     }
@@ -60,7 +60,7 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
     }
 
     private Observable<LatLng> getSearchLocation() {
-        return dtlLocationManager.getSelectedLocation()
+        return locationActionPipe.createObservableSuccess(DtlLocationCommand.get())
                 .filter(DtlLocationCommand::isResultDefined)
                 .map(DtlLocationCommand::getResult)
                 .distinct(DtlLocation::getCoordinates)

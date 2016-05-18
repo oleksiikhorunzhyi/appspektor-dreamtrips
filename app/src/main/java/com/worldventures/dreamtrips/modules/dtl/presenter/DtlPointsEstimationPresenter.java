@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     protected final String merchantId;
 
     @Inject
-    DtlJobManager jobManager;
+    DtlActionPipesHolder jobManager;
     @Inject
     DtlMerchantStore merchantStore;
     //

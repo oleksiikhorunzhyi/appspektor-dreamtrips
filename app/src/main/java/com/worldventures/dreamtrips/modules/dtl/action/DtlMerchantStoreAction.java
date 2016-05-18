@@ -6,14 +6,13 @@ import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
 
 import io.techery.janet.command.annotations.CommandAction;
 
-import static com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction.Action.CLEAN;
 import static com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction.Action.LOAD;
 
 @CommandAction
 public class DtlMerchantStoreAction extends ValueCommandAction<DtlMerchantStoreAction.Action> {
 
     public enum Action {
-        LOAD, CLEAN
+        LOAD
     }
 
     private final Location location;
@@ -29,9 +28,5 @@ public class DtlMerchantStoreAction extends ValueCommandAction<DtlMerchantStoreA
 
     public static DtlMerchantStoreAction load(Location location) {
         return new DtlMerchantStoreAction(LOAD, location);
-    }
-
-    public static DtlMerchantStoreAction clean() {
-        return new DtlMerchantStoreAction(CLEAN, null);
     }
 }

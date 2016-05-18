@@ -22,12 +22,14 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 import com.worldventures.dreamtrips.modules.common.api.StaticPagesQuery;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
@@ -54,11 +56,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     LocalesHolder localeStorage;
     @Inject
-    DtlLocationManager dtlLocationManager;
-    @Inject
     StaticPageHolder staticPageHolder;
-    @Inject
-    SnappyRepository snappyRepository;
     @Inject
     Router router;
     @Inject
@@ -68,7 +66,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     SnappyRepository db;
     @Inject
-    DtlLocationManager locationManager;
+    DtlActionPipesHolder dtlActionPipesHolder;
     @Inject
     GlobalConfigManager globalConfigManager;
 
@@ -82,7 +80,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         busWrapper = getGreenRobotBusWrapper(eventBus);
         networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
         networkEvents.register();
-        snappyRepository.removeAllBucketItemPhotoCreations();
+        db.removeAllBucketItemPhotoCreations();
         startPreloadChain();
     }
 
@@ -102,7 +100,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     public void initDtl() {
         db.cleanLastSelectedOffersOnlyToggle();
         db.cleanLastMapCameraPosition();
-        locationManager.cleanLocation();
+        dtlActionPipesHolder.locationPipe.send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
     }
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
@@ -119,7 +117,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     }
 
     private void onSettingsLoaded(SettingsHolder settingsHolder) {
-        snappyRepository.saveSettings(SettingsManager.merge(settingsHolder.getSettings(),
+        db.saveSettings(SettingsManager.merge(settingsHolder.getSettings(),
                 SettingsFactory.createSettings()), true);
         loadStaticPagesContent();
     }
@@ -140,7 +138,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     }
 
     private void loadFiltersData() {
-        doRequest(new GetActivitiesAndRegionsQuery(snappyRepository), (result) -> done());
+        doRequest(new GetActivitiesAndRegionsQuery(db), (result) -> done());
     }
 
     private void done() {

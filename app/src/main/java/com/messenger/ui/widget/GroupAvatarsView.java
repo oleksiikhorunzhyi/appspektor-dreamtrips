@@ -3,6 +3,7 @@ package com.messenger.ui.widget;
 import android.content.Context;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
+import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -93,5 +94,11 @@ public class GroupAvatarsView extends FrameLayout {
                 .setUri(Uri.parse(conversation.getAvatar()))
                 .build();
         customImageGroupAvatar.setController(controller);
+    }
+
+    public void setImageDrawable(@DrawableRes int drawableId) {
+        hideDefaultAvatar();
+        showCustomAvatar();
+        customImageGroupAvatar.setImageResource(drawableId);
     }
 }

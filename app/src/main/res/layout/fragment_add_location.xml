@@ -29,6 +29,7 @@
             android:paddingLeft="6dp"
             android:paddingRight="30dp"
             android:singleLine="true"
+            android:maxLength="@integer/social_location_name_max_length"
             tools:text="Lorem ipsum dolor sit amet, iriure salutandi aei, ne nec tota meis malis."
             android:inputType="textCapWords"/>
 

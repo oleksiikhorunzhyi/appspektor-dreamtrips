@@ -18,6 +18,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -536,6 +537,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             super.afterCreateView(rootView);
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
+            //Mixed Content: The page at 'https://secure.worldventures.biz/(S(2l0jz1vwma03azykskghv03o))/Checkout/ShoppingCart.aspx?did=ODg4ODg4&pn=V1ZCaXoy' was loaded over HTTPS, but requested an insecure image 'http://secure.worldventures.biz/(S(2l0jz1vwma03azykskghv03o))/Controls/ImageCreator.aspx?Id=2'. This request has been blocked; the content must be served over HTTPS."
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
         @Override

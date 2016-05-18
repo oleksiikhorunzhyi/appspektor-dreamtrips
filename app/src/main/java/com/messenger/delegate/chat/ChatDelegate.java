@@ -61,6 +61,22 @@ public class ChatDelegate {
                 .subscribe(this::paginationPageLoaded, throwable -> pageLoadFailed());
     }
 
+    public Observable<PaginationStatus> bind(Observable<SyncStatus> connectionObservable,
+                                             Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantsObservable) {
+        this.conversationObservable = conversationWithParticipantsObservable
+                .map(pair -> pair.first).take(1).cacheWithInitialCapacity(1);
+        this.chatObservable = conversationWithParticipantsObservable
+                .take(1)
+                .flatMap(conversationListWithParticipants ->
+                        createChatHelper.createChat(conversationListWithParticipants.first,
+                                conversationListWithParticipants.second))
+                .replay(1)
+                .autoConnect();
+        connectToChatConnection(connectionObservable);
+
+        return paginationStateObservable;
+    }
+
     public void sendMessage(Message message) {
         chatObservable.subscribeOn(Schedulers.io())
                 .flatMap(chat -> chat.send(message))
@@ -87,24 +103,6 @@ public class ChatDelegate {
         chatObservable.subscribeOn(Schedulers.io()).subscribe(Chat::close,
                 e -> Timber.e(e, "Fail to close chat"));
     }
-
-    public Observable<PaginationStatus> bind(Observable<SyncStatus> connectionObservable,
-                                             Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantsObservable) {
-        this.conversationObservable = conversationWithParticipantsObservable
-                .map(pair -> pair.first).take(1).cacheWithInitialCapacity(1);
-        this.chatObservable = conversationWithParticipantsObservable
-                .take(1)
-                .flatMap(conversationListWithParticipants ->
-                        createChatHelper.createChat(conversationListWithParticipants.first,
-                                conversationListWithParticipants.second))
-                .replay(1)
-                .autoConnect();
-        connectToChatConnection(connectionObservable);
-
-
-        return paginationStateObservable;
-    }
-
 
     private void connectToChatConnection(Observable<SyncStatus> connectionObservable) {
         connectionObservable

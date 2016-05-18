@@ -29,8 +29,6 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class XmppGroupChat extends XmppChat implements GroupChat {
-    private Observable<MultiUserChat> chatObservable;
-
     private final String userId;
 
     private final Action1<Throwable> defaultOnErrorAction = throwable -> Timber.e(throwable, "");
@@ -43,11 +41,9 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
         chatPreconditions = new ChatPreconditions(isOwner);
     }
 
-    @Override
-    protected void prepareChatObservable(XmppServerFacade facade) {
-        chatObservable = facade.getConnectionObservable()
-                .map(this::createChat)
-                .cacheWithInitialCapacity(1);
+    protected Observable<MultiUserChat> provideChatObservable() {
+        return facade.getConnectionObservable()
+                .map(this::createChat);
     }
 
     private MultiUserChat createChat(XMPPConnection connection) {
@@ -114,7 +110,7 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
         chatPreconditions.checkUserIsNotOwner();
 
         facade.getConnectionObservable()
-                .take(1).withLatestFrom(chatObservable.take(1), Pair::new)
+                .take(1).withLatestFrom(provideChatObservable().take(1), Pair::new)
                 .flatMap(connectionWithChat -> Observable.create(subscriber ->
                         sendLeaveStanza(connectionWithChat.first, connectionWithChat.second, subscriber))
                 )
@@ -159,7 +155,7 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
 
 
     private Observable<Void> chatActionObservable(ChatAction chatAction) {
-        return chatObservable
+        return provideChatObservable()
                 .take(1)
                 .flatMap(chat -> Observable.create(subscriber -> {
                     try {

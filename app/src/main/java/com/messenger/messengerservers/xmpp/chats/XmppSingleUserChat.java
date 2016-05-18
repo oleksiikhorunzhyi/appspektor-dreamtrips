@@ -19,8 +19,6 @@ import org.jivesoftware.smack.packet.Message.Type;
 import rx.Observable;
 
 public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
-    private Observable<Chat> chatObservable;
-
     private final String companionId;
 
     public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String roomId) {
@@ -28,16 +26,14 @@ public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
         this.companionId = companionId;
     }
 
-    @Override
-    protected void prepareChatObservable(XmppServerFacade facade) {
-        chatObservable = facade.getConnectionObservable()
-                .map(this::createChat)
-                .cacheWithInitialCapacity(1);
+    protected Observable<Chat> provideChatObservable() {
+        return facade.getConnectionObservable()
+                .map(this::createChat);
     }
 
     @Override
     protected Observable<Void> trySendSmackMessage(Message message) {
-        return chatObservable
+        return provideChatObservable()
                 .take(1)
                 .flatMap(chat -> Observable.create(subscriber -> {
                     try {

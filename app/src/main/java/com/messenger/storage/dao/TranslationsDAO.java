@@ -25,7 +25,7 @@ public class TranslationsDAO extends BaseDAO{
                 .withSelectionArgs(new String[] {id})
                 .build();
         return query(q, DataTranslation.CONTENT_URI)
-                .compose(DaoTransformers.toDataTranslation());
+                .compose(DaoTransformers.toEntity(DataTranslation.class));
     }
 
     public void save(List<DataTranslation> dataTranslations){

@@ -63,7 +63,7 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
                 .withSelectionArgs(new String[]{Integer.toString(MessageStatus.ERROR)}).build();
 
         return query(q, DataPhotoAttachment.CONTENT_URI, DataMessage.CONTENT_URI).first()
-                .compose(DaoTransformers.toAttachments(DataPhotoAttachment.class));
+                .compose(DaoTransformers.toEntityList(DataPhotoAttachment.class));
     }
 
     @Override

@@ -1,34 +1,30 @@
 package com.messenger.messengerservers.paginations;
 
-import com.messenger.messengerservers.Persister;
-import com.messenger.messengerservers.listeners.OnLoadedListener;
-
 import java.util.List;
+
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 
 public abstract class PagePagination<T> {
-
-    protected Persister<List<T>> persister;
-    protected OnLoadedListener<T> onEntityLoadedListener;
-    protected int sizePerPage;
+    protected PublishSubject<List<T>> publishSubject = PublishSubject.create();
+    protected int pageSize;
 
     public PagePagination(int sizePerPage) {
-        this.sizePerPage = sizePerPage;
+        this.pageSize = sizePerPage;
     }
 
-    public void setPersister(Persister<List<T>> persister) {
-        this.persister = persister;
+    public abstract void loadPage(String conversationId, int page, long offset);
+
+    public int getPageSize() {
+        return pageSize;
     }
 
-    public void setOnEntityLoadedListener(OnLoadedListener<T> onEntityLoadedListener) {
-        this.onEntityLoadedListener = onEntityLoadedListener;
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
-    public abstract void loadPage(int page, long offset);
-
-    public int getSizePerPage(){
-        return sizePerPage;
+    public Observable<List<T>> getPageObservable() {
+        return publishSubject.asObservable();
     }
-
-    public abstract void close();
 }

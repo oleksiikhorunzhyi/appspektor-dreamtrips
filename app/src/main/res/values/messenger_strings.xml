@@ -66,10 +66,23 @@
     <string name="chat_contextual_translate_message">Translate</string>
     <string name="chat_contextual_revert_translate_message">Show original</string>
     <string name="chat_contextual_start_chat_format">Message %s</string>
+    <string name="chat_contextual_flag">Flag</string>
     <string name="chat_share_dialog_location">Share location</string>
     <string name="chat_share_dialog_image">Share image</string>
     <string name="chat_share_dialog_cancel">Cancel</string>
     <string name="chat_could_not_share_location">Could not share location</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Loading…</string>
+    <string name="chat_flag_dialog_reason_title">Flag</string>
+    <string name="chat_flag_dialog_reason_hint">Type your reason</string>
+    <string name="chat_flag_dialog_reason_positive_button">Accept</string>
+    <string name="chat_flag_dialog_reason_negative_button">Cancel</string>
+    <string name="chat_flag_dialog_confirmation_title">Confirm</string>
+    <string name="chat_flag_dialog_confirmation_message_format">WorldVentures personnel will be notified to review this message for %s. Do you want to continue?</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Send</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Cancel</string>
+    <string name="chat_flag_dialog_flagging_progress">Flagging…</string>
+    <string name="chat_flag_failed">Failed to flag message</string>
 
     <!---->
     <!--Chat Settings -->

@@ -1,15 +1,14 @@
 package com.messenger.api;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
+import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 
 import io.techery.janet.http.annotations.Body;
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Response;
-import io.techery.janet.http.annotations.Status;
 
 @HttpAction(value = "/api/translate", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.POST)
-public class TranslateTextAction extends BaseHttpAction {
+public class TranslateTextAction extends AuthorizedHttpAction {
 
     @Body TranslateTextBody body;
     @Response TranslatedText translatedText;

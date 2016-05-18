@@ -18,4 +18,8 @@
         android:id="@+id/action_start_chat"
         android:title=""
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_flag"
+        android:title="@string/chat_contextual_flag"
+        app:showAsAction="never"/>
 </menu>

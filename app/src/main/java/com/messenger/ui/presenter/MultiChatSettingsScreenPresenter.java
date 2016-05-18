@@ -15,25 +15,31 @@ import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState.UploadingState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.io.File;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateToActionTransformer;
+import io.techery.janet.ActionState;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Notification;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> {
-
     @Inject
     CropImageDelegate cropImageDelegate;
 
     @Inject
     ConversationAvatarDelegate conversationAvatarDelegate;
+
+    @Inject
+    PermissionDispatcher permissionDispatcher;
 
     public MultiChatSettingsScreenPresenter(Context context, Injector injector, String conversationId) {
         super(context, injector, conversationId);
@@ -65,11 +71,16 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         conversationAvatarDelegate.getReadChangeAvatarCommandActionPipe()
                 .observe()
                 .compose(bindView())
-                .compose(new ActionStateToActionTransformer<>())
-                .map(ChangeAvatarCommand::getConversation)
-                .filter(conversation -> TextUtils.equals(conversation.getId(), conversationId))
+                .filter(this::filterActionState)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onChangeAvatarSuccess, this::onChangeAvatarFailed);
+                .subscribe(new ActionStateSubscriber<ChangeAvatarCommand>()
+                        .onFail((command, throwable) -> onChangeAvatarFailed(throwable))
+                        .onSuccess(command -> onChangeAvatarSuccess(command.getConversation()))
+                );
+    }
+
+    private boolean filterActionState(ActionState<ChangeAvatarCommand> commandActionState) {
+        return TextUtils.equals(commandActionState.action.getConversation().getId(), conversationId);
     }
 
     @Override
@@ -131,7 +142,7 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     public boolean onToolbarMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_change_chat_avatar:
-                getView().showAvatarPhotoPicker();
+                openPicker();
                 return true;
             case R.id.action_remove_chat_avatar:
                 getView().hideAvatarPhotoPicker();
@@ -140,5 +151,13 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
 
         }
         return super.onToolbarMenuItemClick(item);
+    }
+
+    public void openPicker() {
+        permissionDispatcher.requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
+                .compose(bindView())
+                .subscribe(new PermissionSubscriber()
+                        .onPermissionGrantedAction(() -> getView().showAvatarPhotoPicker())
+                );
     }
 }

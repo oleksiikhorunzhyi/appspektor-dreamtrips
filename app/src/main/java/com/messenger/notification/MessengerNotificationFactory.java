@@ -28,6 +28,9 @@ public class MessengerNotificationFactory extends NotificationFactory {
 
     public static final String MESSENGER_TAG = "messenger_tag";
 
+    public static final int MESSAGE_NOTIFICATION_ID = 0x55a;
+    public static final int MESSEGE_NOTIFICATION_REQUEST_CODE = 0x655e;
+
     public MessengerNotificationFactory(Context context) {
         super(context);
     }
@@ -141,7 +144,8 @@ public class MessengerNotificationFactory extends NotificationFactory {
         stackBuilder.addParentStack(MessengerActivity.class);
         stackBuilder.addNextIntent(resultIntent);
         //
-        return stackBuilder.getPendingIntent(0, forAction ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_CANCEL_CURRENT);
+        return stackBuilder.getPendingIntent(MESSEGE_NOTIFICATION_REQUEST_CODE,
+                forAction ? PendingIntent.FLAG_ONE_SHOT : PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
 }

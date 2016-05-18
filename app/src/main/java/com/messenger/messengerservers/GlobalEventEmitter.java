@@ -1,15 +1,19 @@
 package com.messenger.messengerservers;
 
+import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.event.JoinedEvent;
 import com.messenger.messengerservers.listeners.FriendsAddedListener;
 import com.messenger.messengerservers.listeners.FriendsRemovedListener;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
+import com.messenger.messengerservers.listeners.InvitationListener;
+import com.messenger.messengerservers.listeners.MessagesDeletedListener;
 import com.messenger.messengerservers.listeners.OnAvatarChangedListener;
 import com.messenger.messengerservers.listeners.OnChatJoinedListener;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
 import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
+import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.Participant;
 
@@ -34,6 +38,7 @@ public abstract class GlobalEventEmitter {
     protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
+    protected List<MessagesDeletedListener> onMessagesDeletedListener = new CopyOnWriteArrayList<>();
 
     public void addGlobalMessageListener(GlobalMessageListener listener) {
         globalMessageListeners.add(listener);
@@ -185,7 +190,19 @@ public abstract class GlobalEventEmitter {
         }
     }
 
-    //    observables
+    public void addOnMessagesDeletedListener(MessagesDeletedListener listener) {
+        onMessagesDeletedListener.add(listener);
+    }
+
+    protected void notifyMessagesDeleted(List<DeletedMessage> deletedMessages) {
+        for (MessagesDeletedListener listener : onMessagesDeletedListener)
+            listener.onMessagesDeleted(deletedMessages);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Observables
+    ///////////////////////////////////////////////////////////////////////////
+
     public Observable<JoinedEvent> createChatJoinedObservable() {
         OnChatJoinedListener[] onChatJoinedListeners = new OnChatJoinedListener[]{null};
         return Observable.<JoinedEvent>create(subscriber -> {

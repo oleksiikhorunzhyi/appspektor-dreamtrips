@@ -8,6 +8,8 @@ public class Message {
     private String id;
     private String fromId;
     private String toId;
+    private String deleted;
+
     @Nullable
     private MessageBody messageBody;
     // ms
@@ -26,6 +28,7 @@ public class Message {
         setDate(builder.date);
         setConversationId(builder.conversationId);
         setStatus(builder.status);
+        setDeleted(builder.deleted);
     }
 
     public String getId() {
@@ -86,6 +89,14 @@ public class Message {
         this.status = status;
     }
 
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
+    }
+
     public static final class Builder {
         private String id;
         private String fromId;
@@ -94,6 +105,7 @@ public class Message {
         private long date;
         private String conversationId;
         private int status;
+        private String deleted;
 
         public Builder() {
         }
@@ -130,6 +142,11 @@ public class Message {
 
         public Builder status(@MessageStatus.Status int val) {
             status = val;
+            return this;
+        }
+
+        public Builder deleted(String val) {
+            deleted = val;
             return this;
         }
 

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class OpenedConversationTracker {
 
@@ -19,8 +18,15 @@ public class OpenedConversationTracker {
         openedConversationIds = new HashMap<>(2);
     }
 
+    public void conversationVisibilityChanged(String conversationId, boolean visible) {
+        if (visible) {
+            addOpenedConversation(conversationId);
+        } else {
+            removeOpenedConversation(conversationId);
+        }
+    }
+
     public void addOpenedConversation(String conversationId) {
-        Timber.i("Track conversation %s", conversationId);
         Integer prevCount = openedConversationIds.get(conversationId);
         if (prevCount == null) prevCount = 0;
         openedConversationIds.put(conversationId, prevCount + 1);
@@ -29,7 +35,6 @@ public class OpenedConversationTracker {
     }
 
     public void removeOpenedConversation(String conversationId) {
-        Timber.i("Untrack conversation %s", conversationId);
         Integer prevCount = openedConversationIds.get(conversationId);
         if (prevCount == null || prevCount <= 0) {
             openedConversationIds.remove(conversationId);
@@ -39,7 +44,7 @@ public class OpenedConversationTracker {
     }
 
     public Observable<String> watchOpenedConversationId() {
-                return streamReader.asObservable().filter(id -> containsOpenedConversationId(id));
+                return streamReader.asObservable().filter(this::containsOpenedConversationId);
             }
 
     public boolean containsOpenedConversationId(String conversationId) {

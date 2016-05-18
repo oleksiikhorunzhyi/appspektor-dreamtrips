@@ -4,6 +4,7 @@ import com.messenger.flow.path.MasterDetailPath;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.Layout;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 
 @Layout(R.layout.screen_conversation_list)
 public class ConversationsPath extends StyledPath {
@@ -16,7 +17,7 @@ public class ConversationsPath extends StyledPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return WITH_DRAWER;
+        return PathAttrs.WITH_DRAWER;
     }
 
     @Override

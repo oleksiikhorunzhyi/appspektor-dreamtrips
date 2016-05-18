@@ -1,7 +1,12 @@
 package com.messenger.messengerservers.xmpp.util;
 
+import android.text.TextUtils;
+
+import com.messenger.messengerservers.xmpp.stanzas.incoming.MessageDeletedPresence;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
@@ -14,7 +19,48 @@ import timber.log.Timber;
 
 public class ParseUtils {
 
-    public static Presence parsePresence(XmlPullParser parser)
+    private static Stanza parseDeletedPresence(XmlPullParser parser)
+            throws XmlPullParserException, IOException, SmackException {
+        final int initialDepth = parser.getDepth();
+
+        MessageDeletedPresence presence = new MessageDeletedPresence();
+        presence.setTo(parser.getAttributeValue("", "to"));
+        presence.setFrom(parser.getAttributeValue("", "from"));
+        presence.setStanzaId(parser.getAttributeValue("", "id"));
+
+        outerloop: while (true) {
+            int eventType = parser.next();
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    String elementName = parser.getName();
+                    String namespace = parser.getNamespace();
+                    switch (elementName) {
+                        case "error":
+                            presence.setError(PacketParserUtils.parseError(parser));
+                            break;
+                        default:
+                            // Otherwise, it must be a packet extension.
+                            // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
+                            // failing completely here. See SMACK-390 for more information.
+                            try {
+                                PacketParserUtils.addExtensionElement(presence, parser, elementName, namespace);
+                            } catch (Exception e) {
+                                Timber.w(e, "Failed to parse extension packet in Presence packet.");
+                            }
+                            break;
+                    }
+                    break;
+                case XmlPullParser.END_TAG:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
+                    break;
+            }
+        }
+        return presence;
+    }
+
+    public static Stanza parsePresence(XmlPullParser parser)
             throws XmlPullParserException, IOException, SmackException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
@@ -22,7 +68,9 @@ public class ParseUtils {
         Presence.Type type = Presence.Type.available;
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null && !typeString.equals("")) {
-            if (typeString.equals("leave")) {
+            if (TextUtils.equals(typeString, MessageDeletedPresence.TYPE)) {
+                return parseDeletedPresence(parser);
+            } else if (TextUtils.equals(typeString, "leave")) {
                 type = Presence.Type.unsubscribed;
             } else {
                 type = Presence.Type.fromString(typeString);
@@ -40,7 +88,7 @@ public class ParseUtils {
                 case XmlPullParser.START_TAG:
                     String elementName = parser.getName();
                     String namespace = parser.getNamespace();
-                    switch(elementName) {
+                    switch (elementName) {
                         case "status":
                             presence.setStatus(parser.nextText());
                             break;

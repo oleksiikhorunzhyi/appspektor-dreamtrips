@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -148,6 +147,12 @@ public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, 
             result.setName(name);
         }
         return result;
+    }
+
+    @OnTextChanged(value = R.id.input_location, callback = OnTextChanged.Callback.BEFORE_TEXT_CHANGED)
+    void onBeforeTextChanged(CharSequence text) {
+        if (input.getText().length() == getResources().getInteger(R.integer.social_location_name_max_length))
+            informUser(R.string.location_name_length_message);
     }
 
     @OnTextChanged(R.id.input_location)

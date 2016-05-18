@@ -618,4 +618,6 @@
     <string name="add_title">Add a title</string>
     <string name="flag_sent_success_msg">Content has been flagged</string>
 
+    <string name="location_name_length_message">The location name may not be greater than 255 characters.</string>
+
 </resources>

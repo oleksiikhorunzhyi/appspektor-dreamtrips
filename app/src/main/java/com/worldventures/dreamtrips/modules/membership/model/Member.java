@@ -116,7 +116,7 @@ public class Member implements Serializable, Filterable {
     public boolean containsQuery(String query) {
         if (query == null || TextUtils.isEmpty(query.trim())) return false;
         return (name != null && name.toLowerCase().contains(query))
-                || (email != null && email.contains(query))
+                || (email != null && email.toLowerCase().contains(query))
                 || (phone != null && phone.contains(query));
     }
 }

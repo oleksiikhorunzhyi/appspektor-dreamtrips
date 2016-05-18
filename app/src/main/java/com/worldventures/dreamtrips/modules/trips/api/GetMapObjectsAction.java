@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.trips.api;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
@@ -12,20 +14,19 @@ import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-
 @HttpAction(value = "/api/trip_clusters", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
 public class GetMapObjectsAction extends BaseHttpAction {
 
     @Query("query")
     String query;
     @Query("duration_min")
-    long durationMin;
+    Integer durationMin;
     @Query("duration_max")
-    long durationMax;
+    Integer durationMax;
     @Query("price_min")
-    double priceMin;
+    Double priceMin;
     @Query("price_max")
-    double priceMax;
+    Double priceMax;
     @Query("start_date")
     String startDate;
     @Query("end_date")
@@ -52,14 +53,13 @@ public class GetMapObjectsAction extends BaseHttpAction {
     @Response
     List<MapObjectHolder> mapObjects;
 
-    public GetMapObjectsAction(TripsFilterData tripsFilterData, LatLngBounds latLngBounds, String query) {
+    public GetMapObjectsAction(TripsFilterData tripsFilterData, LatLngBounds latLngBounds, String q) {
         top_left_lat = latLngBounds.northeast.latitude;
         top_left_lng = latLngBounds.southwest.longitude;
         bottom_right_lat = latLngBounds.southwest.latitude;
         bottom_right_lng = latLngBounds.northeast.longitude;
 
-
-        this.query = query;
+        query = TextUtils.isEmpty(q) ? null : q;
         durationMin = tripsFilterData.getMinNights();
         durationMax = tripsFilterData.getMaxNights();
         priceMin = tripsFilterData.getMinPrice();
@@ -79,5 +79,4 @@ public class GetMapObjectsAction extends BaseHttpAction {
         }
         return mapObjects;
     }
-
 }

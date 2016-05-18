@@ -18,7 +18,9 @@ import java.util.List;
 public class TripsFilterData implements Serializable {
 
 
+    private static final int MIN_NIGHT = 0;
     private static final int MAX_NIGHTS = 9;
+    private static final int MIN_PRICE = 100;
     private static final int MAX_PRICE = 500;
 
     private int minNights;
@@ -33,32 +35,32 @@ public class TripsFilterData implements Serializable {
     private Date startDate;
     private Date endDate;
 
-    public int getMinNights() {
-        return minNights;
+    public Integer getMinNights() {
+        return minNights <= MIN_NIGHT ? null : minNights;
     }
 
     public void setMinNights(int minNights) {
         this.minNights = minNights;
     }
 
-    public int getMaxNights() {
-        return maxNights;
+    public Integer getMaxNights() {
+        return maxNights >= MAX_NIGHTS ? null : maxNights;
     }
 
     public void setMaxNights(int maxNights) {
         this.maxNights = maxNights;
     }
 
-    public double getMinPrice() {
-        return minPrice;
+    public Double getMinPrice() {
+        return minPrice <= MIN_PRICE ? null : minPrice;
     }
 
     public void setMinPrice(double minPrice) {
         this.minPrice = minPrice;
     }
 
-    public double getMaxPrice() {
-        return maxPrice;
+    public Double getMaxPrice() {
+        return maxPrice >= MAX_PRICE ? null : maxPrice;
     }
 
     public void setMaxPrice(double maxPrice) {
@@ -124,9 +126,9 @@ public class TripsFilterData implements Serializable {
     public static TripsFilterData createDefault(SnappyRepository db) {
         TripsFilterData tripsFilterData = new TripsFilterData();
         tripsFilterData.maxPrice = MAX_PRICE;
-        tripsFilterData.minPrice = 0;
+        tripsFilterData.minPrice = MIN_PRICE;
         tripsFilterData.maxNights = MAX_NIGHTS;
-        tripsFilterData.minNights = 0;
+        tripsFilterData.minNights = MIN_NIGHT;
         tripsFilterData.showSoldOut = false;
 
         Calendar calendar = Calendar.getInstance();
@@ -146,7 +148,7 @@ public class TripsFilterData implements Serializable {
         return tripsFilterData;
     }
 
-    protected static List<RegionModel> getRegions(SnappyRepository db) {
+    private static List<RegionModel> getRegions(SnappyRepository db) {
         return db.readList(SnappyRepository.REGIONS, RegionModel.class);
     }
 
@@ -158,16 +160,6 @@ public class TripsFilterData implements Serializable {
         List<ActivityModel> activities = db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class);
         List<ActivityModel> parentActivities = getParentActivities(activities);
 
-        ArrayList<ActivityModel> themesList = new ArrayList<>();
-        for (ActivityModel activity : parentActivities) {
-            themesList.addAll(Queryable.from(activities)
-                    .filter((input) -> input.getParentId() == activity.getId())
-                    .toList());
-            themesList.add(activity);
-
-        }
-        return themesList;
+        return new ArrayList<>(parentActivities);
     }
-
-
 }

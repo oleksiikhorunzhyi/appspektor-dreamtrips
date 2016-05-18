@@ -1,14 +1,16 @@
 package com.worldventures.dreamtrips.modules.trips.model;
 
+import android.text.TextUtils;
+
 public class TripQueryData {
 
     int page;
     int perPage;
     String query;
-    long durationMin;
-    long durationMax;
-    double priceMin;
-    double priceMax;
+    Integer durationMin;
+    Integer durationMax;
+    Double priceMin;
+    Double priceMax;
     String startDate;
     String endDate;
     String regions;
@@ -26,22 +28,22 @@ public class TripQueryData {
     }
 
     public String query() {
-        return query;
+        return TextUtils.isEmpty(query) ? null : query;
     }
 
-    public long durationMin() {
+    public Integer durationMin() {
         return durationMin;
     }
 
-    public long durationMax() {
+    public Integer durationMax() {
         return durationMax;
     }
 
-    public double priceMin() {
+    public Double priceMin() {
         return priceMin;
     }
 
-    public double priceMax() {
+    public Double priceMax() {
         return priceMax;
     }
 
@@ -85,19 +87,19 @@ public class TripQueryData {
         this.query = query;
     }
 
-    public void setDurationMin(long durationMin) {
+    public void setDurationMin(Integer durationMin) {
         this.durationMin = durationMin;
     }
 
-    public void setDurationMax(long durationMax) {
+    public void setDurationMax(Integer durationMax) {
         this.durationMax = durationMax;
     }
 
-    public void setPriceMin(double priceMin) {
+    public void setPriceMin(Double priceMin) {
         this.priceMin = priceMin;
     }
 
-    public void setPriceMax(double priceMax) {
+    public void setPriceMax(Double priceMax) {
         this.priceMax = priceMax;
     }
 

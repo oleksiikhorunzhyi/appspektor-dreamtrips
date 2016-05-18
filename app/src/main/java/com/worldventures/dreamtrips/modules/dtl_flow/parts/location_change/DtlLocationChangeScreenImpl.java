@@ -140,10 +140,10 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
                 dtlToolbar.setToolbarCaptions(appliedSearchQuery, dtlLocation.getLongName());
                 break;
             case FROM_MAP:
-                String locationTitle =
-                        TextUtils.isEmpty(dtlLocation.getLongName()) ?
-                                getContext().getString(R.string.dtl_nearby_caption) :
-                                dtlLocation.getLongName();
+                String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
+                        getResources().getString(R.string.dtl_nearby_caption_empty) :
+                        getResources().getString(R.string.dtl_nearby_caption_format,
+                                dtlLocation.getLongName());
                 dtlToolbar.setToolbarCaptions(appliedSearchQuery, locationTitle);
                 break;
         }

@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import android.graphics.Point;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -40,8 +38,6 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
     private List<MapObjectHolder> mapObjects;
     private List<Marker> existsMarkers;
 
-    private Point selectedMarkerPoint;
-
     public TripMapPresenter() {
         mapObjects = new ArrayList<>();
         existsMarkers = new ArrayList<>();
@@ -61,7 +57,6 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
     public String getQuery() {
         return query;
     }
-
 
     public void applySearch(String query) {
         this.query = query;
@@ -87,6 +82,13 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
         Queryable.from(existsMarkers).forEachR(existMarker -> existMarker.setAlpha(1f));
     }
 
+    private void updateMarkersAlphaIfNeeded() {
+        if (Queryable.from(existsMarkers).firstOrDefault(marker -> marker.getAlpha() == 0.6f) != null) {
+            Marker checkedMarker = Queryable.from(existsMarkers).firstOrDefault(marker -> marker.getAlpha() == 1f);
+            if (checkedMarker != null) addAlphaToMarkers(checkedMarker);
+        }
+    }
+
     public void onMarkerClicked(Marker marker) {
         MapObjectHolder holder = Queryable.from(mapObjects).firstOrDefault(object -> object.getItem().getCoordinates().getLat() == marker.getPosition().latitude
                 && object.getItem().getCoordinates().getLng() == marker.getPosition().longitude);
@@ -94,8 +96,10 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
         //
         switch (holder.getType()) {
             case PIN:
-                selectedMarkerPoint = view.getMap().getProjection().toScreenLocation(marker.getPosition());
-                tripMapManager.loadTrips(((Pin) holder.getItem()).getTripUids());
+                view.setSelectedLocation(marker.getPosition());
+                List<String> tripUids = ((Pin) holder.getItem()).getTripUids();
+                view.scrollCameraToPin(tripUids.size());
+                tripMapManager.loadTrips(tripUids);
                 addAlphaToMarkers(marker);
                 break;
             case CLUSTER:
@@ -161,13 +165,15 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
     @Override
     public void onMapObjectsLoaded(List<MarkerOptions> options) {
         Queryable.from(options).forEachR(option -> view.addMarker(option));
+        //
+        updateMarkersAlphaIfNeeded();
     }
 
     @Override
     public void onTripsLoaded(List<TripModel> trips) {
         TripMapDetailsAnchor anchor = null;
         if (view.isTabletLandscape())
-            anchor = view.updateContainerParams(selectedMarkerPoint, trips.size());
+            anchor = view.updateContainerParams(trips.size());
         //
         view.moveTo(trips, anchor);
     }
@@ -182,8 +188,12 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
 
         void zoomToBounds(LatLngBounds latLngBounds);
 
+        void setSelectedLocation(LatLng latLng);
+
         GoogleMap getMap();
 
-        TripMapDetailsAnchor updateContainerParams(Point markerPoint, int tripCount);
+        TripMapDetailsAnchor updateContainerParams(int tripCount);
+
+        void scrollCameraToPin(int size);
     }
 }

@@ -82,6 +82,7 @@
     <dimen name="map_trip_info_text_medium">12sp</dimen>
     <dimen name="map_trip_info_text_large">18sp</dimen>
     <dimen name="map_trip_detail_spacing">220dp</dimen>
+    <dimen name="map_trip_detail_cell_height">100dp</dimen>
 
     <dimen name="pin_progress_inner_size">28dp</dimen>
 

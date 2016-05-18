@@ -3,7 +3,7 @@
               xmlns:fresco="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="100dp"
+              android:layout_height="@dimen/map_trip_detail_cell_height"
               android:background="@color/white"
               android:orientation="horizontal">
 

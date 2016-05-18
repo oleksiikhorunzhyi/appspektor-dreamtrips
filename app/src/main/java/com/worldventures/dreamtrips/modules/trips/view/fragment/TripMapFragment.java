@@ -16,6 +16,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,6 +54,7 @@ import timber.log.Timber;
 public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements TripMapPresenter.View {
 
     private static final String KEY_MAP = "map";
+    private static final int SMALL_PADDING = 20;
 
     protected ToucheableMapView mapView;
     @InjectView(R.id.container_info)
@@ -66,9 +68,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     @Inject
     BackStackDelegate backStackDelegate;
     @State
-    LatLng selectedLocation;
-    @State
     boolean searchOpened;
+
+    private LatLng selectedLocation;
 
     private Subscription mapChangesSubscription;
     private Subscription markersClickSubscription;
@@ -255,13 +257,31 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                 .build());
     }
 
+    protected int calculateOffset(int size) {
+        Rect rect = new Rect();
+        mapView.getLocalVisibleRect(rect);
+        int maxHeight = (int) (rect.bottom - getResources().getDimension(R.dimen.map_trip_detail_spacing));
+        int result = (int) ((rect.bottom - rect.top) / 2 - (Math.min(maxHeight, size * getResources().getDimension(R.dimen.map_trip_detail_cell_height))));
+        return result - SMALL_PADDING;
+    }
+
+    private void animateToMarker(LatLng latLng, int offset) {
+        Projection projection = googleMap.getProjection();
+        Point screenLocation = projection.toScreenLocation(latLng);
+        screenLocation.set(screenLocation.x, screenLocation.y - offset);
+        LatLng offsetTarget = projection.fromScreenLocation(screenLocation);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(offsetTarget));
+    }
+
     @Override
     public void removeTripsPopupInfo() {
-        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment)
+        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment) {
             router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
                     .containerId(R.id.container_info)
                     .fragmentManager(getChildFragmentManager())
                     .build());
+            selectedLocation = null;
+        }
     }
 
     @Override
@@ -270,19 +290,32 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
+    public void setSelectedLocation(LatLng latLng) {
+        selectedLocation = latLng;
+    }
+
+    @Override
     public GoogleMap getMap() {
         return googleMap;
     }
 
     @Override
-    public TripMapDetailsAnchor updateContainerParams(Point markerPoint, int tripCount) {
+    public TripMapDetailsAnchor updateContainerParams(int tripCount) {
         Rect rect = new Rect();
         mapView.getLocalVisibleRect(rect);
         Pair<FrameLayout.LayoutParams, TripMapDetailsAnchor> pair = new ContainerDetailsMapParamsBuilder()
-                .mapRect(rect).markerPoint(markerPoint)
+                .mapRect(rect).markerPoint(googleMap.getProjection().toScreenLocation(selectedLocation))
                 .context(getContext()).tripsCount(tripCount).build();
         containerInfo.setLayoutParams(pair.first);
         return pair.second;
+    }
+
+    @Override
+    public void scrollCameraToPin(int size) {
+        if (!isTabletLandscape()) {
+            int height = calculateOffset(size);
+            animateToMarker(selectedLocation, height);
+        }
     }
 
     protected void onMapLoaded() {

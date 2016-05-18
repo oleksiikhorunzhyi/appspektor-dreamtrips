@@ -25,7 +25,7 @@ public class GroupAvatarsView extends FrameLayout {
     private static final GroupAvatarColorHelper COLOR_HELPER = new GroupAvatarColorHelper();
 
     @InjectView(R.id.group_avatar_default_view)
-    RoundBackgroundImageView defaultGroupAvatar;
+    RoundBackgroundPercentFrameLayout defaultGroupAvatar;
     @InjectView(R.id.group_avatar_custom_view)
     SimpleDraweeView customImageGroupAvatar;
 

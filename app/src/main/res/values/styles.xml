@@ -361,8 +361,6 @@
         <item name="android:layout_width">@dimen/in_app_notification_avatar_image_view_size</item>
         <item name="android:layout_height">@dimen/in_app_notification_avatar_image_view_size</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:padding">@dimen/in_app_notification_group_chat_icon_avatar_padding
-        </item>
     </style>
 
     <style name="InAppNotificationTitle">

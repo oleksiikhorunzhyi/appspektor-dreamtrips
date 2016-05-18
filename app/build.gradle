@@ -393,6 +393,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:${googleLibrariesVersion}"
     compile "com.android.support:cardview-v7:${googleLibrariesVersion}"
     compile "com.android.support:recyclerview-v7:${googleLibrariesVersion}"
+    compile "com.android.support:percent:${googleLibrariesVersion}"
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.getbase:floatingactionbutton:1.10.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'

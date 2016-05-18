@@ -3,19 +3,19 @@ package com.messenger.ui.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.percent.PercentFrameLayout;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
-public class RoundBackgroundImageView extends ImageView {
+public class RoundBackgroundPercentFrameLayout extends PercentFrameLayout {
 
     private Paint paint;
 
-    public RoundBackgroundImageView(Context context) {
+    public RoundBackgroundPercentFrameLayout(Context context) {
         super(context);
         init();
     }
 
-    public RoundBackgroundImageView(Context context, AttributeSet attrs) {
+    public RoundBackgroundPercentFrameLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
@@ -32,9 +32,9 @@ public class RoundBackgroundImageView extends ImageView {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void dispatchDraw(Canvas canvas) {
         int radius = getMeasuredHeight() / 2;
         canvas.drawCircle(radius, radius, radius, paint);
-        super.onDraw(canvas);
+        super.dispatchDraw(canvas);
     }
 }

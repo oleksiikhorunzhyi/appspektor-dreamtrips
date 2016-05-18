@@ -1,6 +1,7 @@
 package com.messenger.ui.widget.inappnotification.messanger;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.TextView;
@@ -54,5 +55,9 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
     @Override
     public void setText(String text) {
         textTextView.setText(text);
+    }
+
+    public void setImageRes(@DrawableRes int drawableId) {
+        avatarViewGroup.setImageDrawable(drawableId);
     }
 }

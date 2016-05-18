@@ -17,10 +17,7 @@ public abstract class XmppChat implements Chat {
     public XmppChat(XmppServerFacade facade, String roomId) {
         this.facade = facade;
         this.roomId = roomId;
-        prepareChatObservable(facade);
     }
-
-    protected abstract void prepareChatObservable(XmppServerFacade facade);
 
     @Override
     public Observable<Message> send(Message message) {

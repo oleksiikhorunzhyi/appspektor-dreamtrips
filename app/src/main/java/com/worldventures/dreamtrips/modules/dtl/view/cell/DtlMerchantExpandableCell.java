@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.view.cell;
 
 import android.content.res.Resources;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,7 +9,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.expandable.GroupDelegateCell;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.CellDelegate;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
@@ -22,12 +20,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
-import rx.Observable;
 
 @Layout(R.layout.adapter_item_dtl_merchant_expandable)
 public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, DtlOfferData, CellDelegate<DtlMerchant>> {
@@ -97,10 +93,9 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
         List<DtlOffer> offers = getModelObject().getOffers();
         if (!offers.isEmpty()) {
             ViewUtils.setViewVisibility(offersContainer, View.VISIBLE);
-            Observable.from(offers)
-                    .compose(RxLifecycle.bindView(itemView))
-                    .filter(offer -> offer.getType().equals(Offer.PERKS))
-                    .count().subscribe(perks -> setOffersTypes(perks, offers.size() - perks));
+            int perksNumber = Queryable.from(offers)
+                    .count(offer -> offer.getType().equals(Offer.PERKS));
+            setOffersTypes(perksNumber, offers.size() - perksNumber);
         } else ViewUtils.setViewVisibility(offersContainer, View.GONE);
     }
 
@@ -118,7 +113,6 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
         perkToggleImage.setBackgroundResource(toggleDrawable);
         //
         ViewUtils.setViewVisibility(perkToggleText, isExpanded() ? View.VISIBLE : View.GONE);
-        ViewUtils.setViewVisibility(isExpanded() ? View.GONE : View.VISIBLE, perks, points);
     }
 
     @Override
@@ -143,6 +137,5 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
 
     @Override
     public void prepareForReuse() {
-
     }
 }

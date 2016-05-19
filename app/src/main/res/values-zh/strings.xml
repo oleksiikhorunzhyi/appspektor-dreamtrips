@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">传出的请求</string>
 
     <string name="add_title">添加标题</string>
+    <string name="flag_sent_success_msg">内容已被举报</string>
+
+    
 
 </resources>

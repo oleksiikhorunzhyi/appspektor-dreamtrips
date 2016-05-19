@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Εξερχόμενα Αιτήματα </string>
 
     <string name="add_title">Προσθέστε έναν τίτλο</string>
+    <string name="flag_sent_success_msg">Το περιεχόμενο διαθέτει πλέον σημαία</string>
+
+    
 
 </resources>

@@ -80,8 +80,10 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
 
             @Override
             public boolean onQueryTextChange(String s) {
-                recyclerView.hideEmptyView();
-                getPresenter().setQuery(s);
+                if (recyclerView != null) {
+                    recyclerView.hideEmptyView();
+                    getPresenter().setQuery(s);
+                }
                 return false;
             }
         });

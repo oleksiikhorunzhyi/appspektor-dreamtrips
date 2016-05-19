@@ -538,7 +538,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
             //Mixed Content: The page at 'https://secure.worldventures.biz/(S(2l0jz1vwma03azykskghv03o))/Checkout/ShoppingCart.aspx?did=ODg4ODg4&pn=V1ZCaXoy' was loaded over HTTPS, but requested an insecure image 'http://secure.worldventures.biz/(S(2l0jz1vwma03azykskghv03o))/Controls/ImageCreator.aspx?Id=2'. This request has been blocked; the content must be served over HTTPS."
-            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            }//otherwise enabled  by default
         }
 
         @Override

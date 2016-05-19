@@ -22,7 +22,7 @@ import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapInfoBundle;
 
 import icepick.State;
 
-@Layout(R.layout.fragment_map_with_info)
+@Layout(R.layout.map_view_with_info)
 @MenuResource(R.menu.menu_map)
 public class TripMapFragment extends MapFragment<TripMapPresenter> implements TripMapPresenter.View {
 

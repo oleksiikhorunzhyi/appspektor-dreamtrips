@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">傳出的請求</string>
 
     <string name="add_title">添加標題</string>
+    <string name="flag_sent_success_msg">內容已被標記</string>
+
+    
 
 </resources>

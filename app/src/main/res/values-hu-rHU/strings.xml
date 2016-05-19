@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Kimenő kérések</string>
 
     <string name="add_title">Cím hozzáadás</string>
+    <string name="flag_sent_success_msg">A tartalom meg lett jelölve</string>
+
+    
 
 </resources>

@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Permintaan Keluar</string>
 
     <string name="add_title">Tambah satu tajuk</string>
+    <string name="flag_sent_success_msg">Kandungan telah ditanda</string>
+
+    
 
 </resources>

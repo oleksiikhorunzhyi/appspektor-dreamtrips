@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Skickade förfrågningar</string>
 
     <string name="add_title">Lägg till titel</string>
+    <string name="flag_sent_success_msg">Innehållet har flaggats</string>
+
+    
 
 </resources>

@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Solicitudes salientes</string>
 
     <string name="add_title">Agregar un titulo</string>
+    <string name="flag_sent_success_msg">El contenido se ha marcado</string>
+
+    
 
 </resources>

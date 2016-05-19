@@ -47,7 +47,8 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
 
     public void onUserClicked() {
         User user = photo.getUser();
-        view.openUser(new UserBundle(user));
+        if (user != null)
+            view.openUser(new UserBundle(user));
     }
 
     public final void setupActualViewState() {

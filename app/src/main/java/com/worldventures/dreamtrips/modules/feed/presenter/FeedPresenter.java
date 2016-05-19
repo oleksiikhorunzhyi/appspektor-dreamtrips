@@ -102,12 +102,6 @@ public class FeedPresenter extends BaseFeedPresenter<FeedPresenter.View> {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        refreshFeed();
-    }
-
-    @Override
     protected void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
         loading = false;
         noMoreFeeds = freshItems == null || freshItems.size() == 0;

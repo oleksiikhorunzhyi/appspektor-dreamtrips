@@ -170,7 +170,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     protected Observable<Boolean> showingLoadMerchantsButton() {
         return MapObservableFactory.createCameraChangeObservable(getView().getMap())
                 .doOnNext(position -> getView().cameraPositionChange(position))
-                .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
+                .doOnNext(position ->
+                        db.saveLastMapCameraPosition(new Location(position.target.latitude,
+                                position.target.longitude)))
                 .flatMap(position -> {
                     if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
                         return just(true);

@@ -121,7 +121,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
         removeInfoIfNeeded();
     }
 
-    private void removeInfoIfNeeded() {
+    public void removeInfoIfNeeded() {
         if (view != null) {
             view.removeTripsPopupInfo();
             removeAlphaFromMarkers();

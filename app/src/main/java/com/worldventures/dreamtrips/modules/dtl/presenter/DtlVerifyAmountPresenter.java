@@ -1,26 +1,27 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
 
 import javax.inject.Inject;
 
-public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter.View> {
+public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresenter.View> {
 
     @Inject
-    SnappyRepository db;
-    @Inject
     DtlMerchantService merchantStore;
+    @Inject
+    DtlTransactionService transactionService;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
-    private DtlTransaction dtlTransaction;
 
     public DtlVerifyAmountPresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -37,30 +38,40 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        dtlTransaction = db.getDtlTransaction(merchantId);
-        view.attachTransaction(dtlTransaction, dtlMerchant.getDefaultCurrency());
-        view.attachDtPoints(Double.valueOf(dtlTransaction.getPoints()).intValue());
+        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(transaction -> {
+                    view.attachTransaction(transaction, dtlMerchant.getDefaultCurrency());
+                    view.attachDtPoints(Double.valueOf(transaction.getPoints()).intValue());
+                }, apiErrorPresenter::handleError);
+
     }
 
     public void rescan() {
-        photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withUploadTask(null);
-        db.saveDtlTransaction(merchantId, dtlTransaction);
-        //
-        view.openScanReceipt(dtlTransaction);
+        transactionService.transactionActionPipe()
+                .createObservableSuccess(DtlTransactionAction.update(dtlMerchant,
+                        transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                                .withUploadTask(null)))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(transaction -> {
+                    photoUploadingManagerS3.cancelUploading(transaction.getUploadTask());
+                    view.openScanReceipt(transaction);
+                }, apiErrorPresenter::handleError);
     }
 
     public void scanQr() {
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withIsVerified(true);
-        //
-        db.saveDtlTransaction(merchantId, dtlTransaction);
-        //
-        view.openScanQr(dtlTransaction);
+        transactionService.transactionActionPipe()
+                .createObservableSuccess(DtlTransactionAction.update(dtlMerchant,
+                        transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                                .withIsVerified(true)))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(view::openScanQr, apiErrorPresenter::handleError);
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void attachDtPoints(int count);
 

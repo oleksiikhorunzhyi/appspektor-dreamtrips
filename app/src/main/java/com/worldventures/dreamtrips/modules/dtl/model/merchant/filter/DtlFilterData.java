@@ -41,6 +41,11 @@ public abstract class DtlFilterData {
 
     public abstract List<DtlMerchantAttribute> getSelectedAmenities();
 
+    @Value.Default
+    public boolean isOffersOnly() {
+        return false;
+    }
+
     public static DtlFilterData merge(DtlFilterParameters filterParameters, DtlFilterData filterData) {
         return ImmutableDtlFilterData.copyOf(filterData)
                 .withMinPrice(filterParameters.getMinPrice())

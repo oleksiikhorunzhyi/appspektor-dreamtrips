@@ -33,6 +33,7 @@ public class ApiErrorPresenter {
     }
 
     public void handleError(Throwable exception) {
+        if (exception instanceof CancelException) return;
         Timber.e(exception, this.getClass().getName() + " handled caught exception");
         if (!hasView()) {
             Crashlytics.logException(exception);
@@ -60,7 +61,7 @@ public class ApiErrorPresenter {
         }
     }
 
-    public void handleActionError(BaseHttpAction action, Throwable exception) {
+    public void handleActionError(Object action, Throwable exception) {
         if (exception instanceof CancelException) return;
         Timber.e(exception, this.getClass().getName() + " handled caught exception");
         if (!hasView()) {
@@ -68,13 +69,15 @@ public class ApiErrorPresenter {
             Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");
             return;
         }
-        apiErrorView.onApiCallFailed();
         //
-        if (exception instanceof HttpServiceException) {//janet-http
+        if (action instanceof BaseHttpAction
+                && exception instanceof HttpServiceException) {//janet-http
+            apiErrorView.onApiCallFailed();
+            BaseHttpAction httpAction = (BaseHttpAction) action;
             if (getCauseByType(IOException.class, exception.getCause()) != null) {
                 apiErrorView.informUser(R.string.no_connection);
-            } else if (action.getErrorResponse() != null) {
-                ErrorResponse errorResponse = action.getErrorResponse();
+            } else if (httpAction.getErrorResponse() != null) {
+                ErrorResponse errorResponse = httpAction.getErrorResponse();
                 logError(errorResponse);
                 if (!apiErrorView.onApiError(errorResponse))
                     apiErrorView.informUser(errorResponse.getFirstMessage());

@@ -25,7 +25,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func2;
 
 @CommandAction
-public class DtlFilterDataAction extends CommandActionBase<DtlFilterData> implements CachedAction<DtlFilterData>, InjectableAction{
+public class DtlFilterDataAction extends CommandActionBase<DtlFilterData> implements CachedAction<DtlFilterData>, InjectableAction {
 
     @Inject
     SnappyRepository db;
@@ -56,7 +56,8 @@ public class DtlFilterDataAction extends CommandActionBase<DtlFilterData> implem
             Setting distanceSetting = Queryable.from(db.getSettings()).filter(setting ->
                     setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
             return ImmutableDtlFilterData.copyOf(data)
-                    .withDistanceType(DistanceType.provideFromSetting(distanceSetting));
+                    .withDistanceType(DistanceType.provideFromSetting(distanceSetting))
+                    .withIsOffersOnly(db.getLastSelectedOffersOnlyToggle());
         });
     }
 
@@ -94,6 +95,14 @@ public class DtlFilterDataAction extends CommandActionBase<DtlFilterData> implem
                 ImmutableDtlFilterData.copyOf(data)
                         .withSearchQuery(query)
         );
+    }
+
+    public static DtlFilterDataAction applyOffersOnly(boolean offersOnly) {
+        return new DtlFilterDataAction((db, data) -> {
+            db.saveLastSelectedOffersOnlyToogle(offersOnly);
+            return ImmutableDtlFilterData.copyOf(data)
+                    .withIsOffersOnly(offersOnly);
+        });
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -4,9 +4,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
+import com.worldventures.dreamtrips.core.rx.composer.StubSubscriber;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlEstimatePointsAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -33,9 +34,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     public static final int REQUESTER_ID = -3;
 
     @Inject
-    SnappyRepository db;
-    @Inject
-    DtlMerchantService merchantStore;
+    DtlMerchantService merchantService;
     @Inject
     DtlTransactionService transactionService;
     //
@@ -44,7 +43,6 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
-    private DtlTransaction dtlTransaction;
 
     public DtlScanReceiptPresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -53,7 +51,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantStore.getMerchantById(merchantId)
+        merchantService.getMerchantById(merchantId)
                 .compose(ImmediateComposer.instance())
                 .subscribe(merchant -> dtlMerchant = merchant);
     }
@@ -62,17 +60,22 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlTransaction = db.getDtlTransaction(merchantId);
+        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(transaction -> {
+                    if (transaction.getUploadTask() != null) {
+                        view.hideScanButton();
+                        view.attachReceipt(Uri.parse(transaction.getUploadTask().getFilePath()));
+                    }
+                    //
+                    if (transaction.getBillTotal() != 0d) {
+                        view.preSetBillAmount(transaction.getBillTotal());
+                        this.amount = String.valueOf(transaction.getBillTotal());
+                    }
+                }, apiErrorPresenter::handleError);
         //
-        if (dtlTransaction.getUploadTask() != null) {
-            view.hideScanButton();
-            view.attachReceipt(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
-        }
-        //
-        if (dtlTransaction.getBillTotal() != 0d) {
-            view.preSetBillAmount(dtlTransaction.getBillTotal());
-            this.amount = String.valueOf(dtlTransaction.getBillTotal());
-        }
+
         //
         checkVerification();
         //
@@ -87,8 +90,12 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     private void checkVerification() {
-        if (!TextUtils.isEmpty(amount) && dtlTransaction.getUploadTask() != null)
-            view.enableVerification();
+        if (!TextUtils.isEmpty(amount))
+            transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                    .map(DtlTransactionAction::getResult)
+                    .filter(transaction -> transaction.getUploadTask() != null)
+                    .compose(bindViewIoToMainComposer())
+                    .subscribe(transaction -> view.enableVerification(), apiErrorPresenter::handleError);
         else view.disableVerification();
     }
 
@@ -102,23 +109,40 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     public void verify() {
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withBillTotal(Double.parseDouble(amount));
         TrackingHelper.dtlVerifyAmountUser(amount);
+
+        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                        .withBillTotal(Double.parseDouble(amount)))
+                .flatMap(transaction ->
+                        transactionService.transactionActionPipe()
+                                .createObservableSuccess(DtlTransactionAction.save(dtlMerchant, transaction))
+                )
+                .map(DtlTransactionAction::getResult)
+                .flatMap(transaction -> transactionService.estimatePointsActionPipe().createObservableSuccess(
+                        new DtlEstimatePointsAction(merchantId, transaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode())
+                ))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new StubSubscriber<>());
         //
-        transactionService.estimatePointsActionPipe().send(
-                new DtlEstimatePointsAction(merchantId, dtlTransaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode())
-        );
+
     }
 
     private void attachDtPoints(Double points) {
         TrackingHelper.dtlVerifyAmountSuccess();
         //
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withPoints(points);
-        //
-        db.saveDtlTransaction(merchantId, dtlTransaction);
-        view.openVerify(dtlTransaction);
+        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                        .withPoints(points))
+                .flatMap(transaction ->
+                        transactionService.transactionActionPipe()
+                                .createObservableSuccess(DtlTransactionAction.save(dtlMerchant, transaction))
+                )
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(view::openVerify, apiErrorPresenter::handleError);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -155,9 +179,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
         TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
         uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
         //
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withUploadTask(uploadTask);
-        db.saveDtlTransaction(merchantId, dtlTransaction);
+        transactionService.transactionActionPipe()
+                .send(DtlTransactionAction.update(dtlMerchant,
+                        transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                                .withUploadTask(uploadTask)));
         //
         checkVerification();
     }

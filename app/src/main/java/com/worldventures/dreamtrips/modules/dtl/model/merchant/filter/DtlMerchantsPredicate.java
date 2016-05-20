@@ -20,7 +20,8 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
                 new DtlMerchantDistancePredicate(filterData),
                 new DtlMerchantAmenitiesPredicate(filterData),
                 new DtlMerchantPricePredicate(filterData),
-                new DtlMerchantQueryPredicate(filterData));
+                new DtlMerchantQueryPredicate(filterData),
+                new DtlMerchantOffersOnlyPredicate(filterData));
     }
 
     @SafeVarargs
@@ -31,7 +32,7 @@ public class DtlMerchantsPredicate implements Predicate<DtlMerchant> {
     @Override
     public boolean apply(DtlMerchant merchant) {
         for (Predicate<DtlMerchant> predicate : predicats) {
-            if(!predicate.apply(merchant)) return false;
+            if (!predicate.apply(merchant)) return false;
         }
         return true;
     }

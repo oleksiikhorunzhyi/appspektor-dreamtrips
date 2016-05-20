@@ -10,12 +10,12 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
@@ -26,6 +26,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMed
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
@@ -36,6 +37,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import flow.Flow;
+import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, ViewState.EMPTY>
@@ -44,15 +46,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     @Inject
     DtlMerchantService merchantService;
     @Inject
-    SnappyRepository db;
-    @Inject
     FeatureManager featureManager;
     @Inject
     LocationDelegate locationDelegate;
     @Inject
+    DtlTransactionService transactionService;
+    @Inject
     protected PhotoUploadingManagerS3 photoUploadingManagerS3;
     //
-    private DtlTransaction dtlTransaction;
     protected DtlMerchant merchant;
     protected final String merchantId;
     protected final DtlOfferData expandOffer;
@@ -77,8 +78,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         if (merchant.hasNoOffers()) {
             getView().setSuggestMerchantButtonAvailable(
                     featureManager.available(Feature.REP_SUGGEST_MERCHANT));
-        }
-        else processTransaction();
+        } else processTransaction();
     }
 
     @Override
@@ -86,54 +86,65 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         return R.menu.menu_detailed_merchant;
     }
 
-    @Override public boolean onToolbarMenuItemClick(MenuItem item) {
+    @Override
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.action_share) onShareClick();
         return super.onToolbarMenuItemClick(item);
     }
 
     private void processTransaction() {
-        dtlTransaction = db.getDtlTransaction(merchant.getId());
-        //
-        if (dtlTransaction != null) {
-            checkSucceedEvent();
-            checkTransactionOutOfDate();
-        }
-        //
-        getView().setTransaction(dtlTransaction);
+        transactionService.transactionActionPipe()
+                .createObservable(DtlTransactionAction.get(merchant))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> {
+                            DtlTransaction transaction = action.getResult();
+                            if (transaction != null) {
+                                checkSucceedEvent(transaction);
+                                checkTransactionOutOfDate(transaction);
+                            }
+                            getView().setTransaction(transaction);
+
+                        }));
+
     }
 
-    private void checkSucceedEvent() {
+    private void checkSucceedEvent(DtlTransaction transaction) {
         DtlTransactionSucceedEvent event = EventBus.getDefault().getStickyEvent(DtlTransactionSucceedEvent.class);
         if (event != null) {
             EventBus.getDefault().removeStickyEvent(event);
-            getView().showSucceed(merchant, dtlTransaction);
+            getView().showSucceed(merchant, transaction);
         }
     }
 
-    private void checkTransactionOutOfDate() {
-        if (dtlTransaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
-            db.deleteDtlTransaction(merchant.getId());
-            dtlTransaction = null;
+    private void checkTransactionOutOfDate(DtlTransaction transaction) {
+        if (transaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
+            transactionService.transactionActionPipe().send(DtlTransactionAction.delete(merchant));
         }
     }
 
     @Override
     public void onCheckInClicked() {
-        if (dtlTransaction != null) {
-            // we should clean transaction, as for now we don't allow user to save his progress
-            // in the enrollment wizard(maybe needed in future)
-            // NOTE! :: but we save checkin (coordinates and checkin time)
-            if (dtlTransaction.getUploadTask() != null)
-                photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
-            db.cleanDtlTransaction(merchant.getId(), dtlTransaction);
-            getView().openTransaction(merchant, dtlTransaction);
-            TrackingHelper.dtlEarnView();
-        } else {
-            getView().disableCheckinButton();
-            locationDelegate.requestLocationUpdate()
-                    .compose(bindViewIoToMainComposer())
-                    .subscribe(this::onLocationObtained, this::onLocationError);
-        }
+        transactionService.transactionActionPipe()
+                .createObservable(DtlTransactionAction.get(merchant))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> {
+                            if (action.getResult() != null) {
+                                DtlTransaction dtlTransaction = action.getResult();
+                                photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
+                                transactionService.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
+                                getView().openTransaction(merchant, dtlTransaction);
+                                TrackingHelper.dtlEarnView();
+                            } else {
+                                getView().disableCheckinButton();
+                                locationDelegate.requestLocationUpdate()
+                                        .compose(bindViewIoToMainComposer())
+                                        .subscribe(this::onLocationObtained, this::onLocationError);
+                            }
+                        }));
     }
 
     @Override
@@ -154,11 +165,11 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     private void onLocationObtained(Location location) {
         getView().enableCheckinButton();
         //
-        dtlTransaction = ImmutableDtlTransaction.builder()
+        DtlTransaction dtlTransaction = ImmutableDtlTransaction.builder()
                 .lat(location.getLatitude())
                 .lng(location.getLongitude())
                 .build();
-        db.saveDtlTransaction(merchant.getId(), dtlTransaction);
+        transactionService.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
         //
         getView().setTransaction(dtlTransaction);
         //

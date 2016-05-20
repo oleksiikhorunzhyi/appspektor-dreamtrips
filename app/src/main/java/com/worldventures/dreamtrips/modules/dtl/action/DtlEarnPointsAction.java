@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.action;
 
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 
@@ -21,9 +22,22 @@ public class DtlEarnPointsAction extends AuthorizedHttpAction {
     @Response
     DtlTransactionResult result;
 
-    public DtlEarnPointsAction(String merchantId, DtlTransaction.Request request) {
-        this.merchantId = merchantId;
-        this.request = request;
+    private final DtlTransaction transaction;
+    private final DtlMerchant merchant;
+
+    public DtlEarnPointsAction(DtlMerchant merchant, DtlTransaction transaction) {
+        this.merchant = merchant;
+        this.transaction = transaction;
+        this.merchantId = merchant.getId();
+        this.request = transaction.asTransactionRequest(merchant.getDefaultCurrency().getCode());
+    }
+
+    public DtlTransaction getTransaction() {
+        return transaction;
+    }
+
+    public DtlMerchant getMerchant() {
+        return merchant;
     }
 
     public DtlTransactionResult getResult() {

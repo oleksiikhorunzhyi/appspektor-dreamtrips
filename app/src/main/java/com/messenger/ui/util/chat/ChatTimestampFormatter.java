@@ -1,4 +1,4 @@
-package com.messenger.util;
+package com.messenger.ui.util.chat;
 
 import android.content.Context;
 import android.text.format.DateUtils;

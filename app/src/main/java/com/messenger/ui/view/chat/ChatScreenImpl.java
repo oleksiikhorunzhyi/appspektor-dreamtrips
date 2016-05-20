@@ -182,8 +182,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     protected ChatAdapter createAdapter() {
-        ChatAdapter adapter = new ChatAdapter(null);
-        injector.inject(adapter);
+        ChatAdapter adapter = new ChatAdapter(null, injector);
         adapter.setCellDelegate(chatCellDelegate);
         adapter.setNeedMarkUnreadMessages(true);
         return adapter;

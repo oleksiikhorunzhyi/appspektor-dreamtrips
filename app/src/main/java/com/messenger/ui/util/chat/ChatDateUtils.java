@@ -1,4 +1,4 @@
-package com.messenger.util;
+package com.messenger.ui.util.chat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -14,10 +14,6 @@ public class ChatDateUtils {
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
         return today;
-    }
-
-    public static long calendarDaysBetweenDates(Date startDate, Date dateEnd) {
-        return calendarDaysBetweenDates(startDate.getTime(), dateEnd.getTime());
     }
 
     public static long calendarDaysBetweenDates(long startDate, long dateEnd) {

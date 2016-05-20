@@ -131,9 +131,9 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
     @Override
     public void finishLoading() {
-        weakHandler.post(() -> {
+        weakHandler.postDelayed(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
+        }, 100);
         stateDelegate.restoreStateIfNeeded();
     }
 

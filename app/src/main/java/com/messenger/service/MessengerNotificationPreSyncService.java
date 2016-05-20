@@ -7,7 +7,11 @@ import android.support.annotation.Nullable;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.service.InjectingService;
 
+import javax.inject.Inject;
+
 public class MessengerNotificationPreSyncService extends InjectingService {
+    @Inject MessengerConnector messengerConnector;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -17,6 +21,7 @@ public class MessengerNotificationPreSyncService extends InjectingService {
     @Override
     public void onCreate() {
         super.onCreate();
-        MessengerConnector.getInstance().connectAfterGlobalConfig();
+
+        messengerConnector.connectAfterGlobalConfig();
     }
 }

@@ -143,12 +143,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Injector injector;
 
     public ChatScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context);
+        super(context, injector);
         this.conversationId = conversationId;
         this.injector = injector;
         openScreenTime = System.currentTimeMillis();
-
-        injector.inject(this);
     }
 
     @Override

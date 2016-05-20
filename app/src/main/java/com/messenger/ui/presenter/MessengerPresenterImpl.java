@@ -1,6 +1,5 @@
 package com.messenger.ui.presenter;
 
-
 import android.content.Context;
 import android.os.Parcelable;
 import android.view.Menu;
@@ -10,9 +9,12 @@ import android.widget.Toast;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.view.layout.MessengerScreen;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -20,19 +22,23 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
         extends BaseViewStateMvpPresenter<V, S> implements MessengerPresenter<V, S> {
 
     protected Context context;
+    private Injector injector;
 
     protected Observable<SyncStatus> connectionStatusStream;
     protected SyncStatus currentConnectivityStatus = SyncStatus.DISCONNECTED;
+    @Inject MessengerConnector messengerConnector;
 
-    public MessengerPresenterImpl(Context context) {
+    public MessengerPresenterImpl(Context context, Injector injector) {
         this.context = context;
+        this.injector = injector;
+        injector.inject(this);
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        connectionStatusStream = MessengerConnector.getInstance().status()
+        connectionStatusStream = messengerConnector.status()
                 .throttleLast(50, TimeUnit.MILLISECONDS)
                 .compose(bindViewIoToMainComposer());
 
@@ -56,11 +62,15 @@ public abstract class MessengerPresenterImpl<V extends MessengerScreen, S extend
 
     @Override
     public void onDisconnectedOverlayClicked() {
-        MessengerConnector.getInstance().connect();
+        messengerConnector.connect();
     }
 
     protected Context getContext() {
         return context;
+    }
+
+    protected Injector getInjector() {
+        return injector;
     }
 
     @Override

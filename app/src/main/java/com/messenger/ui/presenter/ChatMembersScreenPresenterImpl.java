@@ -66,9 +66,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     private final ContactsHeaderCreator contactsHeaderCreator;
 
     public ChatMembersScreenPresenterImpl(Context context, Injector injector) {
-        super(context);
-
-        injector.inject(this);
+        super(context, injector);
 
         profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);

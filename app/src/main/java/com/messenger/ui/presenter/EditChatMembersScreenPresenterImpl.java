@@ -66,11 +66,8 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     private Observable<DataConversation> conversationObservable;
 
     public EditChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context);
-        injector.inject(this);
-
+        super(context, injector);
         this.conversationId = conversationId;
-
         this.profileCrosser = new ProfileCrosser(context, routeCreator);
     }
 

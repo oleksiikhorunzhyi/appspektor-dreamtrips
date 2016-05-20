@@ -71,6 +71,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     DtlLocationManager locationManager;
     @Inject
     GlobalConfigManager globalConfigManager;
+    @Inject
+    MessengerConnector messengerConnector;
 
     private boolean requestInProgress = false;
 
@@ -149,7 +151,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
 
-            MessengerConnector.getInstance().connectAfterGlobalConfig();
+            messengerConnector.connectAfterGlobalConfig();
         } else {
             router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

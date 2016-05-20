@@ -1,104 +1,73 @@
 package com.messenger.ui.widget;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.DrawableRes;
-import android.text.TextUtils;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.FrameLayout;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.image.ImageInfo;
 import com.messenger.entities.DataConversation;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.GroupAvatarColorHelper;
 import com.worldventures.dreamtrips.R;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
-public class GroupAvatarsView extends FrameLayout {
+public class GroupAvatarsView extends SimpleDraweeView {
 
     private static final GroupAvatarColorHelper COLOR_HELPER = new GroupAvatarColorHelper();
-
-    @InjectView(R.id.group_avatar_default_view)
-    RoundBackgroundPercentFrameLayout defaultGroupAvatar;
-    @InjectView(R.id.group_avatar_custom_view)
-    SimpleDraweeView customImageGroupAvatar;
-
-    public GroupAvatarsView(Context context) {
-        super(context);
-        init();
-    }
 
     public GroupAvatarsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
+    public GroupAvatarsView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public GroupAvatarsView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
     private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.widget_group_avatars_view, this, true);
-        ButterKnife.inject(this, this);
+        getHierarchy()
+                .setRoundingParams(RoundingParams.asCircle());
     }
 
     public void setConversationAvatar(DataConversation conversation) {
-        if (TextUtils.isEmpty(conversation.getAvatar())) {
-            showDefaultAvatar(conversation.getId());
-            hideCustomAvatar();
+        if (ConversationHelper.isTripChat(conversation)) {
+            setTripChatAvatar();
         } else {
-            loadCustomAvatar(conversation);
+            setGroupChatAvatar(conversation);
         }
     }
 
-    private void showDefaultAvatar(String conversationId) {
-        defaultGroupAvatar.setRoundBackgroundColor(COLOR_HELPER.obtainColor(getContext(), conversationId));
-        defaultGroupAvatar.setVisibility(VISIBLE);
-    }
-
-    private void hideDefaultAvatar() {
-        defaultGroupAvatar.setVisibility(GONE);
-    }
-
-    private void showCustomAvatar() {
-        customImageGroupAvatar.setVisibility(VISIBLE);
-    }
-
-    private void hideCustomAvatar() {
-        customImageGroupAvatar.setVisibility(GONE);
-    }
-
-    private void loadCustomAvatar(DataConversation conversation) {
-        // show default avatar first as placeholder,
-        // while loading the pic custom avatar will be transparent
-        showDefaultAvatar(conversation.getId());
-        showCustomAvatar();
-
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setControllerListener(new BaseControllerListener<ImageInfo>() {
-                    @Override
-                    public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                        hideDefaultAvatar();
-                    }
-
-                    @Override
-                    public void onFailure(String id, Throwable throwable) {
-                        hideCustomAvatar();
-                        showDefaultAvatar(conversation.getId());
-                    }
-                })
-                .setOldController(customImageGroupAvatar.getController())
-                .setUri(Uri.parse(conversation.getAvatar()))
+    private void setGroupChatAvatar(DataConversation conversation) {
+        Drawable drawable = new RoundDrawableWrapper.Builder()
+                .drawable(ContextCompat.getDrawable(getContext(), R.drawable.regular_group))
+                .color(COLOR_HELPER.obtainColor(getContext(), conversation.getId()))
                 .build();
-        customImageGroupAvatar.setController(controller);
+
+        setController(Fresco.newDraweeControllerBuilder()
+                .setOldController(getController())
+                .setUri(Uri.parse(conversation.getAvatar()))
+                .build());
+
+        GenericDraweeHierarchy history = getHierarchy();
+        history.setFailureImage(drawable);
+        history.setPlaceholderImage(drawable);
     }
 
-    public void setImageDrawable(@DrawableRes int drawableId) {
-        hideDefaultAvatar();
-        showCustomAvatar();
-        customImageGroupAvatar.setImageResource(drawableId);
+    private void setTripChatAvatar() {
+        GenericDraweeHierarchy history = getHierarchy();
+        history.setPlaceholderImage(ContextCompat.getDrawable(getContext(), R.drawable.ic_trip_chat));
     }
 }

@@ -240,9 +240,6 @@ public class UnhandledMessageWatcher {
     private InAppMessengerNotificationView createGroupChatCrouton(Context context, DataConversation conversation, String title, String text) {
         InAppNotificationViewGroup view = new InAppNotificationViewGroup(context);
         view.setConversation(conversation);
-        if (ConversationHelper.isTripChat(conversation)) {
-            view.setImageRes(R.drawable.ic_trip_chat);
-        }
         view.setTitle(title);
         view.setText(text);
         return view;

@@ -5,24 +5,27 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 
-import java.util.ArrayList;
+import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.core.session.UserSession;
+
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
     private static final int TIMER_FOR_DISCONNECT = 2000;
 
-    Handler handler;
+    private final Handler handler = new Handler();
+    private final List<OnStartStopAppListener> listeners = new CopyOnWriteArrayList<>();
+    private final SessionHolder<UserSession> sessionHolder;
 
-    List<OnStartStopAppListener> listeners;
-    int visibleActivityCount;
+    private int visibleActivityCount;
 
-    public ActivityWatcher(Context context) {
-        this.handler = new Handler();
-        this.visibleActivityCount = 0;
-        this.listeners = new ArrayList<>();
-
+    public ActivityWatcher(Context context, SessionHolder<UserSession> sessionHolder) {
+        this.sessionHolder = sessionHolder;
         ((Application) context.getApplicationContext()).registerActivityLifecycleCallbacks(this);
     }
 
@@ -39,9 +42,16 @@ public class ActivityWatcher implements Application.ActivityLifecycleCallbacks {
 
     }
 
+    private boolean isSessionExist() {
+        Optional<UserSession> optionalSession = sessionHolder.get();
+        UserSession session = optionalSession != null && optionalSession.isPresent() ? optionalSession.get() : null;
+        return session != null && !TextUtils.isEmpty(session.getApiToken());
+    }
+
     @Override
     public void onActivityStarted(Activity activity) {
         visibleActivityCount++;
+        if (!isSessionExist()) return;
         if (visibleActivityCount != 1) return;
 
         handler.post(() -> {

@@ -17,7 +17,6 @@ import com.messenger.di.MessengerActivityModule;
 import com.messenger.flow.path.StyledPath;
 import com.messenger.flow.util.FlowActivityHelper;
 import com.messenger.flow.util.GsonParceler;
-import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
@@ -68,8 +67,6 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
     CropImageDelegate cropImageDelegate;
     @Inject
     ActivityRouter activityRouter;
-    @Inject
-    MessengerConnector messengerConnector;
 
     @InjectView(R.id.drawer)
     protected DrawerLayout drawerLayout;
@@ -91,11 +88,6 @@ public class MessengerActivity extends ActivityWithPresenter<MessengerActivityPr
         MonitoringHelper.setInteractionName(this);
         //
         String conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
-        // if we launch activity from push we don't load global configurations.
-        // So we should notify MessengerConnector that there won't be loading configs
-        if (!TextUtils.isEmpty(conversationId)) {
-            messengerConnector.connectAfterGlobalConfig();
-        }
         //
         initPickerLayout();
         initNavDrawer();

@@ -29,7 +29,6 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI
 @Singleton
 public class MessengerConnector {
     private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
-    private final AtomicBoolean loadedGlobalConfigurations = new AtomicBoolean(false);
     private final MessengerCacheSynchronizer messengerCacheSynchronizer;
     private final MessengerServerFacade messengerServerFacade;
     private final SessionHolder<UserSession> appSessionHolder;
@@ -37,8 +36,6 @@ public class MessengerConnector {
     @Inject MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                        SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
                        LoaderDelegate loaderDelegate, EventBusWrapper eventBusWrapper) {
-        Timber.d("CREATE MessengerConnector");
-        Timber.d("CREATE applicationContext %s", applicationContext);
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(loaderDelegate);
@@ -91,20 +88,7 @@ public class MessengerConnector {
         return connectionStream.asObservable();
     }
 
-    /**
-     * This method should be called after loading all global configurations.
-     * Also the one should be called if there is no need to load configurations
-     */
-    public void connectAfterGlobalConfig() {
-        loadedGlobalConfigurations.set(true);
-        connect();
-    }
-
-    /**
-     * Should be called when we need to reconnect connection.
-     */
     public void connect() {
-        if (!loadedGlobalConfigurations.get()) return;
         if (messengerServerFacade.isConnected() || !isUserSessionPresent()) return;
         UserSession userSession = appSessionHolder.get().get();
         if (userSession.getUser() == null) return;

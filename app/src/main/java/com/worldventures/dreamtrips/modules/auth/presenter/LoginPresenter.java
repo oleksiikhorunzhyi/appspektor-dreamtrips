@@ -60,7 +60,7 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                     staticPageHolder.put(staticPageConfig);
                     view.showLoginSuccess();
                     if (appSessionHolder.get().get().getGlobalConfig() != null) {
-                        messengerConnector.connectAfterGlobalConfig();
+                        messengerConnector.connect();
 
                         activityRouter.openMain();
                         activityRouter.finish();

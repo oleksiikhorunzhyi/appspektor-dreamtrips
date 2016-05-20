@@ -24,6 +24,8 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
     StaticPageHolder staticPageHolder;
     @Inject
     LocaleHelper localeHelper;
+    @Inject
+    MessengerConnector messengerConnector;
 
     public void loginAction() {
         String username = view.getUsername();
@@ -58,7 +60,7 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                     staticPageHolder.put(staticPageConfig);
                     view.showLoginSuccess();
                     if (appSessionHolder.get().get().getGlobalConfig() != null) {
-                        MessengerConnector.getInstance().connectAfterGlobalConfig();
+                        messengerConnector.connect();
 
                         activityRouter.openMain();
                         activityRouter.finish();

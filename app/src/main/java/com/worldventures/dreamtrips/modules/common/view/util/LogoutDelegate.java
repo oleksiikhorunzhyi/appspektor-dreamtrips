@@ -38,7 +38,8 @@ public class LogoutDelegate {
     protected DTCookieManager cookieManager;
     @Inject
     FlagsDelegate flagsDelegate;
-    //
+    @Inject
+    MessengerConnector messengerConnector;
     protected DreamSpiceManager dreamSpiceManager;
 
     private OnLogoutSuccessListener onLogoutSuccessListener;
@@ -52,7 +53,7 @@ public class LogoutDelegate {
     }
 
     public void logout() {
-        MessengerConnector.getInstance().disconnect();
+        messengerConnector.disconnect();
         flagsDelegate.clearCache();
 
         String token = snappyRepository.getGcmRegToken();

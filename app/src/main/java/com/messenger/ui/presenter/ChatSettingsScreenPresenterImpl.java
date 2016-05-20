@@ -53,11 +53,8 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     ConversationsDAO conversationsDAO;
 
     public ChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context);
-        injector.inject(this);
-
+        super(context, injector);
         chatLeavingDelegate = new ChatLeavingDelegate(injector, onChatLeftListener);
-
         this.conversationId = conversationId;
     }
 

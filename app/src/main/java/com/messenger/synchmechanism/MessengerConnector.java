@@ -15,45 +15,55 @@ import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import timber.log.Timber;
 
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 
+@Singleton
 public class MessengerConnector {
-
-    private static MessengerConnector INSTANCE;
-    //
-    private final SessionHolder<UserSession> appSessionHolder;
-    private final NetworkEvents networkEvents;
-    //
-    private final MessengerServerFacade messengerServerFacade;
-    private final MessengerCacheSynchronizer messengerCacheSynchronizer;
-    //
     private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
-    //
-    private AtomicBoolean loadedGlobalConfigurations;
+    private final MessengerCacheSynchronizer messengerCacheSynchronizer;
+    private final MessengerServerFacade messengerServerFacade;
+    private final SessionHolder<UserSession> appSessionHolder;
 
-    private MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
-                               SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-                               LoaderDelegate loaderDelegate, EventBusWrapper eventBusWrapper) {
-
+    @Inject MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
+                       SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
+                       LoaderDelegate loaderDelegate, EventBusWrapper eventBusWrapper) {
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
         this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(loaderDelegate);
-        this.networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
-        this.loadedGlobalConfigurations = new AtomicBoolean(false);
+        NetworkEvents networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
 
         messengerServerFacade
                 .getStatusObservable()
                 .subscribe(this::handleFacadeStatus);
 
-        activityWatcher.addOnStartStopListener(startStopAppListener);
 
+        registerActivityWatcher(activityWatcher);
         eventBusWrapper.register(this);
         networkEvents.register();
+    }
+
+    private void registerActivityWatcher(ActivityWatcher activityWatcher) {
+        ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
+            @Override
+            public void onStartApplication() {
+                connect();
+            }
+
+            @Override
+            public void onStopApplication() {
+                disconnect();
+            }
+        };
+        activityWatcher.addOnStartStopListener(startStopAppListener);
     }
 
     private void handleFacadeStatus(ConnectionStatus status) {
@@ -74,39 +84,11 @@ public class MessengerConnector {
         }
     }
 
-    public static MessengerConnector getInstance() {
-        if (INSTANCE == null) {
-            throw new IllegalStateException("You should initialize it");
-        }
-        return INSTANCE;
-    }
-
-    public static void init(Context applicationContext, ActivityWatcher activityWatcher,
-                            SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-                            LoaderDelegate loaderDelegate, EventBusWrapper eventBusWrapper) {
-
-        INSTANCE = new MessengerConnector(applicationContext, activityWatcher, appSessionHolder, messengerServerFacade,
-                loaderDelegate, eventBusWrapper);
-    }
-
     public Observable<SyncStatus> status() {
         return connectionStream.asObservable();
     }
 
-    /**
-     * This method should be called after loading all global configurations.
-     * Also the one should be called if there is no need to load configurations
-     */
-    public void connectAfterGlobalConfig() {
-        loadedGlobalConfigurations.set(true);
-        connect();
-    }
-
-    /**
-     * Should be called when we need to reconnect connection.
-     */
     public void connect() {
-        if (!loadedGlobalConfigurations.get()) return;
         if (messengerServerFacade.isConnected() || !isUserSessionPresent()) return;
         UserSession userSession = appSessionHolder.get().get();
         if (userSession.getUser() == null) return;
@@ -146,17 +128,4 @@ public class MessengerConnector {
             }
         }
     }
-
-    private final ActivityWatcher.OnStartStopAppListener startStopAppListener = new ActivityWatcher.OnStartStopAppListener() {
-        @Override
-        public void onStartApplication() {
-            connect();
-        }
-
-        @Override
-        public void onStopApplication() {
-            disconnect();
-        }
-    };
-
 }

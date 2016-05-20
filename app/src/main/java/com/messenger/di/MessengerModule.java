@@ -1,11 +1,9 @@
 package com.messenger.di;
 
-import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.JoinedChatEventDelegate;
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
-import com.messenger.service.MessengerNotificationPreSyncService;
 import com.messenger.ui.adapter.SwipeableContactsAdapter;
 import com.messenger.ui.adapter.holder.conversation.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
@@ -35,9 +33,7 @@ import dagger.Module;
 
                 LoaderDelegate.class,
                 GroupChatEventDelegate.class,
-                JoinedChatEventDelegate.class,
-
-                MessengerNotificationPreSyncService.class,
+                JoinedChatEventDelegate.class
         },
         complete = false, library = true
 )

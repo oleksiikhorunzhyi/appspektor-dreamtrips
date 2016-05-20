@@ -66,10 +66,9 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     private Subscription conversationSubscription;
 
     public ConversationListScreenPresenterImpl(Context context, Injector injector) {
-        super(context);
+        super(context, injector);
 
         chatLeavingDelegate = new ChatLeavingDelegate(injector, null);
-        injector.inject(this);
     }
 
     @Override

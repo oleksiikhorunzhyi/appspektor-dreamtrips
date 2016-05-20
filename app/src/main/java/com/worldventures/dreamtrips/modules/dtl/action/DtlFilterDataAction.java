@@ -1,41 +1,99 @@
 package com.worldventures.dreamtrips.modules.dtl.action;
 
-import com.worldventures.dreamtrips.core.api.action.CallableCommandAction;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
+import io.techery.janet.CommandActionBase;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.functions.Func1;
+import rx.functions.Func2;
 
 @CommandAction
-public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> implements CachedAction<DtlFilterData> {
+public class DtlFilterDataAction extends CommandActionBase<DtlFilterData> implements CachedAction<DtlFilterData>, InjectableAction{
 
+    @Inject
+    SnappyRepository db;
 
-    private final Func1<DtlFilterData, DtlFilterData> updateFunc;
+    private DtlFilterData data;
+    private final Func2<SnappyRepository, DtlFilterData, DtlFilterData> updateFunc;
 
-    private DtlFilterDataAction(Func1<DtlFilterData, DtlFilterData> updateFunc) {
+    private DtlFilterDataAction(Func2<SnappyRepository, DtlFilterData, DtlFilterData> updateFunc) {
         this(ImmutableDtlFilterData.builder().build(), updateFunc);
     }
 
-    private DtlFilterDataAction(DtlFilterData data, Func1<DtlFilterData, DtlFilterData> updateFunc) {
-        super(() -> updateFunc != null ? updateFunc.call(data) : data);
+    private DtlFilterDataAction(DtlFilterData data, Func2<SnappyRepository, DtlFilterData, DtlFilterData> updateFunc) {
+        this.data = data;
         this.updateFunc = updateFunc;
     }
 
-    public boolean withUpdateFunc() {
-        return updateFunc != null;
+    @Override
+    protected void run(CommandCallback<DtlFilterData> callback) throws Throwable {
+        callback.onSuccess(updateFunc.call(db, data));
     }
 
-    public static DtlFilterDataAction update(Func1<DtlFilterData, DtlFilterData> updateAction) {
-        return new DtlFilterDataAction(updateAction);
+    ///////////////////////////////////////////////////////////////////////////
+    // Actions
+    ///////////////////////////////////////////////////////////////////////////
+
+    public static DtlFilterDataAction init() {
+        return new DtlFilterDataAction((db, data) -> {
+            Setting distanceSetting = Queryable.from(db.getSettings()).filter(setting ->
+                    setting.getName().equals(SettingsFactory.DISTANCE_UNITS)).firstOrDefault();
+            return ImmutableDtlFilterData.copyOf(data)
+                    .withDistanceType(DistanceType.provideFromSetting(distanceSetting));
+        });
     }
 
-    public static DtlFilterDataAction read() {
-        return new DtlFilterDataAction(null);
+    public static DtlFilterDataAction reset() {
+        return new DtlFilterDataAction((db, data) ->
+                DtlFilterData.merge(
+                        ImmutableDtlFilterParameters.builder()
+                                .selectedAmenities(db.getAmenities())
+                                .build(),
+                        data)
+        );
+    }
+
+    public static DtlFilterDataAction amenitiesUpdate(List<DtlMerchantAttribute> amenities) {
+        return new DtlFilterDataAction((db, data) ->
+                DtlFilterData.merge(
+                        ImmutableDtlFilterParameters.builder()
+                                .selectedAmenities(amenities)
+                                .build(),
+                        ImmutableDtlFilterData.copyOf(data)
+                                .withAmenities(amenities)
+                                .withSelectedAmenities(amenities)));
+    }
+
+    public static DtlFilterDataAction applyParams(DtlFilterParameters filterParameters) {
+        return new DtlFilterDataAction((db, data) -> {
+            data = DtlFilterData.merge(filterParameters, data);
+//            TrackingHelper.dtlMerchantFilter(data);
+            return data;
+        });
+    }
+
+    public static DtlFilterDataAction applySearch(String query) {
+        return new DtlFilterDataAction((db, data) ->
+                ImmutableDtlFilterData.copyOf(data)
+                        .withSearchQuery(query)
+        );
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -49,7 +107,7 @@ public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> im
 
     @Override
     public void onRestore(ActionHolder holder, DtlFilterData cache) {
-        holder.newAction(new DtlFilterDataAction(cache, updateFunc));
+        this.data = cache;
     }
 
     @Override
@@ -57,4 +115,5 @@ public class DtlFilterDataAction extends CallableCommandAction<DtlFilterData> im
         return ImmutableCacheOptions.builder()
                 .build();
     }
+
 }

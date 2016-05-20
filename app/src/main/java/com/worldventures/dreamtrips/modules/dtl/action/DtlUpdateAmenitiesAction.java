@@ -39,5 +39,6 @@ public class DtlUpdateAmenitiesAction extends CommandActionBase<List<DtlMerchant
                 .sort(DtlMerchantAttribute.NAME_ALPHABETIC_COMPARATOR)
                 .toList();
         db.saveAmenities(result);
+        callback.onSuccess(result);
     }
 }

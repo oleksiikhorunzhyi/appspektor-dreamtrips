@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.core.janet;
 import com.messenger.di.MessengerJanetCommandModule;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.action.DtlUpdateAmenitiesAction;
 
 import dagger.Module;
 
@@ -12,8 +12,8 @@ import dagger.Module;
         injects = {
                 UploaderyImageCommand.class,
                 SimpleUploaderyCommand.class,
-                DtlFilterMerchantStoreAction.class,
-                DtlMerchantStoreAction.class
+                DtlUpdateAmenitiesAction.class,
+                DtlFilterDataAction.class
         },
         complete = false, library = true)
 public class JanetCommandModule {

@@ -29,7 +29,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirec
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationService;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
@@ -66,7 +66,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     SnappyRepository db;
     @Inject
-    DtlActionPipesHolder dtlActionPipesHolder;
+    DtlLocationService dtlLocationService;
     @Inject
     GlobalConfigManager globalConfigManager;
 
@@ -100,7 +100,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     public void initDtl() {
         db.cleanLastSelectedOffersOnlyToggle();
         db.cleanLastMapCameraPosition();
-        dtlActionPipesHolder.locationPipe.send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+        dtlLocationService.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
     }
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {

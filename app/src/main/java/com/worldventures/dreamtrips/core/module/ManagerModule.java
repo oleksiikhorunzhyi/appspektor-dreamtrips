@@ -25,9 +25,10 @@ import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
@@ -58,9 +59,9 @@ import io.techery.janet.Janet;
 
                 LogoutDelegate.class,
                 //
-                DtlFilterMerchantStore.class,
-                DtlMerchantStore.class,
-                DtlActionPipesHolder.class,
+                DtlFilterMerchantService.class,
+                DtlMerchantService.class,
+                DtlTransactionService.class,
 
                 GlobalConfigManager.class,
         },
@@ -102,20 +103,30 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlMerchantStore dtlMerchantStore(@ForApplication Injector injector) {
-        return new DtlMerchantStore(injector);
+    DtlMerchantService dtlMerchantService(Janet janet,
+                                          DtlLocationService locationService) {
+        return new DtlMerchantService(janet, locationService);
     }
 
     @Singleton
     @Provides
-    DtlFilterMerchantStore dtlFilteredMerchantStore(@ForApplication Injector injector) {
-        return new DtlFilterMerchantStore(injector);
+    DtlFilterMerchantService dtlFilteredMerchantStore(DtlMerchantService dtlMerchantService,
+                                                      DtlLocationService locationService,
+                                                      LocationDelegate locationDelegate,
+                                                      Janet janet) {
+        return new DtlFilterMerchantService(dtlMerchantService, locationService, locationDelegate, janet);
     }
 
     @Singleton
     @Provides
-    DtlActionPipesHolder provideDtlActionPipesHolder(Janet janet) {
-        return new DtlActionPipesHolder(janet);
+    DtlTransactionService provideDtlActionPipesHolder(Janet janet) {
+        return new DtlTransactionService(janet);
+    }
+
+    @Singleton
+    @Provides
+    DtlLocationService provideDtlLocationService(Janet janet) {
+        return new DtlLocationService(janet);
     }
 
 

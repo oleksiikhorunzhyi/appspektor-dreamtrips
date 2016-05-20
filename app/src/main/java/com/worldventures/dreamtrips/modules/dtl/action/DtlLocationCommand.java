@@ -16,7 +16,7 @@ public class DtlLocationCommand extends ValueCommandAction<DtlLocation> implemen
     private boolean fromCache;
 
     private DtlLocationCommand() {
-        super(null);
+        super(DtlLocation.UNDEFINED);
         fromCache = true;
     }
 

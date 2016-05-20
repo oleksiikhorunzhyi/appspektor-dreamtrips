@@ -20,8 +20,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
 
 import javax.inject.Inject;
 
@@ -32,9 +32,9 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantStore;
     @Inject
-    DtlActionPipesHolder jobManager;
+    DtlTransactionService transactionService;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
@@ -67,7 +67,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     }
 
     private void bindApiJob() {
-        jobManager.earnPointsActionPipe.observeWithReplay()
+        transactionService.earnPointsActionPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>()
                         .onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
@@ -93,7 +93,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     private void onReceiptUploaded() {
         dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
                 .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(dtlTransaction.getUploadTask()));
-        jobManager.earnPointsActionPipe.send(
+        transactionService.earnPointsActionPipe().send(
                 new DtlEarnPointsAction(dtlMerchant.getId(), dtlTransaction.asTransactionRequest(dtlMerchant.getDefaultCurrency().getCode()))
         );
     }

@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
 
 import javax.inject.Inject;
 
@@ -25,9 +25,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     protected final String merchantId;
 
     @Inject
-    DtlActionPipesHolder jobManager;
+    DtlTransactionService transactionService;
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantStore;
     //
     private DtlMerchant dtlMerchant;
 
@@ -52,7 +52,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     }
 
     private void bindApiJob() {
-        jobManager.estimatePointsActionPipe.observeWithReplay()
+        transactionService.estimatePointsActionPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
                         .onStart(action -> view.showProgress())
@@ -63,7 +63,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     public void onCalculateClicked(String userInput) {
         if (!validateInput(userInput)) return;
         //
-        jobManager.estimatePointsActionPipe
+        transactionService.estimatePointsActionPipe()
                 .send(new DtlEstimatePointsAction(merchantId, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
     }
 

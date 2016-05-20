@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
 
 import javax.inject.Inject;
 
@@ -16,7 +16,7 @@ public class DtlVerifyAmountPresenter extends Presenter<DtlVerifyAmountPresenter
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantStore;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;

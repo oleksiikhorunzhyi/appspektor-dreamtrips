@@ -9,13 +9,13 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.CommandActionBase;
+import io.techery.janet.ReadActionPipe;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
@@ -23,15 +23,15 @@ import rx.Observable;
 @CommandAction
 public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant>> {
 
-    private final DtlMerchantStore merchantStore;
+    private final ReadActionPipe<DtlMerchantsAction> merchantsActionPipe;
     private final ActionPipe<DtlLocationCommand> locationActionPipe;
     private final LocationDelegate locationDelegate;
     private final DtlFilterData filterData;
 
 
-    public DtlFilterMerchantsAction(DtlFilterData filterData, DtlMerchantStore merchantStore,
+    public DtlFilterMerchantsAction(DtlFilterData filterData, ReadActionPipe<DtlMerchantsAction> merchantsActionPipe,
                                     ActionPipe<DtlLocationCommand> locationActionPipe, LocationDelegate locationDelegate) {
-        this.merchantStore = merchantStore;
+        this.merchantsActionPipe = merchantsActionPipe;
         this.locationActionPipe = locationActionPipe;
         this.locationDelegate = locationDelegate;
         this.filterData = filterData;
@@ -41,7 +41,8 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
     protected void run(CommandCallback<List<DtlMerchant>> callback) throws Throwable {
         getSearchLocation()
                 .flatMap(latLng ->
-                        merchantStore.getState()
+                        merchantsActionPipe.observeWithReplay()
+                                .first()
                                 .compose(new ActionStateToActionTransformer<>())
                                 .map(DtlMerchantsAction::getCacheData)
                                 .map(merchants -> {

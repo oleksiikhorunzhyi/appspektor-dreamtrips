@@ -19,8 +19,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
@@ -35,9 +35,9 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantStore;
     @Inject
-    DtlActionPipesHolder jobManager;
+    DtlTransactionService transactionService;
     //
     @State
     String amount;
@@ -93,7 +93,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     private void bindApiJob() {
-        jobManager.estimatePointsActionPipe.observeWithReplay()
+        transactionService.estimatePointsActionPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
                         .onStart(action -> view.showProgress())
@@ -106,7 +106,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                 .withBillTotal(Double.parseDouble(amount));
         TrackingHelper.dtlVerifyAmountUser(amount);
         //
-        jobManager.estimatePointsActionPipe.send(
+        transactionService.estimatePointsActionPipe().send(
                 new DtlEstimatePointsAction(merchantId, dtlTransaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode())
         );
     }

@@ -13,9 +13,9 @@ import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -28,18 +28,18 @@ import flow.Flow;
 public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, ViewState.EMPTY> implements DtlMapInfoPresenter {
 
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantService;
     @Inject
-    DtlFilterMerchantStore filteredMerchantStore;
+    DtlFilterMerchantService filterService;
     @Inject
-    DtlActionPipesHolder pipesHolder;
+    DtlLocationService locationService;
     //
     protected DtlMerchant merchant;
 
     public DtlMapInfoPresenterImpl(Context context, Injector injector, String merchantId) {
         super(context);
         injector.inject(this);
-        merchantStore.getMerchantById(merchantId)
+        merchantService.getMerchantById(merchantId)
                 .compose(ImmediateComposer.instance())
                 .subscribe(value -> merchant = value);
     }
@@ -64,10 +64,10 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
     }
 
     private void trackIfNeeded() {
-        filteredMerchantStore.getFilterDataState()
+        filterService.getFilterData()
                 .map(DtlFilterData::getSearchQuery)
                 .filter(query -> !TextUtils.isEmpty(query))
-                .flatMap(query -> pipesHolder.locationPipe.createObservableSuccess(DtlLocationCommand.get())
+                .flatMap(query -> locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
                         .map(DtlLocationCommand::getResult)
                         .map(location -> new Pair<>(query, location)))
                 .subscribe(pair -> {

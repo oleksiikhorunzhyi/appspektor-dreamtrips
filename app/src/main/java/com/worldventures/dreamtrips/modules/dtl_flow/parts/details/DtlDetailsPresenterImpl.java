@@ -25,7 +25,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferDat
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
@@ -42,7 +42,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         implements DtlDetailsPresenter {
 
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantService;
     @Inject
     SnappyRepository db;
     @Inject
@@ -63,7 +63,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         injector.inject(this);
         this.expandOffer = expandOffer;
         this.merchantId = merchantId;
-        merchantStore.getMerchantById(merchantId)
+        merchantService.getMerchantById(merchantId)
                 .compose(ImmediateComposer.instance())
                 .subscribe(value -> merchant = value);
     }

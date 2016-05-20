@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.modules.dtl.action.DtlRateAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlActionPipesHolder;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
 
 import javax.inject.Inject;
 
@@ -24,9 +24,9 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     @Inject
     SnappyRepository db;
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantStore;
     @Inject
-    DtlActionPipesHolder jobManager;
+    DtlTransactionService transactionService;
     //
     @State
     int stars;
@@ -57,7 +57,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
 
     public void done() {
         if (stars != 0) {
-            jobManager.rateActionPipe.send(new DtlRateAction(merchantId, stars, dtlTransaction.getDtlTransactionResult().getId()));
+            transactionService.rateActionPipe().send(new DtlRateAction(merchantId, stars, dtlTransaction.getDtlTransactionResult().getId()));
         }
     }
 
@@ -67,11 +67,11 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
         apiErrorPresenter.setView(view);
         dtlTransaction = db.getDtlTransaction(merchantId);
         view.setCongratulations(dtlTransaction.getDtlTransactionResult());
-        bindApiJob();
+        bindApiPipe();
     }
 
-    private void bindApiJob() {
-        jobManager.rateActionPipe.observe()
+    private void bindApiPipe() {
+        transactionService.rateActionPipe().observe()
                 .subscribe(new ActionStateSubscriber<DtlRateAction>()
                         .onFail(apiErrorPresenter::handleActionError));
     }

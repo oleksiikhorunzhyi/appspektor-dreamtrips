@@ -61,8 +61,8 @@ public class ApiErrorPresenter {
     }
 
     public void handleActionError(BaseHttpAction action, Throwable exception) {
-        Timber.e(exception, this.getClass().getName() + " handled caught exception");
         if (exception instanceof CancelException) return;
+        Timber.e(exception, this.getClass().getName() + " handled caught exception");
         if (!hasView()) {
             Crashlytics.logException(exception);
             Timber.e(exception, "ApiErrorPresenter expects apiErrorView to be set, which is null.");

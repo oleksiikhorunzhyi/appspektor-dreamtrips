@@ -33,6 +33,7 @@ public class DtlLocationStorage extends MemoryStorage<DtlLocation> implements Ac
         DtlLocation location = super.get();
         if (location == null) {
             location = db.getDtlLocation();
+            super.save(location);
         }
         return location;
     }

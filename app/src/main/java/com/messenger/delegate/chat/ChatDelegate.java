@@ -84,21 +84,6 @@ public class ChatDelegate {
                         e -> Timber.e(e, "Fail to send message"));
     }
 
-    public void setComposing() {
-        chatObservable.subscribeOn(Schedulers.io())
-                .flatMap(chat -> chat.setCurrentState(ChatState.COMPOSING))
-                .subscribe(state -> {},
-                        e -> Timber.e(e, "Fail to set state"));
-
-    }
-
-    public void setPaused() {
-        chatObservable.subscribeOn(Schedulers.io())
-                .flatMap(chat -> chat.setCurrentState(ChatState.PAUSE))
-                .subscribe(state -> {},
-                        e -> Timber.e(e, "Fail to set state"));
-    }
-
     public void closeChat() {
         chatObservable.subscribeOn(Schedulers.io()).subscribe(Chat::close,
                 e -> Timber.e(e, "Fail to close chat"));

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.messenger.api.ErrorParser;
 import com.messenger.delegate.chat.flagging.FlagMessageAction;
+import com.messenger.delegate.chat.typing.ChatStateAction;
 import com.messenger.delegate.command.ChangeAvatarCommand;
 import com.messenger.delegate.command.RemoveAvatarCommand;
 import com.messenger.delegate.command.SendImageAttachmentCommand;
@@ -20,6 +21,7 @@ import dagger.Provides;
         ChangeAvatarCommand.class,
         RemoveAvatarCommand.class,
         FlagMessageAction.class,
+        ChatStateAction.class,
         SetAvatarUploadCommand.class},
         complete = false, library = true)
 public class MessengerJanetCommandModule {

@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.AttachmentManager;
@@ -21,6 +22,7 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.chat.ChatDelegate;
 import com.messenger.delegate.chat.ChatDelegate.PaginationStatus;
 import com.messenger.delegate.chat.ChatTypingDelegate;
+import com.messenger.delegate.chat.typing.ChatStateDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
@@ -98,8 +100,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         implements ChatScreenPresenter {
     //
     private static final int MARK_AS_READ_DELAY = 2000;
-    private static final int START_TYPING_DELAY = 1000;
-    private static final int STOP_TYPING_DELAY = 2000;
 
     @Inject MessageBodyCreator messageBodyCreator;
     @Inject DataUser user;
@@ -127,13 +127,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject AttachmentHelper attachmentHelper;
     @Inject PermissionDispatcher permissionDispatcher;
     @Inject ConversationAnalyticsDelegate conversationAnalyticsDelegate;
+    @Inject ChatStateDelegate chatStateDelegate;
+
     private FlaggingPresenter flaggingPresenter;
 
     protected String conversationId;
 
     private long openScreenTime;
 
-    private boolean typing;
     private boolean imageAttachmentClicked = false;
 
     private Subscription messageStreamSubscription;
@@ -172,8 +173,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         boolean visible = visibility == View.VISIBLE;
         openedConversationTracker.conversationVisibilityChanged(conversationId, visible);
         if (visible) {
-            connectTypingStartAction();
-            connectTypingStopAction();
+            connectChatStateDelegate();
             connectShowSendMessageAction();
         }
     }
@@ -236,7 +236,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         source.compose(new NonNullFilter<>())
                 .take(1)
                 .subscribe(conversationUsersPair -> trackOpenedConversation(conversationUsersPair.first, conversationUsersPair.second),
-                throwable -> Timber.e(throwable, ""));
+                        throwable -> Timber.e(throwable, ""));
 
         source.doOnSubscribe(() -> getView().showLoading());
 
@@ -246,22 +246,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                                 conversationWithParticipants.second));
 
         source.connect();
-    }
-
-    private void connectChatTypingStream() {
-        chatTypingDelegate
-                .connectChatTypingStream(conversationId)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(pair -> {
-                    switch (pair.first.state) {
-                        case ChatState.COMPOSING:
-                            getView().addTypingUser(pair.second);
-                            break;
-                        case ChatState.PAUSE:
-                            getView().removeTypingUser(pair.second);
-                            break;
-                    }
-                }, e -> Timber.w("Unable to connect chat stream"));
     }
 
     private void conversationLoaded(DataConversation conversation, List<DataUser> participants) {
@@ -336,32 +320,35 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    ////// Typing logic
+    ////// Chat typing state logic
     //////////////////////////////////////////////////////////////////////////
 
-    private void connectTypingStartAction() {
-        getView().getEditMessageObservable()
+    private void connectChatStateDelegate() {
+        chatStateDelegate.init(conversationId);
+        chatStateDelegate.connectTypingStartAction(getView().getEditMessageObservable()
+                .map(TextViewTextChangeEvent::text))
                 .compose(bindVisibility())
-                .skip(1)
-                .filter(textViewTextChangeEvent -> textViewTextChangeEvent.count() > 0
-                        && currentConnectivityStatus == SyncStatus.CONNECTED)
-                .throttleFirst(START_TYPING_DELAY, TimeUnit.MILLISECONDS)
-                .filter(textViewTextChangeEvent -> !typing)
-                .subscribe(chat -> {
-                    typing = true;
-                    chatDelegate.setComposing();
-                }, e -> Timber.w("Unable to connect to Typing start"));
+                .subscribe();
+        chatStateDelegate.connectTypingStopAction(getView().getEditMessageObservable()
+                .map(TextViewTextChangeEvent::text))
+                .compose(bindVisibility())
+                .subscribe();
     }
 
-    private void connectTypingStopAction() {
-        getView().getEditMessageObservable()
-                .compose(bindVisibility())
-                .skip(1)
-                .debounce(STOP_TYPING_DELAY, TimeUnit.MILLISECONDS)
-                .subscribe(chat -> {
-                    typing = false;
-                    chatDelegate.setPaused();
-                }, e -> Timber.w("Unable to connect to Typing stop"));
+    private void connectChatTypingStream() {
+        chatTypingDelegate
+                .connectChatTypingStream(conversationId)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(pair -> {
+                    switch (pair.first.state) {
+                        case ChatState.COMPOSING:
+                            getView().addTypingUser(pair.second);
+                            break;
+                        case ChatState.PAUSE:
+                            getView().removeTypingUser(pair.second);
+                            break;
+                    }
+                }, e -> Timber.w("Unable to connect chat stream"));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -672,7 +659,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
 
-   ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
     // Flagging
     ///////////////////////////////////////////////////////////////////////////
 

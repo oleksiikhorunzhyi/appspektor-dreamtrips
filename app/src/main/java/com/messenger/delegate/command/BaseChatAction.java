@@ -25,6 +25,10 @@ public abstract class BaseChatAction<Result> extends CommandActionBase<Result> i
         return conversation;
     }
 
+    public void setMessengerServerFacade(MessengerServerFacade messengerServerFacade) {
+        this.messengerServerFacade = messengerServerFacade;
+    }
+
     protected Observable<GroupChat> createMultiChat() {
       return messengerServerFacade.getChatManager()
               .createGroupChatObservable(conversation.getId(), messengerServerFacade.getUsername());

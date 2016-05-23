@@ -618,6 +618,6 @@
     <string name="add_title">Προσθέστε έναν τίτλο</string>
     <string name="flag_sent_success_msg">Το περιεχόμενο διαθέτει πλέον σημαία</string>
 
-    
+    <string name="location_name_length_message">Το όνομα της τοποθεσίας δεν μπορεί να είναι μεγαλύτερο από 255 χαρακτήρες.</string>
 
 </resources>

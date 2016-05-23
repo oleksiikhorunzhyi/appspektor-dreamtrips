@@ -27,7 +27,7 @@ public class DtlMapInfoScreenImpl extends DtlLayout<DtlMapInfoScreen, DtlMapInfo
 
     @Override
     public DtlMapInfoPresenter createPresenter() {
-        return new DtlMapInfoPresenterImpl(getContext(), injector, getPath().getId());
+        return new DtlMapInfoPresenterImpl(getContext(), injector, getPath().getMerchant());
     }
 
     @Override

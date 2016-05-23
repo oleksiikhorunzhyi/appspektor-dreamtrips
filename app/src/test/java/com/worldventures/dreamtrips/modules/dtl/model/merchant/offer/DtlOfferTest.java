@@ -13,6 +13,7 @@ public class DtlOfferTest {
     private DtlOffer secondOffer;
     private DtlOffer firstEndlessOffer;
     private DtlOffer secondEndlessOffer;
+    private DtlOffer pointOffer;
 
     @Test
     public void testGreaterThan() {
@@ -56,48 +57,24 @@ public class DtlOfferTest {
         assertThat(result).isEqualTo(1);
     }
 
+    @Test
+    public void testPointThanPerk() {
+        int result = DtlOffer.END_DATE_COMPARATOR.compare(pointOffer, firstOffer);
+
+        assertThat(result).isEqualTo(1);
+    }
+
     @Before
     public void setupOffers() {
-        firstOffer = new DtlOffer("first");
-        secondOffer = new DtlOffer("second");
-        firstEndlessOffer = new DtlOffer("firstEndless");
-        secondEndlessOffer = new DtlOffer("secondEndless");
+        firstOffer = new DtlOfferPerk();
+        secondOffer = new DtlOfferPerk();
+        firstEndlessOffer = new DtlOfferPerk();
+        secondEndlessOffer = new DtlOfferPerk();
+        pointOffer = new DtlOfferPoints();
         //
-        DtlOfferData firstOfferData = new DtlOfferData() {
-            @Override
-            public String getType() {
-                return null;
-            }
-        };
-        firstOfferData.setEndDate(new Date(1463423767L));
-        //
-        DtlOfferData secondOfferData = new DtlOfferData() {
-            @Override
-            public String getType() {
-                return null;
-            }
-        };
-        secondOfferData.setEndDate(new Date(1463443200L)); // + 1 day to first
-        //
-        DtlOfferData firstEndlessOfferData = new DtlOfferData() {
-            @Override
-            public String getType() {
-                return null;
-            }
-        };
-        firstEndlessOfferData.setEndDate(null);
-        //
-        DtlOfferData secondEndlessOfferData = new DtlOfferData() {
-            @Override
-            public String getType() {
-                return null;
-            }
-        };
-        secondEndlessOfferData.setEndDate(null);
-        //
-        firstOffer.setOffer(firstOfferData);
-        secondOffer.setOffer(secondOfferData);
-        firstEndlessOffer.setOffer(firstEndlessOfferData);
-        secondEndlessOffer.setOffer(secondEndlessOfferData);
+        firstOffer.setEndDate(new Date(1463423767L));
+        secondOffer.setEndDate(new Date(1463443200L)); // + 1 day to first
+        firstEndlessOffer.setEndDate(null);
+        secondEndlessOffer.setEndDate(null);
     }
 }

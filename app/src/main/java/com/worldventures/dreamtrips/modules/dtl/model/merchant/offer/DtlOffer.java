@@ -1,81 +1,127 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
+import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
+
 import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
-@SuppressWarnings("unused")
-public class DtlOffer<T extends DtlOfferData> implements Comparable<T> {
+public abstract class DtlOffer implements Comparable<DtlOffer> {
 
-    @Offer.OfferType
-    String type;
-    T offer;
+    private String title;
+    private String description;
+    private String disclaimer;
 
-    public DtlOffer() {
+    private Date startDate;
+    private Date endDate;
+
+    private List<OperationDay> operationDays;
+    private List<DtlOfferMedia> images;
+
+    public String getTitle() {
+        return title;
     }
 
-    public DtlOffer(@Offer.OfferType String type) {
-        this.type = type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public String getDisclaimer() {
+        return disclaimer;
     }
 
-    public String getType() {
-        return type;
+    public Date getStartDdate() {
+        return startDate;
     }
 
-    public T getOffer() {
-        return offer;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setOffer(T offer) {
-        this.offer = offer;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
-    public static final DtlOffer TYPE_POINTS = new DtlOffer(Offer.POINT_REWARD);
-    public static final DtlOffer TYPE_PERK = new DtlOffer(Offer.PERKS);
+    public List<DtlOfferMedia> getImages() {
+        return images;
+    }
+
+    public List<OperationDay> getOperationDays() {
+        return operationDays;
+    }
+
+    public abstract Type getType();
 
     public boolean isPerk() {
-        return type.equals(TYPE_PERK.getType());
+        return getType() == Type.PERK;
     }
 
-    public boolean isPointReward() {
-        return type.equals(TYPE_POINTS.getType());
+    public boolean isPoint() {
+        return getType() == Type.POINTS;
     }
-
-    public static final Comparator<DtlOffer> END_DATE_COMPARATOR = new Comparator<DtlOffer>() {
-
-        @Override
-        public int compare(DtlOffer lhs, DtlOffer rhs) {
-            if (lhs.getOffer().getEndDate() == null && rhs.getOffer().getEndDate() == null)
-                return 0;
-            if (lhs.getOffer().getEndDate() == null && rhs.getOffer().getEndDate() != null)
-                return 1;
-            if (rhs.getOffer().getEndDate() == null && lhs.getOffer().getEndDate() != null)
-                return -1;
-            if (lhs.getOffer().getEndDate().getTime() == rhs.getOffer().getEndDate().getTime())
-                return 0;
-            return lhs.getOffer().getEndDate().getTime() >
-                    rhs.getOffer().getEndDate().getTime() ? 1 : -1;
-        }
-    };
 
     @Override
-    public boolean equals(Object o) {
+    public int compareTo(DtlOffer another) {
+        return getType() == another.getType() ? 0 : isPoint() ? -1 : 1;
+    }
+
+    @Override public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DtlOffer dtlOffer = (DtlOffer) o;
+        DtlOffer that = (DtlOffer) o;
 
-        return !(type != null ? !type.equals(dtlOffer.type) : dtlOffer.type != null);
+        if (title != null ? !title.equals(that.title) : that.title != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null)
+            return false;
+        if (disclaimer != null ? !disclaimer.equals(that.disclaimer) : that.disclaimer != null)
+            return false;
+        if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null)
+            return false;
+        if (endDate != null ? !endDate.equals(that.endDate) : that.endDate != null) return false;
+        if (operationDays != null ? !operationDays.equals(that.operationDays) : that.operationDays != null)
+            return false;
+        if (getType() != that.getType()) return false;
+        return images != null ? images.equals(that.images) : that.images == null;
     }
 
-    @Override
-    public int hashCode() {
-        return type != null ? type.hashCode() : 0;
+    @Override public int hashCode() {
+        int result = title != null ? title.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (disclaimer != null ? disclaimer.hashCode() : 0);
+        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
+        result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
+        result = 31 * result + (operationDays != null ? operationDays.hashCode() : 0);
+        return result;
     }
 
-    @Override public int compareTo(T another) {
-        return getOffer().compareTo(another);
+    public static final Comparator<DtlOffer> END_DATE_COMPARATOR = (lhs, rhs) -> {
+        if (lhs.compareTo(rhs) != 0) return lhs.compareTo(rhs);
+        if (lhs.getEndDate() == null && rhs.getEndDate() == null) return 0;
+        if (lhs.getEndDate() == null && rhs.getEndDate() != null) return 1;
+        if (rhs.getEndDate() == null && lhs.getEndDate() != null) return -1;
+        return lhs.getEndDate().compareTo(rhs.getEndDate());
+    };
+
+    public enum Type {
+
+        PERK("perk"), POINTS("points"), UNKNOWN("unknown");
+
+        private final String type;
+
+        Type(String type) {
+            this.type = type;
+        }
+
+        public String value() {
+            return type;
+        }
+
+        public static Type of(final String type) {
+            final Type entry = Queryable.from(values())
+                    .firstOrDefault(typed -> typed.value().equalsIgnoreCase(type));
+            return entry != null ? entry : UNKNOWN;
+        }
     }
 }

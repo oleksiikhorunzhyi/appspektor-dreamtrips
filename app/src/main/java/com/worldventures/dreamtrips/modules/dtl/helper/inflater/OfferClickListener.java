@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.inflater;
 
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 public interface OfferClickListener {
 
-    void onOfferClick(DtlOfferData offer);
+    void onOfferClick(DtlOffer offer);
 }

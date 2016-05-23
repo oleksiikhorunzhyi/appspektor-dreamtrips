@@ -43,13 +43,13 @@ import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInfl
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -81,8 +81,8 @@ public class DtlDetailsScreenImpl
 
     @Override
     public DtlDetailsPresenter createPresenter() {
-        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getId(),
-                getPath().getPreExpandOffer());
+        return new DtlDetailsPresenterImpl(getContext(), injector, getPath().getMerchant(),
+                getPath().getPreExpandOffers());
     }
 
     @Override
@@ -117,9 +117,8 @@ public class DtlDetailsScreenImpl
     }
 
     @Override
-    public void setMerchant(DtlMerchant merchant, DtlOfferData expandOffer) {
+    public void setMerchant(DtlMerchant merchant) {
         this.merchant = merchant;
-        merchantDataInflater.setExpandedOffer(expandOffer);
         merchantDataInflater.applyMerchant(merchant);
         merchantInfoInflater.applyMerchant(merchant);
         //
@@ -129,6 +128,16 @@ public class DtlDetailsScreenImpl
         setLocation();
         setMap();
         setClicks();
+    }
+
+    @Override
+    public void expandOffers(List<Integer> offers) {
+        merchantDataInflater.expandOffers(offers);
+    }
+
+    @Override
+    public List<Integer> getExpandedOffers() {
+        return merchantDataInflater.getExpandedOffers();
     }
 
     private void setContacts() {
@@ -244,7 +253,7 @@ public class DtlDetailsScreenImpl
         new ShareDialog(getContext(), type -> {
             ShareBundle shareBundle = new ShareBundle();
             shareBundle.setShareType(type);
-            shareBundle.setText(getContext().getString(merchant.hasOffer(DtlOffer.TYPE_POINTS) ?
+            shareBundle.setText(getContext().getString(merchant.hasPoints() ?
                             R.string.dtl_details_share_title :
                             R.string.dtl_details_share_title_without_points,
                     merchant.getDisplayName()));
@@ -323,14 +332,6 @@ public class DtlDetailsScreenImpl
         }
         return false;
     }
-
-    // TODO :: 4/3/16 need onBackPressedDelegate
-//    private boolean onBackPressed() {
-//        if (isTabletLandscape() && getArgs().isSlave()) {
-//            getPresenter().onBackPressed();
-//        } else getActivity().finish();
-//        return true;
-//    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Boilerplate stuff

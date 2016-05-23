@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.module.dtl.constants;
+package com.worldventures.dreamtrips.modules.dtl.constants;
 
 import com.google.android.gms.maps.model.LatLng;
 

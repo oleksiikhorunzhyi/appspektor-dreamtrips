@@ -78,7 +78,7 @@
     <string name="perks_formatted" formatted='false'>%d Perks</string>
     <string name="dtl_coming_soon_offers">Offers coming soon</string>
     <string name="dtl_show_offers_only">Show offers only</string>
-    <string name="dtl_earn_points">Earn DreamTrips Points</string>
+    <string name="dtl_earn_points">Earn DreamTrips points</string>
     <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
     <string name="distance_caption_format" formatted="false" translatable="false">%1$.1f %2$s</string>
     <string name="details_collapsed_text_caption">Show More</string>

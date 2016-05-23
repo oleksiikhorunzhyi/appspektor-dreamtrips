@@ -1,6 +1,6 @@
-package com.worldventures.dreamtrips.module.dtl.model.filter;
+package com.worldventures.dreamtrips.modules.dtl.model.filter;
 
-import com.worldventures.dreamtrips.module.dtl.constants.TestConstants;
+import com.worldventures.dreamtrips.modules.dtl.constants.TestConstants;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchan
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantQueryPredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantTypePredicate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerk;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ public class DtlMerchantsPredicateTest {
         DtlMerchantTypePredicate predicate = new DtlMerchantTypePredicate(DtlMerchantType.OFFER);
         //
         DtlMerchant dtlMerchant = createDefaultMerchant();
-        dtlMerchant.setOffers(Collections.singletonList(DtlOffer.TYPE_PERK));
+        dtlMerchant.setOffers(Collections.singletonList(new DtlOfferPerk()));
         //
         boolean result = predicate.apply(dtlMerchant);
         assertThat(result).isTrue();

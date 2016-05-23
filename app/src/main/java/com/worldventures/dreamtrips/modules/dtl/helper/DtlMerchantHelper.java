@@ -15,7 +15,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
@@ -64,18 +64,18 @@ public class DtlMerchantHelper {
         return getOperationalTime(context, merchant, true);
     }
 
-    public static boolean isOfferExpiringSoon(DtlOfferData offerData) {
+    public static boolean isOfferExpiringSoon(DtlOffer offerData) {
         if (offerData.getEndDate() == null) return false;
         DateTime currentDate = DateTime.now();
         DateTime expirationDate = new DateTime(offerData.getEndDate().getTime());
         return Days.daysBetween(currentDate, expirationDate).isLessThan(Days.SEVEN);
     }
 
-    public static Spannable getOfferExpiringCaption(Context context, DtlOfferData offerData) {
+    public static Spannable getOfferExpiringCaption(Context context, DtlOffer offerData) {
         return getOfferExpiringCaption(context.getResources(), offerData);
     }
 
-    public static Spannable getOfferExpiringCaption(Resources resources, DtlOfferData offerData) {
+    public static Spannable getOfferExpiringCaption(Resources resources, DtlOffer offerData) {
         String format = resources.getString(R.string.offer_expiration_format);
         DateTime expiringDate = new DateTime(offerData.getEndDate().getTime());
         String caption = expiringDate.toString(DateTimeFormat.forPattern("d MMM"));
@@ -142,4 +142,5 @@ public class DtlMerchantHelper {
                 context.getString(R.string.dtl_open_now) :
                 context.getString(R.string.dtl_closed);
     }
+
 }

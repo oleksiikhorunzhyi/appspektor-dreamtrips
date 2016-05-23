@@ -7,9 +7,10 @@ import com.google.android.gms.common.api.Status;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
+
+import java.util.List;
 
 public interface DtlDetailsScreen extends DtlScreen {
 
@@ -35,5 +36,9 @@ public interface DtlDetailsScreen extends DtlScreen {
 
     void showMerchantMap(@Nullable Intent intent);
 
-    void setMerchant(DtlMerchant merchant, DtlOfferData expandOffer);
+    void setMerchant(DtlMerchant merchant);
+
+    void expandOffers(List<Integer> positions);
+
+    List<Integer> getExpandedOffers();
 }

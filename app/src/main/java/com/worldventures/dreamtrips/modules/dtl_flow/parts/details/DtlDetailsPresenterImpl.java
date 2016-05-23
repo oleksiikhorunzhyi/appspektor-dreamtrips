@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +13,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -22,16 +22,16 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBun
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,47 +39,49 @@ import de.greenrobot.event.EventBus;
 import flow.Flow;
 import timber.log.Timber;
 
-public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, ViewState.EMPTY>
+public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, DtlMerchantDetailsState>
         implements DtlDetailsPresenter {
 
-    @Inject
-    DtlMerchantStore merchantStore;
-    @Inject
-    SnappyRepository db;
-    @Inject
-    FeatureManager featureManager;
-    @Inject
-    LocationDelegate locationDelegate;
-    @Inject
-    protected PhotoUploadingManagerS3 photoUploadingManagerS3;
+    @Inject DtlMerchantStore merchantStore;
+    @Inject SnappyRepository db;
+    @Inject FeatureManager featureManager;
+    @Inject LocationDelegate locationDelegate;
+    @Inject PhotoUploadingManagerS3 photoUploadingManagerS3;
     //
     private DtlTransaction dtlTransaction;
     protected DtlMerchant merchant;
-    protected final String merchantId;
-    protected final DtlOfferData expandOffer;
+    protected List<Integer> preExpandOffers;
 
-
-    public DtlDetailsPresenterImpl(Context context, Injector injector, String merchantId, DtlOfferData expandOffer) {
+    public DtlDetailsPresenterImpl(Context context, Injector injector, DtlMerchant merchant, List<Integer> preExpandOffers) {
         super(context);
         injector.inject(this);
-        this.expandOffer = expandOffer;
-        this.merchantId = merchantId;
-        merchantStore.getMerchantById(merchantId)
-                .compose(ImmediateComposer.instance())
-                .subscribe(value -> merchant = value);
+        this.merchant = merchant;
+        this.preExpandOffers = preExpandOffers;
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         //
-        getView().setMerchant(merchant, expandOffer);
+        getView().setMerchant(merchant);
+        getView().expandOffers(getViewState().getOffers() != null ?
+                getViewState().getOffers() : preExpandOffers);
         //
         if (merchant.hasNoOffers()) {
             getView().setSuggestMerchantButtonAvailable(
                     featureManager.available(Feature.REP_SUGGEST_MERCHANT));
-        }
-        else processTransaction();
+        } else processTransaction();
+    }
+
+    @Override
+    public void onNewViewState() {
+        state = new DtlMerchantDetailsState();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        state.setOffers(getView().getExpandedOffers());
+        super.onSaveInstanceState(bundle);
     }
 
     @Override
@@ -95,7 +97,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         return R.menu.menu_detailed_merchant;
     }
 
-    @Override public boolean onToolbarMenuItemClick(MenuItem item) {
+    @Override
+    public boolean onToolbarMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.action_share) onShareClick();
         return super.onToolbarMenuItemClick(item);
     }
@@ -185,7 +188,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     }
 
     @Override
-    public void onOfferClick(DtlOfferData offer) {
+    public void onOfferClick(DtlOffer offer) {
         DtlOfferMedia imageUrl = Queryable.from(offer.getImages()).firstOrDefault();
         if (imageUrl == null) return;
         Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getUrl()));

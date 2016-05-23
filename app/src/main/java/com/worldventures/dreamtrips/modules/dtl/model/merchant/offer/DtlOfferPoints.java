@@ -2,10 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
 import java.util.List;
 
-public class DtlOfferPointsData extends DtlOfferData {
+public class DtlOfferPoints extends DtlOffer {
 
     List<DtlCurrency> currencies;
-
 
     public List<DtlCurrency> getCurrencies() {
         return currencies;
@@ -16,7 +15,7 @@ public class DtlOfferPointsData extends DtlOfferData {
     }
 
     @Override
-    public String getType() {
-        return Offer.POINT_REWARD;
+    public Type getType() {
+        return Type.POINTS;
     }
 }

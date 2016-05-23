@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -38,7 +37,7 @@ public class MerchantInfoInflater extends MerchantDataInflater {
         pricing.setRating(merchant.getBudget());
         //
         boolean hasDistance = merchant.getDistance() != 0.0d;
-        boolean hasOperationDays = merchant.hasOffer(DtlOffer.TYPE_POINTS) && merchant.getOperationDays() != null && !merchant.getOperationDays().isEmpty();
+        boolean hasOperationDays = merchant.hasPoints() && merchant.getOperationDays() != null && !merchant.getOperationDays().isEmpty();
         boolean hasCategories = !TextUtils.isEmpty(DtlMerchantHelper.getCategories(merchant));
 
         CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.getDistance(),

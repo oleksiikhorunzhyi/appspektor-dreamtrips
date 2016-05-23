@@ -16,7 +16,7 @@ import rx.subjects.PublishSubject;
 public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
         implements ViewStateMvpPresenter<V, S> {
 
-    @State S state;
+    @State protected S state;
 
     @Override public S getViewState() {
         return state;

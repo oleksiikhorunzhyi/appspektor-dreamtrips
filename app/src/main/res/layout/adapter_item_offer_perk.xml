@@ -40,20 +40,21 @@
                 />
         </FrameLayout>
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/perk_logo_root"
         android:paddingTop="@dimen/spacing_tiny"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <ImageView
             android:id="@+id/perks_icon"
             android:layout_marginRight="@dimen/spacing_tiny"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/perks_icon"/>
+            android:src="@drawable/perks_icon"
+            />
 
         <TextView
             android:id="@+id/perks_description"
@@ -65,8 +66,8 @@
             android:lineSpacingMultiplier="0.95"
             android:ellipsize="end"
             android:maxLines="2"
-            tools:text="Complimentary Margarita"/>
-
+            tools:text="Complimentary Margarita"
+            />
 
         <TextView
             android:id="@+id/perks_operation_days"
@@ -77,14 +78,14 @@
             android:textSize="12sp"
             tools:text="Everyday"
             android:layout_below="@+id/perks_description"
-            android:layout_toEndOf="@+id/perks_icon"/>
-
+            android:layout_toEndOf="@+id/perks_icon"
+            />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/perk_logo_root"
-        android:background="@drawable/divider_list"/>
-
+        android:background="@drawable/divider_list"
+        />
 </RelativeLayout>

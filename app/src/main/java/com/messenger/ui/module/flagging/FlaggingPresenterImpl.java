@@ -2,7 +2,6 @@ package com.messenger.ui.module.flagging;
 
 import android.text.TextUtils;
 
-import com.messenger.api.ErrorParser;
 import com.messenger.api.GetFlagsAction;
 import com.messenger.api.exception.UiMessageException;
 import com.messenger.delegate.FlagsDelegate;
@@ -36,6 +35,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         injector.inject(this);
         view.setPresenter(this);
         bindToFlagging();
+        view.getCanceledDialogsStream().subscribe(aVoid -> resetState());
     }
 
     private void bindToFlagging() {
@@ -57,7 +57,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
             getView().showFlaggingSuccess();
         }
         //
-        setState(createNewState());
+        resetState();
     }
 
     private void onFlagginError(FlagMessageAction action, Throwable e) {
@@ -66,7 +66,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         getView().hideFlaggingProgressDialog();
         getView().showFlaggingError();
         //
-        setState(createNewState());
+        resetState();
     }
 
     private void onFlaggingStarted(FlagMessageAction action) {
@@ -81,6 +81,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
     @Override
     public void flagMessage(String conversationId, String messageId) {
+        resetState();
         getState().setMessageId(messageId);
         getState().setConversationId(conversationId);
         getState().setDialogState(FlaggingState.DialogState.LOADING_FLAGS);
@@ -121,19 +122,23 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     public void onFlagTypeChosen(Flag flag) {
         getState().setFlag(flag);
         if (flag.isRequireDescription()) {
+            getState().setDialogState(FlaggingState.DialogState.REASON);
             showFlagReasonDialog();
         } else {
+            getState().setDialogState(FlaggingState.DialogState.CONFIRMATION);
             showFlagConfirmationDialog();
         }
     }
 
     private void showFlagReasonDialog() {
-        getView().showFlagReasonDialog(getState().getFlag());
+        getView().showFlagReasonDialog(getState().getFlag(), getState().getReasonDescription())
+                .subscribe(text -> getState().setReasonDescription(text.toString()));
     }
 
     @Override
     public void onFlagReasonProvided(String reason) {
         getState().setReasonDescription(reason);
+        getState().setDialogState(FlaggingState.DialogState.CONFIRMATION);
         showFlagConfirmationDialog();
     }
 

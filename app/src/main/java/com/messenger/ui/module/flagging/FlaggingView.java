@@ -1,12 +1,15 @@
 package com.messenger.ui.module.flagging;
 
 
-import com.messenger.ui.module.ModuleView;
+import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
+import com.messenger.ui.module.ModuleStatefulView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
 
-public interface FlaggingView extends ModuleView<FlaggingPresenter> {
+import rx.Observable;
+
+public interface FlaggingView extends ModuleStatefulView<FlaggingPresenter> {
 
     void showFlagsLoadingDialog();
 
@@ -14,7 +17,7 @@ public interface FlaggingView extends ModuleView<FlaggingPresenter> {
 
     void showFlagsListDialog(List<Flag> flags);
 
-    void showFlagReasonDialog(Flag flag);
+    Observable<CharSequence> showFlagReasonDialog(Flag flag, String prefilledReason);
 
     void showFlagConfirmationDialog(Flag flag);
 
@@ -27,4 +30,6 @@ public interface FlaggingView extends ModuleView<FlaggingPresenter> {
     void showFlaggingError();
 
     void showError(String message);
+
+    Observable<Void> getCanceledDialogsStream();
 }

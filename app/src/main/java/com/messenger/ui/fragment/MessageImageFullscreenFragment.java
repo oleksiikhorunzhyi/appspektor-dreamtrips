@@ -1,8 +1,8 @@
 package com.messenger.ui.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,7 +14,6 @@ import com.messenger.ui.module.flagging.FullScreenFlaggingViewImpl;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.FullScreenPhotoFragment;
@@ -73,5 +72,16 @@ public class MessageImageFullscreenFragment extends FullScreenPhotoFragment<Mess
 
             ivImage.setController(draweeController);
         }
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        flaggingView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        flaggingView.onRestoreInstanceState(savedInstanceState);
     }
 }

@@ -618,6 +618,6 @@
     <string name="add_title">添加标题</string>
     <string name="flag_sent_success_msg">内容已被举报</string>
 
-    
+    <string name="location_name_length_message">地点名称不得超过255个字符。</string>
 
 </resources>

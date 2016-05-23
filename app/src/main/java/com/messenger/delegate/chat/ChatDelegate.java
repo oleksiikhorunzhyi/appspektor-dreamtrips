@@ -77,18 +77,6 @@ public class ChatDelegate {
         return paginationStateObservable;
     }
 
-    public void sendMessage(Message message) {
-        chatObservable.subscribeOn(Schedulers.io())
-                .flatMap(chat -> chat.send(message))
-                .subscribe(message1 -> {},
-                        e -> Timber.e(e, "Fail to send message"));
-    }
-
-    public void closeChat() {
-        chatObservable.subscribeOn(Schedulers.io()).subscribe(Chat::close,
-                e -> Timber.e(e, "Fail to close chat"));
-    }
-
     private void connectToChatConnection(Observable<SyncStatus> connectionObservable) {
         connectionObservable
                 .subscribe(this::handleConnectionState);

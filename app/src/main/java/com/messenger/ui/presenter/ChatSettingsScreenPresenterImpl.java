@@ -203,11 +203,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
         Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
                 .createGroupChatObservable(conversationId, facade.getUsername())
-                .flatMap(multiUserChat -> multiUserChat.setSubject(newSubject))
-                .map(multiUserChat -> {
-                    multiUserChat.close();
-                    return multiUserChat;
-                });
+                .flatMap(multiUserChat -> multiUserChat.setSubject(newSubject));
 
         Observable.zip(multiUserChatObservable, conversationObservable.first(),
                 (multiUserChat, conversation) -> conversation)

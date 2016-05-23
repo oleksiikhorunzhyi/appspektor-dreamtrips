@@ -1,8 +1,9 @@
-package com.messenger.delegate.command;
+package com.messenger.delegate.chat.attachment;
 
 import android.support.annotation.NonNull;
 
 import com.messenger.delegate.MessageBodyCreator;
+import com.messenger.delegate.command.BaseChatAction;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataLocationAttachment;
@@ -29,18 +30,15 @@ public class SendLocationAttachmentCommand extends BaseChatAction<DataMessage> {
     private final DataAttachment attachment;
     private final DataLocationAttachment locationAttachment;
 
-    @Inject
-    MessageDAO messageDAO;
-    @Inject
-    AttachmentDAO attachmentDAO;
-    @Inject
-    LocationDAO locationDAO;
-    @Inject
-    MessageBodyCreator messageBodyCreator;
+    @Inject MessageDAO messageDAO;
+    @Inject AttachmentDAO attachmentDAO;
+    @Inject LocationDAO locationDAO;
+    @Inject MessageBodyCreator messageBodyCreator;
 
-    public SendLocationAttachmentCommand(DataConversation conversation, @NonNull DataMessage message,
-                                      @NonNull DataAttachment attachment, @NonNull DataLocationAttachment locationAttachment) {
-        super(conversation);
+    public SendLocationAttachmentCommand(String conversationId, @NonNull DataMessage message,
+                                         @NonNull DataAttachment attachment,
+                                         @NonNull DataLocationAttachment locationAttachment) {
+        super(conversationId);
         this.message = message;
         this.attachment = attachment;
         this.locationAttachment = locationAttachment;
@@ -74,8 +72,7 @@ public class SendLocationAttachmentCommand extends BaseChatAction<DataMessage> {
         msg.setMessageBody(messageBodyCreator.provideForAttachment(AttachmentHolder
                 .newLocationAttachment(lat, lng)));
 
-        Chat chat = getChat();
-        return chat.send(msg)
-                .doOnNext(m -> chat.close());
+
+        return getChat().flatMap(chat -> chat.send(msg));
     }
 }

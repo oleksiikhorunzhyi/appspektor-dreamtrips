@@ -39,7 +39,6 @@ public class ChatLeavingDelegate {
         GroupChat chat = facade.getChatManager().createGroupChat(
                 conversation.getId(), conversation.getOwnerId());
         chat.leave();
-        chat.close();
     }
 
 }

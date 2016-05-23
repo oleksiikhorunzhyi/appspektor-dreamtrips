@@ -1,10 +1,9 @@
 package com.messenger.delegate.command;
 
-import com.messenger.entities.DataConversation;
+import com.messenger.delegate.chat.CreateChatHelper;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
-import com.messenger.messengerservers.chat.GroupChat;
-import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
@@ -13,32 +12,27 @@ import io.techery.janet.CommandActionBase;
 import rx.Observable;
 
 public abstract class BaseChatAction<Result> extends CommandActionBase<Result> implements InjectableAction {
-    protected final DataConversation conversation;
+    protected final String conversationId;
 
-    @Inject MessengerServerFacade messengerServerFacade;
+    @Inject protected MessengerServerFacade messengerServerFacade;
+    @Inject protected ConversationsDAO conversationsDAO;
+    @Inject protected CreateChatHelper createChatHelper;
 
-    protected BaseChatAction(DataConversation conversation) {
-        this.conversation = conversation;
-    }
-
-    public DataConversation getConversation() {
-        return conversation;
+    protected BaseChatAction(String conversationId) {
+        this.conversationId = conversationId;
     }
 
     public void setMessengerServerFacade(MessengerServerFacade messengerServerFacade) {
         this.messengerServerFacade = messengerServerFacade;
     }
 
-    protected Observable<GroupChat> createMultiChat() {
-      return messengerServerFacade.getChatManager()
-              .createGroupChatObservable(conversation.getId(), messengerServerFacade.getUsername());
+    public String getConversationId() {
+        return conversationId;
     }
 
-    protected Chat getChat() {
-        if (ConversationHelper.isSingleChat(conversation)) {
-            return messengerServerFacade.getChatManager().createSingleUserChat(null, conversation.getId());
-        } else {
-            return messengerServerFacade.getChatManager().createGroupChat(conversation.getId(), conversation.getOwnerId());
-        }
-    }
+    protected Observable<Chat> getChat() {
+        return conversationsDAO.getConversationWithParticipants(conversationId)
+                .take(1)
+                .flatMap(pair -> createChatHelper.createChat(pair.first, pair.second));
+     }
 }

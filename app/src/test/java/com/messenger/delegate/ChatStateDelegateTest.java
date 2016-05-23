@@ -38,7 +38,6 @@ public class ChatStateDelegateTest extends BaseTest {
 
     @Mock MessengerServerFacade messengerServerFacade;
     @Mock ChatManager chatManager;
-    @Mock ConversationsDAO conversationsDAO;
     @Mock GroupChat groupChat;
     @Mock SingleUserChat singleUserChat;
 
@@ -48,12 +47,11 @@ public class ChatStateDelegateTest extends BaseTest {
     public void setup() {
         mockMessengerDataBase();
 
-        doReturn(Observable.just(new DataConversation())).when(conversationsDAO).getConversation(any());
         doReturn(chatManager).when(messengerServerFacade).getChatManager();
         doReturn(groupChat).when(chatManager).createGroupChat(any(), any());
         doReturn(singleUserChat).when(chatManager).createSingleUserChat(any(), any());
 
-        chatStateDelegate = new ChatStateDelegate(mockJanet(), conversationsDAO);
+        chatStateDelegate = new ChatStateDelegate(mockJanet());
     }
 
     @Test

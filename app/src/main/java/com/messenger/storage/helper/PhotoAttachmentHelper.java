@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class AttachmentHelper {
+public class PhotoAttachmentHelper {
 
     private final PhotoDAO photoDAO;
     private final MessageDAO messageDAO;
@@ -28,8 +28,8 @@ public class AttachmentHelper {
     private final ConversationsDAO conversationsDAO;
 
     @Inject
-    public AttachmentHelper(PhotoDAO photoDAO, MessageDAO messageDAO,
-                            UsersDAO usersDAO, ConversationsDAO conversationsDAO) {
+    public PhotoAttachmentHelper(PhotoDAO photoDAO, MessageDAO messageDAO,
+                                 UsersDAO usersDAO, ConversationsDAO conversationsDAO) {
         this.photoDAO = photoDAO;
         this.messageDAO = messageDAO;
         this.usersDAO = usersDAO;

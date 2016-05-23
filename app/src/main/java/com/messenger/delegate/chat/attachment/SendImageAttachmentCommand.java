@@ -1,15 +1,14 @@
-package com.messenger.delegate.command;
+package com.messenger.delegate.chat.attachment;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.messenger.delegate.MessageBodyCreator;
+import com.messenger.delegate.command.BaseChatAction;
 import com.messenger.entities.DataAttachment;
-import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.entities.DataPhotoAttachment.PhotoAttachmentStatus;
-import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
@@ -54,9 +53,10 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
     @ForApplication
     Context context;
 
-    public SendImageAttachmentCommand(@NonNull DataConversation conversation, @NonNull DataMessage message,
-                                      @NonNull DataAttachment attachment, @NonNull DataPhotoAttachment photoAttachment) {
-        super(conversation);
+    public SendImageAttachmentCommand(@NonNull String conversationId, @NonNull DataMessage message,
+                                      @NonNull DataAttachment attachment,
+                                      @NonNull DataPhotoAttachment photoAttachment) {
+        super(conversationId);
         this.message = message;
         this.attachment = attachment;
         this.photoAttachment = photoAttachment;
@@ -145,8 +145,6 @@ public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
         msg.setMessageBody(messageBodyCreator.provideForAttachment(AttachmentHolder
                 .newImageAttachment(fileUrl)));
 
-        Chat chat = getChat();
-        return chat.send(msg)
-                .doOnNext(m -> chat.close());
+        return getChat().flatMap(chat -> chat.send(msg));
     }
 }

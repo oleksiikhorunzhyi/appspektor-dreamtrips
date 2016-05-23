@@ -14,7 +14,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
-import com.messenger.delegate.AttachmentManager;
+import com.messenger.delegate.chat.attachment.ChatMessageManager;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.ProfileCrosser;
@@ -22,6 +22,7 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.chat.ChatDelegate;
 import com.messenger.delegate.chat.ChatDelegate.PaginationStatus;
 import com.messenger.delegate.chat.ChatTypingDelegate;
+import com.messenger.delegate.chat.message.ChatMessageDelegate;
 import com.messenger.delegate.chat.typing.ChatStateDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
@@ -30,7 +31,6 @@ import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.TranslationStatus;
-import com.messenger.messengerservers.model.Message;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -39,7 +39,7 @@ import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.messenger.storage.helper.AttachmentHelper;
+import com.messenger.storage.helper.PhotoAttachmentHelper;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.adapter.inflater.LiteMapInflater;
 import com.messenger.ui.helper.ConversationHelper;
@@ -106,7 +106,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject SessionHolder<UserSession> sessionHolder;
     @Inject NotificationDelegate notificationDelegate;
     @Inject OpenedConversationTracker openedConversationTracker;
-    @Inject AttachmentManager attachmentManager;
+    @Inject ChatMessageManager chatMessageManager;
     @Inject LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
     @Inject AttachmentMenuProvider attachmentMenuProvider;
     @Inject StartChatDelegate startChatDelegate;
@@ -124,7 +124,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject PhotoDAO photoDAO;
     @Inject LocationDAO locationDAO;
     @Inject TranslationsDAO translationsDAO;
-    @Inject AttachmentHelper attachmentHelper;
+    @Inject PhotoAttachmentHelper photoAttachmentHelper;
     @Inject PermissionDispatcher permissionDispatcher;
     @Inject ConversationAnalyticsDelegate conversationAnalyticsDelegate;
     @Inject ChatStateDelegate chatStateDelegate;
@@ -180,7 +180,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onDetachedFromWindow() {
-        chatDelegate.closeChat();
         disconnectFromPhotoPicker();
         super.onDetachedFromWindow();
     }
@@ -379,36 +378,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         String finalMessage = message.trim();
 
         if (TextUtils.isEmpty(finalMessage)) return false;
-
-        chatDelegate.sendMessage(new Message.Builder()
-                .messageBody(messageBodyCreator.provideForText(finalMessage))
-                .fromId(user.getId())
-                .conversationId(conversationId)
-                .build());
-        return true;
+        else {
+            chatMessageManager.sendMessage(conversationId, message);
+            return true;
+        }
     }
 
     @Override
-    public void retrySendMessage(DataMessage message) {
-        String messageId = message.getId();
-
-        attachmentDAO.getAttachmentByMessageId(messageId).take(1)
-                .compose(bindView())
-                .subscribe(attachment -> {
-                    if (attachment != null) retrySendAttachment(message, attachment);
-                    else retrySendTextMessage(message);
-                });
-    }
-
-    private void retrySendTextMessage(DataMessage dataMessage) {
-        Message message = dataMessage.toChatMessage();
-        message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
-        chatDelegate.sendMessage(message);
-    }
-
-    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
-        obtainConversationObservable()
-                .subscribe(conversation -> attachmentManager.retrySendAttachment(conversation, message, dataAttachment));
+    public void retrySendMessage(DataMessage dataMessage) {
+        chatMessageManager.retrySendMessage(conversationId, dataMessage);
     }
 
     @Override
@@ -577,16 +555,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindView())
                 .subscribe(notification -> {
                     if (notification.isOnNext()) {
-                        onLocationPicked(notification.getValue());
+                        sendLocation(notification.getValue());
                     } else if (notification.isOnError()) {
                         getView().showPickLocationError();
                     }
                 });
     }
 
-    private void onLocationPicked(Location location) {
-        obtainConversationObservable()
-                .subscribe(conversation -> attachmentManager.sendLocation(conversation, location));
+    private void sendLocation(Location location) {
+        chatMessageManager.sendLocation(conversationId, location);
     }
 
     @Override
@@ -606,7 +583,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         if (imageAttachmentClicked) return;
         else imageAttachmentClicked = true;
 
-        attachmentHelper.obtainPhotoAttachment(attachmentImageId, user)
+        photoAttachmentHelper.obtainPhotoAttachment(attachmentImageId, user)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photoAttachment -> {
                     ArrayList<IFullScreenObject> items = new ArrayList<>();
@@ -633,7 +610,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photos -> {
                     getView().hidePhotoPicker();
-                    uploadPhotoAttachments(Queryable.from(photos)
+                    sendImages(Queryable.from(photos)
                             .map(ChosenImage::getFilePathOriginal)
                             .toList());
                 }, e -> Timber.e(e, "Error while image picking"));
@@ -643,15 +620,13 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     public void onImagesPicked(List<BasePhotoPickerModel> photos) {
         if (photos == null || photos.isEmpty()) return;
         //
-        uploadPhotoAttachments(Queryable.from(photos)
+        sendImages(Queryable.from(photos)
                 .map(BasePhotoPickerModel::getOriginalPath)
                 .toList());
     }
 
-    private void uploadPhotoAttachments(List<String> filePaths) {
-        conversationObservable.take(1)
-                .subscribe(pair -> attachmentManager.sendImages(pair.first, filePaths),
-                        throwable -> Timber.d(throwable, ""));
+    private void sendImages(List<String> filePaths) {
+        chatMessageManager.sendImages(conversationId, filePaths);
     }
 
     private void disconnectFromPhotoPicker() {
@@ -710,12 +685,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
-
-    private Observable<DataConversation> obtainConversationObservable() {
-        return conversationObservable
-                .take(1)
-                .map(dataConversationListPair -> dataConversationListPair.first);
-    }
 
     private void trackOpenedConversation(DataConversation openedConversation, List<DataUser> participants) {
         conversationAnalyticsDelegate.trackOpenedConversation(openedConversation, participants);

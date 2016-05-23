@@ -45,8 +45,4 @@ public abstract class XmppChat implements Chat {
     }
 
     protected abstract StatusMessageStanza createStatusMessage(String messageId);
-
-    @Override
-    public void close() {
-    }
 }

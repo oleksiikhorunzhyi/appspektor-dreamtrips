@@ -107,7 +107,6 @@
     <string name="chat_settings_leave_group_chat_format">Är du säker på att du vill avbryta chatten %1$s</string>
     <string name="chat_settings_error_change_subject">Du kan inte ändra chattnamn utan nätverksanslutning</string>
     <string name="chat_settings_error_changing_avatar_subject">Du kan inte ändra avatar för konversationen utan att vara ansluten till nätverket</string>
-    <string name="chat_settings_error_empty_subject">Ange namn för konversation</string>
     <!---->
     <!--Add new members -->
     <!---->

@@ -193,11 +193,6 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     public void applyNewChatSubject(String subject) {
         final String newSubject = subject == null? null : subject.trim();
 
-        if (TextUtils.isEmpty(newSubject)) {
-            getView().showEmptySubjectDialog();
-            return;
-        }
-
         Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
                 .createGroupChatObservable(conversationId, facade.getUsername())
                 .flatMap(multiUserChat -> multiUserChat.setSubject(newSubject))

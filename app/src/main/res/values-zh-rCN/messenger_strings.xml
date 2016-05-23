@@ -107,7 +107,6 @@
     <string name="chat_settings_leave_group_chat_format">您确定要从%1$s聊天退出吗</string>
     <string name="chat_settings_error_change_subject">没有网络连接，您不能更改主题</string>
     <string name="chat_settings_error_changing_avatar_subject">没有网络连接，您不能更改化身</string>
-    <string name="chat_settings_error_empty_subject">请输入谈话名称</string>
     <!---->
     <!--Add new members -->
     <!---->

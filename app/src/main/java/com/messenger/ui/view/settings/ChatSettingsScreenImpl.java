@@ -174,12 +174,6 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
     }
 
     @Override
-    public void showEmptySubjectDialog() {
-        Toast.makeText(getContext(), R.string.chat_settings_error_empty_subject,
-                Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void setConversation(@NonNull DataConversation conversation) {
     }
 

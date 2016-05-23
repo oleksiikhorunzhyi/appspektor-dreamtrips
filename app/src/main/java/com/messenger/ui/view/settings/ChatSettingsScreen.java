@@ -23,8 +23,6 @@ public interface ChatSettingsScreen extends MessengerScreen {
 
     void showSubjectDialog(String currentSubject);
 
-    void showEmptySubjectDialog();
-
     void prepareViewForOwner(boolean isOwner);
 
     void setNotificationSettingStatus(boolean checked);

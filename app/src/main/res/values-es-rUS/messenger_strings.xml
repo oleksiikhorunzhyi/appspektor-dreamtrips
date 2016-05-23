@@ -107,7 +107,6 @@
     <string name="chat_settings_leave_group_chat_format">¿Estás seguro que deseas salir de %1$s chat?</string>
     <string name="chat_settings_error_change_subject">No se puede cambiar el tema sin conexión de red</string>
     <string name="chat_settings_error_changing_avatar_subject">No se puede cambiar el avatar de la conversación sin conexión de red</string>
-    <string name="chat_settings_error_empty_subject">Por Favor, introducir el nombre de la conversación</string>
     <!---->
     <!--Add new members -->
     <!---->

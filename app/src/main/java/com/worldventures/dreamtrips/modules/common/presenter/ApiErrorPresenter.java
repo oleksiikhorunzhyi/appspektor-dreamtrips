@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+import com.worldventures.dreamtrips.core.janet.errors.JanetActionException;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class ApiErrorPresenter {
             //
             if (!apiErrorView.onApiError(errorResponse))
                 apiErrorView.informUser(errorResponse.getFirstMessage());
-        } else {
+        } else if (!handleJanetHttpError(null, exception)) {
             apiErrorView.informUser(R.string.smth_went_wrong);
         }
     }
@@ -70,6 +71,12 @@ public class ApiErrorPresenter {
             return;
         }
         //
+        if (!handleJanetHttpError(action, exception)) {
+            apiErrorView.informUser(R.string.smth_went_wrong);
+        }
+    }
+
+    private boolean handleJanetHttpError(Object action, Throwable exception) {
         if (action instanceof BaseHttpAction
                 && exception instanceof HttpServiceException) {//janet-http
             apiErrorView.onApiCallFailed();
@@ -84,9 +91,16 @@ public class ApiErrorPresenter {
             } else {
                 apiErrorView.informUser(exception.getCause().getLocalizedMessage());
             }
-        } else {
-            apiErrorView.informUser(R.string.smth_went_wrong);
+            return true;
         }
+        if (exception instanceof JanetActionException) {
+            JanetActionException actionError = (JanetActionException) exception;
+            return handleJanetHttpError(actionError.getAction(), actionError.getCause());
+        }
+        if (exception.getCause() != null) {
+            return handleJanetHttpError(action, exception.getCause());
+        }
+        return false;
     }
 
     private <T> T getCauseByType(Class<T> causeType, Throwable exception) {

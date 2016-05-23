@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.action;
+package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import android.util.Pair;
 
@@ -25,23 +25,21 @@ public class DtlTransactionAction extends CommandActionBase<DtlTransaction> impl
     SnappyRepository db;
 
     private final String id;
-    private final boolean getting;
     private Func1<DtlTransaction, DtlTransaction> updateFunc;
     private DtlTransaction transaction;
 
 
-    private DtlTransactionAction(DtlMerchant merchant, Func1<DtlTransaction, DtlTransaction> updateFunc, boolean getting) {
+    private DtlTransactionAction(DtlMerchant merchant, Func1<DtlTransaction, DtlTransaction> updateFunc) {
         this.id = merchant.getId();
         this.updateFunc = updateFunc;
-        this.getting = getting;
     }
 
     public static DtlTransactionAction get(DtlMerchant merchant) {
-        return new DtlTransactionAction(merchant, null, true);
+        return new DtlTransactionAction(merchant, null);
     }
 
     public static DtlTransactionAction update(DtlMerchant merchant, Func1<DtlTransaction, DtlTransaction> updateFunc) {
-        return new DtlTransactionAction(merchant, updateFunc, false);
+        return new DtlTransactionAction(merchant, updateFunc);
     }
 
     public static DtlTransactionAction save(DtlMerchant merchant, DtlTransaction transaction) {
@@ -66,10 +64,8 @@ public class DtlTransactionAction extends CommandActionBase<DtlTransaction> impl
 
     @Override
     protected void run(CommandCallback<DtlTransaction> callback) throws Throwable {
-        if (getting) {
-            if (transaction == null)
-                transaction = db.getDtlTransaction(id);
-        }
+        if (transaction == null)
+            transaction = db.getDtlTransaction(id);
         //changing
         if (updateFunc != null) {
             transaction = updateFunc.call(transaction);
@@ -97,7 +93,6 @@ public class DtlTransactionAction extends CommandActionBase<DtlTransaction> impl
     @Override
     public CacheOptions getCacheOptions() {
         return ImmutableCacheOptions.builder()
-                .restoreFromCache(getting)
                 .build();
     }
 }

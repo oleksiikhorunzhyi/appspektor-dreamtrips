@@ -5,7 +5,7 @@ import android.support.v4.util.Pair;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 
 import java.util.ArrayList;

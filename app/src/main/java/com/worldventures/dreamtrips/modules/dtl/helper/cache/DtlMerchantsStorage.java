@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.helper.cache;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
 
 import javax.inject.Inject;
 

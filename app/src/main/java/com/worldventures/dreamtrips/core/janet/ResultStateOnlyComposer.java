@@ -3,12 +3,12 @@ package com.worldventures.dreamtrips.core.janet;
 import io.techery.janet.ActionState;
 import rx.Observable;
 
-public class ResultOnlyFilter<T> implements Observable.Transformer<ActionState<T>, ActionState<T>> {
+public class ResultStateOnlyComposer<T> implements Observable.Transformer<ActionState<T>, ActionState<T>> {
 
-    private static final ResultOnlyFilter INSTANCE = new ResultOnlyFilter();
+    private static final ResultStateOnlyComposer INSTANCE = new ResultStateOnlyComposer();
 
-    public static <T> ResultOnlyFilter<T> instance() {
-        return (ResultOnlyFilter<T>) INSTANCE;
+    public static <T> ResultStateOnlyComposer<T> instance() {
+        return (ResultStateOnlyComposer<T>) INSTANCE;
     }
 
     @Override

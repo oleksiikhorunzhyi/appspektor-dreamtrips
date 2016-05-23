@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.action;
+package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;

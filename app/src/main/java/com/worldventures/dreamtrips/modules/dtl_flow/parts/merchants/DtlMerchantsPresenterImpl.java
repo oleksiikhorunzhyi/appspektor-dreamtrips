@@ -8,17 +8,17 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantsAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -62,17 +62,20 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         apiErrorPresenter.setView(getView());
 
         getView().getToggleObservable()
+                .skip(1)//skip emmit of initialization
                 .subscribe(offersOnly -> filterService.filterDataPipe().send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
-        
+
         //
         connectService();
         connectFilterDataChanges();
         //
         if (!initialized) {
-            locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+            locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                     .map(DtlLocationCommand::getResult)
                     .compose(bindViewIoToMainComposer())
-                    .subscribe(location -> merchantService.loadMerchants(location.getCoordinates().asAndroidLocation()));
+                    .subscribe(location ->
+                            merchantService.merchantsActionPipe().send(DtlMerchantsAction.load(location.getCoordinates().asAndroidLocation()))
+                    );
             initialized = true;
         }
         //
@@ -83,7 +86,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                     .subscribe(this::tryRedirectToLocation);
 
         Observable.combineLatest(
-                locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+                locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                         .map(DtlLocationCommand::getResult),
                 filterService.getFilterData().map(DtlFilterData::getSearchQuery),
                 Pair::new
@@ -131,11 +134,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         filterService.filterMerchantsActionPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
-                        .onFail((action, throwable) -> apiErrorPresenter.handleError(throwable)));
-
-        merchantService.merchantsActionPipe().observeWithReplay()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlMerchantsAction>()
                         .onFail(apiErrorPresenter::handleActionError));
         //
     }
@@ -176,7 +174,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         Observable.combineLatest(
                 filterService.getFilterData()
                         .map(DtlFilterData::getSearchQuery),
-                locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+                locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                         .map(DtlLocationCommand::getResult),
                 Pair::new
         ).compose(bindViewIoToMainComposer())

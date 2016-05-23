@@ -1,9 +1,9 @@
-package com.worldventures.dreamtrips.modules.dtl.store;
+package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.worldventures.dreamtrips.modules.dtl.action.DtlEarnPointsAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlEstimatePointsAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlRateAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;

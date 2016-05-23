@@ -9,10 +9,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantsAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -23,10 +23,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManua
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
@@ -126,7 +126,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
     private void bindLocationStream() {
         Observable.combineLatest(
-                locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+                locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                         .map(DtlLocationCommand::getResult),
                 filterService.getFilterData().map(DtlFilterData::getSearchQuery),
                 Pair::new
@@ -156,7 +156,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     protected Observable<Location> getFirstCenterLocation() {
-        return locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+        return locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .map(command -> {
                     Location lastPosition = db.getLastMapCameraPosition();
                     boolean validLastPosition = lastPosition != null && lastPosition.getLat() != 0 && lastPosition.getLng() != 0;
@@ -174,7 +174,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                     if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
                         return just(true);
                     }
-                    return locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+                    return locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                             .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE,
                                     command.getResult().getCoordinates().asLatLng(),
                                     position.target, DistanceType.MILES));
@@ -188,7 +188,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         getView().showProgress(false);
         getView().showButtonLoadMerchants(false);
         //
-        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {
@@ -283,6 +283,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         android.location.Location location = new android.location.Location("");
         location.setLatitude(latLng.latitude);
         location.setLongitude(latLng.longitude);
-        merchantService.loadMerchants(location);
+        merchantService.merchantsActionPipe().send(DtlMerchantsAction.load(location));
     }
 }

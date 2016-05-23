@@ -1,25 +1,21 @@
-package com.worldventures.dreamtrips.modules.dtl.store;
+package com.worldventures.dreamtrips.modules.dtl.service;
 
-import android.annotation.SuppressLint;
-import android.location.Location;
-
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantsAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlUpdateAmenitiesAction;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlUpdateAmenitiesAction;
 
 import java.util.List;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
-import io.techery.janet.ReadActionPipe;
 import io.techery.janet.WriteActionPipe;
-import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class DtlMerchantService {
@@ -28,6 +24,7 @@ public class DtlMerchantService {
 
     private final ActionPipe<DtlUpdateAmenitiesAction> updateAmenitiesPipe;
     private final ActionPipe<DtlMerchantsAction> merchantsPipe;
+    private final ActionPipe<DtlMerchantByIdAction> merchantByIdPipe;
 
     private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
 
@@ -37,7 +34,7 @@ public class DtlMerchantService {
 
         updateAmenitiesPipe = janet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
         merchantsPipe = janet.createPipe(DtlMerchantsAction.class, Schedulers.io());
-
+        merchantByIdPipe = janet.createPipe(DtlMerchantByIdAction.class);
         filterDataActionPipe = janet.createPipe(DtlFilterDataAction.class, Schedulers.io());
 
         connectMerchantsPipe();
@@ -51,7 +48,7 @@ public class DtlMerchantService {
                     tryUpdateLocation(action.getCacheData());
                     updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(action.getCacheData()));
                 }, Throwable::printStackTrace);
-        merchantsPipe.send(DtlMerchantsAction.fromCache());
+        merchantsPipe.send(DtlMerchantsAction.restore());
     }
 
     private void connectUpdateAmenitiesPipe() {
@@ -61,28 +58,17 @@ public class DtlMerchantService {
                 );
     }
 
-    @SuppressLint("DefaultLocale")
-    @SuppressWarnings("unchecked")
-    public void loadMerchants(Location location) {
-        String locationArg = String.format("%1$f,%2$f",
-                location.getLatitude(), location.getLongitude());
-        merchantsPipe.send(DtlMerchantsAction.fromApi(locationArg));
-    }
-
-    public ReadActionPipe<DtlMerchantsAction> merchantsActionPipe() {
+    public ActionPipe<DtlMerchantsAction> merchantsActionPipe() {
         return merchantsPipe;
     }
 
-    public Observable<DtlMerchant> getMerchantById(String merchantId) {
-        return merchantsActionPipe().observeSuccessWithReplay()
-                .first()
-                .map(DtlMerchantsAction::getCacheData)
-                .flatMap(Observable::from)
-                .filter(merchant -> merchant.getId().equals(merchantId));
+    public ActionPipe<DtlMerchantByIdAction> merchantByIdPipe() {
+        return merchantByIdPipe;
     }
 
+    //TODO: move to action
     private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .filter(command -> {
                     LocationSourceType sourceType = command.getResult().getLocationSourceType();
                     return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)

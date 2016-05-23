@@ -1,8 +1,8 @@
-package com.worldventures.dreamtrips.modules.dtl.store;
+package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
@@ -26,7 +26,7 @@ public class DtlLocationService {
                         .onStart(action -> {
                             nearbyLocationPipe.cancelLatest();
                         }));
-        locationPipe.send(DtlLocationCommand.get());
+        locationPipe.send(DtlLocationCommand.last());
     }
 
     public ActionPipe<DtlLocationCommand> locationPipe() {

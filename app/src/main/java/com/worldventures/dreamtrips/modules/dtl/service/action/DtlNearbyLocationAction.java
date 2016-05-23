@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.action;
+package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import android.location.Location;
 

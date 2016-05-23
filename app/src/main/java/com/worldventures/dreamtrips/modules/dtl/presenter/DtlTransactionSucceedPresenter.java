@@ -6,12 +6,13 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlRateAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlTransactionAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
 
 import javax.inject.Inject;
 
@@ -21,7 +22,7 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
 
     @Inject
-    DtlMerchantService merchantStore;
+    DtlMerchantService merchantService;
     @Inject
     DtlTransactionService transactionService;
     //
@@ -38,9 +39,12 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantStore.getMerchantById(merchantId)
+        merchantService.merchantByIdPipe()
+                .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(ImmediateComposer.instance())
-                .subscribe(merchant -> dtlMerchant = merchant);
+                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> dtlMerchant = action.getResult()));
     }
 
     public void rate(int stars) {

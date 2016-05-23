@@ -7,19 +7,20 @@ import android.util.Pair;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -112,7 +113,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private Observable<DtlLocation> connectDtlLocationUpdate() {
-        Observable<DtlLocation> locationObservable = locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+        Observable<DtlLocation> locationObservable = locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer());
         Observable.combineLatest(
@@ -169,7 +170,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private void tryHideNearMeButton() {
-        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.get())
+        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
 
                 .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
                 .compose(bindViewIoToMainComposer())
@@ -258,7 +259,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 //        trackLocationSelection(location); // TODO :: 4/20/16 new analytics
         locationService.locationPipe().send(DtlLocationCommand.change(dtlExternalLocation));
         filterService.filterMerchantsActionPipe().clearReplays();
-        merchantService.loadMerchants(dtlExternalLocation.getCoordinates().asAndroidLocation());
+        merchantService.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates().asAndroidLocation()));
         navigateAway();
     }
 

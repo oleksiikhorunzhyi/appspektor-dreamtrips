@@ -1,7 +1,7 @@
-package com.worldventures.dreamtrips.modules.dtl.store;
+package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 

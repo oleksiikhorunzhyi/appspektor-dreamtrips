@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.action;
+package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;

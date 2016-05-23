@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.dtl.action;
+package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.core.api.action.ValueCommandAction;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
@@ -6,6 +6,9 @@ import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.command.annotations.CommandAction;
@@ -24,7 +27,7 @@ public class DtlLocationCommand extends ValueCommandAction<DtlLocation> implemen
         super(location);
     }
 
-    public static DtlLocationCommand get() {
+    public static DtlLocationCommand last() {
         return new DtlLocationCommand();
     }
 

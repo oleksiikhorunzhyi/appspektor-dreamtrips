@@ -14,8 +14,8 @@ import android.widget.EditText;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.ui.module.ModuleStatefulViewImpl;
+import com.techery.spares.module.Injector;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -33,8 +33,9 @@ public class FlaggingViewImpl extends ModuleStatefulViewImpl<FlaggingPresenter>
 
     private PublishSubject<Void> canceledDialogsStream = PublishSubject.create();
 
-    public FlaggingViewImpl(View view) {
+    public FlaggingViewImpl(View view, Injector injector) {
         super(view);
+        presenter = new FlaggingPresenterImpl(this, injector);
     }
 
     ///////////////////////////////////////////////////////////////////////////

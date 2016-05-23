@@ -33,7 +33,6 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     public FlaggingPresenterImpl(FlaggingView view, Injector injector) {
         super(view);
         injector.inject(this);
-        view.setPresenter(this);
         bindToFlagging();
         view.getCanceledDialogsStream().subscribe(aVoid -> resetState());
     }

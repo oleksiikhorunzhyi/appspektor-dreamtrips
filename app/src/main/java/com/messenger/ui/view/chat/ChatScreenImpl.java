@@ -162,7 +162,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         // Mosby's presenter is created in super.onAttachedToWindow()
         // and restore instace state is called before onAttachedToWindow() also.
         // Make sure to have the view prepared before this.
-        flaggingView = new FlaggingViewImpl(this);
+        flaggingView = new FlaggingViewImpl(this, injector);
     }
 
     @Override

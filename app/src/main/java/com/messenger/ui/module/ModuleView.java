@@ -7,6 +7,4 @@ public interface ModuleView<P> {
     View getParentView();
 
     P getPresenter();
-
-    void setPresenter(P presenter);
 }

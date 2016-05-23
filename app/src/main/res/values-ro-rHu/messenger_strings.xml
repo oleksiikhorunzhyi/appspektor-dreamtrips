@@ -107,7 +107,6 @@
     <string name="chat_settings_leave_group_chat_format">Sigur doriți să părăsiți chatul %1$s?</string>
     <string name="chat_settings_error_change_subject">Nu puteți schimba subiectul fără o conexiune la internet </string>
     <string name="chat_settings_error_changing_avatar_subject">Nu puteți schimba avatarul conversației dacă nu aveți conexiune la rețea</string>
-    <string name="chat_settings_error_empty_subject">Introduceți numele conversației</string>
     <!---->
     <!--Add new members -->
     <!---->

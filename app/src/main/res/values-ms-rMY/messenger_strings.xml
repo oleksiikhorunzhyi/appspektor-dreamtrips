@@ -107,7 +107,6 @@
     <string name="chat_settings_leave_group_chat_format">Adakah anda pasti anda mahu berhenti dari sembang %1$s </string>
     <string name="chat_settings_error_change_subject">Anda tidak boleh menukar subjek tanpa sambungan rangkaian</string>
     <string name="chat_settings_error_changing_avatar_subject">Anda tidak boleh mengubah avatar perbualan tanpa sambungan rangkaian</string>
-    <string name="chat_settings_error_empty_subject">Sila masukkan nama perbualan</string>
     <!---->
     <!--Add new members -->
     <!---->

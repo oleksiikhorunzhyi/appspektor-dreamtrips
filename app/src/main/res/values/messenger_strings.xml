@@ -109,7 +109,6 @@
     <string name="chat_settings_leave_group_chat_format">Are you sure you want to quit from %1$s chat</string>
     <string name="chat_settings_error_change_subject">You cannot change subject without network connection</string>
     <string name="chat_settings_error_changing_avatar_subject">You cannot change conversation avatar without network connection</string>
-    <string name="chat_settings_error_empty_subject">Please enter name of conversation</string>
     <!---->
     <!--Add new members -->
     <!---->

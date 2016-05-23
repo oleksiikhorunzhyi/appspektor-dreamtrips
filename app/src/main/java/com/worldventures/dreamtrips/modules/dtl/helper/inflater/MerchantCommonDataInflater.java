@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
@@ -28,11 +27,11 @@ public class MerchantCommonDataInflater extends MerchantDataInflater {
             rating.setRating(Float.valueOf(merchant.getRating()).intValue());
         } else ViewUtils.setViewVisibility(rating, View.GONE);
         //
-        int perkMargin = merchant.hasOffer(DtlOffer.TYPE_POINTS) ?
+        int perkMargin = merchant.hasPoints() ?
                 rootView.getResources().getDimensionPixelSize(R.dimen.perks_margin) : 0;
         ((LinearLayout.LayoutParams) perks.getLayoutParams()).setMargins(perkMargin, 0, 0, 0);
         //
-        ViewUtils.setViewVisibility(perks, merchant.hasOffer(DtlOffer.TYPE_PERK) ? View.VISIBLE : View.GONE);
-        ViewUtils.setViewVisibility(earnPointsBadge, merchant.hasOffer(DtlOffer.TYPE_POINTS) ? View.VISIBLE : View.GONE);
+        ViewUtils.setViewVisibility(perks, merchant.hasPerks() ? View.VISIBLE : View.GONE);
+        ViewUtils.setViewVisibility(earnPointsBadge, merchant.hasPoints() ? View.VISIBLE : View.GONE);
     }
 }

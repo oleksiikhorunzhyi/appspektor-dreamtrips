@@ -27,15 +27,16 @@
                 android:id="@+id/merchantCoverImage"
                 android:layout_width="@dimen/dtlMerchantCoverImageWidth"
                 android:layout_height="@dimen/dtlMerchantCoverImageHeight"
-                android:layout_gravity="center_vertical"
                 app:actualImageScaleType="centerInside"
+                android:layout_gravity="center_vertical"
                 app:placeholderImage="@drawable/ic_trip_image_placeholder"
                 />
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_small"
                 >
 
                 <TextView
@@ -43,32 +44,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    style="@style/DreamMerchantTextAppearance"
+                    style="@style/DreamMerchantHeaderTextAppearance"
+                    android:maxLines="2"
+                    android:textSize="13sp"
                     tools:text="Miguel's Cantina"
                     />
 
                 <TextView
                     android:id="@+id/merchantCategories"
+                    android:textSize="13sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center_vertical"
-                    android:ellipsize="end"
                     android:maxLines="1"
-                    android:textSize="13sp"
+                    android:ellipsize="end"
                     tools:text="Mexican, Latinamerican"
                     />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|bottom"
+                    android:layout_gravity="bottom"
                     >
 
                     <TextView
                         android:id="@+id/merchantOpenClosedStatus"
-                        android:layout_width="wrap_content"
+                        style="@style/DreamMerchantHeaderTextAppearance"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toLeftOf="@+id/merchantDistance"
+                        android:textSize="13sp"
                         android:textStyle="bold"
                         tools:text="Open Now"
                         />
@@ -77,8 +83,9 @@
                         android:id="@+id/merchantDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="@dimen/spacing_small"
+                        android:paddingRight="@dimen/spacing_tiny"
                         android:layout_toLeftOf="@+id/merchantPricing"
+                        android:layout_alignParentBottom="true"
                         android:textColor="@color/gray_btn_bg_pressed_color"
                         tools:text="1.7 miles"
                         />
@@ -86,17 +93,17 @@
                     <io.techery.properratingbar.ProperRatingBar
                         android:id="@+id/merchantPricing"
                         style="?android:attr/ratingBarStyleSmall"
-                        android:layout_gravity="end"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
                         app:prb_symbolicTick="$"
                         app:prb_symbolicTickNormalColor="@color/grey"
                         app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
                         app:prb_totalTicks="4"
                         />
                 </RelativeLayout>
-            </FrameLayout>
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

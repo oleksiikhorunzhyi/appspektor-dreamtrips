@@ -1,10 +1,8 @@
-package com.worldventures.dreamtrips.module.dtl.model;
+package com.worldventures.dreamtrips.modules.dtl.model;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPoints;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,14 +18,11 @@ public class DtlMerchantCurrencyTest {
     @Test
     public void test_getDefaultCurrency() {
         DtlMerchant dtlMerchant = new DtlMerchant();
-        DtlOffer<DtlOfferPointsData> dtlPointsOffer = new DtlOffer<>();
-        DtlOfferPointsData dtlOfferPointsDescription = new DtlOfferPointsData();
+        DtlOfferPoints dtlPointsOffer = new DtlOfferPoints();
         DtlCurrency dtlCurrency = new DtlCurrency();
         dtlCurrency.setDefault(true);
         dtlCurrency.setCode("USD");
-        dtlOfferPointsDescription.setCurrencies(Collections.singletonList(dtlCurrency));
-        dtlPointsOffer.setType(Offer.POINT_REWARD);
-        dtlPointsOffer.setOffer(dtlOfferPointsDescription);
+        dtlPointsOffer.setCurrencies(Collections.singletonList(dtlCurrency));
         dtlMerchant.setOffers(Collections.singletonList(dtlPointsOffer));
 
         DtlCurrency dtlCurrencyDefault = dtlMerchant.getDefaultCurrency();

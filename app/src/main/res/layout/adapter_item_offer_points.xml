@@ -9,20 +9,18 @@
 
     <ImageView
         android:src="@drawable/ic_points_earn_badge"
-        android:layout_width="@dimen/dtlOfferCoverImageWidth"
-        android:layout_height="@dimen/dtlOfferCoverImageHeight"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="@dimen/spacing_tiny"/>
+        style="@style/DtlOfferImageView"/>
 
     <TextView
         android:id="@+id/pointsDescription"
-        style="@style/DreamMerchantHeaderTextAppearance"
+        style="@style/DreamMerchantTextAppearance"
+        android:text="@string/dtl_earn_points"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="90dp"
-        android:maxLines="2"
-        tools:text="Earn DreamTrips points"/>
+        android:layout_marginLeft="@dimen/dtlOfferCoverImageWidth"
+        android:padding="@dimen/spacing_tiny"
+        android:maxLines="1"/>
 
     <View
         android:layout_width="match_parent"

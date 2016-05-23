@@ -78,13 +78,14 @@
 
     <style name="DreamMerchantTextAppearance">
         <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/perks_text_color</item>
-        <item name="android:ellipsize">end</item>
+        <item name="android:fontFamily">sans_serif</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="DreamMerchantHeaderTextAppearance" parent="DreamMerchantTextAppearance">
+        <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/font_normal</item>
     </style>
 
     <style name="DreamMerchantSubHeaderTextAppearance" parent="DreamMerchantTextAppearance">
@@ -110,6 +111,20 @@
 
     <style name="Theme.DreamTripsTheme.Progress.White" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/white</item>
+    </style>
+
+    <style name="DtlOfferImageView">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
+        <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
+        <item name="android:padding">@dimen/spacing_tiny</item>
+    </style>
+
+    <style name="DtlOfferDetailsImageView">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
+        <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
+        <item name="android:layout_margin">@dimen/spacing_tiny</item>
     </style>
 
     <style name="UserStatusTextAppearance" parent="TextAppearance.AppCompat.Subhead">

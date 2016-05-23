@@ -21,11 +21,13 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerkData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPointsData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerk;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPoints;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
@@ -66,6 +68,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     View emptyView;
     @InjectView(R.id.merchant_holder_offers)
     TextView emptyTextView;
+    @InjectView(R.id.filterBarRoot)
+    View filterRoot;
     //
     BaseExpandableDelegateAdapter baseDelegateAdapter;
     SelectionManager selectionManager;
@@ -78,12 +82,12 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         //
         baseDelegateAdapter = new BaseExpandableDelegateAdapter(getActivity(), injector);
         baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantExpandableCell.class);
-        baseDelegateAdapter.registerCell(DtlOfferPerkData.class, DtlPerkCell.class);
-        baseDelegateAdapter.registerCell(DtlOfferPointsData.class, DtlPointsCell.class);
+        baseDelegateAdapter.registerCell(DtlOfferPerk.class, DtlPerkCell.class);
+        baseDelegateAdapter.registerCell(DtlOfferPoints.class, DtlPointsCell.class);
 
         baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
-        baseDelegateAdapter.registerDelegate(DtlOfferPerkData.class, new PerkDelegate());
-        baseDelegateAdapter.registerDelegate(DtlOfferPointsData.class, new PointsDelegate());
+        baseDelegateAdapter.registerDelegate(DtlOfferPerk.class, new OfferCLickDelegate());
+        baseDelegateAdapter.registerDelegate(DtlOfferPoints.class, new OfferCLickDelegate());
         //
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
@@ -94,6 +98,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
         refreshLayout.setEnabled(false);
+        //
+        ViewUtils.setViewVisibility(isTabletLandscape() ? View.GONE : View.VISIBLE, filterRoot); // TODO :: fix after DT-1718 finished
     }
 
     @Override
@@ -219,17 +225,10 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         return true;
     }
 
-    public final class PerkDelegate implements CellDelegate<DtlOfferPerkData> {
+    public final class OfferCLickDelegate implements CellDelegate<DtlOffer> {
         @Override
-        public void onCellClicked(DtlOfferPerkData perk) {
-            getPresenter().perkClick(perk);
-        }
-    }
-
-    public final class PointsDelegate implements CellDelegate<DtlOfferPointsData> {
-        @Override
-        public void onCellClicked(DtlOfferPointsData points) {
-            getPresenter().pointClicked(points);
+        public void onCellClicked(DtlOffer offer) {
+            getPresenter().onOfferClick(offer);
         }
     }
 

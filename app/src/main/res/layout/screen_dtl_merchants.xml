@@ -36,8 +36,7 @@
             android:background="@android:color/white"
             >
 
-            <include layout="@layout/view_dtl_filter_button"
-                     android:layout_gravity="start"
+            <include layout="@layout/view_dtl_filter_button" android:layout_gravity="start"
                 />
 
             <android.support.v7.widget.SwitchCompat
@@ -77,11 +76,9 @@
                 android:layout_height="match_parent"
                 android:fadingEdgeLength="0dp"
                 android:overScrollMode="never"
-                android:paddingBottom="6dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingTop="6dp"
-                android:visibility="visible"
+                android:paddingLeft="@dimen/spacing_small"
+                android:paddingRight="@dimen/spacing_small"
+                android:paddingBottom="@dimen/spacing_small"
                 tools:listitem="@layout/adapter_item_dtl_merchant_expandable"
                 />
         </android.support.v4.widget.SwipeRefreshLayout>

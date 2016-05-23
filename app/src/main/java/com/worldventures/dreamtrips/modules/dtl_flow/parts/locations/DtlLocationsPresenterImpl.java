@@ -34,6 +34,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScreen, ViewState.EMPTY>
         implements DtlLocationsPresenter {
@@ -72,7 +73,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
         //
         locationRequestNoFallback = gpsLocationDelegate.requestLocationUpdate()
                 .compose(bindViewIoToMainComposer())
-                .timeout(15, TimeUnit.SECONDS)
+                .timeout(15, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(this::onLocationObtained, throwable -> {
                     if (throwable instanceof TimeoutException) getView().hideProgress();
                 });

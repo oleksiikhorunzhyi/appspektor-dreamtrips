@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
@@ -270,10 +271,12 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     @Override
-    public void showPinInfo(String merchantId) {
+    public void showPinInfo(DtlMerchant merchant) {
         infoContainer.removeAllViews();
-        PathContext newContext = PathContext.create((PathContext) getContext(), new DtlMapInfoPath(FlowUtil.currentMaster(this), merchantId), Path.contextFactory());
-        DtlMapInfoScreenImpl infoView = (DtlMapInfoScreenImpl) LayoutInflater.from(getContext()).cloneInContext(newContext)
+        PathContext newContext = PathContext.create((PathContext) getContext(),
+                new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant), Path.contextFactory());
+        DtlMapInfoScreenImpl infoView =
+                (DtlMapInfoScreenImpl) LayoutInflater.from(getContext()).cloneInContext(newContext)
                 .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
         infoView.setInjector(injector);
         infoContainer.addView(infoView);

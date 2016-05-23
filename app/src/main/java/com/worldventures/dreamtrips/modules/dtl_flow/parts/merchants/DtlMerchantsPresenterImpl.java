@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEve
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
 import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
@@ -30,6 +30,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLo
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,16 +49,11 @@ import rx.subjects.PublishSubject;
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, ViewState.EMPTY>
         implements DtlMerchantsPresenter {
 
-    @Inject
-    SnappyRepository db;
-    @Inject
-    Janet janet;
-    @Inject
-    DtlFilterMerchantStore filteredMerchantStore;
-    @Inject
-    DtlMerchantStore merchantStore;
-    @Inject
-    DtlLocationManager dtlLocationManager;
+    @Inject SnappyRepository db;
+    @Inject Janet janet;
+    @Inject DtlFilterMerchantStore filteredMerchantStore;
+    @Inject DtlMerchantStore merchantStore;
+    @Inject DtlLocationManager dtlLocationManager;
     //
     @State
     boolean initialized;
@@ -214,24 +210,19 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                             pair.first,
                             pair.second);
                 });
-//        }
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId(), null));
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()),
+                merchant, null));
     }
 
     @Override
-    public void perkClick(DtlOfferData perk) {
-        showOfferData(perk);
+    public void onOfferClick(DtlOffer offer) {
+        showOfferData(offer);
     }
 
-    @Override
-    public void pointClicked(DtlOfferData points) {
-        showOfferData(points);
-    }
-
-    private void showOfferData(DtlOfferData offer) {
-        findMerchantId(offer)
-                .filter(merchantId -> !TextUtils.isEmpty(merchantId))
-                .subscribe(merchantId -> Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchantId, offer)),
+    private void showOfferData(DtlOffer offer) {
+        findMerchantWithOffer(offer)
+                .filter(merchant -> merchant != null)
+                .subscribe(merchant -> Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, findExpandablePosition(merchant, offer))),
                         Throwable::printStackTrace);
     }
 
@@ -240,17 +231,24 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     //TODO bad hack!!! find better solution needed
-    private Observable<String> findMerchantId(DtlOfferData offer) {
+    private Observable<DtlMerchant> findMerchantWithOffer(DtlOffer offer) {
         return merchantStore.getState()
                 .compose(new ActionStateToActionTransformer<>())
                 .flatMap(action -> Observable.from(action.getResult()))
                 .filter(merchant -> !merchant.hasNoOffers())
                 .filter(merchant ->
                         Queryable.from(merchant.getOffers())
-                                .filter(off -> off.getOffer().equals(offer))
+                                .filter(off -> off.equals(offer))
                                 .any())
-                .map(DtlMerchant::getId)
                 .take(1);
+    }
+
+    protected List<Integer> findExpandablePosition(DtlMerchant merchant, DtlOffer... expandedOffers) {
+        List<DtlOffer> merchantOffers = merchant.getOffers();
+        return Queryable.from(Arrays.asList(expandedOffers))
+                .filter(merchantOffers::contains)
+                .map(merchantOffers::indexOf)
+                .toList();
     }
 
     @Override

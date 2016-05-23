@@ -272,7 +272,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
     @Override
     public void onMarkerClick(String merchantId) {
-        getView().showPinInfo(merchantId);
+        merchantStore.getMerchantById(merchantId)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(value -> getView().showPinInfo(value));
     }
 
     @Override

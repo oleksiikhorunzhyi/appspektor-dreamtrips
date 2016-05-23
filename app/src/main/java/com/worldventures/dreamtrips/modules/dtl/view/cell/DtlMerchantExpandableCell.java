@@ -17,8 +17,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 
 import java.util.List;
 
@@ -26,7 +24,7 @@ import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
 
 @Layout(R.layout.adapter_item_dtl_merchant_expandable)
-public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, DtlOfferData, CellDelegate<DtlMerchant>> {
+public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, DtlOffer, CellDelegate<DtlMerchant>> {
 
     @InjectView(R.id.merchantCoverImage) ImageryDraweeView merchantCoverImage;
     @InjectView(R.id.merchantPricing) ProperRatingBar pricing;
@@ -39,7 +37,6 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
     @InjectView(R.id.offers_container) View offersContainer;
     @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
     @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
-
 
     public DtlMerchantExpandableCell(View view) {
         super(view);
@@ -60,9 +57,7 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
 
     private void setImage(List<DtlMerchantMedia> mediaList) {
         DtlMerchantMedia media = Queryable.from(mediaList).firstOrDefault();
-        if (media == null) {
-            return;
-        }
+        if (media == null) return;
         //
         merchantCoverImage.setImageUrl(media.getImagePath());
     }
@@ -82,7 +77,7 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
     }
 
     private void setOperationalStatus() {
-        if (getModelObject().hasOffer(DtlOffer.TYPE_POINTS) &&
+        if (getModelObject().hasPoints() &&
                 getModelObject().getOperationDays() != null && !getModelObject().getOperationDays().isEmpty()) {
             ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
             this.merchantOperationalStatus.setText(DtlMerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false));
@@ -90,22 +85,23 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
     }
 
     private void setOffersSection() {
-        List<DtlOffer> offers = getModelObject().getOffers();
-        if (!offers.isEmpty()) {
+        if (getModelObject().hasNoOffers()) ViewUtils.setViewVisibility(offersContainer, View.GONE);
+        else {
             ViewUtils.setViewVisibility(offersContainer, View.VISIBLE);
-            int perksNumber = Queryable.from(offers)
-                    .count(offer -> offer.getType().equals(Offer.PERKS));
-            setOffersTypes(perksNumber, offers.size() - perksNumber);
-        } else ViewUtils.setViewVisibility(offersContainer, View.GONE);
+            int perksNumber = Queryable.from(getModelObject().getOffers()).count(DtlOffer::isPerk);
+            setOffersTypes(perksNumber, getModelObject().getOffers().size() - perksNumber);
+        }
     }
 
     private void setOffersTypes(int perks, int points) {
-        if (perks > 0) {
-            ViewUtils.setViewVisibility(this.perks, View.VISIBLE);
-            this.perks.setText(itemView.getContext().getString(R.string.perks_formatted, perks));
-        } else ViewUtils.setViewVisibility(this.perks, View.GONE);
+        int perkVisibility = isExpanded() ? View.GONE : perks > 0 ? View.VISIBLE : View.GONE;
+        int pointVisibility = isExpanded() ? View.GONE : points > 0 ? View.VISIBLE : View.GONE;
 
-        ViewUtils.setViewVisibility(this.points, points > 0 ? View.VISIBLE : View.GONE);
+        ViewUtils.setViewVisibility(this.perks, perkVisibility);
+        ViewUtils.setViewVisibility(this.points, pointVisibility);
+
+        if (perkVisibility == View.VISIBLE)
+            this.perks.setText(itemView.getContext().getString(R.string.perks_formatted, perks));
     }
 
     private void setToggleView() {
@@ -116,8 +112,8 @@ public class DtlMerchantExpandableCell extends GroupDelegateCell<DtlMerchant, Dt
     }
 
     @Override
-    public List<DtlOfferData> getChildListCell() {
-        return Queryable.from(getModelObject().getOffers()).map(DtlOffer::getOffer).sort().toList();
+    public List<DtlOffer> getChildListCell() {
+        return getModelObject().getOffers();
     }
 
     @Override

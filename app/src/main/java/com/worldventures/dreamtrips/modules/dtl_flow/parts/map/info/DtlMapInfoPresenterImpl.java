@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
@@ -36,12 +35,10 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
     //
     protected DtlMerchant merchant;
 
-    public DtlMapInfoPresenterImpl(Context context, Injector injector, String merchantId) {
+    public DtlMapInfoPresenterImpl(Context context, Injector injector, DtlMerchant merchant) {
         super(context);
         injector.inject(this);
-        merchantStore.getMerchantById(merchantId)
-                .compose(ImmediateComposer.instance())
-                .subscribe(value -> merchant = value);
+        this.merchant = merchant;
     }
 
     @Override
@@ -60,7 +57,8 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
     public void onMarkerClick() {
         eventBus.post(new ToggleMerchantSelectionEvent(merchant));
         trackIfNeeded();
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant.getId(), null));
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()),
+                merchant, null));
     }
 
     private void trackIfNeeded() {

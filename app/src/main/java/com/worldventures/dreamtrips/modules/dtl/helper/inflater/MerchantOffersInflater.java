@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.view.ViewLayoutChangeEvent;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -25,20 +26,20 @@ import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.Offer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
-import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MerchantOffersInflater extends MerchantDataInflater implements MerchantOfferExpanded {
+public class MerchantOffersInflater extends MerchantDataInflater {
 
     @InjectView(R.id.merchant_details_merchant_wrapper) ViewGroup merchantWrapper;
     @InjectView(R.id.merchant_details_description) TextView description;
@@ -50,17 +51,7 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
     @InjectView(R.id.perk_divider) View perkDivider;
 
     private List<OfferClickListener> offerClickListeners = new ArrayList<>();
-    protected DtlOfferData expandedOffer;
-
-    /***
-     * Set expanded offer
-     * Call this method before applyMerchant(DtlMerchant merchant) method;
-     * @param offer expanded offer
-     */
-    @Override
-    public void setExpandedOffer(DtlOfferData offer) {
-        this.expandedOffer = offer;
-    }
+    private Map<Integer, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
 
     public void registerOfferClickListener(OfferClickListener listener) {
         this.offerClickListeners.add(listener);
@@ -80,6 +71,30 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
         super.release();
     }
 
+    /***
+     * Set expanded offers
+     * Call this method before applyMerchant(DtlMerchant merchant) method;
+     *
+     * @param offers offers to expand
+     */
+    public void expandOffers(List<Integer> offers) {
+        Preconditions.checkNotNull(merchant, "Merchant not set");
+        //
+        if (offers == null || cashedViewMap.size() == 0) return;
+        //
+        Queryable.from(offers)
+                .filter(offer -> cashedViewMap.get(offer) != null)
+                .filter(offer -> cashedViewMap.get(offer).get() != null)
+                .forEachR(entry -> cashedViewMap.get(entry).get().showWithoutAnimation());
+    }
+
+    public List<Integer> getExpandedOffers() {
+        return Queryable.from(cashedViewMap.keySet())
+                .filter(index -> cashedViewMap.get(index) != null)
+                .filter(index -> cashedViewMap.get(index).get() != null)
+                .filter(index -> cashedViewMap.get(index).get().isOpened()).toList();
+    }
+
     private void setType() {
         ViewUtils.setViewVisibility(earnWrapper, !merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
         ViewUtils.setViewVisibility(merchantWrapper, merchant.hasNoOffers() ? View.VISIBLE : View.GONE);
@@ -97,6 +112,7 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
 
     private void onLayoutImage(ViewLayoutChangeEvent event, DtlMerchantMedia media) {
         if (event.view().getWidth() == 0) return;
+        //
         cover.setController(GraphicUtils.provideFrescoResizingController(
                 Uri.parse(media.getImagePath()), cover.getController(),
                 cover.getWidth(), cover.getHeight()));
@@ -120,53 +136,49 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
     private void setOffers() {
         if (merchant.hasNoOffers()) return;
         //
-        List<DtlOfferData> offers = Queryable.from(merchant.getOffers())
-                .map(DtlOffer::getOffer).sort().toList();
+        List<DtlOffer> offers = merchant.getOffers();
         for (int index = 0; index < offers.size(); index++) {
             addOffer(offers.get(index), index);
         }
     }
 
-    private void addOffer(DtlOfferData offer, int index) {
-        View view = (offer.getType().equals(Offer.PERKS)) ? createAndBindPerkView(offer) : createAndBindPointView(offer);
+    private void addOffer(DtlOffer offer, int index) {
+        View view = (offer.isPerk()) ? createAndBindPerkView(offer, index) : createPointView();
         earnWrapper.addView(view, index);
     }
 
-    private View createAndBindPointView(DtlOfferData point) {
-        View pointView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_point_view, earnWrapper, false);
-        bindInfo(ButterKnife.<TextView>findById(pointView, R.id.points_description), point.getDescription());
-        return pointView;
+    private View createPointView() {
+        return LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_point_view, earnWrapper, false);
     }
 
-    private View createAndBindPerkView(DtlOfferData perk) {
+    private View createAndBindPerkView(DtlOffer perk, int index) {
         ExpandableOfferView perkView = (ExpandableOfferView) LayoutInflater.from(rootView.getContext()).inflate(R.layout.item_perk_view, earnWrapper, false);
         bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perk_description), perk.getDescription());
-        bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perks_title), perk.getDescription());
+        bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perks_title), perk.getTitle());
         bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perk_disclaimer), perk.getDisclaimer());
         bindImage(ButterKnife.<SimpleDraweeView>findById(perkView, R.id.perk_logo), perk);
         bindOperationDays(ButterKnife.<TextView>findById(perkView, R.id.perks_operation_days), perk, rootView.getResources());
         patchExpiringBar(perkView, perk);
-        if (expandedOffer != null && expandedOffer.equals(perk)) perkView.showWithoutAnimation();
+        //
+        cashedViewMap.put(index, new WeakReference<>(perkView));
         return perkView;
     }
 
-    private void patchExpiringBar(ViewGroup perkView, DtlOfferData offerData) {
-        ViewGroup expirationBarLayout = ButterKnife.<ViewGroup>findById(perkView, R.id.expirationBarLayout);
+    private void patchExpiringBar(ViewGroup perkView, DtlOffer offerData) {
         AppCompatTextView expirationBarCaption = ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
         if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
-            expirationBarLayout.setVisibility(View.VISIBLE);
-            expirationBarCaption.setText(DtlMerchantHelper.
-                    getOfferExpiringCaption(rootView.getResources(), offerData));
-        } else {
-            expirationBarLayout.setVisibility(View.GONE);
+            ViewUtils.setTextOrHideView(expirationBarCaption, DtlMerchantHelper.
+                    getOfferExpiringCaption(perkView.getContext(), offerData));
         }
     }
 
-    private void notifyOfferClickListeners(DtlOfferData offer) {
-        Queryable.from(offerClickListeners).forEachR(listener -> listener.onOfferClick(offer));
+    private void notifyOfferClickListeners(DtlOffer offer) {
+        Queryable.from(offerClickListeners)
+                .filter(listener -> listener != null)
+                .forEachR(listener -> listener.onOfferClick(offer));
     }
 
-    private void bindImage(SimpleDraweeView image, DtlOfferData perk) {
+    private void bindImage(SimpleDraweeView image, DtlOffer perk) {
         DtlOfferMedia media = Queryable.from(perk.getImages()).firstOrDefault();
         if (media == null) return;
         //
@@ -180,7 +192,7 @@ public class MerchantOffersInflater extends MerchantDataInflater implements Merc
         if (description != null) view.setText(description);
     }
 
-    private static void bindOperationDays(TextView operationDays, DtlOfferData perk, Resources resources) {
+    private static void bindOperationDays(TextView operationDays, DtlOffer perk, Resources resources) {
         List<OperationDay> operDays = perk.getOperationDays();
         if (operationDays == null) return;
         //

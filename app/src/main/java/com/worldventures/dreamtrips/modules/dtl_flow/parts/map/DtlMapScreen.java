@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -49,7 +50,7 @@ public interface DtlMapScreen extends DtlScreen {
 
     Observable<Boolean> getToggleObservable();
 
-    void showPinInfo(String merchantId);
+    void showPinInfo(DtlMerchant merchant);
 
     void openFilter();
 

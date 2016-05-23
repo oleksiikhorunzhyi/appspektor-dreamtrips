@@ -45,9 +45,7 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
                                 .compose(new ActionStateToActionTransformer<>())
                                 .map(CommandActionBase::getResult)
                                 .map(merchants -> {
-                                    Queryable.from(merchants)
-                                            .filter(DtlMerchant::hasPerks)
-                                            .forEachR(DtlMerchant::sortPerks);
+                                    Queryable.from(merchants).forEachR(DtlMerchant::sortPerks);
                                     DtlMerchantsPredicate predicate = DtlMerchantsPredicate.fromFilterData(filterData);
                                     merchants = Queryable.from(merchants)
                                             .map(element -> patchMerchantDistance(element, latLng, filterData.getDistanceType()))

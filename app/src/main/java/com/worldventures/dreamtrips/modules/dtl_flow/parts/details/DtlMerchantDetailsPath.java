@@ -2,35 +2,37 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.details;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferData;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlDetailPath;
+
+import java.util.Collections;
+import java.util.List;
 
 @Layout(R.layout.screen_dtl_details)
 public class DtlMerchantDetailsPath extends DtlDetailPath {
 
-    private final String id;
-    private final DtlOfferData preExpandOffer;
+    private final DtlMerchant merchant;
+    private final List<Integer> preExpandOfferPositions;
 
-    public DtlMerchantDetailsPath(MasterDetailPath path, @NonNull String id, @Nullable DtlOfferData preExpandOffer) {
+    public DtlMerchantDetailsPath(MasterDetailPath path, @NonNull DtlMerchant merchant, @Nullable List<Integer> preExpandOfferPositions) {
         super(path);
-        Preconditions.checkArgument(!TextUtils.isEmpty(id), "Merchant's \'id\' argument can not be null or empty");
-        this.id = id;
-        this.preExpandOffer = preExpandOffer;
+        Preconditions.checkNotNull(merchant, "Merchant can not be null or empty");
+        this.merchant = merchant;
+        this.preExpandOfferPositions = preExpandOfferPositions != null ? preExpandOfferPositions : Collections.emptyList();
     }
 
-    public String getId() {
-        return id;
+    public DtlMerchant getMerchant() {
+        return merchant;
     }
 
-    public DtlOfferData getPreExpandOffer() {
-        return preExpandOffer;
+    public List<Integer> getPreExpandOffers() {
+        return preExpandOfferPositions;
     }
 
     @Override

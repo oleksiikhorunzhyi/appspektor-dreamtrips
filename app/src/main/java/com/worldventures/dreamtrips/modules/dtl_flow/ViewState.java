@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 public abstract class ViewState implements Parcelable {
 
+    public ViewState() {
+    }
+
     protected ViewState(Parcel in) {
     }
 

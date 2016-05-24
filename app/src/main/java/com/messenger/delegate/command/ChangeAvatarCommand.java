@@ -2,12 +2,18 @@ package com.messenger.delegate.command;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.chat.GroupChat;
+import com.messenger.storage.dao.ConversationsDAO;
+
+import javax.inject.Inject;
 
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
 public abstract class ChangeAvatarCommand extends BaseChatAction<DataConversation> {
+
+    @Inject ConversationsDAO conversationsDAO;
+
     protected ChangeAvatarCommand(String conversationId) {
         super(conversationId);
     }

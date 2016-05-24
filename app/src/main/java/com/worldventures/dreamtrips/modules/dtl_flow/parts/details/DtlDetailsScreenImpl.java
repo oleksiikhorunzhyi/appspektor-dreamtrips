@@ -175,6 +175,8 @@ public class DtlDetailsScreenImpl
         GoogleMapOptions mapOptions = new GoogleMapOptions();
         mapOptions.liteMode(true);
         //
+        if (destinationMap != null && destinationMap.isAdded()) return;
+
         destinationMap = SupportMapFragment.newInstance(mapOptions);
         getActivity().getSupportFragmentManager()
                 .beginTransaction()

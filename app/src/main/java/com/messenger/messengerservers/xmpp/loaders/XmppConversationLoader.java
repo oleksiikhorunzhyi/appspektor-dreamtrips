@@ -1,7 +1,6 @@
 package com.messenger.messengerservers.xmpp.loaders;
 
 import com.messenger.messengerservers.ConnectionException;
-import com.messenger.messengerservers.loaders.ConversationLoader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.providers.ConversationProvider;
@@ -15,10 +14,10 @@ import org.jivesoftware.smack.provider.ProviderManager;
 
 import rx.Observable;
 
-public class ConversationsLoader extends BaseConversationsLoader implements ConversationLoader {
+public class XmppConversationLoader extends XmppBaseConversationsLoader implements com.messenger.messengerservers.loaders.ConversationLoader {
     private final String conversationId;
 
-    public ConversationsLoader(XmppServerFacade facade, String conversationId) {
+    public XmppConversationLoader(XmppServerFacade facade, String conversationId) {
         super(facade);
         this.conversationId = conversationId;
         ProviderManager.addIQProvider(

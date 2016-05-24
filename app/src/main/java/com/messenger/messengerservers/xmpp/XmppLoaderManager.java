@@ -3,9 +3,10 @@ package com.messenger.messengerservers.xmpp;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.loaders.ContactsLoader;
 import com.messenger.messengerservers.loaders.ConversationLoader;
+import com.messenger.messengerservers.loaders.ConversationsLoader;
 import com.messenger.messengerservers.loaders.FlagMessageLoader;
-import com.messenger.messengerservers.xmpp.loaders.ConversationsListLoader;
-import com.messenger.messengerservers.xmpp.loaders.ConversationsLoader;
+import com.messenger.messengerservers.xmpp.loaders.XmppConversationsListLoader;
+import com.messenger.messengerservers.xmpp.loaders.XmppConversationLoader;
 import com.messenger.messengerservers.xmpp.loaders.XmppContactLoader;
 import com.messenger.messengerservers.xmpp.loaders.XmppFlagMessageLoader;
 
@@ -24,12 +25,12 @@ public class XmppLoaderManager implements LoaderManager {
 
     @Override
     public ConversationLoader createConversationLoader(String conversationId) {
-        return new ConversationsLoader(facade, conversationId);
+        return new XmppConversationLoader(facade, conversationId);
     }
 
     @Override
-    public com.messenger.messengerservers.loaders.ConversationsLoader createConversationsLoader() {
-        return new ConversationsListLoader(facade);
+    public ConversationsLoader createConversationsLoader() {
+        return new XmppConversationsListLoader(facade);
     }
 
     @Override

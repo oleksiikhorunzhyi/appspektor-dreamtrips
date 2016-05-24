@@ -33,27 +33,41 @@ public class XmppContactLoader implements ContactsLoader {
     }
 
     private static class RosterObservable implements Observable.OnSubscribe<List<MessengerUser>> {
+
         private final Roster roster;
+
+        private RosterObservable(Roster roster) {
+            this.roster = roster;
+        }
 
         public static Observable<List<MessengerUser>> create(Roster roster) {
             return Observable.create(new RosterObservable(roster));
-        }
-        private RosterObservable(Roster roster) {
-            this.roster = roster;
         }
 
         @Override
         public void call(Subscriber<? super List<MessengerUser>> subscriber) {
             // TODO encapsulate roster and use proxy instead
-            if (!roster.isLoaded()) {
-                try {
-                    roster.reloadAndWait();
-                } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {
-                    subscriber.onError(new ConnectionException(e));
-                } catch (InterruptedException e) {
-                    subscriber.onError(e);
-                }
+            try {
+                loadRosterIfNeed();
+            } catch (Exception exception) {
+                subscriber.onError(exception);
             }
+
+            if (subscriber.isUnsubscribed()) return;
+            subscriber.onNext(obtainUsersFromRoster());
+            subscriber.onCompleted();
+        }
+
+        private void loadRosterIfNeed() throws ConnectionException, InterruptedException {
+            if (roster.isLoaded()) return;
+            try {
+                roster.reloadAndWait();
+            } catch (SmackException.NotLoggedInException | SmackException.NotConnectedException e) {
+                throw new ConnectionException(e);
+            }
+        }
+
+        private List<MessengerUser> obtainUsersFromRoster() {
             Collection<RosterEntry> entries = roster.getEntries();
             ArrayList<MessengerUser> messengerUsers = new ArrayList<>(entries.size());
 
@@ -63,14 +77,16 @@ public class XmppContactLoader implements ContactsLoader {
                 }
 
                 String userName = entry.getUser();
-                MessengerUser messengerUser = new MessengerUser(JidCreatorHelper.obtainId(userName));
                 boolean online = roster.getPresence(userName).getType().equals(Presence.Type.available);
+
+                MessengerUser messengerUser = new MessengerUser(JidCreatorHelper.obtainId(userName));
                 messengerUser.setOnline(online);
                 messengerUser.setType(UserType.FRIEND);
                 messengerUsers.add(messengerUser);
             }
-            subscriber.onNext(messengerUsers);
-            subscriber.onCompleted();
+
+            return messengerUsers;
         }
+
     }
 }

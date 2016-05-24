@@ -18,11 +18,11 @@ import java.util.List;
 
 import rx.Observable;
 
-public class ConversationsListLoader extends BaseConversationsLoader implements ConversationsLoader {
+public class XmppConversationsListLoader extends XmppBaseConversationsLoader implements ConversationsLoader {
 
     private static final int MAX_CONVERSATIONS = 512;
 
-    public ConversationsListLoader(XmppServerFacade facade) {
+    public XmppConversationsListLoader(XmppServerFacade facade) {
         super(facade);
         ProviderManager.addIQProvider(
                 ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE,
@@ -33,11 +33,11 @@ public class ConversationsListLoader extends BaseConversationsLoader implements 
     @Override
     public Observable<List<Conversation>> load() {
         return facade.getConnectionObservable()
-                .flatMap(this::loadConversation)
+                .flatMap(this::loadConversations)
                 .flatMap(this::loadParticipants);
     }
 
-    private Observable<List<Conversation>> loadConversation(XMPPConnection connection) {
+    private Observable<List<Conversation>> loadConversations(XMPPConnection connection) {
         return Observable.create(subscriber -> {
             try {
                 connection.sendStanzaWithResponseCallback(createConversationStanza(),

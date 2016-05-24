@@ -1,8 +1,5 @@
 package com.messenger.messengerservers.xmpp.util;
 
-
-import com.messenger.messengerservers.model.Conversation;
-
 public final class ThreadCreatorHelper {
 
     private ThreadCreatorHelper() {
@@ -20,11 +17,6 @@ public final class ThreadCreatorHelper {
             return String.format("%s_%s", userId1, userId2);
         else
             return String.format("%s_%s", userId2, userId1);
-    }
-
-    @Deprecated
-    public static String obtainCompanionFromSingleChat(Conversation conversation, String userJid) {
-        return obtainCompanionFromSingleChat(conversation.getId(), userJid);
     }
 
     public static String obtainCompanionFromSingleChat(String conversationId, String userJid) {

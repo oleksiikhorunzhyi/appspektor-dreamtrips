@@ -17,7 +17,6 @@ public class Conversation {
     private final Message lastMessage;
     public final long lastActiveDate;
     private String ownerId;
-    private boolean abandoned;
 
     private Conversation(Builder builder) {
         id = builder.id;
@@ -76,14 +75,6 @@ public class Conversation {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public boolean isAbandoned() {
-        return abandoned;
-    }
-
-    public void setAbandoned(boolean abandoned) {
-        this.abandoned = abandoned;
     }
 
     public static final class Builder {

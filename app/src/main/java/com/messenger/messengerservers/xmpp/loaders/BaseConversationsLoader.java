@@ -1,5 +1,9 @@
 package com.messenger.messengerservers.xmpp.loaders;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Participant;
@@ -43,19 +47,15 @@ abstract class BaseConversationsLoader {
                 subscriber.onNext(conversation);
                 subscriber.onCompleted();
             } else {
-                provider.loadMultiUserChatParticipants(conversation.getId(), (owner, members, abandoned) -> {
+                provider.loadMultiUserChatParticipants(conversation.getId(), members -> {
                     if (subscriber.isUnsubscribed()) return;
-                    if (BaseConversationsLoader.this.groupChatInvalid(conversation, owner, members)) {
+                    if (groupChatInvalid(conversation, members)) {
                         Timber.w("Group Conversation is invalid: %s", conversation);
                         subscriber.onCompleted();
                         return;
                     }
                     //
-                    if (owner != null) {
-                        conversation.setOwnerId(owner.getUserId());
-                        members.add(0, owner);
-                    }
-                    conversation.setAbandoned(abandoned);
+                    conversation.setOwnerId(findOwnerId(members));
                     conversation.getParticipants().addAll(members);
                     subscriber.onNext(conversation);
                     subscriber.onCompleted();
@@ -64,10 +64,20 @@ abstract class BaseConversationsLoader {
         });
     }
 
-    private boolean groupChatInvalid(Conversation conversation, Participant owner, List<Participant> members) {
-        boolean withoutOwner = owner == null && (conversation.getType().equals(ConversationType.CHAT) || conversation.getType().equals(ConversationType.GROUP));
-        boolean noParticipants = owner == null && (members == null || members.isEmpty());
-        return withoutOwner || noParticipants;
+    // TODO: 5/24/16 this logic should be refactored, because conversation can have a few owners.
+    @Nullable
+    private String findOwnerId(List<Participant> participants) {
+        for (Participant p : participants) {
+            if (TextUtils.equals(p.getAffiliation(), Participant.Affiliation.OWNER)) {
+                return p.getUserId();
+            }
+        }
+        return null;
+    }
+
+    private boolean groupChatInvalid(@NonNull Conversation conversation, @NonNull List<Participant> members) {
+        boolean isGroupChat = !TextUtils.equals(conversation.getType(), ConversationType.CHAT);
+        return isGroupChat && members.size() < 2;
     }
 
     private boolean singleChatInvalid(Conversation conversation, String userId) {

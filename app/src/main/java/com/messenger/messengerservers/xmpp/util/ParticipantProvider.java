@@ -25,14 +25,14 @@ public class ParticipantProvider {
     private XMPPConnection connection;
 
     public interface OnGroupChatParticipantsLoaded {
-        void onLoaded(Participant owner, List<Participant> participants, boolean abandoned);
+        void onLoaded(List<Participant> participants);
     }
 
     public ParticipantProvider(XMPPConnection connection) {
         this.connection = connection;
         ProviderManager.addIQProvider(
                 ConversationParticipantsIQ.ELEMENT_QUERY, ConversationParticipantsIQ.NAMESPACE,
-                new ConversationParticipantsProvider(connection.getUser())
+                new ConversationParticipantsProvider()
         );
     }
 
@@ -55,22 +55,16 @@ public class ParticipantProvider {
                             && TextUtils.equals(conversationId, JidCreatorHelper.obtainId(stanza.getFrom())),
                     packet -> {
                         ConversationParticipantsIQ conversationParticipantsIQ = (ConversationParticipantsIQ) packet;
-                        //
-                        Participant owner = conversationParticipantsIQ.getOwner();
-                        if (owner != null) {
-                            owner = new Participant(owner, conversationId);
-                        }
                         List<Participant> participants = conversationParticipantsIQ.getParticipants();
-                        if (participants != null) {
+                        if (!participants.isEmpty()) {
                             participants = Queryable.from(participants).map(p -> new Participant(p, conversationId)).toList();
                         }
-                        boolean abandoned = conversationParticipantsIQ.isAbandoned();
                         //
-                        listener.onLoaded(owner, participants, abandoned);
+                        listener.onLoaded(participants);
                     },
                     exception -> {
                         Timber.w(exception, "Can't get participants for conversation: %s", conversationId);
-                        listener.onLoaded(null, Collections.emptyList(), false);
+                        listener.onLoaded(Collections.emptyList());
                     }
             );
         } catch (SmackException.NotConnectedException e) {

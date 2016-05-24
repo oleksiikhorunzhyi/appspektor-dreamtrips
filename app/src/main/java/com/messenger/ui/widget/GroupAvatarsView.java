@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -56,9 +57,10 @@ public class GroupAvatarsView extends SimpleDraweeView {
                 .color(COLOR_HELPER.obtainColor(getContext(), conversation.getId()))
                 .build();
 
+        String avatarUrl = conversation.getAvatar();
         setController(Fresco.newDraweeControllerBuilder()
                 .setOldController(getController())
-                .setUri(Uri.parse(conversation.getAvatar()))
+                .setUri(TextUtils.isEmpty(avatarUrl) ? Uri.EMPTY : Uri.parse(avatarUrl))
                 .build());
 
         GenericDraweeHierarchy history = getHierarchy();

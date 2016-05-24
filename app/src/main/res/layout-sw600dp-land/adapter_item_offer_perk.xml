@@ -25,7 +25,7 @@
             />
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/expirationBarCaption"
+            android:id="@+id/expirationBar"
             android:layout_width="@dimen/dtlOfferExpirationWidth"
             android:layout_height="@dimen/dtlOfferExpirationHeight"
             android:layout_gravity="start|top"
@@ -85,7 +85,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/perk_logo_root"
+        android:layout_alignParentTop="true"
         android:background="@drawable/divider_list"
         />
 </RelativeLayout>

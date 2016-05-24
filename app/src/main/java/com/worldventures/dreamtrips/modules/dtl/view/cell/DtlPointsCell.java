@@ -4,14 +4,15 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_offer_points)
-public class DtlPointsCell extends AbstractDelegateCell<DtlOffer, DtlMerchantsScreenImpl.OfferCLickDelegate> {
+public class DtlPointsCell
+        extends AbstractDelegateCell<DtlOffer, CellDelegate<DtlOffer>> {
 
     public DtlPointsCell(View view) {
         super(view);

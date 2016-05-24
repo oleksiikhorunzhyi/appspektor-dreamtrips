@@ -6,6 +6,13 @@
              android:background="@android:color/white"
     >
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="top"
+        android:background="@drawable/divider_list"
+        />
+
     <ImageView
         android:src="@drawable/ic_points_earn_badge"
         style="@style/DtlOfferImageView"
@@ -21,12 +28,5 @@
         android:layout_marginLeft="@dimen/dtlOfferCoverImageWidth"
         android:padding="@dimen/spacing_tiny"
         android:maxLines="1"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/divider_list"
         />
 </FrameLayout>

@@ -24,21 +24,21 @@
             tools:src="@drawable/ic_trip_image_placeholder"
             />
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/expirationBarCaption"
-                android:layout_width="@dimen/dtlOfferExpirationWidth"
-                android:layout_height="@dimen/dtlOfferExpirationHeight"
-                android:layout_marginTop="@dimen/dtlOfferExpirationTopMargin"
-                android:background="@color/dtlOfferItemExpirationBackground"
-                android:layout_gravity="start|top"
-                android:visibility="gone"
-                android:gravity="center"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/dtlOfferExpirationTextSize"
-                tools:text="Until Apr 7"
-                tools:visibility="visible"
-                />
-        </FrameLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/expirationBar"
+            android:layout_width="@dimen/dtlOfferExpirationWidth"
+            android:layout_height="@dimen/dtlOfferExpirationHeight"
+            android:layout_marginTop="@dimen/dtlOfferExpirationTopMargin"
+            android:background="@color/dtlOfferItemExpirationBackground"
+            android:layout_gravity="start|top"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/dtlOfferExpirationTextSize"
+            tools:text="Until Apr 7"
+            tools:visibility="visible"
+            />
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -85,7 +85,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/perk_logo_root"
+        android:layout_alignParentTop="true"
         android:background="@drawable/divider_list"
         />
 </RelativeLayout>

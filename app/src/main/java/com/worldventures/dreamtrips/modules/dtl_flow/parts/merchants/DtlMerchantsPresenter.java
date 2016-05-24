@@ -13,7 +13,7 @@ public interface DtlMerchantsPresenter extends DtlPresenter<DtlMerchantsScreen, 
 
     void merchantClicked(DtlMerchant merchant);
 
-    void onOfferClick(DtlOffer perk);
+    void onOfferClick(DtlMerchant dtlMerchant, DtlOffer perk);
 
     void mapClicked();
 }

@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -15,7 +16,6 @@ import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 
 import java.util.List;
 
@@ -24,12 +24,12 @@ import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_offer_perk)
 public class DtlPerkCell
-        extends AbstractDelegateCell<DtlOffer, DtlMerchantsScreenImpl.OfferCLickDelegate> {
+        extends AbstractDelegateCell<DtlOffer, CellDelegate<DtlOffer>> {
 
     @InjectView(R.id.perk_logo) ImageryDraweeView image;
     @InjectView(R.id.perks_description) TextView title;
     @InjectView(R.id.perks_operation_days) TextView operationDays;
-    @InjectView(R.id.expirationBarCaption) AppCompatTextView expirationBarCaption;
+    @InjectView(R.id.expirationBar) AppCompatTextView expirationBar;
 
     public DtlPerkCell(View view) {
         super(view);
@@ -61,9 +61,9 @@ public class DtlPerkCell
 
     private void bindExpirationBar() {
         if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
-            ViewUtils.setTextOrHideView(expirationBarCaption, DtlMerchantHelper.
+            ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
                     getOfferExpiringCaption(itemView.getContext(), getModelObject()));
-        } else ViewUtils.setViewVisibility(View.GONE, expirationBarCaption);
+        } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
     }
 
     private void bindDescription() {

@@ -7,14 +7,10 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
-import com.techery.spares.adapter.expandable.BaseExpandableDelegateAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
@@ -26,11 +22,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerk;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPoints;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
-import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
@@ -39,21 +32,15 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Observable;
 
-public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
-        implements DtlMerchantsScreen, CellDelegate<DtlMerchant> {
+public class DtlMerchantsScreenImpl
+        extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
+        implements DtlMerchantsScreen, DtlMerchantCellDelegate {
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-    //
     @InjectView(R.id.dtlToolbar)
     DtlToolbar dtlToolbar;
     @InjectView(R.id.filterDiningsSwitch)
@@ -66,28 +53,26 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView)
     View emptyView;
-    @InjectView(R.id.merchant_holder_offers)
-    TextView emptyTextView;
     @InjectView(R.id.filterBarRoot)
     View filterRoot;
     //
-    BaseExpandableDelegateAdapter baseDelegateAdapter;
+    BaseDelegateAdapter baseDelegateAdapter;
     SelectionManager selectionManager;
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
+    protected void onFinishInflate() {
+        super.onFinishInflate();
         recyclerView.setLayoutManager(new ExpandableLayoutManager(getActivity()));
-        //
-        baseDelegateAdapter = new BaseExpandableDelegateAdapter(getActivity(), injector);
-        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantExpandableCell.class);
-        baseDelegateAdapter.registerCell(DtlOfferPerk.class, DtlPerkCell.class);
-        baseDelegateAdapter.registerCell(DtlOfferPoints.class, DtlPointsCell.class);
+    }
 
+    @Override
+    protected void onPostAttachToWindowView() {
+        super.onPostAttachToWindowView();
+        initDtlToolbar();
+        //
+        baseDelegateAdapter = new BaseDelegateAdapter(getActivity(), injector);
+        baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantExpandableCell.class);
         baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
-        baseDelegateAdapter.registerDelegate(DtlOfferPerk.class, new OfferCLickDelegate());
-        baseDelegateAdapter.registerDelegate(DtlOfferPoints.class, new OfferCLickDelegate());
         //
         selectionManager = new SingleSelectionManager(recyclerView);
         selectionManager.setEnabled(isTabletLandscape());
@@ -96,16 +81,10 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         recyclerView.setEmptyView(emptyView);
         //
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-        // we use SwipeRefreshLayout only for loading indicator, so disable manual triggering by user
+        // we use SwipeRefreshLayout only for loading indicator - disable manual triggering by user
         refreshLayout.setEnabled(false);
         //
         ViewUtils.setViewVisibility(isTabletLandscape() ? View.GONE : View.VISIBLE, filterRoot); // TODO :: fix after DT-1718 finished
-    }
-
-    @Override
-    protected void onPostAttachToWindowView() {
-        super.onPostAttachToWindowView();
-        initDtlToolbar();
     }
 
     private void initDtlToolbar() {
@@ -165,6 +144,16 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
     }
 
     @Override
+    public void onExpandedToggle(int position) {
+        baseDelegateAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onOfferClick(DtlMerchant dtlMerchant, DtlOffer dtlOffer) {
+        getPresenter().onOfferClick(dtlMerchant, dtlOffer);
+    }
+
+    @Override
     public void setItems(List<DtlMerchant> merchants) {
         hideProgress();
         baseDelegateAdapter.setItems(merchants);
@@ -172,7 +161,8 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
 
     @Override
     public Observable<Boolean> getToggleObservable() {
-        return RxCompoundButton.checkedChanges(filterDiningsSwitch).compose(RxLifecycle.bindView(this));
+        return RxCompoundButton.checkedChanges(filterDiningsSwitch)
+                .compose(RxLifecycle.bindView(this));
     }
 
     @Override
@@ -223,13 +213,6 @@ public class DtlMerchantsScreenImpl extends DtlLayout<DtlMerchantsScreen, DtlMer
         alertDialog.setCancelable(false);
         alertDialog.show();
         return true;
-    }
-
-    public final class OfferCLickDelegate implements CellDelegate<DtlOffer> {
-        @Override
-        public void onCellClicked(DtlOffer offer) {
-            getPresenter().onOfferClick(offer);
-        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

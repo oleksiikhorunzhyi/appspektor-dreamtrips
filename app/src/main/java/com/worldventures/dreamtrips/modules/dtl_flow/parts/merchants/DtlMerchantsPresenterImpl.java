@@ -36,7 +36,6 @@ import flow.Flow;
 import flow.History;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
 public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScreen, ViewState.EMPTY>
@@ -191,33 +190,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     @Override
-    public void onOfferClick(DtlOffer offer) {
-        showOfferData(offer);
-    }
-
-    private void showOfferData(DtlOffer offer) {
-        findMerchantWithOffer(offer)
-                .filter(merchant -> merchant != null)
-                .subscribe(merchant -> Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()), merchant, findExpandablePosition(merchant, offer))),
-                        Throwable::printStackTrace);
+    public void onOfferClick(DtlMerchant dtlMerchant, DtlOffer offer) {
+        Flow.get(getContext()).set(new DtlMerchantDetailsPath(
+                FlowUtil.currentMaster(getContext()), dtlMerchant,
+                findExpandablePosition(dtlMerchant, offer)));
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {
         getView().toggleSelection(event.getDtlMerchant());
-    }
-
-    //TODO bad hack!!! find better solution needed
-    private Observable<DtlMerchant> findMerchantWithOffer(DtlOffer offer) {
-        return merchantService.merchantsActionPipe().observeWithReplay()
-                .first()
-                .compose(new ActionStateToActionTransformer<>())
-                .flatMap(action -> Observable.from(action.getCacheData()))
-                .filter(merchant -> !merchant.hasNoOffers())
-                .filter(merchant ->
-                        Queryable.from(merchant.getOffers())
-                                .filter(off -> off.equals(offer))
-                                .any())
-                .take(1);
     }
 
     protected List<Integer> findExpandablePosition(DtlMerchant merchant, DtlOffer... expandedOffers) {

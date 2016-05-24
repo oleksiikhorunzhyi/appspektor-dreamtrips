@@ -49,6 +49,8 @@ public class DtlMerchant {
     List<OperationDay> operationDays;
     List<DtlDisclaimer> disclaimers;
 
+    private transient boolean expanded = false;
+
     public DtlMerchant() {
     }
 
@@ -178,6 +180,18 @@ public class DtlMerchant {
 
     public DtlMerchantType getMerchantType() {
         return hasNoOffers() ? DtlMerchantType.DINING : DtlMerchantType.OFFER;
+    }
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
+    }
+
+    public void toggleExpanded() {
+        expanded = !expanded;
     }
 
     public boolean hasOffer(DtlOffer dtlOffer) {

@@ -188,15 +188,11 @@ public class DtlMerchantExpandableCell
         }
         //
         if (DtlMerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
-            expirationBar.setVisibility(View.VISIBLE);
-            expirationBar.setText(DtlMerchantHelper.
+            ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
                     getOfferExpiringCaption(itemView.getContext(), offer));
-        } else {
-            expirationBar.setVisibility(View.GONE);
-        }
+        } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
         //
-        if (offer.getDescription() != null) // description
-            title.setText(offer.getDescription());
+        title.setText(offer.getTitle()); // description
         //
         List<OperationDay> operationDays = offer.getOperationDays(); // operation days
         if (operationDays == null) return;

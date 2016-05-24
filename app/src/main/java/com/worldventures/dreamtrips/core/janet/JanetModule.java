@@ -46,11 +46,11 @@ public class JanetModule {
         for (ActionService service : services) {
             service = new DaggerActionServiceWrapper(service, context);
             service = new TimberServiceWrapper(service);
-            service = new CacheResultWrapper(service) {{
-                for (ActionStorage storage : cacheStorages) {
-                    bindStorage(storage.getActionClass(), storage);
-                }
-            }};
+         //   service = new CacheResultWrapper(service) {{
+           //     for (ActionStorage storage : cacheStorages) {
+             //       bindStorage(storage.getActionClass(), storage);
+           //     }
+         //   }};
             builder.addService(service);
         }
         return builder.build();

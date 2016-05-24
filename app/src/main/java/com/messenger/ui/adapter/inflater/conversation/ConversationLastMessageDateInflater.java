@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.ui.adapter.inflater.ViewInflater;
-import com.messenger.ui.util.chat.ChatDateUtils;
+import com.messenger.util.ChatDateUtils;
 import com.worldventures.dreamtrips.R;
 
 import java.text.SimpleDateFormat;

@@ -3,6 +3,7 @@ package com.messenger.ui.util.chat;
 import android.content.Context;
 import android.text.format.DateUtils;
 
+import com.messenger.util.ChatDateUtils;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 

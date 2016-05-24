@@ -1,4 +1,4 @@
-package com.messenger.ui.util.chat;
+package com.messenger.util;
 
 import java.util.Calendar;
 import java.util.Date;

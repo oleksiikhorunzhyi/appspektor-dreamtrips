@@ -8,7 +8,7 @@ import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.messenger.ui.util.chat.ChatDateUtils;
+import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
 
 import java.util.Collections;

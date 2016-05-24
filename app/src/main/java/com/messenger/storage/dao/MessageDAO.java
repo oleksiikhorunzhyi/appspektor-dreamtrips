@@ -20,7 +20,7 @@ import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.ui.util.chat.ChatDateUtils;
+import com.messenger.util.ChatDateUtils;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 

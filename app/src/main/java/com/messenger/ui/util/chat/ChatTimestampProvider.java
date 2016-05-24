@@ -3,6 +3,7 @@ package com.messenger.ui.util.chat;
 import android.database.Cursor;
 
 import com.messenger.entities.DataMessage$Table;
+import com.messenger.util.ChatDateUtils;
 
 import javax.inject.Inject;
 
@@ -34,9 +35,6 @@ public class ChatTimestampProvider {
             calendarDaysSincePreviousDate = (int) ChatDateUtils
                     .calendarDaysBetweenDates(previousDate, currentDate);
         }
-        if ((previousDate != 0 && calendarDaysSincePreviousDate > 0) || previousDate == 0) {
-            return true;
-        }
-        return false;
+        return previousDate == 0 || (previousDate != 0 && calendarDaysSincePreviousDate > 0);
     }
 }

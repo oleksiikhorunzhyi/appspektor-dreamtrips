@@ -41,7 +41,7 @@ public class JanetModule {
 
     @Singleton
     @Provides
-    Janet provideJanet(Set<ActionService> services, Set<ActionStorage> cacheStorages, @ForApplication Context context) {
+    Janet provideJanet(Set<ActionService> services, @ForApplication Context context) {
         Janet.Builder builder = new Janet.Builder();
         for (ActionService service : services) {
             service = new DaggerActionServiceWrapper(service, context);

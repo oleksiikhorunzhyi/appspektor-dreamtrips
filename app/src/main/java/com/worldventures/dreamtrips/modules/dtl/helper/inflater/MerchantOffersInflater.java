@@ -158,6 +158,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
         bindInfo(ButterKnife.<TextView>findById(perkView, R.id.perk_disclaimer), perk.getDisclaimer());
         bindImage(ButterKnife.<SimpleDraweeView>findById(perkView, R.id.perk_logo), perk);
         bindOperationDays(ButterKnife.<TextView>findById(perkView, R.id.perks_operation_days), perk, rootView.getResources());
+        bindDisclaimer(perkView, perk);
         patchExpiringBar(perkView, perk);
         //
         cashedViewMap.put(index, new WeakReference<>(perkView));
@@ -176,6 +177,13 @@ public class MerchantOffersInflater extends MerchantDataInflater {
         Queryable.from(offerClickListeners)
                 .filter(listener -> listener != null)
                 .forEachR(listener -> listener.onOfferClick(offer));
+    }
+
+    private void bindDisclaimer(View perkView, DtlOffer offer) {
+        if (TextUtils.isEmpty(offer.getDisclaimer())){
+            ButterKnife.findById(perkView, R.id.perk_disclaimer_header).setVisibility(View.GONE);
+        }
+        else ButterKnife.<TextView>findById(perkView, R.id.perk_disclaimer).setText(offer.getDisclaimer());
     }
 
     private void bindImage(SimpleDraweeView image, DtlOffer perk) {
@@ -199,4 +207,5 @@ public class MerchantOffersInflater extends MerchantDataInflater {
         String concatDays = DateTimeUtils.concatOperationDays(resources, operDays);
         operationDays.setText(concatDays);
     }
+
 }

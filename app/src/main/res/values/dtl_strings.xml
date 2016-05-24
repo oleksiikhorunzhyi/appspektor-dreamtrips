@@ -75,6 +75,7 @@
     <string name="points">Points</string>
     <string name="perks">Perks</string>
     <string name="everyday">Everyday</string>
+    <string name="perks_terms">Terms &amp; Condition</string>
     <string name="perks_formatted" formatted='false'>%d Perks</string>
     <string name="dtl_coming_soon_offers">Offers coming soon</string>
     <string name="dtl_show_offers_only">Show offers only</string>

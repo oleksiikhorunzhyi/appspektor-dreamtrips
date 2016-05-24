@@ -2,7 +2,6 @@ package com.messenger.messengerservers.xmpp.providers;
 
 import android.text.TextUtils;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationParticipantsIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -14,12 +13,11 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
+import timber.log.Timber;
+
 public class ConversationParticipantsProvider extends IQProvider<ConversationParticipantsIQ> {
 
-    private final String userId;
-
-    public ConversationParticipantsProvider(String userJid) {
-        this.userId = JidCreatorHelper.obtainId(userJid);
+    public ConversationParticipantsProvider() {
     }
 
     @Override
@@ -49,17 +47,9 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
                         case "item":
                             if (participantId == null) continue;
                             Participant participant = new Participant(participantId, affiliation.toLowerCase(), null);
-
-                            if (TextUtils.equals(affiliation.toLowerCase(), Participant.Affiliation.OWNER)) {
-                                conversationParticipantsIQ.setOwner(participant);
-                            } else {
-                                conversationParticipantsIQ.addParticipant(participant);
-                            }
+                            conversationParticipantsIQ.addParticipant(participant);
                             break;
                         case "query":
-                            boolean isOwner = conversationParticipantsIQ.getOwner() != null && TextUtils.equals(conversationParticipantsIQ.getOwner().getUserId(), userId);
-                            boolean isMember = Queryable.from(conversationParticipantsIQ.getParticipants()).map((elem, idx) -> elem.getUserId()).contains(userId);
-                            conversationParticipantsIQ.setAbandoned(!isOwner && !isMember);
                             done = true;
                             break;
                     }

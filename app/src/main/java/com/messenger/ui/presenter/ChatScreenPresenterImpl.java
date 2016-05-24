@@ -153,7 +153,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        this.flaggingPresenter = new FlaggingPresenterImpl(getView().getFlaggingView(), injector);
+        this.flaggingPresenter = getView().getFlaggingView().getPresenter();
         //
         connectConnectivityStatusStream();
         connectConversationStream();

@@ -13,6 +13,7 @@ import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.module.flagging.FullScreenFlaggingViewImpl;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
@@ -35,7 +36,7 @@ public class MessageImageFullscreenFragment extends FullScreenPhotoFragment<Mess
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        flaggingView = new FullScreenFlaggingViewImpl(rootView);
+        flaggingView = new FullScreenFlaggingViewImpl(rootView, (Injector) getActivity());
     }
 
     @Override

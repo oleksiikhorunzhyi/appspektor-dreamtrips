@@ -32,7 +32,7 @@ public class MessageImageFullscreenPresenter extends FullScreenPresenter<PhotoAt
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        flaggingPresenter = new FlaggingPresenterImpl(view.getFlaggingView(), injector);
+        flaggingPresenter = view.getFlaggingView().getPresenter();
         //
         view.setShowFlag(photo.isFlaggingEnabled());
         if (photo.getDate() != null) {

@@ -9,11 +9,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -22,12 +17,16 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
@@ -36,7 +35,6 @@ import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -86,13 +84,15 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         getView().hideDinings(db.getLastSelectedOffersOnlyToggle());
+        getView().getToggleObservable()
+                .skip(1)//skip emmit of initialization
+                .subscribe(offersOnly -> filterService.filterDataPipe().send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
         //
-        bindFilteredStream();
-        bindLocationStream();
-        bindFilterState();
+        updateToolbarTitle();
+        updateFilterButtonState();
     }
 
-    protected void connectMerchants() {
+    protected void connectService() {
         merchantService.merchantsActionPipe()
                 .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
@@ -103,29 +103,20 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
-                        .onFail((action, throwable) -> getView().showProgress(false))
+                        .onFail((action, throwable) -> {
+                            getView().showProgress(false);
+                            apiErrorPresenter.handleActionError(action, throwable);
+                        })
                         .onSuccess(action -> onMerchantsLoaded(action.getResult())));
         //
-        filterService.getFilterData()
+        filterService.filterDataPipe().observeSuccess()
+                .map(DtlFilterDataAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(dtlFilterData ->
                         getView().setFilterButtonState(!dtlFilterData.isDefault()));
     }
 
-    protected void bindFilteredStream() {
-        final Observable<List<DtlMerchant>> merchantsStream =
-                Observable.combineLatest(this.merchantsStream, prepareFilterToogle(),
-                        this::filterMerchantsByType);
-        merchantsStream.compose(bindView()).subscribe(this::showPins);
-    }
-
-    private List<DtlMerchant> filterMerchantsByType(List<DtlMerchant> merchants, boolean hideDinings) {
-        return Observable.from(merchants)
-                .filter(merchant -> !(hideDinings && merchant.getMerchantType() == DtlMerchantType.DINING))
-                .toList().toBlocking().firstOrDefault(Collections.emptyList());
-    }
-
-    private void bindLocationStream() {
+    private void updateToolbarTitle() {
         Observable.combineLatest(
                 locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                         .map(DtlLocationCommand::getResult),
@@ -138,18 +129,11 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 });
     }
 
-    private void bindFilterState() {
-        filterService.filterDataPipe().observeSuccess()
-                .map(DtlFilterDataAction::getResult)
+    private void updateFilterButtonState() {
+        filterService.getFilterData()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(dtlFilterData ->
                         getView().setFilterButtonState(!dtlFilterData.isDefault()));
-    }
-
-    private Observable<Boolean> prepareFilterToogle() {
-        return getView().getToggleObservable()
-                .startWith(db.getLastSelectedOffersOnlyToggle())
-                .doOnNext(checked -> db.saveLastSelectedOffersOnlyToogle(checked));
     }
 
     protected void tryHideMyLocationButton(boolean hide) {
@@ -184,10 +168,10 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
-        this.merchantsStream.onNext(dtlMerchants);
         //
         getView().showProgress(false);
         getView().showButtonLoadMerchants(false);
+        showPins(dtlMerchants);
         //
         locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .map(DtlLocationCommand::getResult)
@@ -236,7 +220,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     @Override
     public void onMapLoaded() {
         mapReady = true;
-        connectMerchants();
+        connectService();
         //
         getFirstCenterLocation()
                 .compose(bindViewIoToMainComposer())

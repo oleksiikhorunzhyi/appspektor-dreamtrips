@@ -1,7 +1,8 @@
-package com.worldventures.dreamtrips.modules.dtl.action;
+package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
@@ -9,30 +10,29 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlMerchantsPredicate;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.CommandActionBase;
+import io.techery.janet.ReadActionPipe;
 import io.techery.janet.command.annotations.CommandAction;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
 @CommandAction
 public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant>> {
 
-    private final DtlMerchantStore merchantStore;
-    private final DtlLocationManager dtlLocationManager;
+    private final ReadActionPipe<DtlMerchantsAction> merchantsActionPipe;
+    private final ActionPipe<DtlLocationCommand> locationActionPipe;
     private final LocationDelegate locationDelegate;
     private final DtlFilterData filterData;
 
 
-    public DtlFilterMerchantsAction(DtlFilterData filterData, DtlMerchantStore merchantStore,
-                                    DtlLocationManager dtlLocationManager, LocationDelegate locationDelegate) {
-        this.merchantStore = merchantStore;
-        this.dtlLocationManager = dtlLocationManager;
+    public DtlFilterMerchantsAction(DtlFilterData filterData, ReadActionPipe<DtlMerchantsAction> merchantsActionPipe,
+                                    ActionPipe<DtlLocationCommand> locationActionPipe, LocationDelegate locationDelegate) {
+        this.merchantsActionPipe = merchantsActionPipe;
+        this.locationActionPipe = locationActionPipe;
         this.locationDelegate = locationDelegate;
         this.filterData = filterData;
     }
@@ -41,9 +41,10 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
     protected void run(CommandCallback<List<DtlMerchant>> callback) throws Throwable {
         getSearchLocation()
                 .flatMap(latLng ->
-                        merchantStore.getState()
-                                .compose(new ActionStateToActionTransformer<>())
-                                .map(CommandActionBase::getResult)
+                        merchantsActionPipe.observeWithReplay()
+                                .first()
+                                .compose(JanetPlainActionComposer.instance())
+                                .map(DtlMerchantsAction::getResult)
                                 .map(merchants -> {
                                     Queryable.from(merchants).forEachR(DtlMerchant::sortPerks);
                                     DtlMerchantsPredicate predicate = DtlMerchantsPredicate.fromFilterData(filterData);
@@ -58,7 +59,7 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
     }
 
     private Observable<LatLng> getSearchLocation() {
-        return dtlLocationManager.getSelectedLocation()
+        return locationActionPipe.createObservableSuccess(DtlLocationCommand.last())
                 .filter(DtlLocationCommand::isResultDefined)
                 .map(DtlLocationCommand::getResult)
                 .distinct(DtlLocation::getCoordinates)

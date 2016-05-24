@@ -7,15 +7,15 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlNearbyLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
@@ -30,8 +30,6 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import icepick.State;
-import io.techery.janet.Janet;
-import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -40,13 +38,11 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
         implements DtlLocationsPresenter {
 
     @Inject
-    DtlLocationManager dtlLocationManager;
-    @Inject
-    DtlFilterMerchantStore filterMerchantStore;
-    @Inject
-    Janet janet;
+    DtlFilterMerchantService filterService;
     @Inject
     LocationDelegate gpsLocationDelegate;
+    @Inject
+    DtlLocationService locationService;
     //
     @State
     ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
@@ -54,12 +50,10 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
     //
     private Subscription locationRequestNoFallback;
-    private final WriteActionPipe<DtlMerchantStoreAction> merchantStoreActionPipe;
 
     public DtlLocationsPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
-        merchantStoreActionPipe = janet.createPipe(DtlMerchantStoreAction.class);
     }
 
     @Override
@@ -110,7 +104,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     private void onLocationObtained(Location location) {
         switch (screenMode) {
             case NEARBY_LOCATIONS:
-                dtlLocationManager.loadNearbyLocations(location);
+                locationService.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
                 break;
             case AUTO_NEAR_ME:
                 DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -118,14 +112,14 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
                         .longName(context.getString(R.string.dtl_near_me_caption))
                         .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                         .build();
-                dtlLocationManager.persistLocation(dtlLocation);
+                locationService.locationPipe().send(DtlLocationCommand.change(dtlLocation));
                 navigateToMerchants();
                 break;
         }
     }
 
     private void tryHideNearMeButton() {
-        dtlLocationManager.getSelectedLocation()
+        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> getView().hideNearMeButton());
@@ -154,17 +148,17 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     ///////////////////////////////////////////////////////////////////////////
 
     private void connectNearbyLocations() {
-        dtlLocationManager.nearbyLocationPipe().observeWithReplay()
+        locationService.nearbyLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
                         .onStart(command -> getView().showProgress())
-                        .onFail((command, throwable) -> apiErrorPresenter.handleError(throwable))
+                        .onFail(apiErrorPresenter::handleActionError)
                         .onSuccess(this::onLocationsLoaded));
     }
 
-    private void onLocationsLoaded(DtlNearbyLocationAction command) {
+    private void onLocationsLoaded(DtlNearbyLocationAction action) {
         getView().hideProgress();
-        showLoadedLocations(command.getResult());
+        showLoadedLocations(action.getResult());
     }
 
     private void showLoadedLocations(List<DtlExternalLocation> locations) {
@@ -176,8 +170,8 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
-        dtlLocationManager.persistLocation(location);
-        filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
+        locationService.locationPipe().send(DtlLocationCommand.change(location));
+        filterService.filterMerchantsActionPipe().clearReplays();
         navigateToMerchants();
     }
 

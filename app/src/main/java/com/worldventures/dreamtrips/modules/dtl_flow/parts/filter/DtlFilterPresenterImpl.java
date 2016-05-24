@@ -1,12 +1,10 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 
-import com.worldventures.dreamtrips.modules.dtl.action.DtlFilterMerchantStoreAction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Janet;
-import io.techery.janet.WriteActionPipe;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
@@ -14,19 +12,16 @@ import rx.subjects.PublishSubject;
 public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
     @Inject
-    Janet janet;
-    @Inject
-    DtlFilterMerchantStore filterStore;
+    DtlFilterMerchantService filterService;
 
     protected FilterView view;
-    private WriteActionPipe<DtlFilterMerchantStoreAction> filterStorePipe;
 
     PublishSubject<Void> detachStopper = PublishSubject.create();
 
     @Override
     public void onDrawerToggle(boolean show) {
         if (view != null && show) {
-            filterStore.getFilterDataState()
+            filterService.getFilterData()
                     .subscribeOn(Schedulers.immediate())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(view::syncUi);
@@ -41,7 +36,6 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
     public void attachView(FilterView view) {
         this.view = view;
         this.view.getInjector().inject(this);
-        filterStorePipe = janet.createPipe(DtlFilterMerchantStoreAction.class);
         connectFilter();
     }
 
@@ -53,20 +47,22 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
     @Override
     public void apply() {
-        filterStorePipe.send(DtlFilterMerchantStoreAction.applyParams(view.getFilterParameters()));
+        filterService.filterDataPipe().send(DtlFilterDataAction.applyParams(view.getFilterParameters()));
         closeDrawer();
     }
 
     @Override
     public void resetAll() {
-        filterStorePipe.send(DtlFilterMerchantStoreAction.reset());
+        filterService.filterDataPipe().send(DtlFilterDataAction.reset());
         closeDrawer();
     }
 
     private void connectFilter() {
-        filterStore.observeStateChange()
+        filterService.filterDataPipe()
+                .observeSuccess()
+                .map(DtlFilterDataAction::getResult)
                 .observeOn(AndroidSchedulers.mainThread())
                 .takeUntil(detachStopper.asObservable())
-        .subscribe(view::attachFilterData);
+                .subscribe(view::attachFilterData);
     }
 }

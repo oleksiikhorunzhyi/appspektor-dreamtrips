@@ -9,10 +9,14 @@ import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimationPresenter.View> {
 
@@ -22,9 +26,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     protected final String merchantId;
 
     @Inject
-    DtlJobManager jobManager;
+    DtlTransactionService transactionService;
     @Inject
-    DtlMerchantStore merchantStore;
+    DtlMerchantService merchantService;
     //
     private DtlMerchant dtlMerchant;
 
@@ -35,9 +39,12 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantStore.getMerchantById(merchantId)
+        merchantService.merchantByIdPipe()
+                .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(ImmediateComposer.instance())
-                .subscribe(merchant -> dtlMerchant = merchant);
+                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> dtlMerchant = action.getResult()));
     }
 
     @Override
@@ -49,17 +56,19 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.estimatePointsExecutor)
-                .onProgress(view::showProgress)
-                .onSuccess(dataHolder -> view.showEstimatedPoints(dataHolder.getPointsInteger()))
-                .onError(throwable -> apiErrorPresenter.handleError(throwable));
+        transactionService.estimatePointsActionPipe().observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
+                        .onStart(action -> view.showProgress())
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> view.showEstimatedPoints(action.getEstimationPointsHolder().getPointsInteger())));
     }
 
     public void onCalculateClicked(String userInput) {
         if (!validateInput(userInput)) return;
         //
-        jobManager.estimatePointsExecutor.createJobWith(merchantId, Double.valueOf(userInput),
-                dtlMerchant.getDefaultCurrency().getCode()).subscribe();
+        transactionService.estimatePointsActionPipe()
+                .send(new DtlEstimatePointsAction(merchantId, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
     }
 
     protected boolean validateInput(String pointsInput) {

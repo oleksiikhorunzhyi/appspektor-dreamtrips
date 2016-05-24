@@ -36,9 +36,8 @@ public class JobPresenter<VT extends RxView> extends Presenter<VT> {
         return subscriber;
     }
 
-    protected  <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
+    protected <T> Observable.Transformer<T, T> bindViewIoToMainComposer() {
         return input -> view.bind(input
-                .compose(new IoToMainComposer<>())
-        );
+                .compose(new IoToMainComposer<>()));
     }
 }

@@ -12,8 +12,8 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
@@ -29,7 +29,7 @@ import butterknife.OnClick;
 
 @SuppressLint("DefaultLocale")
 @Layout(R.layout.fragment_verify_amount)
-public class DtlVerifyAmountFragment extends BaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantIdBundle>
+public class DtlVerifyAmountFragment extends RxBaseFragmentWithArgs<DtlVerifyAmountPresenter, MerchantIdBundle>
         implements DtlVerifyAmountPresenter.View {
 
     @InjectView(R.id.dt_points)

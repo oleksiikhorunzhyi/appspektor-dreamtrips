@@ -7,13 +7,12 @@ import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlMerchantStoreAction;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlSearchLocationAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
@@ -23,27 +22,19 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
-import io.techery.janet.Janet;
-import io.techery.janet.WriteActionPipe;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
         implements DtlLocationsSearchPresenter {
 
     @Inject
-    DtlLocationManager dtlLocationManager;
+    DtlFilterMerchantService filterService;
     @Inject
-    DtlFilterMerchantStore filterMerchantStore;
-    @Inject
-    Janet janet;
-
-    private final WriteActionPipe<DtlMerchantStoreAction> merchantStoreActionPipe;
+    DtlLocationService locationService;
 
     public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
-        merchantStoreActionPipe = janet.createPipe(DtlMerchantStoreAction.class);
-        apiErrorPresenter.setView(getView());
     }
 
     @Override
@@ -52,52 +43,50 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
         getView().toggleDefaultCaptionVisibility(true);
         //
         connectLocationsSearch();
+        apiErrorPresenter.setView(getView());
     }
 
     private void connectLocationsSearch() {
-        dtlLocationManager.searchLocationPipe().observeWithReplay()
+        locationService.searchLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
                         .onStart(command -> getView().showProgress())
-                        .onFail((command, throwable) -> onSearchError(throwable))
+                        .onFail(apiErrorPresenter::handleActionError)
                         .onSuccess(this::onSearchFinished));
     }
 
-    private void onSearchFinished(DtlSearchLocationAction command) {
-        List<DtlExternalLocation> locations = command.getResult();
+    private void onSearchFinished(DtlSearchLocationAction action) {
+        List<DtlExternalLocation> locations = action.getResult();
         getView().hideProgress();
         getView().setItems(locations);
-        if (TextUtils.isEmpty(command.getQuery()) && !locations.isEmpty())
+        if (TextUtils.isEmpty(action.getQuery()) && !locations.isEmpty())
             getView().toggleDefaultCaptionVisibility(false);
     }
 
     @Override
     public void searchClosed() {
-        dtlLocationManager.searchLocations("");
+        sendSearchAction("");
         Flow.get(getContext()).goBack();
     }
 
     @Override
     public void search(String query) {
         getView().toggleDefaultCaptionVisibility(query.isEmpty());
-        dtlLocationManager.searchLocations(query.trim());
+        sendSearchAction(query);
+    }
+
+    private void sendSearchAction(String query) {
+        locationService.searchLocationPipe().cancelLatest();
+        locationService.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
     }
 
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
-        dtlLocationManager.persistLocation(location);
-        filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
+        locationService.locationPipe().send(DtlLocationCommand.change(location));
+        filterService.filterMerchantsActionPipe().clearReplays();
         History history = History.single(new DtlMerchantsPath());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-    }
-
-    public void onSearchError(Throwable e) {
-        // TODO :: 3/16/16 TEMPORARY NOT TO BULK USER WITH ERRORS
-        // TODO :: 3/16/16 RELATED TO DtlLocationManager bug:
-        // when we perform local search. e.g. we enter 4th symbol right after 3rd, when API-call is
-        // still going - we get "Smth went wrong error" and then it presents loading results as expected
-        if (e instanceof DtApiException) apiErrorPresenter.handleError(e);
     }
 
     /**

@@ -1,37 +1,36 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantStore;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
 
     @Inject
-    SnappyRepository db;
+    DtlMerchantService merchantService;
     @Inject
-    DtlMerchantStore merchantStore;
-    @Inject
-    DtlJobManager jobManager;
+    DtlTransactionService transactionService;
     //
     @State
     int stars;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
-    private DtlTransaction dtlTransaction;
 
     public DtlTransactionSucceedPresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -40,9 +39,12 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantStore.getMerchantById(merchantId)
+        merchantService.merchantByIdPipe()
+                .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(ImmediateComposer.instance())
-                .subscribe(merchant -> dtlMerchant = merchant);
+                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> dtlMerchant = action.getResult()));
     }
 
     public void rate(int stars) {
@@ -50,14 +52,24 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     }
 
     public void share() {
-        view.showShareDialog((int) dtlTransaction.getDtlTransactionResult().getEarnedPoints(), dtlMerchant);
+        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(transaction ->
+                                view.showShareDialog((int) transaction.getDtlTransactionResult().getEarnedPoints(), dtlMerchant),
+                        apiErrorPresenter::handleError);
     }
 
     public void done() {
         if (stars != 0) {
-            jobManager.rateExecutor.createJobWith(merchantId, stars,
-                    dtlTransaction.getDtlTransactionResult().getId())
-                    .subscribe();
+            transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                    .map(DtlTransactionAction::getResult)
+                    .flatMap(transaction ->
+                            transactionService.rateActionPipe().createObservableSuccess(new DtlRateAction(merchantId, stars, transaction.getDtlTransactionResult().getId()))
+                    ).compose(bindViewIoToMainComposer())
+                    .subscribe(action -> {
+                    }, apiErrorPresenter::handleError);
+
         }
     }
 
@@ -65,14 +77,18 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlTransaction = db.getDtlTransaction(merchantId);
-        view.setCongratulations(dtlTransaction.getDtlTransactionResult());
-        bindApiJob();
+        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(transaction -> view.setCongratulations(transaction.getDtlTransactionResult()),
+                        apiErrorPresenter::handleError);
+        bindApiPipe();
     }
 
-    private void bindApiJob() {
-        bindJobCached(jobManager.rateExecutor)
-                .onError(throwable -> apiErrorPresenter.handleError(throwable));
+    private void bindApiPipe() {
+        transactionService.rateActionPipe().observe()
+                .subscribe(new ActionStateSubscriber<DtlRateAction>()
+                        .onFail(apiErrorPresenter::handleActionError));
     }
 
     /**

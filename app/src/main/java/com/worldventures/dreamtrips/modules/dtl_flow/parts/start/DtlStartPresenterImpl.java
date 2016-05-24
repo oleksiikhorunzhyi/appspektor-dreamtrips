@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
@@ -15,8 +15,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlFilterMerchantStore;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
@@ -34,9 +34,9 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     @Inject
     LocationDelegate gpsLocationDelegate;
     @Inject
-    DtlLocationManager dtlLocationManager;
+    DtlLocationService locationService;
     @Inject
-    DtlFilterMerchantStore filterMerchantStore;
+    DtlFilterMerchantService filterService;
 
     public DtlStartPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -66,7 +66,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     }
 
     public void proceedNavigation(@Nullable Location newLocation) {
-        dtlLocationManager.getSelectedLocation()
+        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> {
                     if (!command.isResultDefined()) {
@@ -77,22 +77,22 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                                     .longName(context.getString(R.string.dtl_near_me_caption))
                                     .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
                                     .build();
-                            dtlLocationManager.persistLocation(dtlLocation);
+                            locationService.locationPipe().send(DtlLocationCommand.change(dtlLocation));
                             navigatePath(new DtlMerchantsPath());
                         }
                     } else {
                         switch (command.getResult().getLocationSourceType()) {
                             case NEAR_ME:
                                 if (newLocation == null) { // we had location before, but not now - and we need it
-                                    dtlLocationManager.cleanLocation();
-                                    filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
+                                    locationService.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+                                    filterService.filterMerchantsActionPipe().clearReplays();
                                     navigatePath(DtlLocationsPath.getDefault());
                                     break;
                                 }
                                 //
                                 if (!DtlLocationHelper.checkLocation(0.5, newLocation,
                                         command.getResult().getCoordinates().asAndroidLocation(), DistanceType.MILES))
-                                    filterMerchantStore.filteredMerchantsChangesPipe().clearReplays();
+                                    filterService.filterMerchantsActionPipe().clearReplays();
                                 //
                                 navigatePath(new DtlMerchantsPath());
                                 break;
@@ -120,7 +120,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
      * @param e exception that {@link LocationDelegate} subscription returned
      */
     private void onLocationError(Throwable e) {
-        dtlLocationManager.getSelectedLocation()
+        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {

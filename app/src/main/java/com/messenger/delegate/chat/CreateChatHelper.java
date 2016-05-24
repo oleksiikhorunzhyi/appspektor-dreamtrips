@@ -8,6 +8,7 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.ChatManager;
 import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.storage.dao.ConversationsDAO;
 
 import java.util.List;
 
@@ -18,11 +19,20 @@ import rx.Observable;
 public class CreateChatHelper {
 
     private ChatManager chatManager;
+    private ConversationsDAO conversationsDAO;
 
-    @Inject CreateChatHelper(MessengerServerFacade messengerServerFacade) {
+    @Inject CreateChatHelper(MessengerServerFacade messengerServerFacade, ConversationsDAO conversationsDAO) {
         this.chatManager = messengerServerFacade.getChatManager();
+        this.conversationsDAO = conversationsDAO;
     }
 
+    public Observable<Chat> createChat(String conversationId) {
+        return conversationsDAO.getConversationWithParticipants(conversationId)
+                .take(1)
+                .flatMap(pair -> createChat(pair.first, pair.second));
+    }
+
+    //TODO privatize this method after ChatDelegate refactor
     public Observable<Chat> createChat(DataConversation conversation,
                                        @NonNull List<DataUser> participants) {
         switch (conversation.getType()) {

@@ -12,14 +12,14 @@ public class ChatStateAction extends BaseChatAction<String> {
     @ChatState.State
     private String chatState;
 
-    public ChatStateAction(DataConversation conversation, @ChatState.State String chatState) {
-        super(conversation);
+    public ChatStateAction(String conversationId, @ChatState.State String chatState) {
+        super(conversationId);
         this.chatState = chatState;
     }
 
     @Override
     protected void run(CommandCallback<String> callback) throws Throwable {
-        getChat().setCurrentState(chatState)
+        getChat().flatMap(chat -> chat.setCurrentState(chatState))
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 }

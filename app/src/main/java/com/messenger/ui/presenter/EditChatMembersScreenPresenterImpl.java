@@ -202,7 +202,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
         chat.kick(Collections.singletonList(userId))
                 .map(users -> users.get(0))
                 .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))
-                .subscribe(memberId -> chat.close(),
+                .subscribe(memberId -> {},
                         e -> Timber.e(e, "Failed to delete user"));
     }
 

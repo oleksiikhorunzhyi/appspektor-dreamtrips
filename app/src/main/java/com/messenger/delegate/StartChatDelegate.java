@@ -53,8 +53,11 @@ public class StartChatDelegate {
                 .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
     }
 
-    public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction) {
-        startSingleChat(user, crossingAction, null);
+    public void startSingleChat(String userId, @NotNull Action1<DataConversation> crossingAction) {
+        usersDAO.getUserById(userId).take(1)
+                .flatMap(this::startSingleChatObservable)
+                .compose(new IoToMainComposer<>())
+                .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
     }
 
     public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction,

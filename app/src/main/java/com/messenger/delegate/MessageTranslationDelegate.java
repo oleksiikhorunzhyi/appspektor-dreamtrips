@@ -12,24 +12,32 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+@Singleton
 public class MessageTranslationDelegate {
 
     private Janet janet;
     private TranslationsDAO translationsDAO;
     private LocaleHelper localeHelper;
+    private SessionHolder<UserSession> sessionHolder;
 
-    public MessageTranslationDelegate(Janet janet, TranslationsDAO translationsDAO, LocaleHelper localeHelper) {
+    @Inject
+    public MessageTranslationDelegate(Janet janet, TranslationsDAO translationsDAO,
+                                      LocaleHelper localeHelper, SessionHolder<UserSession> sessionHolder) {
         this.janet = janet;
         this.translationsDAO = translationsDAO;
         this.localeHelper = localeHelper;
+        this.sessionHolder = sessionHolder;
     }
 
-    public void translateMessage(DataMessage message, SessionHolder<UserSession> sessionHolder) {
+    public void translateMessage(DataMessage message) {
         translationsDAO.getTranslation(message.getId()).first()
                 .subscribe(dataTranslation -> {
                     String translateToLocale = localeHelper.getAccountLocaleFormatted(sessionHolder.get().get().getUser());

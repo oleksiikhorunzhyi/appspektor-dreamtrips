@@ -54,6 +54,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     UserSectionHelper userSectionHelper;
     @Inject
     UsersDAO usersDAO;
+    @Inject ProfileCrosser profileCrosser;
 
     private final RxSearchHelper<DataUser> searchHelper = new RxSearchHelper<>();
     protected final List<DataUser> futureParticipants = new CopyOnWriteArrayList<>();
@@ -62,13 +63,11 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     @Nullable
     private String currentSearchFilter;
 
-    private final ProfileCrosser profileCrosser;
     private final ContactsHeaderCreator contactsHeaderCreator;
 
     public ChatMembersScreenPresenterImpl(Context context, Injector injector) {
         super(context, injector);
 
-        profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);
     }
 

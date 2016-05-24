@@ -1,13 +1,10 @@
 package com.messenger.ui.view.chat;
 
-import android.Manifest;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresPermission;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,10 +21,10 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
+import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
@@ -42,7 +39,6 @@ import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -55,6 +51,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
@@ -69,7 +66,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ViewGroup contentView;
     @InjectView(R.id.chat_loading_view)
     View loadingView;
-
     @InjectView(R.id.chat_toolbar)
     Toolbar toolbar;
     @InjectView(R.id.chat_toolbar_title)
@@ -80,7 +76,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     RecyclerView recyclerView;
     @InjectView(R.id.chat_users_typing_view)
     ChatUsersTypingView chatUsersTypingView;
-
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
     @InjectView(R.id.chat_message_send_button)
@@ -96,6 +91,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private final Runnable openPikerTask = this::openPicker;
 
     private FlaggingView flaggingView;
+
+    private PublishSubject<String> attachmentClickStream = PublishSubject.create();
+    private PublishSubject<DataMessage> lastVisibleItemStream = PublishSubject.create();
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -140,7 +138,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 int totalItem = linearLayoutManager.getItemCount();
-                getPresenter().onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem);
+                onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem);
 
                 if (dy > 0) return;
 
@@ -199,7 +197,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
         @Override
         public void onImageClicked(String attachmentId) {
-            getPresenter().onImageClicked(attachmentId);
+            attachmentClickStream.onNext(attachmentId);
         }
 
         @Override
@@ -248,10 +246,22 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     public void showAttachmentMenu(AttachmentMenuItem[] items) {
         new AlertDialog.Builder(getContext())
-                .setItems(Queryable.from(items).map(item -> item.getTitle()).toArray(),
+                .setItems(Queryable.from(items).map(AttachmentMenuItem::getTitle).toArray(),
                         (dialog, which) -> getPresenter().onAttachmentMenuItemChosen(items[which]))
                 .show();
     }
+
+    @Override
+    public Observable<DataMessage> getLastVisibleItemStream() {
+        return lastVisibleItemStream;
+    }
+
+    private void onLastVisibleMessageChanged(Cursor cursor, int position) {
+        DataMessage message = cursor.isClosed() || !cursor.moveToPosition(position) ? null :
+                MessageDAO.fromCursor(cursor, false);
+        if (message != null) lastVisibleItemStream.onNext(message);
+    }
+
 
     @Override
     public void showLoading() {
@@ -297,9 +307,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void showMessages(Cursor cursor, DataConversation conversation) {
-        adapter.setConversation(conversation);
+    public void setConversation(DataConversation dataConversation) {
+        adapter.setConversation(dataConversation);
+    }
 
+    @Override
+    public void showMessages(Cursor cursor) {
         int firstVisibleViewTop = 0;
         int cursorCountDiff = 0;
         View firstItemView = null;
@@ -328,7 +341,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
             linearLayoutManager.scrollToPositionWithOffset(position, offset);
         } else if (cursor.getCount() == 1) {
-            getPresenter().onLastVisibleMessageChanged(cursor, 0);
+            onLastVisibleMessageChanged(cursor, 0);
         }
     }
 
@@ -353,7 +366,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                     getPresenter().onStartNewChatForMessageOwner(message);
                     break;
                 case R.id.action_flag:
-                    getPresenter().onFlagMessageAttempt(message);
+                    getPresenter().onFlagMessage(message);
                     break;
             }
         }))
@@ -361,8 +374,14 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public Observable<TextViewTextChangeEvent> getEditMessageObservable() {
-        return RxTextView.textChangeEvents(messageEditText);
+    public Observable<String> getEditMessageObservable() {
+        return RxTextView.textChangeEvents(messageEditText)
+                .map(event -> event.text().toString());
+    }
+
+    @Override
+    public Observable<String> getAttachmentClickStream() {
+        return attachmentClickStream.distinctUntilChanged();
     }
 
     @Override
@@ -398,6 +417,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
         @Override
         public void onOpened() {
+            messageEditText.clearFocus();
             MarginLayoutParams params = (MarginLayoutParams) inputHolder.getLayoutParams();
             params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.picker_panel_height);
             inputHolder.setLayoutParams(params);
@@ -418,35 +438,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ///////////////////////////////////////////////////////////////////////////
 
     private void initPhotoPicker() {
-        photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
         photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
     }
 
     private void openPicker() {
         //noinspection all
         photoPickerLayoutDelegate.showPicker(true, getResources().getInteger(R.integer.messenger_pick_image_limit));
-    }
-
-    @Override
-    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void showPhotoPicker() {
-        if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
-        else {
-            messageEditText.clearFocus();
-            // put delay to prevent wrong resizing of photo picker panel
-            handler.postDelayed(openPikerTask, 400);
-        }
-    }
-
-    @Override
-    public void hidePhotoPicker() {
-        photoPickerLayoutDelegate.hidePicker();
-    }
-
-    private void onImagesPicked(List<BasePhotoPickerModel> images) {
-        photoPickerLayoutDelegate.hidePicker();
-        //
-        getPresenter().onImagesPicked(images);
     }
 
     @Override

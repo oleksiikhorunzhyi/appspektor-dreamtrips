@@ -21,12 +21,11 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
 
-    protected final ProfileCrosser profileCrosser;
+    @Inject
+    ProfileCrosser profileCrosser;
 
     public SingleChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector, conversationId);
-
-        profileCrosser = new ProfileCrosser(context, routeCreator);
     }
 
     @Override

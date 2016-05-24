@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.custom;
 
 import android.Manifest;
+import android.os.Handler;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -16,6 +17,9 @@ public class PhotoPickerLayoutDelegate {
     private BackStackDelegate backStackDelegate;
 
     private PhotoPickerLayout photoPickerLayout;
+    private Handler handler = new Handler();
+    private final Runnable openPikerTask = this::showPicker;
+
 
     public PhotoPickerLayoutDelegate(BackStackDelegate backStackDelegate) {
         this.backStackDelegate = backStackDelegate;
@@ -56,6 +60,7 @@ public class PhotoPickerLayoutDelegate {
     @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
     public void showPicker() {
         //noinspection all
+        handler.postDelayed(openPikerTask, 400);
         showPicker(false, Integer.MAX_VALUE);
     }
 

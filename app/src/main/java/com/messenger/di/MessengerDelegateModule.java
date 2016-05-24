@@ -55,12 +55,6 @@ public class MessengerDelegateModule {
         return new UserSectionHelper(context, appSessionHolder);
     }
 
-    @Singleton
-    @Provides
-    MessageTranslationDelegate provideMessageTranslationDelegate(Janet janet, TranslationsDAO translationsDAO, LocaleHelper localeHelper) {
-        return new MessageTranslationDelegate(janet, translationsDAO, localeHelper);
-    }
-
     @Provides
     StartChatDelegate provideSingleChatDelegate(UsersDAO usersDAO, ParticipantsDAO participantsDAO,
                                                 ConversationsDAO conversationsDAO, CreateConversationHelper createConversationHelper) {

@@ -37,6 +37,20 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         view.getCanceledDialogsStream().subscribe(aVoid -> resetState());
     }
 
+    @Override
+    protected FlaggingState createNewState() {
+        return new FlaggingState();
+    }
+
+    @Override
+    public void flagMessage(String conversationId, String messageId) {
+        resetState();
+        getState().setMessageId(conversationId);
+        getState().setConversationId(messageId);
+        getState().setDialogState(FlaggingState.DialogState.LOADING_FLAGS);
+        loadFlags();
+    }
+
     private void bindToFlagging() {
         flagMessageDelegate.observeOngoingFlagging()
                 .compose(bindView())
@@ -71,20 +85,6 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     private void onFlaggingStarted(FlagMessageAction action) {
         Timber.d("[Flagging] Flagging is in progress, wait");
         getView().showFlaggingProgressDialog();
-    }
-
-    @Override
-    protected FlaggingState createNewState() {
-        return new FlaggingState();
-    }
-
-    @Override
-    public void flagMessage(String conversationId, String messageId) {
-        resetState();
-        getState().setMessageId(messageId);
-        getState().setConversationId(conversationId);
-        getState().setDialogState(FlaggingState.DialogState.LOADING_FLAGS);
-        loadFlags();
     }
 
     private void loadFlags() {

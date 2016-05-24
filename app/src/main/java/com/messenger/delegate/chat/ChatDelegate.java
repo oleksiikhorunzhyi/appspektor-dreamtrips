@@ -61,15 +61,11 @@ public class ChatDelegate {
                 .subscribe(this::paginationPageLoaded, throwable -> pageLoadFailed());
     }
 
-    public Observable<PaginationStatus> bind(Observable<SyncStatus> connectionObservable,
-                                             Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantsObservable) {
-        this.conversationObservable = conversationWithParticipantsObservable
-                .map(pair -> pair.first).take(1).cacheWithInitialCapacity(1);
-        this.chatObservable = conversationWithParticipantsObservable
+    public Observable<PaginationStatus> bind(Observable<SyncStatus> connectionObservable, String conversationId) {
+        this.conversationObservable = conversationsDAO.getConversation(conversationId)
                 .take(1)
-                .flatMap(conversationListWithParticipants ->
-                        createChatHelper.createChat(conversationListWithParticipants.first,
-                                conversationListWithParticipants.second))
+                .cacheWithInitialCapacity(1);
+        this.chatObservable = createChatHelper.createChat(conversationId)
                 .replay(1)
                 .autoConnect();
         connectToChatConnection(connectionObservable);
@@ -152,11 +148,11 @@ public class ChatDelegate {
             loading.set(false);
             haveMoreElements = false;
             paginationStateObservable.onNext(PaginationStatus.builder()
-                            .haveMoreElements(false)
-                            .loadedElementsCount(0)
-                            .page(page)
-                            .status(Status.SUCCESS)
-                            .build()
+                    .haveMoreElements(false)
+                    .loadedElementsCount(0)
+                    .page(page)
+                    .status(Status.SUCCESS)
+                    .build()
             );
             return;
         }
@@ -172,11 +168,11 @@ public class ChatDelegate {
         }
 
         paginationStateObservable.onNext(PaginationStatus.builder()
-                        .haveMoreElements(true)
-                        .status(Status.SUCCESS)
-                        .page(page)
-                        .loadedElementsCount(loadedCount)
-                        .build()
+                .haveMoreElements(true)
+                .status(Status.SUCCESS)
+                .page(page)
+                .loadedElementsCount(loadedCount)
+                .build()
         );
     }
 

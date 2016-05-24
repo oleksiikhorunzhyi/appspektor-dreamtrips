@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
@@ -269,9 +270,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
     @Override
     public void onMarkerClick(String merchantId) {
-        merchantStore.getMerchantById(merchantId)
+        merchantService.merchantByIdPipe()
+                .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(bindViewIoToMainComposer())
-                .subscribe(value -> getView().showPinInfo(value));
+                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                        .onSuccess(action -> getView().showPinInfo(action.getResult()))
+                        .onFail(apiErrorPresenter::handleActionError));
     }
 
     @Override

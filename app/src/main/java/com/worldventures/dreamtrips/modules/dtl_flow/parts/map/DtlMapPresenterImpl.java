@@ -180,10 +180,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {
-                    if (dtlMerchants.isEmpty() && location.getLocationSourceType() == LocationSourceType.FROM_MAP)
+                    if (dtlMerchants.isEmpty()) {
                         getView().informUser(R.string.dtl_no_merchants_caption);
+                    }
                     //
-                    if (location.getLocationSourceType() == LocationSourceType.FROM_MAP && getView().getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
+                    if (location.getLocationSourceType() == LocationSourceType.FROM_MAP &&
+                            getView().getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
                         getView().zoom(MapViewUtils.DEFAULT_ZOOM);
                     //
                     if (location.getLocationSourceType() != LocationSourceType.NEAR_ME)

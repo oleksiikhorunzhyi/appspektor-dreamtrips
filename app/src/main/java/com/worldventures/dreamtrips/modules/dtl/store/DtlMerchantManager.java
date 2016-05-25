@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -184,7 +185,7 @@ public class DtlMerchantManager {
      */
     @SuppressLint("DefaultLocale")
     public void loadMerchants(Location location) {
-        String locationArg = String.format("%1$f,%2$f",
+        String locationArg = String.format(Locale.US, "%1$f,%2$f",
                 location.getLatitude(), location.getLongitude());
         if (lastResult != null && !lastResult.first.equals(locationArg)) {
             lastResult = null;

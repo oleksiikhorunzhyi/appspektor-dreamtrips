@@ -122,20 +122,16 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
-                        .onFail((action, throwable) -> getView().hideProgress())
+                        .onFail((action, throwable) -> {
+                            getView().hideProgress();
+                            apiErrorPresenter.handleActionError(action, throwable);
+                        })
                         .onSuccess(action -> getView().setItems(action.getResult())));
         //
         filterService.getFilterData()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(dtlFilterData ->
                         getView().setFilterButtonState(!dtlFilterData.isDefault()));
-
-        //errors handling
-        filterService.filterMerchantsActionPipe().observeWithReplay()
-                .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlFilterMerchantsAction>()
-                        .onFail(apiErrorPresenter::handleActionError));
-        //
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
@@ -22,7 +23,7 @@ public class DtlLoadMerchantsAction extends AuthorizedHttpAction {
     List<DtlMerchant> response = new ArrayList<>();
 
     public DtlLoadMerchantsAction(Location location) {
-        this.ll = String.format("%1$f,%2$f",
+        this.ll = String.format(Locale.US, "%1$f,%2$f",
                 location.getLatitude(), location.getLongitude());
     }
 

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -181,22 +182,35 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                             pair.first,
                             pair.second);
                 });
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(FlowUtil.currentMaster(getContext()),
-                merchant, null));
+        navigateToDetails(merchant, null);
+    }
+
+    private void navigateToDetails(DtlMerchant dtlMerchant, @Nullable DtlOffer dtlOffer) {
+        if (Flow.get(getContext()).getHistory().size() < 2) {
+            Flow.get(getContext()).set(new DtlMerchantDetailsPath(
+                    FlowUtil.currentMaster(getContext()), dtlMerchant, dtlOffer == null ? null :
+                    findExpandablePosition(dtlMerchant, dtlOffer)));
+        } else {
+            History.Builder historyBuilder = Flow.get(getContext()).getHistory().buildUpon();
+            historyBuilder.pop();
+            historyBuilder.push(new DtlMerchantDetailsPath(
+                    FlowUtil.currentMaster(getContext()), dtlMerchant, dtlOffer == null ? null :
+                    findExpandablePosition(dtlMerchant, dtlOffer)));
+            Flow.get(getContext()).setHistory(historyBuilder.build(), Flow.Direction.FORWARD);
+        }
     }
 
     @Override
     public void onOfferClick(DtlMerchant dtlMerchant, DtlOffer offer) {
-        Flow.get(getContext()).set(new DtlMerchantDetailsPath(
-                FlowUtil.currentMaster(getContext()), dtlMerchant,
-                findExpandablePosition(dtlMerchant, offer)));
+        navigateToDetails(dtlMerchant, offer);
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {
         getView().toggleSelection(event.getDtlMerchant());
     }
 
-    protected List<Integer> findExpandablePosition(DtlMerchant merchant, DtlOffer... expandedOffers) {
+    protected List<Integer> findExpandablePosition(DtlMerchant merchant,
+                                                   DtlOffer... expandedOffers) {
         List<DtlOffer> merchantOffers = merchant.getOffers();
         return Queryable.from(Arrays.asList(expandedOffers))
                 .filter(merchantOffers::contains)

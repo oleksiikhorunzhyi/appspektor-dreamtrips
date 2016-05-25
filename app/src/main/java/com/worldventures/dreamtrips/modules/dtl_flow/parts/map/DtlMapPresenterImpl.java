@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
@@ -85,7 +86,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .map(DtlFilterData::isOffersOnly)
                 .subscribe(getView()::hideDinings);
         getView().getToggleObservable()
-                .skip(1) //skip emit of initialization
+                .skip(1) // skip emit of initialization
                 .subscribe(offersOnly -> filterService.filterDataPipe()
                         .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
         //
@@ -94,6 +95,13 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     protected void connectService() {
+        merchantService.merchantsActionPipe()
+                .observe()
+                .compose(bindViewIoToMainComposer())
+                .compose(JanetPlainActionComposer.instance())
+                .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
+                .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption),
+                        throwable -> {});
         merchantService.merchantsActionPipe()
                 .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
@@ -180,10 +188,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {
-                    if (dtlMerchants.isEmpty()) {
-                        getView().informUser(R.string.dtl_no_merchants_caption);
-                    }
-                    //
                     if (location.getLocationSourceType() == LocationSourceType.FROM_MAP &&
                             getView().getMap().getCameraPosition().zoom < MapViewUtils.DEFAULT_ZOOM)
                         getView().zoom(MapViewUtils.DEFAULT_ZOOM);

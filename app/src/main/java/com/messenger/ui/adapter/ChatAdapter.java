@@ -7,7 +7,6 @@ import com.messenger.entities.DataConversation;
 import com.messenger.ui.adapter.holder.chat.ChatViewHolderProvider;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
 import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
-import com.techery.spares.module.Injector;
 
 import javax.inject.Inject;
 
@@ -22,13 +21,12 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
 
     private ChatCellDelegate cellDelegate;
 
-    public ChatAdapter(Cursor cursor, Injector injector) {
+    public ChatAdapter(Cursor cursor, ChatTimestampInflater chatTimestampInflater) {
         super(cursor);
-        injector.inject(this);
-        chatTimestampInflater = new ChatTimestampInflater(this);
         chatTimestampInflater.getClickedTimestampPositionsObservable()
                 .subscribe(position -> cellDelegate.onTimestampViewClicked(position));
-        injector.inject(chatTimestampInflater);
+        this.chatTimestampInflater = chatTimestampInflater;
+        this.chatTimestampInflater.setAdapter(this);
     }
 
     @Override

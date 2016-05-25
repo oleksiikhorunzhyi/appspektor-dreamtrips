@@ -28,6 +28,7 @@ import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
+import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
 import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingView;
@@ -35,6 +36,7 @@ import com.messenger.ui.module.flagging.FlaggingViewImpl;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.chat.anim.TimestampItemAnimator;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
@@ -61,6 +63,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    @Inject
+    ChatTimestampInflater chatTimestampInflater;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -147,7 +151,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                 }
             }
         });
-        recyclerView.setItemAnimator(null);
+
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
         initPhotoPicker();
@@ -166,7 +170,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        recyclerView.setAdapter(adapter = createAdapter());
+        injector.inject(chatTimestampInflater);
+        recyclerView.setAdapter(adapter = createAdapter(chatTimestampInflater));
+        recyclerView.setItemAnimator(new TimestampItemAnimator(chatTimestampInflater));
         inflateToolbarMenu(toolbar);
     }
 
@@ -181,8 +187,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         super.onDetachedFromWindow();
     }
 
-    protected ChatAdapter createAdapter() {
-        ChatAdapter adapter = new ChatAdapter(null, injector);
+    protected ChatAdapter createAdapter(ChatTimestampInflater chatTimestampInflater) {
+        ChatAdapter adapter = new ChatAdapter(null, chatTimestampInflater);
+        injector.inject(adapter);
         adapter.setCellDelegate(chatCellDelegate);
         adapter.setNeedMarkUnreadMessages(true);
         return adapter;
@@ -415,7 +422,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     public void refreshChatTimestampView(int position) {
         adapter.refreshTimestampView(position);
     }
-
 
     ////////////////////////////////////////
     /////// Photo picking

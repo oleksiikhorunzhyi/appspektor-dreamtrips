@@ -8,33 +8,33 @@ import android.widget.TextView;
 
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
 import com.messenger.ui.util.chat.ChatTimestampProvider;
-import com.messenger.ui.util.chat.anim.SlideDownAnimator;
-import com.messenger.ui.util.chat.anim.SlideUpAnimator;
-import com.messenger.ui.util.chat.anim.TimestampAnimator;
+import com.messenger.ui.util.chat.anim.TimestampAnimationType;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class ChatTimestampInflater {
 
     private RecyclerView.Adapter adapter;
-    @Inject
+
     ChatTimestampProvider timestampProvider;
 
-    private List<TimestampAnimator> pendingAnimators = new ArrayList<>();
+    @Inject
+    public ChatTimestampInflater(ChatTimestampProvider timestampProvider) {
+        this.timestampProvider = timestampProvider;
+    }
+
+    private Map<Integer, TimestampAnimationType> pendingAnimations = new HashMap<>();
     private int manualTimestampPosition = -1;
     private PublishSubject<Integer> clickedTimestampPositionsObservable = PublishSubject.create();
 
-    public ChatTimestampInflater(RecyclerView.Adapter adapter) {
+    public void setAdapter(RecyclerView.Adapter adapter) {
         this.adapter = adapter;
     }
 
@@ -52,30 +52,13 @@ public class ChatTimestampInflater {
             if ((manualTimestamp || !automaticTimestamp)) {
                 clickedTimestampPositionsObservable.onNext(position);
             }
-
         });
 
-        TextView dateTextView = holder.dateTextView;
-        if (!runPendingAnimations(cursor, position, dateTextView)) {
-            bindNonAnimatedTimestampIfNeeded(timestampProvider.getTimestamp(cursor),
-                    manualTimestamp, automaticTimestamp, dateTextView);
-        }
+        TimestampAnimationType pendingAnimationType = pendingAnimations.get(position);
+        bindNonAnimatedTimestampIfNeeded(pendingAnimationType != null, timestampProvider.getTimestamp(cursor),
+                manualTimestamp, automaticTimestamp, holder.dateTextView);
 
         return position == manualTimestampPosition;
-    }
-
-    private boolean runPendingAnimations(Cursor cursor, int position, TextView dateTextView) {
-        for (Iterator<TimestampAnimator> it = pendingAnimators.iterator(); it.hasNext(); ) {
-            TimestampAnimator timestampAnimator = it.next();
-            if (timestampAnimator.getPosition() == position) {
-                dateTextView.setText(timestampProvider.getTimestamp(cursor));
-                timestampAnimator.setDateTextView(dateTextView);
-                timestampAnimator.start();
-                it.remove();
-                return true;
-            }
-        }
-        return false;
     }
 
     public void showManualTimestampForPosition(int position) {
@@ -87,7 +70,7 @@ public class ChatTimestampInflater {
     }
 
     private void removeTimestamp() {
-        pendingAnimators.add(new SlideDownAnimator(manualTimestampPosition));
+        pendingAnimations.put(manualTimestampPosition, TimestampAnimationType.SLIDE_DOWN);
         adapter.notifyItemChanged(manualTimestampPosition);
         manualTimestampPosition = -1;
     }
@@ -95,22 +78,25 @@ public class ChatTimestampInflater {
     private void addTimestamp(int position) {
         // hide previous opened timestamp
         if (manualTimestampPosition != -1) {
-            pendingAnimators.add(new SlideDownAnimator(manualTimestampPosition));
+            pendingAnimations.put(manualTimestampPosition, TimestampAnimationType.SLIDE_DOWN);
             adapter.notifyItemChanged(manualTimestampPosition);
         }
 
         manualTimestampPosition = position;
-        pendingAnimators.add(new SlideUpAnimator(manualTimestampPosition));
+        pendingAnimations.put(manualTimestampPosition, TimestampAnimationType.SLIDE_UP);
         adapter.notifyItemChanged(manualTimestampPosition);
     }
 
-    private void bindNonAnimatedTimestampIfNeeded(String timeStamp, boolean manualTimestamp,
-                                                    boolean automaticTimestamp, TextView dateTextView) {
+    private void bindNonAnimatedTimestampIfNeeded(boolean pendingAnimation, String timeStamp, boolean manualTimestamp,
+                                                  boolean automaticTimestamp, TextView dateTextView) {
+        dateTextView.setText(timeStamp);
+        if (pendingAnimation) {
+            return;
+        }
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();
         params.bottomMargin = 0;
-        if (automaticTimestamp || manualTimestamp) {
+        if ((automaticTimestamp || manualTimestamp)) {
             dateTextView.setVisibility(View.VISIBLE);
-            dateTextView.setText(timeStamp);
         } else {
             dateTextView.setVisibility(View.GONE);
         }
@@ -118,5 +104,9 @@ public class ChatTimestampInflater {
 
     public PublishSubject<Integer> getClickedTimestampPositionsObservable() {
         return clickedTimestampPositionsObservable;
+    }
+
+    public TimestampAnimationType popPendingAnimation(int position) {
+        return pendingAnimations.remove(position);
     }
 }

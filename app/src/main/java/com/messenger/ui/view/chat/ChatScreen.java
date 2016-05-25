@@ -35,15 +35,17 @@ public interface ChatScreen extends MessengerScreen {
 
     void removeAllTypingUsers();
 
-    void showMessages(Cursor cursor, DataConversation conversation);
+    void setConversation(DataConversation dataConversation);
+
+    void showMessages(Cursor cursor);
 
     void showAttachmentMenu(AttachmentMenuItem[] items);
 
-    void showPhotoPicker();
+    Observable<DataMessage> getLastVisibleItemStream();
 
-    void hidePhotoPicker();
+    Observable<String> getEditMessageObservable();
 
-    Observable<TextViewTextChangeEvent> getEditMessageObservable();
+    Observable<String> getAttachmentClickStream();
 
     void showContextualAction(Menu menu, DataMessage message);
 

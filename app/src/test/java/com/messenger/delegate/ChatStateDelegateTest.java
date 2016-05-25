@@ -29,9 +29,9 @@ public class ChatStateDelegateTest extends BaseChatActionDelegateTest {
     @Test
     public void testChatDelegate_TypingStarted() {
         chatStateDelegate.init("");
-        chatStateDelegate.connectTypingStopAction(Observable.create(new Observable.OnSubscribe<CharSequence>() {
+        chatStateDelegate.connectTypingStopAction(Observable.create(new Observable.OnSubscribe<String>() {
             @Override
-            public void call(Subscriber<? super CharSequence> subscriber) {
+            public void call(Subscriber<? super String> subscriber) {
                 subscriber.onNext("h");
                 subscriber.onNext("hi");
             }
@@ -44,9 +44,9 @@ public class ChatStateDelegateTest extends BaseChatActionDelegateTest {
     @Test
     public void testChatDelegate_TypingStopped() {
         chatStateDelegate.init("");
-        chatStateDelegate.connectTypingStopAction(Observable.create(new Observable.OnSubscribe<CharSequence>() {
+        chatStateDelegate.connectTypingStopAction(Observable.create(new Observable.OnSubscribe<String>() {
             @Override
-            public void call(Subscriber<? super CharSequence> subscriber) {
+            public void call(Subscriber<? super String> subscriber) {
                 subscriber.onNext("h");
                 subscriber.onNext("hi");
                 try {

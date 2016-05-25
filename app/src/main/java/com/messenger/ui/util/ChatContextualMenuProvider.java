@@ -13,11 +13,16 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.TranslationStatus;
+import com.messenger.storage.dao.AttachmentDAO;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.ConversationHelper;
+import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -25,23 +30,29 @@ public class ChatContextualMenuProvider {
 
     private Context context;
     private UsersDAO usersDAO;
+    private ConversationsDAO conversationsDAO;
+    private AttachmentDAO attachmentDAO;
     private TranslationsDAO translationsDAO;
     private DataUser currentUser;
 
-    public ChatContextualMenuProvider(Context context, DataUser currentUser,
-                                      UsersDAO usersDAO, TranslationsDAO translationsDAO) {
+    @Inject
+    public ChatContextualMenuProvider(@ForApplication Context context, DataUser currentUser,
+                                      UsersDAO usersDAO, TranslationsDAO translationsDAO,
+                                      ConversationsDAO conversationsDAO, AttachmentDAO attachmentDAO) {
         this.context = context;
         this.usersDAO = usersDAO;
         this.currentUser = currentUser;
         this.translationsDAO = translationsDAO;
+        this.conversationsDAO = conversationsDAO;
+        this.attachmentDAO = attachmentDAO;
     }
 
     public Observable<Menu> provideMenu(DataMessage message,
-                                        Observable<DataConversation> conversationObservable,
-                                        Observable<DataAttachment> attachmentObservable) {
+                                        String conversationId) {
         return Observable
                 .combineLatest(
-                        conversationObservable.first(), attachmentObservable.first(),
+                        conversationsDAO.getConversation(conversationId),
+                        attachmentDAO.getAttachmentByMessageId(message.getId()),
                         usersDAO.getUserById(message.getFromId()).first(),
                         translationsDAO.getTranslation(message.getId()).first(), QueryResult::new
                 )

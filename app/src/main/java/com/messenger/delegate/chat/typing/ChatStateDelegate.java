@@ -30,7 +30,7 @@ public class ChatStateDelegate {
         this.conversationId = conversationId;
     }
 
-    public Observable<String> connectTypingStartAction(Observable<CharSequence> inputObservable) {
+    public Observable<String> connectTypingStartAction(Observable<String> inputObservable) {
         return inputObservable
                 .skip(1)
                 .filter(text -> text.length() > 0)
@@ -43,7 +43,7 @@ public class ChatStateDelegate {
                 .map(dataConversation -> ChatState.COMPOSING);
     }
 
-    public Observable<String> connectTypingStopAction(Observable<CharSequence> inputObservable) {
+    public Observable<String> connectTypingStopAction(Observable<String> inputObservable) {
        return inputObservable
                 .skip(1)
                 .debounce(STOP_TYPING_DELAY, TimeUnit.MILLISECONDS)

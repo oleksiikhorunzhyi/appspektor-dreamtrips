@@ -156,7 +156,7 @@ public class MessageDAO extends BaseDAO {
         getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID + "=?", new String[]{msgId});
     }
 
-    public DataMessage fromCursor(Cursor cursor, boolean moveToFirst) {
+    public static DataMessage fromCursor(Cursor cursor, boolean moveToFirst) {
         return SqlUtils.convertToModel(!moveToFirst, DataMessage.class, cursor);
     }
 

@@ -168,8 +168,9 @@ public class MessageTranslationDelegateTest extends BaseTest {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     private void translateMessage() {
-        MessageTranslationDelegate delegate = new MessageTranslationDelegate(janet, translationsDAO, localeHelper);
-        delegate.translateMessage(testMessage, userSessionHolder);
+        MessageTranslationDelegate delegate = new MessageTranslationDelegate(janet, translationsDAO,
+                localeHelper, userSessionHolder);
+        delegate.translateMessage(testMessage);
     }
 
     private void mockMessengerDataBase() {

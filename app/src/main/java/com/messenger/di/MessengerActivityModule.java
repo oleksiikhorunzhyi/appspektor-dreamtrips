@@ -39,6 +39,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -92,14 +93,10 @@ public class MessengerActivityModule {
     }
 
     @Provides
-    ChatContextualMenuProvider providerMenuProvider(@ForApplication Context context, DataUser currentUser,
-                                                    UsersDAO usersDAO, TranslationsDAO translationsDAO) {
-        return new ChatContextualMenuProvider(context, currentUser, usersDAO, translationsDAO);
-    }
-
-    @Provides
-    MessengerMediaPickerDelegate provideChangeAvatarDelegate(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate, PhotoPickerLayoutDelegate photoPickerLayoutDelegate) {
-        return new MessengerMediaPickerDelegateImpl(legacyPhotoPickerDelegate, photoPickerLayoutDelegate);
+    MessengerMediaPickerDelegate provideChangeAvatarDelegate(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate,
+                                                             PhotoPickerLayoutDelegate photoPickerLayoutDelegate,
+                                                             PermissionDispatcher permissionDispatcher) {
+        return new MessengerMediaPickerDelegateImpl(legacyPhotoPickerDelegate, photoPickerLayoutDelegate, permissionDispatcher);
     }
 
     @Provides

@@ -24,6 +24,8 @@ public abstract class ModuleStatefulPresenterImpl<V extends ModuleView, S extend
 
     @Override
     public void onRestoreInstanceState(Parcelable parcelable) {
+        if (parcelable == null) return;
+
         checkParcelableType(parcelable);
         Icepick.restoreInstanceState(this, (Bundle) parcelable);
         applyState(state);

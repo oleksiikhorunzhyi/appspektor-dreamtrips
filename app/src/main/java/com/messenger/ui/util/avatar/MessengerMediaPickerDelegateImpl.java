@@ -3,6 +3,9 @@ package com.messenger.ui.util.avatar;
 import com.innahema.collections.query.queriables.Queryable;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
+import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.permission.PermissionGrantedComposer;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -14,16 +17,21 @@ import rx.subjects.PublishSubject;
 
 public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDelegate {
 
+    public static final int MESSENGER_MULTI_PICK_LIMIT = 15;
+
     private LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
     private PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    private PermissionDispatcher permissionDispatcher;
 
     private PublishSubject<String> imagesStream = PublishSubject.create();
     private Subscription cameraImagesStreamSubscription;
 
     public MessengerMediaPickerDelegateImpl(LegacyPhotoPickerDelegate legacyPhotoPickerDelegate,
-                                            PhotoPickerLayoutDelegate photoPickerLayoutDelegate) {
+                                            PhotoPickerLayoutDelegate photoPickerLayoutDelegate,
+                                            PermissionDispatcher permissionDispatcher) {
         this.legacyPhotoPickerDelegate = legacyPhotoPickerDelegate;
         this.photoPickerLayoutDelegate = photoPickerLayoutDelegate;
+        this.permissionDispatcher = permissionDispatcher;
         initPhotoPicker();
     }
 
@@ -47,9 +55,30 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
 
     @Override
     public void showPhotoPicker() {
-        if (!photoPickerLayoutDelegate.isPanelVisible()) {
-            photoPickerLayoutDelegate.showPicker();
-        }
+        checkPermissions()
+                .subscribe(aVoid -> {
+                    if (!photoPickerLayoutDelegate.isPanelVisible()) {
+                        photoPickerLayoutDelegate.showPicker();
+                    }
+                });
+    }
+
+    @Override
+    public void showMultiPhotoPicker() {
+        checkPermissions()
+                .subscribe(aVoid -> {
+                    if (!photoPickerLayoutDelegate.isPanelVisible()) {
+                        photoPickerLayoutDelegate.showPicker(true, MESSENGER_MULTI_PICK_LIMIT);
+                    } else {
+                        photoPickerLayoutDelegate.hidePicker();
+                    }
+                });
+    }
+
+    private Observable<Void> checkPermissions(){
+        return permissionDispatcher
+                .requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
+                .compose(new PermissionGrantedComposer());
     }
 
     @Override

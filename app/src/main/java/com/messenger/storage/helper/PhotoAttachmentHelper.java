@@ -26,17 +26,20 @@ public class PhotoAttachmentHelper {
     private final MessageDAO messageDAO;
     private final UsersDAO usersDAO;
     private final ConversationsDAO conversationsDAO;
+    private final DataUser currentUser;
 
     @Inject
     public PhotoAttachmentHelper(PhotoDAO photoDAO, MessageDAO messageDAO,
-                                 UsersDAO usersDAO, ConversationsDAO conversationsDAO) {
+                                 UsersDAO usersDAO, ConversationsDAO conversationsDAO,
+                                 DataUser currentUser) {
         this.photoDAO = photoDAO;
         this.messageDAO = messageDAO;
         this.usersDAO = usersDAO;
         this.conversationsDAO = conversationsDAO;
+        this.currentUser = currentUser;
     }
 
-    public Observable<PhotoAttachment> obtainPhotoAttachment(String attachmentImageId, DataUser currentUser) {
+    public Observable<PhotoAttachment> obtainPhotoAttachment(String attachmentImageId) {
         return Observable.just(new PhotoAttachment.Builder())
                 .map(builder -> {
                     DataPhotoAttachment dataAttachment = photoDAO.getAttachmentById(attachmentImageId)

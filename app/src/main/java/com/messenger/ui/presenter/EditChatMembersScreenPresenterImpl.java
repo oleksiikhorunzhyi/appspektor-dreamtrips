@@ -53,14 +53,13 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     ParticipantsDAO participantsDAO;
     @Inject
     ConversationsDAO conversationsDAO;
-
+    @Inject ProfileCrosser profileCrosser;
     @Inject
     ActivityWatcher activityWatcher;
     @Inject
     UserSectionHelper userSectionHelper;
 
     private final RxSearchHelper<Pair<DataUser, String>> rxSearchHelper = new RxSearchHelper<>();
-    private final ProfileCrosser profileCrosser;
 
     private final String conversationId;
     private Observable<DataConversation> conversationObservable;
@@ -68,7 +67,6 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
     public EditChatMembersScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector);
         this.conversationId = conversationId;
-        this.profileCrosser = new ProfileCrosser(context, routeCreator);
     }
 
     @Override

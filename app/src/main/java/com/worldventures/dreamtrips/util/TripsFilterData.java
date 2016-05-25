@@ -10,10 +10,12 @@ import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TripsFilterData implements Serializable {
 
@@ -92,7 +94,7 @@ public class TripsFilterData implements Serializable {
     }
 
     public String getStartDate() {
-        return DateTimeUtils.convertDateToUTCString(startDate);
+        return DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()));
     }
 
     public void setStartDate(Date startDate) {
@@ -100,7 +102,7 @@ public class TripsFilterData implements Serializable {
     }
 
     public String getEndDate() {
-        return DateTimeUtils.convertDateToUTCString(endDate);
+        return DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()));
     }
 
     public void setEndDate(Date endDate) {

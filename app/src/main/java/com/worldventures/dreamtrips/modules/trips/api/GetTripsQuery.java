@@ -9,9 +9,7 @@ import java.util.ArrayList;
 
 public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
 
-
     private TripQueryData tripQueryData;
-
 
     @Override
     public ArrayList<TripModel> loadDataFromNetwork() throws Exception {
@@ -33,17 +31,13 @@ public class GetTripsQuery extends DreamTripsRequest<ArrayList<TripModel>> {
         );
     }
 
-
     @Override
     public int getErrorMessage() {
         return R.string.string_failed_to_load_trips;
     }
 
-
     public GetTripsQuery(TripQueryData tripQueryData) {
         super((Class<ArrayList<TripModel>>) new ArrayList<TripModel>().getClass());
         this.tripQueryData = tripQueryData;
     }
-
-
 }

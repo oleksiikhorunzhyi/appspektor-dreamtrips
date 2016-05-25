@@ -21,19 +21,19 @@ public class TripPinFactory {
         switch (mapObjectHolder.getType()) {
             case CLUSTER:
                 return createClusterBitmap(context, R.drawable.cluster_pin,
-                        String.valueOf(((Cluster) mapObjectHolder.getItem()).getTripCount()));
+                        String.valueOf(((Cluster) mapObjectHolder.getItem()).getTripCount() > 99 ? "99+" : ((Cluster) mapObjectHolder.getItem()).getTripCount()));
             case PIN:
                 Pin pin = (Pin) mapObjectHolder.getItem();
                 if (pin.getTripUids().size() > 1)
                     return createClusterBitmap(context, R.drawable.cluster_pin,
-                            String.valueOf(pin.getTripUids().size()));
+                            String.valueOf(pin.getTripUids().size() > 99 ? "99+" : pin.getTripUids().size()));
                 else
                     return BitmapFactory.decodeResource(context.getResources(), R.drawable.dt_pin_icon);
         }
         return null;
     }
 
-    private static Bitmap createClusterBitmap(Context context, int drawableId, String text) {
+    public static Bitmap createClusterBitmap(Context context, int drawableId, String text) {
         Bitmap bm = BitmapFactory.decodeResource(context.getResources(), drawableId)
                 .copy(Bitmap.Config.ARGB_8888, true);
 

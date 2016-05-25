@@ -19,7 +19,10 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.fragment.FragmentHelper;
@@ -30,13 +33,17 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
+import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
+import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.bundle.TripMapListBundle;
 import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 import com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder;
+import com.worldventures.dreamtrips.modules.trips.view.util.TripClusterRenderer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -74,6 +81,9 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
     private Subscription mapChangesSubscription;
     private Subscription markersClickSubscription;
+
+    private ClusterManager<TripClusterItem> clusterManager;
+    private TripClusterRenderer tripClusterRenderer;
 
     @Override
     protected TripMapPresenter createPresenter(Bundle savedInstanceState) {
@@ -144,7 +154,6 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         return false;
     }
 
-
     private void moveToListView() {
         if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment) {
             removeTripsPopupInfo();
@@ -169,6 +178,12 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         if (markersClickSubscription != null && !markersClickSubscription.isUnsubscribed()) {
             markersClickSubscription.unsubscribe();
         }
+        //local clustering
+        if (clusterManager != null) {
+            clusterManager.setOnClusterItemClickListener(null);
+            clusterManager.setOnClusterClickListener(null);
+        }
+        //
         super.onDestroyView();
     }
 
@@ -193,6 +208,25 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
             googleMap = map;
             googleMap.setMyLocationEnabled(true);
             mapView.setMapTouchListener(this::onMapTouched);
+            //local clustering
+            clusterManager = new ClusterManager<>(getActivity(), googleMap);
+            tripClusterRenderer = new TripClusterRenderer(getContext(), googleMap, clusterManager);
+            clusterManager.setRenderer(tripClusterRenderer);
+            clusterManager.setOnClusterClickListener(cluster -> {
+                if (googleMap.getCameraPosition().zoom >= 17.0f) {
+                    selectedLocation = cluster.getPosition();
+                    getPresenter().onMarkerClicked(tripClusterRenderer.getMarker(Queryable.from(cluster.getItems()).first()));
+                } else {
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
+                            googleMap.getCameraPosition().zoom + 1.0f), MapViewUtils.MAP_ANIMATION_DURATION, null);
+                }
+                return true;
+            });
+            clusterManager.setOnClusterItemClickListener(tripClusterItem -> {
+                getPresenter().onMarkerClicked(tripClusterRenderer.getMarker(tripClusterItem));
+                return true;
+            });
+            //
             onMapLoaded();
         });
     }
@@ -326,10 +360,13 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
     private Subscription subscribeToCameraChanges() {
         return MapObservableFactory.createCameraChangeObservable(googleMap)
-                .throttleLast(2000, TimeUnit.MILLISECONDS)
+                .throttleLast(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(cameraPosition -> {
-                    getPresenter().reloadMapObjects();
+//                    getPresenter().reloadMapObjects();
+                    //local clustering
+                    clusterManager.onCameraChange(cameraPosition);
+                    //
                 }, error -> {
                     Timber.e(error.getMessage());
                 });
@@ -338,7 +375,10 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     private Subscription subscribeToMarkersClicks() {
         return MapObservableFactory.createMarkerClickObservable(googleMap)
                 .subscribe(marker -> {
-                    getPresenter().onMarkerClicked(marker);
+//                    getPresenter().onMarkerClicked(marker);
+                    //local clustering
+                    clusterManager.onMarkerClick(marker);
+                    //
                 }, error -> {
                     Timber.e(error, error.getMessage());
                 });
@@ -363,5 +403,25 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
         }
     };
 
+    //local clustering
+    @Override
+    public void addItems(List<TripClusterItem> tripClusterItems) {
+        clusterManager.addItems(tripClusterItems);
+        clusterManager.cluster();
+    }
+
+    @Override
+    public void clearItems() {
+        clusterManager.clearItems();
+    }
+
+    @Override
+    public List<Marker> getMarkers() {
+        List<Marker> markers = new ArrayList<>();
+        markers.addAll(clusterManager.getClusterMarkerCollection().getMarkers());
+        markers.addAll(clusterManager.getMarkerCollection().getMarkers());
+        return markers;
+    }
+    //
 }
 

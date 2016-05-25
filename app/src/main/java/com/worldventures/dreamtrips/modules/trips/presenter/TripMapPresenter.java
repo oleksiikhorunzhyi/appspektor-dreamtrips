@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.trips.manager.functions.RemoveOldMar
 import com.worldventures.dreamtrips.modules.trips.model.Cluster;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
 import com.worldventures.dreamtrips.modules.trips.model.Pin;
+import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
@@ -67,6 +68,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
     public void onMapLoaded() {
         //
         tripMapManager.subscribe(this);
+        reloadMapObjects();
     }
 
     public void addMarker(Marker marker) {
@@ -100,6 +102,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
                 List<String> tripUids = ((Pin) holder.getItem()).getTripUids();
                 view.scrollCameraToPin(tripUids.size());
                 tripMapManager.loadTrips(tripUids);
+                updateExistsMarkers(view.getMarkers());
                 addAlphaToMarkers(marker);
                 break;
             case CLUSTER:
@@ -112,6 +115,13 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
                 break;
         }
     }
+
+    //local clustering
+    public void updateExistsMarkers(List<Marker> markers) {
+        existsMarkers.clear();
+        existsMarkers.addAll(markers);
+    }
+    //
 
     public void onEvent(MenuPressedEvent event) {
         removeInfoIfNeeded();
@@ -169,6 +179,14 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
         updateMarkersAlphaIfNeeded();
     }
 
+    //local clustering
+    @Override
+    public void onTripMapObjectsLoaded(List<TripClusterItem> tripClusterItems) {
+        view.clearItems();
+        view.addItems(tripClusterItems);
+    }
+    //
+
     @Override
     public void onTripsLoaded(List<TripModel> trips) {
         TripMapDetailsAnchor anchor = null;
@@ -195,5 +213,13 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> implement
         TripMapDetailsAnchor updateContainerParams(int tripCount);
 
         void scrollCameraToPin(int size);
+
+        // local clustering
+        void addItems(List<TripClusterItem> tripClusterItems);
+
+        void clearItems();
+
+        List<Marker> getMarkers();
+        //
     }
 }

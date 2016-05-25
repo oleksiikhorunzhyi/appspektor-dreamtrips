@@ -44,7 +44,6 @@ import flow.History;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.subjects.PublishSubject;
 
 import static rx.Observable.just;
 
@@ -73,8 +72,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     private boolean mapReady;
     private DtlMapInfoReadyEvent pendingMapInfoEvent;
 
-    private final PublishSubject<List<DtlMerchant>> merchantsStream = PublishSubject.create();
-
     public DtlMapPresenterImpl(Context context, Injector injector) {
         super(context);
         injector.inject(this);
@@ -83,10 +80,14 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getView().hideDinings(db.getLastSelectedOffersOnlyToggle());
+        //
+        filterService.getFilterData()
+                .map(DtlFilterData::isOffersOnly)
+                .subscribe(getView()::hideDinings);
         getView().getToggleObservable()
-                .skip(1)//skip emmit of initialization
-                .subscribe(offersOnly -> filterService.filterDataPipe().send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
+                .skip(1) //skip emit of initialization
+                .subscribe(offersOnly -> filterService.filterDataPipe()
+                        .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
         //
         updateToolbarTitle();
         updateFilterButtonState();

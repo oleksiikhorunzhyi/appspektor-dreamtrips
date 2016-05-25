@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -17,9 +16,9 @@ import android.widget.RelativeLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -63,6 +62,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     protected static final int CAMERA_DURATION = 1000;
 
+    public static final String MAP_TAG = "MAP_TAG";
+
     @InjectView(R.id.mapTouchView)
     View mapTouchView;
     @InjectView(R.id.infoContainer)
@@ -86,7 +87,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     //
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
-    private SupportMapFragment mapFragment;
     private GoogleMap googleMap;
 
     public DtlMapScreenImpl(Context context) {
@@ -161,8 +161,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     protected void prepareMap() {
-        mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.mapFragment);
+        MapFragment mapFragment = MapFragment.newInstance();
+        getActivity().getFragmentManager()
+                .beginTransaction()
+                .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
+                .commit();
         if (mapFragment != null) {
             mapFragment.getMapAsync(map -> {
                 googleMap = map;
@@ -184,16 +187,14 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         if (googleMap != null) {
             googleMap = null;
         }
-        Fragment fragment = getActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.mapFragment);
+        android.app.Fragment fragment = getActivity().getFragmentManager()
+                .findFragmentByTag(MAP_TAG);
         if (fragment != null) {
-            getActivity().getSupportFragmentManager()
+            getActivity().getFragmentManager()
                     .beginTransaction()
                     .remove(fragment)
                     .commit();
-            getActivity().getSupportFragmentManager().executePendingTransactions();
         }
-        mapFragment = null;
     }
 
     @Override

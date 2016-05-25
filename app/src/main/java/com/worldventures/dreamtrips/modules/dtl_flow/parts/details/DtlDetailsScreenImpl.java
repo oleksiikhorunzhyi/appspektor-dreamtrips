@@ -18,7 +18,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,6 +46,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -76,7 +77,7 @@ public class DtlDetailsScreenImpl
     //
     MerchantOffersInflater merchantDataInflater;
     MerchantDataInflater merchantInfoInflater;
-    SupportMapFragment destinationMap;
+    MapFragment destinationMap;
     DtlMerchant merchant;
 
     @Override
@@ -175,14 +176,13 @@ public class DtlDetailsScreenImpl
         GoogleMapOptions mapOptions = new GoogleMapOptions();
         mapOptions.liteMode(true);
         //
-        if (destinationMap != null && destinationMap.isAdded()) return;
-
-        destinationMap = SupportMapFragment.newInstance(mapOptions);
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.merchant_details_map, destinationMap)
-                .commit();
-        //
+        if (destinationMap == null || !destinationMap.isAdded()) {
+            destinationMap = MapFragment.newInstance(mapOptions);
+            getActivity().getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.merchant_details_map, destinationMap, DtlMapScreenImpl.MAP_TAG)
+                    .commit();
+        }
         destinationMap.getMapAsync(this::bindMap);
     }
 

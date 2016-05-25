@@ -45,8 +45,8 @@ public class DtlMerchantService {
         merchantsPipe.observeSuccess()
                 .filter(DtlMerchantsAction::isFromApi)
                 .subscribe(action -> {
-                    tryUpdateLocation(action.getCacheData());
-                    updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(action.getCacheData()));
+                    tryUpdateLocation(action.getResult());
+                    updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(action.getResult()));
                 }, Throwable::printStackTrace);
         merchantsPipe.send(DtlMerchantsAction.restore());
     }

@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.PhotoPickerDelegate;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegateImpl;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
@@ -133,7 +134,7 @@ public class ManagerModule {
     @Singleton
     @Provides
     LocationDelegate provideLocationDelegate(@ForApplication Context context) {
-        return new LocationDelegate(context);
+        return new LocationDelegateImpl(context);
     }
 
     @Provides

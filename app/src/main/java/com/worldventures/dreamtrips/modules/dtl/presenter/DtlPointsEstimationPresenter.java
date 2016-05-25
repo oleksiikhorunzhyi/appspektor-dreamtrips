@@ -68,7 +68,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
         if (!validateInput(userInput)) return;
         //
         transactionService.estimatePointsActionPipe()
-                .send(new DtlEstimatePointsAction(merchantId, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
+                .send(new DtlEstimatePointsAction(dtlMerchant, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
     }
 
     protected boolean validateInput(String pointsInput) {

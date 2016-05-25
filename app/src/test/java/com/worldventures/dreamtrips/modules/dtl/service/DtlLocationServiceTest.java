@@ -28,6 +28,7 @@ import rx.observers.TestSubscriber;
 
 import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -41,7 +42,7 @@ public class DtlLocationServiceTest extends BaseTest {
 
     static {
         testLocationList = Collections.singletonList(
-                testLocation = spy(new DtlExternalLocation())
+                testLocation = mock(DtlExternalLocation.class)
         );
         when(testLocation.getLongName()).thenReturn("London");
     }
@@ -94,10 +95,13 @@ public class DtlLocationServiceTest extends BaseTest {
     @Test
     public void testDtlNearbyLocationAction() {
         TestSubscriber<ActionState<DtlNearbyLocationAction>> subscriber = new TestSubscriber<>();
+        StubServiceWrapper.Callback spyHttpCallback = spy(StubServiceWrapper.Callback.class);
+        httpStubWrapper.setCallback(spyHttpCallback);
         locationService.nearbyLocationPipe()
                 .createObservable(new DtlNearbyLocationAction(Mockito.mock(Location.class)))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> !action.getResult().isEmpty());
+        verify(spyHttpCallback, times(1)).onSend(any(ActionHolder.class));
     }
 
     @Test

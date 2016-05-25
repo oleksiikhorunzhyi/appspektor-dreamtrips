@@ -122,7 +122,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                 )
                 .map(DtlTransactionAction::getResult)
                 .flatMap(transaction -> transactionService.estimatePointsActionPipe().createObservable(
-                        new DtlEstimatePointsAction(merchantId, transaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode()))
+                        new DtlEstimatePointsAction(dtlMerchant, transaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode()))
                         .compose(JanetPlainActionComposer.instance())
                 ).subscribe(action -> {
         }, apiErrorPresenter::handleError);

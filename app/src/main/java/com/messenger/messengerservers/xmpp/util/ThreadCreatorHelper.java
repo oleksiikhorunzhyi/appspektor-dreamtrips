@@ -19,6 +19,11 @@ public final class ThreadCreatorHelper {
             return String.format("%s_%s", userId2, userId1);
     }
 
+    public static String obtainCompanionIdFromSingleChatId(String conversationId, String userId) {
+        return conversationId.replace(userId, "").replace("_", "");
+    }
+
+    @Deprecated
     public static String obtainCompanionFromSingleChat(String conversationId, String userJid) {
         String userId = conversationId
                 .replace(userJid.split("@")[0], "")

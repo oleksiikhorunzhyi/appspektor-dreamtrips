@@ -64,7 +64,6 @@ public class XmppConversationsListLoader extends XmppBaseConversationsLoader imp
     }
 
     private Observable<List<Conversation>> loadParticipants(List<Conversation> conversations) {
-        return createParticipantProvider()
-                .flatMap(provider -> obtainParticipants(provider, conversations));
+        return obtainParticipants(new XmppParticipantsLoader(facade), conversations);
     }
 }

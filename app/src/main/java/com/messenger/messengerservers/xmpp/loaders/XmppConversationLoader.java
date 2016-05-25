@@ -48,8 +48,7 @@ public class XmppConversationLoader extends XmppBaseConversationsLoader implemen
     }
 
     protected Observable<Conversation> loadParticipants(Conversation conversation) {
-        return createParticipantProvider()
-                .flatMap(provider -> obtainParticipants(provider, conversation));
+        return obtainParticipants(new XmppParticipantsLoader(facade), conversation);
     }
 
     private boolean stanzaFilter(Stanza stanza) {

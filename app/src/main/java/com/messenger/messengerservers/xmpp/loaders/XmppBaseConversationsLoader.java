@@ -8,11 +8,11 @@ import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.util.ParticipantProvider;
 
 import java.util.List;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
@@ -24,49 +24,44 @@ abstract class XmppBaseConversationsLoader {
         this.facade = facade;
     }
 
-    protected Observable<List<Conversation>> obtainParticipants(ParticipantProvider provider, List<Conversation> conversations) {
+    protected Observable<List<Conversation>> obtainParticipants(XmppParticipantsLoader participantsLoader, List<Conversation> conversations) {
         return Observable.from(conversations)
-                .flatMap(conversation -> obtainParticipants(provider, conversation))
+                .flatMap(conversation -> obtainParticipants(participantsLoader, conversation))
                 .toList();
     }
 
-    protected Observable<Conversation> obtainParticipants(ParticipantProvider provider, Conversation conversation) {
+    protected Observable<Conversation> obtainParticipants(XmppParticipantsLoader participantsLoader, Conversation conversation) {
         return TextUtils.equals(conversation.getType(), CHAT) ?
-                obtainSingleConversationParticipants(provider, conversation) : obtainGroupConversationParticipants(provider, conversation);
+                obtainSingleConversationParticipant(participantsLoader, conversation) : obtainGroupConversationParticipants(participantsLoader, conversation);
     }
 
-    private Observable<Conversation> obtainSingleConversationParticipants(ParticipantProvider provider, Conversation conversation) {
-        return Observable.<Conversation>create(subscriber -> {
-            List<Participant> participants = provider.getSingleChatParticipants(conversation.getId());
-            if (subscriber.isUnsubscribed()) return;
-            if (singleChatInvalid(conversation, facade.getUsername())) {
-                Timber.w("Single Conversation is invalid: %s", conversation);
-                subscriber.onCompleted();
-                return;
-            }
+    private Observable<Conversation> obtainSingleConversationParticipant(XmppParticipantsLoader participantLoader, Conversation conversation) {
+        if (singleChatInvalid(conversation, facade.getUsername())) {
+            Timber.w("Single Conversation is invalid: %s", conversation);
+            return Observable.empty();
+        }
 
-            conversation.getParticipants().addAll(participants);
-            subscriber.onNext(conversation);
-            subscriber.onCompleted();
-        });
+        return participantLoader.getSingleChatParticipants(conversation.getId())
+                .map(participant -> {
+                    conversation.getParticipants().add(participant);
+                    return conversation;
+                });
     }
 
-    private Observable<Conversation> obtainGroupConversationParticipants (ParticipantProvider provider, Conversation conversation) {
-        return Observable.<Conversation>create(subscriber -> {
-            provider.loadMultiUserChatParticipants(conversation.getId(), members -> {
-                if (subscriber.isUnsubscribed()) return;
-                if (groupChatInvalid(conversation, members)) {
-                    Timber.w("Group Conversation is invalid: %s", conversation);
-                    subscriber.onCompleted();
-                    return;
-                }
-                //
-                conversation.setOwnerId(findOwnerId(members));
-                conversation.getParticipants().addAll(members);
-                subscriber.onNext(conversation);
-                subscriber.onCompleted();
-            });
-        });
+    private Observable<Conversation> obtainGroupConversationParticipants (XmppParticipantsLoader participantLoader, Conversation conversation) {
+        return participantLoader.loadMultiUserChatParticipants(conversation.getId())
+                .filter(participants -> {
+                    boolean groupChatInvalid = groupChatInvalid(conversation, participants);
+                    if (groupChatInvalid) {
+                        Timber.w("Group Conversation is invalid: %s", conversation);
+                    }
+                    return !groupChatInvalid;
+                })
+                .map(participants -> {
+                    conversation.setOwnerId(findOwnerId(participants));
+                    conversation.getParticipants().addAll(participants);
+                    return conversation;
+                });
     }
 
 
@@ -90,9 +85,4 @@ abstract class XmppBaseConversationsLoader {
         return !conversation.getId().contains(userId);
     }
 
-    protected Observable<ParticipantProvider> createParticipantProvider() {
-        return facade.getConnectionObservable()
-                .take(1)
-                .map(ParticipantProvider::new);
-    }
 }

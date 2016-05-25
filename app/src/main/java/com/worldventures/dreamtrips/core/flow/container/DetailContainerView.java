@@ -13,7 +13,8 @@ public class DetailContainerView extends FramePathContainerView {
 
     public DetailContainerView(Context context, AttributeSet attrs) {
         super(context, attrs, null);
-        DetailPathContainer container = new DetailPathContainer(context, R.id.screen_switcher_tag, Path.contextFactory());
+        DetailPathContainer container =
+                new DetailPathContainer(context, R.id.screen_switcher_tag, Path.contextFactory());
         setContainer(container);
     }
 
@@ -30,5 +31,4 @@ public class DetailContainerView extends FramePathContainerView {
             return super.getLayout(mdPath.isMaster() ? emptyPath : mdPath);
         }
     }
-
 }

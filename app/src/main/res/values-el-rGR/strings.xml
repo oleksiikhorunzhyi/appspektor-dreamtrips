@@ -22,7 +22,7 @@
     <string name="action_enroll">Εγγραφή</string>
     <string name="action_filter">Φίλτρο</string>
     <string name="action_map">Χάρτης</string>
-    <string name="action_like">Like</string>
+    <string name="action_like">Μου Αρέσει</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="trips">DreamTrips</string>
     <string name="drawer_open">Το μενού είναι ανοικτό</string>
@@ -173,7 +173,7 @@
     <string name="training_videos">Εκπαιδευτικά βίντεο</string>
     <string name="error_while_sync">Κάτι δεν πήγε καλά</string>
     <string name="can_not_like_photo">Δεν είναι δυνατό να γίνει like στη φωτογραφία</string>
-    <string name="likes">%1$d Like</string>
+    <string name="likes">%1$d Μου Αρέσει</string>
     <string name="comments">%1$d σχόλια</string>
     <string name="wrong_image">Λάθος εικόνα</string>
     <string name="could_not_load">Δεν ήταν δυνατή η φόρτωση </string>
@@ -313,7 +313,7 @@
     <string name="booked">έκλεισε</string>
     <string name="shared">κοινοποίησε</string>
     <string name="updated">ενημέρωσε</string>
-    <string name="liked">σας έκανε like σε</string>
+    <string name="liked">άρεσε το</string>
     <string name="feed_trip">Ταξίδι</string>
     <string name="feed_photo">Φωτογραφία</string>
     <string name="feed_bucket">Αντικείμενο Καλαθιού αγορών</string>
@@ -373,13 +373,13 @@
     <string name="configuration_failed">Η φόρτωση της ρύθμισης παραμέτρων απέτυχε</string>
     <string name="email_app_choose_dialog_title">Επιλογή εφαρμογής</string>
 
-    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt; έκαναν like σε αυτό</string>
-    <string name="users_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt; έκανε like σε αυτό</string>
-    <string name="users_who_liked_with_first_single" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμα&lt;/b&gt; έκαναν like σε αυτό</string>
-    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμα&lt;/b&gt; έκαναν like σε αυτό</string>
+    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;τους αρέσει αυτό</string>
+    <string name="users_who_liked_with_first_zero" formatted="false">&lt;b&gt;%1$s&lt;/b&gt;του αρέσει αυτό</string>
+    <string name="users_who_liked_with_first_single" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμη&lt;/b&gt;τους αρέσει αυτό</string>
+    <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;Ο/Η %1$s και %2$d ακόμη&lt;/b&gt;τους αρέσει αυτό</string>
 
-    <string name="users_who_liked_title">Άτομα που έκαναν like</string>
-    <string name="users_who_liked_empty">Κανείς δεν έκανε like σε αυτό το αντικείμενο</string>
+    <string name="users_who_liked_title">Άτομα που τους άρεσε</string>
+    <string name="users_who_liked_empty">Σε κανέναν δεν άρεσε αυτό το αντικείμενο</string>
     <string name="notifications_title">Ειδοποιήσεις</string>
     <string name="accept_request">αποδέχτηκε το αίτημά σας</string>
     <string name="reject_request">απέρριψε το αίτημά σας</string>
@@ -421,8 +421,8 @@
     <string name="all">Όλα</string>
     <string name="you">Εσείς</string>
 
-    <string name="likes_count_one">%1$d like</string>
-    <string name="likes_count_other">%1$d like</string>
+    <string name="likes_count_one">%1$d Μου αρέσει</string>
+    <string name="likes_count_other">%1$d Μου αρέσει</string>
 
     <string name="comments_count_one">%1$d σχόλιο</string>
     <string name="comments_count_other">%1$d σχόλια</string>
@@ -430,7 +430,7 @@
     <string name="feed_edit_item">Επεξεργασία</string>
     <string name="feed_delete_item">Διαγραφή</string>
 
-    <string name="liked_foreign">έκανε like σε</string>
+    <string name="liked_foreign">άρεσε ένα</string>
     <string name="comment_foreign">σχολίασε</string>
 
     <string name="no_feed">Εδώ θα βλέπετε τη δραστηριότητα των Φίλων σας.\n Κάντε κλικ στον παρακάτω σύνδεσμο για να βρείτε τους φίλους σας</string>
@@ -442,8 +442,8 @@
     <string name="feed_close_friends">Στενοί φίλοι</string>
     <string name="start_searching">Πληκτρολογήστε για να ξεκινήσει η αναζήτηση</string>
 
-    <string name="people_liked_one">%1$s έκαναν like</string>
-    <string name="people_liked_other">%1$s άτομα έκαναν like</string>
+    <string name="people_liked_one">%1$s τους άρεσε</string>
+    <string name="people_liked_other">%1$s άτομα τους άρεσε</string>
 
     <string name="terms_and_conditions_title">Όροι και Προϋποθέσεις</string>
     <string name="terms_and_conditions_subtitle">Διαβάστε και αποδεχτείτε τους παρακάτω όρους και τις προϋποθέσεις για να συνεχίσετε</string>
@@ -514,8 +514,8 @@
     <string name="discard">Απόρριψη</string>
 
     <string name="error_fail_to_load_success_stories">Αποτυχία φόρτωσης ιστοριών επιτυχίας</string>
-    <string name="error_fail_to_like_success_story">Αποτυχία like ιστορίας επιτυχίας</string>
-    <string name="error_fail_to_unlike_success_story">Αποτυχία unlike ιστορίας επιτυχίας</string>
+    <string name="error_fail_to_like_success_story">Αποτυχία εντολής Μου αρέσει στην ιστορία επιτυχίας</string>
+    <string name="error_fail_to_unlike_success_story">Αποτυχία εντολής Δεν μου αρέσει στην ιστορία επιτυχίας</string>
     <string name="error_fail_to_load_settings">Αποτυχία φόρτωσης ρύθμισης</string>
     <string name="error_fail_to_update_settings">Αποτυχία αναβάθμισης ρυθμίσεων</string>
     <string name="error_fail_to_load_bl">Αποτυχία φόρτωσης Καλαθιού Αγορών</string>
@@ -551,7 +551,7 @@
     <string name="error_failed_to_unfriend_user">Αποτυχία ακύρωσης φιλίας με χρήστη</string>
     <string name="error_failed_to_add_user_to_circle">Αποτυχία προσθήκης χρήστη στον κύκλο</string>
     <string name="error_failed_to_remove_user_from_circle">Αποτυχία μετακίνησης χρήστη από τον κύκλο</string>
-    <string name="error_failed_to_load_people_who_liked">Αποτυχία φόρτωσης ανθρώπων που έκαναν \'Μου Αρέσει\'</string>
+    <string name="error_failed_to_load_people_who_liked">Αποτυχία φόρτωσης ατόμων που έκαναν \'Μου Αρέσει\'</string>
     <string name="error_failed_to_load_mutual_friends">Αποτυχία φόρτωσης κοινών φίλων</string>
     <string name="error_failed_to_load_notifications">Αποτυχία φόρτωσης ειδοποιήσεων</string>
     <string name="error_failed_to_accept_terms_and_conditions">Αποτυχία αποδοχής όρων και προϋποθέσεων</string>
@@ -585,8 +585,8 @@
     <string name="error_fail_to_update_avatar">Αποτυχία ενημέρωσης εικονιδίου</string>
     <string name="error_fail_to_update_cover_photo">Αποτυχία ενημέρωσης φωτογραφίας εξωφύλλου</string>
     <string name="error_fail_to_load_videos">Αποτυχία φόρτωσης βίντεο</string>
-    <string name="error_fail_to_like_item">Αποτυχία \'μου αρέσει\' αντικειμένου</string>
-    <string name="error_fail_to_unlike_item">Αποτυχία \'δεν μου αρέσει\' αντικειμένου</string>
+    <string name="error_fail_to_like_item">Αποτυχία \'Μου αρέσει\' αντικειμένου</string>
+    <string name="error_fail_to_unlike_item">Αποτυχία \'Δεν μου αρέσει\' αντικειμένου</string>
     <string name="error_fail_to_mark_notification">Αποτυχία επισήμανσης ειδοποίησης</string>
     <string name="error_fail_to_mark_notifications">Αποτυχία επισήμανσης ειδοποιήσεων</string>
     <string name="tag_people">Επισήμανση ατόμων</string>

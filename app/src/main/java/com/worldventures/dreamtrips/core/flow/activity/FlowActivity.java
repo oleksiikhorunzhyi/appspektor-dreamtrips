@@ -190,6 +190,10 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
         Path path = traversal.destination.top();
         setNavigation(path);
         //
+        if (traversal.origin.top() instanceof AttributedPath) {
+            ((AttributedPath) traversal.origin.top()).onPreDispatch(this);
+        }
+        //
         weakHandler.post(() -> {
             doOnDispatch(traversal);
             container.dispatch(traversal, callback);

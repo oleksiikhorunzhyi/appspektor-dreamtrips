@@ -8,6 +8,7 @@ import android.util.Pair;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -61,31 +62,34 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         apiErrorPresenter.setView(getView());
-
+        //
         getView().getToggleObservable()
-                .skip(1)//skip emmit of initialization
+                .skip(1) //skip emit of initialization
                 .subscribe(offersOnly -> filterService.filterDataPipe().send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
-
         //
         connectService();
         connectFilterDataChanges();
         //
-        if (!initialized) {
-            locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
-                    .map(DtlLocationCommand::getResult)
-                    .compose(bindViewIoToMainComposer())
-                    .subscribe(location ->
-                            merchantService.merchantsActionPipe().send(DtlMerchantsAction.load(location.getCoordinates().asAndroidLocation()))
-                    );
-            initialized = true;
-        }
+        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+                .filter(command -> !this.initialized)
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(location -> {
+                            merchantService.merchantsActionPipe()
+                                    .send(DtlMerchantsAction.load(
+                                            location.getCoordinates().asAndroidLocation()));
+                            initialized = true;
+                        }
+                );
         //
-        if (!getView().isTabletLandscape())
-            filterService.filterMerchantsActionPipe().observeSuccess()
-                    .compose(bindViewIoToMainComposer())
-                    .map(DtlFilterMerchantsAction::getResult)
-                    .subscribe(this::tryRedirectToLocation);
-
+        merchantService.merchantsActionPipe()
+                .observe()
+                .compose(bindViewIoToMainComposer())
+                .compose(JanetPlainActionComposer.instance())
+                .filter(action -> !getView().isTabletLandscape())
+                .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
+                .subscribe(s -> redirectToLocations());
+        //
         Observable.combineLatest(
                 locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
                         .map(DtlLocationCommand::getResult),
@@ -142,17 +146,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
-    private void tryRedirectToLocation(List<DtlMerchant> merchants) {
-        filterService.getFilterData()
-                .compose(bindViewIoToMainComposer())
-                .filter(dtlFilterData -> merchants.isEmpty())
-                .filter(dtlFilterData -> TextUtils.isEmpty(dtlFilterData.getSearchQuery()))
-                .filter(DtlFilterData::isDefault)
-                .subscribe(dtlFilterData ->
-                        Flow.get(getContext()).set(DtlLocationsPath.builder()
-                                .allowUserGoBack(true)
-                                .showNoMerchantsCaption(true)
-                                .build()));
+    private void redirectToLocations() {
+        Flow.get(getContext()).set(DtlLocationsPath.builder()
+                .allowUserGoBack(true)
+                .showNoMerchantsCaption(true)
+                .build());
     }
 
     @Override

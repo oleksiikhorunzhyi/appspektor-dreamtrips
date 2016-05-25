@@ -38,6 +38,8 @@ public interface DtlDetailsScreen extends DtlScreen {
 
     void setMerchant(DtlMerchant merchant);
 
+    void setMap(DtlMerchant merchant);
+
     void expandOffers(List<Integer> positions);
 
     List<Integer> getExpandedOffers();

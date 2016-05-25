@@ -30,18 +30,20 @@ public class DtlMapPath extends DtlDetailPath {
 
     @Override
     public void onPreDispatch(AppCompatActivity activity) {
-        /*
+        /**
          * We have problem with measuring new screen if old one has
          * {@link com.google.android.gms.maps.MapView MapView} or
          * {@link com.google.android.gms.maps.MapFragment MapFragment} <br />
          * Solution is to remove map prior to dispatch start as we do in this method. <br />
-         * NOTE: make sure that MapFragment is added <i><b>programmatically</i></b> to container <br />
-         * with tag {@link DtlMapScreenImpl#MAP_TAG}
+         * NOTE: make sure that MapFragment is added <i><b>programmatically</i></b> to container. <br />
          * @param traversal current traversal
          */
-        activity.getFragmentManager()
-                .beginTransaction()
-                .remove(activity.getFragmentManager().findFragmentByTag(DtlMapScreenImpl.MAP_TAG))
-                .commit();
+        if (activity.getFragmentManager().findFragmentByTag(DtlMapScreenImpl.MAP_TAG) != null) {
+            activity.getFragmentManager()
+                    .beginTransaction()
+                    .remove(activity.getFragmentManager()
+                            .findFragmentByTag(DtlMapScreenImpl.MAP_TAG))
+                    .commit();
+        }
     }
 }

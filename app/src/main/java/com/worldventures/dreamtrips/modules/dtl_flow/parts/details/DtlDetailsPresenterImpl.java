@@ -93,6 +93,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     @Override
     public void onVisibilityChanged(int visibility) {
         super.onVisibilityChanged(visibility);
+        if (visibility == View.VISIBLE) {
+            getView().setMap(merchant);
+        }
         if (visibility == View.VISIBLE && !merchant.hasNoOffers()) {
             processTransaction();
         }

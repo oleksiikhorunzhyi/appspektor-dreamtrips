@@ -88,6 +88,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
     private GoogleMap googleMap;
+    private MapFragment mapFragment;
 
     public DtlMapScreenImpl(Context context) {
         super(context);
@@ -105,8 +106,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @Override
     protected void onPostAttachToWindowView() {
         checkMapAvailable();
-        prepareMap();
         prepareView();
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == VISIBLE) prepareMap();
     }
 
     @Override
@@ -161,26 +167,28 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     protected void prepareMap() {
-        MapFragment mapFragment = MapFragment.newInstance();
-        getActivity().getFragmentManager()
-                .beginTransaction()
-                .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
-                .commit();
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(map -> {
-                googleMap = map;
-                googleMap.setMyLocationEnabled(true);
-                MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16,
-                        RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
-                onMapLoaded();
-            });
-            mapTouchView.setOnTouchListener((v, event) -> {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    hideInfoIfShown();
-                }
-                return false;
-            });
+        mapFragment = (MapFragment) getActivity().getFragmentManager()
+                .findFragmentByTag(MAP_TAG);
+        if (mapFragment == null || !mapFragment.isAdded()) {
+            mapFragment = MapFragment.newInstance();
+            getActivity().getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
+                    .commit();
         }
+        mapFragment.getMapAsync(map -> {
+            googleMap = map;
+            googleMap.setMyLocationEnabled(true);
+            MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16,
+                    RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
+            onMapLoaded();
+        });
+        mapTouchView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                hideInfoIfShown();
+            }
+            return false;
+        });
     }
 
     private void destroyMap() {

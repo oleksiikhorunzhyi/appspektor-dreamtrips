@@ -46,7 +46,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl;
 import com.worldventures.dreamtrips.util.ImageTextItem;
 import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
@@ -66,6 +65,8 @@ public class DtlDetailsScreenImpl
 
     private final static float MERCHANT_MAP_ZOOM = 15f;
 
+    public static final String MAP_TAG = "MAP_DETAILS_TAG";
+
     @Inject ActivityResultDelegate activityResultDelegate;
     @Inject Router router;
     //
@@ -77,7 +78,6 @@ public class DtlDetailsScreenImpl
     //
     MerchantOffersInflater merchantDataInflater;
     MerchantDataInflater merchantInfoInflater;
-    MapFragment destinationMap;
     DtlMerchant merchant;
 
     @Override
@@ -127,8 +127,24 @@ public class DtlDetailsScreenImpl
         //
         setContacts();
         setLocation();
-        setMap();
         setClicks();
+    }
+
+    @Override
+    public void setMap(DtlMerchant merchant) {
+        GoogleMapOptions mapOptions = new GoogleMapOptions();
+        mapOptions.liteMode(true);
+        //
+        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
+                .findFragmentByTag(MAP_TAG);
+        if (mapFragment == null || !mapFragment.isAdded()) {
+            mapFragment = MapFragment.newInstance(mapOptions);
+            getActivity().getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.merchant_details_map, mapFragment, MAP_TAG)
+                    .commit();
+        }
+        mapFragment.getMapAsync(this::bindMap);
     }
 
     @Override
@@ -170,20 +186,6 @@ public class DtlDetailsScreenImpl
         if (contact.type.equals(ImageTextItem.Type.ADDRESS))
             getPresenter().routeToMerchantRequested(contact.intent);
         else getContext().startActivity(contact.intent);
-    }
-
-    private void setMap() {
-        GoogleMapOptions mapOptions = new GoogleMapOptions();
-        mapOptions.liteMode(true);
-        //
-        if (destinationMap == null || !destinationMap.isAdded()) {
-            destinationMap = MapFragment.newInstance(mapOptions);
-            getActivity().getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.merchant_details_map, destinationMap, DtlMapScreenImpl.MAP_TAG)
-                    .commit();
-        }
-        destinationMap.getMapAsync(this::bindMap);
     }
 
     public void bindMap(GoogleMap map) {

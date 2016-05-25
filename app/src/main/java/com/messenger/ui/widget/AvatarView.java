@@ -11,6 +11,8 @@ import android.util.TypedValue;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 
+import timber.log.Timber;
+
 /**
  * Class for displaying online status indicator on the top of the rim of the rounded avatar.
  * If no online indicator is needed plain RoundedImageView can be used instead.
@@ -44,7 +46,7 @@ public class AvatarView extends SimpleDraweeView {
             }
             onlineIndicatorSize = a.getDimensionPixelSize(R.styleable.AvatarView_av_online_indicator_size, 0);
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e, "");
         } finally {
             a.recycle();
         }

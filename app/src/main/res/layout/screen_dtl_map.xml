@@ -63,49 +63,41 @@
         android:orientation="vertical"
         >
 
-        <!-- TODO add new filter bar here once PR with it is merged -->
+        <include layout="@layout/map_fragment_with_info" />
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/redo_merchants"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_margin="16dp"
+            android:minHeight="48dp"
+            android:visibility="gone"
+            tools:visibility="visible"
             >
 
-            <include layout="@layout/fragment_map_with_info" />
-
-            <FrameLayout
-                android:id="@+id/redo_merchants"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/redo_merchants_button"
+                style="@style/DtlButtonTheme"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_margin="16dp"
-                android:minHeight="48dp"
+                android:text="@string/dtl_load_merchants_here_button_caption"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                tools:visibility="visible"
+                />
+
+            <ProgressBar
+                android:id="@+id/redo_merchants_progress"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginLeft="12dp"
+                android:theme="@style/Theme.DreamTripsTheme.Progress.White"
                 android:visibility="gone"
                 tools:visibility="visible"
-                >
-
-                <Button
-                    android:id="@+id/redo_merchants_button"
-                    style="@style/DtlButtonTheme"
-                    android:layout_width="230dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dtl_load_merchants_here_button_caption"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    tools:visibility="visible"
-                    />
-
-                <ProgressBar
-                    android:id="@+id/redo_merchants_progress"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical|start"
-                    android:layout_marginLeft="12dp"
-                    android:theme="@style/Theme.DreamTripsTheme.Progress.White"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    />
-            </FrameLayout>
+                />
         </FrameLayout>
     </LinearLayout>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl>

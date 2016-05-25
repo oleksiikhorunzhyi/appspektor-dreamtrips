@@ -18,7 +18,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -65,6 +65,8 @@ public class DtlDetailsScreenImpl
 
     private final static float MERCHANT_MAP_ZOOM = 15f;
 
+    public static final String MAP_TAG = "MAP_DETAILS_TAG";
+
     @Inject ActivityResultDelegate activityResultDelegate;
     @Inject Router router;
     //
@@ -76,7 +78,6 @@ public class DtlDetailsScreenImpl
     //
     MerchantOffersInflater merchantDataInflater;
     MerchantDataInflater merchantInfoInflater;
-    SupportMapFragment destinationMap;
     DtlMerchant merchant;
 
     @Override
@@ -126,8 +127,24 @@ public class DtlDetailsScreenImpl
         //
         setContacts();
         setLocation();
-        setMap();
         setClicks();
+    }
+
+    @Override
+    public void setMap(DtlMerchant merchant) {
+        GoogleMapOptions mapOptions = new GoogleMapOptions();
+        mapOptions.liteMode(true);
+        //
+        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
+                .findFragmentByTag(MAP_TAG);
+        if (mapFragment == null || !mapFragment.isAdded()) {
+            mapFragment = MapFragment.newInstance(mapOptions);
+            getActivity().getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.merchant_details_map, mapFragment, MAP_TAG)
+                    .commit();
+        }
+        mapFragment.getMapAsync(this::bindMap);
     }
 
     @Override
@@ -169,21 +186,6 @@ public class DtlDetailsScreenImpl
         if (contact.type.equals(ImageTextItem.Type.ADDRESS))
             getPresenter().routeToMerchantRequested(contact.intent);
         else getContext().startActivity(contact.intent);
-    }
-
-    private void setMap() {
-        GoogleMapOptions mapOptions = new GoogleMapOptions();
-        mapOptions.liteMode(true);
-        //
-        if (destinationMap != null && destinationMap.isAdded()) return;
-
-        destinationMap = SupportMapFragment.newInstance(mapOptions);
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.merchant_details_map, destinationMap)
-                .commit();
-        //
-        destinationMap.getMapAsync(this::bindMap);
     }
 
     public void bindMap(GoogleMap map) {

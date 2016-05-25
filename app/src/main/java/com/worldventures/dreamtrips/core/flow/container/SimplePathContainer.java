@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.crashlytics.android.Crashlytics;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.flow.animation.AnimatorFactory;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
@@ -34,6 +35,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.animation.DtlAnimatorRegistrar;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import flow.Flow;
@@ -42,6 +44,7 @@ import flow.path.Path;
 import flow.path.PathContainer;
 import flow.path.PathContext;
 import flow.path.PathContextFactory;
+import timber.log.Timber;
 
 /**
  * Provides basic right-to-left transitions. Saves and restores view state.
@@ -121,6 +124,13 @@ public class SimplePathContainer extends PathContainer {
                     animator.start();
                 }), view -> {
                     finalizeViewTransition(containerView, fromView, pathContext, oldPath, callback);
+                    String logMessage = String.format(Locale.US,
+                            "Measuring new view failed: fromView = %s, newView = ",
+                            fromView.getClass(), newView.getClass());
+                    Timber.e(logMessage);
+                    Crashlytics.log(logMessage);
+                    Crashlytics.logException(new IllegalStateException("Measuring view failed"));
+                    // possible recovery from unmeasured view
                     containerView.addView(fromView);
                     containerView.removeAllViews();
                     containerView.addView(newView);

@@ -16,6 +16,7 @@
 
 package com.worldventures.dreamtrips.core.flow.util;
 
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -33,7 +34,8 @@ public final class Utils {
         waitForMeasure(view, callback, null);
     }
 
-    public static void waitForMeasure(final View view, final OnMeasuredCallback callback, final OnMeasureFailCallback failCallback) {
+    public static void waitForMeasure(final View view, final OnMeasuredCallback callback,
+                                      @Nullable final OnMeasureFailCallback failCallback) {
         int width = view.getWidth();
         int height = view.getHeight();
         if (width > 0 || height > 0) {

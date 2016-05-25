@@ -154,17 +154,19 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     protected Observable<Boolean> showingLoadMerchantsButton() {
         return MapObservableFactory.createCameraChangeObservable(getView().getMap())
                 .doOnNext(position -> getView().cameraPositionChange(position))
-                .doOnNext(position -> db.saveLastMapCameraPosition(new Location(position.target.latitude, position.target.longitude)))
+                .doOnNext(position ->
+                        db.saveLastMapCameraPosition(new Location(position.target.latitude,
+                                position.target.longitude)))
                 .flatMap(position -> {
                     if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
                         return just(true);
                     }
                     return locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+                            .compose(bindViewIoToMainComposer())
                             .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE,
                                     command.getResult().getCoordinates().asLatLng(),
                                     position.target, DistanceType.MILES));
-                })
-                .compose(bindView());
+                });
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
@@ -236,7 +238,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         //
         checkPendingMapInfo();
         gpsLocationDelegate.getLastKnownLocation()
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(location -> tryHideMyLocationButton(false),
                         throwable -> tryHideMyLocationButton(true));
     }

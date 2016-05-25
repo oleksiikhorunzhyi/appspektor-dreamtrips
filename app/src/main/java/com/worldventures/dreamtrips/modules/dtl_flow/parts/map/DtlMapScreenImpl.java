@@ -7,13 +7,16 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -42,7 +45,6 @@ import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
 import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.trips.view.custom.ToucheableMapView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -60,11 +62,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     protected static final int CAMERA_DURATION = 1000;
 
-    @InjectView(R.id.map)
-    ToucheableMapView mapView;
-    @InjectView(R.id.container_info)
+    public static final String MAP_TAG = "MAP_TAG";
+
+    @InjectView(R.id.mapTouchView)
+    View mapTouchView;
+    @InjectView(R.id.infoContainer)
     FrameLayout infoContainer;
-    @InjectView(R.id.container_no_google)
+    @InjectView(R.id.noGoogleContainer)
     FrameLayout noGoogleContainer;
     @InjectView(R.id.dtlToolbar)
     DtlToolbar dtlToolbar;
@@ -84,6 +88,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
     private GoogleMap googleMap;
+    private MapFragment mapFragment;
 
     public DtlMapScreenImpl(Context context) {
         super(context);
@@ -101,8 +106,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @Override
     protected void onPostAttachToWindowView() {
         checkMapAvailable();
-        prepareMap();
         prepareView();
+    }
+
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == VISIBLE) prepareMap();
     }
 
     @Override
@@ -114,8 +124,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     protected void prepareView() {
         initToolbar();
         initToggle();
-        //
-        MapViewUtils.setLocationButtonGravity(mapView, 16, RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
     }
 
     private void initToggle() {
@@ -151,21 +159,35 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     private void checkMapAvailable() {
-        if (MapsInitializer.initialize(getContext()) == 0) {
-            mapView.onCreate(null);
-            mapView.onResume();
-        } else {
-            mapView.setVisibility(View.GONE);
+        if (MapsInitializer.initialize(getActivity())
+                != ConnectionResult.SUCCESS) {
+            destroyMap();
             noGoogleContainer.setVisibility(View.VISIBLE);
         }
     }
 
     protected void prepareMap() {
-        mapView.getMapAsync(map -> {
+        mapFragment = (MapFragment) getActivity().getFragmentManager()
+                .findFragmentByTag(MAP_TAG);
+        if (mapFragment == null || !mapFragment.isAdded()) {
+            mapFragment = MapFragment.newInstance();
+            getActivity().getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
+                    .commit();
+        }
+        mapFragment.getMapAsync(map -> {
             googleMap = map;
             googleMap.setMyLocationEnabled(true);
-            mapView.setMapTouchListener(this::onMapTouched);
+            MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16,
+                    RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
             onMapLoaded();
+        });
+        mapTouchView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                hideInfoIfShown();
+            }
+            return false;
         });
     }
 
@@ -173,9 +195,13 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         if (googleMap != null) {
             googleMap = null;
         }
-        if (mapView != null) {
-            mapView.onPause();
-            mapView.onDestroy();
+        android.app.Fragment fragment = getActivity().getFragmentManager()
+                .findFragmentByTag(MAP_TAG);
+        if (fragment != null) {
+            getActivity().getFragmentManager()
+                    .beginTransaction()
+                    .remove(fragment)
+                    .commit();
         }
     }
 
@@ -359,10 +385,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         });
         //
         getPresenter().onMapLoaded();
-    }
-
-    private void onMapTouched() {
-        hideInfoIfShown();
     }
 
     private void hideInfoIfShown() {

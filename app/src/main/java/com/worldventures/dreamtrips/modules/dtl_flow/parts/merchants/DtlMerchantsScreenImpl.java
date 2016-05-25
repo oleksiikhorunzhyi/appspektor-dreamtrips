@@ -84,7 +84,8 @@ public class DtlMerchantsScreenImpl
         // we use SwipeRefreshLayout only for loading indicator - disable manual triggering by user
         refreshLayout.setEnabled(false);
         //
-        ViewUtils.setViewVisibility(isTabletLandscape() ? View.GONE : View.VISIBLE, filterRoot); // TODO :: fix after DT-1718 finished
+        // TODO :: line below: fix after DT-1718 finished (new search for tablets)
+        ViewUtils.setViewVisibility(isTabletLandscape() ? View.GONE : View.VISIBLE, filterRoot);
     }
 
     private void initDtlToolbar() {

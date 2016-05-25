@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
 import com.messenger.ui.util.chat.ChatTimestampProvider;
 import com.messenger.ui.util.chat.anim.SlideDownAnimator;
@@ -20,6 +21,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
 public class ChatTimestampInflater {
 
     private RecyclerView.Adapter adapter;
@@ -27,8 +31,8 @@ public class ChatTimestampInflater {
     ChatTimestampProvider timestampProvider;
 
     private List<TimestampAnimator> pendingAnimators = new ArrayList<>();
-
     private int manualTimestampPosition = -1;
+    private PublishSubject<Integer> clickedTimestampPositionsObservable = PublishSubject.create();
 
     public ChatTimestampInflater(RecyclerView.Adapter adapter) {
         this.adapter = adapter;
@@ -44,13 +48,14 @@ public class ChatTimestampInflater {
         boolean manualTimestamp = manualTimestampPosition == position;
         boolean automaticTimestamp = timestampProvider.shouldShowAutomaticTimestamp(cursor);
 
-        TextView dateTextView = holder.dateTextView;
         holder.getTimestampClickableView().setOnClickListener(view -> {
-            if (manualTimestamp || !automaticTimestamp) {
-                showManualTimestampForPosition(position);
+            if ((manualTimestamp || !automaticTimestamp)) {
+                clickedTimestampPositionsObservable.onNext(position);
             }
+
         });
 
+        TextView dateTextView = holder.dateTextView;
         if (!runPendingAnimations(cursor, position, dateTextView)) {
             bindNonAnimatedTimestampIfNeeded(timestampProvider.getTimestamp(cursor),
                     manualTimestamp, automaticTimestamp, dateTextView);
@@ -73,7 +78,7 @@ public class ChatTimestampInflater {
         return false;
     }
 
-    private void showManualTimestampForPosition(int position) {
+    public void showManualTimestampForPosition(int position) {
         if (position == manualTimestampPosition) {
             removeTimestamp();
         } else {
@@ -109,5 +114,9 @@ public class ChatTimestampInflater {
         } else {
             dateTextView.setVisibility(View.GONE);
         }
+    }
+
+    public PublishSubject<Integer> getClickedTimestampPositionsObservable() {
+        return clickedTimestampPositionsObservable;
     }
 }

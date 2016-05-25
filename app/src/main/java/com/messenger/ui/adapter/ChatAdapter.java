@@ -26,6 +26,8 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
         super(cursor);
         injector.inject(this);
         chatTimestampInflater = new ChatTimestampInflater(this);
+        chatTimestampInflater.getClickedTimestampPositionsObservable()
+                .subscribe(position -> cellDelegate.onTimestampViewClicked(position));
         injector.inject(chatTimestampInflater);
     }
 
@@ -60,5 +62,9 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
 
     public void setConversation(DataConversation conversation) {
         this.dataConversation = conversation;
+    }
+
+    public void refreshTimestampView(int position) {
+        chatTimestampInflater.showManualTimestampForPosition(position);
     }
 }

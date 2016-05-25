@@ -189,6 +189,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     private ChatCellDelegate chatCellDelegate = new ChatCellDelegate() {
+
+        @Override
+        public void onTimestampViewClicked(int position) {
+            getPresenter().onTimestampViewClicked(position);
+        }
+
         @Override
         public void onAvatarClicked(DataUser dataUser) {
             getPresenter().openUserProfile(dataUser);
@@ -400,6 +406,16 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         super.onRestoreInstanceState(state);
         flaggingView.onRestoreInstanceState(state);
     }
+
+    ////////////////////////////////////////
+    /////// Timestamp
+    ////////////////////////////////////////
+
+    @Override
+    public void refreshChatTimestampView(int position) {
+        adapter.refreshTimestampView(position);
+    }
+
 
     ////////////////////////////////////////
     /////// Photo picking

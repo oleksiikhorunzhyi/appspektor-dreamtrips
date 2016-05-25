@@ -10,6 +10,8 @@ import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
+import com.techery.spares.module.Injector;
+import com.techery.spares.module.qualifier.ForApplication;
 
 import java.util.Collections;
 import java.util.List;

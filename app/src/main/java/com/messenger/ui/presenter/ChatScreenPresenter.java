@@ -33,5 +33,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
     void onRevertTranslate(DataMessage message);
 
     void onStartNewChatForMessageOwner(DataMessage message);
+
+    void onTimestampViewClicked(int position);
 }
 

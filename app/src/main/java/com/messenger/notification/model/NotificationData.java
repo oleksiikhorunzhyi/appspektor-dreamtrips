@@ -5,12 +5,14 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 
+import org.jetbrains.annotations.Nullable;
+
 public interface NotificationData {
     DataConversation getConversation();
 
     DataMessage getMessage();
 
-    DataAttachment getAttachment();
+    @Nullable DataAttachment getAttachment();
 
     DataUser getSender();
 }

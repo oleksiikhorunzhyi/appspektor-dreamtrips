@@ -4,6 +4,8 @@ package com.messenger.ui.dialog;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 
+import com.worldventures.dreamtrips.R;
+
 import rx.functions.Action0;
 
 public class LeaveChatDialog {
@@ -15,11 +17,11 @@ public class LeaveChatDialog {
 
     public LeaveChatDialog(Context context, String message) {
         dialog = new AlertDialog.Builder(context)
-                .setNegativeButton(android.R.string.cancel, (dialog, which1) -> {
+                .setNegativeButton(R.string.action_cancel, (dialog, which1) -> {
                     if (negativeListener != null)
                         negativeListener.call();
                 })
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                .setPositiveButton(R.string.ok, (dialog, which) -> {
                     if (positiveListener != null)
                         positiveListener.call();
                 })

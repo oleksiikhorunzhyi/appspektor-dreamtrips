@@ -12,7 +12,7 @@ import rx.schedulers.Schedulers;
 public abstract class XmppChat implements Chat {
 
     protected final XmppServerFacade facade;
-    protected String roomId;
+    protected final String roomId;
 
     public XmppChat(XmppServerFacade facade, String roomId) {
         this.facade = facade;

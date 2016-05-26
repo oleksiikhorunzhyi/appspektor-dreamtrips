@@ -1,6 +1,5 @@
 package com.messenger.messengerservers.xmpp.chats;
 
-import android.text.TextUtils;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -29,11 +28,12 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class XmppGroupChat extends XmppChat implements GroupChat {
+
     private final String userId;
+    private final ChatPreconditions chatPreconditions;
 
     private final Action1<Throwable> defaultOnErrorAction = throwable -> Timber.e(throwable, "");
     private final Action1<Object> defaultOnNextAction = o -> {};
-    private final ChatPreconditions chatPreconditions;
 
     public XmppGroupChat(XmppServerFacade facade, String roomId, boolean isOwner) {
         super(facade, roomId);
@@ -51,13 +51,13 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
         MultiUserChat chat = MultiUserChatManager
                 .getInstanceFor(connection).getMultiUserChat(jid);
 
-        if (!chat.isJoined()) {
-            try {
-                chat.createOrJoin(userId);
-            } catch (IllegalStateException | XMPPException.XMPPErrorException | SmackException e) {
-                Timber.e(e, "SetConnection");
-            }
+        if (chat.isJoined()) return chat;
+        try {
+            chat.createOrJoin(userId);
+        } catch (IllegalStateException | XMPPException.XMPPErrorException | SmackException e) {
+            Timber.e(e, "SetConnection");
         }
+
         return chat;
     }
 
@@ -119,9 +119,10 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
     }
 
     private void sendLeaveStanza(XMPPConnection connection, MultiUserChat chat, Subscriber subscriber) {
+        LeavePresence leavePresence = new LeavePresence();
+        leavePresence.setTo(chat.getRoom() + "/" + chat.getNickname());
+
         try {
-            LeavePresence leavePresence = new LeavePresence();
-            leavePresence.setTo(chat.getRoom() + "/" + chat.getNickname());
             connection.sendStanza(leavePresence);
             subscriber.onCompleted();
         } catch (SmackException.NotConnectedException e) {
@@ -129,16 +130,12 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
         }
     }
 
-
     @Override
     public Observable<GroupChat> setSubject(String subject) {
         chatPreconditions.checkUserIsOwner();
 
-        return chatActionObservable(chat -> {
-            if (!TextUtils.isEmpty(subject) && TextUtils.getTrimmedLength(subject) > 0) {
-                chat.changeSubject(subject);
-            }
-        }).map(aVoid -> XmppGroupChat.this);
+        return chatActionObservable(chat -> chat.changeSubject(subject))
+                .map(aVoid -> XmppGroupChat.this);
     }
 
     @Override
@@ -153,10 +150,8 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
         }).map(aVoid -> XmppGroupChat.this);
     }
 
-
     private Observable<Void> chatActionObservable(ChatAction chatAction) {
-        return provideChatObservable()
-                .take(1)
+        return provideChatObservable().take(1)
                 .flatMap(chat -> Observable.create(subscriber -> {
                     try {
                         chatAction.call(chat);
@@ -171,7 +166,6 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
     }
 
     private interface ChatAction {
-
         void call(MultiUserChat chat) throws XMPPException.XMPPErrorException, SmackException;
     }
 }

@@ -154,7 +154,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                         .onSuccess(action -> {
                             if (action.getResult() != null) {
                                 DtlTransaction dtlTransaction = action.getResult();
-                                photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
+                                if (dtlTransaction.getUploadTask() != null) {
+                                    photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
+                                }
                                 transactionService.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
                                 getView().openTransaction(merchant, dtlTransaction);
                                 TrackingHelper.dtlEarnView();

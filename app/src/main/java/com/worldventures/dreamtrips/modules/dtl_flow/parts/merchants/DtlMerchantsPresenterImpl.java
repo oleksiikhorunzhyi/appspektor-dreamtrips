@@ -116,11 +116,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     private void connectService() {
-        merchantService.merchantsActionPipe()//for progress
+        merchantService.merchantsActionPipe()
                 .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlMerchantsAction>()
-                        .onStart(action -> getView().showProgress()));
+                        .onStart(action -> getView().showProgress())
+                        .onFail(apiErrorPresenter::handleActionError));
 
         filterService.filterMerchantsActionPipe()//observe data
                 .observeWithReplay()

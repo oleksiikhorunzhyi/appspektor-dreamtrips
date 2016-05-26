@@ -1,13 +1,11 @@
 package com.messenger.messengerservers.xmpp.chats;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.chat.SingleUserChat;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.StatusMessageStanza;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
-import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -21,7 +19,7 @@ import rx.Observable;
 public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
     private final String companionId;
 
-    public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String roomId) {
+    public XmppSingleUserChat(final XmppServerFacade facade, @NonNull String companionId, @NonNull String roomId) {
         super(facade, roomId);
         this.companionId = companionId;
     }
@@ -53,25 +51,11 @@ public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
     }
 
     private Chat createChat(@NonNull XMPPConnection connection) {
-        String userJid = facade.getUsername();
-        String companionJid = null;
-
-        if (companionId != null) {
-            companionJid = JidCreatorHelper.obtainUserJid(companionId);
-        }
-        if (roomId == null) {
-            if (companionJid == null) throw new Error();
-            roomId = ThreadCreatorHelper.obtainThreadSingleChatFromJids(userJid, companionJid);
-        }
-
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         Chat chat = chatManager.getThreadChat(roomId);
 
         if (chat == null) {
-            if (companionJid == null) {
-                companionJid = ThreadCreatorHelper.obtainCompanionFromSingleChat(roomId, userJid);
-            }
-            chat = chatManager.createChat(companionJid, roomId, null);
+            chat = chatManager.createChat(JidCreatorHelper.obtainUserJid(companionId), roomId, null);
         }
 
         return chat;

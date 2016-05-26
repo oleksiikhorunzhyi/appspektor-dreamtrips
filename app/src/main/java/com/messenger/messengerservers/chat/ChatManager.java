@@ -1,14 +1,14 @@
 package com.messenger.messengerservers.chat;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import rx.Observable;
 
 public interface ChatManager {
 
-    SingleUserChat createSingleUserChat(@Nullable String companionId, @Nullable String conversationId);
+    SingleUserChat createSingleUserChat(@NonNull String companionId, @NonNull String conversationId);
 
-    GroupChat createGroupChat(@Nullable String roomId, String ownerId);
+    GroupChat createGroupChat(@NonNull String roomId, String ownerId);
 
-    Observable<GroupChat> createGroupChatObservable(@Nullable String roomId, String ownerId);
+    Observable<GroupChat> createGroupChatObservable(@NonNull String roomId, String ownerId);
 }

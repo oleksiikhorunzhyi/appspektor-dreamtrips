@@ -12,7 +12,6 @@ import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import java.util.List;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;

@@ -110,12 +110,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if (visibility == VISIBLE) prepareMap();
-    }
-
-    @Override
     protected void onDetachedFromWindow() {
         destroyMap();
         super.onDetachedFromWindow();
@@ -166,7 +160,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         }
     }
 
-    protected void prepareMap() {
+    @Override
+    public void prepareMap() {
         mapFragment = (MapFragment) getActivity().getFragmentManager()
                 .findFragmentByTag(MAP_TAG);
         if (mapFragment == null || !mapFragment.isAdded()) {
@@ -178,6 +173,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         }
         mapFragment.getMapAsync(map -> {
             googleMap = map;
+            googleMap.clear();
             googleMap.setMyLocationEnabled(true);
             MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16,
                     RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -378,9 +374,10 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         clusterManager.setOnClusterClickListener(cluster -> {
             if (googleMap.getCameraPosition().zoom >= 17.0f) {
                 getPresenter().onMarkerClick(Queryable.from(cluster.getItems()).first().getId());
-            } else googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
-                    googleMap.getCameraPosition().zoom + 1.0f), MapViewUtils.MAP_ANIMATION_DURATION, null);
-
+            } else {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
+                        googleMap.getCameraPosition().zoom + 1.0f), MapViewUtils.MAP_ANIMATION_DURATION, null);
+            }
             return true;
         });
         //

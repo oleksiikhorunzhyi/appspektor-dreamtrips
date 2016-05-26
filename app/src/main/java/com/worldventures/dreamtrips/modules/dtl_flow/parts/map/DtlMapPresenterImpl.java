@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 
 import android.content.Context;
 import android.util.Pair;
+import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
@@ -92,6 +93,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         //
         updateToolbarTitle();
         updateFilterButtonState();
+    }
+
+    @Override
+    public void onVisibilityChanged(int visibility) {
+        super.onVisibilityChanged(visibility);
+        if (visibility == View.VISIBLE) getView().prepareMap();
     }
 
     protected void connectService() {

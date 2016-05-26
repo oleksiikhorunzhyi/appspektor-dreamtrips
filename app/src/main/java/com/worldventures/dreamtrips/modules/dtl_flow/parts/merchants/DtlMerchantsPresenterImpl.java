@@ -88,7 +88,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .compose(JanetPlainActionComposer.instance())
                 .filter(action -> !getView().isTabletLandscape())
                 .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
-                .subscribe(s -> redirectToLocations());
+                .subscribe(s -> redirectToLocations(), e -> {});
         //
         Observable.combineLatest(
                 locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
@@ -100,11 +100,10 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .subscribe(pair -> {
                     getView().updateToolbarTitle(pair.first, pair.second);
                 });
-
+        //
         filterService.getFilterData()
                 .map(DtlFilterData::isOffersOnly)
                 .subscribe(getView()::toggleDiningFilterSwitch);
-
     }
 
     private void connectFilterDataChanges() {

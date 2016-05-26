@@ -57,10 +57,9 @@
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         >
 
         <include layout="@layout/map_fragment_with_info" />
@@ -84,7 +83,6 @@
                 android:text="@string/dtl_load_merchants_here_button_caption"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                tools:visibility="visible"
                 />
 
             <ProgressBar
@@ -99,5 +97,5 @@
                 tools:visibility="visible"
                 />
         </FrameLayout>
-    </LinearLayout>
+    </FrameLayout>
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl>

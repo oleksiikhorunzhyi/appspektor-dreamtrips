@@ -130,10 +130,6 @@ public class SimplePathContainer extends PathContainer {
                     Timber.e(logMessage);
                     Crashlytics.log(logMessage);
                     Crashlytics.logException(new IllegalStateException("Measuring view failed"));
-                    // possible recovery from unmeasured view
-                    containerView.addView(fromView);
-                    containerView.removeAllViews();
-                    containerView.addView(newView);
                 }
         );
     }

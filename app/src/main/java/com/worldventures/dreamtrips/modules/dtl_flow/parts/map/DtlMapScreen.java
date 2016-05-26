@@ -18,6 +18,8 @@ public interface DtlMapScreen extends DtlScreen {
 
     GoogleMap getMap();
 
+    void prepareMap();
+
     void showProgress(boolean show);
 
     void addLocationMarker(LatLng location);

@@ -167,7 +167,7 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
                                 selectedAction.apply(i);
                                 materialDialog.dismiss();
                             })
-                    .negativeText(R.string.cancel)
+                    .negativeText(R.string.action_cancel)
                     .show();
         }
     }

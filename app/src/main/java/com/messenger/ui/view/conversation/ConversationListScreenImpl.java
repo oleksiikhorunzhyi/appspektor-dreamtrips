@@ -211,7 +211,7 @@ public class ConversationListScreenImpl extends MessengerPathLayout<Conversation
                             presenter.onDeletionConfirmed(conversation);
                             swipeableAdapterManager.closeAllItems();
                         })
-                .setNeutralButton(R.string.cancel, (d, i) -> swipeableAdapterManager.closeAllItems())
+                .setNeutralButton(R.string.action_cancel, (d, i) -> swipeableAdapterManager.closeAllItems())
                 .show();
     }
 

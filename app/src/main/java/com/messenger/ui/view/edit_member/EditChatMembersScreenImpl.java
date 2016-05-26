@@ -165,7 +165,7 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     @Override
     public void showDeletionConfirmationDialog(DataUser user) {
         new AlertDialog.Builder(getContext())
-                .setNegativeButton(android.R.string.cancel, (dialogInterface, i)
+                .setNegativeButton(R.string.action_cancel, (dialogInterface, i)
                         -> swipeableAdapterManager.closeAllItems())
                 .setPositiveButton(R.string.edit_chat_dialog_confirm_user_deletion_button_delete, (dialog1, which1) -> {
                     getPresenter().onDeleteUserFromChatConfirmed(user);

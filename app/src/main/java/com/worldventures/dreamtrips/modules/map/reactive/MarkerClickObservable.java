@@ -35,7 +35,7 @@ public class MarkerClickObservable implements Observable.OnSubscribe<Marker> {
         subscriber.add(new MainThreadSubscription() {
             @Override
             protected void onUnsubscribe() {
-                map.setOnCameraChangeListener(null);
+                map.setOnMarkerClickListener(null);
             }
         });
     }

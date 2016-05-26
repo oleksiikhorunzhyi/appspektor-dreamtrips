@@ -26,14 +26,13 @@ import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
 import com.messenger.ui.util.ChatContextualMenuProvider;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegateImpl;
+import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
 import com.messenger.ui.view.chat.ChatScreenImpl;
 import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
 import com.messenger.ui.view.settings.GroupChatSettingsScreenImpl;
 import com.messenger.ui.view.settings.TripChatSettingsScreenImpl;
 import com.messenger.ui.widget.MessengerPhotoPickerLayout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -63,6 +62,7 @@ import dagger.Provides;
 
                 ChatLeavingDelegate.class,
                 ChatAdapter.class,
+                ChatTimestampInflater.class,
 
                 //presenters
                 MessengerActivityPresenter.class,

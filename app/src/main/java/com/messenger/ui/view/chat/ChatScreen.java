@@ -54,4 +54,6 @@ public interface ChatScreen extends MessengerScreen {
     void showPickLocationError();
 
     FlaggingView getFlaggingView();
+
+    void refreshChatTimestampView(int position);
 }

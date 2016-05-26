@@ -74,18 +74,6 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    UnhandledMessageWatcher provideUnhandledMessageWatcher(
-            AppNotification appNotification,
-            ChatMessagesEventDelegate chatMessagesEventDelegate,
-            ConversationsDAO conversationsDAO,
-            UsersDAO usersDAO,
-            ParticipantsDAO participantsDAO,
-            AttachmentDAO attachmentDAO,
-            OpenedConversationTracker openedConversationTracker) {
-        return new UnhandledMessageWatcher(appNotification, chatMessagesEventDelegate, openedConversationTracker, conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
-    }
-
-    @Provides
     LegacyPhotoPickerDelegate providePhotoPickerDelegate(@Global EventBus eventBus) {
         return new LegacyPhotoPickerDelegate(eventBus);
     }

@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@color/dtl_cities_background"
+        android:background="@color/white"
         fresco:actualImageScaleType="fitCenter"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
         fresco:placeholderImageScaleType="centerInside"

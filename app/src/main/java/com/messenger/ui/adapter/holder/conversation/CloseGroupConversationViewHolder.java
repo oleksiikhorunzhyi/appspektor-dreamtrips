@@ -2,12 +2,12 @@ package com.messenger.ui.adapter.holder.conversation;
 
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.messenger.entities.DataMessage;
-import com.messenger.entities.DataTranslation;
 import com.worldventures.dreamtrips.R;
 
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class CloseGroupConversationViewHolder extends GroupConversationViewHolder {
@@ -20,26 +20,26 @@ public class CloseGroupConversationViewHolder extends GroupConversationViewHolde
     public CloseGroupConversationViewHolder(View itemView) {
         super(itemView);
         itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
-        for (int i = 0; i < contentLayout.getChildCount(); i++) {
-            View child = contentLayout.getChildAt(i);
-            if (child.getId() != R.id.conversation_last_messages_layout) {
+        groupAvatarsView.setAlpha(CLOSED_CONVERSATION_ALPHA);
+        ViewGroup commonMessageViewsLayout = ButterKnife.findById(contentLayout, R.id.conversation_common_layout);
+        for (int i = 0; i < commonMessageViewsLayout.getChildCount(); i++) {
+            View child = commonMessageViewsLayout.getChildAt(i);
+            if (child.getId() != R.id.conversation_last_messages_date_and_count_layout) {
                 child.setAlpha(CLOSED_CONVERSATION_ALPHA);
             }
         }
-        lastMessageDateTextView.setTextColor(ContextCompat.getColor(context,
-                R.color.conversation_list_closed_conversation));
-        lastMessageDateTextView.setText(R.string.conversation_list_abandoned);
-        unreadMessagesCountTextView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void bindLastMessage(DataMessage message, String messageAuthor,
-                                String attachmentType, DataTranslation dataTranslation) {
-        //nothing to here now
     }
 
     @Override
     protected void updateUnreadCountTextView() {
-        //nothing to here now
+        unreadMessagesCountTextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void updateLastMessageDateTextView() {
+        // use last message date text view as "Closed" label
+        lastMessageDateTextView.setTextColor(ContextCompat.getColor(context,
+                R.color.conversation_list_closed_conversation));
+        lastMessageDateTextView.setText(R.string.conversation_list_abandoned);
     }
 }

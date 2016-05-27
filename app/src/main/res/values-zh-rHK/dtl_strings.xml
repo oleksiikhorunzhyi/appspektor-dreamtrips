@@ -10,6 +10,7 @@
     <string name="dtl_no_merchants_caption">這裡沒有商家</string>
     <string name="dtl_load_merchants_here_button_caption">重做商戶搜索</string>
     <string name="dtl_place_list_empty_text">沒有所選類型的地方</string>
+    <string name="dtl_location_no_merchants_caption">您附近沒有商家。\n 請輸入新城市或</string>
     <string name="dtl_points_estimation_calculate_button_caption">計算</string>
     <string name="dtl_points_estimation_input_hint">輸入金額</string>
     <string name="dtl_header">點數估計</string>

@@ -10,14 +10,14 @@ import com.worldventures.dreamtrips.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class CloseGroupConversationViewHolder extends GroupConversationViewHolder {
+public class ClosedGroupConversationViewHolder extends GroupConversationViewHolder {
 
     private static final float CLOSED_CONVERSATION_ALPHA = 0.3f;
 
     @InjectView(R.id.conversation_last_message_date_textview)
     TextView lastMessageDateTextView;
 
-    public CloseGroupConversationViewHolder(View itemView) {
+    public ClosedGroupConversationViewHolder(View itemView) {
         super(itemView);
         itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.conversation_list_read_conversation_bg));
         groupAvatarsView.setAlpha(CLOSED_CONVERSATION_ALPHA);

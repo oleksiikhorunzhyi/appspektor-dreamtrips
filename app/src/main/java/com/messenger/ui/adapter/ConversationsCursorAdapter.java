@@ -14,7 +14,7 @@ import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.adapter.holder.conversation.BaseConversationViewHolder;
-import com.messenger.ui.adapter.holder.conversation.CloseGroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.ClosedGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
@@ -106,7 +106,7 @@ public class ConversationsCursorAdapter
             case VIEW_TYPE_GROUP_CLOSE_CONVERSATION:
                 View closeGroupChatLayout = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_conversation_group, parent, false);
-                return new CloseGroupConversationViewHolder(closeGroupChatLayout);
+                return new ClosedGroupConversationViewHolder(closeGroupChatLayout);
         }
         throw new IllegalStateException("There is no such view type in adapter");
     }

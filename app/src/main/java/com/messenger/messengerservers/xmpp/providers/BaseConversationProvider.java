@@ -1,5 +1,7 @@
 package com.messenger.messengerservers.xmpp.providers;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -26,6 +28,19 @@ import java.util.List;
 import timber.log.Timber;
 
 public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<T> {
+    private static final String CONVERSATION = "chat";
+    private static final String CONVERSATION_THREAD = "thread";
+    private static final String CONVERSATION_UNREAD_COUNT = "unread-count";
+//    private static final String CONVERSATION_LEFT_TIME = "left-room-date";
+//    private static final String CONVERSATION_KICKED = "kicked";
+    private static final String CONVERSATION_TYPE = "type";
+    private static final String CONVERSATION_SUBJECT = "subject";
+
+    private static final String LAST_MESSAGE = "last-message";
+    private static final String LAST_MESSAGE_ID = "client_msg_id";
+    private static final String LAST_MESSAGE_TIME = "time";
+    private static final String LAST_MESSAGE_IS_UNREAD = "unread";
+    private static final String LAST_MESSAGE_FROM = "from";
 
     private final MessageBodyParser messageBodyParser;
 
@@ -36,103 +51,88 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
     @Override
     public T parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         List<Conversation> conversations = new ArrayList<>();
-
-        String thread = null;
-        String elementName;
-        Message.Builder messageBuilder = null;
-        Conversation.Builder conversationBuilder = null;
-
         boolean done = false;
         while (!done) {
             int eventType = parser.next();
-            elementName = parser.getName();
+            String elementName = parser.getName();
             switch (eventType) {
                 case XmlPullParser.START_TAG:
                     switch (elementName) {
-                        case "chat":
-                            thread = parser.getAttributeValue("", "thread");
-                            String type = getTypeByThread(thread);
-                            if (type == null) {
-                                type = parser.getAttributeValue("", "type");
-                            }
-                            String subject = parser.getAttributeValue("", "subject");
-                            String avatar = parser.getAttributeValue("", ChangeAvatarExtension.ELEMENT);
-
-                            // TODO: 4/28/16 Workaround for server bug:
-                            // "unread-count" is missing when getting single conversation details
-                            int unreadMessageCount;
-                            if (parser.getAttributeValue("", "unread-count") == null) {
-                                unreadMessageCount = 0;
-                            } else {
-                                unreadMessageCount = ParserUtils.getIntegerAttribute(parser, "unread-count");
-                            }
-
-                            conversationBuilder = new Conversation.Builder()
-                                    .id(thread)
-                                    .type(type.toLowerCase())
-                                    .subject(subject)
-                                    .avatar(avatar)
-                                    //// TODO: 1/19/16 set status depends on status will be sent in future
-                                    .status(ConversationStatus.PRESENT)
-                                    .unreadMessageCount(unreadMessageCount);
-                            break;
-                        case "last-message":
-                            long timestamp = ParserUtils.getLongAttribute(parser, "time");
-                            //noinspection all
-                            conversationBuilder.lastActiveDate(timestamp);
-
-                            Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
-                            String messageId = parser.getAttributeValue("", "client_msg_id");
-                            if (TextUtils.isEmpty(messageId)) {
-                                messageBuilder = null;
-                                continue;
-                            }
-                            String from = parser.getAttributeValue("", "from");
-                            // TODO: 4/28/16 Workaround for server bug:
-                            // domain name is missing from JID when getting single conversation details
-                            if (from.contains("@")) {
-                                from = JidCreatorHelper.obtainId(from);
-                            }
-
-                            messageBuilder = new Message.Builder()
-                                    .id(messageId)
-                                    .date(timestamp)
-                                    .fromId(from)
-                                    .status(unread != null && unread ? MessageStatus.SENT  : MessageStatus.READ)
-                                    .messageBody(messageBodyParser.parseMessageBody(parser.nextText()));
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    elementName = parser.getName();
-                    switch (elementName) {
-                        case "chat":
-                            if (conversationBuilder == null) break;
-                            Conversation conversation = conversationBuilder
-                                    .lastMessage(messageBuilder != null ? messageBuilder.conversationId(thread).build() : null)
-                                    .build();
-                            //noinspection all // conversationBuilder cannot be null
+                        case CONVERSATION:
+                            Conversation conversation = parseConversation(parser);
+                            Timber.d("TEST_PARSER %s", conversation);
                             conversations.add(conversation);
-                            messageBuilder = null;
-                            thread = null;
-                            conversationBuilder = null;
                             break;
                     }
                     break;
             }
-
-            if (eventType == XmlPullParser.END_TAG
-                    && getEndElement().equalsIgnoreCase(elementName)) {
-                done = true;
-            }
+            done = eventType == XmlPullParser.END_TAG && getEndElement().equalsIgnoreCase(elementName);
         }
         return constructIQ(conversations);
     }
 
-    private String getTypeByThread(String thread) {
+    @NonNull
+    private Conversation parseConversation(XmlPullParser parser)
+            throws IOException, XmlPullParserException {
+        String thread = parser.getAttributeValue("", CONVERSATION_THREAD);
+        String type = getType(thread, parser);
+        String subject = parser.getAttributeValue("", CONVERSATION_SUBJECT);
+        String avatar = parser.getAttributeValue("", ChangeAvatarExtension.ELEMENT);
+        int unreadMessageCount = ParserUtils.getIntegerAttribute(parser, CONVERSATION_UNREAD_COUNT, 0);
+
+        Message lastMessage = null;
+        long timestamp = 0;
+        while (parser.next() != XmlPullParser.END_TAG && TextUtils.equals(LAST_MESSAGE, parser.getName())) {
+            timestamp = ParserUtils.getLongAttribute(parser, LAST_MESSAGE_TIME, 0);
+            lastMessage = parseLastMessage(parser, thread, timestamp);
+            Timber.d("TEST_PARSER_MSG %s", lastMessage);
+        }
+
+        return new Conversation.Builder()
+                .id(thread)
+                .type(type.toLowerCase())
+                .subject(subject)
+                .avatar(avatar)
+                .lastActiveDate(timestamp)
+                .lastMessage(lastMessage)
+                //// TODO: 1/19/16 set status depends on status will be sent in future
+                .status(ConversationStatus.PRESENT)
+                .unreadMessageCount(unreadMessageCount)
+                .build();
+    }
+
+    @Nullable
+    private Message parseLastMessage(XmlPullParser parser, String thread, long timestamp)
+            throws IOException, XmlPullParserException {
+        String messageId = parser.getAttributeValue("", LAST_MESSAGE_ID);
+        if (TextUtils.isEmpty(messageId)) {
+            return null;
+        }
+
+        boolean unread = ParserUtils.getBooleanAttribute(parser, LAST_MESSAGE_IS_UNREAD, false);
+        String from = parser.getAttributeValue("", LAST_MESSAGE_FROM);
+        // TODO: 4/28/16 Workaround for server bug:
+        // domain name is missing from JID when getting single conversation details
+        if (from.contains("@")) {
+            from = JidCreatorHelper.obtainId(from);
+        }
+
+        return new Message.Builder()
+                .id(messageId)
+                .date(timestamp)
+                .fromId(from)
+                .conversationId(thread)
+                .status(unread ? MessageStatus.SENT  : MessageStatus.READ)
+                .messageBody(messageBodyParser.parseMessageBody(parser.nextText()))
+                .build();
+    }
+
+
+    private String getType(String thread, XmlPullParser parser) {
         if (thread.startsWith("dreamtrip_auto_gen")) {
             return ConversationType.TRIP;
         }
-        return null;
+        return parser.getAttributeValue("", CONVERSATION_TYPE);
     }
 
     protected abstract T constructIQ(List<Conversation> data);

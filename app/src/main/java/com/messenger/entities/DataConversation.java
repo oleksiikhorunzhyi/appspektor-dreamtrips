@@ -28,7 +28,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @Column String ownerId;
     @Column String subject;
     @Column String avatar;
-    @Column String type;
+    @ConversationType.Type @Column String type;
     @Column String status;
     @Column int unreadMessageCount;
     @Column long syncTime;

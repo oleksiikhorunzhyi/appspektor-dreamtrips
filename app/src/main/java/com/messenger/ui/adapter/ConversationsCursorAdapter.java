@@ -17,7 +17,6 @@ import com.messenger.ui.adapter.holder.conversation.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.CloseGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
-import com.messenger.ui.adapter.holder.conversation.TripConversationViewHolder;
 import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
 import com.messenger.ui.helper.ConversationHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -25,7 +24,6 @@ import com.worldventures.dreamtrips.R;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 import static com.messenger.messengerservers.constant.ConversationType.GROUP;
-import static com.messenger.messengerservers.constant.ConversationType.TRIP;
 
 public class ConversationsCursorAdapter
         extends CursorRecyclerViewAdapter<BaseConversationViewHolder>
@@ -33,8 +31,7 @@ public class ConversationsCursorAdapter
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
-    private static final int VIEW_TYPE_TRIP_CONVERSATION = 3;
-    private static final int VIEW_TYPE_GROUP_CLOSE_CONVERSATION = 4;
+    private static final int VIEW_TYPE_GROUP_CLOSE_CONVERSATION = 3;
 
     private SwipeButtonsListener swipeButtonsListener;
     private ConversationClickListener conversationClickListener;
@@ -106,10 +103,6 @@ public class ConversationsCursorAdapter
                 View groupChatLayout = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_conversation_group, parent, false);
                 return new GroupConversationViewHolder(groupChatLayout);
-            case VIEW_TYPE_TRIP_CONVERSATION:
-                View tripChatLayout = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_conversation_trip, parent, false);
-                return new TripConversationViewHolder(tripChatLayout);
             case VIEW_TYPE_GROUP_CLOSE_CONVERSATION:
                 View closeGroupChatLayout = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_conversation_group, parent, false);
@@ -132,8 +125,6 @@ public class ConversationsCursorAdapter
         switch (type) {
             case CHAT:
                 return VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
-            case TRIP:
-                return VIEW_TYPE_TRIP_CONVERSATION;
             case GROUP:
             default:
                 if (abandoned) return VIEW_TYPE_GROUP_CLOSE_CONVERSATION;

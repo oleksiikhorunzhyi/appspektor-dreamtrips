@@ -9,6 +9,7 @@ import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -42,7 +43,7 @@ abstract class XmppBaseConversationsLoader {
 
         return participantLoader.getSingleChatParticipants(conversation.getId())
                 .map(participant -> {
-                    conversation.getParticipants().add(participant);
+                    conversation.setParticipants(Collections.singletonList(participant));
                     return conversation;
                 });
     }
@@ -58,7 +59,7 @@ abstract class XmppBaseConversationsLoader {
                 })
                 .map(participants -> {
                     conversation.setOwnerId(findOwnerId(participants));
-                    conversation.getParticipants().addAll(participants);
+                    conversation.setParticipants(participants);
                     return conversation;
                 });
     }

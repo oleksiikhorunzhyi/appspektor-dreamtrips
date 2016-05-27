@@ -25,14 +25,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
-
-public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<T> {
+public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<T>  {
     private static final String CONVERSATION = "chat";
     private static final String CONVERSATION_THREAD = "thread";
     private static final String CONVERSATION_UNREAD_COUNT = "unread-count";
-//    private static final String CONVERSATION_LEFT_TIME = "left-room-date";
-//    private static final String CONVERSATION_KICKED = "kicked";
+    private static final String CONVERSATION_LEFT_TIME = "left-room-date";
+    private static final String CONVERSATION_KICKED = "kicked";
     private static final String CONVERSATION_TYPE = "type";
     private static final String CONVERSATION_SUBJECT = "subject";
 
@@ -52,6 +50,7 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
     public T parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         List<Conversation> conversations = new ArrayList<>();
         boolean done = false;
+
         while (!done) {
             int eventType = parser.next();
             String elementName = parser.getName();
@@ -59,9 +58,7 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
                 case XmlPullParser.START_TAG:
                     switch (elementName) {
                         case CONVERSATION:
-                            Conversation conversation = parseConversation(parser);
-                            Timber.d("TEST_PARSER %s", conversation);
-                            conversations.add(conversation);
+                            conversations.add(parseConversation(parser));
                             break;
                     }
                     break;
@@ -79,13 +76,14 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
         String subject = parser.getAttributeValue("", CONVERSATION_SUBJECT);
         String avatar = parser.getAttributeValue("", ChangeAvatarExtension.ELEMENT);
         int unreadMessageCount = ParserUtils.getIntegerAttribute(parser, CONVERSATION_UNREAD_COUNT, 0);
+        boolean kicked = ParserUtils.getBooleanAttribute(parser, CONVERSATION_KICKED, false);
+        long leftTime = ParserUtils.getLongAttribute(parser, CONVERSATION_LEFT_TIME, 0);
 
         Message lastMessage = null;
         long timestamp = 0;
         while (parser.next() != XmlPullParser.END_TAG && TextUtils.equals(LAST_MESSAGE, parser.getName())) {
             timestamp = ParserUtils.getLongAttribute(parser, LAST_MESSAGE_TIME, 0);
             lastMessage = parseLastMessage(parser, thread, timestamp);
-            Timber.d("TEST_PARSER_MSG %s", lastMessage);
         }
 
         return new Conversation.Builder()
@@ -95,10 +93,15 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
                 .avatar(avatar)
                 .lastActiveDate(timestamp)
                 .lastMessage(lastMessage)
-                //// TODO: 1/19/16 set status depends on status will be sent in future
-                .status(ConversationStatus.PRESENT)
+                .leftTime(leftTime)
+                .status(obtainConversationStatus(leftTime, kicked))
                 .unreadMessageCount(unreadMessageCount)
                 .build();
+    }
+
+    public String obtainConversationStatus(long leftTime, boolean kicked) {
+        return kicked ? ConversationStatus.KICKED :
+                leftTime > 0 ? ConversationStatus.LEFT : ConversationStatus.PRESENT;
     }
 
     @Nullable

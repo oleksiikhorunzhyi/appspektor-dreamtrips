@@ -37,7 +37,7 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     private static final long PACKET_REPLAY_TIMEOUT = TimeUnit.SECONDS.toMillis(60L);
     private static final int TIME_PING_INTERVAL = 45; // secs
-    private static final String WV_API_PROTOCOL_VERSION = "2.0";
+    private static final String WV_API_PROTOCOL_VERSION = "3.0";
 
     private XmppServerParams serverParams;
     // TODO: 4/28/16 not rx way

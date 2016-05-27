@@ -66,7 +66,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     @OnClick(R.id.textViewBookIt)
     public void bookIt() {
         TripModel tripModel = getArgs().tripModel();
-        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_BOOK_IT, tripModel.getTripId()));
+        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_BOOK_IT, tripModel.getTripId(), tripModel.getName()));
         getPresenter().actionBookIt();
     }
 

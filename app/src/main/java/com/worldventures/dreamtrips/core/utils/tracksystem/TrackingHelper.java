@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.utils.tracksystem;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterD
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
+import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -30,6 +32,7 @@ public class TrackingHelper {
     public static final String ACTION_LOGIN = "login";
 
     public static final String ACTION_DREAMTRIPS = "dreamtrips";
+    public static final String ACTION_DREAMTRIPS_TRIP_DETAIL = "dreamtrips.tripdetail";
     public static final String ACTION_PHOTOS_YSBH = "photos-ysbh";
     public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
     public static final String ACTION_PHOTOS_MINE = "photos-mine";
@@ -40,7 +43,7 @@ public class TrackingHelper {
     public static final String ACTION_COOKIE = "terms-cookie";
     public static final String ACTION_SERVICE = "terms-service";
 
-    public static final String ACTION_PHOTO_UPLOAD = "photo_upload_start";
+    public static final String ACTION_PHOTO_UPLOAD_START = "photo_upload_start";
 
     public static final String ACTION_PHOTOS_INSPR = "photos-inspireme";
     public static final String ACTION_INSPR_DETAILS = "inspireme_details";
@@ -284,7 +287,7 @@ public class TrackingHelper {
         Map<String, Object> data = new HashMap<>();
         data.put(TYPE, type);
         data.put(ID, id);
-        trackMemberAction(ACTION_PHOTO_UPLOAD, null, data);
+        trackMemberAction(ACTION_PHOTO_UPLOAD_START, null, data);
     }
 
     public static void video360(String memberId) {
@@ -414,6 +417,7 @@ public class TrackingHelper {
     public static final String ACTION_SETTINGS = "Settings";
     public static final String ACTION_SETTINGS_GENERAL = "Settings:General";
     public static final String ACTION_SETTINGS_NOTIFICATIONS = "Settings:Notifications";
+    public static final String ACTION_PHOTO_UPLOAD = "photo_upload";
 
     // ---------------- DreamTrips attributes
     public static final String ATTRIBUTE_LOGIN = "login";
@@ -479,6 +483,11 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_CAPTURE = "capture";
     public static final String ATTRIBUTE_SCAN = "scan";
     public static final String ATTRIBUTE_COMPLETED = "completed";
+    public static final String ATTRIBUTE_TRIP_FILTERS = "tripfilters";
+    public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
+    public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
+    public static final String ATTRIBUTE_TRIP_SEARCH = "tripsearch";
+    public static final String ATTRIBUTE_NUMBER_OF_UPLOADED_PHOTOS = "uploadamt";
 
     // ---------------- DTL new Actions
     public static final String DTL_ACTION_SELECT_LOCATION_FROM_SEARCH = "Local:City Search";
@@ -677,16 +686,35 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(ACTION_DREAMTRIPS, ATTRIBUTE_LIST);
     }
 
+    public static void viewTripDetails(String tripId, String tripName, String searchQuery) {
+        Map data = new HashMap<>();
+        data.put("trip_id", tripName + "-" + tripId);
+        data.put(ATTRIBUTE_VIEW, tripId);
+        if (!TextUtils.isEmpty(searchQuery)) {
+            data.put(ATTRIBUTE_TRIP_SEARCH, searchQuery);
+        }
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS_TRIP_DETAIL, data);
+    }
+
     public static void tapDreamTripsButton(@MagicConstant(stringValues = {ATTRIBUTE_SEARCH, ATTRIBUTE_FILTER,
             ATTRIBUTE_MAP}) String buttonType) {
         sendSimpleAttributetoAdobeTracker(ACTION_DREAMTRIPS, buttonType);
     }
 
-    public static void actionItemDreamtrips(@MagicConstant(stringValues = {ATTRIBUTE_VIEW,
-            ATTRIBUTE_BUCKET_LIST, ATTRIBUTE_FAVORITE, ATTRIBUTE_BOOK_IT}) String eventType, String tripId) {
+    public static void actionItemDreamtrips(@MagicConstant(stringValues = {ATTRIBUTE_BUCKET_LIST,
+            ATTRIBUTE_FAVORITE, ATTRIBUTE_BOOK_IT}) String eventType, String tripId, String tripName) {
         Map data = new HashMap<>();
-        data.put("trip_id", tripId);
+        data.put("trip_id", tripName + "-" + tripId);
         data.put(eventType, tripId);
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
+    }
+
+    public static void actionFilterTrips(TripsFilterData filterData) {
+        Map data = new HashMap<>();
+        data.put(ATTRIBUTE_FILTER, "1");
+        data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
+        data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegions());
+        data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivities());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
     }
 
@@ -739,6 +767,12 @@ public class TrackingHelper {
         Map data = new HashMap<>();
         data.put(actionTab, "1");
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_MEMBER_IMAGES, data);
+    }
+
+    public static void actionPhotosUploaded(int uploadedPhotosCount) {
+        Map data = new HashMap<>();
+        data.put(ATTRIBUTE_NUMBER_OF_UPLOADED_PHOTOS, uploadedPhotosCount);
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_PHOTO_UPLOAD, data);
     }
 
     public static void sendFeedback(int reason) {

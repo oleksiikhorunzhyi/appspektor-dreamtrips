@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
@@ -160,7 +161,10 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     @Override
     protected void processPostSuccess(FeedEntity feedEntity) {
+        if (cachedCreationItems.size() > 0) TrackingHelper.actionPhotosUploaded(cachedCreationItems.size());
+        //
         super.processPostSuccess(feedEntity);
+        //
         eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
     }
 

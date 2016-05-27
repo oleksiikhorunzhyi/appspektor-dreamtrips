@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.utils.events.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
@@ -138,6 +139,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void acceptFilters() {
         eventBus.removeStickyEvent(FilterBusEvent.class);
         eventBus.postSticky(new FilterBusEvent(tripFilterData));
+        TrackingHelper.actionFilterTrips(tripFilterData);
     }
 
     public void resetFilters() {

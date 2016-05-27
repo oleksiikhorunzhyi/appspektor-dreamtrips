@@ -40,7 +40,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.State;
 
-
 @Layout(R.layout.fragment_trip_list)
 @MenuResource(R.menu.menu_dream_trips)
 public class TripListFragment extends BaseFragment<TripListPresenter> implements
@@ -172,7 +171,6 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     searchOpened = true;
-                    TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_SEARCH);
                     return true;
                 }
 
@@ -198,7 +196,6 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
         switch (item.getItemId()) {
             case R.id.action_filter:
                 ((MainActivity) getActivity()).openRightDrawer();
-                TrackingHelper.tapDreamTripsButton(TrackingHelper.ATTRIBUTE_FILTER);
                 break;
             case R.id.action_map:
                 actionMap();
@@ -263,6 +260,11 @@ public class TripListFragment extends BaseFragment<TripListPresenter> implements
             }
         }
 
+    }
+
+    @Override
+    public boolean isSearchOpened() {
+        return searchOpened;
     }
 
     public void clearSearch() {

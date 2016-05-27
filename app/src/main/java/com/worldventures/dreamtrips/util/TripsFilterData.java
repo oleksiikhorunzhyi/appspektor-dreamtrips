@@ -162,4 +162,17 @@ public class TripsFilterData implements Serializable {
 
         return new ArrayList<>(parentActivities);
     }
+
+    public String getFilterAnalyticString() {
+        List<String> filters = new ArrayList<>();
+        filters.add(String.format("%d-%d", minNights, maxNights));
+        filters.add(String.format("%d-%d", minPrice, maxPrice));
+        filters.add(DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())));
+        filters.add(DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())));
+        filters.add(String.valueOf(showSoldOut));
+        filters.add(String.valueOf(showRecentlyAdded));
+        filters.add(String.valueOf(showFavorites));
+        return TextUtils.join(",", filters);
+    }
+
 }

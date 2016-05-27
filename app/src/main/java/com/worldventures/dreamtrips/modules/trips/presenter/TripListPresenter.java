@@ -176,7 +176,11 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
     }
 
     public void onEvent(TripItemAnalyticEvent event) {
-        TrackingHelper.actionItemDreamtrips(event.getActionAttribute(), event.getTripId());
+        if (event.getActionAttribute().equals(TrackingHelper.ATTRIBUTE_VIEW)) {
+            TrackingHelper.viewTripDetails(event.getTripId(), event.getTripName(), view.isSearchOpened() ? query : "");
+        } else {
+            TrackingHelper.actionItemDreamtrips(event.getActionAttribute(), event.getTripId(), event.getTripName());
+        }
     }
 
     private void onFailure() {
@@ -215,6 +219,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
         IRoboSpiceAdapter<TripModel> getAdapter();
 
         void itemLiked(FeedEntity feedEntity);
+
+        boolean isSearchOpened();
     }
 
 }

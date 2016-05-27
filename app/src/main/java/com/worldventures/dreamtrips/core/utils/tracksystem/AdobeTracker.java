@@ -40,7 +40,7 @@ public class AdobeTracker extends ITracker {
 
         data.put(CHANNEL_KEY, CHANNEL_VALUE);
 
-        Analytics.trackAction(prepareAction(action), data);
+        Analytics.trackState(prepareAction(action), data);
     }
 
     private String prepareAction(String action) {

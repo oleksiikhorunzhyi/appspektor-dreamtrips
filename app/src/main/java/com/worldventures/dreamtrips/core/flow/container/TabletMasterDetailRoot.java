@@ -81,5 +81,4 @@ public class TabletMasterDetailRoot extends LinearLayout implements PathContaine
         detailContainer.dispatch(traversal, callback);
         masterContainer.dispatch(traversal, callback);
     }
-
 }

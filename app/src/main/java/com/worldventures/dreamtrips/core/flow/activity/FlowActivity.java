@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.flow.path.AttributedPath;
+import com.worldventures.dreamtrips.core.flow.path.FullScreenPath;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.FlowActivityHelper;
 import com.worldventures.dreamtrips.core.flow.util.GsonParceler;
@@ -220,10 +221,15 @@ public abstract class FlowActivity<PM extends ActivityPresenter> extends Activit
             PathAttrs attrs = ((AttributedPath) path).getAttrs();
             enabled = attrs.isDrawerEnabled();
         }
-        //
         drawerLayout.setDrawerLockMode(enabled ?
                 DrawerLayout.LOCK_MODE_UNLOCKED :
                 DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        if (ViewUtils.isLandscapeOrientation(this)) {
+            if (path instanceof FullScreenPath && ((FullScreenPath) path).shouldHideDrawer())
+                navDrawer.setVisibility(View.GONE);
+            else
+                navDrawer.setVisibility(View.VISIBLE);
+        }
     }
 
     protected abstract History provideDefaultHistory();

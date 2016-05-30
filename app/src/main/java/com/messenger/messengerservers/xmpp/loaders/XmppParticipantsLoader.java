@@ -77,7 +77,10 @@ public class XmppParticipantsLoader {
     private void processPacket(ConversationParticipantsIQ participantsIQPacket, String conversationId,
                                Subscriber<? super List<Participant>> subscriber) {
         List<ParticipantItem> participantItems = participantsIQPacket.getParticipantItems();
-        if (!participantItems.isEmpty()) {
+        if (participantItems.isEmpty()) {
+            pushParticipantsListToSubscriber(Collections.emptyList(), subscriber);
+            return;
+        }
             List<Participant> participants = Queryable.from(participantItems)
                     .map(item -> (Participant) ImmutableParticipant.builder()
                             .conversationId(conversationId)
@@ -87,9 +90,6 @@ public class XmppParticipantsLoader {
                     .toList();
 
             pushParticipantsListToSubscriber(participants, subscriber);
-            return;
-        }
-        pushParticipantsListToSubscriber(Collections.emptyList(), subscriber);
     }
 
     private void pushParticipantsListToSubscriber(List<Participant> participants,

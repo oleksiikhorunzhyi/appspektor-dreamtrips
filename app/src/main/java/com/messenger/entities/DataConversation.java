@@ -201,7 +201,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         private String status;
         private long date;
         private int unreadMessageCount = 0;
-        public long leftTime;
+        private long leftTime;
 
         public Builder() {
         }

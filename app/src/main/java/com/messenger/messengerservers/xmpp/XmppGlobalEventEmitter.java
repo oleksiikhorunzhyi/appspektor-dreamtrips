@@ -201,7 +201,6 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             notifyOnChatLeftListener(conversationId, userId, leave);
         } else {
             boolean isOnline = presence.getType() == Type.available;
-            ;
             notifyOnChatJoinedListener(ImmutableParticipant.builder()
                     .userId(userId)
                     .conversationId(conversationId)

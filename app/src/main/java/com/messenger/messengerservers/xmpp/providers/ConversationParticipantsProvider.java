@@ -13,30 +13,27 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import timber.log.Timber;
-
 public class ConversationParticipantsProvider extends IQProvider<ConversationParticipantsIQ> {
+    private static final String QUERY = "query";
     private static final String PARTICIPANT_ITEM = "item";
-    public ConversationParticipantsProvider() {
-    }
+    private static final String PARTICIPANT_JID = "jid";
+    private static final String PARTICIPANT_AFFILIATION = "affiliation";
 
     @Override
     public ConversationParticipantsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         ConversationParticipantsIQ conversationParticipantsIQ = new ConversationParticipantsIQ();
         boolean done = false;
-        Timber.d("TEST_PART START");
 
         while (!done) {
             int eventType = parser.next();
             String elementName = parser.getName();
-            Timber.d("TEST_PART %s", elementName);
             switch (eventType) {
                 case XmlPullParser.START_TAG:
                     switch (elementName) {
                         case PARTICIPANT_ITEM:
-                            String jid = parser.getAttributeValue("", "jid");
+                            String jid = parser.getAttributeValue("", PARTICIPANT_JID);
                             if (TextUtils.isEmpty(jid)) break;
-                            String affiliation = parser.getAttributeValue("", "affiliation");
+                            String affiliation = parser.getAttributeValue("", PARTICIPANT_AFFILIATION);
                             String participantId = JidCreatorHelper.obtainId(jid);
                             conversationParticipantsIQ.addParticipantItem(ImmutableParticipantItem.builder()
                                     .affiliation(affiliation)
@@ -46,12 +43,11 @@ public class ConversationParticipantsProvider extends IQProvider<ConversationPar
                     }
                 case XmlPullParser.END_TAG:
                     switch (elementName) {
-                        case "query":
+                        case QUERY:
                             done = true;
                     }
             }
         }
-        Timber.d("TEST_PART END");
         return conversationParticipantsIQ;
     }
 }

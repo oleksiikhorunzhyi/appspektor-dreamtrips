@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">No se pudo cargar la configuración del chat</string>
     <string name="chat_settings_single_chat_online">en internet</string>
     <string name="chat_settings_single_chat_offline">no en internet</string>
-    <string name="chat_settings_group_chat_description">%1$d miembros, %2$d conectados a internet</string>
     <string name="chat_settings_row_notifications">Notificaciones</string>
     <string name="chat_settings_row_shared_content">Contenido compartido</string>
     <string name="chat_settings_row_members_format">Miembros %1$d)</string>

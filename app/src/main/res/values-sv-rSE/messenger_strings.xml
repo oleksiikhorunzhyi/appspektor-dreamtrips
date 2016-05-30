@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">Kunde inte ladda chattinställningar</string>
     <string name="chat_settings_single_chat_online">online</string>
     <string name="chat_settings_single_chat_offline">offline</string>
-    <string name="chat_settings_group_chat_description">%1$d medlemmar, %2$d online</string>
     <string name="chat_settings_row_notifications">Aviseringar</string>
     <string name="chat_settings_row_shared_content">Delat innehåll</string>
     <string name="chat_settings_row_members_format">Medlemmar (%1$d)</string>

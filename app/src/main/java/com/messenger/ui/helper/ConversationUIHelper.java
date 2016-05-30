@@ -1,5 +1,6 @@
 package com.messenger.ui.helper;
 
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
@@ -42,15 +43,24 @@ public final class ConversationUIHelper {
         if (isEmptyMembers(members)) return;
 
         CharSequence subtitle;
+        Resources res =  target.getResources();
         switch (conversation.getType()) {
             case ConversationType.CHAT:
-                int substringRes = members.get(0).isOnline() ? R.string.chat_subtitle_format_single_chat_online : R.string.chat_subtitle_format_single_chat_offline;
-                subtitle = target.getResources().getText(substringRes);
+                int substringRes = members.get(0).isOnline() ?
+                        R.string.chat_subtitle_format_single_chat_online
+                        : R.string.chat_subtitle_format_single_chat_offline;
+                subtitle = res.getText(substringRes);
                 break;
             case ConversationType.GROUP:
             default:
-                int online = Queryable.from(members).count(DataUser::isOnline);
-                subtitle = target.getResources().getString(R.string.chat_subtitle_format_group_chat_format, members.size(), online);
+                if (ConversationHelper.isAbandoned(conversation)) {
+                    subtitle = res.getString(R.string.chat_subtitle_format_group_chat_format_closed,
+                            members.size());
+                } else {
+                    int onlineMembersCount = Queryable.from(members).count(DataUser::isOnline);
+                    subtitle = res.getString(R.string.chat_subtitle_format_group_chat_format,
+                            members.size(), onlineMembersCount);
+                }
                 break;
         }
         target.setText(subtitle);

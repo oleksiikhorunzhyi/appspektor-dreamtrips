@@ -85,54 +85,71 @@
                     android:background="@color/list_item_divider_color"
                     />
 
-                <LinearLayout
-                    android:id="@+id/input_holder"
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
-                    android:background="@color/white"
-                    android:orientation="horizontal"
-                    >
+                    android:layout_weight="0">
 
-                    <ImageView
-                        android:id="@+id/chat_message_add_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/chat_attachment_button_left_margin"
-                        android:layout_marginRight="@dimen/chat_attachment_button_right_margin"
-                        android:padding="@dimen/chat_attachment_button_padding"
-                        android:layout_weight="0"
-                        android:src="@drawable/ic_file_upload_black_24_px"
-                        />
-
-                    <EditText
-                        android:id="@+id/chat_message_edit_text"
+                    <LinearLayout
+                        android:id="@+id/input_holder"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_weight="1"
-                        android:hint="@string/chat_message_edittext_hint"
-                        android:imeOptions="actionGo"
-                        android:singleLine="true"
-                        android:textColor="#9F9E9E"
-                        android:textColorHint="#9F9E9E"
-                        android:maxLength="@integer/messenger_max_message_length"
-                        android:textSize="@dimen/chat_message_edittext_text_size"
-                        />
+                        android:background="@color/white"
+                        android:orientation="horizontal"
+                        >
 
-                    <Button
-                        android:id="@+id/chat_message_send_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0"
-                        android:background="@null"
+                        <ImageView
+                            android:id="@+id/chat_message_add_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/chat_attachment_button_left_margin"
+                            android:layout_marginRight="@dimen/chat_attachment_button_right_margin"
+                            android:padding="@dimen/chat_attachment_button_padding"
+                            android:layout_weight="0"
+                            android:src="@drawable/ic_file_upload_black_24_px"
+                            />
+
+                        <EditText
+                            android:id="@+id/chat_message_edit_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_weight="1"
+                            android:hint="@string/chat_message_edittext_hint"
+                            android:imeOptions="actionGo"
+                            android:singleLine="true"
+                            android:textColor="#9F9E9E"
+                            android:textColorHint="#9F9E9E"
+                            android:maxLength="@integer/messenger_max_message_length"
+                            android:textSize="@dimen/chat_message_edittext_text_size"
+                            />
+
+                        <Button
+                            android:id="@+id/chat_message_send_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:text="@string/chat_message_send_button_text"
+                            android:textColor="@color/send_chat_message_button_text_color"
+                            android:textSize="@dimen/chat_message_send_button_text_size"
+                            />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/input_disabled_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="10sp"
                         android:gravity="center"
-                        android:text="@string/chat_message_send_button_text"
-                        android:textColor="@color/send_chat_message_button_text_color"
-                        android:textSize="@dimen/chat_message_send_button_text_size"
-                        />
-                </LinearLayout>
+                        android:textColor="#9b9b9b"
+                        android:visibility="gone"
+                        android:text="@string/chat_message_sending_disabled"/>
+
+                </FrameLayout>
+
             </LinearLayout>
         </FrameLayout>
 

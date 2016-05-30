@@ -208,6 +208,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         //noinspection all
         getView().setConversation(conversation);
         getView().setTitle(conversation, participants);
+        getView().enableInput(!ConversationHelper.isAbandoned(conversation));
     }
 
     private Subscription connectMessagesStream(long syncTime) {

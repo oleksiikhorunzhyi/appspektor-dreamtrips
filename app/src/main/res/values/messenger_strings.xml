@@ -54,9 +54,11 @@
     <string name="chat_subtitle_format_single_chat_online">Online</string>
     <string name="chat_subtitle_format_single_chat_offline">Offline</string>
     <string name="chat_subtitle_format_group_chat_format">%1$d members, %2$d online</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d members</string>
     <string name="chat_subtitle_format_group_chat_offline">No users online</string>
     <string name="chat_message_edittext_hint">Your message</string>
     <string name="chat_message_send_button_text">Send</string>
+    <string name="chat_message_sending_disabled">You can’t send messages because you are no longer a participant</string>
     <string name="chat_error_loading">Could not load chat history</string>
     <string name="chat_unread_messages_textview_format">You have %d unread messages</string>
     <string name="chat_more_typing_users_hint_format">and %d more</string>
@@ -92,7 +94,6 @@
     <string name="chat_settings_error_loading">Could not load chat settings</string>
     <string name="chat_settings_single_chat_online">Online</string>
     <string name="chat_settings_single_chat_offline">Offline</string>
-    <string name="chat_settings_group_chat_description">%1$d members, %2$d online</string>
     <string name="chat_settings_row_notifications">Notifications</string>
     <string name="chat_settings_row_shared_content">Shared Content</string>
     <string name="chat_settings_row_members_format">Members (%d)</string>

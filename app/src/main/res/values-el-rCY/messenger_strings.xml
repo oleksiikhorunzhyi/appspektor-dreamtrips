@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">Δεν φορτώθηκαν οι ρυθμίσεις συνομιλίας</string>
     <string name="chat_settings_single_chat_online">σε σύνδεση</string>
     <string name="chat_settings_single_chat_offline">εκτός σύνδεσης</string>
-    <string name="chat_settings_group_chat_description">%1$d μέλη, %2$d σε σύνδεση</string>
     <string name="chat_settings_row_notifications">Ειδοποιήσεις</string>
     <string name="chat_settings_row_shared_content">Κοινόχρηστο περιεχόμενο</string>
     <string name="chat_settings_row_members_format">Μέλη (%1$d)</string>

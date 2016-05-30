@@ -309,6 +309,9 @@
     <dimen name="dtlt_icon_size">22dp</dimen>
     <dimen name="dtlt_icon_vertical_margin">10dp</dimen>
     <dimen name="dtlt_icon_side_margin">16dp</dimen>
+    <dimen name="dtlt_action_view_size">26dp</dimen>
+    <dimen name="dtlt_action_view_vertical_margin">8dp</dimen>
+    <dimen name="dtlt_action_view_side_margin">14dp</dimen>
     <dimen name="dtlt_input_vertical_margin">10dp</dimen>
     <dimen name="dtlt_input_round_radius">2dp</dimen>
     <dimen name="dtlt_input_elevation">2dp</dimen>

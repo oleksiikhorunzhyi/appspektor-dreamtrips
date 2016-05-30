@@ -45,8 +45,8 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     @Override
     public void flagMessage(String conversationId, String messageId) {
         resetState();
-        getState().setMessageId(conversationId);
-        getState().setConversationId(messageId);
+        getState().setMessageId(messageId);
+        getState().setConversationId(conversationId);
         getState().setDialogState(FlaggingState.DialogState.LOADING_FLAGS);
         loadFlags();
     }

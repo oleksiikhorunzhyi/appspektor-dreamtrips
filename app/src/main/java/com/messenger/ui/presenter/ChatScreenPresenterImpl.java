@@ -150,7 +150,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         getView().getAttachmentClickStream()
                 .distinctUntilChanged()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(chatUserInteractionHelper::openPhotoInFullScreen);
+                .subscribe(attachmentId -> chatUserInteractionHelper.openPhotoInFullScreen(attachmentId, conversationId, openScreenTime));
     }
 
     private void connectConnectivityStatusStream() {

@@ -31,7 +31,7 @@ public class ConversationsCursorAdapter
 
     private static final int VIEW_TYPE_ONE_TO_ONE_CONVERSATION = 1;
     private static final int VIEW_TYPE_GROUP_CONVERSATION = 2;
-    private static final int VIEW_TYPE_GROUP_CLOSE_CONVERSATION = 3;
+    private static final int VIEW_TYPE_GROUP_CLOSED_CONVERSATION = 3;
 
     private SwipeButtonsListener swipeButtonsListener;
     private ConversationClickListener conversationClickListener;
@@ -103,10 +103,10 @@ public class ConversationsCursorAdapter
                 View groupChatLayout = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_conversation_group, parent, false);
                 return new GroupConversationViewHolder(groupChatLayout);
-            case VIEW_TYPE_GROUP_CLOSE_CONVERSATION:
-                View closeGroupChatLayout = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_conversation_group, parent, false);
-                return new ClosedGroupConversationViewHolder(closeGroupChatLayout);
+            case VIEW_TYPE_GROUP_CLOSED_CONVERSATION:
+                View closedGroupChatLayout = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_conversation_group_closed, parent, false);
+                return new ClosedGroupConversationViewHolder(closedGroupChatLayout);
         }
         throw new IllegalStateException("There is no such view type in adapter");
     }
@@ -127,7 +127,7 @@ public class ConversationsCursorAdapter
                 return VIEW_TYPE_ONE_TO_ONE_CONVERSATION;
             case GROUP:
             default:
-                if (abandoned) return VIEW_TYPE_GROUP_CLOSE_CONVERSATION;
+                if (abandoned) return VIEW_TYPE_GROUP_CLOSED_CONVERSATION;
                 return VIEW_TYPE_GROUP_CONVERSATION;
         }
     }

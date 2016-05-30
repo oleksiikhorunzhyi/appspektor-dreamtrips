@@ -31,8 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/conversation_name_textview"
-        android:layout_marginRight="@dimen/conversation_list_item_conversation_last_message_date_textview_right_margin"
-        >
+        style="@style/ConversationListItemLastMessageDateAndCountLayout">
 
         <TextView
             android:id="@+id/conversation_last_message_date_textview"
@@ -50,8 +49,6 @@
             android:layout_below="@+id/conversation_last_message_date_textview"
             android:layout_centerHorizontal="true"
             android:gravity="center_horizontal"
-            android:visibility="gone"
-            tools:visibility="visible"
             />
     </RelativeLayout>
 </RelativeLayout>

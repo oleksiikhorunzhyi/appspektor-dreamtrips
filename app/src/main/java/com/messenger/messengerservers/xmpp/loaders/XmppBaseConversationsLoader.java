@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.Participant;
@@ -69,7 +70,7 @@ abstract class XmppBaseConversationsLoader {
     @Nullable
     private String findOwnerId(List<Participant> participants) {
         for (Participant p : participants) {
-            if (TextUtils.equals(p.getAffiliation(), Participant.Affiliation.OWNER)) {
+            if (TextUtils.equals(p.getAffiliation(), Affiliation.OWNER)) {
                 return p.getUserId();
             }
         }

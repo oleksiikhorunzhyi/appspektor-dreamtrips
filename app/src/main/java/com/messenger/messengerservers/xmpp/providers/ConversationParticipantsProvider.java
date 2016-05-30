@@ -2,7 +2,7 @@ package com.messenger.messengerservers.xmpp.providers;
 
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.model.Participant;
+import com.messenger.messengerservers.model.ImmutableParticipantItem;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationParticipantsIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
@@ -16,46 +16,42 @@ import java.io.IOException;
 import timber.log.Timber;
 
 public class ConversationParticipantsProvider extends IQProvider<ConversationParticipantsIQ> {
-
+    private static final String PARTICIPANT_ITEM = "item";
     public ConversationParticipantsProvider() {
     }
 
     @Override
     public ConversationParticipantsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         ConversationParticipantsIQ conversationParticipantsIQ = new ConversationParticipantsIQ();
-
-        String elementName;
-        String affiliation = null;
-        String participantId = null;
-
         boolean done = false;
+        Timber.d("TEST_PART START");
+
         while (!done) {
             int eventType = parser.next();
+            String elementName = parser.getName();
+            Timber.d("TEST_PART %s", elementName);
             switch (eventType) {
                 case XmlPullParser.START_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "item":
-                            affiliation = parser.getAttributeValue("", "affiliation");
+                        case PARTICIPANT_ITEM:
                             String jid = parser.getAttributeValue("", "jid");
-                            participantId = TextUtils.isEmpty(jid) ? null : JidCreatorHelper.obtainId(jid);
+                            if (TextUtils.isEmpty(jid)) break;
+                            String affiliation = parser.getAttributeValue("", "affiliation");
+                            String participantId = JidCreatorHelper.obtainId(jid);
+                            conversationParticipantsIQ.addParticipantItem(ImmutableParticipantItem.builder()
+                                    .affiliation(affiliation)
+                                    .userId(participantId)
+                                    .build());
                             break;
                     }
                 case XmlPullParser.END_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "item":
-                            if (participantId == null) continue;
-                            Participant participant = new Participant(participantId, affiliation.toLowerCase(), null);
-                            conversationParticipantsIQ.addParticipant(participant);
-                            break;
                         case "query":
                             done = true;
-                            break;
                     }
-                    break;
             }
         }
+        Timber.d("TEST_PART END");
         return conversationParticipantsIQ;
     }
 }

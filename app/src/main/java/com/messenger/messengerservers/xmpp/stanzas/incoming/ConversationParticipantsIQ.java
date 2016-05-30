@@ -3,7 +3,7 @@ package com.messenger.messengerservers.xmpp.stanzas.incoming;
 
 import android.support.annotation.NonNull;
 
-import com.messenger.messengerservers.model.Participant;
+import com.messenger.messengerservers.model.ParticipantItem;
 
 import org.jivesoftware.smack.packet.IQ;
 
@@ -15,22 +15,19 @@ public class ConversationParticipantsIQ extends IQ {
     public static final String NAMESPACE = "http://jabber.org/protocol/muc#admin";
     public static final String ELEMENT_QUERY = "query";
 
-    private final List<Participant> participants = new ArrayList<>();
+    private final List<ParticipantItem> participantItems = new ArrayList<>();
 
     public ConversationParticipantsIQ() {
         super(ELEMENT_QUERY, NAMESPACE);
     }
 
-    public void addParticipant(Participant participant) {
-        // TODO: 2/2/16 remove this condition
-        if (!participants.contains(participant)) {
-            participants.add(participant);
-        }
+    public void addParticipantItem(ParticipantItem participantItem) {
+        participantItems.add(participantItem);
     }
 
     @NonNull
-    public List<Participant> getParticipants() {
-        return participants;
+    public List<ParticipantItem> getParticipantItems() {
+        return participantItems;
     }
 
     @Override

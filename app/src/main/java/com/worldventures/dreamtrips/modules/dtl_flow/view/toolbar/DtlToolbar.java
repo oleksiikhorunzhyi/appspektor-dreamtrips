@@ -13,13 +13,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.SwitchCompat;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -55,10 +55,13 @@ public class DtlToolbar extends LinearLayout {
 
     private static final boolean DEF_COLLAPSED = true;
     private static final boolean DEF_NAVIGATION_ICON_VISIBLE = true;
+    private static final boolean DEF_SHOW_FILTER_BAR = true;
     @DrawableRes
     private static final int DEF_NAVIGATION_ICON = R.drawable.ic_menu_trip_map;
     private static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
 
+    @InjectView(R.id.dtlToolbarLayout)
+    ViewGroup dtlToolbarLayout;
     @InjectView(R.id.dtlToolbarFirstRow)
     View firstRowLayout;
     @InjectView(R.id.actionViewLayout)
@@ -75,6 +78,12 @@ public class DtlToolbar extends LinearLayout {
     ImageView dtlToolbarNavigationIcon;
     @InjectView(R.id.dtlToolbarBottomCaption)
     AppCompatEditText bottomCaption;
+    @InjectView(R.id.filterBarRoot)
+    ViewGroup filterBarRoot;
+    @InjectView(R.id.dtlfb_rootView)
+    DtlFilterButton filtersButton;
+    @InjectView(R.id.filterDiningsSwitch)
+    SwitchCompat filterDiningsSwitch;
     //
     @State
     boolean collapsed;
@@ -87,18 +96,16 @@ public class DtlToolbar extends LinearLayout {
     private String locationTitle;
     private String defaultEmptySearchCaption;
     private boolean showNavigation;
+    private boolean showFilterBar;
     //
     private List<CollapseListener> collapseListeners = new ArrayList<>();
     private List<ExpandListener> expandListeners = new ArrayList<>();
     private List<NavigationClickListener> navigationClickListeners = new ArrayList<>();
     private List<NavigationControlListener> navigationControlListeners = new ArrayList<>();
+    private List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
 
     public DtlToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setOrientation(VERTICAL);
-        setGravity(Gravity.TOP);
-        setFocusableInTouchMode(true);
-        setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
         initAttributes(attrs);
         initLayout();
     }
@@ -148,6 +155,14 @@ public class DtlToolbar extends LinearLayout {
         return collapsed;
     }
 
+    public void setFilterEnabled(boolean enabled) {
+        filtersButton.setFilterEnabled(enabled);
+    }
+
+    public void toggleDiningFilterSwitch(boolean enabled) {
+        filterDiningsSwitch.setChecked(enabled);
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Essential private and package-private stuff
     ///////////////////////////////////////////////////////////////////////////
@@ -168,11 +183,17 @@ public class DtlToolbar extends LinearLayout {
         return bottomCaption;
     }
 
+    SwitchCompat getDiningFilterToggle() {
+        return filterDiningsSwitch;
+    }
+
     private void initAttributes(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
         collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
         navigationControlVisible = a.getBoolean(R.styleable.DtlToolbar_dtlt_navigation_icon_visible,
                 DEF_NAVIGATION_ICON_VISIBLE);
+        showFilterBar = a.getBoolean(R.styleable.DtlToolbar_dtlt_show_filter_bar_portrait,
+                DEF_SHOW_FILTER_BAR);
         navigationIconResource = a.getResourceId(R.styleable.DtlToolbar_dtlt_navigation_icon_src,
                 DEF_NAVIGATION_ICON);
         focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
@@ -197,6 +218,7 @@ public class DtlToolbar extends LinearLayout {
         dtlToolbarNavigationIcon.setImageDrawable(ContextCompat.getDrawable(getContext(),
                 navigationIconResource));
         dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
+        filterBarRoot.setVisibility(showFilterBar ? VISIBLE : GONE);
     }
 
     /**
@@ -277,10 +299,11 @@ public class DtlToolbar extends LinearLayout {
         }
         //
         secondRow.setVisibility(VISIBLE);
-        ValueAnimator heightAnimator = ValueAnimator.ofInt(getHeight(), getHeight() * 2);
+        ValueAnimator heightAnimator = ValueAnimator.ofInt(dtlToolbarLayout.getHeight(),
+                dtlToolbarLayout.getHeight() * 2);
         heightAnimator.addUpdateListener(animation -> {
-            getLayoutParams().height = (int) animation.getAnimatedValue();
-            requestLayout();
+            dtlToolbarLayout.getLayoutParams().height = (int) animation.getAnimatedValue();
+            dtlToolbarLayout.requestLayout();
         });
         heightAnimator.setInterpolator(new DecelerateInterpolator());
         heightAnimator.start();
@@ -300,12 +323,13 @@ public class DtlToolbar extends LinearLayout {
             hideNavigationAnimator.start();
         }
         //
-        ValueAnimator heightAnimator = ValueAnimator.ofInt(getHeight(), getHeight() / 2);
+        ValueAnimator heightAnimator = ValueAnimator.ofInt(dtlToolbarLayout.getHeight(),
+                dtlToolbarLayout.getHeight() / 2);
         heightAnimator.setInterpolator(new AccelerateInterpolator());
         heightAnimator.setStartDelay(75L);
         heightAnimator.addUpdateListener(animation -> {
-            getLayoutParams().height = (int) animation.getAnimatedValue();
-            requestLayout();
+            dtlToolbarLayout.getLayoutParams().height = (int) animation.getAnimatedValue();
+            dtlToolbarLayout.requestLayout();
         });
         //
         Animator secondRowAnimator = ObjectAnimator.ofFloat(secondRow, ALPHA, 1F, 0F);
@@ -343,7 +367,14 @@ public class DtlToolbar extends LinearLayout {
 
     @OnClick(R.id.dtlToolbarNavigationLayout)
     void navigationClicked(View view) {
-        Queryable.from(navigationClickListeners).forEachR(listener -> listener.onNavigationClicked());
+        Queryable.from(navigationClickListeners)
+                .forEachR(listener -> listener.onNavigationClicked());
+    }
+
+    @OnClick(R.id.dtlfb_rootView)
+    void filterButtonClicked(View view) {
+        Queryable.from(filterButtonListeners)
+                .forEachR(listener -> listener.onFilterButtonClicked());
     }
 
     /**
@@ -397,6 +428,15 @@ public class DtlToolbar extends LinearLayout {
         expandListeners.add(listener);
     }
 
+    public void addFilterButtonListener(@NonNull FilterButtonListener listener) {
+        if (checkListenerNull(listener)) return;
+        filterButtonListeners.add(listener);
+    }
+
+    public void removeFilterButtonListener(FilterButtonListener listener) {
+        filterButtonListeners.remove(listener);
+    }
+
     public void removeExpandListener(ExpandListener listener) {
         expandListeners.remove(listener);
     }
@@ -419,6 +459,11 @@ public class DtlToolbar extends LinearLayout {
     public interface NavigationControlListener {
 
         void onNavigationControlClicked();
+    }
+
+    public interface FilterButtonListener {
+
+        void onFilterButtonClicked();
     }
 
     ///////////////////////////////////////////////////////////////////////////

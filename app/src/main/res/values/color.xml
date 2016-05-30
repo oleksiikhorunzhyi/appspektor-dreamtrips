@@ -120,7 +120,7 @@
     <color name="conversation_list_last_message_date">@color/conversation_list_message</color>
     <color name="conversation_list_more_button_background">#505050</color>
     <color name="conversation_list_delete_button_background">#FA6D6D</color>
-    <color name="conversation_list_closed_conversation">#FB7687</color>
+    <color name="conversation_list_closed_conversation">#FE5B5C</color>
 
     <!-- Chat settings screen -->
     <color name="chat_settings_chat_name_title_textview">#0F0F0F</color>

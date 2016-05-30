@@ -5,10 +5,9 @@ import com.messenger.delegate.JoinedChatEventDelegate;
 import com.messenger.delegate.LoaderDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.ui.adapter.SwipeableContactsAdapter;
-import com.messenger.ui.adapter.holder.conversation.CloseGroupConversationViewHolder;
+import com.messenger.ui.adapter.holder.conversation.ClosedGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
-import com.messenger.ui.adapter.holder.conversation.TripConversationViewHolder;
 import com.messenger.util.ChatFacadeManager;
 
 import dagger.Module;
@@ -22,8 +21,7 @@ import dagger.Module;
         injects = {
                 GroupConversationViewHolder.class,
                 OneToOneConversationViewHolder.class,
-                TripConversationViewHolder.class,
-                CloseGroupConversationViewHolder.class,
+                ClosedGroupConversationViewHolder.class,
 
                 ChatFacadeInitializer.class,
                 ChatFacadeManager.class,

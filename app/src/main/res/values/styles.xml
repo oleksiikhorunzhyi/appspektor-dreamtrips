@@ -235,6 +235,22 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="ConversationListItemContentLayout">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">@dimen/conversation_list_item_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/conversation_list_item_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/conversation_list_item_horizontal_padding</item>
+        <item name="android:paddingTop">@dimen/conversation_list_item_vertical_padding</item>
+    </style>
+
+    <style name="GroupChatBigAvatarViewClosed" parent="GroupChatBigAvatarView">
+        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
+    </style>
+
+    <style name="ConversationListNameTextViewClosed" parent="ConversationListNameTextView">
+        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
+    </style>
+
     <style name="ConversationListNameTextView">
         <item name="android:layout_marginLeft">
             @dimen/conversation_list_item_conversation_name_textview_left_margin
@@ -247,6 +263,10 @@
         <item name="android:textColor">@color/conversation_list_name</item>
         <item name="android:textSize">@dimen/conversation_list_item_conversation_name_text_size
         </item>
+    </style>
+
+    <style name="ConversationListLastMessageTextViewClosed" parent="ConversationListLastMessageTextView">
+        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
     </style>
 
     <style name="ConversationListLastMessageTextView">
@@ -262,11 +282,25 @@
         <item name="android:textSize">@dimen/list_item_description_text_size</item>
     </style>
 
+    <style name="ConversationListItemLastMessageDateAndCountLayout">
+        <item name="android:layout_marginRight">
+            @dimen/conversation_list_item_conversation_last_message_date_textview_right_margin
+        </item>
+    </style>
+
+    <style name="ConversationListLastMessageDateTextViewClosed" parent="ConversationListLastMessageDateTextView">
+        <item name="android:textColor">@color/conversation_list_closed_conversation</item>
+    </style>
+
     <style name="ConversationListLastMessageDateTextView">
         <item name="android:textColor">@color/conversation_list_last_message_date</item>
         <item name="android:textSize">
             @dimen/new_chat_conversation_list_last_message_textview_textsize
         </item>
+    </style>
+
+    <style name="ConversationListUnreadMessagesCountTextViewClosed" parent="ConversationListUnreadMessagesCountTextView">
+        <item name="android:visibility">gone</item>
     </style>
 
     <style name="ConversationListUnreadMessagesCountTextView">

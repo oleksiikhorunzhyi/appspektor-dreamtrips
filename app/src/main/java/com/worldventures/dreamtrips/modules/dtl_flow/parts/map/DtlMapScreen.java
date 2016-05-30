@@ -34,7 +34,7 @@ public interface DtlMapScreen extends DtlScreen {
 
     void renderPins();
 
-    void hideDinings(boolean hide);
+    void toggleDiningFilterSwitch(boolean enabled);
 
     void cameraPositionChange(CameraPosition cameraPosition);
 

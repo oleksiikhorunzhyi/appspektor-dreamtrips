@@ -272,8 +272,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     @Override
-    public void hideDinings(boolean hide) {
         filterDiningsSwitch.setChecked(hide);
+    public void toggleDiningFilterSwitch(boolean enabled) {
     }
 
     @Override

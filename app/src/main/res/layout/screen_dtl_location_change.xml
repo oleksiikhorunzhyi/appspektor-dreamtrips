@@ -24,6 +24,7 @@
             app:dtlt_collapsed="false"
             app:dtlt_focused_mode="location"
             app:dtlt_navigation_icon_visible="false"
+            app:dtlt_show_filter_bar_portrait="false"
             />
     </android.support.design.widget.AppBarLayout>
 

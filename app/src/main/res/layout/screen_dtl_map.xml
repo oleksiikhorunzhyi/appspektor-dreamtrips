@@ -24,33 +24,6 @@
             android:layout_height="wrap_content"
             app:dtlt_navigation_icon_src="@drawable/ic_menu_trip_list"
             />
-
-        <FrameLayout
-            android:id="@+id/filterBarRoot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            >
-
-            <include layout="@layout/view_dtl_filter_button"
-                     android:layout_gravity="start"
-                />
-
-            <android.support.v7.widget.SwitchCompat
-                android:id="@+id/filterDiningsSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end"
-                android:layout_margin="8dp"
-                android:checked="false"
-                android:text="@string/dtl_show_offers_only"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/dtlfb_caption_text_size"
-                android:textAllCaps="true"
-                textAllCaps="true"
-                app:switchPadding="@dimen/dtlfb_icon_padding"
-                />
-        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout

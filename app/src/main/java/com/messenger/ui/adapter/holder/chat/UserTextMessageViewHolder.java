@@ -34,7 +34,6 @@ public class UserTextMessageViewHolder extends TextMessageViewHolder {
 
     @Override
     public void showMessage() {
-        messageTextView.setAutoLinkMask(Linkify.WEB_URLS);
         applyTranslationStatus();
     }
 

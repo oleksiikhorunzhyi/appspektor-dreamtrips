@@ -100,6 +100,11 @@ public class DtlToolbar extends LinearLayout {
         setFocusableInTouchMode(true);
         setBackgroundColor(ContextCompat.getColor(context, R.color.theme_main));
         initAttributes(attrs);
+        initLayout();
+    }
+
+    private void initLayout() {
+        inflate(getContext(), R.layout.view_dtl_toolbar_content, this);
     }
 
     @Override

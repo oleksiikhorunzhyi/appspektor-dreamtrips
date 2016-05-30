@@ -23,11 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:dtlt_navigation_icon_src="@drawable/ic_menu_trip_list"
-            >
-
-            <!-- Make additional wrapping to make layout editable and previewable in IDE -->
-            <include layout="@layout/view_dtl_toolbar_content" />
-        </com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar>
+            />
 
         <FrameLayout
             android:id="@+id/filterBarRoot"

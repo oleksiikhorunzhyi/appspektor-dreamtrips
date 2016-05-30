@@ -21,15 +21,10 @@
             android:id="@+id/dtlToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/theme_main"
             app:dtlt_collapsed="false"
             app:dtlt_focused_mode="location"
             app:dtlt_navigation_icon_visible="false"
-            >
-
-            <!-- Make additional wrapping to make layout editable and previewable in IDE -->
-            <include layout="@layout/view_dtl_toolbar_content" />
-        </com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar>
+            />
     </android.support.design.widget.AppBarLayout>
 
     <Button

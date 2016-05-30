@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 
@@ -43,10 +44,11 @@ abstract class XmppBaseConversationsLoader {
         }
 
         return participantLoader.getSingleChatParticipants(conversation.getId())
-                .map(participant -> {
-                    conversation.setParticipants(Collections.singletonList(participant));
-                    return conversation;
-                });
+                .map(participant -> ImmutableConversation.builder()
+                        .from(conversation)
+                        .participants(Collections.singletonList(participant))
+                        .build()
+                );
     }
 
     private Observable<Conversation> obtainGroupConversationParticipants (XmppParticipantsLoader participantLoader, Conversation conversation) {
@@ -58,13 +60,13 @@ abstract class XmppBaseConversationsLoader {
                     }
                     return !groupChatInvalid;
                 })
-                .map(participants -> {
-                    conversation.setOwnerId(findOwnerId(participants));
-                    conversation.setParticipants(participants);
-                    return conversation;
-                });
+                .map(participants -> ImmutableConversation.builder()
+                        .from(conversation)
+                        .participants(participants)
+                        .ownerId(findOwnerId(participants))
+                        .build()
+                );
     }
-
 
     // TODO: 5/24/16 this logic should be refactored, because conversation can have a few owners.
     @Nullable

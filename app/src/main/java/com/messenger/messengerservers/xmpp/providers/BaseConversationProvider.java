@@ -10,6 +10,7 @@ import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -86,7 +87,7 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
             lastMessage = parseLastMessage(parser, thread, timestamp);
         }
 
-        return new Conversation.Builder()
+        return ImmutableConversation.builder()
                 .id(thread)
                 .type(type.toLowerCase())
                 .subject(subject)

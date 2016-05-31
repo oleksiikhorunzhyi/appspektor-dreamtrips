@@ -618,6 +618,6 @@
     <string name="add_title">Agregar un titulo</string>
     <string name="flag_sent_success_msg">El contenido se ha marcado</string>
 
-    
+    <string name="location_name_length_message">El nombre de la ubicación no puede ser mayor de 255 caracteres.</string>
 
 </resources>

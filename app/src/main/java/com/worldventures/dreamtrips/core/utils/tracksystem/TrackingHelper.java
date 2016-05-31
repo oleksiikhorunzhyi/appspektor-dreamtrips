@@ -532,7 +532,7 @@ public class TrackingHelper {
     public static final String MESSENGER_ACTION_CONVERSATION_SORT = "Messenger:Conversation Type";
     public static final String MESSENGER_ACTION_GROUP_CHAT_SETINGS = "Messenger:Group Chat Settings";
     public static final String MESSENGER_ACTION_LEAVE = "Messenger:Leave Group Chat";
-    public static final String MESSENGER_ACTION_TRANSLATION = "Messenger:Translation";
+    public static final String MESSENGER_ACTION_TRANSLATION = "Messenger:View Conversation";
 
     // ---------------- Messenger attributes
     public static final String MESSENGER_ATTRIBUTE_NUMBER_OF_CONVERSATIONS = "numberconvo";

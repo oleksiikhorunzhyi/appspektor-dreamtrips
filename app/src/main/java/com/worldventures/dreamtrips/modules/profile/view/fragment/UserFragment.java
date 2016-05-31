@@ -79,7 +79,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
                             selectedAction.apply(i);
                             materialDialog.dismiss();
                         })
-                .negativeText(R.string.cancel)
+                .negativeText(R.string.action_cancel)
                 .show();
     }
 

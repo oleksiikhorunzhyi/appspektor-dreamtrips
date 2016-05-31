@@ -10,6 +10,7 @@
     <string name="dtl_no_merchants_caption">Tiada pedagang di sini</string>
     <string name="dtl_load_merchants_here_button_caption">Buat semula carian pedagang</string>
     <string name="dtl_place_list_empty_text">Tiada tempat untuk jenis yang dipilih</string>
+    <string name="dtl_location_no_merchants_caption">Tiada pedagang berhampiran anda.\n Sila masukkan bandar baharu atau</string>
     <string name="dtl_points_estimation_calculate_button_caption">Kira</string>
     <string name="dtl_points_estimation_input_hint">Masukkan amaun</string>
     <string name="dtl_header">Penganggar Mata</string>

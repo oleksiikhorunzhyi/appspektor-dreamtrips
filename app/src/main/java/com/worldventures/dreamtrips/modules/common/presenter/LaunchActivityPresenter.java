@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
@@ -73,6 +74,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     GlobalConfigManager globalConfigManager;
     @Inject
     MessengerConnector messengerConnector;
+    @Inject
+    AuthorizedDataUpdater authorizedDataUpdater;
 
     private boolean requestInProgress = false;
 
@@ -110,10 +113,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
         localeStorage.put(locales);
         UserSession userSession = appSessionHolder.get().isPresent() ? appSessionHolder.get().get() : null;
-        if (userSession != null && userSession.getApiToken() != null)
+        if (userSession != null && userSession.getApiToken() != null) {
             loadSettings();
-        else
+            authorizedDataUpdater.updateData(dreamSpiceManager);
+        } else {
             done();
+        }
     }
 
     private void loadSettings() {

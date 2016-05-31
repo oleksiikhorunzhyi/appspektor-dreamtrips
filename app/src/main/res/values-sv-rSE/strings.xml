@@ -618,6 +618,6 @@
     <string name="add_title">Lägg till titel</string>
     <string name="flag_sent_success_msg">Innehållet har flaggats</string>
 
-    
+    <string name="location_name_length_message">Namnet på platsen får inte vara längre än 255 tecken.</string>
 
 </resources>

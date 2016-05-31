@@ -227,7 +227,7 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     private void updateCancelButtonState() {
         if (cancel == null) return;
         if (fragmentManager.getBackStackEntryCount() < 2)
-            cancel.setText(R.string.cancel);
+            cancel.setText(R.string.action_cancel);
         else
             cancel.setText(R.string.back);
     }

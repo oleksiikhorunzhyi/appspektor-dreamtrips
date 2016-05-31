@@ -20,8 +20,8 @@ import javax.inject.Inject;
 
 public class TrainingVideosPresenter extends PresentationVideosPresenter<TrainingVideosPresenter.View> {
 
-    VideoLocale videoLocale = null;
-    VideoLanguage videoLanguage = null;
+    protected VideoLocale videoLocale = null;
+    protected VideoLanguage videoLanguage = null;
 
     @Inject
     SnappyRepository db;

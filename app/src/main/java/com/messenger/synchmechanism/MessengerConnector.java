@@ -5,15 +5,13 @@ import android.content.Context;
 import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
-import com.messenger.delegate.LoaderDelegate;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.util.EventBusWrapper;
+import com.messenger.util.SessionHolderHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -28,22 +26,24 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI
 
 @Singleton
 public class MessengerConnector {
+
     private final BehaviorSubject<SyncStatus> connectionStream = BehaviorSubject.create(SyncStatus.DISCONNECTED);
-    private final MessengerCacheSynchronizer messengerCacheSynchronizer;
     private final MessengerServerFacade messengerServerFacade;
     private final SessionHolder<UserSession> appSessionHolder;
+    private final MessengerSyncDelegate messengerSyncDelegate;
 
-    @Inject MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
+    @Inject
+    MessengerConnector(Context applicationContext, ActivityWatcher activityWatcher,
                        SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade,
-                       LoaderDelegate loaderDelegate, EventBusWrapper eventBusWrapper) {
+                       EventBusWrapper eventBusWrapper, MessengerSyncDelegate messengerSyncDelegate) {
         this.appSessionHolder = appSessionHolder;
         this.messengerServerFacade = messengerServerFacade;
-        this.messengerCacheSynchronizer = new MessengerCacheSynchronizer(loaderDelegate);
+        this.messengerSyncDelegate = messengerSyncDelegate;
         NetworkEvents networkEvents = new NetworkEvents(applicationContext, eventBusWrapper);
 
         messengerServerFacade
                 .getStatusObservable()
-                .subscribe(this::handleFacadeStatus);
+                .subscribe(this::handleConnectionStatus);
 
 
         registerActivityWatcher(activityWatcher);
@@ -66,7 +66,7 @@ public class MessengerConnector {
         activityWatcher.addOnStartStopListener(startStopAppListener);
     }
 
-    private void handleFacadeStatus(ConnectionStatus status) {
+    private void handleConnectionStatus(ConnectionStatus status) {
         switch (status) {
             case DISCONNECTED:
                 connectionStream.onNext(SyncStatus.DISCONNECTED);
@@ -89,7 +89,8 @@ public class MessengerConnector {
     }
 
     public void connect() {
-        if (messengerServerFacade.isConnected() || !isUserSessionPresent()) return;
+        if (messengerServerFacade.isConnected() || !SessionHolderHelper.hasEntity(appSessionHolder))
+            return;
         UserSession userSession = appSessionHolder.get().get();
         if (userSession.getUser() == null) return;
         messengerServerFacade.connect(userSession.getUsername(), userSession.getLegacyApiToken());
@@ -109,23 +110,21 @@ public class MessengerConnector {
         }
     }
 
-    private boolean isUserSessionPresent() {
-        return appSessionHolder != null && appSessionHolder.get() != null
-                && appSessionHolder.get().isPresent();
-    }
-
     private void syncData() {
-        // TODO: 4/28/16 is this make sense?
         if (messengerServerFacade.sendInitialPresence()) {
             connectionStream.onNext(SyncStatus.SYNC_DATA);
-            if (messengerServerFacade.sendInitialPresence()) {
-                messengerCacheSynchronizer.updateCache(success -> {
-                    messengerServerFacade.setActive(success);
-                    connectionStream.onNext(SyncStatus.CONNECTED);
-                });
-            } else {
-                connectionStream.onNext(SyncStatus.ERROR);
-            }
+            messengerSyncDelegate.sync()
+                    .subscribe(result -> {
+                        Timber.d("Sync succeed");
+                        messengerServerFacade.setActive(result);
+                        connectionStream.onNext(SyncStatus.CONNECTED);
+                    }, e -> {
+                        Timber.e(e, "Sync failed");
+                        connectionStream.onNext(SyncStatus.ERROR);
+                    });
+        } else {
+            Timber.e("Sync failed");
+            connectionStream.onNext(SyncStatus.ERROR);
         }
     }
 }

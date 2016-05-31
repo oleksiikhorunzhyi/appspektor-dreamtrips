@@ -9,7 +9,7 @@ import android.util.Pair;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.CreateConversationHelper;
+import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;
 import com.messenger.entities.DataUser;

@@ -28,7 +28,7 @@ public class XmppContactLoader implements ContactsLoader {
     }
 
     @Override
-    public Observable<List<MessengerUser>> getContactsObservable() {
+    public Observable<List<MessengerUser>> load() {
         return rosterObservable.flatMap(RosterObservable::create);
     }
 

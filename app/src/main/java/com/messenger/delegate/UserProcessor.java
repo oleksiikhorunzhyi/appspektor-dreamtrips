@@ -8,8 +8,6 @@ import com.messenger.api.GetShortProfileAction;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.UsersDAO;
-import com.techery.spares.session.SessionHolder;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.Collections;
@@ -26,18 +24,19 @@ import static com.innahema.collections.query.queriables.Queryable.from;
 
 public class UserProcessor {
     private static final String HOST_BADGE = "DreamTrips Host";
+
     private final UsersDAO usersDAO;
     private final ActionPipe<GetShortProfileAction> shortProfilePipe;
-    private final SessionHolder<UserSession> sessionHolder;
-    private final Janet janet;
 
-    public UserProcessor(UsersDAO usersDAO, Janet janet, SessionHolder<UserSession> sessionHolder) {
+    public UserProcessor(UsersDAO usersDAO, Janet janet) {
         this.usersDAO = usersDAO;
-        this.janet = janet;
-        this.sessionHolder = sessionHolder;
         this.shortProfilePipe = janet.createPipe(GetShortProfileAction.class);
     }
 
+    /**
+     * @deprecated  Should be replaced by {@link #syncUsers(List)}()} and proper {@link Janet} actions
+     */
+    @Deprecated
     public Observable<List<DataUser>> connectToUserProvider(Observable<List<MessengerUser>> provider) {
         ConnectableObservable<List<DataUser>> observable = provider
                 .flatMap(this::updateWithSocialData)
@@ -47,6 +46,10 @@ public class UserProcessor {
         observable.subscribe(aVoid -> Timber.i("Users processed"), t -> Timber.w(t, "Can't process users"));
         observable.connect();
         return observable.asObservable();
+    }
+
+    public Observable<List<DataUser>> syncUsers(List<MessengerUser> users) {
+        return updateWithSocialData(users);
     }
 
     private Observable<List<DataUser>> updateWithSocialData(List<MessengerUser> messengerUsers) {

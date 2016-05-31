@@ -2,21 +2,15 @@ package com.messenger.di;
 
 import android.content.Context;
 
-import com.messenger.delegate.CreateConversationHelper;
+import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.delegate.MessageBodyCreator;
-import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.UserProcessor;
-import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
-import com.messenger.notification.UnhandledMessageWatcher;
-import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
-import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
@@ -41,8 +35,8 @@ import io.techery.janet.Janet;
 )
 public class MessengerDelegateModule {
     @Provides
-    UserProcessor provideUserProcessor(Janet janet, UsersDAO usersDAO, SessionHolder<UserSession> sessionHolder) {
-        return new UserProcessor(usersDAO, janet, sessionHolder);
+    UserProcessor provideUserProcessor(Janet janet, UsersDAO usersDAO) {
+        return new UserProcessor(usersDAO, janet);
     }
 
     @Provides

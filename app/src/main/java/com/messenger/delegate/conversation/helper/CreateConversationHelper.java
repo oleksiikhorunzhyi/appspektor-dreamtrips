@@ -1,4 +1,4 @@
-package com.messenger.delegate;
+package com.messenger.delegate.conversation.helper;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;

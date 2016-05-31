@@ -139,10 +139,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 filterService.getFilterData().map(DtlFilterData::getSearchQuery),
                 Pair::new
         ).compose(bindViewIoToMainComposer())
-                .take(1)
-                .subscribe(pair -> {
-                    getView().updateToolbarTitle(pair.first, pair.second);
-                });
+//                .take(1)
+                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
     }
 
     private void updateFilterButtonState() {

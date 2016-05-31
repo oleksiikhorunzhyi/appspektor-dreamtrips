@@ -29,8 +29,8 @@ public class ChatToolbarMenuProvider {
                 .getConversation(conversationId).take(1)
                 .compose(new IoToMainComposer<>())
                 .map(conversation -> {
-                    boolean addVisible = !ConversationHelper.isGroup(conversation)
-                            && !TextUtils.equals(currentUser.getId(), conversation.getOwnerId());
+                    boolean addVisible = ConversationHelper.isSingleChat(conversation) || (ConversationHelper.isGroup(conversation)
+                            && TextUtils.equals(currentUser.getId(), conversation.getOwnerId()));
                     menu.findItem(R.id.action_add).setVisible(addVisible);
                     menu.findItem(R.id.action_settings).setVisible(true);
                     return menu;

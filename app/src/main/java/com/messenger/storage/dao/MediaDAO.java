@@ -67,8 +67,7 @@ public class MediaDAO extends BaseDAO {
                 .build();
 
         return query(query, DataPhotoAttachment.CONTENT_URI, DataMessage.CONTENT_URI)
-                .map(this::obtainPhotoAttachmentListFromCursor)
-                .filter(photoAttachments -> !photoAttachments.isEmpty());
+                .map(this::obtainPhotoAttachmentListFromCursor);
     }
 
     private List<PhotoAttachment> obtainPhotoAttachmentListFromCursor(Cursor cursor) {
@@ -90,7 +89,7 @@ public class MediaDAO extends BaseDAO {
         Date date = new Date(cursor.getLong(cursor.getColumnIndex(DataMessage$Table.DATE)));
 
         Image image = new Image();
-        image.setUrl(url);
+        image.setUrl(url.replace(" ", "%20"));
         image.setFromFile(false);
         User user = new User(userSocialId);
         user.setUsername(userName);

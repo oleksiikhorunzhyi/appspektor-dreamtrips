@@ -393,7 +393,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public Observable<String> getAttachmentClickStream() {
-        return attachmentClickStream.distinctUntilChanged();
+        return attachmentClickStream;
     }
 
     @Override

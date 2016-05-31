@@ -14,4 +14,9 @@ public abstract class DtlMasterPath extends DtlPath implements FullScreenPath {
     public boolean isFullScreen() {
         return false;
     }
+
+    @Override
+    public boolean shouldHideDrawer() {
+        return false;
+    }
 }

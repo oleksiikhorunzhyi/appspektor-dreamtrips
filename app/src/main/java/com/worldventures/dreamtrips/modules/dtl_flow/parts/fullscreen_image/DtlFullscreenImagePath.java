@@ -24,6 +24,11 @@ public class DtlFullscreenImagePath extends DtlMasterPath {
     }
 
     @Override
+    public boolean shouldHideDrawer() {
+        return true;
+    }
+
+    @Override
     public PathAttrs getAttrs() {
         return PathAttrs.WITHOUT_DRAWER;
     }

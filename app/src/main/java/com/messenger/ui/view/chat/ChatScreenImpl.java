@@ -399,7 +399,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void enableInput(boolean enabled) {
-        // use invisible so that overlay can have the same size as input holder
+        // use invisible so that disabled input overlay can have the same size as input holder
         inputHolder.setVisibility(enabled ? VISIBLE : INVISIBLE);
         inputDisabledView.setVisibility(enabled ? GONE : VISIBLE);
     }

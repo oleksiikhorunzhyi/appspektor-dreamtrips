@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
@@ -18,7 +17,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
-
 
 public class FriendListPresenter extends BaseUserListPresenter<FriendListPresenter.View> {
 
@@ -90,7 +88,5 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
         void showFilters(List<Circle> circles, int selectedPosition);
 
         void openFriendPrefs(UserBundle userBundle);
-
     }
-
 }

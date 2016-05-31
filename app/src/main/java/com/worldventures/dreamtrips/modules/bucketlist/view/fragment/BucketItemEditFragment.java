@@ -86,7 +86,10 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     @Override
     public void onResume() {
         super.onResume();
-        if (getArgs().isLock()) OrientationUtil.lockOrientation(getActivity());
+        if (getArgs().isLock()) {
+            OrientationUtil.lockOrientation(getActivity());
+        }
+        initAutoCompleteDate();
     }
 
     @Optional
@@ -197,7 +200,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                //nothin to do here
+                //nothing to do here
             }
         };
         spinnerCategory.setOnItemSelectedListener(onItemSelectedListenerCategory);
@@ -372,7 +375,3 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
         editTextDescription.validate();
     }
 }
-
-
-
-

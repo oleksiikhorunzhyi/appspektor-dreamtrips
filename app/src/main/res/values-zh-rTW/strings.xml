@@ -618,6 +618,6 @@
     <string name="add_title">添加標題</string>
     <string name="flag_sent_success_msg">內容已被標記</string>
 
-    
+    <string name="location_name_length_message">地點名稱不得超過255個字符。</string>
 
 </resources>

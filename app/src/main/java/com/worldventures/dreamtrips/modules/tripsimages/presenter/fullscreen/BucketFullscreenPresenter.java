@@ -36,7 +36,7 @@ public class BucketFullscreenPresenter extends FullScreenPresenter<BucketPhoto, 
     @Override
     public void onResume() {
         super.onResume();
-        if (bucketItem != null && !foreign) {
+        if (bucketItem != null && bucketItem.getCoverPhoto() != null && !foreign) {
             view.showCheckbox(bucketItem.getCoverPhoto().equals(photo));
         } else {
             view.hideCheckBox();

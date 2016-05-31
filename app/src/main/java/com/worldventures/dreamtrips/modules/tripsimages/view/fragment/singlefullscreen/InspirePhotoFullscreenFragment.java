@@ -26,8 +26,6 @@ public class InspirePhotoFullscreenFragment extends FullScreenPhotoFragment<Insp
     TextView textViewInspireMeTitle;
     @InjectView(R.id.iv_share)
     ImageView ivShare;
-    @InjectView(R.id.actionPanel)
-    LinearLayout actionContainer;
 
     @Override
     protected InspirationFullscreenPresenter createPresenter(Bundle savedInstanceState) {
@@ -43,7 +41,6 @@ public class InspirePhotoFullscreenFragment extends FullScreenPhotoFragment<Insp
 
     @OnClick(R.id.tv_see_more)
     protected void actionSeeMore() {
-        actionContainer.setVisibility(View.VISIBLE);
         tvDescription.setSingleLine(false);
 
         tvSeeMore.setVisibility(View.GONE);
@@ -54,7 +51,6 @@ public class InspirePhotoFullscreenFragment extends FullScreenPhotoFragment<Insp
 
     @OnClick({R.id.actionPanel, R.id.description_container})
     public void actionSeeLess() {
-        actionContainer.setVisibility(View.INVISIBLE);
         tvDescription.setSingleLine(true);
         tvDescription.setVisibility(View.VISIBLE);
         tvSeeMore.setVisibility(View.VISIBLE);

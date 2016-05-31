@@ -73,7 +73,7 @@ public class SelectDialog extends BaseDialogFragment {
                 .title(titleId)
                 .customView(listView, false)
                 .positiveText(R.string.ok)
-                .negativeText(R.string.cancel)
+                .negativeText(R.string.action_cancel)
                 .onPositive((dialog1, which) -> {
                     if (buttonListener != null) {
                         buttonListener.onPositiveClick(listView.getCheckedItemPosition());

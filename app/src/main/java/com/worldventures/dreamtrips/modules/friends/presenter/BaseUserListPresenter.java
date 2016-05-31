@@ -103,6 +103,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
         super.handleError(error);
         if (view != null) view.finishLoading();
         loadUsersRequestLocked = false;
+        loading = false;
     }
 
     protected abstract Query<ArrayList<User>> getUserListQuery(int page);
@@ -254,6 +255,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     }
 
     public interface View extends Presenter.View {
+
         void startLoading();
 
         void finishLoading();

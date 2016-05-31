@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen.YouShouldBeHerePhotoFullscreenPresenter;
-import com.worldventures.dreamtrips.modules.tripsimages.view.custom.ScaleImageView;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -19,8 +18,6 @@ import butterknife.OnClick;
 @Layout(R.layout.fragment_fullscreen_ysbh_photo)
 public class YSBHPhotoFullscreenFragment extends FullScreenPhotoFragment<YouShouldBeHerePhotoFullscreenPresenter, YSBHPhoto> implements YouShouldBeHerePhotoFullscreenPresenter.View {
 
-    @InjectView(R.id.iv_image)
-    ScaleImageView ivImage;
     @InjectView(R.id.tv_description)
     TextView tvDescription;
     @InjectView(R.id.tv_see_more)

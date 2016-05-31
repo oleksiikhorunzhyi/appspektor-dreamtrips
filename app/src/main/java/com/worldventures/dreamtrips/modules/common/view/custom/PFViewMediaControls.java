@@ -206,6 +206,8 @@ public class PFViewMediaControls extends RelativeLayout {
 
     private void setPfPlaybackPosition(float playbackPosition) {
         pfAsset.setPLaybackTime(playbackPosition);
+        seekBar.setProgress((int) playbackPosition);
+        updateTime();
     }
 
     private void onPlayClick() {

@@ -22,11 +22,11 @@ public class ChangeSubjectDialog {
     public ChangeSubjectDialog(Context context, String currentSubject) {
         dialog = new AlertDialog.Builder(context)
                 .setView(obtainDialogUi(context, currentSubject))
-                .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                .setNegativeButton(R.string.action_cancel, (dialog, which) -> {
                     if (cancelListener != null)
                         cancelListener.call();
                 })
-                .setPositiveButton(android.R.string.ok, (dialog, which1) -> {
+                .setPositiveButton(R.string.ok, (dialog, which1) -> {
                     if (positiveListener != null)
                         positiveListener.call(etSubject.getText().toString());
                 })

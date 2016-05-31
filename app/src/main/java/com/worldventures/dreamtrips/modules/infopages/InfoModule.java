@@ -81,7 +81,7 @@ public class InfoModule {
 
     @Provides(type = Provides.Type.SET)
     ComponentDescription provideHelpComponent() {
-        return new ComponentDescription(HELP, R.string.help, R.string.help, R.drawable.ic_faq, HelpFragment.class);
+        return new ComponentDescription(HELP, R.string.help, R.string.help, R.drawable.ic_help, HelpFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)

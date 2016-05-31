@@ -4,11 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -41,10 +44,11 @@ abstract class XmppBaseConversationsLoader {
         }
 
         return participantLoader.getSingleChatParticipants(conversation.getId())
-                .map(participant -> {
-                    conversation.getParticipants().add(participant);
-                    return conversation;
-                });
+                .map(participant -> ImmutableConversation.builder()
+                        .from(conversation)
+                        .participants(Collections.singletonList(participant))
+                        .build()
+                );
     }
 
     private Observable<Conversation> obtainGroupConversationParticipants (XmppParticipantsLoader participantLoader, Conversation conversation) {
@@ -56,19 +60,19 @@ abstract class XmppBaseConversationsLoader {
                     }
                     return !groupChatInvalid;
                 })
-                .map(participants -> {
-                    conversation.setOwnerId(findOwnerId(participants));
-                    conversation.getParticipants().addAll(participants);
-                    return conversation;
-                });
+                .map(participants -> ImmutableConversation.builder()
+                        .from(conversation)
+                        .participants(participants)
+                        .ownerId(findOwnerId(participants))
+                        .build()
+                );
     }
-
 
     // TODO: 5/24/16 this logic should be refactored, because conversation can have a few owners.
     @Nullable
     private String findOwnerId(List<Participant> participants) {
         for (Participant p : participants) {
-            if (TextUtils.equals(p.getAffiliation(), Participant.Affiliation.OWNER)) {
+            if (TextUtils.equals(p.getAffiliation(), Affiliation.OWNER)) {
                 return p.getUserId();
             }
         }

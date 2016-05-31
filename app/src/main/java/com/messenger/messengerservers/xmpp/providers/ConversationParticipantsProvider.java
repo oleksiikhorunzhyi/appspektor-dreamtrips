@@ -2,7 +2,7 @@ package com.messenger.messengerservers.xmpp.providers;
 
 import android.text.TextUtils;
 
-import com.messenger.messengerservers.model.Participant;
+import com.messenger.messengerservers.model.ImmutableParticipantItem;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationParticipantsIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
@@ -13,47 +13,39 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import timber.log.Timber;
-
 public class ConversationParticipantsProvider extends IQProvider<ConversationParticipantsIQ> {
-
-    public ConversationParticipantsProvider() {
-    }
+    private static final String QUERY = "query";
+    private static final String PARTICIPANT_ITEM = "item";
+    private static final String PARTICIPANT_JID = "jid";
+    private static final String PARTICIPANT_AFFILIATION = "affiliation";
 
     @Override
     public ConversationParticipantsIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
         ConversationParticipantsIQ conversationParticipantsIQ = new ConversationParticipantsIQ();
-
-        String elementName;
-        String affiliation = null;
-        String participantId = null;
-
         boolean done = false;
+
         while (!done) {
             int eventType = parser.next();
+            String elementName = parser.getName();
             switch (eventType) {
                 case XmlPullParser.START_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "item":
-                            affiliation = parser.getAttributeValue("", "affiliation");
-                            String jid = parser.getAttributeValue("", "jid");
-                            participantId = TextUtils.isEmpty(jid) ? null : JidCreatorHelper.obtainId(jid);
+                        case PARTICIPANT_ITEM:
+                            String jid = parser.getAttributeValue("", PARTICIPANT_JID);
+                            if (TextUtils.isEmpty(jid)) break;
+                            String affiliation = parser.getAttributeValue("", PARTICIPANT_AFFILIATION);
+                            String participantId = JidCreatorHelper.obtainId(jid);
+                            conversationParticipantsIQ.addParticipantItem(ImmutableParticipantItem.builder()
+                                    .affiliation(affiliation)
+                                    .userId(participantId)
+                                    .build());
                             break;
                     }
                 case XmlPullParser.END_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "item":
-                            if (participantId == null) continue;
-                            Participant participant = new Participant(participantId, affiliation.toLowerCase(), null);
-                            conversationParticipantsIQ.addParticipant(participant);
-                            break;
-                        case "query":
+                        case QUERY:
                             done = true;
-                            break;
                     }
-                    break;
             }
         }
         return conversationParticipantsIQ;

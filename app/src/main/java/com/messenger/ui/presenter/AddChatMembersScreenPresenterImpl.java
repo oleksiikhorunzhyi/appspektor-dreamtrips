@@ -11,8 +11,8 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationType;
-import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.helper.ConversationHelper;
@@ -99,12 +99,12 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
 
     private void saveModifiedConversation(DataConversation newConversation,  List<DataUser> newChatUsers, String previousType) {
         List<DataParticipant> relationships = Queryable.from(newChatUsers).map(user ->
-                        new DataParticipant(newConversation.getId(), user.getId(), Participant.Affiliation.MEMBER))
+                        new DataParticipant(newConversation.getId(), user.getId(), Affiliation.MEMBER))
                 .toList();
 
         // we are participants too and if conversation is group then we're owner otherwise we're member
         if (TextUtils.equals(previousType, ConversationType.CHAT)) {
-            relationships.add(new DataParticipant(newConversation.getId(), user.getId(), Participant.Affiliation.OWNER));
+            relationships.add(new DataParticipant(newConversation.getId(), user.getId(), Affiliation.OWNER));
         }
 
         participantsDAO.save(relationships);

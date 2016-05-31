@@ -2,8 +2,8 @@ package com.messenger.entities;
 
 import android.net.Uri;
 
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.model.Participant.Affiliation.AffiliationType;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
@@ -37,12 +37,7 @@ public class DataParticipant extends BaseProviderModel<DataParticipant> {
         id = createId(conversationId, userId);
     }
 
-    @Deprecated
-    public DataParticipant(String conversationId, DataUser user, @AffiliationType String affiliation) {
-        this(conversationId, user.getId(), affiliation);
-    }
-
-    public DataParticipant(String conversationId, String userId, @AffiliationType String affiliation) {
+    public DataParticipant(String conversationId, String userId, @Affiliation String affiliation) {
         this.id = createId(conversationId, userId);
         this.conversationId = conversationId;
         this.userId = userId;
@@ -76,7 +71,7 @@ public class DataParticipant extends BaseProviderModel<DataParticipant> {
         this.syncTime = syncTime;
     }
 
-    @AffiliationType
+    @Affiliation
     public String getAffiliation() {
         return affiliation;
     }

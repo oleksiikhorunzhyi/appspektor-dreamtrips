@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.GlobalEventEmitter;
+import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
@@ -200,7 +201,11 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             notifyOnChatLeftListener(conversationId, userId, leave);
         } else {
             boolean isOnline = presence.getType() == Type.available;
-            notifyOnChatJoinedListener(new Participant(userId, String.valueOf(affiliation), conversationId), isOnline);
+            notifyOnChatJoinedListener(ImmutableParticipant.builder()
+                    .userId(userId)
+                    .conversationId(conversationId)
+                    .affiliation(String.valueOf(affiliation))
+                    .build(), isOnline);
         }
         return true;
     }

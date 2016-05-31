@@ -32,6 +32,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
     @Column String status;
     @Column int unreadMessageCount;
     @Column long syncTime;
+    @Column long leftTime;
     @Column long lastActiveDate;
 
     public DataConversation() {}
@@ -45,6 +46,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setType(conversation.getType());
         setUnreadMessageCount(conversation.getUnreadMessageCount());
         setLastActiveDate(conversation.getLastActiveDate());
+        setLeftTime(conversation.getLeftTime());
     }
 
     private DataConversation(Builder builder) {
@@ -56,6 +58,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         setType(builder.type);
         setUnreadMessageCount(builder.unreadMessageCount);
         setLastActiveDate(builder.date);
+        setLeftTime(builder.leftTime);
     }
 
     public String getId() {
@@ -97,6 +100,14 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
     public void setType(@ConversationType.Type String type) {
         this.type = type;
+    }
+
+    public long getLeftTime() {
+        return leftTime;
+    }
+
+    public void setLeftTime(long leftTime) {
+        this.leftTime = leftTime;
     }
 
     @ConversationStatus.Status
@@ -190,6 +201,7 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
         private String status;
         private long date;
         private int unreadMessageCount = 0;
+        private long leftTime;
 
         public Builder() {
         }
@@ -211,6 +223,11 @@ public class DataConversation extends BaseProviderModel<DataConversation> {
 
         public Builder subject(String val) {
             subject = val;
+            return this;
+        }
+
+        public Builder leftTime(long val) {
+            leftTime = val;
             return this;
         }
 

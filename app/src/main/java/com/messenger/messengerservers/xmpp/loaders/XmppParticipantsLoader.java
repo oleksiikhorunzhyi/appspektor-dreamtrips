@@ -3,7 +3,10 @@ package com.messenger.messengerservers.xmpp.loaders;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.messengerservers.constant.Affiliation;
+import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.messengerservers.model.Participant;
+import com.messenger.messengerservers.model.ParticipantItem;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationParticipantsIQ;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.ObtainConversationParticipantsIQ;
@@ -36,7 +39,11 @@ public class XmppParticipantsLoader {
 
     public Observable<Participant> getSingleChatParticipants(String conversationId) {
         String companionId = ThreadCreatorHelper.obtainCompanionIdFromSingleChatId(conversationId, facade.getUsername());
-        Participant companion = new Participant(companionId, Participant.Affiliation.MEMBER, conversationId);
+        Participant companion = ImmutableParticipant.builder()
+                .userId(companionId)
+                .affiliation(Affiliation.MEMBER)
+                .conversationId(conversationId)
+                .build();
         return Observable.just(companion);
     }
 
@@ -67,15 +74,26 @@ public class XmppParticipantsLoader {
                 && TextUtils.equals(conversationId, JidCreatorHelper.obtainId(stanza.getFrom()));
     }
 
-    private void processPacket(ConversationParticipantsIQ participantsIQPacket, String conversationId, Subscriber subscriber) {
-        List<Participant> participants = participantsIQPacket.getParticipants();
-        if (!participants.isEmpty()) {
-            participants = Queryable.from(participants).map(p -> new Participant(p, conversationId)).toList();
+    private void processPacket(ConversationParticipantsIQ participantsIQPacket, String conversationId,
+                               Subscriber<? super List<Participant>> subscriber) {
+        List<ParticipantItem> participantItems = participantsIQPacket.getParticipantItems();
+        if (participantItems.isEmpty()) {
+            pushParticipantsListToSubscriber(Collections.emptyList(), subscriber);
+            return;
         }
-        pushParticipantsListToSubscriber(participants, subscriber);
+            List<Participant> participants = Queryable.from(participantItems)
+                    .map(item -> (Participant) ImmutableParticipant.builder()
+                            .conversationId(conversationId)
+                            .userId(item.getUserId())
+                            .affiliation(item.getAffiliation())
+                            .build())
+                    .toList();
+
+            pushParticipantsListToSubscriber(participants, subscriber);
     }
 
-    private void pushParticipantsListToSubscriber(List<Participant> participants, Subscriber subscriber) {
+    private void pushParticipantsListToSubscriber(List<Participant> participants,
+                                                  Subscriber<? super List<Participant>> subscriber) {
         if (subscriber.isUnsubscribed()) return;
 
         subscriber.onNext(participants);

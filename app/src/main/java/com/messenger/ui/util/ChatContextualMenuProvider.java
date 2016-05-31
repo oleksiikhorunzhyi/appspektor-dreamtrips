@@ -51,12 +51,11 @@ public class ChatContextualMenuProvider {
                                         String conversationId) {
         return Observable
                 .combineLatest(
-                        conversationsDAO.getConversation(conversationId),
-                        attachmentDAO.getAttachmentByMessageId(message.getId()),
-                        usersDAO.getUserById(message.getFromId()).first(),
-                        translationsDAO.getTranslation(message.getId()).first(), QueryResult::new
+                        conversationsDAO.getConversation(conversationId).take(1),
+                        attachmentDAO.getAttachmentByMessageId(message.getId()).take(1),
+                        usersDAO.getUserById(message.getFromId()).take(1),
+                        translationsDAO.getTranslation(message.getId()).take(1), QueryResult::new
                 )
-                .compose(new IoToMainComposer<>())
                 .map(queryResult -> {
                     Menu menu = new MenuBuilder(context);
                     new SupportMenuInflater(context).inflate(R.menu.menu_chat_contextual, menu);

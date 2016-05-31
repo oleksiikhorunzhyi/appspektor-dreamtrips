@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">Tidak dapat memuatkan tetapan perbualan</string>
     <string name="chat_settings_single_chat_online">dalam talian</string>
     <string name="chat_settings_single_chat_offline">luar talian</string>
-    <string name="chat_settings_group_chat_description">%1$d ahli, %2$d dalam talian</string>
     <string name="chat_settings_row_notifications">Pemberitahuan</string>
     <string name="chat_settings_row_shared_content">Kandungan Berkongsi</string>
     <string name="chat_settings_row_members_format">Ahli (%1$d)</string>

@@ -87,9 +87,10 @@ public class UserSectionHelper {
                                                            DataConversation conversation) {
         boolean isAdmin = TextUtils.equals(conversation.getOwnerId(), getCurrentUserId());
         boolean isTripConversation = ConversationHelper.isTripChat(conversation);
+        boolean enableOnlineMembersStatuses = !ConversationHelper.isAbandoned(conversation);
         Map<String, Collection<SwipeDataUser>> groupedMap = Queryable.from(members)
                 .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation),
-                        pair -> toSwipeDataUser(pair.first, pair.second, isAdmin));
+                        pair -> toSwipeDataUser(pair.first, pair.second, isAdmin, enableOnlineMembersStatuses));
 
         return convertToGroups(groupedMap);
     }
@@ -132,9 +133,10 @@ public class UserSectionHelper {
                 return name;
         }
     }
-
-    private SwipeDataUser toSwipeDataUser(DataUser user, String affiliation, boolean isOwner) {
-        return new SwipeDataUser(user, isOwner && !TextUtils.equals(affiliation, Affiliation.OWNER));
+    private SwipeDataUser toSwipeDataUser(DataUser user, String affiliation, boolean isOwner,
+                                          boolean onlineStatusEnabled) {
+        return new SwipeDataUser(user, isOwner && !TextUtils.equals(affiliation, Affiliation.OWNER),
+                onlineStatusEnabled);
     }
 
     private String getUserGroup(DataUser user, String affiliation, boolean isTripConversation) {

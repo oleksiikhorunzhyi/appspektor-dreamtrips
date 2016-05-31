@@ -34,8 +34,12 @@ public abstract class UserCell<EntityType, D extends CellDelegate<EntityType>> e
     protected void syncUIStateWithModel() {
         DataUser user = getDataUser();
         nameTextView.setText(user.getName());
-        avatarView.setOnline(user.isOnline());
+        setUserOnline(user);
         avatarView.setImageURI(Uri.parse(user.getAvatarUrl()));
+    }
+
+    protected void setUserOnline(DataUser user) {
+        avatarView.setOnline(user.isOnline());
     }
 
     protected abstract DataUser getDataUser();

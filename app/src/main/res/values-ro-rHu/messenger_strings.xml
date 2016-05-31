@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">Setările conversațiilor nu s-au putut încărca</string>
     <string name="chat_settings_single_chat_online">online</string>
     <string name="chat_settings_single_chat_offline">offline</string>
-    <string name="chat_settings_group_chat_description">%1$d membri, %2$d online</string>
     <string name="chat_settings_row_notifications">Notificări</string>
     <string name="chat_settings_row_shared_content">Conținut partajat</string>
     <string name="chat_settings_row_members_format">Membri (%1$d)</string>

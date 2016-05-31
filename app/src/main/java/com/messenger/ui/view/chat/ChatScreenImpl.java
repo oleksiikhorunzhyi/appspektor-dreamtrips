@@ -86,6 +86,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     View sendMessageButton;
     @InjectView(R.id.input_holder)
     ViewGroup inputHolder;
+    @InjectView(R.id.input_disabled_text_view)
+    View inputDisabledView;
 
     private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -385,10 +387,21 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                 .show();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Message input
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
     public Observable<String> getEditMessageObservable() {
         return RxTextView.textChangeEvents(messageEditText)
                 .map(event -> event.text().toString());
+    }
+
+    @Override
+    public void enableInput(boolean enabled) {
+        // use invisible so that disabled input overlay can have the same size as input holder
+        inputHolder.setVisibility(enabled ? VISIBLE : INVISIBLE);
+        inputDisabledView.setVisibility(enabled ? GONE : VISIBLE);
     }
 
     @Override

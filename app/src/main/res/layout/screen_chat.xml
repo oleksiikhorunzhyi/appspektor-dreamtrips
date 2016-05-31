@@ -46,50 +46,43 @@
         android:focusableInTouchMode="true"
         >
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/chat_content_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
-            <LinearLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/chat_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
+                android:layout_weight="1"
+                />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    >
+            <com.messenger.ui.widget.ChatUsersTypingView
+                android:id="@+id/chat_users_typing_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_weight="0"
+                />
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/chat_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/list_item_divider_color"
+                />
 
-                </FrameLayout>
-
-                <com.messenger.ui.widget.ChatUsersTypingView
-                    android:id="@+id/chat_users_typing_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_weight="0"
-                    />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/list_item_divider_color"
-                    />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0">
 
                 <LinearLayout
                     android:id="@+id/input_holder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0"
                     android:background="@color/white"
                     android:orientation="horizontal"
                     >
@@ -133,8 +126,23 @@
                         android:textSize="@dimen/chat_message_send_button_text_size"
                         />
                 </LinearLayout>
-            </LinearLayout>
-        </FrameLayout>
+
+                <TextView
+                    android:id="@+id/input_disabled_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="10sp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="#9b9b9b"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:text="@string/chat_message_sending_disabled"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
 
         <!--<TextView-->
             <!--android:id="@+id/chat_error_view"-->

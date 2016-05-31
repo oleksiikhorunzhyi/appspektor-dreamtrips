@@ -74,17 +74,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     public void setParticipants(DataConversation conversation, List<DataUser> participants) {
         ConversationUIHelper.setTitle(chatNameTextView, conversation, participants, false);
-        String chatDescriptionFormat = getContext()
-                .getString(R.string.chat_settings_group_chat_description);
-        int onlineCount = 0;
-        for (DataUser user : participants) {
-            if (user.isOnline()) {
-                onlineCount++;
-            }
-        }
-        String chatDescription = String.format(chatDescriptionFormat, participants.size(),
-                onlineCount);
-        chatDescriptionTextView.setText(chatDescription);
+        ConversationUIHelper.setSubtitle(chatDescriptionTextView, conversation, participants);
 
         if (membersSettingsRow == null) {
             membersSettingsRow = new ChatSettingsRow(getContext());

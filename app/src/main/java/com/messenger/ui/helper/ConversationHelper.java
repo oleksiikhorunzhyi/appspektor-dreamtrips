@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 
 import java.util.List;
@@ -50,4 +51,7 @@ public final class ConversationHelper {
         return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 
+    public static boolean isAbandoned(DataConversation conversation) {
+        return !ConversationStatus.PRESENT.equals(conversation.getStatus());
+    }
 }

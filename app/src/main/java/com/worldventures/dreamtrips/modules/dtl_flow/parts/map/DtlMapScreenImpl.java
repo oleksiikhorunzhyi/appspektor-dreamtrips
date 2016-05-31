@@ -233,7 +233,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void prepareInfoWindow(int height) {
-        int ownHeight = getHeight() - ButterKnife.findById(this, R.id.filterBarRoot).getBottom();
+        int ownHeight = getHeight() - ButterKnife.findById(this, R.id.dtlToolbar).getBottom();
         int centerY = ownHeight / 2;
         int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;

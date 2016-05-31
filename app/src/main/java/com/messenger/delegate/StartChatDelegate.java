@@ -2,6 +2,7 @@ package com.messenger.delegate;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.converter.UserConverter;
+import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;

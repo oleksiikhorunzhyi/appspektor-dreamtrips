@@ -4,6 +4,7 @@ package com.messenger.delegate;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;

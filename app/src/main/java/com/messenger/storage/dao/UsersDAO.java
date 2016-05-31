@@ -64,7 +64,7 @@ public class UsersDAO extends BaseDAO {
                 .compose(DaoTransformers.toEntityList(DataUser.class));
     }
 
-    public void deleteFriends() {
+    public void unfriendAll() {
         new Update<>(DataUser.class).set(Condition.column(DataUser$Table.FRIEND).is(false)).queryClose();
     }
 

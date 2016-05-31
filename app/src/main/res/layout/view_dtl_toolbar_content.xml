@@ -108,8 +108,13 @@
         android:background="@android:color/white"
         >
 
-        <include layout="@layout/view_dtl_filter_button"
-                 android:layout_gravity="start"
+        <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="@dimen/dtlfb_width"
+            android:layout_height="@dimen/dtlfb_height"
+            tools:background="@color/dtlfb_disabled_background_color"
+            tools:showIn="@layout/screen_dtl_merchants"
             />
 
         <android.support.v7.widget.SwitchCompat

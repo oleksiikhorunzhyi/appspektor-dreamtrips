@@ -61,6 +61,17 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="DtlFilterButton">
+        <!-- 'dtlfb_' prefix to prevent any possible duplication -->
+        <attr name="dtlfb_enabled_background_color" format="integer" />
+        <attr name="dtlfb_disabled_background_color" format="integer" />
+        <attr name="dtlfb_enabled_caption_color" format="integer" />
+        <attr name="dtlfb_disabled_caption_color" format="integer" />
+        <attr name="dtlfb_enabled_icon" format="integer" />
+        <attr name="dtlfb_disabled_icon" format="integer" />
+        <attr name="dtlfb_show_separator" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="CollageView">
         <attr name="padding" format="dimension"/>
         <attr name="moreTextSize" format="dimension"/>

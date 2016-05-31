@@ -106,12 +106,8 @@ public class DtlToolbar extends LinearLayout {
 
     public DtlToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initAttributes(attrs);
-        initLayout();
-    }
-
-    private void initLayout() {
         inflate(getContext(), R.layout.view_dtl_toolbar_content, this);
+        initAttributes(attrs);
     }
 
     @Override

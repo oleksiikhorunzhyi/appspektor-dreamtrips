@@ -6,9 +6,9 @@ import rx.android.MainThreadSubscription;
 
 public class DtlToolbarFilterClicksOnSubscribe implements Observable.OnSubscribe<Void> {
 
-    private final DtlToolbar dtlToolbar;
+    private final BaseDtlToolbar dtlToolbar;
 
-    public DtlToolbarFilterClicksOnSubscribe(DtlToolbar dtlToolbar) {
+    public DtlToolbarFilterClicksOnSubscribe(BaseDtlToolbar dtlToolbar) {
         this.dtlToolbar = dtlToolbar;
     }
 

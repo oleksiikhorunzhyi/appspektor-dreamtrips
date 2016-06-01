@@ -27,13 +27,13 @@
             >
 
             <FrameLayout
-                android:id="@+id/actionViewLayout"
+                android:id="@+id/dtlToolbarActionViewLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 >
 
                 <at.markushi.ui.ActionView
-                    android:id="@+id/actionView"
+                    android:id="@+id/dtlToolbarActionView"
                     android:layout_width="@dimen/dtlt_action_view_size"
                     android:layout_height="@dimen/dtlt_action_view_size"
                     android:layout_marginLeft="@dimen/dtlt_action_view_side_margin"
@@ -48,7 +48,7 @@
             </FrameLayout>
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/dtlToolbarTopCaption"
+                android:id="@+id/dtlToolbarMerchantSearchInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -80,7 +80,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/dtlToolbarSecondRow"
+            android:id="@+id/dtlToolbarLocationSearchLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dtlt_row_height"
             android:paddingLeft="@dimen/dtlt_second_row_side_padding"
@@ -90,7 +90,7 @@
             >
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/dtlToolbarBottomCaption"
+                android:id="@+id/dtlToolbarLocationSearchInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/DtlToolbarInput"
@@ -102,7 +102,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/filterBarRoot"
+        android:id="@+id/dtlToolbarFilterBarRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"

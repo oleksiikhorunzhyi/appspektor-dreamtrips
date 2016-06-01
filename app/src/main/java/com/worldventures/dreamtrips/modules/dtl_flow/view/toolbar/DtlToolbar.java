@@ -10,10 +10,7 @@ import android.content.res.TypedArray;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.SwitchCompat;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -25,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -39,151 +35,82 @@ import java.util.List;
 import at.markushi.ui.ActionView;
 import at.markushi.ui.action.CloseAction;
 import at.markushi.ui.action.DrawerAction;
-import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import icepick.Icepick;
 import icepick.State;
-import timber.log.Timber;
 
 /**
- * Custom implementation to wrap up look and behaviour. <br />
- * Actual layout is included from
- * {@link com.worldventures.dreamtrips.R.layout#view_dtl_toolbar_content this layout}
+ * Custom implementation to wrap up look and behaviour
  */
-public class DtlToolbar extends LinearLayout {
+public class DtlToolbar extends BaseDtlToolbar {
 
     private static final boolean DEF_COLLAPSED = true;
     private static final boolean DEF_NAVIGATION_ICON_VISIBLE = true;
     private static final boolean DEF_SHOW_FILTER_BAR = true;
     @DrawableRes
     private static final int DEF_NAVIGATION_ICON = R.drawable.ic_menu_trip_map;
-    private static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
 
     @InjectView(R.id.dtlToolbarLayout)
     ViewGroup dtlToolbarLayout;
-    @InjectView(R.id.dtlToolbarFirstRow)
-    View firstRowLayout;
-    @InjectView(R.id.actionViewLayout)
+    @InjectView(R.id.dtlToolbarActionViewLayout)
     ViewGroup actionViewLayout;
-    @InjectView(R.id.actionView)
+    @InjectView(R.id.dtlToolbarActionView)
     ActionView actionView;
-    @InjectView(R.id.dtlToolbarTopCaption)
-    AppCompatEditText topCaption;
-    @InjectView(R.id.dtlToolbarSecondRow)
-    ViewGroup secondRow;
+    @InjectView(R.id.dtlToolbarLocationSearchLayout)
+    ViewGroup locationSearchLayout;
     @InjectView(R.id.dtlToolbarNavigationLayout)
     ViewGroup dtlNavigationControl;
     @InjectView(R.id.dtlToolbarNavigationIcon)
     ImageView dtlToolbarNavigationIcon;
-    @InjectView(R.id.dtlToolbarBottomCaption)
-    AppCompatEditText bottomCaption;
-    @InjectView(R.id.filterBarRoot)
+    @InjectView(R.id.dtlToolbarFilterBarRoot)
     ViewGroup filterBarRoot;
-    @InjectView(R.id.dtlfb_rootView)
-    DtlFilterButton filtersButton;
-    @InjectView(R.id.filterDiningsSwitch)
-    SwitchCompat filterDiningsSwitch;
+    //
+    protected List<CollapseListener> collapseListeners = new ArrayList<>();
+    protected List<ExpandListener> expandListeners = new ArrayList<>();
+    protected List<NavigationClickListener> navigationClickListeners = new ArrayList<>();
+    protected List<NavigationControlListener> navigationControlListeners = new ArrayList<>();
     //
     @State
     boolean collapsed;
     //
-    private FocusedMode focusedMode;
     boolean navigationControlVisible;
     @DrawableRes
     int navigationIconResource;
-    private String searchQuery;
-    private String locationTitle;
-    private String defaultEmptySearchCaption;
     private boolean showNavigation;
     private boolean showFilterBar;
-    //
-    private List<CollapseListener> collapseListeners = new ArrayList<>();
-    private List<ExpandListener> expandListeners = new ArrayList<>();
-    private List<NavigationClickListener> navigationClickListeners = new ArrayList<>();
-    private List<NavigationControlListener> navigationControlListeners = new ArrayList<>();
-    private List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
 
     public DtlToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        inflate(getContext(), R.layout.view_dtl_toolbar_content, this);
-        initAttributes(attrs);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        ButterKnife.inject(this);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        initState();
-        bindSearchQueryPersisting();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Essential public methods
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void collapse() {
-        collapsed = true;
-        updateToolbarCaptions();
-        animateCollapsing();
-        patchInputFields(true);
-    }
-
-    public void expand() {
-        collapsed = false;
-        updateToolbarCaptions();
-        animateExpanding();
-        patchInputFields(false);
-    }
-
-    public void setToolbarCaptions(@Nullable String searchQuery, String locationTitle) {
-        this.searchQuery = searchQuery;
-        this.locationTitle = locationTitle;
-        updateToolbarCaptions();
     }
 
     public boolean isCollapsed() {
         return collapsed;
     }
 
-    public void setFilterEnabled(boolean enabled) {
-        filtersButton.setFilterEnabled(enabled);
-    }
-
-    public void toggleDiningFilterSwitch(boolean enabled) {
-        filterDiningsSwitch.setChecked(enabled);
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Essential private and package-private stuff
     ///////////////////////////////////////////////////////////////////////////
 
-    private void bindSearchQueryPersisting() {
-        RxDtlToolbar.merchantSearchTextChanges(this)
-                .skip(1)
-                .filter(s -> !isCollapsed())
-                .compose(RxLifecycle.bindView(this))
-                .subscribe(searchQuery -> this.searchQuery = searchQuery);
+    private void collapse() {
+        collapsed = true;
+        updateToolbarCaptions();
+        animateCollapsing();
+        patchInputFields(true);
+        Queryable.from(collapseListeners).forEachR(listener -> listener.onCollapsed());
     }
 
-    AppCompatEditText getMerchantSearchView() {
-        return topCaption;
+    private void expand() {
+        collapsed = false;
+        updateToolbarCaptions();
+        animateExpanding();
+        patchInputFields(false);
+        Queryable.from(expandListeners).forEachR(listener -> listener.onExpanded());
     }
 
-    AppCompatEditText getLocationSearchView() {
-        return bottomCaption;
-    }
-
-    SwitchCompat getDiningFilterToggle() {
-        return filterDiningsSwitch;
-    }
-
-    private void initAttributes(AttributeSet attrs) {
+    @Override
+    protected void initAttributes(AttributeSet attrs) {
+        super.initAttributes(attrs);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
         collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
         navigationControlVisible = a.getBoolean(R.styleable.DtlToolbar_dtlt_navigation_icon_visible,
@@ -197,17 +124,17 @@ public class DtlToolbar extends LinearLayout {
         a.recycle();
         if (focusedMode != FocusedMode.UNDEFINED) collapsed = false;
         showNavigation = !ViewUtils.isLandscapeOrientation(getContext());
-        defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
     }
 
-    private void initState() {
+    @Override
+    protected void initState() {
         patchInputFields(collapsed);
         if (collapsed) {
-            secondRow.setVisibility(GONE);
+            locationSearchLayout.setVisibility(GONE);
             actionView.setAction(new DrawerAction(), false);
             if (!showNavigation) actionViewLayout.setVisibility(INVISIBLE);
         } else {
-            secondRow.setVisibility(VISIBLE);
+            locationSearchLayout.setVisibility(VISIBLE);
             actionViewLayout.setVisibility(VISIBLE);
             actionView.setAction(new CloseAction(), false);
         }
@@ -215,6 +142,15 @@ public class DtlToolbar extends LinearLayout {
                 navigationIconResource));
         dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
         filterBarRoot.setVisibility(showFilterBar ? VISIBLE : GONE);
+    }
+
+    @Override
+    protected void bindSearchQueryPersisting() {
+        RxDtlToolbar.merchantSearchTextChanges(this)
+                .skip(1)
+                .filter(s -> !isCollapsed())
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(searchQuery -> this.searchQuery = searchQuery);
     }
 
     /**
@@ -225,52 +161,53 @@ public class DtlToolbar extends LinearLayout {
     private void patchInputFields(boolean collapsed) {
         if (collapsed) {
             SoftInputUtil.hideSoftInputMethod(this);
-            topCaption.clearFocus();
-            bottomCaption.clearFocus();
-            topCaption.setFocusable(false);
-            topCaption.setFocusableInTouchMode(false);
-            topCaption.setInputType(InputType.TYPE_NULL);
+            merchantSearchInput.clearFocus();
+            locationSearchInput.clearFocus();
+            merchantSearchInput.setFocusable(false);
+            merchantSearchInput.setFocusableInTouchMode(false);
+            merchantSearchInput.setInputType(InputType.TYPE_NULL);
         } else {
-            topCaption.setFocusable(true);
-            topCaption.setFocusableInTouchMode(true);
-            topCaption.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            merchantSearchInput.setFocusable(true);
+            merchantSearchInput.setFocusableInTouchMode(true);
+            merchantSearchInput.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
             //
             if (focusedMode != FocusedMode.UNDEFINED) {
                 switch (focusedMode) {
                     case SEARCH:
-                        topCaption.requestFocus();
+                        merchantSearchInput.requestFocus();
                         SoftInputUtil.showSoftInputMethod(getContext());
                         break;
                     case LOCATION:
                         SoftInputUtil.showSoftInputMethod(getContext());
-                        bottomCaption.requestFocus();
+                        locationSearchInput.requestFocus();
                         break;
                 }
             }
             // due to possible bug in EditText - hint not saved after rotation. Fix below:
-            if (TextUtils.isEmpty(searchQuery) || TextUtils.isEmpty(topCaption.getHint())) {
-                topCaption.setHint(defaultEmptySearchCaption);
+            if (TextUtils.isEmpty(searchQuery) || TextUtils.isEmpty(merchantSearchInput.getHint())) {
+                merchantSearchInput.setHint(defaultEmptySearchCaption);
             }
         }
     }
 
-    private void updateToolbarCaptions() {
+    @Override
+    protected void updateToolbarCaptions() {
         if (collapsed) {
             final String searchQueryTitle =
                     TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
             if (TextUtils.isEmpty(searchQuery)) {
-                topCaption.setHint(searchQueryTitle + " " + locationTitle);
-                topCaption.setText("");
+                merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
+                merchantSearchInput.setText("");
             } else {
-                topCaption.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
+                merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
             }
         } else {
             if (TextUtils.isEmpty(searchQuery)) {
-                topCaption.setHint(defaultEmptySearchCaption);
+                merchantSearchInput.setHint(defaultEmptySearchCaption);
             }
-            topCaption.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
-            bottomCaption.setText(locationTitle);
-            bottomCaption.selectAll();
+            merchantSearchInput.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
+            locationSearchInput.setText(locationTitle);
+            locationSearchInput.selectAll();
         }
     }
 
@@ -294,7 +231,7 @@ public class DtlToolbar extends LinearLayout {
             revealNavigationAnimator.start();
         }
         //
-        secondRow.setVisibility(VISIBLE);
+        locationSearchLayout.setVisibility(VISIBLE);
         ValueAnimator heightAnimator = ValueAnimator.ofInt(dtlToolbarLayout.getHeight(),
                 dtlToolbarLayout.getHeight() * 2);
         heightAnimator.addUpdateListener(animation -> {
@@ -328,36 +265,33 @@ public class DtlToolbar extends LinearLayout {
             dtlToolbarLayout.requestLayout();
         });
         //
-        Animator secondRowAnimator = ObjectAnimator.ofFloat(secondRow, ALPHA, 1F, 0F);
+        Animator secondRowAnimator = ObjectAnimator.ofFloat(locationSearchLayout, ALPHA, 1F, 0F);
         AnimatorSet collapseSet = new AnimatorSet();
         collapseSet.playTogether(secondRowAnimator, heightAnimator);
         collapseSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                secondRow.setVisibility(GONE);
-                secondRow.setAlpha(1F);
+                locationSearchLayout.setVisibility(GONE);
+                locationSearchLayout.setAlpha(1F);
             }
         });
         collapseSet.start();
     }
 
-    @OnClick(R.id.actionViewLayout)
+    @Override
+    protected void onMerchantSearchInputClicked() {
+        if (collapsed) {
+            expand();
+        }
+    }
+
+    @OnClick(R.id.dtlToolbarActionViewLayout)
     void actionViewClicked(View view) {
         if (collapsed) {
             Queryable.from(navigationControlListeners).forEachR(listener ->
                     listener.onNavigationControlClicked());
         } else {
             collapse();
-            Queryable.from(collapseListeners).forEachR(listener -> listener.onCollapsed());
-        }
-    }
-
-    @OnClick(R.id.dtlToolbarTopCaption)
-    void firstRowClicked(View view) {
-        if (collapsed) {
-            focusedMode = FocusedMode.SEARCH;
-            expand();
-            Queryable.from(expandListeners).forEachR(listener -> listener.onExpanded());
         }
     }
 
@@ -367,30 +301,29 @@ public class DtlToolbar extends LinearLayout {
                 .forEachR(listener -> listener.onNavigationClicked());
     }
 
-    @OnClick(R.id.dtlfb_rootView)
-    void filterButtonClicked(View view) {
-        Queryable.from(filterButtonListeners)
-                .forEachR(listener -> listener.onFilterButtonClicked());
-    }
-
-    /**
-     * Sugar listener nullability checker-method.
-     * @param listener object to check
-     * @return true if listener is null
-     */
-    private boolean checkListenerNull(Object listener) {
-        if (listener == null) {
-            Timber.e(new IllegalArgumentException(
-                            "Listener should not be null! Skipping listener adding"),
-                    "Skipping listener adding.");
-            return true;
-        }
-        return false;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Listeners
     ///////////////////////////////////////////////////////////////////////////
+
+    public interface CollapseListener {
+
+        void onCollapsed();
+    }
+
+    public interface ExpandListener {
+
+        void onExpanded();
+    }
+
+    public interface NavigationClickListener {
+
+        void onNavigationClicked();
+    }
+
+    public interface NavigationControlListener {
+
+        void onNavigationControlClicked();
+    }
 
     public void addNavigationClickListener(@NonNull NavigationClickListener listener) {
         if (checkListenerNull(listener)) return;
@@ -424,42 +357,8 @@ public class DtlToolbar extends LinearLayout {
         expandListeners.add(listener);
     }
 
-    public void addFilterButtonListener(@NonNull FilterButtonListener listener) {
-        if (checkListenerNull(listener)) return;
-        filterButtonListeners.add(listener);
-    }
-
-    public void removeFilterButtonListener(FilterButtonListener listener) {
-        filterButtonListeners.remove(listener);
-    }
-
     public void removeExpandListener(ExpandListener listener) {
         expandListeners.remove(listener);
-    }
-
-    public interface CollapseListener {
-
-        void onCollapsed();
-    }
-
-    public interface ExpandListener {
-
-        void onExpanded();
-    }
-
-    public interface NavigationClickListener {
-
-        void onNavigationClicked();
-    }
-
-    public interface NavigationControlListener {
-
-        void onNavigationControlClicked();
-    }
-
-    public interface FilterButtonListener {
-
-        void onFilterButtonClicked();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -472,28 +371,5 @@ public class DtlToolbar extends LinearLayout {
 
     @Override public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Attributes enum
-    ///////////////////////////////////////////////////////////////////////////
-
-    public enum FocusedMode {
-        UNDEFINED(0), SEARCH(1), LOCATION(2);
-
-        private int id;
-
-        FocusedMode(int attributeId) {
-            this.id = attributeId;
-        }
-
-        public static FocusedMode fromAttribute(int attributeId) {
-            for (FocusedMode value : values()) {
-                if (value.id == attributeId) return value;
-            }
-            throw new IllegalArgumentException("DtlToolbar: wrong argument provided for focused" +
-                    " mode attribute: must be one of " +
-                    Queryable.from(values()).joinStrings(" ", element -> element.name()));
-        }
     }
 }

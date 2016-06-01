@@ -14,7 +14,7 @@
     >
 
     <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/dtlToolbarTopCaption"
+        android:id="@+id/dtlToolbarMerchantSearchInput"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         style="@style/DtlToolbarInput"
@@ -24,7 +24,7 @@
         />
 
     <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/dtlToolbarBottomCaption"
+        android:id="@+id/dtlToolbarLocationSearchInput"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         style="@style/DtlToolbarInput"

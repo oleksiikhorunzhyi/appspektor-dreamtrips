@@ -15,7 +15,7 @@ import static com.jakewharton.rxbinding.internal.Preconditions.checkNotNull;
 
 /**
  * Static factory methods for creating {@linkplain Observable observables} and {@linkplain Action1
- * actions} for {@link DtlToolbar}.
+ * actions} for {@link BaseDtlToolbar} and it's descendants.
  */
 public class RxDtlToolbar {
 
@@ -84,7 +84,7 @@ public class RxDtlToolbar {
      */
     @CheckResult
     @NonNull
-    public static Observable<Void> filterButtonClicks(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<Void> filterButtonClicks(@NonNull BaseDtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         return Observable.create(new DtlToolbarFilterClicksOnSubscribe(dtlToolbar));
     }
@@ -105,7 +105,7 @@ public class RxDtlToolbar {
      */
     @CheckResult
     @NonNull
-    public static Observable<String> merchantSearchTextChanges(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<String> merchantSearchTextChanges(@NonNull BaseDtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
         return RxTextView.textChanges(dtlToolbar.getMerchantSearchView())
@@ -128,7 +128,7 @@ public class RxDtlToolbar {
      */
     @CheckResult
     @NonNull
-    public static Observable<String> locationSearchTextChanges(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<String> locationSearchTextChanges(@NonNull BaseDtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
         return RxTextView.textChanges(dtlToolbar.getLocationSearchView())
@@ -151,7 +151,7 @@ public class RxDtlToolbar {
      */
     @CheckResult
     @NonNull
-    public static Observable<Boolean> locationInputFocusChanges(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<Boolean> locationInputFocusChanges(@NonNull BaseDtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
         return RxView.focusChanges(dtlToolbar.getLocationSearchView());
@@ -173,7 +173,7 @@ public class RxDtlToolbar {
      */
     @CheckResult
     @NonNull
-    public static Observable<Boolean> merchantSearchInputFocusChanges(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<Boolean> merchantSearchInputFocusChanges(@NonNull BaseDtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
         return RxView.focusChanges(dtlToolbar.getMerchantSearchView());
@@ -190,7 +190,7 @@ public class RxDtlToolbar {
      * to observe checked changes. Only one observable can be used for a view at a time.
      */
     @CheckResult @NonNull
-    public static Observable<Boolean> diningFilterChanges(@NonNull DtlToolbar dtlToolbar) {
+    public static Observable<Boolean> diningFilterChanges(@NonNull BaseDtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         checkNotNull(dtlToolbar.getLocationSearchView(), "view == null");
         return RxCompoundButton.checkedChanges(dtlToolbar.getDiningFilterToggle())

@@ -48,7 +48,7 @@
         <attr name="av_online_indicator_size" format="dimension|reference" />
     </declare-styleable>
 
-    <declare-styleable name="DtlToolbar">
+    <declare-styleable name="ExpandableDtlToolbar">
         <!-- 'dtlt_' prefix to prevent any possible duplication -->
         <attr name="dtlt_collapsed" format="boolean" />
         <attr name="dtlt_navigation_icon_visible" format="boolean" />

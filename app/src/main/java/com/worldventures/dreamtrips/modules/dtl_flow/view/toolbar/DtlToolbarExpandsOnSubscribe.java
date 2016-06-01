@@ -6,15 +6,15 @@ import rx.android.MainThreadSubscription;
 
 public class DtlToolbarExpandsOnSubscribe implements Observable.OnSubscribe<Void> {
 
-    private final DtlToolbar dtlToolbar;
+    private final ExpandableDtlToolbar dtlToolbar;
 
-    public DtlToolbarExpandsOnSubscribe(DtlToolbar dtlToolbar) {
+    public DtlToolbarExpandsOnSubscribe(ExpandableDtlToolbar dtlToolbar) {
         this.dtlToolbar = dtlToolbar;
     }
 
     @Override
     public void call(Subscriber<? super Void> subscriber) {
-        DtlToolbar.ExpandListener expandListener = new DtlToolbar.ExpandListener() {
+        ExpandableDtlToolbar.ExpandListener expandListener = new ExpandableDtlToolbar.ExpandListener() {
             @Override
             public void onExpanded() {
                 if (!subscriber.isUnsubscribed()) {

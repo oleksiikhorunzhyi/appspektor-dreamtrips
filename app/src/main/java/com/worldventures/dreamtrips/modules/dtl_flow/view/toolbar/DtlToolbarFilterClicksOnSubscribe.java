@@ -6,16 +6,16 @@ import rx.android.MainThreadSubscription;
 
 public class DtlToolbarFilterClicksOnSubscribe implements Observable.OnSubscribe<Void> {
 
-    private final BaseDtlToolbar dtlToolbar;
+    private final DtlToolbar dtlToolbar;
 
-    public DtlToolbarFilterClicksOnSubscribe(BaseDtlToolbar dtlToolbar) {
+    public DtlToolbarFilterClicksOnSubscribe(DtlToolbar dtlToolbar) {
         this.dtlToolbar = dtlToolbar;
     }
 
     @Override
     public void call(Subscriber<? super Void> subscriber) {
-        DtlToolbar.FilterButtonListener filterButtonListener =
-                new DtlToolbar.FilterButtonListener() {
+        ExpandableDtlToolbar.FilterButtonListener filterButtonListener =
+                new ExpandableDtlToolbar.FilterButtonListener() {
                     @Override
                     public void onFilterButtonClicked() {
                         if (!subscriber.isUnsubscribed()) {

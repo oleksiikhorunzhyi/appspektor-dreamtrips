@@ -1,375 +1,212 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.os.Parcelable;
-import android.support.annotation.DrawableRes;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.text.InputType;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import at.markushi.ui.ActionView;
-import at.markushi.ui.action.CloseAction;
-import at.markushi.ui.action.DrawerAction;
+import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import icepick.Icepick;
-import icepick.State;
+import timber.log.Timber;
 
-/**
- * Custom implementation to wrap up look and behaviour
- */
-public class DtlToolbar extends BaseDtlToolbar {
+public class DtlToolbar extends LinearLayout {
 
-    private static final boolean DEF_COLLAPSED = true;
-    private static final boolean DEF_NAVIGATION_ICON_VISIBLE = true;
-    private static final boolean DEF_SHOW_FILTER_BAR = true;
-    @DrawableRes
-    private static final int DEF_NAVIGATION_ICON = R.drawable.ic_menu_trip_map;
+    protected static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
 
-    @InjectView(R.id.dtlToolbarLayout)
-    ViewGroup dtlToolbarLayout;
-    @InjectView(R.id.dtlToolbarActionViewLayout)
-    ViewGroup actionViewLayout;
-    @InjectView(R.id.dtlToolbarActionView)
-    ActionView actionView;
-    @InjectView(R.id.dtlToolbarLocationSearchLayout)
-    ViewGroup locationSearchLayout;
-    @InjectView(R.id.dtlToolbarNavigationLayout)
-    ViewGroup dtlNavigationControl;
-    @InjectView(R.id.dtlToolbarNavigationIcon)
-    ImageView dtlToolbarNavigationIcon;
-    @InjectView(R.id.dtlToolbarFilterBarRoot)
-    ViewGroup filterBarRoot;
-    //
-    protected List<CollapseListener> collapseListeners = new ArrayList<>();
-    protected List<ExpandListener> expandListeners = new ArrayList<>();
-    protected List<NavigationClickListener> navigationClickListeners = new ArrayList<>();
-    protected List<NavigationControlListener> navigationControlListeners = new ArrayList<>();
-    //
-    @State
-    boolean collapsed;
-    //
-    boolean navigationControlVisible;
-    @DrawableRes
-    int navigationIconResource;
-    private boolean showNavigation;
-    private boolean showFilterBar;
+    @InjectView(R.id.dtlfb_rootView)
+    protected DtlFilterButton filtersButton;
+    @InjectView(R.id.filterDiningsSwitch)
+    protected SwitchCompat filterDiningsSwitch;
+    @InjectView(R.id.dtlToolbarMerchantSearchInput)
+    protected AppCompatEditText merchantSearchInput;
+    @InjectView(R.id.dtlToolbarLocationSearchInput)
+    protected AppCompatEditText locationSearchInput;
+
+    protected List<FilterButtonListener> filterButtonListeners = new ArrayList<>();
+
+    protected String searchQuery;
+    protected FocusedMode focusedMode;
+    protected String locationTitle;
+    protected String defaultEmptySearchCaption;
 
     public DtlToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
+        inflateLayout();
+        initAttributes(attrs);
     }
 
-    public boolean isCollapsed() {
-        return collapsed;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Essential private and package-private stuff
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void collapse() {
-        collapsed = true;
-        updateToolbarCaptions();
-        animateCollapsing();
-        patchInputFields(true);
-        Queryable.from(collapseListeners).forEachR(listener -> listener.onCollapsed());
-    }
-
-    private void expand() {
-        collapsed = false;
-        updateToolbarCaptions();
-        animateExpanding();
-        patchInputFields(false);
-        Queryable.from(expandListeners).forEachR(listener -> listener.onExpanded());
+    protected void inflateLayout() {
+        inflate(getContext(), R.layout.view_dtl_toolbar_content, this);
     }
 
     @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        ButterKnife.inject(this);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        initState();
+        bindSearchQueryPersisting();
+    }
+
+    @CallSuper
     protected void initAttributes(AttributeSet attrs) {
-        super.initAttributes(attrs);
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlToolbar);
-        collapsed = a.getBoolean(R.styleable.DtlToolbar_dtlt_collapsed, DEF_COLLAPSED);
-        navigationControlVisible = a.getBoolean(R.styleable.DtlToolbar_dtlt_navigation_icon_visible,
-                DEF_NAVIGATION_ICON_VISIBLE);
-        showFilterBar = a.getBoolean(R.styleable.DtlToolbar_dtlt_show_filter_bar_portrait,
-                DEF_SHOW_FILTER_BAR);
-        navigationIconResource = a.getResourceId(R.styleable.DtlToolbar_dtlt_navigation_icon_src,
-                DEF_NAVIGATION_ICON);
-        focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.DtlToolbar_dtlt_focused_mode,
-                DEF_FOCUSED_MODE.id));
-        a.recycle();
-        if (focusedMode != FocusedMode.UNDEFINED) collapsed = false;
-        showNavigation = !ViewUtils.isLandscapeOrientation(getContext());
+        defaultEmptySearchCaption = getResources().getString(R.string.dtlt_search_hint);
     }
 
-    @Override
-    protected void initState() {
-        patchInputFields(collapsed);
-        if (collapsed) {
-            locationSearchLayout.setVisibility(GONE);
-            actionView.setAction(new DrawerAction(), false);
-            if (!showNavigation) actionViewLayout.setVisibility(INVISIBLE);
-        } else {
-            locationSearchLayout.setVisibility(VISIBLE);
-            actionViewLayout.setVisibility(VISIBLE);
-            actionView.setAction(new CloseAction(), false);
-        }
-        dtlToolbarNavigationIcon.setImageDrawable(ContextCompat.getDrawable(getContext(),
-                navigationIconResource));
-        dtlNavigationControl.setVisibility(navigationControlVisible ? VISIBLE : INVISIBLE);
-        filterBarRoot.setVisibility(showFilterBar ? VISIBLE : GONE);
-    }
-
-    @Override
     protected void bindSearchQueryPersisting() {
         RxDtlToolbar.merchantSearchTextChanges(this)
                 .skip(1)
-                .filter(s -> !isCollapsed())
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(searchQuery -> this.searchQuery = searchQuery);
     }
 
-    /**
-     * Deals with focus in our input fields during collapsing/expanding <br />
-     * to mimic native Toolbar's SearchView behaviour.
-     * @param collapsed boolean indicating whether new state is collapsed
-     */
-    private void patchInputFields(boolean collapsed) {
-        if (collapsed) {
-            SoftInputUtil.hideSoftInputMethod(this);
-            merchantSearchInput.clearFocus();
-            locationSearchInput.clearFocus();
-            merchantSearchInput.setFocusable(false);
-            merchantSearchInput.setFocusableInTouchMode(false);
-            merchantSearchInput.setInputType(InputType.TYPE_NULL);
-        } else {
-            merchantSearchInput.setFocusable(true);
-            merchantSearchInput.setFocusableInTouchMode(true);
-            merchantSearchInput.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-            //
-            if (focusedMode != FocusedMode.UNDEFINED) {
-                switch (focusedMode) {
-                    case SEARCH:
-                        merchantSearchInput.requestFocus();
-                        SoftInputUtil.showSoftInputMethod(getContext());
-                        break;
-                    case LOCATION:
-                        SoftInputUtil.showSoftInputMethod(getContext());
-                        locationSearchInput.requestFocus();
-                        break;
-                }
-            }
-            // due to possible bug in EditText - hint not saved after rotation. Fix below:
-            if (TextUtils.isEmpty(searchQuery) || TextUtils.isEmpty(merchantSearchInput.getHint())) {
-                merchantSearchInput.setHint(defaultEmptySearchCaption);
-            }
-        }
-    }
-
-    @Override
     protected void updateToolbarCaptions() {
-        if (collapsed) {
-            final String searchQueryTitle =
-                    TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
-            if (TextUtils.isEmpty(searchQuery)) {
-                merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
-                merchantSearchInput.setText("");
-            } else {
-                merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
+        if (TextUtils.isEmpty(searchQuery)) {
+            merchantSearchInput.setHint(defaultEmptySearchCaption);
+        }
+        merchantSearchInput.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
+        locationSearchInput.setText(locationTitle);
+        locationSearchInput.selectAll(); // TODO :: 01.06.16 ??? WHAT?
+    }
+
+    public void setToolbarCaptions(@Nullable String searchQuery, String locationTitle) {
+        this.searchQuery = searchQuery;
+        this.locationTitle = locationTitle;
+        updateToolbarCaptions();
+    }
+
+    public void setFilterEnabled(boolean enabled) {
+        filtersButton.setFilterEnabled(enabled);
+    }
+
+    public void toggleDiningFilterSwitch(boolean enabled) {
+        filterDiningsSwitch.setChecked(enabled);
+    }
+
+    AppCompatEditText getMerchantSearchView() {
+        return merchantSearchInput;
+    }
+
+    AppCompatEditText getLocationSearchView() {
+        return locationSearchInput;
+    }
+
+    SwitchCompat getDiningFilterToggle() {
+        return filterDiningsSwitch;
+    }
+
+    @OnClick(R.id.dtlfb_rootView)
+    protected void filterButtonClicked(View view) {
+        Queryable.from(filterButtonListeners)
+                .forEachR(listener -> listener.onFilterButtonClicked());
+    }
+
+    @OnClick(R.id.dtlToolbarMerchantSearchInput)
+    protected void merchantSearchInputClicked(View view) {
+        focusedMode = FocusedMode.SEARCH;
+        onMerchantSearchInputClicked();
+    }
+
+    protected void initState() {
+        focusedMode = FocusedMode.UNDEFINED;
+        patchInputFields();
+    }
+
+    protected void patchInputFields() {
+        if (focusedMode != FocusedMode.UNDEFINED) {
+            switch (focusedMode) {
+                case SEARCH:
+                    merchantSearchInput.requestFocus();
+                    SoftInputUtil.showSoftInputMethod(getContext());
+                    break;
+                case LOCATION:
+                    SoftInputUtil.showSoftInputMethod(getContext());
+                    locationSearchInput.requestFocus();
+                    break;
             }
-        } else {
-            if (TextUtils.isEmpty(searchQuery)) {
-                merchantSearchInput.setHint(defaultEmptySearchCaption);
-            }
-            merchantSearchInput.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
-            locationSearchInput.setText(locationTitle);
-            locationSearchInput.selectAll();
+        }
+        // due to possible bug in EditText - hint not saved after rotation. Fix below:
+        if (TextUtils.isEmpty(searchQuery) || TextUtils.isEmpty(merchantSearchInput.getHint())) {
+            merchantSearchInput.setHint(defaultEmptySearchCaption);
         }
     }
 
-    private SpannableStringBuilder prepareSpannedTopCaption(String searchQuery,
-                                                            String locationTitle) {
-        final SpannableStringBuilder stringBuilder =
-                new SpannableStringBuilder(searchQuery + " " + locationTitle);
-        final ForegroundColorSpan colorSpan = new ForegroundColorSpan(getContext().getResources()
-                .getColor(R.color.dtlt_input_hint_color));
-        stringBuilder.setSpan(colorSpan, searchQuery.length(), stringBuilder.length(),
-                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        return stringBuilder;
-    }
-
-    private void animateExpanding() {
-        if (showNavigation) actionView.setAction(new CloseAction());
-        else {
-            actionViewLayout.setVisibility(VISIBLE);
-            Animator revealNavigationAnimator =
-                    ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 0F, 1F);
-            revealNavigationAnimator.start();
-        }
-        //
-        locationSearchLayout.setVisibility(VISIBLE);
-        ValueAnimator heightAnimator = ValueAnimator.ofInt(dtlToolbarLayout.getHeight(),
-                dtlToolbarLayout.getHeight() * 2);
-        heightAnimator.addUpdateListener(animation -> {
-            dtlToolbarLayout.getLayoutParams().height = (int) animation.getAnimatedValue();
-            dtlToolbarLayout.requestLayout();
-        });
-        heightAnimator.setInterpolator(new DecelerateInterpolator());
-        heightAnimator.start();
-    }
-
-    private void animateCollapsing() {
-        if (showNavigation) actionView.setAction(new DrawerAction());
-        else {
-            Animator hideNavigationAnimator =
-                    ObjectAnimator.ofFloat(actionViewLayout, ALPHA, 1F, 0F);
-            hideNavigationAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    actionViewLayout.setVisibility(INVISIBLE);
-                }
-            });
-            hideNavigationAnimator.start();
-        }
-        //
-        ValueAnimator heightAnimator = ValueAnimator.ofInt(dtlToolbarLayout.getHeight(),
-                dtlToolbarLayout.getHeight() / 2);
-        heightAnimator.setInterpolator(new AccelerateInterpolator());
-        heightAnimator.setStartDelay(75L);
-        heightAnimator.addUpdateListener(animation -> {
-            dtlToolbarLayout.getLayoutParams().height = (int) animation.getAnimatedValue();
-            dtlToolbarLayout.requestLayout();
-        });
-        //
-        Animator secondRowAnimator = ObjectAnimator.ofFloat(locationSearchLayout, ALPHA, 1F, 0F);
-        AnimatorSet collapseSet = new AnimatorSet();
-        collapseSet.playTogether(secondRowAnimator, heightAnimator);
-        collapseSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                locationSearchLayout.setVisibility(GONE);
-                locationSearchLayout.setAlpha(1F);
-            }
-        });
-        collapseSet.start();
-    }
-
-    @Override
     protected void onMerchantSearchInputClicked() {
-        if (collapsed) {
-            expand();
-        }
     }
 
-    @OnClick(R.id.dtlToolbarActionViewLayout)
-    void actionViewClicked(View view) {
-        if (collapsed) {
-            Queryable.from(navigationControlListeners).forEachR(listener ->
-                    listener.onNavigationControlClicked());
-        } else {
-            collapse();
+    /**
+     * Sugar listener nullability checker-method.
+     * @param listener object to check
+     * @return true if listener is null
+     */
+    protected boolean checkListenerNull(Object listener) {
+        if (listener == null) {
+            Timber.e(new IllegalArgumentException(
+                            "Listener should not be null! Skipping listener adding"),
+                    "Skipping listener adding.");
+            return true;
         }
-    }
-
-    @OnClick(R.id.dtlToolbarNavigationLayout)
-    void navigationClicked(View view) {
-        Queryable.from(navigationClickListeners)
-                .forEachR(listener -> listener.onNavigationClicked());
+        return false;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Listeners
     ///////////////////////////////////////////////////////////////////////////
 
-    public interface CollapseListener {
-
-        void onCollapsed();
-    }
-
-    public interface ExpandListener {
-
-        void onExpanded();
-    }
-
-    public interface NavigationClickListener {
-
-        void onNavigationClicked();
-    }
-
-    public interface NavigationControlListener {
-
-        void onNavigationControlClicked();
-    }
-
-    public void addNavigationClickListener(@NonNull NavigationClickListener listener) {
+    public void addFilterButtonListener(@NonNull FilterButtonListener listener) {
         if (checkListenerNull(listener)) return;
-        navigationClickListeners.add(listener);
+        filterButtonListeners.add(listener);
     }
 
-    public void removeNavigationClickListener(NavigationClickListener listener) {
-        navigationClickListeners.remove(listener);
+    public void removeFilterButtonListener(FilterButtonListener listener) {
+        filterButtonListeners.remove(listener);
     }
 
-    public void addNavigationControlClickListener(@NonNull NavigationControlListener listener) {
-        if (checkListenerNull(listener)) return;
-        navigationControlListeners.add(listener);
-    }
+    public interface FilterButtonListener {
 
-    public void removeNavigationControlClickListener(NavigationControlListener listener) {
-        navigationControlListeners.remove(listener);
-    }
-
-    public void addCollapseListener(@NonNull CollapseListener listener) {
-        if (checkListenerNull(listener)) return;
-        collapseListeners.add(listener);
-    }
-
-    public void removeCollapseListener(CollapseListener listener) {
-        collapseListeners.remove(listener);
-    }
-
-    public void addExpandListener(@NonNull ExpandListener listener) {
-        if (checkListenerNull(listener)) return;
-        expandListeners.add(listener);
-    }
-
-    public void removeExpandListener(ExpandListener listener) {
-        expandListeners.remove(listener);
+        void onFilterButtonClicked();
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // State saving
+    // Attributes enum
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override public Parcelable onSaveInstanceState() {
-        return Icepick.saveInstanceState(this, super.onSaveInstanceState());
-    }
+    protected enum FocusedMode {
 
-    @Override public void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
+        UNDEFINED(0), SEARCH(1), LOCATION(2);
+
+        int id;
+
+        FocusedMode(int attributeId) {
+            this.id = attributeId;
+        }
+
+        public static FocusedMode fromAttribute(int attributeId) {
+            for (FocusedMode value : values()) {
+                if (value.id == attributeId) return value;
+            }
+            throw new IllegalArgumentException("DtlToolbar: wrong argument provided for focused" +
+                    " mode attribute: must be one of " +
+                    Queryable.from(values()).joinStrings(" ", element -> element.name()));
+        }
     }
 }

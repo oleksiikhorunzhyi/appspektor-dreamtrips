@@ -36,7 +36,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
@@ -68,7 +68,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @InjectView(R.id.noGoogleContainer)
     FrameLayout noGoogleContainer;
     @InjectView(R.id.dtlToolbar)
-    DtlToolbar dtlToolbar;
+    ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.redo_merchants)
     View loadMerchantsRoot;
     //
@@ -370,5 +370,4 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     protected void onMarkerFocused() {
         EventBus.getDefault().post(new DtlShowMapInfoEvent());
     }
-
 }

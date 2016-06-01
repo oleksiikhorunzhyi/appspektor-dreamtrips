@@ -26,6 +26,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -36,6 +37,8 @@ import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentP
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -53,6 +56,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static final String COOKIE_TITLE = "Cookie Policy";
     public static final String FAQ_TITLE = "FAQ";
     public static final String TERMS_TITLE = "Terms of Use";
+    public static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
+    public static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
+            + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "." + BuildConfig.versionPatch;
 
     @Inject
     protected StaticPageProvider provider;
@@ -547,6 +553,21 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Layout(R.layout.fragment_webview)
     public static class BookItFragment extends BundleUrlFragment {
+
+        @Override
+        public void load(String url) {
+            if (!isLoading && savedState == null) {
+                Map<String, String> additionalHeaders = new HashMap<>();
+                additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
+                webView.loadUrl(url, additionalHeaders);
+            }
+        }
+
+        @Override
+        public void reload(String url) {
+            webView.loadUrl("about:blank");
+            load(url);
+        }
     }
 
     @Layout(R.layout.fragment_webview)

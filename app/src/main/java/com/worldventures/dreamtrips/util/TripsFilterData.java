@@ -19,7 +19,6 @@ import java.util.Locale;
 
 public class TripsFilterData implements Serializable {
 
-
     private static final int MIN_NIGHT = 0;
     private static final int MAX_NIGHTS = 9;
     private static final int MIN_PRICE = 100;
@@ -69,7 +68,7 @@ public class TripsFilterData implements Serializable {
         this.maxPrice = maxPrice;
     }
 
-    public String getAcceptedRegions() {
+    public String getAcceptedRegionsIds() {
         return TextUtils.join(",", Queryable.from(acceptedRegions).map(BaseEntity::getId).toList());
     }
 
@@ -77,7 +76,7 @@ public class TripsFilterData implements Serializable {
         this.acceptedRegions = acceptedRegions;
     }
 
-    public String getAcceptedActivities() {
+    public String getAcceptedActivitiesIds() {
         return TextUtils.join(",", Queryable.from(acceptedActivities).map(BaseEntity::getId).toList());
     }
 
@@ -167,14 +166,22 @@ public class TripsFilterData implements Serializable {
 
     public String getFilterAnalyticString() {
         List<String> filters = new ArrayList<>();
-        filters.add(String.format("%d-%d", minNights, maxNights));
-        filters.add(String.format("%f-%f", minPrice, maxPrice));
+        filters.add(String.format("%d-%d", minNights, Math.min(maxNights, 9)));
+        filters.add(String.format("%.0f-%.0f", minPrice, Math.min(maxPrice, 500)));
         filters.add(DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())));
         filters.add(DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())));
         filters.add(String.valueOf(showSoldOut));
         filters.add(String.valueOf(showRecentlyAdded));
         filters.add(String.valueOf(showFavorites));
         return TextUtils.join(",", filters);
+    }
+
+    public String getAcceptedRegionsAnalyticString() {
+        return TextUtils.join(",", Queryable.from(acceptedRegions).map(RegionModel::getName).toList());
+    }
+
+    public String getAcceptedActivitiesAnalyticString() {
+        return TextUtils.join(",", Queryable.from(acceptedActivities).map(ActivityModel::getName).toList());
     }
 
 }

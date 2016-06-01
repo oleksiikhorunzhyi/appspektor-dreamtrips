@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.trips.api;
 
+import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
@@ -10,9 +11,9 @@ import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/trips/details", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
-public class GetDetailedTripsAction extends BaseHttpAction {
+public class GetDetailedTripsAction extends AuthorizedHttpAction {
 
-    @Query("ids") String ids;
+    @Query("trip_uids") String ids;
 
     @Response List<TripModel> tripList;
 

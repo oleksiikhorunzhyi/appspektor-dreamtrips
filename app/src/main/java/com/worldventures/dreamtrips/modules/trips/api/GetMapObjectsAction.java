@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.trips.api;
 import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
 import com.worldventures.dreamtrips.util.TripsFilterData;
@@ -15,7 +16,7 @@ import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/trip_clusters", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
-public class GetMapObjectsAction extends BaseHttpAction {
+public class GetMapObjectsAction extends AuthorizedHttpAction {
 
     @Query("query")
     String query;
@@ -66,8 +67,8 @@ public class GetMapObjectsAction extends BaseHttpAction {
         priceMax = tripsFilterData.getMaxPrice();
         startDate = tripsFilterData.getStartDate();
         endDate = tripsFilterData.getEndDate();
-        regions = tripsFilterData.getAcceptedRegions();
-        activities = tripsFilterData.getAcceptedActivities();
+        regions = tripsFilterData.getAcceptedRegionsIds();
+        activities = tripsFilterData.getAcceptedActivitiesIds();
         soldOut = tripsFilterData.isShowSoldOut();
         recent = tripsFilterData.isShowRecentlyAdded();
         liked = tripsFilterData.isShowFavorites();

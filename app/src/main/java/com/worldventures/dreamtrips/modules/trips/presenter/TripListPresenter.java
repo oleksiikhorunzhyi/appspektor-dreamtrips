@@ -114,8 +114,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
             b.setPriceMax(tripsFilterData.getMaxPrice());
             b.setStartDate(tripsFilterData.getStartDate());
             b.setEndDate(tripsFilterData.getEndDate());
-            b.setRegions(tripsFilterData.getAcceptedRegions());
-            b.setActivities(tripsFilterData.getAcceptedActivities());
+            b.setRegions(tripsFilterData.getAcceptedRegionsIds());
+            b.setActivities(tripsFilterData.getAcceptedActivitiesIds());
             b.setSoldOut(tripsFilterData.isShowSoldOut());
             b.setRecent(tripsFilterData.isShowRecentlyAdded());
             b.setLiked(tripsFilterData.isShowFavorites());

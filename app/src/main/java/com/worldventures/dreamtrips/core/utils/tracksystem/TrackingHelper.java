@@ -713,8 +713,8 @@ public class TrackingHelper {
         Map data = new HashMap<>();
         data.put(ATTRIBUTE_FILTER, "1");
         data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
-        data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegions());
-        data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivities());
+        data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegionsAnalyticString());
+        data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivitiesAnalyticString());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
     }
 

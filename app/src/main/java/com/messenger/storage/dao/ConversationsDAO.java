@@ -188,9 +188,7 @@ public class ConversationsDAO extends BaseDAO {
                 "ON uu." + DataUser$Table._ID + "=(" +
                 "SELECT pp." + DataParticipant$Table.USERID + " FROM " + DataParticipant.TABLE_NAME + " pp " +
                 "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) " +
-
-                "WHERE c." + DataConversation$Table.STATUS + "='" + ConversationStatus.PRESENT + "' "
+                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) "
         );
 
 

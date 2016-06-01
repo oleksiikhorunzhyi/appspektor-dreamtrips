@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 
+import timber.log.Timber;
+
 public class ViewUtils {
 
     private ViewUtils() {
@@ -45,6 +47,22 @@ public class ViewUtils {
         } else {
             viewTreeObserver.removeOnGlobalLayoutListener(listener);
         }
+    }
+
+    public static void runTaskAfterMeasure(View view, Runnable task) {
+        if (view.getHeight() > 0 && view.getWidth() > 0) {
+            task.run();
+            return;
+        }
+
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                view.getViewTreeObserver().removeOnPreDrawListener(this);
+                task.run();
+                return true;
+            }
+        });
     }
 
     public static int getRootViewHeight(Activity activity) {

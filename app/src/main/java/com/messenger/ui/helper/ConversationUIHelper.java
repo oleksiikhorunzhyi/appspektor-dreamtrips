@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -13,6 +12,7 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public final class ConversationUIHelper {
             textView.setText(initialTitle);
         } else {
             Runnable textSetter = () -> textView.setText(obtainFittingTitle(textView, initialTitle, members.size()));
-            runTaskAfterMeasure(textView, textSetter);
+            ViewUtils.runTaskAfterMeasure(textView, textSetter);
         }
     }
 
@@ -76,22 +76,7 @@ public final class ConversationUIHelper {
             textView.setText(ellipsizedText + counterLabel);
         };
 
-        runTaskAfterMeasure(textView, runnable);
-    }
-
-    private static void runTaskAfterMeasure(TextView textView, Runnable runTask) {
-        if (textView.getMeasuredWidth() == 0) {
-            textView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    textView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    runTask.run();
-                    return true;
-                }
-            });
-        } else {
-            runTask.run();
-        }
+        ViewUtils.runTaskAfterMeasure(textView, runnable);
     }
 
     private static int getTextWidthWithMargins(String text, float textSize) {

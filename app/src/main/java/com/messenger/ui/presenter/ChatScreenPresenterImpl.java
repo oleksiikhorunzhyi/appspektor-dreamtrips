@@ -22,7 +22,6 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.chat.ChatState;
-import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -39,7 +38,6 @@ import com.messenger.ui.util.menu.ChatToolbarMenuProvider;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
-import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.settings.GroupSettingsPath;
 import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.view.settings.TripSettingsPath;
@@ -174,15 +172,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectConversationStream() {
         ConnectableObservable<Pair<DataConversation, List<DataUser>>> source = conversationDAO.getConversationWithParticipants(conversationId)
                 .filter(conversationWithParticipant -> conversationWithParticipant != null)
-                .filter(conversationWithParticipant -> {
-                    if (TextUtils.equals(conversationWithParticipant.first.getStatus(), ConversationStatus.PRESENT)) {
-                        return true;
-                    } else {
-                        //if we were kicked from conversation
-                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
-                        return false;
-                    }
-                })
                 .compose(bindViewIoToMainComposer())
                 .publish();
 

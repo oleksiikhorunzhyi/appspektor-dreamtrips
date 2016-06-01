@@ -221,7 +221,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
         @Override
         public void onRetryClicked(DataMessage dataMessage) {
-            presenter.retrySendMessage(dataMessage);
+            presenter.retryClicked(dataMessage);
         }
 
         @Override
@@ -262,6 +262,16 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         new AlertDialog.Builder(getContext())
                 .setItems(Queryable.from(items).map(AttachmentMenuItem::getTitle).toArray(),
                         (dialog, which) -> getPresenter().onAttachmentMenuItemChosen(items[which]))
+                .show();
+    }
+
+    @Override
+    public void showRetrySendMessageDialog (DataMessage dataMessage) {
+        new AlertDialog.Builder(getContext(), R.style.RetrySendMessageDialogStyle)
+                .setMessage(R.string.chat_retry_send_message_dialog_resend_message)
+                .setNegativeButton(R.string.chat_retry_send_message_dialog_cancel, null)
+                .setPositiveButton(R.string.chat_retry_send_message_dialog_resend,
+                        (dialog, which) -> presenter.retrySendMessage(dataMessage))
                 .show();
     }
 

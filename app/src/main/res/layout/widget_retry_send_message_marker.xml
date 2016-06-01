@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/view_retry_send"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:paddingEnd="@dimen/spacing_small"
+              android:paddingRight="@dimen/spacing_small"
+              android:paddingTop="@dimen/chat_error_message_top_padding"
+              android:paddingBottom="@dimen/chat_error_message_bottom_padding"
+              android:visibility="gone"
+              tools:visibility="visible">
+
+    <ImageView
+        tools:ignore="ContentDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_error_red_400_18dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chat_error_marker_not_delivered"
+        android:layout_gravity="center"
+        android:paddingLeft="@dimen/chat_error_message_space_between_icon_and_text"
+        android:textColor="@color/chat_error_message_color"
+        android:textSize="@dimen/chat_error_message_textview_text_size"/>
+
+</LinearLayout>

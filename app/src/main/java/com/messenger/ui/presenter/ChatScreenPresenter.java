@@ -10,6 +10,8 @@ import com.messenger.ui.viewstate.ChatLayoutViewState;
 public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, ChatLayoutViewState> {
     boolean sendMessage(String message);
 
+    void retryClicked(DataMessage dataMessage);
+
     void retrySendMessage(DataMessage message);
 
     void onNextPageReached();

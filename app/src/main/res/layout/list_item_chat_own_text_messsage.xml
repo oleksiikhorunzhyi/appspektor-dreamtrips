@@ -38,35 +38,11 @@
 
         </com.messenger.ui.widget.ChatItemFrameLayout>
 
-
-        <ViewSwitcher
-            android:id="@+id/view_switcher"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/message_container"
-            android:layout_alignRight="@+id/message_container"
-            android:layout_below="@+id/message_container"
-            android:paddingEnd="@dimen/spacing_small"
-            android:paddingRight="@dimen/spacing_small"
-            android:paddingTop="@dimen/spacing_tiny"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <ImageView
-                android:id="@+id/retry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_error_red_400_18dp"
-                tools:ignore="ContentDescription"/>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-        </ViewSwitcher>
-
+        <include layout="@layout/widget_retry_send_message_marker"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_alignEnd="@+id/message_container"
+                 android:layout_alignRight="@+id/message_container"
+                 android:layout_below="@+id/message_container"/>
     </RelativeLayout>
 </LinearLayout>

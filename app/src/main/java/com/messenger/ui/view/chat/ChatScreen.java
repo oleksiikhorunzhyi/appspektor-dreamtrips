@@ -3,7 +3,6 @@ package com.messenger.ui.view.chat;
 import android.database.Cursor;
 import android.view.Menu;
 
-import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
@@ -11,7 +10,6 @@ import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 import com.messenger.ui.model.AttachmentMenuItem;
-import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
 
@@ -40,6 +38,8 @@ public interface ChatScreen extends MessengerScreen {
     void showMessages(Cursor cursor);
 
     void showAttachmentMenu(AttachmentMenuItem[] items);
+
+    void showRetrySendMessageDialog(DataMessage dataMessage);
 
     Observable<DataMessage> getLastVisibleItemStream();
 

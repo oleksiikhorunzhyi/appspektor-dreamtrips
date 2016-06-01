@@ -26,12 +26,6 @@ public class OwnLocationMessageHolder extends LocationMessageHolder {
         }
 
         boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;
-        int viewVisibility = isError ? View.VISIBLE : View.GONE;
-        if (viewVisibility != retrySwitcher.getVisibility()) {
-            retrySwitcher.setVisibility(viewVisibility);
-        }
-        if (isError && retrySwitcher.getCurrentView().getId() == R.id.progress_bar) {
-            retrySwitcher.showPrevious();
-        }
+        viewRetrySend.setVisibility(isError ? View.VISIBLE : View.GONE);
     }
 }

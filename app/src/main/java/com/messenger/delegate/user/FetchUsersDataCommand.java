@@ -1,6 +1,5 @@
-package com.messenger.delegate.roster;
+package com.messenger.delegate.user;
 
-import com.messenger.delegate.UserProcessor;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.MessengerUser;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -15,7 +14,7 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class FetchUsersDataCommand extends CommandActionBase<List<DataUser>> implements InjectableAction {
 
-    @Inject UserProcessor userProcessor;
+    @Inject UserDataFetcher userDataFetcher;
 
     private List<MessengerUser> messengerUserList;
 
@@ -29,7 +28,7 @@ public class FetchUsersDataCommand extends CommandActionBase<List<DataUser>> imp
 
     @Override
     protected void run(CommandCallback<List<DataUser>> callback) throws Throwable {
-        userProcessor.syncUsers(messengerUserList)
+        userDataFetcher.fetchUserData(messengerUserList)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 }

@@ -3,7 +3,7 @@ package com.messenger.delegate.chat;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.messenger.delegate.UsersDelegate;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.model.Message;
@@ -63,7 +63,7 @@ public class HistoryPaginationDelegate {
 
     private Observable<List<Message>> prepareUsers(List<Message> messages) {
         List<String> usersIds = from(messages).map(Message::getFromId).toList();
-        if (!usersIds.isEmpty()) return usersDelegate.loadIfNeedUsers(usersIds).map(users -> messages);
+        if (!usersIds.isEmpty()) return usersDelegate.loadMissingUsers(usersIds).map(users -> messages);
         return Observable.just(messages);
     }
 

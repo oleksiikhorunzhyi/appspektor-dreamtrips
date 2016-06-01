@@ -5,7 +5,6 @@ import android.content.Context;
 import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.delegate.UserProcessor;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -34,11 +33,6 @@ import io.techery.janet.Janet;
         library = true
 )
 public class MessengerDelegateModule {
-    @Provides
-    UserProcessor provideUserProcessor(Janet janet, UsersDAO usersDAO) {
-        return new UserProcessor(usersDAO, janet);
-    }
-
     @Provides
     ChatFacadeManager provideChatFacadeManager(@ForApplication Injector injector) {
         return new ChatFacadeManager(injector);

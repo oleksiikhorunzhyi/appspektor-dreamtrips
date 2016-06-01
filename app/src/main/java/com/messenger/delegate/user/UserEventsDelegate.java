@@ -1,4 +1,4 @@
-package com.messenger.delegate;
+package com.messenger.delegate.user;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataUser;
@@ -14,16 +14,17 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
-public class UserDelegate {
+public class UserEventsDelegate {
 
-    private UserProcessor userProcessor;
-    private UsersDAO usersDAO;
+    private final UsersDAO usersDAO;
+    private final UsersDelegate usersDelegate;
 
     @Inject
-    public UserDelegate(UserProcessor userProcessor, UsersDAO usersDAO) {
-        this.userProcessor = userProcessor;
+    public UserEventsDelegate(UsersDAO usersDAO, UsersDelegate usersDelegate) {
         this.usersDAO = usersDAO;
+        this.usersDelegate = usersDelegate;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -36,14 +37,17 @@ public class UserDelegate {
 
     private void friendAdded(String userId) {
         getUser(userId)
-                .doOnNext(user -> {
-                    if (user == null) loadFriend(userId);
+                .flatMap(user -> {
+                    if (user == null) {
+                        MessengerUser messengerUser = new MessengerUser(userId);
+                        messengerUser.setType(UserType.FRIEND);
+                        return usersDelegate.loadUsers(Collections.singletonList(messengerUser));
+                    } else {
+                        user.setFriend(true);
+                        return Observable.just(Collections.singletonList(user));
+                    }
                 })
-                .compose(new NonNullFilter<>())
-                .subscribe(user -> {
-                    user.setFriend(true);
-                    usersDAO.save(user);
-                });
+                .subscribe(usersDAO::save, e -> Timber.e(e, "Failed to add friend"));
     }
 
     public void friendsRemoved(Collection<String> userIds) {
@@ -58,14 +62,6 @@ public class UserDelegate {
                     usersDAO.save(user);
                 });
     }
-
-    private void loadFriend(String userId) {
-        MessengerUser messengerUser = new MessengerUser(userId);
-        messengerUser.setType(UserType.FRIEND);
-        userProcessor.connectToUserProvider(Observable
-                .just(Collections.singletonList(messengerUser)));
-    }
-
 
     ///////////////////////////////////////////////////////////////////////////
     // Presence

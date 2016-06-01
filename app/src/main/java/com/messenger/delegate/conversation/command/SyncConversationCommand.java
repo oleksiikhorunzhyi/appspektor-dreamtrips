@@ -2,7 +2,7 @@ package com.messenger.delegate.conversation.command;
 
 
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
-import com.messenger.delegate.roster.FetchUsersDataCommand;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.ui.helper.ConversationHelper;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -12,12 +12,12 @@ import javax.inject.Inject;
 import io.techery.janet.CommandActionBase;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 
 @CommandAction
 public class SyncConversationCommand extends CommandActionBase<Conversation> implements InjectableAction {
 
     @Inject Janet janet;
+    @Inject UsersDelegate usersDelegate;
     @Inject ConversationSyncHelper conversationSyncHelper;
 
     private final String conversationId;
@@ -31,9 +31,9 @@ public class SyncConversationCommand extends CommandActionBase<Conversation> imp
         janet.createPipe(LoadConversationCommand.class)
                 .createObservableSuccess(new LoadConversationCommand(conversationId))
                 .map(CommandActionBase::getResult)
-                .flatMap(conversations -> janet.createPipe(FetchUsersDataCommand.class)
-                        .createObservableSuccess(FetchUsersDataCommand.from(ConversationHelper.getUsersFromConversation(conversations)))
-                        .flatMap(fetchUsersDataCommand -> Observable.just(conversations))
+                .flatMap(conversation ->
+                        usersDelegate.loadAndSaveUsers(ConversationHelper.getUsersFromConversation(conversation))
+                                .map(fetchUsersDataCommand -> conversation)
                 )
                 .subscribe(conversation -> {
                     conversationSyncHelper.process(conversation);

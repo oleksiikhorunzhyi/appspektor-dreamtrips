@@ -1,7 +1,7 @@
 package com.messenger.delegate.conversation;
 
-import com.messenger.delegate.UserProcessor;
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationStatus;
@@ -54,7 +54,7 @@ public class LoadConversationDelegateTest extends BaseTest {
 
     @Mock ConversationSyncHelper conversationSyncHelper;
     @Mock MessengerServerFacade messengerServerFacade;
-    @Mock UserProcessor userProcessor;
+    @Mock UsersDelegate usersDelegate;
 
     private LoadConversationDelegate loadConversationDelegate;
 
@@ -67,8 +67,8 @@ public class LoadConversationDelegateTest extends BaseTest {
             }
         }).when(messengerServerFacade).getLoaderManager();
         Mockito.doReturn(Observable.just(Collections.emptyList()))
-                .when(userProcessor)
-                .syncUsers(Mockito.any());
+                .when(usersDelegate)
+                .loadAndSaveUsers(Mockito.any());
 
         MockDaggerActionService daggerActionService;
         Janet janet = new Janet.Builder()
@@ -78,7 +78,7 @@ public class LoadConversationDelegateTest extends BaseTest {
         daggerActionService.registerProvider(Janet.class, () -> janet);
         daggerActionService.registerProvider(ConversationSyncHelper.class, () -> conversationSyncHelper);
         daggerActionService.registerProvider(MessengerServerFacade.class, () -> messengerServerFacade);
-        daggerActionService.registerProvider(UserProcessor.class, () -> userProcessor);
+        daggerActionService.registerProvider(UsersDelegate.class, () -> usersDelegate);
 
         loadConversationDelegate = new LoadConversationDelegate(janet);
     }
@@ -91,7 +91,7 @@ public class LoadConversationDelegateTest extends BaseTest {
                 .subscribe(subscriber);
 
         verify(conversationSyncHelper, times(1)).process(testConversation);
-        verify(userProcessor, times(1)).syncUsers(anyList());
+        verify(usersDelegate, times(1)).loadAndSaveUsers(anyList());
 
         subscriber.unsubscribe();
         subscriber.assertNoErrors();

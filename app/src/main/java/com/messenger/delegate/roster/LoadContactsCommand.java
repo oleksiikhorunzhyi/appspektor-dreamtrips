@@ -1,5 +1,6 @@
 package com.messenger.delegate.roster;
 
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.storage.dao.UsersDAO;
@@ -10,14 +11,13 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.CommandActionBase;
-import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
 public class LoadContactsCommand extends CommandActionBase<List<DataUser>> implements InjectableAction {
 
     @Inject MessengerServerFacade messengerServerFacade;
-    @Inject Janet janet;
+    @Inject UsersDelegate usersDelegate;
     @Inject UsersDAO usersDAO;
 
     @Override
@@ -25,12 +25,11 @@ public class LoadContactsCommand extends CommandActionBase<List<DataUser>> imple
         messengerServerFacade.getLoaderManager()
                 .createContactLoader()
                 .load()
-                .doOnNext(contacts -> usersDAO.unfriendAll())
                 .flatMap(users ->
-                        janet.createPipe(FetchUsersDataCommand.class)
-                                .createObservableSuccess(FetchUsersDataCommand.from(users))
+                        usersDelegate.loadUsers(users)
+                                .doOnNext(action -> usersDAO.unfriendAll())
+                                .doOnNext(dataUsers -> usersDAO.save(dataUsers))
                 )
-                .map(CommandActionBase::getResult)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 }

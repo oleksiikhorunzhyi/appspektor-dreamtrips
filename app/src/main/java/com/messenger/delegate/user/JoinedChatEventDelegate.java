@@ -1,4 +1,4 @@
-package com.messenger.delegate;
+package com.messenger.delegate.user;
 
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
@@ -7,38 +7,35 @@ import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
-import static rx.Observable.just;
 
+@Singleton
 public class JoinedChatEventDelegate {
 
-    @Inject
-    UsersDAO usersDAO;
-    @Inject
-    ParticipantsDAO participantsDAO;
+    private final UsersDAO usersDAO;
+    private final ParticipantsDAO participantsDAO;
+    private final UsersDelegate usersDelegate;
 
     @Inject
-    UserProcessor userProcessor;
-
-    @Inject
-    public JoinedChatEventDelegate(@ForApplication Injector injector) {
-        injector.inject(this);
+    public JoinedChatEventDelegate(UsersDAO usersDAO, ParticipantsDAO participantsDAO, UsersDelegate usersDelegate) {
+        this.usersDAO = usersDAO;
+        this.participantsDAO = participantsDAO;
+        this.usersDelegate = usersDelegate;
     }
 
-    public void processJoinedEvents (Observable<JoinedEvent> joinedEventObservable){
+    public void processJoinedEvents(Observable<JoinedEvent> joinedEventObservable) {
         joinedEventObservable
                 .subscribeOn(Schedulers.io())
                 .buffer(3, TimeUnit.SECONDS)
@@ -46,17 +43,11 @@ public class JoinedChatEventDelegate {
                 .onBackpressureBuffer()
                 .doOnNext(this::saveNewParticipants)
                 .map(this::filterNotExistedUsersAndUpdateExisted)
-                .flatMap(users -> userProcessor.connectToUserProvider(just(users)))
-                .doOnNext(usersDAO::save)
+                .flatMap(usersDelegate::loadAndSaveUsers)
                 .subscribe(dataUsers -> {
-                }, throwable -> Timber.d(throwable, ""));
+                }, throwable -> Timber.e(throwable, ""));
     }
 
-    private MessengerUser createUser(Participant participant, boolean isOnline) {
-        MessengerUser messengerUser = new MessengerUser(participant.getUserId());
-        messengerUser.setOnline(isOnline);
-        return messengerUser;
-    }
 
     private void saveNewParticipants(List<JoinedEvent> joinedEvents) {
         List<DataParticipant> participants = from(joinedEvents).map(e -> new DataParticipant(e.getParticipant())).toList();
@@ -67,14 +58,13 @@ public class JoinedChatEventDelegate {
         List<DataUser> existedUsers = new ArrayList<>(joinedEvents.size());
         List<MessengerUser> newMessengerUsers = new ArrayList<>(joinedEvents.size());
 
-        for (JoinedEvent e: joinedEvents) {
+        for (JoinedEvent e : joinedEvents) {
             Participant participant = e.getParticipant();
             DataUser cachedUser = usersDAO.getUserById(participant.getUserId()).toBlocking().first();
             if (cachedUser != null) {
                 cachedUser.setOnline(e.isOnline());
                 existedUsers.add(cachedUser);
-            }
-            else {
+            } else {
                 newMessengerUsers.add(createUser(participant, joinedEvents.isEmpty()));
             }
         }
@@ -82,4 +72,9 @@ public class JoinedChatEventDelegate {
         return newMessengerUsers;
     }
 
+    private MessengerUser createUser(Participant participant, boolean isOnline) {
+        MessengerUser messengerUser = new MessengerUser(participant.getUserId());
+        messengerUser.setOnline(isOnline);
+        return messengerUser;
+    }
 }

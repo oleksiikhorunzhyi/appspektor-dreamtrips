@@ -1,9 +1,9 @@
 package com.messenger.delegate.sync;
 
-import com.messenger.delegate.UserProcessor;
 import com.messenger.delegate.conversation.command.SyncConversationsCommand;
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
 import com.messenger.delegate.roster.LoadContactsCommand;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationStatus;
@@ -79,7 +79,7 @@ public class MessengerSyncDelegateTest extends BaseTest {
     @Mock List<MessengerUser> testUsers;
     @Mock ConversationSyncHelper conversationSyncHelper;
     @Mock MessengerServerFacade messengerServerFacade;
-    @Mock UserProcessor userProcessor;
+    @Mock UsersDelegate usersDelegate;
     @Mock UsersDAO usersDAO;
 
     private MessengerSyncDelegate messengerSyncDelegate;
@@ -98,8 +98,12 @@ public class MessengerSyncDelegateTest extends BaseTest {
             }
         }).when(messengerServerFacade).getLoaderManager();
         Mockito.doReturn(Observable.just(Collections.emptyList()))
-                .when(userProcessor)
-                .syncUsers(any());
+                .when(usersDelegate)
+                .loadUsers(any());
+        Mockito.doReturn(Observable.just(Collections.emptyList()))
+                .when(usersDelegate)
+                .loadAndSaveUsers(any());
+
 
         MockDaggerActionService daggerActionService;
         Janet janet = new Janet.Builder()
@@ -109,7 +113,7 @@ public class MessengerSyncDelegateTest extends BaseTest {
         daggerActionService.registerProvider(Janet.class, () -> janet);
         daggerActionService.registerProvider(ConversationSyncHelper.class, () -> conversationSyncHelper);
         daggerActionService.registerProvider(MessengerServerFacade.class, () -> messengerServerFacade);
-        daggerActionService.registerProvider(UserProcessor.class, () -> userProcessor);
+        daggerActionService.registerProvider(UsersDelegate.class, () -> usersDelegate);
         daggerActionService.registerProvider(UsersDAO.class, () -> usersDAO);
 
         messengerSyncDelegate = new MessengerSyncDelegate(janet);
@@ -121,8 +125,9 @@ public class MessengerSyncDelegateTest extends BaseTest {
         messengerSyncDelegate.getContactsPipe().createObservable(new LoadContactsCommand())
                 .subscribe(testSubscriber);
 
+        verify(usersDelegate, times(1)).loadUsers(testUsers);
         verify(usersDAO, times(1)).unfriendAll();
-        verify(userProcessor, times(1)).syncUsers(testUsers);
+        verify(usersDAO, times(1)).save(anyList());
         assertActionSuccess(testSubscriber, action -> action.getResult() != null);
     }
 
@@ -132,6 +137,7 @@ public class MessengerSyncDelegateTest extends BaseTest {
         messengerSyncDelegate.getConversationsPipe().createObservable(new SyncConversationsCommand())
                 .subscribe(testSubscriber);
 
+        verify(usersDelegate, times(1)).loadAndSaveUsers(anyList());
         verify(conversationSyncHelper).process(anyList());
         assertActionSuccess(testSubscriber, action -> action.getResult() != null);
     }

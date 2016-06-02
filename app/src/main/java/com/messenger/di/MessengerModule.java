@@ -1,7 +1,6 @@
 package com.messenger.di;
 
 import com.messenger.delegate.GroupChatEventDelegate;
-import com.messenger.delegate.JoinedChatEventDelegate;
 import com.messenger.initializer.ChatFacadeInitializer;
 import com.messenger.ui.adapter.SwipeableContactsAdapter;
 import com.messenger.ui.adapter.holder.conversation.ClosedGroupConversationViewHolder;
@@ -29,7 +28,6 @@ import dagger.Module;
                 SwipeableContactsAdapter.class,
 
                 GroupChatEventDelegate.class,
-                JoinedChatEventDelegate.class
         },
         complete = false, library = true
 )

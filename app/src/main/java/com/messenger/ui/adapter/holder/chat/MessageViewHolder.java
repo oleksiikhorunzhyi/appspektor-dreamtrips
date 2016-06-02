@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
@@ -43,8 +42,8 @@ public abstract class MessageViewHolder extends CursorViewHolder {
     @InjectView(R.id.message_container)
     public FrameLayout messageContainer;
     @Optional
-    @InjectView(R.id.view_switcher)
-    public ViewSwitcher retrySwitcher;
+    @InjectView(R.id.view_retry_send)
+    public View viewRetrySend;
 
     protected boolean selected;
     protected boolean previousMessageFromSameUser;
@@ -85,10 +84,9 @@ public abstract class MessageViewHolder extends CursorViewHolder {
     }
 
     @Optional
-    @OnClick(R.id.retry)
+    @OnClick(R.id.view_retry_send)
     void onRetry() {
         cellDelegate.onRetryClicked(dataMessage);
-        retrySwitcher.showNext();
     }
 
     @Optional

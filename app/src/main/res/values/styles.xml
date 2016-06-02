@@ -432,5 +432,8 @@
         <item name="android:src">@drawable/close</item>
     </style>
 
+    <style name="RetrySendMessageDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/retry_send_message_dialog_button_text_color</item>
+    </style>
     <!--end in app notifications-->
 </resources>

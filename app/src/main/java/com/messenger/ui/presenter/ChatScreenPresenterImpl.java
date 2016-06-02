@@ -312,6 +312,11 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     @Override
+    public void retryClicked(DataMessage dataMessage) {
+        getView().showRetrySendMessageDialog(dataMessage);
+    }
+
+    @Override
     public void retrySendMessage(DataMessage dataMessage) {
         chatMessageManager.retrySendMessage(conversationId, dataMessage);
     }

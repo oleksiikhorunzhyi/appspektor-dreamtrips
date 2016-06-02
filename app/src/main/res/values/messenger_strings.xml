@@ -73,6 +73,11 @@
     <string name="chat_share_dialog_image">Share image</string>
     <string name="chat_share_dialog_cancel">Cancel</string>
     <string name="chat_could_not_share_location">Could not share location</string>
+    <string name="chat_error_marker_not_delivered">Not Delivered</string>
+    <string name="chat_retry_send_message_dialog_resend_message">Resend message?</string>
+    <string name="chat_retry_send_message_dialog_resend">Resend</string>
+    <string name="chat_retry_send_message_dialog_cancel">Cancel</string>
+
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Loading…</string>
     <string name="chat_flag_dialog_reason_title">Flag</string>

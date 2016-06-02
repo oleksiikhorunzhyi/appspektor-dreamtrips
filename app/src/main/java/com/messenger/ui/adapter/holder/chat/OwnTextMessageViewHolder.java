@@ -22,12 +22,6 @@ public class OwnTextMessageViewHolder extends TextMessageViewHolder {
 
     public void updateMessageStatusUi() {
         boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;
-        int viewVisible = isError ? View.VISIBLE : View.GONE;
-        if (viewVisible != retrySwitcher.getVisibility()) {
-            retrySwitcher.setVisibility(viewVisible);
-        }
-        if (isError && retrySwitcher.getCurrentView().getId() == R.id.progress_bar) {
-            retrySwitcher.showPrevious();
-        }
+        viewRetrySend.setVisibility(isError ? View.VISIBLE : View.GONE);
     }
 }

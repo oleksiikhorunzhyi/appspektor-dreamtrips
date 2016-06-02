@@ -1,7 +1,6 @@
 package com.messenger.delegate.chat;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
@@ -11,10 +10,7 @@ import javax.inject.Inject;
 
 public class ChatLeavingDelegate {
 
-    @Inject
-    MessengerServerFacade facade;
-    @Inject
-    DataUser user;
+    @Inject MessengerServerFacade facade;
 
     private final OnChatLeftListener listener;
 

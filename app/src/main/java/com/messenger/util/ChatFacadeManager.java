@@ -1,6 +1,5 @@
 package com.messenger.util;
 
-
 import com.messenger.delegate.GroupChatEventDelegate;
 import com.messenger.delegate.user.JoinedChatEventDelegate;
 import com.messenger.delegate.chat.ChatMessagesEventDelegate;
@@ -17,12 +16,9 @@ import rx.Observable;
 
 public class ChatFacadeManager {
 
-    @Inject
-    ChatMessagesEventDelegate chatMessagesDelegate;
-    @Inject
-    GroupChatEventDelegate groupChatEventDelegate;
-    @Inject
-    JoinedChatEventDelegate joinedChatDelegate;
+    @Inject ChatMessagesEventDelegate chatMessagesDelegate;
+    @Inject GroupChatEventDelegate groupChatEventDelegate;
+    @Inject JoinedChatEventDelegate joinedChatDelegate;
 
     public ChatFacadeManager(Injector injector) {
         injector.inject(this);
@@ -62,8 +58,12 @@ public class ChatFacadeManager {
         groupChatEventDelegate.onAvatarChanged(conversationId, avatar);
     }
 
-    public void onChatLeft(String conversationId, String userId, boolean leave){
-        groupChatEventDelegate.onChatLeft(conversationId, userId, leave);
+    public void onChatLeft(String conversationId, String userId){
+        groupChatEventDelegate.onChatLeft(conversationId, userId);
+    }
+
+    public void onKicked(String conversationId, String userId) {
+        groupChatEventDelegate.onKicked(conversationId, userId);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,10 +5,10 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.model.ImmutableParticipant;
-import com.messenger.messengerservers.model.Participant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.extensions.DeleteMessageExtension;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.LeftRoomPresence;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessageDeletedPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
@@ -55,6 +55,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 StanzaTypeFilter.MESSAGE);
         connection.addAsyncStanzaListener(this::interceptIncomingPresence,
                 StanzaTypeFilter.PRESENCE);
+        connection.addAsyncStanzaListener(this::interceptLeftPresence,
+                LeftRoomPresence.LEAVE_PRESENCE_FILTER);
         connection.addAsyncStanzaListener(this::interceptIncomingMessageDeletedPresence,
                 MessageDeletedPresence.DELETED_PRESENCE_FILTER);
 
@@ -196,18 +198,29 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         MUCItem item = extension.getItem();
         MUCAffiliation affiliation = item.getAffiliation();
         //
-        if (affiliation == MUCAffiliation.none) {
-            boolean leave = presence.getType() == Type.unsubscribed;
-            notifyOnChatLeftListener(conversationId, userId, leave);
-        } else {
-            boolean isOnline = presence.getType() == Type.available;
-            notifyOnChatJoinedListener(ImmutableParticipant.builder()
-                    .userId(userId)
-                    .conversationId(conversationId)
-                    .affiliation(String.valueOf(affiliation))
-                    .build(), isOnline);
-        }
+
+        boolean isOnline = presence.getType() == Type.available;
+        notifyOnChatJoinedListener(ImmutableParticipant.builder()
+                .userId(userId)
+                .conversationId(conversationId)
+                .affiliation(String.valueOf(affiliation))
+                .build(), isOnline);
         return true;
+    }
+
+    private void interceptLeftPresence(Stanza stanza) {
+        String fromJid = stanza.getFrom();
+
+        MUCUser extension = (MUCUser) stanza.getExtension(MUCUser.NAMESPACE);
+        String conversationId = JidCreatorHelper.obtainId(fromJid);
+
+        MUCItem item = extension.getItem();
+        String userJid = item.getJid();
+
+        String userId = userJid == null ?
+                JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(userJid);
+
+        notifyOnChatLeftListener(conversationId, userId);
     }
 
     private boolean isMessageIgnored(Message message, int packetType) {

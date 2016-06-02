@@ -12,13 +12,13 @@ import com.messenger.entities.DataParticipant$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Adapter;
 import com.messenger.entities.DataUser$Table;
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.util.RxContentResolver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 public class ParticipantsDAO extends BaseDAO {
 
@@ -66,7 +66,8 @@ public class ParticipantsDAO extends BaseDAO {
         return "SELECT " + projection + " FROM Users u " +
                 "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p.userId = u._id " +
-                "WHERE p.conversationId = ?";
+                "WHERE p.conversationId = ? " +
+                "AND p."+ DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'";
     }
 
     @NonNull

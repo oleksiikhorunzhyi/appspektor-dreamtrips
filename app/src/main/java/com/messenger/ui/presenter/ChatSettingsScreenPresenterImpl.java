@@ -144,7 +144,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     private final OnChatLeftListener onChatLeftListener = new OnChatLeftListener() {
         @Override
-        public void onChatLeft(String conversationId, String userId, boolean leave) {
+        public void onChatLeft(String conversationId, String userId) {
             if (userId.equals(user.getId())) {
                 Flow flow = Flow.get(getContext());
                 History newHistory = flow.getHistory()

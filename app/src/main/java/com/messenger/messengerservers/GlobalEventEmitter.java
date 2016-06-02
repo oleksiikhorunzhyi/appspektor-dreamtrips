@@ -11,6 +11,7 @@ import com.messenger.messengerservers.listeners.OnAvatarChangedListener;
 import com.messenger.messengerservers.listeners.OnChatJoinedListener;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
+import com.messenger.messengerservers.listeners.OnKickListener;
 import com.messenger.messengerservers.listeners.OnSubjectChangedListener;
 import com.messenger.messengerservers.listeners.PresenceListener;
 import com.messenger.messengerservers.model.DeletedMessage;
@@ -36,6 +37,7 @@ public abstract class GlobalEventEmitter {
     protected List<OnSubjectChangedListener> onSubjectChangedListeners = new CopyOnWriteArrayList<>();
     protected List<OnAvatarChangedListener> onAvatarChangedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatLeftListener> onChatLeftListeners = new CopyOnWriteArrayList<>();
+    protected List<OnKickListener> onKickListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
     protected List<MessagesDeletedListener> onMessagesDeletedListener = new CopyOnWriteArrayList<>();
@@ -156,9 +158,23 @@ public abstract class GlobalEventEmitter {
         onChatLeftListeners.remove(listener);
     }
 
-    protected void notifyOnChatLeftListener(String conversationId, String userId, boolean leave) {
+    protected void notifyOnChatLeftListener(String conversationId, String userId) {
         for (OnChatLeftListener listener : onChatLeftListeners) {
-            listener.onChatLeft(conversationId, userId, leave);
+            listener.onChatLeft(conversationId, userId);
+        }
+    }
+
+    public void addOnKickListener(OnKickListener listener) {
+        onKickListeners.add(listener);
+    }
+
+    public void removeOnKickListener(OnKickListener listener) {
+        onKickListeners.remove(listener);
+    }
+
+    protected void notifyOnKickListener(String conversationId, String userId) {
+        for (OnKickListener l : onKickListeners) {
+            l.onKicked(conversationId, userId);
         }
     }
 

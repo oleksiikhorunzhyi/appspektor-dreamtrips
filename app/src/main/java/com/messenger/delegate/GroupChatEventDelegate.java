@@ -2,12 +2,12 @@ package com.messenger.delegate;
 
 
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataUser;
+import com.messenger.entities.DataParticipant;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -17,6 +17,8 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.session.UserSession;
+
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -71,23 +73,45 @@ public class GroupChatEventDelegate {
                 }, e -> Timber.d(e, "Could not save avatar to conversation"));
     }
 
-    public void onChatLeft(String conversationId, String userId, boolean leave){
-        Timber.i("Chat left :: chat=%s , user=%s", conversationId, userId);
-        Observable.zip(
-                conversationsDAO.getConversation(conversationId).compose(new NonNullFilter<>()).take(1),
-                usersDAO.getUserById(userId).compose(new NonNullFilter<>()).take(1),
-                (conversation, user) -> new Pair<>(conversation, user)
-        )
-                .subscribeOn(Schedulers.io())
-                .subscribe(pair -> {
-                    DataConversation conversation = pair.first;
-                    DataUser dataUser = pair.second;
-                    participantsDAO.delete(conversation.getId(), dataUser.getId());
-                    if (TextUtils.equals(messengerServerFacade.getUsername(), dataUser.getId())) { // if it is owner action
-                        conversation.setStatus(leave ? ConversationStatus.LEFT : ConversationStatus.KICKED);
-                        conversationsDAO.save(conversation);
-                    }
-                }, throwable -> Timber.d(throwable, ""));
+    public void onChatLeft(String conversationId, String userId) {
+        Timber.i("User left :: chat=%s , user=%s", conversationId, userId);
+
+        handleRemovingMember(conversationId, userId, ConversationStatus.LEFT);
     }
 
+    public void onKicked(String conversationId, String userId) {
+        Timber.i("User kicked :: chat=%s , user=%s", conversationId, userId);
+
+        handleRemovingMember(conversationId, userId, ConversationStatus.KICKED);
+    }
+
+    private void handleRemovingMember(String conversationId, String userId, @ConversationStatus.Status String status) {
+        Observable.fromCallable(() -> removeFromConversation(conversationId, userId))
+                .subscribeOn(Schedulers.io())
+                .flatMap(participant -> {
+                    if (TextUtils.equals(messengerServerFacade.getUsername(), participant.getUserId())) {
+                        return setConversationStatus(conversationId, status);
+                    } else {
+                        return Observable.empty();
+                    }
+                })
+                .subscribe(c -> {}, e -> Timber.e(e, ""));
+    }
+
+    private DataParticipant removeFromConversation(String conversationId, String userId) {
+        DataParticipant participant = new DataParticipant(conversationId, userId, Affiliation.NONE);
+        participantsDAO.save(Collections.singletonList(participant));
+        return participant;
+    }
+
+    private Observable<DataConversation> setConversationStatus(String conversationId,
+                                                               @ConversationStatus.Status String status) {
+        return conversationsDAO.getConversation(conversationId)
+                .compose(new NonNullFilter<>())
+                .take(1)
+                .doOnNext(conversation -> {
+                    conversation.setStatus(status);
+                    conversationsDAO.save(conversation);
+                });
+    }
 }

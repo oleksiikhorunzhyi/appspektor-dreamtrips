@@ -20,6 +20,7 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.util.RxContentResolver;
@@ -92,6 +93,7 @@ public class ConversationsDAO extends BaseDAO {
 
                 "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "= c." + DataConversation$Table._ID + " " +
+                "AND p."+ DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'" +
 
                 "JOIN " + DataUser$Table.TABLE_NAME + " u " +
                 "ON p." + DataParticipant$Table.USERID + "=u." + DataUser$Table._ID + " " +

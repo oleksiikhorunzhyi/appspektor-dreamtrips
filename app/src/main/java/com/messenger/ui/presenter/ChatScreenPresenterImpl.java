@@ -18,6 +18,7 @@ import com.messenger.delegate.chat.ChatTypingDelegate;
 import com.messenger.delegate.chat.MessagesPaginationDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
 import com.messenger.delegate.chat.typing.ChatStateDelegate;
+import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
@@ -47,6 +48,7 @@ import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.PickLocationDelegate;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
@@ -86,6 +88,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject AttachmentMenuProvider attachmentMenuProvider;
     @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
     @Inject PickLocationDelegate pickLocationDelegate;
+    @Inject LoadConversationDelegate loadConversationDelegate;
 
     protected String conversationId;
 
@@ -192,7 +195,14 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         //noinspection all
         getView().setConversation(conversation);
         getView().setTitle(conversation, participants);
-        getView().enableInput(!ConversationHelper.isAbandoned(conversation));
+        getView().enableInput(ConversationHelper.isPresent(conversation));
+        enableUnreadMessagesUi(conversation);
+    }
+
+    private boolean enableUnreadMessagesUi(DataConversation conversation) {
+        boolean isActive = conversation != null && ConversationHelper.isPresent(conversation);
+        getView().setShowMarkUnreadMessage(isActive);
+        return isActive;
     }
 
     private Subscription connectMessagesStream(long syncTime) {
@@ -220,22 +230,30 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void handlePaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus) {
-        ChatScreen view = getView();
         switch (paginationStatus.getStatus()) {
             case START:
-                if (paginationStatus.getPage() == 1) view.setShowMarkUnreadMessage(true);
-                view.showLoading();
-                getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+                loadConversationDelegate.loadConversationFromDb(conversationId)
+                        .compose(new IoToMainComposer<>())
+                        .subscribe(conversation
+                                -> handleStartPaginationStatus(paginationStatus, conversation));
                 break;
             case SUCCESS:
                 if (paginationStatus.getPage() == 1 && paginationStatus.getLoadedElementsCount() == 0) {
-                    view.setShowMarkUnreadMessage(false);
+                    getView().setShowMarkUnreadMessage(false);
                 }
             default:
-                view.showContent();
+                getView().showContent();
         }
     }
 
+    private void handleStartPaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus,
+                                             DataConversation conversation) {
+        if (enableUnreadMessagesUi(conversation) && paginationStatus.getPage() == 1) {
+            getView().setShowMarkUnreadMessage(true);
+        }
+        getView().showLoading();
+        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+    }
     ///////////////////////////////////////////////////////////////////////////
     ////// Chat typing state logic
     //////////////////////////////////////////////////////////////////////////

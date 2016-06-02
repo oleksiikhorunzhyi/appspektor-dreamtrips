@@ -87,7 +87,7 @@ public class UserSectionHelper {
                                                            DataConversation conversation) {
         boolean isAdmin = TextUtils.equals(conversation.getOwnerId(), getCurrentUserId());
         boolean isTripConversation = ConversationHelper.isTripChat(conversation);
-        boolean enableOnlineMembersStatuses = !ConversationHelper.isAbandoned(conversation);
+        boolean enableOnlineMembersStatuses = ConversationHelper.isPresent(conversation);
         Map<String, Collection<SwipeDataUser>> groupedMap = Queryable.from(members)
                 .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation),
                         pair -> toSwipeDataUser(pair.first, pair.second, isAdmin, enableOnlineMembersStatuses));

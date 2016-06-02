@@ -6,8 +6,10 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.model.Conversation;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.ui.helper.ConversationHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
@@ -53,6 +55,7 @@ public class UnreadMessagesDelegate {
         }
 
         chatObservable
+                .filter(chat -> ConversationHelper.isPresent(conversationObservable.toBlocking().first()))
                 .flatMap(chat -> chat.sendReadStatus(lastMessage.getId()))
                 .flatMap(msgId -> markMessagesAsRead(lastMessage))
                 .flatMap(this::changeUnreadCounter)

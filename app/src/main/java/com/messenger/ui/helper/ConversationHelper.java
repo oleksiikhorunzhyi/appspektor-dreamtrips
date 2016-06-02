@@ -36,9 +36,10 @@ public final class ConversationHelper {
 
     public static List<MessengerUser> getUsersFromConversations(List<Conversation> conversations) {
         List<MessengerUser> messengerUsers = new ArrayList<>();
-        Queryable.from(conversations).map(ConversationHelper::getUsersFromConversation)
+        Queryable.from(conversations)
+                .map(ConversationHelper::getUsersFromConversation)
                 .forEachR(messengerUsers::addAll);
-        return messengerUsers;
+        return Queryable.from(messengerUsers).distinct().toList();
     }
 
     public static List<MessengerUser> getUsersFromConversation(Conversation conversation) {

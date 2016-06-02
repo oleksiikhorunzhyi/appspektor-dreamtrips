@@ -65,7 +65,7 @@ public class LoadChatMessagesCommand extends BaseChatAction<List<Message>>
     }
 
     private Observable<List<Message>> prepareUsers(List<Message> messages) {
-        List<String> usersIds = from(messages).map(Message::getFromId).toList();
+        List<String> usersIds = from(messages).map(Message::getFromId).distinct().toList();
         if (!usersIds.isEmpty()) return usersDelegate.loadMissingUsers(usersIds).map(users -> messages);
         return Observable.just(messages);
     }

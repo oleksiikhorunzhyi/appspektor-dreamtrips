@@ -15,8 +15,8 @@
     <string name="privacy">Política de privacidad</string>
     <string name="cookie">Política de Cookies</string>
     <string name="action_settings">Configuraciones</string>
-    <string name="action_quick_input">Añadir rápido</string>
-    <string name="action_popular_string">Añadir de populares</string>
+    <string name="action_quick_input">Agregar rápido</string>
+    <string name="action_popular_string">Agregar de Populares</string>
     <string name="action_done">Listo</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_enroll">Inscribirse</string>
@@ -40,7 +40,7 @@
     <string name="duration">%1$d noches</string>
     <string name="smth_went_wrong">Algo fue mal =(</string>
     <string name="inspire_me">Inspiración</string>
-    <string name="three_sixty">Experiencia 365</string>
+    <string name="three_sixty">Experiencia 360</string>
     <string name="book_it">¡Resérvalo!</string>
     <string name="reload_trip_details">Volver a cargar los detalles del viaje</string>
     <string name="title_book_it">Reservar</string>
@@ -76,7 +76,7 @@
     <string name="photo_when_date_hint">Fecha</string>
     <string name="photo_when_time_hint">Hora</string>
     <string name="photo_tags">Etiquetas</string>
-    <string name="photo_tags_hint">Añadir etiquetas separadas con comas aquí</string>
+    <string name="photo_tags_hint">Agregar etiquetas separadas con comas aquí</string>
     <string name="photo_deleted">Se ha borrado la foto</string>
     <string name="photo_flagged">Se ha marcado la foto</string>
     <string name="delete_photo_title">Borrar foto</string>
@@ -88,7 +88,7 @@
     <string name="flag_photo_title">Confirmar</string>
     <string name="flag_photo_positive">Enviar</string>
     <string name="flag_photo_negative">Cancelar</string>
-    <string name="flag_description_title">Flag</string>
+    <string name="flag_description_title">Marcar</string>
     <string name="flag_description_positive">Aceptar</string>
     <string name="flag_description_negative">Cancelar</string>
     <string name="log_in">Inicio de sesión </string>
@@ -112,7 +112,7 @@
         <item>Twitter</item>
         <item>Guardar en galería</item>
     </string-array>
-    <string name="buffering">Almacenando en búfer…</string>
+    <string name="buffering">Almacenando en búfer...</string>
     <string name="profile_select_avatar_header">Seleccionar avatar</string>
     <string name="profile_select_cover_header">Seleccionar portada</string>
     <string name="error_internal_server">Error interno del servidor</string>
@@ -120,12 +120,12 @@
     <string name="username_not_valid">El nombre de usuario no es válido</string>
     <string name="password_empty">La contraseña está vacía</string>
     <string name="password_not_valid">La contraseña no es válida</string>
-    <string name="bucket_list_my_title">Añadir elementos a la lista de pendientes</string>
+    <string name="bucket_list_my_title">Agregar elementos a la lista de pendientes</string>
     <string name="bucket_list_location_popular">Lista de pendientes populares</string>
     <string name="bucket_list_activity_popular">Actividades de las listas de pendientes populares</string>
     <string name="bucket_list_dinning_popular">Restaurantes y ocio de las listas de pendientes populares</string>
     <string name="bucket_list_edit_header">Editar elemento de la lista de pendientes</string>
-    <string name="bucket_list_add">Añadir %1$s a tu lista de pendientes</string>
+    <string name="bucket_list_add">Agregar %1$s a tu lista de pendientes</string>
     <string name="bucket_list_create_message">Actualmente no tienes elementos en la lista de pendientes. Puedes elegir entre elementos populares de la lista de pendientes o crear tus propios objetivos</string>
     <string name="bucket_list_choose">Elegir entre elementos populares</string>
     <string name="bucket_list_create_new">Crear mi propia lista</string>
@@ -137,15 +137,15 @@
     <string name="bucket_hint_location">Ubicación</string>
     <string name="bucket_hint_location_text">¿Este objetivo tiene una ubicación específica?</string>
     <string name="bucket_hint_people">Gente</string>
-    <string name="bucket_hint_people_text">Añadir gente con la que quiero lograr este objetivo</string>
+    <string name="bucket_hint_people_text">Agregar gente con la que quiero lograr este objetivo</string>
     <string name="bucket_hint_tags">Etiquetas</string>
-    <string name="bucket_hint_tags_text">Añadir etiquetas que describen tu elemento de la lista de pendientes</string>
+    <string name="bucket_hint_tags_text">Agregar etiquetas que describen tu elemento de la lista de pendientes</string>
     <string name="bucket_item_edit_done">¡Se ha guardado el elemento de la lista de pendientes!</string>
     <string name="bucket_item_edit_error">Se encontró un error al guardar el elemento</string>
-    <string name="bucket_item_photos">Añadir fotos</string>
+    <string name="bucket_item_photos">Agregar fotos</string>
     <string name="category">Categoría</string>
-    <string name="bucket_added">Se ha añadido %1$s a tu lista de pendientes</string>
-    <string name="trip_liked">Se ha añadido %1$s a tus favoritos</string>
+    <string name="bucket_added">Se ha agregado %1$s a tu lista de pendientes</string>
+    <string name="trip_liked">Se ha agregado %1$s a tus favoritos</string>
     <string name="trip_unliked">Se ha eliminado %1$s de tus favoritos</string>
     <string name="congrats">¡Felicitaciones!</string>
     <string name="bucket_delete_undo">Se borró el elemento</string>
@@ -156,17 +156,17 @@
     <string name="show_all">Mostrar todo</string>
     <string name="show_completed">Mostrar finalizados</string>
     <string name="show_to_do">Mostrar POR HACER</string>
-    <string name="rep_tools">Herramientas rep</string>
+    <string name="rep_tools">Herramientas para Reps</string>
     <string name="success_stories">Historias de éxito</string>
     <string name="to_do">Por hacer</string>
     <string name="completed">Listo</string>
     <string name="action_share">Compartir</string>
-    <string name="recent_header">Recientemente añadido a Experiencia 360</string>
-    <string name="recent_videos">Añadido recientemente</string>
+    <string name="recent_header">Recientemente agregado a Experiencia 360</string>
+    <string name="recent_videos">Agregado recientemente</string>
     <string name="featured_header">Experiencia 360 destacada</string>
     <string name="title_activity_success_story_details">Activ.DetallesHist.Éxito</string>
     <string name="hello_world">¡Hola mundo!</string>
-    <string name="ss_has_been_added_to_favorites">La historia de éxito se ha añadido a los favoritos</string>
+    <string name="ss_has_been_added_to_favorites">La historia de éxito se ha agregado a los favoritos</string>
     <string name="ss_has_been_removed_from_favorites">La historia de éxito se ha eliminado de los favoritos</string>
     <string name="ss_filter_show_favorites">Mostrar favoritos</string>
     <string name="other_travel">Reservar viaje</string>
@@ -182,9 +182,9 @@
     <string name="tags">Etiquetas: </string>
     <string name="my_pictures">Mis fotos</string>
     <string name="today">Hoy</string>
-    <string name="rep_enrollment">Inscripción rep.</string>
+    <string name="rep_enrollment">Inscripción de rep.</string>
     <string name="no_connection">No hay conexión a internet</string>
-    <string name="popular_add">AÑADIR</string>
+    <string name="popular_add">AGREGAR</string>
     <string name="popular_done">LISTO</string>
     <string name="see_more">Ver más</string>
     <string name="alert">Alerta</string>
@@ -208,7 +208,7 @@
     <string name="uploading_photo">Cargando foto</string>
     <string name="bucket_photo_cover">Configurar como portada</string>
     <string name="bucket_photo_delete">Borrar</string>
-    <string name="add_pictures">Añadir fotos</string>
+    <string name="add_pictures">Agregar fotos</string>
     <string name="select_photo">Seleccionar foto</string>
     <string name="bucket_photo_dialog">Foto de pendientes</string>
     <string name="download_in_progress">Descarga en progreso</string>
@@ -222,12 +222,12 @@
     <string name="presentations">Videos</string>
     <string name="enroll_member">Inscribir miembro</string>
     <string name="invite_and_share">Invitar y compartir</string>
-    <string name="add_contact">Añadir contacto</string>
-    <string name="add">Añadir</string>
+    <string name="add_contact">Agregar contacto</string>
+    <string name="add">Agregar</string>
     <string name="invite_add_name">Nombre</string>
     <string name="invite_email">Correo electrónico</string>
     <string name="invite_phone">Teléfono</string>
-    <string name="invite_add_message">Añadir mensaje personal</string>
+    <string name="invite_add_message">Agregar mensaje personal</string>
     <string name="action_send">Enviar</string>
     <string name="action_preview">Vista previa</string>
     <string name="title_edit_template">Editar plantilla</string>
@@ -248,10 +248,10 @@
     <string name="invitation_deselect_all">Desactivar selección de todo</string>
     <string name="invitation_text_template" formatted="false"><![CDATA[ Hola %1$s, %2$s <br/>Echa un vistazo <a href=\"%3$s\">aquí</a>.]]></string>
     <string name="terms_and_conditions"><![CDATA[He leído y acepto los <a href=\"http://gs1.wpc.edgecastcdn.net/80289E/media/1/dtapp/legal/us_en/html/terms_of_service.html\">Términos y condiciones.</a>]]></string>
-    <string name="invite_add_photo">Añadir foto</string>
+    <string name="invite_add_photo">Agregar foto</string>
     <string name="invite_select_first">Seleccionar contactos primero</string>
     <string name="filters_show_favorite">MOSTRAR VIAJES FAVORITOS</string>
-    <string name="filter_recently_added">AÑADIDOS RECIENTEMENTE</string>
+    <string name="filter_recently_added">AGREGADOS RECIENTEMENTE </string>
     <string name="bucketlist_share" formatted="false">En mi lista de pendientes: %1$s</string>
     <string name="choose_multiselect">Elegir fotos</string>
     <string name="last_sent">Último envío</string>
@@ -273,9 +273,9 @@
     <string name="profile_rovia_bucks">&lt;b&gt;%1$s&lt;/b&gt; Rovia Bucks</string>
     <string name="bucket_delete_dialog">¿Estás seguro de que deseas borrar este elemento de la lista de pendientes?</string>
 
-    <string name="action_add_to_bucket">Añadir a lista de pendientes</string>
+    <string name="action_add_to_bucket">Agregar a lista de pendientes</string>
     <string name="profile_dream_trips">%1$d Dream Trips</string>
-    <string name="profile_add_friend">Añadir amigo</string>
+    <string name="profile_add_friend">Agregar amigo</string>
     <string name="profile_friend_request" formatted="false">%1$s te envió una solicitud de amistad</string>
     <string name="profile_accept">Confirmar</string>
     <string name="profile_reject">Borrar solicitud</string>
@@ -287,10 +287,10 @@
     <string name="social_requests">Solicitudes</string>
     <string name="social_add_friend_yes">Sí</string>
     <string name="social_add_friend_no">No</string>
-    <string name="social_add_friend_title">Añadir amigo</string>
-    <string name="social_add_friend_content" formatted="false">¿Quieres añadir a %1$s como tu amigo?</string>
+    <string name="social_add_friend_title">Agregar amigo</string>
+    <string name="social_add_friend_content" formatted="false">¿Quieres Agregar a %1$s como tu amigo?</string>
     <string name="social_postfix_mutual_friends_one">%1$d amigo mutuo</string>
-    <string name="social_postfix_mutual_friends">%1$d amigos mutuos</string>
+    <string name="social_postfix_mutual_friends">%1$d amigos en común </string>
     <string name="social_user_wrapper_cell_actions">Acciones</string>
     <string name="social_remove_friend_title">Eliminar amigo</string>
     <string name="action_social_show_all">Mostrar todos</string>
@@ -304,25 +304,25 @@
     <string name="request_incoming">Entrante</string>
     <string name="request_outgoing">Saliente</string>
     <string name="friend_global_search">Buscar todos los miembros</string>
-    <string name="friend_add_to">Añadir a:</string>
+    <string name="friend_add_to">Agregar a:</string>
     <string name="bucket_current_cover">Portada actual</string>
     <string name="bucket_item_edit_completed">¡Marcar como listo!</string>
     <string name="reload_feed">Volver a cargar fuente</string>
     <string name="feed_header" formatted="false">&lt;b&gt;%1$s%2$s&lt;/b&gt; %3$s &lt;b&gt;%4$s&lt;/b&gt;</string>
-    <string name="added">añadido a</string>
+    <string name="added">agregó una</string>
     <string name="booked">reservó un</string>
-    <string name="shared">compartió u</string>
+    <string name="shared">compartió un</string>
     <string name="updated">actualizó un</string>
     <string name="liked">le gustó tu</string>
     <string name="feed_trip">Viaje</string>
     <string name="feed_photo">Foto</string>
     <string name="feed_bucket">Elemento de la lista de pendientes</string>
     <string name="coming_soon">Próximamente</string>
-    <string name="loading">Cargando…</string>
+    <string name="loading">Cargando...</string>
     <string name="filter_video_title_language">Elegir idioma</string>
     <string name="filter_video_title_country">Elegir país</string>
     <string name="comments_title">Comentarios</string>
-    <string name="comment_add_hint">Añadir un comentario</string>
+    <string name="comment_add_hint">Agregar un comentario</string>
     <string name="comment_post_btn_title">Publicar</string>
     <string name="comment_view_more">Ver más comentarios</string>
     <string name="comment_edit">Editar comentario</string>
@@ -333,7 +333,7 @@
     <string name="post_visibility_public">Publicar</string>
     <string name="post_hint">¿En qué andas?</string>
     <string name="photo_hint">Di algo sobre la foto…</string>
-    <string name="post">Publicar</string>
+    <string name="post">Publicación</string>
 
     /////////Date time relative strings
     <string name="just_now">Justo ahora</string>
@@ -373,7 +373,7 @@
     <string name="configuration_failed">Falló la configuración de carga</string>
     <string name="email_app_choose_dialog_title">Elegir aplicación</string>
 
-    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;A %1$s&lt;/b&gt; les gusta esto</string>
+    <string name="account_who_liked_with_first_zero" formatted="false">&lt;b&gt;A %1$s&lt;/b&gt;les gusta esto</string>
     <string name="users_who_liked_with_first_zero" formatted="false">&lt;b&gt;A %1$s&lt;/b&gt; le gusta esto</string>
     <string name="users_who_liked_with_first_single" formatted="false">&lt;b&gt;A %1$s y %2$d más&lt;/b&gt; les gusta esto</string>
     <string name="users_who_liked_with_first_multiple" formatted="false">&lt;b&gt;a %1$s y %2$d más&lt;/b&gt; les gusta esto</string>
@@ -410,7 +410,7 @@
     <string name="no_notifications">Todavía no tienes notificaciones</string>
     <string name="notification_message_friend_accepted">%1$s aceptó tu solicitud de amistad</string>
     <string name="notification_message_friend_request">%1$s te envió una solicitud de amistad</string>
-    <string name="notification_message_tagged_on_photo">%1$s te marcó en la foto</string>
+    <string name="notification_message_tagged_on_photo">%1$s te etiquetó en la foto</string>
 
     <string name="error_webview_no_internet">No hay conexión a internet. Resuelve el problema y vuelve a cargar la página.</string>
     <string name="error_webview_default">Hay un problema de conexión. Intenta volver a cargar la página.</string>
@@ -419,7 +419,7 @@
     <string name="notifaction_older">Más antiguo</string>
 
     <string name="all">Todos</string>
-    <string name="you">TÚ</string>
+    <string name="you">TI</string>
 
     <string name="likes_count_one">%1$d me gusta</string>
     <string name="likes_count_other">%1$d me gusta</string>
@@ -452,30 +452,30 @@
     <string name="terms_and_conditions_reject">No ahora</string>
 
     <string name="camera">Cámara</string>
-    <string name="add_from_facebook">Añadir de Facebook</string>
+    <string name="add_from_facebook">Agregar de Facebook</string>
 
-    <string name="photos_selected">%1$d seleccionado</string>
+    <string name="photos_selected">%1$d seleccionados</string>
 
     <string name="no_friends">No tienes amigos aún en esta lista</string>
-    <string name="feed_add_friends">Añadir amigos</string>
+    <string name="feed_add_friends">Agregar amigos</string>
     <string name="all_friends">Todos los amigos</string>
     <string name="trip_view_and_book"><![CDATA[Ver y reservar]]></string>
     <string name="accept_all">Aceptar todo</string>
     <string name="request_count_desc">Tienes %1$d solicitudes entrantes de amistad</string>
 
-    <string name="user_mutual_friends">Amigos mutuos</string>
+    <string name="user_mutual_friends">Amigos en común </string>
     <string name="no_mutual_friends">No tenéis ningún amigo mutuo</string>
 
     <string name="photo_limitation_message">Elige hasta %1$d fotos</string>
-    <string name="pending">Pendiente…</string>
+    <string name="pending">Pendiente...</string>
 
     <string name="back">Volver</string>
     <string name="logout_component">Cerrar sesión</string>
     <string name="start_typing_name">Empezar a escribir nombre</string>
 
-    <string name="multiple_dates">Múltiples fechas, %1$s…</string>
+    <string name="multiple_dates">Múltiples fechas, %1$s...</string>
 
-    <string name="tag_photo">te marcó en </string>
+    <string name="tag_photo">te etiquetó en</string>
 
     <string name="user_already_exists">%1$s ya existe</string>
     <string name="photo_tag_title">Toca en cualquier lugar para marcar gente</string>
@@ -531,9 +531,9 @@
     <string name="error_fail_to_load_circles">Error al cargar círculos </string>
     <string name="error_fail_to_load_feed">No se pudo carga el feed</string>
     <string name="error_fail_to_load_item_details">Error al cargar los detalles del ítem</string>
-    <string name="error_fail_to_create_post">No se pudo crear poste</string>
-    <string name="error_fail_to_update_post">No se pudo actualizar poste</string>
-    <string name="error_fail_to_delete_post">No se pudo eliminar poste</string>
+    <string name="error_fail_to_create_post">No se pudo crear la publicación</string>
+    <string name="error_fail_to_update_post">No se pudo actualizar la publicación</string>
+    <string name="error_fail_to_delete_post">No se pudo eliminar la publicación</string>
     <string name="error_fail_to_load_comments">No se pudo cargar los comentarios</string>
     <string name="error_fail_to_post_comment">No se ha podido publicar comentario</string>
     <string name="error_fail_to_delete_comment">No se ha podido borrar el comentario</string>

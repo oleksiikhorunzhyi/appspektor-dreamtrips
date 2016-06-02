@@ -6,7 +6,7 @@
     <string name="dtl_merchant_tab_dining">Étkezés</string>
     <string name="dtl_near_me_caption">Közel hozzám</string>
     <string name="dtl_nearby_caption">Közelben</string>
-    <string name="dtl_autodetect_location">Autó-megkeresése a helyzetemnek</string>
+    <string name="dtl_autodetect_location">HELYZETMEGHATÁROZÁS</string>
     <string name="dtl_no_merchants_caption">Nincs kereskedő itt</string>
     <string name="dtl_load_merchants_here_button_caption">Kereskedő keresése újra</string>
     <string name="dtl_place_list_empty_text">Nincs helyszín a kiválasztott típusnak megfelelően</string>

@@ -2,8 +2,8 @@
 <resources>
     <string name="dtl_locations_title">Pilih lokasi</string>
     <string name="dtl_locations_try_search">Kami tidak dapat mengesan Bandar terdekat kepada anda.\nCuba carian bandar kami</string>
-    <string name="dtl_merchant_tab_offers">Menawarkan</string>
-    <string name="dtl_merchant_tab_dining">Makan malam</string>
+    <string name="dtl_merchant_tab_offers">Tawaran</string>
+    <string name="dtl_merchant_tab_dining">Jamuan Selera</string>
     <string name="dtl_near_me_caption">Berhampiran saya</string>
     <string name="dtl_nearby_caption">Berhampiran</string>
     <string name="dtl_autodetect_location">Auto-kesan lokasi saya</string>

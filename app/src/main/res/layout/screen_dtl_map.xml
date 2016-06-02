@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dtl_map_screen_root"
     android:layout_width="match_parent"
@@ -26,45 +25,5 @@
             />
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
-        <include layout="@layout/map_fragment_with_info" />
-
-        <FrameLayout
-            android:id="@+id/redo_merchants"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_margin="16dp"
-            android:minHeight="48dp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
-
-            <Button
-                android:id="@+id/redo_merchants_button"
-                style="@style/DtlButtonTheme"
-                android:layout_width="230dp"
-                android:layout_height="wrap_content"
-                android:text="@string/dtl_load_merchants_here_button_caption"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                />
-
-            <ProgressBar
-                android:id="@+id/redo_merchants_progress"
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical|start"
-                android:layout_marginLeft="12dp"
-                android:theme="@style/Theme.DreamTripsTheme.Progress.White"
-                android:visibility="gone"
-                tools:visibility="visible"
-                />
-        </FrameLayout>
-    </FrameLayout>
+    <include layout="@layout/screen_dtl_map_content" />
 </com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl>

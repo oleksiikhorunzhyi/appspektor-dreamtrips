@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import de.greenrobot.event.EventBus;
 import flow.path.Path;
 import flow.path.PathContext;
@@ -67,7 +68,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     FrameLayout infoContainer;
     @InjectView(R.id.noGoogleContainer)
     FrameLayout noGoogleContainer;
-    @InjectView(R.id.dtlToolbar)
+    @InjectView(R.id.dtlToolbar) @Optional
     ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.redo_merchants)
     View loadMerchantsRoot;
@@ -107,6 +108,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     protected void initToolbar() {
+        if (dtlToolbar == null) return;
         RxDtlToolbar.actionViewClicks(dtlToolbar)
                 .throttleFirst(250L, TimeUnit.MILLISECONDS)
                 .compose(RxLifecycle.bindView(this))
@@ -133,6 +135,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void setFilterButtonState(boolean enabled) {
+        if (dtlToolbar == null) return;
         dtlToolbar.setFilterEnabled(enabled);
     }
 
@@ -187,6 +190,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public Observable<Boolean> getToggleObservable() {
+        if (dtlToolbar == null) return Observable.empty();
         return RxDtlToolbar.diningFilterChanges(dtlToolbar)
                 .compose(RxLifecycle.bindView(this));
     }
@@ -210,6 +214,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public boolean isToolbarCollapsed() {
+        if (dtlToolbar == null) return true;
         return dtlToolbar.isCollapsed();
     }
 
@@ -233,7 +238,12 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void prepareInfoWindow(int height) {
-        int ownHeight = getHeight() - ButterKnife.findById(this, R.id.dtlToolbar).getBottom();
+        int ownHeight;
+        if (dtlToolbar == null) {
+            ownHeight = getHeight();
+        } else {
+            ownHeight = getHeight() - dtlToolbar.getBottom();
+        }
         int centerY = ownHeight / 2;
         int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;
@@ -252,6 +262,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void toggleDiningFilterSwitch(boolean enabled) {
+        if (dtlToolbar == null) return;
         dtlToolbar.toggleDiningFilterSwitch(enabled);
     }
 
@@ -301,7 +312,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
                                    @Nullable String actualSearchQuery) {
-        if (dtlLocation == null) return;
+        if (dtlLocation == null || dtlToolbar == null) return;
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.InjectView;
+import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Observable;
 
@@ -36,7 +37,7 @@ public class DtlMerchantsScreenImpl
         extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
         implements DtlMerchantsScreen, DtlMerchantCellDelegate {
 
-    @InjectView(R.id.dtlToolbar)
+    @InjectView(R.id.dtlToolbar) @Optional
     ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
@@ -75,6 +76,7 @@ public class DtlMerchantsScreenImpl
     }
 
     private void initDtlToolbar() {
+        if (dtlToolbar == null) return;
         RxDtlToolbar.actionViewClicks(dtlToolbar)
                 .throttleFirst(250L, TimeUnit.MILLISECONDS)
                 .compose(RxLifecycle.bindView(this))
@@ -101,13 +103,14 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public void setFilterButtonState(boolean enabled) {
+        if (dtlToolbar == null) return;
         dtlToolbar.setFilterEnabled(enabled);
     }
 
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
                                    @Nullable String actualSearchQuery) {
-        if (dtlLocation == null) return;
+        if (dtlLocation == null || dtlToolbar == null) return;
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:
@@ -146,6 +149,7 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public Observable<Boolean> getToggleObservable() {
+        if (dtlToolbar == null) return Observable.empty();
         return RxDtlToolbar.diningFilterChanges(dtlToolbar)
                 .compose(RxLifecycle.bindView(this));
     }
@@ -162,6 +166,7 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public void toggleDiningFilterSwitch(boolean enabled) {
+        if (dtlToolbar == null) return;
         dtlToolbar.toggleDiningFilterSwitch(enabled);
     }
 
@@ -173,6 +178,7 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public boolean isToolbarCollapsed() {
+        if (dtlToolbar == null) return true;
         return dtlToolbar.isCollapsed();
     }
 

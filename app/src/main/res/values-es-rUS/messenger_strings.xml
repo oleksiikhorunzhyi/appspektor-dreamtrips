@@ -41,8 +41,8 @@
     <string name="new_multi_user_chat_not_supported">No se pueden crear grupos de chat</string>
     <string name="new_chat_error_loading_contacts">No se pudo cargar los contactos</string>
     <string name="new_chat_new_conversation_title_hint">Establecer nombre para la conversación</string>
-    <string name="new_chat_chosen_contacts_header_empty">"Añadir: "</string>
-    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Añadir</string>
+    <string name="new_chat_chosen_contacts_header_empty">"Agregar: "</string>
+    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Agregar</string>
     <string name="new_chat_list_item_section_close_friends">Amigos cercanos</string>
     <string name="menu_done">Listo</string>
 
@@ -64,14 +64,14 @@
     <string name="chat_contextual_translate_message">Traducir</string>
     <string name="chat_contextual_revert_translate_message">Mostrar original</string>
     <string name="chat_contextual_start_chat_format">Mensaje %1$s</string>
-    <string name="chat_contextual_flag">Flag</string>
+    <string name="chat_contextual_flag">Marcar</string>
     <string name="chat_share_dialog_location">Compartir ubicación</string>
     <string name="chat_share_dialog_image">Compartir imagen</string>
     <string name="chat_share_dialog_cancel">Cancelar</string>
     <string name="chat_could_not_share_location">No se pudo compartir ubicación</string>
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Cargando...</string>
-    <string name="chat_flag_dialog_reason_title">Flag</string>
+    <string name="chat_flag_dialog_reason_title">Marcar</string>
     <string name="chat_flag_dialog_reason_hint">Escribe el motivo</string>
     <string name="chat_flag_dialog_reason_positive_button">Aceptar</string>
     <string name="chat_flag_dialog_reason_negative_button">Cancelar</string>

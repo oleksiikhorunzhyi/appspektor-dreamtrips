@@ -13,7 +13,7 @@
     <string name="terms_of_service">Användarvillkor</string>
     <string name="faq">Vanliga frågor</string>
     <string name="privacy">Sekretesspolicy</string>
-    <string name="cookie">Cookie Policy</string>
+    <string name="cookie">POLICY FÖR COOKIEFILER</string>
     <string name="action_settings">Inställningar</string>
     <string name="action_quick_input">Lägg till snabbt</string>
     <string name="action_popular_string">Lägg till från populära</string>
@@ -34,7 +34,7 @@
     <string name="logout_dialog_negative_btn">Avbryt</string>
     <string name="member_images">Medlemsbilder</string>
     <string name="my_images">Mina bilder</string>
-    <string name="you_should_be_here">You Should Be Here</string>
+    <string name="you_should_be_here">DU SKULLE VARA HÄR</string>
     <string name="title_activity_full_screen_photo">DreamTrips</string>
     <string name="skip_login">Hoppa över inloggning</string>
     <string name="duration">%1$d nätter</string>
@@ -251,7 +251,7 @@
     <string name="invite_add_photo">Lägg till foto</string>
     <string name="invite_select_first">Välj kontakter först</string>
     <string name="filters_show_favorite">VISA FAVORITRESOR</string>
-    <string name="filter_recently_added">NYLIGEN TILLAGD</string>
+    <string name="filter_recently_added">NYLIGEN TILLAGDA</string>
     <string name="bucketlist_share" formatted="false">Bland mina drömresmål: %1$s</string>
     <string name="choose_multiselect">Välj foton</string>
     <string name="last_sent">Senast skickade</string>
@@ -486,7 +486,7 @@
     <string name="working_hard">Vi arbetar hårt för att göra DreamTrips bättre. Hjälp oss att bli bättre.</string>
     <string name="feedback_message_hint">Skriv ditt meddelande här</string>
     <string name="message_can_not_be_empty">Meddelandet kan inte vara tomt</string>
-    <string name="feedback_has_been_sent">Din feedback har skickats. Tack</string>
+    <string name="feedback_has_been_sent">Din feedback har skickats. Tack.</string>
     <string name="feedback_send_btn">Skicka</string>
     <string name="feedback_select_category">Välj kategori</string>
 

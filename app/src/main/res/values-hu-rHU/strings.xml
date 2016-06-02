@@ -18,7 +18,7 @@
     <string name="action_quick_input">Gyors hozzáadás</string>
     <string name="action_popular_string">Hozzáadás a népszerűek közül</string>
     <string name="action_done">Kész</string>
-    <string name="action_cancel">Törlés</string>
+    <string name="action_cancel">Mégse</string>
     <string name="action_enroll">Beléptetés</string>
     <string name="action_filter">Szűrés</string>
     <string name="action_map">Térkép</string>
@@ -60,7 +60,7 @@
     <string name="filter_reset">Szűrők visszaállítása</string>
     <string name="trip_details">út részletek</string>
     <string name="trip_featured">KIEMELT ÚT</string>
-    <string name="profile_from_hint">Kezdő</string>
+    <string name="profile_from_hint">Innen</string>
     <string name="profile_location_hint">Lakóhely</string>
     <string name="profile_enroll_hint">Belépés dátuma</string>
     <string name="profile_birth_hint">Születési dátum</string>
@@ -236,7 +236,7 @@
     <string name="invitation_select_contacts">Kapcsolattartók kiválasztása</string>
     <string name="invitation_select_template">Meghívósablon választása</string>
     <string name="invitation_select">Válasszon</string>
-    <string name="invitation_from">Kezdő:</string>
+    <string name="invitation_from">Innen:</string>
     <string name="invitation_to">Záró:</string>
     <string name="invitation_subject">Tárgy:</string>
 
@@ -467,13 +467,13 @@
     <string name="no_mutual_friends">Nincsenek közös barátai</string>
 
     <string name="photo_limitation_message">Legfeljebb %1$d fényképet válasszon</string>
-    <string name="pending">Függőben…</string>
+    <string name="pending">Függőben...</string>
 
     <string name="back">Vissza</string>
     <string name="logout_component">Kijelentkezés</string>
     <string name="start_typing_name">Kezdje el beírni a nevet</string>
 
-    <string name="multiple_dates">Több dátumot, %1$s …</string>
+    <string name="multiple_dates">Több dátumot, %1$s ...</string>
 
     <string name="tag_photo">megjelölte Önt itt:</string>
 

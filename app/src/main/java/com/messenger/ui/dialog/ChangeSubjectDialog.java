@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -37,6 +36,8 @@ public class ChangeSubjectDialog {
                 })
                 .setTitle(R.string.change_subject)
                 .create();
+
+        dialog.setOnShowListener(dialog -> setInputTextBehave());
     }
 
     private View obtainDialogUi(Context context, String currentSubject) {
@@ -48,24 +49,15 @@ public class ChangeSubjectDialog {
             etSubject.setSelection(currentSubject.length());
         }
 
-        setInputTextBehave(dialogView);
         return dialogView;
     }
 
-    private void setInputTextBehave(View contentView) {
+    private void setInputTextBehave() {
         RxTextView.textChangeEvents(etSubject)
                 .map(textChangeEvent -> !TextUtils.isEmpty(textChangeEvent.text().toString().trim()))
                 .distinctUntilChanged()
-                .compose(RxLifecycle.bindView(contentView))
-                .subscribe(this::setEnabledPositiveButton);
-    }
-
-    private void setEnabledPositiveButton(boolean enabled) {
-        if (dialog == null) return;
-        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        if (positiveButton != null) {
-            positiveButton.setEnabled(enabled);
-        }
+                .compose(RxLifecycle.bindView(etSubject))
+                .subscribe(dialog.getButton(DialogInterface.BUTTON_POSITIVE)::setEnabled);
     }
 
     public ChangeSubjectDialog setPositiveListener(Action1<String> positiveListener) {

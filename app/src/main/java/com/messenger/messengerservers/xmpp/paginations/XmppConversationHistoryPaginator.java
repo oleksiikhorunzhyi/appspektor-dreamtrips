@@ -28,7 +28,7 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     }
 
     @Override
-    public void loadPage(String conversationId, int page, long sinceSecs) {
+    public Observable<List<Message>> loadPage(String conversationId, int page, long sinceSecs) {
         ObtainMessageListIQ packet = new ObtainMessageListIQ();
         packet.setMax(getPageSize());
         packet.setConversationId(conversationId);
@@ -42,6 +42,8 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
                 .doOnNext(connection -> connectionPrepared(connection, packet, conversationId))
                 .subscribe(connection -> {
                 }, this::notifyError);
+
+        return paginationObservable;
     }
 
     public void connectionPrepared(XMPPConnection connection, Stanza packet, String conversationId) {
@@ -72,11 +74,11 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
             message.setConversationId(conversationId);
         }
 
-        publishSubject.onNext(messages);
+        paginationObservable.onNext(messages);
     }
 
     private void notifyError(Throwable throwable) {
-        publishSubject.onError(throwable);
+        paginationObservable.onError(throwable);
         ProviderManager.removeIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE);
     }
 }

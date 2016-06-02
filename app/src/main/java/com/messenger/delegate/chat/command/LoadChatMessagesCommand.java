@@ -1,15 +1,16 @@
-package com.messenger.delegate.chat;
+package com.messenger.delegate.chat.command;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.messenger.delegate.command.BaseChatAction;
 import com.messenger.delegate.user.UsersDelegate;
-import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.DecomposeMessagesHelper;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,40 +20,42 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
 
-public class HistoryPaginationDelegate {
-    private final DecomposeMessagesHelper decomposeMessagesHelper;
-    private final UsersDelegate usersDelegate;
+@CommandAction
+public class LoadChatMessagesCommand extends BaseChatAction<List<Message>>
+        implements InjectableAction {
 
-    private final PagePagination<Message> messagePagePagination;
-    private final Observable<List<Message>> pageObservable;
-    private final MessageDAO messageDAO;
+    @Inject UsersDelegate usersDelegate;
+    @Inject MessageDAO messageDAO;
+    @Inject MessengerServerFacade messengerServerFacade;
+    @Inject DecomposeMessagesHelper decomposeMessagesHelper;
 
-    @Inject
-    HistoryPaginationDelegate(MessengerServerFacade messengerServerFacade,
-                              DecomposeMessagesHelper decomposeMessagesHelper,
-                              UsersDelegate usersDelegate, MessageDAO messageDAO) {
-        this.messageDAO = messageDAO;
-        this.messagePagePagination = messengerServerFacade.getPaginationManager()
+    private int page;
+    private int pageSize;
+    private long beforeMessageTimestamp;
+
+    public LoadChatMessagesCommand(String conversationId, int page,
+                                   int pageSize, long beforeMessageTimestamp) {
+        super(conversationId);
+        this.page = page;
+        this.pageSize = pageSize;
+        this.beforeMessageTimestamp = beforeMessageTimestamp;
+    }
+
+    @Override
+    protected void run(CommandCallback<List<Message>> callback) throws Throwable {
+        PagePagination<Message> pagination = messengerServerFacade.getPaginationManager()
                 .getConversationHistoryPagination();
-        this.decomposeMessagesHelper = decomposeMessagesHelper;
-        this.usersDelegate = usersDelegate;
-
-        pageObservable = messagePagePagination.getPageObservable()
+        pagination.setPageSize(pageSize);
+        pagination.loadPage(conversationId, page, beforeMessageTimestamp)
                 .compose(this::filterAndRemoveDeletedMessages)
                 .flatMap(this::prepareUsers)
-                .doOnNext(this::saveMessages);
-    }
-
-    public void setPageSize(int pageSize) {
-        messagePagePagination.setPageSize(pageSize);
-    }
-
-    public void loadConversationHistoryPage(DataConversation conversation, int page, long beforeTimestamp) {
-        messagePagePagination.loadPage(conversation.getId(), page, beforeTimestamp);
+                .doOnNext(this::saveMessages)
+                .subscribe(callback::onSuccess, callback::onFail);
     }
 
     private void saveMessages(List<Message> messages) {
@@ -65,10 +68,6 @@ public class HistoryPaginationDelegate {
         List<String> usersIds = from(messages).map(Message::getFromId).toList();
         if (!usersIds.isEmpty()) return usersDelegate.loadMissingUsers(usersIds).map(users -> messages);
         return Observable.just(messages);
-    }
-
-    public Observable<List<Message>> getPageObservable() {
-        return pageObservable;
     }
 
     private Observable<List<Message>> filterAndRemoveDeletedMessages(Observable<List<Message>> messagesObservable) {

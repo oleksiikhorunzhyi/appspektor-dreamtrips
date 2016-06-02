@@ -13,9 +13,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.delegate.chat.ChatDelegate;
-import com.messenger.delegate.chat.ChatDelegate.PaginationStatus;
+import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.ChatTypingDelegate;
+import com.messenger.delegate.chat.MessagesPaginationDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
 import com.messenger.delegate.chat.typing.ChatStateDelegate;
 import com.messenger.entities.DataConversation;
@@ -68,7 +68,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private static final int MARK_AS_READ_DELAY = 2000;
 
-    @Inject ChatDelegate chatDelegate;
+    @Inject UnreadMessagesDelegate unreadMessagesDelegate;
+    @Inject MessagesPaginationDelegate messagesPaginationDelegate;
     @Inject ChatMessageManager chatMessageManager;
     @Inject ChatToolbarMenuProvider chatToolbarMenuProvider;
     @Inject ChatContextualMenuProvider contextualMenuProvider;
@@ -111,7 +112,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         connectChatTypingStream();
         connectToLastVisibleItemStream();
         connectToShareLocationsStream();
-        bindChatDelegate();
+        bindMessagePaginationDelegate();
+        bindUnreadMessagesDelegate();
         connectToPhotoPicker();
 
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
@@ -138,12 +140,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ////// Streams
     //////////////////////////////////////////////////
 
-    private void bindChatDelegate() {
-        chatDelegate.bind(connectionStatusStream, conversationId)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(this::handlePaginationStatus);
-    }
-
     private void connectToChatEvents() {
         getView().getAttachmentClickStream()
                 .compose(bindViewIoToMainComposer())
@@ -161,7 +157,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     messageStreamSubscription = connectMessagesStream(syncTime);
 
                     if (connectionStatus == SyncStatus.CONNECTED) {
-                        chatDelegate.loadFirstPage();
+                        messagesPaginationDelegate.loadFirstPage();
                     } else {
                         // TODO Feb 29, 2016 Implement it in more Rx way
                         getView().removeAllTypingUsers();
@@ -212,21 +208,27 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Message Pagination
     ///////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public void onNextPageReached() {
-        chatDelegate.loadNextPage();
+    private void bindMessagePaginationDelegate() {
+        messagesPaginationDelegate.bind(connectionStatusStream, conversationId)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(this::handlePaginationStatus);
     }
 
-    private void handlePaginationStatus(PaginationStatus paginationStatus) {
+    @Override
+    public void onNextPageReached() {
+        messagesPaginationDelegate.loadNextPage();
+    }
+
+    private void handlePaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus) {
         ChatScreen view = getView();
-        switch (paginationStatus.status) {
+        switch (paginationStatus.getStatus()) {
             case START:
-                if (paginationStatus.page == 1) view.setShowMarkUnreadMessage(true);
+                if (paginationStatus.getPage() == 1) view.setShowMarkUnreadMessage(true);
                 view.showLoading();
                 getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
                 break;
             case SUCCESS:
-                if (paginationStatus.page == 1 && paginationStatus.loadedElementsCount == 0) {
+                if (paginationStatus.getPage() == 1 && paginationStatus.getLoadedElementsCount() == 0) {
                     view.setShowMarkUnreadMessage(false);
                 }
             default:
@@ -268,6 +270,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Unread and Mark as read
     ///////////////////////////////////////////////////////////////////////////
 
+    private void bindUnreadMessagesDelegate() {
+        unreadMessagesDelegate.bind(conversationId);
+    }
+
     private void connectToLastVisibleItemStream() {
         getView().getLastVisibleItemStream().throttleLast(MARK_AS_READ_DELAY, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
@@ -279,7 +285,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void tryMarkAsReadMessage(DataMessage lastMessage) {
         getView().setShowMarkUnreadMessage(false);
-        chatDelegate.tryMarkAsReadMessage(lastMessage);
+        unreadMessagesDelegate.tryMarkAsReadMessage(lastMessage);
     }
 
     ///////////////////////////////////////////////////////////////////////////

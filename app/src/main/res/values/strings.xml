@@ -299,6 +299,7 @@
     <string name="friend_search_placeholder">Search names, groups</string>
     <string name="bucket_photo_upload_error">Unable to upload photo</string>
     <string name="training_video_hint">Select language</string>
+    <string name="training_no_video">Videos coming soon</string>
     <string name="friend_reject">Reject</string>
     <string name="friend_accept">Accept</string>
     <string name="friend_hide">Hide</string>

@@ -17,7 +17,7 @@
         android:id="@+id/header"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@color/dtl_cities_background"
+        android:background="@color/light_grey_background"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/spacing_normal"
         android:orientation="horizontal">

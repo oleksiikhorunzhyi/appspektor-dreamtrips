@@ -7,11 +7,12 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.messenger.entities.DataAttachment;
-import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.ChatCellDelegate;
@@ -35,7 +36,6 @@ public abstract class MessageViewHolder extends CursorViewHolder {
     protected DataAttachment dataAttachment;
     protected DataUser dataUserSender;
     protected DataTranslation dataTranslation;
-    protected DataConversation dataConversation;
 
     @InjectView(R.id.chat_date)
     public TextView dateTextView;
@@ -48,6 +48,7 @@ public abstract class MessageViewHolder extends CursorViewHolder {
     protected boolean selected;
     protected boolean previousMessageFromSameUser;
     protected boolean needMarkUnreadMessage;
+    protected boolean isGroupMessage;
 
     protected ChatCellDelegate cellDelegate;
 
@@ -68,9 +69,11 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         dataUserSender = SqlUtils.convertToModel(true, DataUser.class, cursor);
         boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
         dataTranslation = translationExist ? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
+        String status =  cursor.getString(cursor.getColumnIndex(DataConversation$Table.TYPE));
+        isGroupMessage = !TextUtils.equals(status, ConversationType.CHAT);
         //
         messageCommonInflater.onCellBind(previousMessageFromSameUser, isUnread(), selected);
-        userMessageHolderInflater.onCellBind(dataUserSender, dataConversation, previousMessageFromSameUser);
+        userMessageHolderInflater.onCellBind(dataUserSender, isGroupMessage, previousMessageFromSameUser);
     }
 
     private boolean isUnread() {
@@ -97,10 +100,6 @@ public abstract class MessageViewHolder extends CursorViewHolder {
 
     public void setCellDelegate(ChatCellDelegate cellDelegate) {
         this.cellDelegate = cellDelegate;
-    }
-
-    public void setConversation(DataConversation dataConversation) {
-        this.dataConversation = dataConversation;
     }
 
     public void setNeedMarkUnreadMessage(boolean needMarkUnreadMessage) {

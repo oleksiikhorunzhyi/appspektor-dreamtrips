@@ -331,11 +331,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void setConversation(DataConversation dataConversation) {
-        adapter.setConversation(dataConversation);
-    }
-
-    @Override
     public void showMessages(Cursor cursor) {
         int firstVisibleViewTop = 0;
         int cursorCountDiff = 0;

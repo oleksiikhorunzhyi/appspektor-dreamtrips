@@ -3,7 +3,6 @@ package com.messenger.ui.adapter;
 import android.database.Cursor;
 import android.view.ViewGroup;
 
-import com.messenger.entities.DataConversation;
 import com.messenger.ui.adapter.holder.chat.ChatViewHolderProvider;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
 import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
@@ -13,7 +12,6 @@ import javax.inject.Inject;
 public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
 
     private boolean needMarkUnreadMessages;
-    private DataConversation dataConversation;
 
     @Inject
     ChatViewHolderProvider viewHolderProvider;
@@ -41,7 +39,6 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
         int position = cursor.getPosition();
         holder.setSelected(chatTimestampInflater.bindTimeStampIfNeeded(holder, cursor, position));
         holder.setNeedMarkUnreadMessage(needMarkUnreadMessages);
-        holder.setConversation(dataConversation);
         holder.bindCursor(cursor);
     }
 
@@ -56,10 +53,6 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
 
     public void setNeedMarkUnreadMessages(boolean needMarkUnreadMessages) {
         this.needMarkUnreadMessages = needMarkUnreadMessages;
-    }
-
-    public void setConversation(DataConversation conversation) {
-        this.dataConversation = conversation;
     }
 
     public void refreshTimestampView(int position) {

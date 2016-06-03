@@ -13,9 +13,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.ChatTypingDelegate;
 import com.messenger.delegate.chat.MessagesPaginationDelegate;
+import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
 import com.messenger.delegate.chat.typing.ChatStateDelegate;
 import com.messenger.entities.DataConversation;
@@ -190,7 +190,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void conversationLoaded(DataConversation conversation, List<DataUser> participants) {
         //noinspection all
-        getView().setConversation(conversation);
         getView().setTitle(conversation, participants);
         getView().enableInput(!ConversationHelper.isAbandoned(conversation));
     }

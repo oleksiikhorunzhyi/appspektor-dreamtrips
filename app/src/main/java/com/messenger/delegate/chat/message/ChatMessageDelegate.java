@@ -17,14 +17,14 @@ public class ChatMessageDelegate {
 
     private final DataUser currentUser;
     private final MessageBodyCreator messageBodyCreator;
-    private final ActionPipe<ChatSendMessageAction> messageActionPipe;
+    private final ActionPipe<ChatSendMessageCommand> messageActionPipe;
 
     @Inject
     public ChatMessageDelegate(Janet janet, DataUser currentUser,
                                MessageBodyCreator messageBodyCreator) {
         this.currentUser = currentUser;
         this.messageBodyCreator = messageBodyCreator;
-        this.messageActionPipe = janet.createPipe(ChatSendMessageAction.class);
+        this.messageActionPipe = janet.createPipe(ChatSendMessageCommand.class);
     }
 
     public Observable<Message> sendMessage(String conversationId, String messageText) {
@@ -44,7 +44,7 @@ public class ChatMessageDelegate {
 
     private Observable<Message> sendMessageInternal(String conversationId, Message message) {
         Observable<Message> messageObservable = messageActionPipe
-                .createObservableSuccess(new ChatSendMessageAction(conversationId, message))
+                .createObservableSuccess(new ChatSendMessageCommand(conversationId, message))
                 .map(CommandActionBase::getResult);
 
         messageObservable.subscribe(resultMessage -> {

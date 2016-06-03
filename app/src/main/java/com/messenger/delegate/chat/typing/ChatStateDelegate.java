@@ -15,7 +15,7 @@ public class ChatStateDelegate {
     public static final int START_TYPING_DELAY = 1000;
     public static final int STOP_TYPING_DELAY = 2000;
 
-    private ActionPipe<ChatStateAction> chatStateActionPipe;
+    private ActionPipe<ChatStateCommand> chatStateActionPipe;
 
     private String conversationId;
 
@@ -23,7 +23,7 @@ public class ChatStateDelegate {
 
     @Inject
     public ChatStateDelegate(Janet janet) {
-        this.chatStateActionPipe = janet.createPipe(ChatStateAction.class);
+        this.chatStateActionPipe = janet.createPipe(ChatStateCommand.class);
     }
 
     public void init(String conversationId) {
@@ -38,7 +38,7 @@ public class ChatStateDelegate {
                 .filter(text -> !typing)
                 .doOnNext(dataConversation -> {
                     typing = true;
-                    chatStateActionPipe.send(new ChatStateAction(conversationId, ChatState.COMPOSING));
+                    chatStateActionPipe.send(new ChatStateCommand(conversationId, ChatState.COMPOSING));
                 })
                 .map(dataConversation -> ChatState.COMPOSING);
     }
@@ -49,7 +49,7 @@ public class ChatStateDelegate {
                 .debounce(STOP_TYPING_DELAY, TimeUnit.MILLISECONDS)
                 .doOnNext(dataConversation -> {
                     typing = false;
-                    chatStateActionPipe.send(new ChatStateAction(conversationId, ChatState.PAUSE));
+                    chatStateActionPipe.send(new ChatStateCommand(conversationId, ChatState.PAUSE));
                 })
                 .map(dataConversation -> ChatState.PAUSE);
     }

@@ -3,7 +3,7 @@ package com.messenger.delegate.chat.command;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.messenger.delegate.command.BaseChatAction;
+import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.model.Message;
@@ -26,7 +26,7 @@ import rx.Observable;
 import static com.innahema.collections.query.queriables.Queryable.from;
 
 @CommandAction
-public class LoadChatMessagesCommand extends BaseChatAction<List<Message>>
+public class LoadChatMessagesCommand extends BaseChatCommand<List<Message>>
         implements InjectableAction {
 
     @Inject UsersDelegate usersDelegate;

@@ -3,12 +3,10 @@ package com.messenger.delegate.chat.attachment;
 import android.support.annotation.NonNull;
 
 import com.messenger.delegate.MessageBodyCreator;
-import com.messenger.delegate.command.BaseChatAction;
+import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.entities.DataAttachment;
-import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataLocationAttachment;
 import com.messenger.entities.DataMessage;
-import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.Message;
@@ -25,7 +23,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public class SendLocationAttachmentCommand extends BaseChatAction<DataMessage> {
+public class SendLocationAttachmentCommand extends BaseChatCommand<DataMessage> {
     private final DataMessage message;
     private final DataAttachment attachment;
     private final DataLocationAttachment locationAttachment;

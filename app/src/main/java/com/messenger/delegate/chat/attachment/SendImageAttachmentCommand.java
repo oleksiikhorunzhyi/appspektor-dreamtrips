@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.messenger.delegate.MessageBodyCreator;
-import com.messenger.delegate.command.BaseChatAction;
+import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataPhotoAttachment;
@@ -34,7 +34,7 @@ import rx.Observable;
 import static rx.Observable.just;
 
 @CommandAction
-public class SendImageAttachmentCommand extends BaseChatAction<DataMessage> {
+public class SendImageAttachmentCommand extends BaseChatCommand<DataMessage> {
     private final DataMessage message;
     private final DataAttachment attachment;
     private final DataPhotoAttachment photoAttachment;

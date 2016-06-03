@@ -9,13 +9,13 @@ import javax.inject.Inject;
 import io.techery.janet.CommandActionBase;
 import rx.Observable;
 
-public abstract class BaseChatAction<Result> extends CommandActionBase<Result> implements InjectableAction {
+public abstract class BaseChatCommand<Result> extends CommandActionBase<Result> implements InjectableAction {
 
     protected final String conversationId;
 
     @Inject protected CreateChatHelper createChatHelper;
 
-    protected BaseChatAction(String conversationId) {
+    protected BaseChatCommand(String conversationId) {
         this.conversationId = conversationId;
     }
 

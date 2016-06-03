@@ -1,18 +1,17 @@
 package com.messenger.delegate.chat.typing;
 
-import com.messenger.delegate.command.BaseChatAction;
-import com.messenger.entities.DataConversation;
+import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.messengerservers.chat.ChatState;
 
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class ChatStateAction extends BaseChatAction<String> {
+public class ChatStateCommand extends BaseChatCommand<String> {
 
     @ChatState.State
     private String chatState;
 
-    public ChatStateAction(String conversationId, @ChatState.State String chatState) {
+    public ChatStateCommand(String conversationId, @ChatState.State String chatState) {
         super(conversationId);
         this.chatState = chatState;
     }

@@ -10,7 +10,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
 @CommandAction
-public abstract class ChangeAvatarCommand extends BaseChatAction<DataConversation> {
+public abstract class ChangeAvatarCommand extends BaseChatCommand<DataConversation> {
 
     @Inject ConversationsDAO conversationsDAO;
 

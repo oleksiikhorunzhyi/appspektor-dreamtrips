@@ -1,7 +1,7 @@
 package com.messenger.delegate;
 
 import com.messenger.delegate.chat.CreateChatHelper;
-import com.messenger.delegate.command.BaseChatAction;
+import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.model.Message;
@@ -67,7 +67,7 @@ public class BaseChatActionDelegateTest extends BaseTest {
                 .addService(new BaseCommandActionServiceWrapper() {
                     @Override
                     protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
-                        BaseChatAction chatAction = (BaseChatAction) holder.action();
+                        BaseChatCommand chatAction = (BaseChatCommand) holder.action();
                         chatAction.setCreateChatHelper(createChatHelper);
                         return false;
                     }

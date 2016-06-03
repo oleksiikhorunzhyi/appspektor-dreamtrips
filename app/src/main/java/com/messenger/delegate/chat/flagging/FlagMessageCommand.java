@@ -9,14 +9,14 @@ import io.techery.janet.CommandActionBase;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class FlagMessageAction extends CommandActionBase<FlagMessageDTO> implements InjectableAction {
+public class FlagMessageCommand extends CommandActionBase<FlagMessageDTO> implements InjectableAction {
 
     @Inject
     MessengerServerFacade messengerServerFacade;
 
     private final FlagMessageDTO flagMessageDTO;
 
-    public FlagMessageAction(FlagMessageDTO flagMessageDTO) {
+    public FlagMessageCommand(FlagMessageDTO flagMessageDTO) {
         this.flagMessageDTO = flagMessageDTO;
     }
 

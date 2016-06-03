@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.messenger.api.GetFlagsAction;
 import com.messenger.api.exception.UiMessageException;
 import com.messenger.delegate.FlagsDelegate;
-import com.messenger.delegate.chat.flagging.FlagMessageAction;
+import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.ui.module.ModuleStatefulPresenterImpl;
@@ -55,14 +55,14 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         flagMessageDelegate.observeOngoingFlagging()
                 .compose(bindView())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ActionStateSubscriber<FlagMessageAction>()
+                .subscribe(new ActionStateSubscriber<FlagMessageCommand>()
                         .onStart(this::onFlaggingStarted)
                         .onSuccess(this::onFlaggingSuccess)
                         .onFail(this::onFlagginError)
                 );
     }
 
-    private void onFlaggingSuccess(FlagMessageAction action) {
+    private void onFlaggingSuccess(FlagMessageCommand action) {
         Timber.d("[Flagging] Result obtained, stop progress");
         flagMessageDelegate.clearReplays();
         getView().hideFlaggingProgressDialog();
@@ -73,7 +73,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         resetState();
     }
 
-    private void onFlagginError(FlagMessageAction action, Throwable e) {
+    private void onFlagginError(FlagMessageCommand action, Throwable e) {
         Timber.e(e, "Smth went wrong while flagging");
         flagMessageDelegate.clearReplays();
         getView().hideFlaggingProgressDialog();
@@ -82,7 +82,7 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
         resetState();
     }
 
-    private void onFlaggingStarted(FlagMessageAction action) {
+    private void onFlaggingStarted(FlagMessageCommand action) {
         Timber.d("[Flagging] Flagging is in progress, wait");
         getView().showFlaggingProgressDialog();
     }

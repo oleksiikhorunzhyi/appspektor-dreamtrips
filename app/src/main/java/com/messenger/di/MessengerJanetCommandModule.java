@@ -3,9 +3,9 @@ package com.messenger.di;
 import com.messenger.delegate.chat.attachment.SendImageAttachmentCommand;
 import com.messenger.delegate.chat.attachment.SendLocationAttachmentCommand;
 import com.messenger.delegate.chat.command.LoadChatMessagesCommand;
-import com.messenger.delegate.chat.flagging.FlagMessageAction;
-import com.messenger.delegate.chat.message.ChatSendMessageAction;
-import com.messenger.delegate.chat.typing.ChatStateAction;
+import com.messenger.delegate.chat.flagging.FlagMessageCommand;
+import com.messenger.delegate.chat.message.ChatSendMessageCommand;
+import com.messenger.delegate.chat.typing.ChatStateCommand;
 import com.messenger.delegate.command.ChangeAvatarCommand;
 import com.messenger.delegate.command.RemoveAvatarCommand;
 import com.messenger.delegate.command.SetAvatarUploadCommand;
@@ -23,15 +23,15 @@ import dagger.Module;
         SendLocationAttachmentCommand.class,
         ChangeAvatarCommand.class,
         RemoveAvatarCommand.class,
-        FlagMessageAction.class,
-        ChatSendMessageAction.class,
+        FlagMessageCommand.class,
+        ChatSendMessageCommand.class,
         LoadConversationCommand.class,
         LoadConversationsCommand.class,
         SyncConversationCommand.class,
         SyncConversationsCommand.class,
         FetchUsersDataCommand.class,
         LoadContactsCommand.class,
-        ChatStateAction.class,
+        ChatStateCommand.class,
         LoadChatMessagesCommand.class,
         SetAvatarUploadCommand.class},
         complete = false, library = true)

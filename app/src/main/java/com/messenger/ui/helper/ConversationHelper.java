@@ -68,6 +68,10 @@ public final class ConversationHelper {
     }
 
     public static boolean isAbandoned(DataConversation conversation) {
-        return !ConversationStatus.PRESENT.equals(conversation.getStatus());
+        return !isPresent(conversation);
+    }
+
+    public static boolean isPresent(DataConversation conversation) {
+        return ConversationStatus.PRESENT.equals(conversation.getStatus());
     }
 }

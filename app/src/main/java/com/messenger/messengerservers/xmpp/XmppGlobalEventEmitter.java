@@ -191,13 +191,17 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
             return false;
         //
         String conversationId = JidCreatorHelper.obtainId(fromJid);
+        MUCItem item = extension.getItem();
+        MUCAffiliation affiliation = item.getAffiliation();
+
+        if (isKickPresence(presence.getType(), affiliation)) {
+            notifyOnKickListener(conversationId, JidCreatorHelper.obtainUserIdFromGroupJid(fromJid));
+            return true;
+        }
+
         String jid = extension.getItem().getJid();
         String userId = jid == null ?
                 JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
-        //
-        MUCItem item = extension.getItem();
-        MUCAffiliation affiliation = item.getAffiliation();
-        //
 
         boolean isOnline = presence.getType() == Type.available;
         notifyOnChatJoinedListener(ImmutableParticipant.builder()
@@ -206,6 +210,10 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 .affiliation(String.valueOf(affiliation))
                 .build(), isOnline);
         return true;
+    }
+
+    private boolean isKickPresence(Type type, MUCAffiliation affiliation) {
+        return type == Type.unavailable && affiliation == MUCAffiliation.none;
     }
 
     private void interceptLeftPresence(Stanza stanza) {

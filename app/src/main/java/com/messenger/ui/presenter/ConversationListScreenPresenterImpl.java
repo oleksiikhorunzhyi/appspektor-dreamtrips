@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -49,14 +48,9 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     private static final int SELECTED_CONVERSATION_DELAY = 400;
 
-    @Inject
-    DataUser user;
-    @Inject
-    ConversationsDAO conversationsDAO;
-    @Inject
-    NotificationDelegate notificationDelegate;
-    @Inject
-    OpenedConversationTracker openedConversationTracker;
+    @Inject ConversationsDAO conversationsDAO;
+    @Inject NotificationDelegate notificationDelegate;
+    @Inject OpenedConversationTracker openedConversationTracker;
 
     private final ChatLeavingDelegate chatLeavingDelegate;
     //
@@ -89,11 +83,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         } else {
             chatLeavingDelegate.unregister();
         }
-    }
-
-    @Override
-    public DataUser getUser() {
-        return user;
     }
 
     private void connectData() {

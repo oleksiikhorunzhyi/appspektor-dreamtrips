@@ -19,10 +19,6 @@ public abstract class BaseChatCommand<Result> extends CommandActionBase<Result> 
         this.conversationId = conversationId;
     }
 
-    public void setCreateChatHelper(CreateChatHelper createChatHelper) {
-        this.createChatHelper = createChatHelper;
-    }
-
     public String getConversationId() {
         return conversationId;
     }

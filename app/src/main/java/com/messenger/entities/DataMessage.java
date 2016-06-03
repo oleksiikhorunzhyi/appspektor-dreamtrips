@@ -248,6 +248,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
                 .fromId(fromId)
                 .toId(toId)
                 .id(id)
+                .conversationId(conversationId)
                 .status(status)
                 .build();
     }

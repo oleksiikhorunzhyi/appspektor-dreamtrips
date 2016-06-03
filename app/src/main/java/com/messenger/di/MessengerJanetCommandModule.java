@@ -5,6 +5,7 @@ import com.messenger.delegate.chat.attachment.SendLocationAttachmentCommand;
 import com.messenger.delegate.chat.command.LoadChatMessagesCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
+import com.messenger.delegate.chat.message.RetrySendMessageCommand;
 import com.messenger.delegate.chat.typing.ChatStateCommand;
 import com.messenger.delegate.command.ChangeAvatarCommand;
 import com.messenger.delegate.command.RemoveAvatarCommand;
@@ -25,6 +26,7 @@ import dagger.Module;
         RemoveAvatarCommand.class,
         FlagMessageCommand.class,
         ChatSendMessageCommand.class,
+        RetrySendMessageCommand.class,
         LoadConversationCommand.class,
         LoadConversationsCommand.class,
         SyncConversationCommand.class,

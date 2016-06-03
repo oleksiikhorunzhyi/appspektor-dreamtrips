@@ -33,8 +33,6 @@ public interface ChatScreen extends MessengerScreen {
 
     void removeAllTypingUsers();
 
-    void setConversation(DataConversation dataConversation);
-
     void showMessages(Cursor cursor);
 
     void showAttachmentMenu(AttachmentMenuItem[] items);

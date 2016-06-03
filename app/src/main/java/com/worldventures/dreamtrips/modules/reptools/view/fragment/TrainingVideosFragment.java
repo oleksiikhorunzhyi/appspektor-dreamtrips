@@ -5,13 +5,12 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
-import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoHeaderDelegate;
-import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.reptools.presenter.TrainingVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoHeaderDelegate;
+import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 
 import java.util.ArrayList;
 
@@ -32,12 +31,6 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
 
         }
     };
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        TrackingHelper.viewRepToolsTrainingVideoScreen();
-    }
 
     @Override
     public void afterCreateView(View rootView) {
@@ -66,10 +59,5 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
             dialog.setSelectionListener((locale, language) -> getPresenter().onLanguageSelected(locale, language));
             dialog.show(getChildFragmentManager(), FilterLanguageDialogFragment.class.getSimpleName());
         }
-    }
-
-    @Override
-    public void sendAnalytic(String action, String name) {
-        TrackingHelper.actionRepToolsTrainingVideo(action, name);
     }
 }

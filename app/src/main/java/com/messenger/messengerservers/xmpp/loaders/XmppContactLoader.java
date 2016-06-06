@@ -24,7 +24,7 @@ public class XmppContactLoader implements ContactsLoader {
     private final Observable<Roster> rosterObservable;
 
     public XmppContactLoader(XmppServerFacade facade) {
-        this.rosterObservable = facade.getConnectionObservable().map(Roster::getInstanceFor);
+        this.rosterObservable = facade.getConnectionObservable().take(1).map(Roster::getInstanceFor);
     }
 
     @Override

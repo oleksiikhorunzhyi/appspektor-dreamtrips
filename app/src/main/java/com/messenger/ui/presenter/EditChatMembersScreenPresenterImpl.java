@@ -201,7 +201,7 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
                 .map(users -> users.get(0))
                 .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))
                 .subscribe(memberId -> {},
-                        e -> Timber.e(e, "Failed to delete user"));
+                        e -> Timber.e(e, "Failed to delete currentUser"));
     }
 
     @Override

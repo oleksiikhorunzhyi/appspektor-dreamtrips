@@ -24,7 +24,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class XmppGroupChat extends XmppChat implements GroupChat {
@@ -106,24 +105,27 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
     }
 
     @Override
-    public void leave() {
+    public Observable<GroupChat> leave() {
         chatPreconditions.checkUserIsNotOwner();
 
-        facade.getConnectionObservable()
-                .take(1).withLatestFrom(provideChatObservable().take(1), Pair::new)
-                .flatMap(connectionWithChat -> Observable.create(subscriber ->
-                        sendLeaveStanza(connectionWithChat.first, connectionWithChat.second, subscriber))
-                )
-                .subscribeOn(Schedulers.io())
-                .subscribe(defaultOnNextAction, defaultOnErrorAction);
+        return facade.getConnectionObservable()
+                .take(1)
+                .withLatestFrom(provideChatObservable().take(1), Pair::new)
+                .flatMap(connectionWithChat -> Observable.create(new Observable.OnSubscribe<GroupChat>() {
+                    @Override
+                    public void call(Subscriber<? super GroupChat> subscriber) {
+                        sendLeaveStanza(connectionWithChat.first, connectionWithChat.second, subscriber);
+                    }
+                }));
     }
 
-    private void sendLeaveStanza(XMPPConnection connection, MultiUserChat chat, Subscriber subscriber) {
+    private void sendLeaveStanza(XMPPConnection connection, MultiUserChat chat, Subscriber<? super GroupChat> subscriber) {
         LeavePresence leavePresence = new LeavePresence();
         leavePresence.setTo(chat.getRoom() + "/" + chat.getNickname());
 
         try {
             connection.sendStanza(leavePresence);
+            subscriber.onNext(this);
             subscriber.onCompleted();
         } catch (SmackException.NotConnectedException e) {
             subscriber.onError(new ConnectionException(e));

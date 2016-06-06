@@ -12,7 +12,7 @@ public interface GroupChat extends Chat {
 
     void join(String userId);
 
-    void leave();
+    Observable<GroupChat> leave();
 
     Observable<GroupChat> setSubject(String subject);
 

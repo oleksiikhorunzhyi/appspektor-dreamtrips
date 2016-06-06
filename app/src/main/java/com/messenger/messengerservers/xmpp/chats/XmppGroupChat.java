@@ -89,13 +89,13 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
     }
 
     @Override
-    public Observable<List<String>> kick(List<String> userIds) {
+    public Observable<GroupChat> kick(String userId) {
         chatPreconditions.checkUserIsOwner();
 
         return chatActionObservable(chat -> {
-            List<String> jids = Queryable.from(userIds).map(JidCreatorHelper::obtainUserJid).toList();
-            chat.revokeMembership(jids);
-        }).map(aVoid -> userIds);
+            String jid = JidCreatorHelper.obtainUserJid(userId);
+            chat.revokeMembership(jid);
+        }).map(aVoid -> this);
     }
 
     @Override

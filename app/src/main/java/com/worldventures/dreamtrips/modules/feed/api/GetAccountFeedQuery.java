@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class GetAccountFeedQuery extends Query<ArrayList<ParentFeedItem>> {
 
-    public static final int LIMIT = 10;
+    public static final int LIMIT = 20;
     private Date before;
     private String circleId;
 

@@ -25,6 +25,7 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
     private int manualTimestampPositionToAdd = -1;
     private int manualTimestampPosition = -1;
     private int manualTimestampPositionToRemove = -1;
+    private boolean manualTimestampAdditionIsPending;
 
     private boolean needMarkUnreadMessages;
     private DataConversation dataConversation;
@@ -97,7 +98,7 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
                 || manualTimestampPositionToRemove == position;
         String dateDivider;
         if (manualTimestamp) {
-            dateDivider = timestampFormatter.getMessageDateManualTimestamp(cursor
+            dateDivider = timestampFormatter.getMessageTimestamp(cursor
                     .getLong(cursor.getColumnIndex(DataMessage$Table.DATE)));
         } else {
             dateDivider = getMessageTimestampBetweenMessagesIfNeeded(cursor);
@@ -122,6 +123,7 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
         TextView dateTextView = holder.dateTextView;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dateTextView.getLayoutParams();
         if (manualTimestampPositionToAdd == position) {
+            manualTimestampAdditionIsPending = true;
             manualTimestampPositionToAdd = -1;
             manualTimestampPosition = position;
 
@@ -138,10 +140,19 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
                 params.bottomMargin = (int) margin;
                 dateTextView.requestLayout();
             });
+            animator.addListener(new SimpleAnimatorListener() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    manualTimestampAdditionIsPending = false;
+                }
+            });
             animator.start();
         } else if (manualTimestampPositionToRemove == position) {
             manualTimestampPositionToRemove = -1;
-            manualTimestampPosition = -1;
+            // ensure there is no pending add operation
+            if (!manualTimestampAdditionIsPending) {
+                manualTimestampPosition = -1;
+            }
             ValueAnimator animator = ValueAnimator.ofFloat(0, -dateTextView.getMeasuredHeight());
             animator.addUpdateListener(valueAnimator -> {
                 float margin = (Float) valueAnimator.getAnimatedValue();
@@ -185,7 +196,7 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
                     .calendarDaysBetweenDates(previousDate, currentDate);
         }
         if ((previousDate != 0 && calendarDaysSincePreviousDate > 0) || previousDate == 0) {
-            return timestampFormatter.getMessageDateDividerTimestamp(currentDate);
+            return timestampFormatter.getMessageTimestamp(currentDate);
         }
         return null;
     }

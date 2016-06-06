@@ -131,9 +131,9 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
     @Override
     public void finishLoading() {
-        weakHandler.post(() -> {
+        weakHandler.postDelayed(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
+        }, 100);
         stateDelegate.restoreStateIfNeeded();
     }
 
@@ -167,7 +167,7 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
                                 selectedAction.apply(i);
                                 materialDialog.dismiss();
                             })
-                    .negativeText(R.string.cancel)
+                    .negativeText(R.string.action_cancel)
                     .show();
         }
     }

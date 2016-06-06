@@ -11,7 +11,6 @@ public class InspirationFullscreenPresenter extends FullScreenPresenter<Inspirat
         super(photo, type);
     }
 
-
     public interface View extends FullScreenPresenter.View {
     }
 

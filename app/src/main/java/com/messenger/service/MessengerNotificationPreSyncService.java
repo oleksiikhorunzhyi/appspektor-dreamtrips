@@ -17,6 +17,6 @@ public class MessengerNotificationPreSyncService extends InjectingService {
     @Override
     public void onCreate() {
         super.onCreate();
-        MessengerConnector.getInstance().connect();
+        MessengerConnector.getInstance().connectAfterGlobalConfig();
     }
 }

@@ -67,14 +67,17 @@ public class FilterableArrayListAdapter<BaseItemClass extends Filterable> extend
         } else {
             filterHandler.post(() -> {
                 try {
-                    List<BaseItemClass> filtered  = Queryable.from(cachedItems).filter(element -> element.containsQuery(this.query.toLowerCase())).toList();
+                    // don't remove this statement!!!
+                    if (query != null) {
+                        List<BaseItemClass> filtered = Queryable.from(cachedItems).filter(element -> element.containsQuery(this.query.toLowerCase())).toList();
 
-                    mainHandler.post(() -> {
-                        items.clear();
-                        items.addAll(filtered);
-                        if (comparator != null) Collections.sort(items, comparator);
-                        notifyDataSetChanged();
-                    });
+                        mainHandler.post(() -> {
+                            items.clear();
+                            items.addAll(filtered);
+                            if (comparator != null) Collections.sort(items, comparator);
+                            notifyDataSetChanged();
+                        });
+                    }
                 } catch (Exception ex) {
                     //TODO remove it when issue from Fabric (#277) will be fixed
                     ArrayMap<String, Object> params = new ArrayMap<>(2);

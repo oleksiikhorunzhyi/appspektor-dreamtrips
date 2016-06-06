@@ -24,7 +24,8 @@ public class PhotoPickerDelegate {
     }
 
     public void attachScrollableView(View view) {
-        photoPickerLayout.setScrollableView(view);
+        if (photoPickerLayout != null)
+            photoPickerLayout.setScrollableView(view);
     }
 
     public void openFacebookAlbums() {

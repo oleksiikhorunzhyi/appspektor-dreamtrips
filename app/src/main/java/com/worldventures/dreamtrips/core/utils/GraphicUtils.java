@@ -75,7 +75,7 @@ public class GraphicUtils {
     }
 
     @Nullable
-    private static ImageRequest createResizeImageRequest(@Nullable Uri uri, int width, int height) {
+    public static ImageRequest createResizeImageRequest(@Nullable Uri uri, int width, int height) {
         return uri == null ? null : ImageRequestBuilder.newBuilderWithSource(uri)
                 .setResizeOptions(new ResizeOptions(width, height))
                 .setAutoRotateEnabled(true)

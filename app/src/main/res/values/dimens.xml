@@ -296,7 +296,6 @@
     <dimen name="in_app_notification_horizontal_padding">11dp</dimen>
     <dimen name="in_app_notification_vertical_padding">11dp</dimen>
     <dimen name="in_app_notification_avatar_image_view_size">43dp</dimen>
-    <dimen name="in_app_notification_group_chat_icon_avatar_padding">5dp</dimen>
     <dimen name="in_app_notification_small_avatar_image_suze">20dp</dimen>
     <dimen name="in_app_notification_close_button_padding">10dp</dimen>
     <!-- calculated as in_app_notification_horizontal_padding + in_app_notification_close_button_padding -->

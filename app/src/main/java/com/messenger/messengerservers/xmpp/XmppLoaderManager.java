@@ -1,14 +1,13 @@
 package com.messenger.messengerservers.xmpp;
 
 import com.messenger.messengerservers.LoaderManager;
-import com.messenger.messengerservers.loaders.Loader;
-import com.messenger.messengerservers.loaders.ParticipantsLoader;
-import com.messenger.messengerservers.model.Conversation;
-import com.messenger.messengerservers.model.MessengerUser;
+import com.messenger.messengerservers.loaders.ContactsLoader;
+import com.messenger.messengerservers.loaders.ConversationLoader;
+import com.messenger.messengerservers.loaders.FlagMessageLoader;
+import com.messenger.messengerservers.xmpp.loaders.ConversationsListLoader;
+import com.messenger.messengerservers.xmpp.loaders.ConversationsLoader;
 import com.messenger.messengerservers.xmpp.loaders.XmppContactLoader;
-import com.messenger.messengerservers.xmpp.loaders.XmppConversationLoader;
-import com.messenger.messengerservers.xmpp.loaders.XmppParticipantsLoader;
-
+import com.messenger.messengerservers.xmpp.loaders.XmppFlagMessageLoader;
 
 public class XmppLoaderManager implements LoaderManager {
     private final XmppServerFacade facade;
@@ -19,18 +18,22 @@ public class XmppLoaderManager implements LoaderManager {
     }
 
     @Override
-    public Loader<MessengerUser> createContactLoader() {
-        return new XmppContactLoader(facade, null);
+    public ContactsLoader createContactLoader() {
+        return new XmppContactLoader(facade);
     }
 
     @Override
-    public Loader<Conversation> createConversationLoader() {
-        return new XmppConversationLoader(facade);
+    public ConversationLoader createConversationLoader(String conversationId) {
+        return new ConversationsLoader(facade, conversationId);
     }
 
     @Override
-    public ParticipantsLoader createParticipantsLoader() {
-        return new XmppParticipantsLoader(facade);
+    public com.messenger.messengerservers.loaders.ConversationsLoader createConversationsLoader() {
+        return new ConversationsListLoader(facade);
     }
 
+    @Override
+    public FlagMessageLoader createFlaggingLoader() {
+        return new XmppFlagMessageLoader(facade);
+    }
 }

@@ -64,10 +64,23 @@
     <string name="chat_contextual_translate_message">Översätt</string>
     <string name="chat_contextual_revert_translate_message">Visa ursprunglig</string>
     <string name="chat_contextual_start_chat_format">Meddelande %1$s</string>
+    <string name="chat_contextual_flag">Flagga</string>
     <string name="chat_share_dialog_location">Visa plats</string>
     <string name="chat_share_dialog_image">Visa bild</string>
     <string name="chat_share_dialog_cancel">Avbryt</string>
     <string name="chat_could_not_share_location">Det gick inte att dela plats</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Läser in …</string>
+    <string name="chat_flag_dialog_reason_title">Flagga</string>
+    <string name="chat_flag_dialog_reason_hint">Ange ditt skäl</string>
+    <string name="chat_flag_dialog_reason_positive_button">Acceptera</string>
+    <string name="chat_flag_dialog_reason_negative_button">Avbryt</string>
+    <string name="chat_flag_dialog_confirmation_title">Bekräfta</string>
+    <string name="chat_flag_dialog_confirmation_message_format">WorldVentures personal kommer att underrättas om att granska det här meddelandet för %1$s. Vill du fortsätta?</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Skicka</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Avbryt</string>
+    <string name="chat_flag_dialog_flagging_progress">Flaggning… </string>
+    <string name="chat_flag_failed">Kunde inte flagga meddelandet </string>
 
     <!---->
     <!--Chat Settings -->

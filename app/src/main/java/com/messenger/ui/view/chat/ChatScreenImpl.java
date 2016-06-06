@@ -30,18 +30,17 @@ import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
-import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.model.AttachmentMenuItem;
+import com.messenger.ui.module.flagging.FlaggingView;
+import com.messenger.ui.module.flagging.FlaggingViewImpl;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
@@ -64,10 +63,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-    @Inject
-    LocaleHelper localeHelper;
-    @Inject
-    SessionHolder<UserSession> sessionHolder;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -94,11 +89,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
-    private ConversationHelper conversationHelper;
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private Handler handler = new Handler();
     private final Runnable openPikerTask = this::openPicker;
+
+    private FlaggingView flaggingView;
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -117,7 +113,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @NonNull
     @Override
     public ChatScreenPresenter createPresenter() {
-        return new ChatScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
+        return new ChatScreenPresenterImpl(getContext(), injector,
+                getPath().getConversationId());
     }
 
     @SuppressWarnings("Deprecated")
@@ -164,7 +161,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     protected void onAttachedToWindow() {
-        conversationHelper = new ConversationHelper();
+        flaggingView = new FlaggingViewImpl(this);
         super.onAttachedToWindow();
         recyclerView.setAdapter(adapter = createAdapter());
         inflateToolbarMenu(toolbar);
@@ -270,8 +267,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void setTitle(DataConversation conversation, List<DataUser> members) {
-        conversationHelper.setTitle(title, conversation, members, false);
-        conversationHelper.setSubtitle(subtitle, conversation, members);
+        ConversationUIHelper.setTitle(title, conversation, members, false);
+        ConversationUIHelper.setSubtitle(subtitle, conversation, members);
     }
 
     @Override
@@ -296,7 +293,6 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public void showMessages(Cursor cursor, DataConversation conversation) {
-        Timber.i("Show Cursor with size " + cursor.getCount());
         adapter.setConversation(conversation);
 
         int firstVisibleViewTop = 0;
@@ -350,6 +346,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                     break;
                 case R.id.action_start_chat:
                     getPresenter().onStartNewChatForMessageOwner(message);
+                    break;
+                case R.id.action_flag:
+                    getPresenter().onFlagMessageAttempt(message);
                     break;
             }
         }))
@@ -435,5 +434,10 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         photoPickerLayoutDelegate.hidePicker();
         //
         getPresenter().onImagesPicked(images);
+    }
+
+    @Override
+    public FlaggingView getFlaggingView() {
+        return flaggingView;
     }
 }

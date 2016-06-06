@@ -130,7 +130,7 @@ public class CommonModule {
         featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlActivityModule.DTL));
         featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
-        activeComponents.add(VideoModule.MEMBERSHIP);
+        featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
         activeComponents.add(BucketListModule.BUCKETLIST);
         activeComponents.add(ProfileModule.MY_PROFILE);
 

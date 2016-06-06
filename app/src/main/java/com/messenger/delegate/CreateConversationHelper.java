@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.ConversationIdHelper;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
@@ -27,8 +26,6 @@ public class CreateConversationHelper {
 
     private SessionHolder<UserSession> appSessionHolder;
     private final MessengerServerFacade messengerServerFacade;
-
-    private final ConversationIdHelper conversationIdHelper = new ConversationIdHelper();
 
     @Inject CreateConversationHelper(SessionHolder<UserSession> appSessionHolder, MessengerServerFacade messengerServerFacade) {
         this.appSessionHolder = appSessionHolder;
@@ -87,20 +84,6 @@ public class CreateConversationHelper {
         return setMultiUserChatData(conversation, newChatUserIds, subject);
     }
 
-    public Observable<DataConversation> createConversation(String conversationId, String currentUserId) {
-        return Observable.just(conversationId)
-                .map(convId -> {
-                    DataConversation conversation = new DataConversation.Builder()
-                            .id(convId)
-                            .lastActiveDate(System.currentTimeMillis())
-                            .status(ConversationStatus.PRESENT)
-                            .type(conversationIdHelper.obtainType(convId, getUsername()))
-                            .build();
-
-                    return conversation;
-                });
-    }
-
     public DataConversation getExistingSingleConversation(String participantId) {
         String conversationId = ThreadCreatorHelper.obtainThreadSingleChat(getUsername(), participantId);
         DataConversation existingConversation = ConversationsDAO.getConversationById(conversationId);
@@ -110,7 +93,7 @@ public class CreateConversationHelper {
     private Observable<DataConversation> setMultiUserChatData(DataConversation conversation,
                                                               List<DataUser> newParticipants, @Nullable String subject) {
         return messengerServerFacade.getChatManager()
-                .createMultiUserChatObservable(conversation.getId(), getUsername())
+                .createGroupChatObservable(conversation.getId(), getUsername())
                 .doOnNext(multiUserChat -> multiUserChat.invite(getUserIds(newParticipants)))
                 .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
                 .map(chat -> conversation);

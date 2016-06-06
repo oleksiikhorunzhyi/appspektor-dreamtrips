@@ -101,7 +101,7 @@
     <string-array name="photo_dialog_items">
         <item>Ambil Gambar</item>
         <item>Pilih Gambar</item>
-        <item>@string/choose_fb</item>
+        <item>Pilih dari Facebook</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>Facebook</item>
@@ -200,7 +200,7 @@
         <item>Dalam enam bulan</item>
         <item>Tahun ini</item>
         <item>Tahun depan</item>
-        <item>@string/someday</item>
+        <item>Suatu hari</item>
     </string-array>
     <string name="choose_fb">Pilih dari Facebook</string>
     <string name="choose_camera">Ambil Gambar</string>
@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Permintaan Keluar</string>
 
     <string name="add_title">Tambah satu tajuk</string>
+    <string name="flag_sent_success_msg">Kandungan telah ditanda</string>
+
+    <string name="location_name_length_message">Nama lokasi tidak boleh melebihi 255 aksara.</string>
 
 </resources>

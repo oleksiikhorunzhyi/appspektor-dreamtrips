@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Cereri trimise</string>
 
     <string name="add_title">Adăugați un titlu</string>
+    <string name="flag_sent_success_msg">Conținutul a fost marcat</string>
+
+    <string name="location_name_length_message">Denumirea locației nu poate conține mai mult de 255 de caractere.</string>
 
 </resources>

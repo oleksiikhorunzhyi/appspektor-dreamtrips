@@ -114,7 +114,8 @@ public class TripMapPresenter extends BaseTripsPresenter<TripMapPresenter.View> 
     }
 
     private void removeInfoIfNeeded() {
-        view.removeIfNeeded(Route.MAP_INFO);
+        if (view != null)
+            view.removeIfNeeded(Route.MAP_INFO);
     }
 
     public void actionList() {

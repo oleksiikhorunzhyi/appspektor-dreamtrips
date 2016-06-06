@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
+import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
@@ -56,6 +57,7 @@ public abstract class BaseActivity extends InjectingActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        MonitoringHelper.setInteractionName(this);
         TrackingHelper.onCreate(this);
         super.onCreate(savedInstanceState);
     }

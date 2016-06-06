@@ -101,7 +101,7 @@
     <string-array name="photo_dialog_items">
         <item>Fénykép készítése</item>
         <item>Válasszon fényképet</item>
-        <item>@string/choose_fb</item>
+        <item>Válasszon a Facebookról</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>Facebook</item>
@@ -200,7 +200,7 @@
         <item>Hat hónap alatt</item>
         <item>Ez az év</item>
         <item>Következő év</item>
-        <item>@string/someday</item>
+        <item>Egy napon</item>
     </string-array>
     <string name="choose_fb">Válasszon a Facebookról</string>
     <string name="choose_camera">Fénykép készítése</string>
@@ -616,5 +616,8 @@
     <string name="request_outgoing_long">Kimenő kérések</string>
 
     <string name="add_title">Cím hozzáadás</string>
+    <string name="flag_sent_success_msg">A tartalom meg lett jelölve</string>
+
+    <string name="location_name_length_message">A helyszín neve ne legyen hosszabb 255 karakternél.</string>
 
 </resources>

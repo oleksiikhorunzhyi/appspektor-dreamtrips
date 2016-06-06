@@ -24,7 +24,8 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import io.techery.janet.helper.ActionStateToActionTransformer;
+import io.techery.janet.ActionState;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Notification;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -70,11 +71,16 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         conversationAvatarDelegate.getReadChangeAvatarCommandActionPipe()
                 .observe()
                 .compose(bindView())
-                .compose(new ActionStateToActionTransformer<>())
-                .map(ChangeAvatarCommand::getConversation)
-                .filter(conversation -> TextUtils.equals(conversation.getId(), conversationId))
+                .filter(this::filterActionState)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onChangeAvatarSuccess, this::onChangeAvatarFailed);
+                .subscribe(new ActionStateSubscriber<ChangeAvatarCommand>()
+                        .onFail((command, throwable) -> onChangeAvatarFailed(throwable))
+                        .onSuccess(command -> onChangeAvatarSuccess(command.getConversation()))
+                );
+    }
+
+    private boolean filterActionState(ActionState<ChangeAvatarCommand> commandActionState) {
+        return TextUtils.equals(commandActionState.action.getConversation().getId(), conversationId);
     }
 
     @Override

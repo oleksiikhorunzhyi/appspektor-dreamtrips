@@ -15,8 +15,6 @@ import com.worldventures.dreamtrips.modules.gcm.model.PushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.TaggedOnPhotoPushMessage;
 import com.worldventures.dreamtrips.modules.gcm.model.UserPushMessage;
 
-import java.util.Random;
-
 import de.greenrobot.event.EventBus;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -60,7 +58,8 @@ public class NotificationDelegate {
 
     public void notifyNewMessageReceived(NewMessagePushMessage message) {
         Notification notification = notificationFactoryHolder.getMessengerNotificationFactory().createNewMessage(message);
-        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, 0, notification);
+        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
+                MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
     }
 
     public void notifyNewImageMessageReceived(NewImagePushMessage message) {
@@ -68,20 +67,23 @@ public class NotificationDelegate {
                 .createNewImageMessage(message)
                 .subscribeOn(Schedulers.io())
                 .subscribe(notification -> {
-                    notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, new Random().nextInt(), notification);
+                    notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
+                            MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
                 }, e -> Timber.w(e, "Failed with creation of image message notification"));
     }
 
     public void notifyNewLocationMessageReceived(NewLocationPushMessage message) {
         Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
                 .createNewLocationMessage(message);
-        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, 0, notification);
+        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
+                MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
     }
 
     public void notifyUnsupportedMessageReceived(NewUnsupportedMessage newUnsupportedMessage){
         Notification notification = notificationFactoryHolder.getMessengerNotificationFactory()
                 .createUnsupportedMessage(newUnsupportedMessage);
-        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG, 0, notification);
+        notificationManager.notify(MessengerNotificationFactory.MESSENGER_TAG,
+                MessengerNotificationFactory.MESSAGE_NOTIFICATION_ID, notification);
     }
 
     public void cancel(String tag) {

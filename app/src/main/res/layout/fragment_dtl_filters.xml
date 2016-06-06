@@ -127,21 +127,22 @@
         android:layout_above="@+id/footer"
         android:layout_below="@+id/distance_view_group"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:paddingLeft="20dp"
         android:paddingRight="20dp">
 
         <TextView
             android:id="@+id/apply"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/textViewResetFilter"
-            android:gravity="end"
+            android:layout_weight="1"
+            android:gravity="center"
             android:padding="15dp"
             android:text="@string/filter_apply_all"
             android:textColor="#025E93"
@@ -149,15 +150,16 @@
 
         <TextView
             android:id="@+id/reset"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_weight="1"
+            android:gravity="center"
             android:padding="15dp"
             android:text="@string/filter_reset_all"
             android:textColor="#025E93"
             android:textStyle="bold"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>

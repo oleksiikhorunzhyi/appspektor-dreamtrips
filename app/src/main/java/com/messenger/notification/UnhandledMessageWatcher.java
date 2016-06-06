@@ -2,25 +2,24 @@ package com.messenger.notification;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.ChatMessagesEventDelegate;
+import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.ConversationStatus;
-import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.activity.MessengerActivity;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.inappnotifications.MessengerInAppNotificationListener;
 import com.messenger.ui.widget.inappnotification.messanger.InAppMessengerNotificationView;
@@ -122,9 +121,11 @@ public class UnhandledMessageWatcher {
                     DataAttachment attachment = attachmentDAO.getAttachmentByMessageId(message.getId()).toBlocking().first();
                     String attachmentType = attachment != null ? attachment.getType() : null;
 
-                    if (isSingleChat(conversation))
+                    if (ConversationHelper.isSingleChat(conversation)) {
                         return composeSingleChatNotification(conversation, message, attachmentType);
-                    else return composeGroupChatNotification(conversation, message, attachmentType);
+                    } else {
+                        return composeGroupChatNotification(conversation, message, attachmentType);
+                    }
                 })
                 .compose(new IoToMainComposer<>())
                 .filter(data -> {
@@ -152,10 +153,6 @@ public class UnhandledMessageWatcher {
                 MessengerActivity.startMessengerWithConversation(activity, data.conversation.getId());
             }
         });
-    }
-
-    private boolean isSingleChat(@NonNull DataConversation conversation) {
-        return conversation.getType().equalsIgnoreCase(ConversationType.CHAT);
     }
 
     private String getImagePostMessage(DataUser user) {
@@ -191,11 +188,11 @@ public class UnhandledMessageWatcher {
         }
     }
 
-    //group 4 avas + group name/user names + last name : last message
+    //group name/user names + last name : last message
     private Observable<NotificationData> composeGroupChatNotification(DataConversation conversation, DataMessage message, @Nullable String attachmentType) {
         return Observable.zip(
-                participantsDAO.getParticipantsEntities(conversation.getId()).first(),
-                usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()).first(),
+                participantsDAO.getParticipantsEntities(conversation.getId()).take(1),
+                usersDAO.getUserById(message.getFromId()).compose(new NonNullFilter<>()).take(1),
                 (users, fromUser) -> {
                     String lastName = fromUser.getName();
                     String messageText = getGroupChatNotificationText(message, attachmentType, fromUser);
@@ -203,7 +200,7 @@ public class UnhandledMessageWatcher {
                             TextUtils.join(", ", Queryable.from(users).map(DataUser::getName).toList()) :
                             conversation.getSubject();
                     return new NotificationData(groupName, lastName, users, messageText, conversation, true);
-                }).first();
+                }).take(1);
     }
 
     private String getGroupChatNotificationText(DataMessage message, @Nullable String attachmentType,
@@ -243,6 +240,9 @@ public class UnhandledMessageWatcher {
     private InAppMessengerNotificationView createGroupChatCrouton(Context context, DataConversation conversation, String title, String text) {
         InAppNotificationViewGroup view = new InAppNotificationViewGroup(context);
         view.setConversation(conversation);
+        if (ConversationHelper.isTripChat(conversation)) {
+            view.setImageRes(R.drawable.ic_trip_chat);
+        }
         view.setTitle(title);
         view.setText(text);
         return view;

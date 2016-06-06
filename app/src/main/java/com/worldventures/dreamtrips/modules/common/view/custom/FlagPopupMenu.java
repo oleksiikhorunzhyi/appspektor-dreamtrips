@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import rx.functions.Action1;
 
 public class FlagPopupMenu extends PopupMenu {
     private Context context;
@@ -29,6 +30,20 @@ public class FlagPopupMenu extends PopupMenu {
         this.context = context;
     }
 
+    public void show(List<Flag> flags, Action1<Flag> onSelected) {
+        for (int i = 0; i < flags.size(); i++) {
+            Flag flagContent = flags.get(i);
+            getMenu().add(0, i, i, flagContent.getName());
+        }
+        setOnMenuItemClickListener(item -> {
+            Flag flag = flags.get(item.getOrder());
+            onSelected.call(flag);
+            return true;
+        });
+        show();
+    }
+
+    @Deprecated
     public void show(List<Flag> flags, DialogConfirmationCallback dialogConfirmationCallback) {
         this.dialogConfirmationCallback = dialogConfirmationCallback;
         for (int i = 0; i < flags.size(); i++) {

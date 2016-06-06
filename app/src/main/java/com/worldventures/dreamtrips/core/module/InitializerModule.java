@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
 import com.worldventures.dreamtrips.core.initializer.LeakCanaryInitializer;
 import com.worldventures.dreamtrips.core.initializer.LoggingInitializer;
+import com.worldventures.dreamtrips.core.initializer.NewrelicInitializer;
 import com.worldventures.dreamtrips.core.initializer.RxJavaLoggingInitializer;
 import com.worldventures.dreamtrips.core.initializer.SoftInputInitializer;
 import com.worldventures.dreamtrips.core.initializer.ViewServerInitializer;
@@ -22,6 +23,7 @@ import dagger.Provides;
         injects = {
                 LeakCanaryInitializer.class,
                 FabricInitializer.class,
+                NewrelicInitializer.class,
                 FrescoInitializer.class,
                 SoftInputInitializer.class,
                 ViewServerInitializer.class,
@@ -77,6 +79,11 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideFabricInitializer() {
         return new FabricInitializer();
+    }
+
+    @Provides(type = Provides.Type.SET)
+    public AppInitializer provideNewrelicInitializer() {
+        return new NewrelicInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

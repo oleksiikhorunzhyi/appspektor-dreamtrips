@@ -90,6 +90,9 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
     }
 
     private void updateEmptyCaption(int querySize) {
+        if (emptyView == null) {
+            return; // rare NPE fix
+        }
         if (emptyView.getVisibility() == View.VISIBLE) {
             if (querySize > 2) {
                 caption.setText(R.string.filter_no_results);

@@ -37,6 +37,10 @@ public class DataTranslation extends BaseProviderModel<DataTranslation> {
         this.translateStatus = translateStatus;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getTranslation() {
         return translation;
     }

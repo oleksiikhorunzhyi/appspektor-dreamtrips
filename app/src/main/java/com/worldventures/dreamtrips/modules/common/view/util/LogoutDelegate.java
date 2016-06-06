@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 
 import android.content.Context;
 
+import com.messenger.delegate.FlagsDelegate;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.storage.MessengerDatabase;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -35,6 +36,8 @@ public class LogoutDelegate {
     protected BadgeUpdater badgeUpdater;
     @Inject
     protected DTCookieManager cookieManager;
+    @Inject
+    FlagsDelegate flagsDelegate;
     //
     protected DreamSpiceManager dreamSpiceManager;
 
@@ -50,6 +53,7 @@ public class LogoutDelegate {
 
     public void logout() {
         MessengerConnector.getInstance().disconnect();
+        flagsDelegate.clearCache();
 
         String token = snappyRepository.getGcmRegToken();
         if (token != null) {

@@ -8,6 +8,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
+import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 
 public abstract class MessengerPathLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>, T extends StyledPath>
         extends MessengerLinearLayout<V, P> implements PathView<T>, InjectorHolder {
@@ -21,6 +22,7 @@ public abstract class MessengerPathLayout<V extends MessengerScreen, P extends M
 
     public MessengerPathLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        MonitoringHelper.startInteractionName(this);
     }
 
     @Override
@@ -39,7 +41,7 @@ public abstract class MessengerPathLayout<V extends MessengerScreen, P extends M
         onPrepared();
     }
 
+    /** Safe method to init UI with path provided */
     protected void onPrepared() {
-        // safe method to init UI with path provided
     }
 }

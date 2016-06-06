@@ -6,6 +6,7 @@ import com.messenger.messengerservers.paginations.PagePagination;
 import com.messenger.messengerservers.xmpp.paginations.XmppConversationHistoryPaginator;
 
 public class XmppPaginationManager implements PaginationManager {
+    public static final int DEFAULT_PAGE_SIZE = 20;
 
     private final XmppServerFacade facade;
 
@@ -14,7 +15,7 @@ public class XmppPaginationManager implements PaginationManager {
     }
 
     @Override
-    public PagePagination<Message> getConversationHistoryPagination(String conversationId, int pageSize) {
-        return new XmppConversationHistoryPaginator(facade, conversationId, pageSize);
+    public PagePagination<Message> getConversationHistoryPagination() {
+        return new XmppConversationHistoryPaginator(facade, DEFAULT_PAGE_SIZE);
     }
 }

@@ -3,7 +3,7 @@ package com.messenger.storage.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
+import android.util.Pair;
 
 import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataParticipant;
@@ -37,7 +37,7 @@ public class ParticipantsDAO extends BaseDAO {
 
         return query(q, DataUser.CONTENT_URI)
                 .subscribeOn(Schedulers.io())
-                .compose(DaoTransformers.toDataUser());
+                .compose(DaoTransformers.toEntity(DataUser.class));
     }
 
     public Observable<List<Pair<DataUser, String>>> getParticipants(String conversationId) {
@@ -72,7 +72,7 @@ public class ParticipantsDAO extends BaseDAO {
                 .build();
 
         return query(q, DataUser.CONTENT_URI, DataParticipant.CONTENT_URI)
-                .compose(DaoTransformers.toDataUsers());
+                .compose(DaoTransformers.toEntityList(DataUser.class));
     }
 
     @NonNull
@@ -98,14 +98,27 @@ public class ParticipantsDAO extends BaseDAO {
         bulkInsert(participants, new DataParticipant$Adapter(), DataParticipant.CONTENT_URI);
     }
 
+    public void deleteBySyncTime(long time, @NonNull String conversationId) {
+        String query = DataParticipant$Table.SYNCTIME + " < " + "?" +
+                " AND " + DataParticipant$Table.CONVERSATIONID + " =? " +
+                " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
+                "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
+                " FROM " + DataConversation$Table.TABLE_NAME +
+                " WHERE " + DataParticipant$Table.CONVERSATIONID + " =? " +
+                " AND " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
+                DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
+        getContentResolver().delete(DataParticipant.CONTENT_URI, query,
+                new String[]{String.valueOf(time), conversationId, conversationId});
+    }
+
     public void deleteBySyncTime(long time) {
-        getContentResolver().delete(DataParticipant.CONTENT_URI,
-                DataParticipant$Table.SYNCTIME + " < " + "?" +
-                        " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
-                        "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
-                        " FROM " + DataConversation$Table.TABLE_NAME +
-                        " WHERE " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
-                        DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")",
+        String query = DataParticipant$Table.SYNCTIME + " < " + "?" +
+                " AND " + DataParticipant$Table.SYNCTIME + " NOT IN " +
+                "(SELECT " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table.SYNCTIME +
+                " FROM " + DataConversation$Table.TABLE_NAME +
+                " WHERE " + DataConversation$Table.TABLE_NAME + "." + DataConversation$Table._ID + " = " +
+                DataParticipant$Table.TABLE_NAME + "." + DataParticipant$Table.CONVERSATIONID + ")";
+        getContentResolver().delete(DataParticipant.CONTENT_URI, query,
                 new String[]{String.valueOf(time)});
     }
 }

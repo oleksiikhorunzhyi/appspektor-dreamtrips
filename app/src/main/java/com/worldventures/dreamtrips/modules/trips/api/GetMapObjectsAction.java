@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
-import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.MapObjectHolder;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
@@ -15,7 +14,7 @@ import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-@HttpAction(value = "/api/trip_clusters", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
+@HttpAction(value = "/api/trips/locations", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
 public class GetMapObjectsAction extends AuthorizedHttpAction {
 
     @Query("query")
@@ -42,23 +41,25 @@ public class GetMapObjectsAction extends AuthorizedHttpAction {
     int recent;
     @Query("liked")
     int liked;
-    @Query("top_left_lat")
-    double top_left_lat;
-    @Query("bottom_right_lat")
-    double bottom_right_lat;
-    @Query("top_left_lng")
-    double top_left_lng;
-    @Query("bottom_right_lng")
-    double bottom_right_lng;
+    //Fields for server clustering
+//    @Query("top_left_lat")
+//    double top_left_lat;
+//    @Query("bottom_right_lat")
+//    double bottom_right_lat;
+//    @Query("top_left_lng")
+//    double top_left_lng;
+//    @Query("bottom_right_lng")
+//    double bottom_right_lng;
 
     @Response
     List<MapObjectHolder> mapObjects;
 
     public GetMapObjectsAction(TripsFilterData tripsFilterData, LatLngBounds latLngBounds, String q) {
-        top_left_lat = latLngBounds.northeast.latitude;
-        top_left_lng = latLngBounds.southwest.longitude;
-        bottom_right_lat = latLngBounds.southwest.latitude;
-        bottom_right_lng = latLngBounds.northeast.longitude;
+        //Fields for server clustering
+//        top_left_lat = latLngBounds.northeast.latitude;
+//        top_left_lng = latLngBounds.southwest.longitude;
+//        bottom_right_lat = latLngBounds.southwest.latitude;
+//        bottom_right_lng = latLngBounds.northeast.longitude;
 
         query = TextUtils.isEmpty(q) ? null : q;
         durationMin = tripsFilterData.getMinNights();

@@ -5,10 +5,10 @@ import android.util.Pair;
 
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;
+import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
+import com.messenger.delegate.chat.command.KickChatCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.ui.util.UserSectionHelper;
@@ -20,15 +20,12 @@ import com.messenger.ui.viewstate.LceViewState;
 import com.messenger.util.StringUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import flow.Flow;
 import rx.Observable;
@@ -36,28 +33,16 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.ConnectableObservable;
 import timber.log.Timber;
 
-import static com.worldventures.dreamtrips.core.module.RouteCreatorModule.PROFILE;
-
 public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<EditChatMembersScreen,
         EditChatMembersViewState> implements EditChatMembersScreenPresenter {
 
     @Inject
-    @Named(PROFILE)
-    RouteCreator<Integer> routeCreator;
-    @Inject
-    MessengerServerFacade messengerServerFacade;
-    @Inject
-    DataUser user;
-
-    @Inject
-    ParticipantsDAO participantsDAO;
-    @Inject
-    ConversationsDAO conversationsDAO;
+    ChatGroupCommandsInteractor chatGroupCommandsInteractor;
+    @Inject ParticipantsDAO participantsDAO;
+    @Inject ConversationsDAO conversationsDAO;
     @Inject ProfileCrosser profileCrosser;
-    @Inject
-    ActivityWatcher activityWatcher;
-    @Inject
-    UserSectionHelper userSectionHelper;
+    @Inject ActivityWatcher activityWatcher;
+    @Inject UserSectionHelper userSectionHelper;
 
     private final RxSearchHelper<Pair<DataUser, String>> rxSearchHelper = new RxSearchHelper<>();
 
@@ -189,19 +174,8 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Override
     public void onDeleteUserFromChatConfirmed(DataUser user) {
-        messengerServerFacade.getChatManager()
-                .createGroupChatObservable(conversationId, this.user.getId())
-                .compose(bindViewIoToMainComposer())
-                .subscribe(chat -> kickUser(chat, user.getId()),
-                        e -> Timber.e(e, "Failed to create chat"));
-    }
-
-    private void kickUser(GroupChat chat, String userId) {
-        chat.kick(Collections.singletonList(userId))
-                .map(users -> users.get(0))
-                .doOnNext(memberId -> participantsDAO.delete(conversationId, memberId))
-                .subscribe(memberId -> {},
-                        e -> Timber.e(e, "Failed to delete currentUser"));
+        chatGroupCommandsInteractor.getKickChatPipe()
+                .send(new KickChatCommand(conversationId, user.getId()));
     }
 
     @Override

@@ -4,7 +4,7 @@ package com.messenger.di;
 import android.app.Activity;
 
 import com.messenger.delegate.CropImageDelegate;
-import com.messenger.delegate.chat.ChatLeavingInteractor;
+import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
 
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ChatAdapter;
@@ -55,7 +55,7 @@ import dagger.Provides;
                 GroupChatSettingsScreenImpl.class,
                 TripChatSettingsScreenImpl.class,
 
-                ChatLeavingInteractor.class,
+                ChatGroupCommandsInteractor.class,
                 ChatAdapter.class,
                 ChatTimestampInflater.class,
 

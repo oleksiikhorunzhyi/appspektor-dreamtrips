@@ -6,7 +6,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.messenger.delegate.chat.ChatLeavingInteractor;
+import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
 import com.messenger.delegate.chat.command.LeaveChatCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
@@ -43,7 +43,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     protected Observable<List<DataUser>> participantsObservable;
 
     @Inject
-    ChatLeavingInteractor chatLeavingInteractor;
+    ChatGroupCommandsInteractor chatGroupCommandsInteractor;
     @Inject DataUser currentUser;
     @Inject MessengerServerFacade facade;
     @Inject ConversationsDAO conversationsDAO;
@@ -123,7 +123,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     @Override
     public void onLeaveChatClicked() {
         TrackingHelper.leaveConversation();
-        chatLeavingInteractor.getLeaveChatPipe()
+        chatGroupCommandsInteractor.getLeaveChatPipe()
                 .createObservableSuccess(new LeaveChatCommand(conversationId))
                 .compose(bindView())
                 .subscribe(command -> {

@@ -2,6 +2,7 @@ package com.messenger.di;
 
 import com.messenger.delegate.chat.attachment.SendImageAttachmentCommand;
 import com.messenger.delegate.chat.attachment.SendLocationAttachmentCommand;
+import com.messenger.delegate.chat.command.LeaveChatCommand;
 import com.messenger.delegate.chat.command.LoadChatMessagesCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
@@ -27,6 +28,7 @@ import dagger.Module;
         ChatSendMessageCommand.class,
         LoadConversationCommand.class,
         LoadConversationsCommand.class,
+        LeaveChatCommand.class,
         SyncConversationCommand.class,
         SyncConversationsCommand.class,
         FetchUsersDataCommand.class,

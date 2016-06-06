@@ -6,7 +6,8 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.messenger.delegate.chat.ChatLeavingDelegate;
+import com.messenger.delegate.chat.ChatLeavingInteractor;
+import com.messenger.delegate.chat.command.LeaveChatCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -14,6 +15,7 @@ import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
@@ -29,7 +31,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
+import flow.History;
 import rx.Observable;
+import timber.log.Timber;
 
 public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScreen> extends MessengerPresenterImpl<C,
         ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
@@ -38,15 +42,14 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     protected Observable<DataConversation> conversationObservable;
     protected Observable<List<DataUser>> participantsObservable;
 
-    protected final ChatLeavingDelegate chatLeavingDelegate;
-
+    @Inject
+    ChatLeavingInteractor chatLeavingInteractor;
     @Inject DataUser currentUser;
     @Inject MessengerServerFacade facade;
     @Inject ConversationsDAO conversationsDAO;
 
     public ChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector);
-        chatLeavingDelegate = new ChatLeavingDelegate(injector);
         this.conversationId = conversationId;
     }
 
@@ -69,8 +72,8 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     private void connectToConversation() {
         Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantObservable =
                 conversationsDAO.getConversationWithParticipants(conversationId)
-                .compose(new NonNullFilter<>())
-                .compose(bindViewIoToMainComposer());
+                        .compose(new NonNullFilter<>())
+                        .compose(bindViewIoToMainComposer());
 
         conversationWithParticipantObservable
                 .subscribe(conversation -> onConversationChanged(conversation.first, conversation.second));
@@ -120,7 +123,16 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     @Override
     public void onLeaveChatClicked() {
         TrackingHelper.leaveConversation();
-        conversationObservable.subscribe(conversation -> chatLeavingDelegate.leave(conversation));
+        chatLeavingInteractor.getLeaveChatPipe()
+                .createObservableSuccess(new LeaveChatCommand(conversationId))
+                .compose(bindView())
+                .subscribe(command -> {
+                    Flow flow = Flow.get(getContext());
+                    History newHistory = flow.getHistory()
+                            .buildUpon().clear().push(ConversationsPath.MASTER_PATH)
+                            .build();
+                    flow.setHistory(newHistory, Flow.Direction.FORWARD);
+                }, e -> Timber.e(e, "Can't leave chat"));
     }
 
     @Override
@@ -159,7 +171,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     @Override
     public void applyNewChatSubject(String subject) {
-        final String newSubject = subject == null? null : subject.trim();
+        final String newSubject = subject == null ? null : subject.trim();
 
         Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
                 .createGroupChatObservable(conversationId, facade.getUsername())
@@ -193,19 +205,19 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                 .compose(bindViewIoToMainComposer())
                 .take(1)
                 .subscribe(conversation -> {
-                boolean isMultiUserChat = !ConversationHelper.isSingleChat(conversation);
-                if (!isMultiUserChat || !ConversationHelper.isOwner(conversation, currentUser)) {
-                    menu.findItem(R.id.action_overflow).setVisible(false);
-                    return;
-                }
-                if (ConversationHelper.isTripChat(conversation)) {
-                    menu.findItem(R.id.action_change_chat_avatar).setVisible(false);
-                    menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
-                }
-                if (TextUtils.isEmpty(conversation.getAvatar())) {
-                    menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
-                }
-            });
+                    boolean isMultiUserChat = !ConversationHelper.isSingleChat(conversation);
+                    if (!isMultiUserChat || !ConversationHelper.isOwner(conversation, currentUser)) {
+                        menu.findItem(R.id.action_overflow).setVisible(false);
+                        return;
+                    }
+                    if (ConversationHelper.isTripChat(conversation)) {
+                        menu.findItem(R.id.action_change_chat_avatar).setVisible(false);
+                        menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
+                    }
+                    if (TextUtils.isEmpty(conversation.getAvatar())) {
+                        menu.findItem(R.id.action_remove_chat_avatar).setVisible(false);
+                    }
+                });
 
     }
 

@@ -7,13 +7,11 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.synchmechanism.SyncStatus;
-import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationListScreen;
@@ -51,8 +49,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     @Inject NotificationDelegate notificationDelegate;
     @Inject OpenedConversationTracker openedConversationTracker;
 
-    private final ChatLeavingDelegate chatLeavingDelegate;
-    //
     private PublishSubject<String> filterStream;
     private BehaviorSubject<String> typeStream;
     private PublishSubject<DataConversation> selectedConversationStream;
@@ -60,8 +56,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     public ConversationListScreenPresenterImpl(Context context, Injector injector) {
         super(context, injector);
-
-        chatLeavingDelegate = new ChatLeavingDelegate(injector);
     }
 
     @Override
@@ -221,11 +215,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onDeletionConfirmed(DataConversation conversation) {
-        if (ConversationHelper.isGroup(conversation)) {
-            chatLeavingDelegate.leave(conversation);
-        } else {
-            Toast.makeText(getContext(), "Delete not yet implemented", Toast.LENGTH_SHORT).show();
-        }
+        //not implemented
     }
 
     @Override

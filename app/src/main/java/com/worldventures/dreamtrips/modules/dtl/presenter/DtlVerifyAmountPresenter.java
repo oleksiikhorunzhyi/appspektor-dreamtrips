@@ -1,16 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
 
@@ -56,15 +57,20 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
 
     public void rescan() {
         transactionService.transactionActionPipe()
-                .createObservableSuccess(DtlTransactionAction.update(dtlMerchant,
-                        transaction -> ImmutableDtlTransaction.copyOf(transaction)
-                                .withUploadTask(null)))
+                .createObservable(DtlTransactionAction.get(dtlMerchant))
+                .compose(JanetPlainActionComposer.instance())
                 .map(DtlTransactionAction::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(transaction -> {
-                    photoUploadingManagerS3.cancelUploading(transaction.getUploadTask());
-                    view.openScanReceipt(transaction);
-                }, apiErrorPresenter::handleError);
+                .doOnNext(transaction ->
+                        photoUploadingManagerS3.cancelUploading(transaction.getUploadTask())
+                )
+                .flatMap(transaction ->
+                        transactionService.transactionActionPipe()
+                                .createObservable(DtlTransactionAction.save(dtlMerchant,
+                                        ImmutableDtlTransaction.copyOf(transaction).withUploadTask(null)))
+                                .compose(JanetPlainActionComposer.instance())
+                                .map(DtlTransactionAction::getResult)
+                ).compose(bindViewIoToMainComposer())
+                .subscribe(view::openScanReceipt, apiErrorPresenter::handleError);
     }
 
     public void scanQr() {

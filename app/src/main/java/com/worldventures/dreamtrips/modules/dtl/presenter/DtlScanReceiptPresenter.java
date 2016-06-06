@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
@@ -105,6 +106,8 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
     private void bindApiJob() {
         transactionService.estimatePointsActionPipe().observeWithReplay()
+                .takeUntil(state -> state.status == ActionState.Status.SUCCESS
+                        || state.status == ActionState.Status.FAIL)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
                         .onStart(action -> view.showProgress())

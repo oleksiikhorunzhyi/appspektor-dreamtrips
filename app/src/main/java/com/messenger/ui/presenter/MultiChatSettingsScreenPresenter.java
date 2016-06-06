@@ -3,13 +3,14 @@ package com.messenger.ui.presenter;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.MenuItem;
 
 import com.messenger.delegate.ConversationAvatarDelegate;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.command.ChangeAvatarCommand;
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataUser;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.messenger.ui.viewstate.ChatSettingsViewState.UploadingState;
@@ -21,25 +22,20 @@ import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.io.File;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Notification;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresenterImpl<GroupChatSettingsScreen> {
-    @Inject
-    CropImageDelegate cropImageDelegate;
 
-    @Inject
-    ConversationAvatarDelegate conversationAvatarDelegate;
-
-    @Inject
-    PermissionDispatcher permissionDispatcher;
+    @Inject CropImageDelegate cropImageDelegate;
+    @Inject ConversationAvatarDelegate conversationAvatarDelegate;
+    @Inject PermissionDispatcher permissionDispatcher;
 
     public MultiChatSettingsScreenPresenter(Context context, Injector injector, String conversationId) {
         super(context, injector, conversationId);
@@ -72,6 +68,13 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
                         .onFail((command, throwable) -> onChangeAvatarFailed(throwable))
                         .onSuccess(command -> onChangeAvatarSuccess())
                 );
+    }
+
+    @Override
+    protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
+        super.onConversationChanged(conversation, participants);
+        getView().setLeaveButtonVisible(ConversationHelper.isPresent(conversation)
+                && !ConversationHelper.isOwner(conversation, currentUser));
     }
 
     private boolean filterActionState(ActionState<ChangeAvatarCommand> commandActionState) {

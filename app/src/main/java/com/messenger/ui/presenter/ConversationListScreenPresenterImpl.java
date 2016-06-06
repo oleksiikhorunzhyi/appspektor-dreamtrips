@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.messenger.delegate.chat.ChatLeavingDelegate;
@@ -62,7 +61,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
     public ConversationListScreenPresenterImpl(Context context, Injector injector) {
         super(context, injector);
 
-        chatLeavingDelegate = new ChatLeavingDelegate(injector, null);
+        chatLeavingDelegate = new ChatLeavingDelegate(injector);
     }
 
     @Override
@@ -73,16 +72,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         applyViewState();
         connectData();
         trackConversations();
-    }
-
-    @Override
-    public void onVisibilityChanged(int visibility) {
-        super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE) {
-            chatLeavingDelegate.register();
-        } else {
-            chatLeavingDelegate.unregister();
-        }
     }
 
     private void connectData() {

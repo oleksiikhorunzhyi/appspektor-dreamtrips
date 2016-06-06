@@ -86,11 +86,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
         membersSettingsRow.setTitle(String.format(membersFormat, participants.size()));
     }
 
-    @Override
-    protected int getLeaveChatButtonStringRes() {
-        return R.string.chat_settings_row_leave_chat;
-    }
-
     @NonNull
     @Override
     public ChatSettingsScreenPresenter<GroupChatSettingsScreen> createPresenter() {
@@ -120,5 +115,10 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     public void hideChangingAvatarProgressBar() {
         groupAvatarsViewProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setLeaveButtonVisible(boolean visible) {
+        leaveChatButton.setVisibility(visible ? VISIBLE : GONE);
     }
 }

@@ -12,4 +12,6 @@ public interface GroupChatSettingsScreen extends ChatSettingsScreen {
     void showChangingAvatarProgressBar();
 
     void hideChangingAvatarProgressBar();
+
+    void setLeaveButtonVisible(boolean visible);
 }

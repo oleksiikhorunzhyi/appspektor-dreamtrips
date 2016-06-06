@@ -32,7 +32,7 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
     public void onConversationAvatarClick() {
         participantsObservable
                 .flatMap(Observable::from)
-                .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
+                .filter(participant -> !TextUtils.equals(currentUser.getId(), participant.getId()))
                 .take(1)
                 .subscribe(profileCrosser::crossToProfile);
     }

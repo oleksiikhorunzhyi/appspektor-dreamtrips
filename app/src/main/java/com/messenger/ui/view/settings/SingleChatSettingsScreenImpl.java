@@ -25,15 +25,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
         super(context, attrs);
     }
 
-    @Override
-    protected void initUi() {
-        super.initUi();
-
-        // TODO: 1/2/16
-        leaveChatButton.setVisibility(GONE);
-
-    }
-
     @OnClick(R.id.chat_settings_single_chat_avatar_view)
     public void onAvatarClick() {
         getPresenter().onConversationAvatarClick();
@@ -56,11 +47,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
         chatDescriptionTextView.setText(addressee.isOnline()
                 ? R.string.chat_settings_single_chat_online
                 : R.string.chat_settings_single_chat_offline);
-    }
-
-    @Override
-    protected int getLeaveChatButtonStringRes() {
-        return R.string.chat_settings_row_delete_chat;
     }
 
     @NonNull

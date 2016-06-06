@@ -85,9 +85,8 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         //
         filterService.getFilterData()
                 .map(DtlFilterData::isOffersOnly)
-                .subscribe(getView()::hideDinings);
+                .subscribe(getView()::toggleDiningFilterSwitch);
         getView().getToggleObservable()
-                .skip(1) // skip emit of initialization
                 .subscribe(offersOnly -> filterService.filterDataPipe()
                         .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
         //

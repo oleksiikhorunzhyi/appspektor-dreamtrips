@@ -22,7 +22,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
     void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
 
-    void toggleDiningFilterSwitch(boolean checked);
+    void toggleDiningFilterSwitch(boolean enabled);
 
     Observable<Boolean> getToggleObservable();
 

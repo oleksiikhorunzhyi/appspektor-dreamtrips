@@ -6,15 +6,15 @@ import rx.android.MainThreadSubscription;
 
 public class DtlToolbarNavigationClicksOnSubscribe implements Observable.OnSubscribe<Void> {
 
-    private final DtlToolbar dtlToolbar;
+    private final ExpandableDtlToolbar dtlToolbar;
 
-    public DtlToolbarNavigationClicksOnSubscribe(DtlToolbar dtlToolbar) {
+    public DtlToolbarNavigationClicksOnSubscribe(ExpandableDtlToolbar dtlToolbar) {
         this.dtlToolbar = dtlToolbar;
     }
 
     @Override
     public void call(Subscriber<? super Void> subscriber) {
-        DtlToolbar.NavigationClickListener navigationClickListener = new DtlToolbar.NavigationClickListener() {
+        ExpandableDtlToolbar.NavigationClickListener navigationClickListener = new ExpandableDtlToolbar.NavigationClickListener() {
             @Override
             public void onNavigationClicked() {
                 if (!subscriber.isUnsubscribed()) {

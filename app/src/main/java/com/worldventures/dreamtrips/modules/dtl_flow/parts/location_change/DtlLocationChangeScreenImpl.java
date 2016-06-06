@@ -27,7 +27,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationChangeCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     ActivityResultDelegate activityResultDelegate;
     //
     @InjectView(R.id.dtlToolbar)
-    DtlToolbar dtlToolbar;
+    ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.autoDetectNearMe)
     Button autoDetectNearMe;
     @InjectView(R.id.locationsList)

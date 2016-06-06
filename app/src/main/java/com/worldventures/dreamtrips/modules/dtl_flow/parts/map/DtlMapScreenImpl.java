@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -26,7 +25,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.innahema.collections.query.queriables.Queryable;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
@@ -38,8 +36,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
 import com.worldventures.dreamtrips.modules.map.renderer.DtClusterRenderer;
@@ -51,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import de.greenrobot.event.EventBus;
 import flow.path.Path;
 import flow.path.PathContext;
@@ -70,16 +68,11 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     FrameLayout infoContainer;
     @InjectView(R.id.noGoogleContainer)
     FrameLayout noGoogleContainer;
+    @Optional
     @InjectView(R.id.dtlToolbar)
-    DtlToolbar dtlToolbar;
-    @InjectView(R.id.filterDiningsSwitch)
-    SwitchCompat filterDiningsSwitch;
+    ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.redo_merchants)
     View loadMerchantsRoot;
-    @InjectView(R.id.filterBarRoot)
-    View filterBarLayout;
-    @InjectView(R.id.dtlfb_rootView)
-    DtlFilterButton filtersButton;
     //
     LatLng selectedLocation;
     @State
@@ -106,7 +99,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @Override
     protected void onPostAttachToWindowView() {
         checkMapAvailable();
-        prepareView();
+        initToolbar();
     }
 
     @Override
@@ -115,17 +108,8 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         super.onDetachedFromWindow();
     }
 
-    protected void prepareView() {
-        initToolbar();
-        initToggle();
-    }
-
-    private void initToggle() {
-        int visibility = isTabletLandscape() ? View.GONE : VISIBLE;
-        filterBarLayout.setVisibility(visibility);
-    }
-
     protected void initToolbar() {
+        if (dtlToolbar == null) return;
         RxDtlToolbar.actionViewClicks(dtlToolbar)
                 .throttleFirst(250L, TimeUnit.MILLISECONDS)
                 .compose(RxLifecycle.bindView(this))
@@ -145,11 +129,15 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
                 .throttleFirst(200L, TimeUnit.MILLISECONDS)
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(aVoid -> getPresenter().onListClicked());
+        RxDtlToolbar.filterButtonClicks(dtlToolbar)
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
     }
 
     @Override
     public void setFilterButtonState(boolean enabled) {
-        filtersButton.setFilterEnabled(enabled);
+        if (dtlToolbar == null) return;
+        dtlToolbar.setFilterEnabled(enabled);
     }
 
     private void checkMapAvailable() {
@@ -203,18 +191,14 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public Observable<Boolean> getToggleObservable() {
-        return RxCompoundButton.checkedChanges(filterDiningsSwitch)
+        if (dtlToolbar == null) return Observable.empty();
+        return RxDtlToolbar.diningFilterChanges(dtlToolbar)
                 .compose(RxLifecycle.bindView(this));
     }
 
     @OnClick(R.id.redo_merchants_button)
     public void onMechantsRedoClick() {
         getPresenter().onLoadMerchantsClick(googleMap.getCameraPosition().target);
-    }
-
-    @OnClick(R.id.dtlfb_rootView)
-    void onFiltersCounterClicked(View view) {
-        ((FlowActivity) getActivity()).openRightDrawer();
     }
 
     @Override
@@ -231,6 +215,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public boolean isToolbarCollapsed() {
+        if (dtlToolbar == null) return true;
         return dtlToolbar.isCollapsed();
     }
 
@@ -254,7 +239,12 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void prepareInfoWindow(int height) {
-        int ownHeight = getHeight() - ButterKnife.findById(this, R.id.filterBarRoot).getBottom();
+        int ownHeight;
+        if (dtlToolbar == null) {
+            ownHeight = getHeight();
+        } else {
+            ownHeight = getHeight() - dtlToolbar.getBottom();
+        }
         int centerY = ownHeight / 2;
         int resultY = height + getResources().getDimensionPixelSize(R.dimen.size_huge);
         int offset = resultY - centerY;
@@ -272,8 +262,9 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     @Override
-    public void hideDinings(boolean hide) {
-        filterDiningsSwitch.setChecked(hide);
+    public void toggleDiningFilterSwitch(boolean enabled) {
+        if (dtlToolbar == null) return;
+        dtlToolbar.toggleDiningFilterSwitch(enabled);
     }
 
     @Override
@@ -322,7 +313,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
                                    @Nullable String actualSearchQuery) {
-        if (dtlLocation == null) return;
+        if (dtlLocation == null || dtlToolbar == null) return;
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:
@@ -391,5 +382,4 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     protected void onMarkerFocused() {
         EventBus.getDefault().post(new DtlShowMapInfoEvent());
     }
-
 }

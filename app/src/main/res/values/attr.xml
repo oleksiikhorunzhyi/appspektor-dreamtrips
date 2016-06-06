@@ -48,16 +48,28 @@
         <attr name="av_online_indicator_size" format="dimension|reference" />
     </declare-styleable>
 
-    <declare-styleable name="DtlToolbar">
+    <declare-styleable name="ExpandableDtlToolbar">
         <!-- 'dtlt_' prefix to prevent any possible duplication -->
         <attr name="dtlt_collapsed" format="boolean" />
         <attr name="dtlt_navigation_icon_visible" format="boolean" />
         <attr name="dtlt_navigation_icon_src" format="integer" />
+        <attr name="dtlt_show_filter_bar_portrait" format="boolean" />
         <attr name="dtlt_focused_mode" format="enum">
             <enum name="undefined" value="0" />
             <enum name="search" value="1" />
             <enum name="location" value="2" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="DtlFilterButton">
+        <!-- 'dtlfb_' prefix to prevent any possible duplication -->
+        <attr name="dtlfb_enabled_background_color" format="integer" />
+        <attr name="dtlfb_disabled_background_color" format="integer" />
+        <attr name="dtlfb_enabled_caption_color" format="integer" />
+        <attr name="dtlfb_disabled_caption_color" format="integer" />
+        <attr name="dtlfb_enabled_icon" format="integer" />
+        <attr name="dtlfb_disabled_icon" format="integer" />
+        <attr name="dtlfb_show_separator" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="CollageView">

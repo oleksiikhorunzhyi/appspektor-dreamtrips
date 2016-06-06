@@ -64,8 +64,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         apiErrorPresenter.setView(getView());
         //
         getView().getToggleObservable()
-                .skip(1) //skip emit of initialization
-                .subscribe(offersOnly -> filterService.filterDataPipe().send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
+                .subscribe(offersOnly -> filterService.filterDataPipe()
+                        .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
         //
         connectService();
         connectFilterDataChanges();

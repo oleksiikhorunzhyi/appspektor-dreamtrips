@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Parcelable;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
@@ -18,10 +22,23 @@ import icepick.State;
 
 public class DtlFilterButton extends FrameLayout {
 
-    private final int enabledBackgroundColor;
-    private final int disabledBackgroundColor;
-    private final int enabledCaptionColor;
-    private final int disabledCaptionColor;
+    @ColorRes
+    private static final int DEF_ENABLED_BACKGROUND_COLOR_RES =
+            R.color.dtlfb_enabled_background_color;
+    @ColorRes
+    private static final int DEF_DISABLED_BACKGROUND_COLOR_RES =
+            R.color.dtlfb_disabled_background_color;
+    @ColorRes
+    private static final int DEF_ENABLED_CAPTION_COLOR_RES = R.color.dtlfb_enabled_caption_color;
+    @ColorRes
+    private static final int DEF_DISABLED_CAPTION_COLOR_RES = R.color.dtlfb_disabled_caption_color;
+    @DrawableRes
+    private static final int DEF_ENABLED_ICON_DRAWABLE_RES =
+            R.drawable.ic_dtl_filter_button_enabled;
+    @DrawableRes
+    private static final int DEF_DISABLED_ICON_DRAWABLE_RES =
+            R.drawable.ic_dtl_filter_button_disabled;
+    private static final boolean DEF_SHOW_SEPARATOR = true;
 
     @InjectView(R.id.dtlfb_rootView)
     ViewGroup rootView;
@@ -33,15 +50,45 @@ public class DtlFilterButton extends FrameLayout {
     @State
     protected boolean filterEnabled = false;
 
+    private int enabledBackgroundColor;
+    private int disabledBackgroundColor;
+    private int enabledCaptionColor;
+    private int disabledCaptionColor;
+    @DrawableRes
+    private int enabledIconDrawableRes;
+    @DrawableRes
+    private int disabledIconDrawableRes;
+    private boolean showSeparator;
+
     public DtlFilterButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        enabledBackgroundColor =
-                ContextCompat.getColor(context, R.color.dtlfb_enabled_background_color);
-        disabledBackgroundColor =
-                ContextCompat.getColor(context, R.color.dtlfb_disabled_background_color);
-        enabledCaptionColor = ContextCompat.getColor(context, R.color.dtlfb_enabled_caption_color);
-        disabledCaptionColor =
-                ContextCompat.getColor(context, R.color.dtlfb_disabled_caption_color);
+        setId(R.id.dtlfb_rootView);
+        inflate(getContext(), R.layout.view_dtl_filter_button_content, this);
+        setLayoutTransition(new LayoutTransition()); // animateLayoutChanges="true"
+        initAttributes(context, attrs);
+    }
+
+    private void initAttributes(Context context, AttributeSet attrs) {
+        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.DtlFilterButton);
+        showSeparator =
+                a.getBoolean(R.styleable.DtlFilterButton_dtlfb_show_separator, DEF_SHOW_SEPARATOR);
+        enabledBackgroundColor = ContextCompat.getColor(context,
+                a.getResourceId(R.styleable.DtlFilterButton_dtlfb_enabled_background_color,
+                        DEF_ENABLED_BACKGROUND_COLOR_RES));
+        disabledBackgroundColor = ContextCompat.getColor(context,
+                a.getResourceId(R.styleable.DtlFilterButton_dtlfb_disabled_background_color,
+                        DEF_DISABLED_BACKGROUND_COLOR_RES));
+        enabledCaptionColor = ContextCompat.getColor(context,
+                a.getResourceId(R.styleable.DtlFilterButton_dtlfb_enabled_caption_color,
+                        DEF_ENABLED_CAPTION_COLOR_RES));
+        disabledCaptionColor = ContextCompat.getColor(context,
+                a.getResourceId(R.styleable.DtlFilterButton_dtlfb_disabled_caption_color,
+                        DEF_DISABLED_CAPTION_COLOR_RES));
+        enabledIconDrawableRes = a.getResourceId(R.styleable.DtlFilterButton_dtlfb_enabled_icon,
+                DEF_ENABLED_ICON_DRAWABLE_RES);
+        disabledIconDrawableRes = a.getResourceId(R.styleable.DtlFilterButton_dtlfb_disabled_icon,
+                DEF_DISABLED_ICON_DRAWABLE_RES);
+        a.recycle();
     }
 
     @Override
@@ -61,15 +108,14 @@ public class DtlFilterButton extends FrameLayout {
             rootView.setBackgroundColor(enabledBackgroundColor);
             caption.setTextColor(enabledCaptionColor);
             caption.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    R.drawable.ic_dtl_filter_button_enabled, 0, 0, 0);
-            separator.setVisibility(INVISIBLE);
+                    enabledIconDrawableRes, 0, 0, 0);
         } else {
             rootView.setBackgroundColor(disabledBackgroundColor);
             caption.setTextColor(disabledCaptionColor);
             caption.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    R.drawable.ic_dtl_filter_button_disabled, 0, 0, 0);
-            separator.setVisibility(VISIBLE);
+                    disabledIconDrawableRes, 0, 0, 0);
         }
+        separator.setVisibility(!filterEnabled && showSeparator ? VISIBLE : GONE);
     }
 
     public void setFilterEnabled(final boolean enabled) {

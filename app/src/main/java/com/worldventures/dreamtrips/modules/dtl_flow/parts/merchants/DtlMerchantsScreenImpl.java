@@ -3,12 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -17,7 +15,6 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.selectable.SelectionManager;
 import com.worldventures.dreamtrips.core.selectable.SingleSelectionManager;
-import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -25,15 +22,14 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
+import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import rx.Observable;
 
@@ -41,20 +37,15 @@ public class DtlMerchantsScreenImpl
         extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
         implements DtlMerchantsScreen, DtlMerchantCellDelegate {
 
+    @Optional
     @InjectView(R.id.dtlToolbar)
-    DtlToolbar dtlToolbar;
-    @InjectView(R.id.filterDiningsSwitch)
-    SwitchCompat filterDiningsSwitch;
-    @InjectView(R.id.dtlfb_rootView)
-    DtlFilterButton filtersButton;
+    ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.emptyView)
     View emptyView;
-    @InjectView(R.id.filterBarRoot)
-    View filterRoot;
     //
     BaseDelegateAdapter baseDelegateAdapter;
     SelectionManager selectionManager;
@@ -83,12 +74,10 @@ public class DtlMerchantsScreenImpl
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
         // we use SwipeRefreshLayout only for loading indicator - disable manual triggering by user
         refreshLayout.setEnabled(false);
-        //
-        // TODO :: line below: fix after DT-1718 finished (new search for tablets)
-        ViewUtils.setViewVisibility(isTabletLandscape() ? View.GONE : View.VISIBLE, filterRoot);
     }
 
     private void initDtlToolbar() {
+        if (dtlToolbar == null) return;
         RxDtlToolbar.actionViewClicks(dtlToolbar)
                 .throttleFirst(250L, TimeUnit.MILLISECONDS)
                 .compose(RxLifecycle.bindView(this))
@@ -108,17 +97,21 @@ public class DtlMerchantsScreenImpl
                 .compose(RxLifecycle.bindView(this))
                 .filter(Boolean::booleanValue) // only true -> only focus gains
                 .subscribe(aBoolean -> getPresenter().locationChangeRequested());
+        RxDtlToolbar.filterButtonClicks(dtlToolbar)
+                .compose(RxLifecycle.bindView(this))
+                .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
     }
 
     @Override
     public void setFilterButtonState(boolean enabled) {
-        filtersButton.setFilterEnabled(enabled);
+        if (dtlToolbar == null) return;
+        dtlToolbar.setFilterEnabled(enabled);
     }
 
     @Override
     public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
                                    @Nullable String actualSearchQuery) {
-        if (dtlLocation == null) return;
+        if (dtlLocation == null || dtlToolbar == null) return;
         switch (dtlLocation.getLocationSourceType()) {
             case NEAR_ME:
             case EXTERNAL:
@@ -132,11 +125,6 @@ public class DtlMerchantsScreenImpl
                 dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
                 break;
         }
-    }
-
-    @OnClick(R.id.dtlfb_rootView)
-    void onFiltersCounterClicked(View view) {
-        ((FlowActivity) getActivity()).openRightDrawer();
     }
 
     @Override
@@ -162,7 +150,8 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public Observable<Boolean> getToggleObservable() {
-        return RxCompoundButton.checkedChanges(filterDiningsSwitch)
+        if (dtlToolbar == null) return Observable.empty();
+        return RxDtlToolbar.diningFilterChanges(dtlToolbar)
                 .compose(RxLifecycle.bindView(this));
     }
 
@@ -177,8 +166,9 @@ public class DtlMerchantsScreenImpl
     }
 
     @Override
-    public void toggleDiningFilterSwitch(boolean checked) {
-        filterDiningsSwitch.setChecked(checked);
+    public void toggleDiningFilterSwitch(boolean enabled) {
+        if (dtlToolbar == null) return;
+        dtlToolbar.toggleDiningFilterSwitch(enabled);
     }
 
     @Override
@@ -189,6 +179,7 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public boolean isToolbarCollapsed() {
+        if (dtlToolbar == null) return true;
         return dtlToolbar.isCollapsed();
     }
 

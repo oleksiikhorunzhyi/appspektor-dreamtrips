@@ -3,7 +3,10 @@ package com.messenger.util;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -43,7 +46,8 @@ public class MockDaggerActionService extends ActionServiceWrapper {
     }
 
     private void inject(InjectableAction action) throws IllegalAccessException {
-        Field[] fields = action.getClass().getDeclaredFields();
+        List<Field> fields = new ArrayList<>();
+        getFields(fields, action.getClass());
         for (Field field : fields) {
             if (field.getAnnotation(Inject.class) != null) {
                 ObjectProvider provider = injectionMap.get(field.getType());
@@ -52,6 +56,13 @@ public class MockDaggerActionService extends ActionServiceWrapper {
                     field.set(action, provider.provide());
                 }
             }
+        }
+    }
+
+    private void getFields(List<Field> fields, Class c) {
+        fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        for (c = c.getSuperclass(); c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
         }
     }
 

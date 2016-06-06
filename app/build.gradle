@@ -344,10 +344,10 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // janet
-    compile "com.github.techery:janet:1.0.4"
-    compile "com.github.techery:janet-command:1.0.1"
-    compile "com.github.techery.janet-http:service:1.0.2"
-    apt "com.github.techery.janet-http:service-compiler:1.0.2"
+    compile "com.github.techery:janet:1.0.5"
+    compile "com.github.techery:janet-command:1.0.3"
+    compile "com.github.techery.janet-http:service:1.0.5"
+    apt "com.github.techery.janet-http:service-compiler:1.0.5"
     compile "com.github.techery.janet-http:client-okhttp:1.0.2"
     compile "com.github.techery.janet-converters:gson:1.0.1"
     compile 'com.squareup.okhttp:logging-interceptor:2.+'

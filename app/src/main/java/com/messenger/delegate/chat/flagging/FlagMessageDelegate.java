@@ -2,7 +2,6 @@ package com.messenger.delegate.chat.flagging;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionState;
-import io.techery.janet.CommandActionBase;
 import io.techery.janet.Janet;
 import rx.Observable;
 import rx.schedulers.Schedulers;

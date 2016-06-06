@@ -37,7 +37,8 @@ public class DtlMerchantsScreenImpl
         extends DtlLayout<DtlMerchantsScreen, DtlMerchantsPresenter, DtlMerchantsPath>
         implements DtlMerchantsScreen, DtlMerchantCellDelegate {
 
-    @InjectView(R.id.dtlToolbar) @Optional
+    @Optional
+    @InjectView(R.id.dtlToolbar)
     ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.lv_items)
     EmptyRecyclerView recyclerView;

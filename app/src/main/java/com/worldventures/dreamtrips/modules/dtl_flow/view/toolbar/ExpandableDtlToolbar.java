@@ -125,7 +125,7 @@ public class ExpandableDtlToolbar extends DtlToolbar {
         navigationIconResource = a.getResourceId(R.styleable.ExpandableDtlToolbar_dtlt_navigation_icon_src,
                 DEF_NAVIGATION_ICON);
         focusedMode = FocusedMode.fromAttribute(a.getInt(R.styleable.ExpandableDtlToolbar_dtlt_focused_mode,
-                DEF_FOCUSED_MODE.id));
+                FocusedMode.UNDEFINED.id));
         a.recycle();
         if (focusedMode != FocusedMode.UNDEFINED) collapsed = false;
         showNavigation = !ViewUtils.isLandscapeOrientation(getContext());

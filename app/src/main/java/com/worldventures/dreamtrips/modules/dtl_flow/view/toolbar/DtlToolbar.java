@@ -26,8 +26,6 @@ import timber.log.Timber;
 
 public class DtlToolbar extends LinearLayout {
 
-    protected static final FocusedMode DEF_FOCUSED_MODE = FocusedMode.UNDEFINED;
-
     @InjectView(R.id.dtlfb_rootView)
     protected DtlFilterButton filtersButton;
     @InjectView(R.id.filterDiningsSwitch)

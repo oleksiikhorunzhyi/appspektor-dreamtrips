@@ -1,37 +1,37 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-
 import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
+import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.techery.janet.ActionHolder;
-import io.techery.janet.http.annotations.HttpAction;
-import io.techery.janet.http.annotations.Query;
-import io.techery.janet.http.annotations.Response;
+import javax.inject.Inject;
 
-@HttpAction("/api/dtl/v2/locations")
-public class DtlSearchLocationAction extends AuthorizedHttpAction implements CachedAction<Pair<String, List<DtlExternalLocation>>> {
+import io.techery.janet.ActionHolder;
+import io.techery.janet.CommandActionBase;
+import io.techery.janet.Janet;
+import io.techery.janet.command.annotations.CommandAction;
+
+@CommandAction
+public class DtlSearchLocationAction extends CommandActionBase<List<DtlExternalLocation>> implements CachedAction<Pair<String, List<DtlExternalLocation>>>, InjectableAction {
 
     private static final int API_SEARCH_QUERY_LENGTH = 3;
 
-    @Query("query")
-    String apiQuery;
-
-    @Response
-    List<DtlExternalLocation> response = new ArrayList<>();
+    @Inject
+    Janet janet;
 
     private final String query;
+    private String apiQuery;
     private boolean restored;
-    private List<DtlExternalLocation> filteredResponse;
+    private List<DtlExternalLocation> locations = new ArrayList<>();
 
     public DtlSearchLocationAction(String query) {
         this.query = query;
@@ -40,38 +40,48 @@ public class DtlSearchLocationAction extends AuthorizedHttpAction implements Cac
         }
     }
 
-    public List<DtlExternalLocation> getResult() {
-        if (filteredResponse == null) {
-            filteredResponse = filter(response, query);
+    @Override
+    protected void run(CommandCallback<List<DtlExternalLocation>> callback) throws Throwable {
+        if (needApiRequest()) {
+            janet.createPipe(DtlLocationsHttpAction.class)
+                    .createObservable(new DtlLocationsHttpAction(apiQuery))
+                    .compose(JanetPlainActionComposer.instance())
+                    .map(DtlLocationsHttpAction::getResponse)
+                    .subscribe(response -> {
+                        locations = response;
+                        callback.onSuccess(filter(locations, query));
+                    }, callback::onFail);
+        } else {
+            callback.onSuccess(filter(locations, query));
         }
-        return filteredResponse;
-    }
-
-    public String getQuery() {
-        return query;
     }
 
     @Override
     public Pair<String, List<DtlExternalLocation>> getCacheData() {
-        return new Pair<>(apiQuery, response);
+        return new Pair<>(apiQuery, locations);
     }
 
     @Override
     public void onRestore(ActionHolder holder, Pair<String, List<DtlExternalLocation>> cache) {
         if (apiQuery != null && apiQuery.equals(cache.first)) {
-            response = cache.second;
-            getResult();
+            locations = cache.second;
             restored = true;
         }
     }
 
     @Override
     public CacheOptions getCacheOptions() {
-        boolean needToSend = apiQuery != null && !restored;
         return ImmutableCacheOptions.builder()
-                .sendAfterRestore(needToSend)
-                .saveToCache(needToSend)
+                .saveToCache(needApiRequest())
                 .build();
+    }
+
+    private boolean needApiRequest() {
+        return !restored && apiQuery != null;
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     private static List<DtlExternalLocation> filter(List<DtlExternalLocation> result, String query) {

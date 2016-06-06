@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service.action;
 
-import android.util.Pair;
+
+import android.support.v4.util.Pair;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;

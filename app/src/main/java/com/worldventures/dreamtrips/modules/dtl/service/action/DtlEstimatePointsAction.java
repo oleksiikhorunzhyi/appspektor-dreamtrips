@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 import io.techery.janet.http.annotations.Field;
 import io.techery.janet.http.annotations.HttpAction;
@@ -29,8 +30,8 @@ public class DtlEstimatePointsAction extends AuthorizedHttpAction {
     @Response
     EstimationPointsHolder estimationPointsHolder;
 
-    public DtlEstimatePointsAction(String merchantId, Double price, String currencyCode) {
-        this.merchantId = merchantId;
+    public DtlEstimatePointsAction(DtlMerchant merchant, Double price, String currencyCode) {
+        this.merchantId = merchant.getId();
         this.price = price;
         this.currencyCode = currencyCode;
         this.checkinTime = DateTimeUtils.currentUtcString();

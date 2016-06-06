@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.module.dtl.model;
+package com.worldventures.dreamtrips.modules.dtl.model;
 
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 

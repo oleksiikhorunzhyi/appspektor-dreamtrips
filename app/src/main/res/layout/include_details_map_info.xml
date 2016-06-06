@@ -83,7 +83,7 @@
                 android:id="@+id/merchant_details_additional"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dtl_cities_background"
+                android:background="@color/light_grey_background"
                 android:divider="@drawable/list_divider_with_left_padding"
                 android:layout_alignParentBottom="true"
                 android:gravity="top"

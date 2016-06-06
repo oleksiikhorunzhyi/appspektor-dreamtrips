@@ -140,7 +140,7 @@ public class CommonModule {
 
         activeComponents.add(SettingsModule.SETTINGS);
 
-        activeComponents.add(InfoModule.FAQ);
+        activeComponents.add(InfoModule.HELP);
         activeComponents.add(InfoModule.TERMS);
 
         activeComponents.add(TripsModule.MAP_TRIPS);

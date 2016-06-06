@@ -46,6 +46,7 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
@@ -82,6 +83,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefull
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.SocialImageFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.TripPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.YSBHPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
@@ -129,6 +131,8 @@ public enum Route {
     FOREIGN_PROFILE(UserFragment.class),
     REP_TOOLS(RepToolsFragment.class),
     FAQ(StaticInfoFragment.FAQFragment.class),
+    HELP(HelpFragment.class),
+    HELP_VIDEOS(HelpVideosFragment.class),
     TERMS(TermsTabFragment.class),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),

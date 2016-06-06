@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.SendFeedbackPresenter;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
@@ -18,8 +19,10 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
+import com.worldventures.dreamtrips.modules.video.presenter.HelpVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
+import com.worldventures.dreamtrips.modules.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 import dagger.Module;
@@ -47,6 +50,10 @@ import dagger.Provides;
                 ThreeSixtyVideosFragment.class,
                 ThreeSixtyVideosPresenter.class,
 
+                HelpVideosFragment.class,
+                HelpVideosPresenter.class,
+
+                HelpFragment.class,
                 TermsTabFragment.class,
                 WebViewFragmentPresenter.class,
 
@@ -58,7 +65,7 @@ import dagger.Provides;
 )
 public class InfoModule {
 
-    public static final String FAQ = Route.FAQ.name();
+    public static final String HELP = Route.HELP.name();
     public static final String TERMS = Route.TERMS.name();
     public static final String SEND_FEEDBACK = Route.SEND_FEEDBACK.name();
 
@@ -73,8 +80,8 @@ public class InfoModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    ComponentDescription provideFAQComponent() {
-        return new ComponentDescription(FAQ, R.string.faq, R.string.faq, R.drawable.ic_faq, StaticInfoFragment.FAQFragment.class);
+    ComponentDescription provideHelpComponent() {
+        return new ComponentDescription(HELP, R.string.help, R.string.help, R.drawable.ic_help, HelpFragment.class);
     }
 
     @Provides(type = Provides.Type.SET)

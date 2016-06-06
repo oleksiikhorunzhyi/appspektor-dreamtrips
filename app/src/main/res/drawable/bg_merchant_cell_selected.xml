@@ -16,6 +16,6 @@
 -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <color android:color="@color/dtl_cities_background"/>
+        <color android:color="@color/light_grey_background"/>
     </item>
 </layer-list>

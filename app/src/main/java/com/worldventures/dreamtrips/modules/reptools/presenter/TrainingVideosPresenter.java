@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
@@ -18,10 +19,10 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class TrainingVideosPresenter extends PresentationVideosPresenter<TrainingVideosPresenter.View> {
+public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> extends PresentationVideosPresenter<T> {
 
-    VideoLocale videoLocale = null;
-    VideoLanguage videoLanguage = null;
+    protected VideoLocale videoLocale = null;
+    protected VideoLanguage videoLanguage = null;
 
     @Inject
     SnappyRepository db;
@@ -30,8 +31,13 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     public void onResume() {
         videoLocale = db.getLastSelectedVideoLocale();
         videoLanguage = db.getLastSelectedVideoLanguage();
-
+        //
         super.onResume();
+        trackAnalyticsOnPostResume();
+    }
+
+    protected void trackAnalyticsOnPostResume() {
+        TrackingHelper.viewRepToolsTrainingVideoScreen();
     }
 
     @Override
@@ -103,6 +109,11 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     protected void addCategoryHeader(String category, List<Video> videos, int index) {
         currentItems.add(new VideoHeader(category, index == 0));
         currentItems.addAll(videos);
+    }
+
+    @Override
+    public void sendAnalytic(String action, String name) {
+        TrackingHelper.actionRepToolsTrainingVideo(action, name);
     }
 
     @Override

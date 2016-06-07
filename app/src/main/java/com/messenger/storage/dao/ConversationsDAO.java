@@ -197,7 +197,7 @@ public class ConversationsDAO extends BaseDAO {
 
         boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("AND c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
+            query.append("WHERE c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
         }
 
         if (!TextUtils.isEmpty(searchQuery)) {

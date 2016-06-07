@@ -28,6 +28,7 @@ import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.SelectionListenerEditText;
 import com.messenger.util.ScrollStatePersister;
 import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
@@ -94,15 +95,10 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         BaseDelegateAdapter<Object> adapter = new BaseDelegateAdapter<>(getContext(), injector);
         adapter.registerCell(SelectableDataUser.class, CheckableUserCell.class);
         adapter.registerCell(Header.class, HeaderCell.class);
-        adapter.registerDelegate(SelectableDataUser.class, new CheckableUserCell.Delegate() {
+        adapter.registerDelegate(SelectableDataUser.class, new CellDelegate<SelectableDataUser>() {
             @Override
             public void onCellClicked(SelectableDataUser model) {
-                getPresenter().openUserProfile(model.getDataUser());
-            }
-
-            @Override
-            public void onItemSelectChanged(SelectableDataUser item) {
-                getPresenter().onItemSelectChange(item);
+                getPresenter().onItemSelectChange(model);
             }
         });
         return adapter;

@@ -24,32 +24,34 @@ public class XmppConversationsListLoader extends XmppBaseConversationsLoader imp
 
     public XmppConversationsListLoader(XmppServerFacade facade) {
         super(facade);
+        ConversationListProvider provider = new ConversationListProvider(facade.getGson());
         ProviderManager.addIQProvider(
-                ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE,
-                new ConversationListProvider(facade.getGson())
-        );
+                ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE, provider);
     }
 
     @Override
     public Observable<List<Conversation>> load() {
         return facade.getConnectionObservable()
+                .take(1)
                 .flatMap(this::loadConversations)
                 .flatMap(this::loadParticipants);
     }
 
     private Observable<List<Conversation>> loadConversations(XMPPConnection connection) {
-        return Observable.create(subscriber -> {
+        return Observable.<List<Conversation>>create(subscriber -> {
             try {
                 connection.sendStanzaWithResponseCallback(createConversationStanza(),
                         this::stanzaFilter, stanza -> {
-                            subscriber.onNext(((ConversationListIQ) stanza).getConversations());
+                            List<Conversation> data = ((ConversationListIQ) stanza).getConversations();
+                            subscriber.onNext(data);
                             subscriber.onCompleted();
                         },
                         subscriber::onError);
             } catch (SmackException.NotConnectedException e) {
                 subscriber.onError(new ConnectionException(e));
             }
-        });
+        }).doOnUnsubscribe(() ->
+                ProviderManager.removeIQProvider(ConversationListIQ.ELEMENT_LIST, ConversationListIQ.NAMESPACE));
     }
 
     private boolean stanzaFilter(Stanza stanza) {

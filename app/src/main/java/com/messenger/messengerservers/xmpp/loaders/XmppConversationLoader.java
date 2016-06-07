@@ -29,6 +29,7 @@ public class XmppConversationLoader extends XmppBaseConversationsLoader implemen
     @Override
     public Observable<Conversation> load() {
         return facade.getConnectionObservable()
+                .take(1)
                 .flatMap(this::loadConversation)
                 .flatMap(this::loadParticipants);
     }

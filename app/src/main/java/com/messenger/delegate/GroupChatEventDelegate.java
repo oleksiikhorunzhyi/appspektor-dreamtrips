@@ -3,6 +3,7 @@ package com.messenger.delegate;
 import android.text.TextUtils;
 
 import com.messenger.delegate.conversation.LoadConversationDelegate;
+import com.messenger.delegate.conversation.command.SyncConversationCommand;
 import com.messenger.entities.DataParticipant;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.Affiliation;
@@ -24,18 +25,12 @@ import timber.log.Timber;
 
 public class GroupChatEventDelegate {
 
-    @Inject
-    MessengerServerFacade messengerServerFacade;
-    @Inject
-    ConversationsDAO conversationsDAO;
-    @Inject
-    ParticipantsDAO participantsDAO;
-    @Inject
-    UsersDAO usersDAO;
-    @Inject
-    SessionHolder<UserSession> currentUserSession;
-    @Inject
-    LoadConversationDelegate loadConversationDelegate;
+    @Inject MessengerServerFacade messengerServerFacade;
+    @Inject ConversationsDAO conversationsDAO;
+    @Inject ParticipantsDAO participantsDAO;
+    @Inject UsersDAO usersDAO;
+    @Inject SessionHolder<UserSession> currentUserSession;
+    @Inject LoadConversationDelegate loadConversationDelegate;
 
     @Inject
     public GroupChatEventDelegate(@ForApplication Injector injector) {
@@ -43,9 +38,8 @@ public class GroupChatEventDelegate {
     }
 
     public void onChatInvited(String conversationId) {
-        if (currentUserSession.get() == null || currentUserSession.get().get() == null
-                || !currentUserSession.get().isPresent()) return;
-        reloadConversation(conversationId);
+        loadConversationDelegate.getSyncConversationPipe()
+                .send(new SyncConversationCommand(conversationId));
     }
 
     public void onSubjectChanged(String conversationId, String subject){
@@ -69,38 +63,26 @@ public class GroupChatEventDelegate {
     }
 
     public void onChatLeft(String conversationId, String userId) {
-        Timber.i("User left :: chat=%s , user=%s", conversationId, userId);
-
         handleRemovingMember(conversationId, userId);
     }
 
     public void onKicked(String conversationId, String userId) {
-        Timber.i("User kicked :: chat=%s , user=%s", conversationId, userId);
-
         handleRemovingMember(conversationId, userId);
     }
 
     private void handleRemovingMember(String conversationId, String userId) {
-        if (TextUtils.equals(messengerServerFacade.getUsername(), userId)) {
-            reloadConversation(conversationId);
-        } else {
-            Observable
-                    .fromCallable(() -> removeFromConversation(conversationId, userId))
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(p -> {}, e -> Timber.e(e, ""));
-        }
+        Observable
+                .fromCallable(() -> removeFromConversation(conversationId, userId))
+                .flatMap(dataParticipant ->  loadConversationDelegate.getSyncConversationPipe()
+                        .createObservableResult(new SyncConversationCommand(conversationId)))
+                .subscribeOn(Schedulers.io())
+                .subscribe(p -> {}, e -> Timber.e(e, ""));
     }
 
     private DataParticipant removeFromConversation(String conversationId, String userId) {
         DataParticipant participant = new DataParticipant(conversationId, userId, Affiliation.NONE);
         participantsDAO.save(Collections.singletonList(participant));
         return participant;
-    }
-
-    private void reloadConversation(String conversationId) {
-        loadConversationDelegate.loadConversationFromNetwork(conversationId)
-                .subscribeOn(Schedulers.io())
-                .subscribe(c -> {}, throwable -> Timber.e(throwable, ""));
     }
 
 }

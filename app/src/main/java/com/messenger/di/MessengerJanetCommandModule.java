@@ -16,8 +16,8 @@ import com.messenger.delegate.conversation.command.LoadConversationCommand;
 import com.messenger.delegate.conversation.command.LoadConversationsCommand;
 import com.messenger.delegate.conversation.command.SyncConversationCommand;
 import com.messenger.delegate.conversation.command.SyncConversationsCommand;
-import com.messenger.delegate.user.FetchUsersDataCommand;
 import com.messenger.delegate.roster.LoadContactsCommand;
+import com.messenger.delegate.user.FetchUsersDataCommand;
 
 import dagger.Module;
 

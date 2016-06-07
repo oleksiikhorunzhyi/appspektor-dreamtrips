@@ -24,6 +24,10 @@ public class LoadConversationDelegate {
         this.conversationsDAO = conversationsDAO;
     }
 
+    public ActionPipe<SyncConversationCommand> getSyncConversationPipe() {
+        return syncConversationPipe;
+    }
+
     public Observable<Conversation> loadConversationFromNetwork(String conversationId) {
         return syncConversationPipe.createObservableResult(new SyncConversationCommand(conversationId))
                 .map(Command::getResult);

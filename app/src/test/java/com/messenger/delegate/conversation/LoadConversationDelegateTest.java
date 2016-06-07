@@ -10,6 +10,7 @@ import com.messenger.messengerservers.loaders.ConversationLoader;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.ImmutableParticipant;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.util.BaseTest;
 import com.messenger.util.MockDaggerActionService;
 import com.messenger.util.serverfacade.BaseLoaderManager;
@@ -55,6 +56,7 @@ public class LoadConversationDelegateTest extends BaseTest {
     @Mock ConversationSyncHelper conversationSyncHelper;
     @Mock MessengerServerFacade messengerServerFacade;
     @Mock UsersDelegate usersDelegate;
+    @Mock ConversationsDAO conversationsDAO;
 
     private LoadConversationDelegate loadConversationDelegate;
 
@@ -80,7 +82,7 @@ public class LoadConversationDelegateTest extends BaseTest {
         daggerActionService.registerProvider(MessengerServerFacade.class, () -> messengerServerFacade);
         daggerActionService.registerProvider(UsersDelegate.class, () -> usersDelegate);
 
-        loadConversationDelegate = new LoadConversationDelegate(janet);
+        loadConversationDelegate = new LoadConversationDelegate(janet, conversationsDAO);
     }
 
     @Test

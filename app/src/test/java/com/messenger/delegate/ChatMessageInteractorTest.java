@@ -4,10 +4,12 @@ import com.messenger.delegate.chat.message.ChatMessageInteractor;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
 import com.messenger.delegate.chat.message.RetrySendMessageCommand;
 import com.messenger.entities.DataMessage;
-import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.MockDaggerActionService;
+import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -30,11 +32,11 @@ import static org.mockito.Mockito.doReturn;
 @PrepareForTest(MessengerDatabase.class)
 public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
 
-    @Mock
-    LocaleHelper localeHelper;
+    @Mock LocaleHelper localeHelper;
+    @Mock SessionHolder<UserSession> sessionHolder;
+    @Mock Optional<UserSession> userSessionOptional;
 
     private MessageBodyCreator messageBodyCreator;
-    private DataUser currentUser;
     private ChatMessageInteractor chatMessageInteractor;
 
     private String testText = "dummy_text";
@@ -47,7 +49,12 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
         super.setup();
         messageBodyCreator = new MessageBodyCreator(localeHelper, new User());
         doReturn(Locale.getDefault()).when(localeHelper).getAccountLocale(any());
-        currentUser = new DataUser(testDataUserId);
+
+        UserSession userSession = new UserSession();
+        userSession.setUsername(testDataUserId);
+
+        doReturn(userSessionOptional).when(sessionHolder).get();
+        doReturn(userSession).when(userSessionOptional).get();
 
         chatMessageInteractor = new ChatMessageInteractor(mockJanet());
     }
@@ -56,7 +63,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
     public void checkSendMessage() {
         TestSubscriber<ChatSendMessageCommand> subscriber = new TestSubscriber<>();
         chatMessageInteractor.getMessageActionPipe().
-                createObservableSuccess(new ChatSendMessageCommand(testConversationId, testText))
+                createObservableResult(new ChatSendMessageCommand(testConversationId, testText))
                 .subscribe(subscriber);
 
         subscriber.assertNoErrors();
@@ -78,7 +85,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
 
         TestSubscriber<RetrySendMessageCommand> subscriber = new TestSubscriber<>();
         chatMessageInteractor.getResendMessagePipe().
-                createObservableSuccess(new RetrySendMessageCommand(failedMessage))
+                createObservableResult(new RetrySendMessageCommand(failedMessage))
                 .subscribe(subscriber);
 
         subscriber.assertNoErrors();
@@ -96,7 +103,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
     protected MockDaggerActionService provideMockActionService() {
         MockDaggerActionService actionService = super.provideMockActionService();
         actionService.registerProvider(MessageBodyCreator.class, () -> messageBodyCreator);
-        actionService.registerProvider(DataUser.class, () -> currentUser);
+        actionService.registerProvider(SessionHolder.class, () -> sessionHolder);
         return actionService;
     }
 }

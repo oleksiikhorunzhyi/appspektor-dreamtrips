@@ -13,27 +13,27 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
     @Inject
-    DtlMerchantService merchantService;
+    DtlMerchantInteractor merchantInteractor;
     @Inject
-    DtlTransactionService transactionService;
+    DtlTransactionInteractor transactionInteractor;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
@@ -46,7 +46,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantService.merchantByIdPipe()
+        merchantInteractor.merchantByIdPipe()
                 .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(ImmediateComposer.instance())
                 .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
@@ -61,7 +61,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         //
         view.setMerchant(dtlMerchant);
         //
-        transactionService.transactionActionPipe().createObservable(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe().createObservable(DtlTransactionAction.get(dtlMerchant))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
                         .onFail(apiErrorPresenter::handleActionError)
@@ -76,7 +76,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     }
 
     private void bindApiJob() {
-        transactionService.earnPointsActionPipe().observeWithReplay()
+        transactionInteractor.earnPointsActionPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>()
                         .onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
@@ -86,7 +86,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
     public void codeScanned(String scannedQr) {
         TrackingHelper.dtlScanMerchant(scannedQr);
-        transactionService.transactionActionPipe().createObservable(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe().createObservable(DtlTransactionAction.get(dtlMerchant))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
                         .onFail(apiErrorPresenter::handleActionError)
@@ -95,7 +95,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                                 DtlTransaction dtlTransaction = action.getResult();
                                 dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
                                         .withMerchantToken(scannedQr);
-                                transactionService.transactionActionPipe().send(DtlTransactionAction.save(dtlMerchant, dtlTransaction));
+                                transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(dtlMerchant, dtlTransaction));
                                 checkReceiptUploading(dtlTransaction);
                             }
                         }));
@@ -105,7 +105,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     }
 
     public void photoUploadFailed() {
-        transactionService.transactionActionPipe().createObservable(DtlTransactionAction.clean(dtlMerchant))
+        transactionInteractor.transactionActionPipe().createObservable(DtlTransactionAction.clean(dtlMerchant))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
                         .onFail(apiErrorPresenter::handleActionError)
@@ -118,11 +118,11 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     }
 
     private void onReceiptUploaded() {
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
-                .map(CommandActionBase::getResult)
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(Command::getResult)
                 .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
                         .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
-                .subscribe(dtlTransaction -> transactionService.earnPointsActionPipe().send(
+                .subscribe(dtlTransaction -> transactionInteractor.earnPointsActionPipe().send(
                         new DtlEarnPointsAction(dtlMerchant, dtlTransaction)
                 ), apiErrorPresenter::handleError);
 
@@ -131,12 +131,12 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .map(transaction -> ImmutableDtlTransaction.copyOf(transaction).withMerchantToken(null))
                 .flatMap(transaction ->
-                        transactionService.transactionActionPipe()
-                                .createObservableSuccess(DtlTransactionAction.save(dtlMerchant, transaction))
+                        transactionInteractor.transactionActionPipe()
+                                .createObservableResult(DtlTransactionAction.save(dtlMerchant, transaction))
                 )
                 .compose(bindViewIoToMainComposer())
                 .subscribe(action -> {
@@ -147,7 +147,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         TrackingHelper.dtlPointsEarned(Double.valueOf(action.getResult().getEarnedPoints()).intValue());
         view.hideProgress();
         //
-        transactionService.transactionActionPipe()
+        transactionInteractor.transactionActionPipe()
                 .send(DtlTransactionAction.save(action.getMerchant(),
                         ImmutableDtlTransaction.copyOf(action.getTransaction())
                                 .withDtlTransactionResult(action.getResult())));
@@ -194,8 +194,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
     @Override
     public void onStateChanged(int id, TransferState state) {
-        transactionService.transactionActionPipe()
-                .createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe()
+                .createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .filter(transaction -> Integer.valueOf(transaction.getUploadTask().getAmazonTaskId()) == id)
                 .compose(bindViewIoToMainComposer())

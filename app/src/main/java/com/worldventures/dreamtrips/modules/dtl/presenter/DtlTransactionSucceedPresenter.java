@@ -8,8 +8,8 @@ import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
@@ -22,9 +22,9 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
 
     @Inject
-    DtlMerchantService merchantService;
+    DtlMerchantInteractor merchantInteractor;
     @Inject
-    DtlTransactionService transactionService;
+    DtlTransactionInteractor transactionInteractor;
     //
     @State
     int stars;
@@ -39,7 +39,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantService.merchantByIdPipe()
+        merchantInteractor.merchantByIdPipe()
                 .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(ImmediateComposer.instance())
                 .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
@@ -52,7 +52,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     }
 
     public void share() {
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction ->
@@ -62,10 +62,10 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
 
     public void done() {
         if (stars != 0) {
-            transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+            transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                     .map(DtlTransactionAction::getResult)
                     .flatMap(transaction ->
-                            transactionService.rateActionPipe().createObservableSuccess(new DtlRateAction(dtlMerchant, stars, transaction))
+                            transactionInteractor.rateActionPipe().createObservableResult(new DtlRateAction(dtlMerchant, stars, transaction))
                     ).compose(bindViewIoToMainComposer())
                     .subscribe(action -> {
                     }, apiErrorPresenter::handleError);
@@ -77,7 +77,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction -> view.setCongratulations(transaction.getDtlTransactionResult()),
@@ -86,7 +86,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     }
 
     private void bindApiPipe() {
-        transactionService.rateActionPipe().observe()
+        transactionInteractor.rateActionPipe().observe()
                 .subscribe(new ActionStateSubscriber<DtlRateAction>()
                         .onFail(apiErrorPresenter::handleActionError));
     }

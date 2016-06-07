@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import android.location.Location;
 
-import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
@@ -15,12 +14,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlMerchantsAction extends CommandActionBase<List<DtlMerchant>> implements CachedAction<List<DtlMerchant>>, InjectableAction {
+public class DtlMerchantsAction extends Command<List<DtlMerchant>> implements CachedAction<List<DtlMerchant>>, InjectableAction {
 
     @Inject
     Janet janet;
@@ -37,8 +36,7 @@ public class DtlMerchantsAction extends CommandActionBase<List<DtlMerchant>> imp
     protected void run(CommandCallback<List<DtlMerchant>> callback) throws Throwable {
         if (location != null) {
             janet.createPipe(DtlLoadMerchantsAction.class)
-                    .createObservable(new DtlLoadMerchantsAction(location))
-                    .compose(JanetPlainActionComposer.instance())
+                    .createObservableResult(new DtlLoadMerchantsAction(location))
                     .map(DtlLoadMerchantsAction::getResponse)
                     .subscribe(callback::onSuccess, callback::onFail);
         } else {

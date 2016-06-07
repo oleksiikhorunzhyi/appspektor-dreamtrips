@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.filter;
 
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
 
 import javax.inject.Inject;
 
@@ -12,7 +12,7 @@ import rx.subjects.PublishSubject;
 public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
     @Inject
-    DtlFilterMerchantService filterService;
+    DtlFilterMerchantInteractor filterInteractor;
 
     protected FilterView view;
 
@@ -21,7 +21,9 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
     @Override
     public void onDrawerToggle(boolean show) {
         if (view != null && show) {
-            filterService.getFilterData()
+            filterInteractor.filterDataPipe().observeSuccessWithReplay()
+                    .first()
+                    .map(DtlFilterDataAction::getResult)
                     .subscribeOn(Schedulers.immediate())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(view::syncUi);
@@ -47,18 +49,18 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
     @Override
     public void apply() {
-        filterService.filterDataPipe().send(DtlFilterDataAction.applyParams(view.getFilterParameters()));
+        filterInteractor.filterDataPipe().send(DtlFilterDataAction.applyParams(view.getFilterParameters()));
         closeDrawer();
     }
 
     @Override
     public void resetAll() {
-        filterService.filterDataPipe().send(DtlFilterDataAction.reset());
+        filterInteractor.filterDataPipe().send(DtlFilterDataAction.reset());
         closeDrawer();
     }
 
     private void connectFilter() {
-        filterService.filterDataPipe()
+        filterInteractor.filterDataPipe()
                 .observeSuccess()
                 .map(DtlFilterDataAction::getResult)
                 .observeOn(AndroidSchedulers.mainThread())

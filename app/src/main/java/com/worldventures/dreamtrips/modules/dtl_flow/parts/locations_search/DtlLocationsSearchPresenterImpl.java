@@ -8,11 +8,11 @@ import android.view.MenuItem;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
@@ -28,9 +28,9 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
         implements DtlLocationsSearchPresenter {
 
     @Inject
-    DtlFilterMerchantService filterService;
+    DtlFilterMerchantInteractor filterInteractor;
     @Inject
-    DtlLocationService locationService;
+    DtlLocationInteractor locationInteractor;
 
     public DtlLocationsSearchPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -47,7 +47,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     }
 
     private void connectLocationsSearch() {
-        locationService.searchLocationPipe().observeWithReplay()
+        locationInteractor.searchLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlSearchLocationAction>()
                         .onStart(command -> getView().showProgress())
@@ -76,15 +76,15 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     }
 
     private void sendSearchAction(String query) {
-        locationService.searchLocationPipe().cancelLatest();
-        locationService.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
+        locationInteractor.searchLocationPipe().cancelLatest();
+        locationInteractor.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
     }
 
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
-        locationService.locationPipe().send(DtlLocationCommand.change(location));
-        filterService.filterMerchantsActionPipe().clearReplays();
+        locationInteractor.locationPipe().send(DtlLocationCommand.change(location));
+        filterInteractor.filterMerchantsActionPipe().clearReplays();
         History history = History.single(new DtlMerchantsPath());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }

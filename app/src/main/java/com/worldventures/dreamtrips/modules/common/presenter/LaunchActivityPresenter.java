@@ -28,9 +28,9 @@ import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.StaticPageConfig;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.settings.api.GetSettingsQuery;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
@@ -67,7 +67,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     SnappyRepository db;
     @Inject
-    DtlLocationService dtlLocationService;
+    DtlLocationInteractor dtlLocationInteractor;
     @Inject
     GlobalConfigManager globalConfigManager;
     @Inject
@@ -103,7 +103,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     public void initDtl() {
         db.cleanLastSelectedOffersOnlyToggle();
         db.cleanLastMapCameraPosition();
-        dtlLocationService.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
+        dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
     }
 
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {

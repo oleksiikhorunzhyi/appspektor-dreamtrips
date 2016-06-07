@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 
@@ -26,9 +26,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     protected final String merchantId;
 
     @Inject
-    DtlTransactionService transactionService;
+    DtlTransactionInteractor transactionInteractor;
     @Inject
-    DtlMerchantService merchantService;
+    DtlMerchantInteractor merchantInteractor;
     //
     private DtlMerchant dtlMerchant;
 
@@ -39,7 +39,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantService.merchantByIdPipe()
+        merchantInteractor.merchantByIdPipe()
                 .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(ImmediateComposer.instance())
                 .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
@@ -56,7 +56,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     }
 
     private void bindApiJob() {
-        transactionService.estimatePointsActionPipe().observeWithReplay()
+        transactionInteractor.estimatePointsActionPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
                         .onStart(action -> view.showProgress())
@@ -67,7 +67,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     public void onCalculateClicked(String userInput) {
         if (!validateInput(userInput)) return;
         //
-        transactionService.estimatePointsActionPipe()
+        transactionInteractor.estimatePointsActionPipe()
                 .send(new DtlEstimatePointsAction(dtlMerchant, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
     }
 

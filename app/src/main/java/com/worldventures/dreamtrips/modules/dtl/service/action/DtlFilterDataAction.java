@@ -20,12 +20,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func2;
 
 @CommandAction
-public class DtlFilterDataAction extends CommandActionBase<DtlFilterData> implements CachedAction<DtlFilterData>, InjectableAction {
+public class DtlFilterDataAction extends Command<DtlFilterData> implements CachedAction<DtlFilterData>, InjectableAction {
 
     @Inject
     SnappyRepository db;

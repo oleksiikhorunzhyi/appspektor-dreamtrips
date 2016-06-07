@@ -12,11 +12,11 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlUpdateAmenitiesAction extends CommandActionBase<List<DtlMerchantAttribute>> implements InjectableAction {
+public class DtlUpdateAmenitiesAction extends Command<List<DtlMerchantAttribute>> implements InjectableAction {
 
     @Inject
     SnappyRepository db;

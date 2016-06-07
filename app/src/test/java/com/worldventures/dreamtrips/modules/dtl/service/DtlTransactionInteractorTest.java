@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @PrepareForTest(DateTimeUtils.class)
-public class DtlTransactionServiceTest extends BaseTest {
+public class DtlTransactionInteractorTest extends BaseTest {
 
     private static DtlMerchant testMerchant = mock(DtlMerchant.class);
     private static DtlTransaction testTransaction = mock(DtlTransaction.class);
@@ -57,7 +57,7 @@ public class DtlTransactionServiceTest extends BaseTest {
         when(testTransaction.asTransactionRequest(anyString())).thenReturn(mock(DtlTransaction.Request.class));
     }
 
-    private DtlTransactionService transactionService;
+    private DtlTransactionInteractor transactionInteractor;
     private SnappyRepository db;
 
     @Before
@@ -77,7 +77,7 @@ public class DtlTransactionServiceTest extends BaseTest {
                                 .build()))
                 .build();
 
-        transactionService = new DtlTransactionService(janet);
+        transactionInteractor = new DtlTransactionInteractor(janet);
 
         db = spy(SnappyRepository.class);
         when(db.getDtlTransaction(anyString())).thenReturn(testTransaction);
@@ -135,7 +135,7 @@ public class DtlTransactionServiceTest extends BaseTest {
     @Test
     public void testDtlEstimatePointsAction() {
         TestSubscriber<ActionState<DtlEstimatePointsAction>> subscriber = new TestSubscriber<>();
-        transactionService.estimatePointsActionPipe()
+        transactionInteractor.estimatePointsActionPipe()
                 .createObservable(new DtlEstimatePointsAction(testMerchant, Double.MAX_VALUE, ""))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getEstimationPointsHolder() != null);
@@ -144,7 +144,7 @@ public class DtlTransactionServiceTest extends BaseTest {
     @Test
     public void testDtlRateAction() {
         TestSubscriber<ActionState<DtlRateAction>> subscriber = new TestSubscriber<>();
-        transactionService.rateActionPipe()
+        transactionInteractor.rateActionPipe()
                 .createObservable(new DtlRateAction(testMerchant, 5, testTransaction))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getErrorResponse() == null);
@@ -153,7 +153,7 @@ public class DtlTransactionServiceTest extends BaseTest {
     @Test
     public void testDtlEarnPointsAction() {
         TestSubscriber<ActionState<DtlEarnPointsAction>> subscriber = new TestSubscriber<>();
-        transactionService.earnPointsActionPipe()
+        transactionInteractor.earnPointsActionPipe()
                 .createObservable(new DtlEarnPointsAction(testMerchant, testTransaction))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getResult() != null);
@@ -161,7 +161,7 @@ public class DtlTransactionServiceTest extends BaseTest {
 
     private void checkTransactionAction(DtlTransactionAction transactionAction, Func1<DtlTransactionAction, Boolean> assertPredicate) {
         TestSubscriber<ActionState<DtlTransactionAction>> subscriber = new TestSubscriber<>();
-        transactionService.transactionActionPipe()
+        transactionInteractor.transactionActionPipe()
                 .createObservable(transactionAction)
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, assertPredicate);

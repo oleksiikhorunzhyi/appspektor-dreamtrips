@@ -15,12 +15,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTr
 import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.functions.Func1;
 
 @CommandAction
-public class DtlTransactionAction extends CommandActionBase<DtlTransaction> implements CachedAction<Pair<String, DtlTransaction>>, InjectableAction {
+public class DtlTransactionAction extends Command<DtlTransaction> implements CachedAction<Pair<String, DtlTransaction>>, InjectableAction {
 
     @Inject
     SnappyRepository db;

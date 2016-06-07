@@ -54,7 +54,7 @@ public class UserProcessor {
 
         List<String> userNames = from(messengerUsers).map(MessengerUser::getName).toList();
         return shortProfilePipe
-                .createObservableSuccess(new GetShortProfileAction(userNames))
+                .createObservableResult(new GetShortProfileAction(userNames))
                 .flatMap(action -> syncCashedUser(messengerUsers, action.getShortUsers()));
     }
 

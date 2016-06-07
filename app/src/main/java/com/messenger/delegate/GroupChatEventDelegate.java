@@ -16,6 +16,7 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -73,6 +74,7 @@ public class GroupChatEventDelegate {
     private void handleRemovingMember(String conversationId, String userId) {
         Observable
                 .fromCallable(() -> removeFromConversation(conversationId, userId))
+                .flatMap(participant -> Observable.timer(1, TimeUnit.SECONDS).map(secs -> participant)) //TODO remove it, just to be sure it is hungarian sheet
                 .flatMap(dataParticipant ->  loadConversationDelegate.getSyncConversationPipe()
                         .createObservableResult(new SyncConversationCommand(conversationId)))
                 .subscribeOn(Schedulers.io())
@@ -82,6 +84,10 @@ public class GroupChatEventDelegate {
     private DataParticipant removeFromConversation(String conversationId, String userId) {
         DataParticipant participant = new DataParticipant(conversationId, userId, Affiliation.NONE);
         participantsDAO.save(Collections.singletonList(participant));
+
+        if (TextUtils.equals(userId, currentUserSession.get().get().getUsername())) {
+            conversationsDAO.markAsLeft(conversationId);
+        }
         return participant;
     }
 

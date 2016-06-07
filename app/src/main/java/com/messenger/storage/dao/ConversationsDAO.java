@@ -237,6 +237,14 @@ public class ConversationsDAO extends BaseDAO {
         getContentResolver().notifyChange(DataConversation.CONTENT_URI, null);
     }
 
+    public void markAsLeft(String conversationId) {
+        new Update<>(DataConversation.class)
+                .set(DataConversation$Table.STATUS + " = '" + ConversationStatus.LEFT + "'")
+                .where(Condition.column(DataConversation$Table._ID).is(conversationId))
+                .queryClose();
+        getContentResolver().notifyChange(DataConversation.CONTENT_URI, null);
+    }
+
     public Observable<Integer> getUnreadConversationsCount() {
         String selection = "SELECT con." + DataConversation$Table._ID // cause Count(con._id) is interpreted as field for every id
                 + " FROM " + DataConversation.TABLE_NAME + " con"

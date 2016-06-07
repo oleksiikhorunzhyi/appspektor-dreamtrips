@@ -30,7 +30,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 
-
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     @Inject
@@ -42,10 +41,10 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     ArrayList<ActivityModel> activities = new ArrayList<>();
     @State
     ArrayList<ActivityModel> parentActivities = new ArrayList<>();
+
     /**
      * variables for filtering
      */
-
     @State
     FilterModel filterModel;
     @State
@@ -133,7 +132,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
                 activity.setChecked(isChecked);
             }
         }
-        tripFilterData.setAcceptedActivities(parentActivities);
     }
 
     public void acceptFilters() {
@@ -153,11 +151,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         setRegionsChecked(true);
         setThemesChecked(true);
         view.dataSetChanged();
-
-        FilterBusEvent filterBusEvent = new FilterBusEvent(TripsFilterData.createDefault(db));
-
+        //
+        tripFilterData = TripsFilterData.createDefault(db);
+        FilterBusEvent filterBusEvent = new FilterBusEvent(tripFilterData);
         eventBus.removeAllStickyEvents();
         eventBus.postSticky(filterBusEvent);
+        TrackingHelper.actionFilterTrips(tripFilterData);
     }
 
     private List<ActivityModel> getParentActivities() {
@@ -165,30 +164,16 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     private ArrayList<RegionModel> getAcceptedRegions() {
-        if (regionHeaderModel.isChecked()) {
-            return null;
-        }
-
-        ArrayList<RegionModel> regionsList = null;
-
+        ArrayList<RegionModel> regionsList = new ArrayList<>();
         if (regions != null) {
-            regionsList = new ArrayList<>();
-            for (RegionModel region : regions) {
-                if (region.isChecked()) {
-                    regionsList.add(region);
-                }
-            }
+            Queryable.from(regions).filter(RegionModel::isChecked).forEachR(regionsList::add);
         }
 
         return regionsList;
     }
 
     private ArrayList<ActivityModel> getAcceptedThemes() {
-        if (themeHeaderModel.isChecked()) {
-            return null;
-        }
-
-        ArrayList<ActivityModel> themesList = null;
+        ArrayList<ActivityModel> themesList = new ArrayList<>();
         if (parentActivities != null) {
             themesList = new ArrayList<>();
             for (ActivityModel activity : parentActivities) {
@@ -229,7 +214,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void onFilterShowSoldOutEvent(boolean isSoldOut) {
         tripFilterData.setShowSoldOut(isSoldOut);
-
     }
 
     public void onFilterShowFavoritesEvent(boolean isSoldOut) {
@@ -249,7 +233,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void onCheckBoxAllThemePressedEvent(boolean isChecked) {
         setThemesChecked(isChecked);
         tripFilterData.setAcceptedActivities(getAcceptedThemes());
-
         view.dataSetChanged();
     }
 
@@ -289,9 +272,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     public interface View extends Presenter.View {
+
         void dataSetChanged();
 
         BaseArrayListAdapter getAdapter();
     }
-
 }

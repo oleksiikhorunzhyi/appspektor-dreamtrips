@@ -181,7 +181,8 @@ public class TripsFilterData implements Serializable {
     }
 
     public String getAcceptedActivitiesAnalyticString() {
-        return TextUtils.join(",", Queryable.from(acceptedActivities).map(ActivityModel::getName).toList());
+        return TextUtils.join(",", Queryable.from(acceptedActivities).filter(activity -> activity.getParentId() == 0)
+                .map(ActivityModel::getName).toList());
     }
 
 }

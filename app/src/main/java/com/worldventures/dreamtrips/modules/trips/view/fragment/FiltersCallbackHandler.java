@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
 
 public class FiltersCallbackHandler {
 
-
     public void init(BaseDelegateAdapter adapter, FiltersPresenter presenter) {
         setDateFilterItemDelegate(adapter, presenter);
         setFilterRecentlyAddedModelDelegate(adapter, presenter);
@@ -40,7 +39,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(ActivityModel.class, new ThemeCell.Delegate() {
             @Override
             public void onCellClicked(ActivityModel model) {
-
             }
 
             @Override
@@ -54,7 +52,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(RegionModel.class, new RegionCell.Delegate() {
             @Override
             public void onCellClicked(RegionModel model) {
-
             }
 
             @Override
@@ -68,7 +65,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(FilterModel.class, new FilterRangeBarsCell.Delegate() {
             @Override
             public void onCellClicked(FilterModel model) {
-
             }
 
             @Override
@@ -79,9 +75,7 @@ public class FiltersCallbackHandler {
             @Override
             public void rangeBarPriceEvent(double minPrice, double maxPrice) {
                 presenter.onRangeBarPriceEvent(minPrice, maxPrice);
-
             }
-
         });
     }
 
@@ -89,7 +83,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(RegionHeaderModel.class, new HeaderRegionCell.Delegate() {
             @Override
             public void onCellClicked(RegionHeaderModel model) {
-
             }
 
             @Override
@@ -103,7 +96,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(ThemeHeaderModel.class, new HeaderThemeCell.Delegate() {
             @Override
             public void onCellClicked(ThemeHeaderModel model) {
-
             }
 
             @Override
@@ -131,7 +123,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(FilterFavoriteModel.class, new FavoritesCell.Delegate() {
             @Override
             public void onCellClicked(FilterFavoriteModel model) {
-
             }
 
             @Override
@@ -145,7 +136,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(FilterRecentlyAddedModel.class, new FilterRecentlyAddedCell.Delegate() {
             @Override
             public void onCellClicked(FilterRecentlyAddedModel model) {
-
             }
 
             @Override
@@ -159,7 +149,6 @@ public class FiltersCallbackHandler {
         adapter.registerDelegate(DateFilterItem.class, new DateCell.Delegate() {
             @Override
             public void onCellClicked(DateFilterItem model) {
-
             }
 
             @Override

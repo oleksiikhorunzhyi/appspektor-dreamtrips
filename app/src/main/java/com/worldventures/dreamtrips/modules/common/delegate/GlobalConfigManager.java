@@ -26,7 +26,7 @@ public class GlobalConfigManager {
 
     public void loadGlobalConfig(SuccessConfigListener successConfigListener,
                                  ErrorConfigListener errorConfigListener) {
-        configPipe.createObservableSuccess(new GlobalConfigAction())
+        configPipe.createObservableResult(new GlobalConfigAction())
                 .take(1)
                 .subscribe(action -> processAppConfig(action.getAppConfig(), successConfigListener,
                         errorConfigListener),

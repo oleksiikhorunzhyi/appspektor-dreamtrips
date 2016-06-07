@@ -58,7 +58,7 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
         checkPermissions()
                 .subscribe(aVoid -> {
                     if (!photoPickerLayoutDelegate.isPanelVisible()) {
-                        photoPickerLayoutDelegate.showPicker();
+                        photoPickerLayoutDelegate.showPickerAfterDelay();
                     }
                 });
     }

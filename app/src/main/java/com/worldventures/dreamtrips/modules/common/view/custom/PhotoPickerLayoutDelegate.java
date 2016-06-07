@@ -58,9 +58,12 @@ public class PhotoPickerLayoutDelegate {
     }
 
     @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void showPicker() {
-        //noinspection all
+    public void showPickerAfterDelay() {
         handler.postDelayed(openPikerTask, 400);
+    }
+
+    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void showPicker() {
         showPicker(false, Integer.MAX_VALUE);
     }
 

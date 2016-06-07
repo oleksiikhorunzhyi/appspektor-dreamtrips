@@ -9,13 +9,13 @@ import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.schedulers.Schedulers;
 
-public class DtlLocationService {
+public class DtlLocationInteractor {
 
     private final ActionPipe<DtlLocationCommand> locationPipe;
     private final ActionPipe<DtlNearbyLocationAction> nearbyLocationPipe;
     private final ActionPipe<DtlSearchLocationAction> searchLocationPipe;
 
-    public DtlLocationService(Janet janet) {
+    public DtlLocationInteractor(Janet janet) {
 
         locationPipe = janet.createPipe(DtlLocationCommand.class, Schedulers.io());
         nearbyLocationPipe = janet.createPipe(DtlNearbyLocationAction.class, Schedulers.io());

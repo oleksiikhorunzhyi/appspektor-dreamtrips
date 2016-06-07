@@ -48,9 +48,9 @@ class DtlBaseMerchantServiceTest extends BaseTest {
         when(testMerchant.getMerchantType()).thenReturn(DtlMerchantType.DINING);
     }
 
-    protected DtlMerchantService merchantService;
+    protected DtlMerchantInteractor merchantInteractor;
     protected StubServiceWrapper httpStubWrapper;
-    protected DtlLocationService locationService;
+    protected DtlLocationInteractor locationInteractor;
     protected Janet janet;
     protected SnappyRepository db;
 
@@ -68,12 +68,12 @@ class DtlBaseMerchantServiceTest extends BaseTest {
                 )
                 .build();
 
-        locationService = new DtlLocationService(janet);
-        merchantService = new DtlMerchantService(janet, locationService);
+        locationInteractor = new DtlLocationInteractor(janet);
+        merchantInteractor = new DtlMerchantInteractor(janet, locationInteractor);
         db = spy(SnappyRepository.class);
 
         daggerActionService.registerProvider(Janet.class, () -> janet);
-        daggerActionService.registerProvider(DtlMerchantService.class, () -> merchantService);
+        daggerActionService.registerProvider(DtlMerchantInteractor.class, () -> merchantInteractor);
         daggerActionService.registerProvider(SnappyRepository.class, () -> db);
     }
 
@@ -81,7 +81,7 @@ class DtlBaseMerchantServiceTest extends BaseTest {
         TestSubscriber<ActionState<DtlMerchantsAction>> subscriber = new TestSubscriber<>();
         StubServiceWrapper.Callback spyHttpCallback = spy(StubServiceWrapper.Callback.class);
         httpStubWrapper.setCallback(spyHttpCallback);
-        merchantService.merchantsActionPipe()
+        merchantInteractor.merchantsActionPipe()
                 .createObservable(DtlMerchantsAction.load(mock(android.location.Location.class)))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> !action.getResult().isEmpty() && action.isFromApi());
@@ -90,7 +90,7 @@ class DtlBaseMerchantServiceTest extends BaseTest {
         subscriber = new TestSubscriber<>();
         spyHttpCallback = spy(StubServiceWrapper.Callback.class);
         httpStubWrapper.setCallback(spyHttpCallback);
-        merchantService.merchantsActionPipe()
+        merchantInteractor.merchantsActionPipe()
                 .createObservable(DtlMerchantsAction.restore())
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> !action.getResult().isEmpty() && !action.isFromApi());

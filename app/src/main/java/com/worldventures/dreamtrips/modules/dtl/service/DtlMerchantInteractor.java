@@ -18,9 +18,9 @@ import io.techery.janet.Janet;
 import io.techery.janet.WriteActionPipe;
 import rx.schedulers.Schedulers;
 
-public class DtlMerchantService {
+public class DtlMerchantInteractor {
 
-    private final DtlLocationService locationService;
+    private final DtlLocationInteractor locationInteractor;
 
     private final ActionPipe<DtlUpdateAmenitiesAction> updateAmenitiesPipe;
     private final ActionPipe<DtlMerchantsAction> merchantsPipe;
@@ -28,9 +28,9 @@ public class DtlMerchantService {
 
     private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
 
-    public DtlMerchantService(Janet janet,
-                              DtlLocationService locationService) {
-        this.locationService = locationService;
+    public DtlMerchantInteractor(Janet janet,
+                                 DtlLocationInteractor locationInteractor) {
+        this.locationInteractor = locationInteractor;
 
         updateAmenitiesPipe = janet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
         merchantsPipe = janet.createPipe(DtlMerchantsAction.class, Schedulers.io());
@@ -68,7 +68,7 @@ public class DtlMerchantService {
 
     //TODO: move to action
     private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-        locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
+        locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
                 .filter(command -> {
                     LocationSourceType sourceType = command.getResult().getLocationSourceType();
                     return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)
@@ -82,7 +82,7 @@ public class DtlMerchantService {
                             .withLongName(location.getLocationSourceType() == LocationSourceType.FROM_MAP
                                     ? nearestMerchant.getCity() : location.getLongName())
                             .withAnalyticsName(nearestMerchant.getAnalyticsName());
-                    locationService.locationPipe().send(DtlLocationCommand.change(updatedLocation));
+                    locationInteractor.locationPipe().send(DtlLocationCommand.change(updatedLocation));
                 }, Throwable::printStackTrace);
     }
 }

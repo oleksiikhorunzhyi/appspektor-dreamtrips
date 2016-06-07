@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import rx.Observable;
 public class DtlMerchantByIdAction extends Command<DtlMerchant> implements InjectableAction {
 
     @Inject
-    DtlMerchantService merchantService;
+    DtlMerchantInteractor merchantInteractor;
 
     private final String merchantId;
 
@@ -25,7 +25,7 @@ public class DtlMerchantByIdAction extends Command<DtlMerchant> implements Injec
 
     @Override
     protected void run(CommandCallback<DtlMerchant> callback) throws Throwable {
-        merchantService.merchantsActionPipe().observeWithReplay()
+        merchantInteractor.merchantsActionPipe().observeWithReplay()
                 .first()
                 .compose(new ActionStateToActionTransformer<>())
                 .map(DtlMerchantsAction::getResult)

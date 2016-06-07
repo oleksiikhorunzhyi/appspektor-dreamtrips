@@ -21,7 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class DtlMerchantServiceTest extends DtlBaseMerchantServiceTest {
+public class DtlMerchantInteractorTest extends DtlBaseMerchantServiceTest {
 
     @Before
     public void setup() {
@@ -69,11 +69,11 @@ public class DtlMerchantServiceTest extends DtlBaseMerchantServiceTest {
 
     @Test
     public void testDtlMerchantByIdAction() {
-        merchantService.merchantsActionPipe()
+        merchantInteractor.merchantsActionPipe()
                 .send(DtlMerchantsAction.load(mock(Location.class)));
 
         TestSubscriber<ActionState<DtlMerchantByIdAction>> subscriber = new TestSubscriber<>();
-        merchantService.merchantByIdPipe()
+        merchantInteractor.merchantByIdPipe()
                 .createObservable(new DtlMerchantByIdAction(MERCHANT_ID))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getResult() != null);

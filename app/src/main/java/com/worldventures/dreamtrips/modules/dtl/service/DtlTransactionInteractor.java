@@ -9,14 +9,14 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
-public class DtlTransactionService {
+public class DtlTransactionInteractor {
 
     private final ActionPipe<DtlEstimatePointsAction> estimatePointsActionPipe;
     private final ActionPipe<DtlRateAction> rateActionPipe;
     private final ActionPipe<DtlEarnPointsAction> earnPointsActionPipe;
     private final ActionPipe<DtlTransactionAction> transactionActionPipe;
 
-    public DtlTransactionService(Janet janet) {
+    public DtlTransactionInteractor(Janet janet) {
         estimatePointsActionPipe = janet.createPipe(DtlEstimatePointsAction.class, Schedulers.io());
         rateActionPipe = janet.createPipe(DtlRateAction.class, Schedulers.io());
         earnPointsActionPipe = janet.createPipe(DtlEarnPointsAction.class, Schedulers.io());

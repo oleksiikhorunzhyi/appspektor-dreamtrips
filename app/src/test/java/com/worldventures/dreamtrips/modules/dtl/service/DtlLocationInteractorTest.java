@@ -35,7 +35,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class DtlLocationServiceTest extends BaseTest {
+public class DtlLocationInteractorTest extends BaseTest {
 
     private static final DtlExternalLocation testLocation;
     private static final List<DtlExternalLocation> testLocationList;
@@ -47,7 +47,7 @@ public class DtlLocationServiceTest extends BaseTest {
         when(testLocation.getLongName()).thenReturn("London");
     }
 
-    private DtlLocationService locationService;
+    private DtlLocationInteractor locationInteractor;
     private StubServiceWrapper httpStubWrapper;
 
     @Before
@@ -67,26 +67,26 @@ public class DtlLocationServiceTest extends BaseTest {
 
         daggerActionService.registerProvider(Janet.class, () -> janet);
 
-        locationService = new DtlLocationService(janet);
+        locationInteractor = new DtlLocationInteractor(janet);
     }
 
     @Test
     public void testDtlLocationCommand() {
         TestSubscriber<ActionState<DtlLocationCommand>> subscriber = new TestSubscriber<>();
 
-        locationService.locationPipe()
+        locationInteractor.locationPipe()
                 .createObservable(DtlLocationCommand.last())
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getResult().getLocationSourceType() == LocationSourceType.UNDEFINED);
 
         subscriber = new TestSubscriber<>();
-        locationService.locationPipe()
+        locationInteractor.locationPipe()
                 .createObservable(DtlLocationCommand.change(testLocation))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getResult().equals(testLocation));
 
         subscriber = new TestSubscriber<>();
-        locationService.locationPipe()
+        locationInteractor.locationPipe()
                 .createObservable(DtlLocationCommand.last())
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getResult().equals(testLocation));
@@ -97,7 +97,7 @@ public class DtlLocationServiceTest extends BaseTest {
         TestSubscriber<ActionState<DtlNearbyLocationAction>> subscriber = new TestSubscriber<>();
         StubServiceWrapper.Callback spyHttpCallback = spy(StubServiceWrapper.Callback.class);
         httpStubWrapper.setCallback(spyHttpCallback);
-        locationService.nearbyLocationPipe()
+        locationInteractor.nearbyLocationPipe()
                 .createObservable(new DtlNearbyLocationAction(Mockito.mock(Location.class)))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> !action.getResult().isEmpty());
@@ -109,7 +109,7 @@ public class DtlLocationServiceTest extends BaseTest {
         TestSubscriber<ActionState<DtlSearchLocationAction>> subscriber = new TestSubscriber<>();
         StubServiceWrapper.Callback spyHttpCallback = spy(StubServiceWrapper.Callback.class);
         httpStubWrapper.setCallback(spyHttpCallback);
-        locationService.searchLocationPipe()
+        locationInteractor.searchLocationPipe()
                 .createObservable(new DtlSearchLocationAction(testLocation.getLongName().substring(0, 2)))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> action.getResult().isEmpty());
@@ -118,7 +118,7 @@ public class DtlLocationServiceTest extends BaseTest {
         subscriber = new TestSubscriber<>();
         spyHttpCallback = spy(StubServiceWrapper.Callback.class);
         httpStubWrapper.setCallback(spyHttpCallback);
-        locationService.searchLocationPipe()
+        locationInteractor.searchLocationPipe()
                 .createObservable(new DtlSearchLocationAction(testLocation.getLongName().substring(0, 3)))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> !action.getResult().isEmpty());
@@ -127,7 +127,7 @@ public class DtlLocationServiceTest extends BaseTest {
         subscriber = new TestSubscriber<>();
         spyHttpCallback = spy(StubServiceWrapper.Callback.class);
         httpStubWrapper.setCallback(spyHttpCallback);
-        locationService.searchLocationPipe()
+        locationInteractor.searchLocationPipe()
                 .createObservable(new DtlSearchLocationAction(testLocation.getLongName()))
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, action -> !action.getResult().isEmpty());

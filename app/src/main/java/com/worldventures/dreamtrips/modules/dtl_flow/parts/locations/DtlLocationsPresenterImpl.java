@@ -12,8 +12,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
@@ -38,11 +38,11 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
         implements DtlLocationsPresenter {
 
     @Inject
-    DtlFilterMerchantService filterService;
+    DtlFilterMerchantInteractor filterInteractor;
     @Inject
     LocationDelegate gpsLocationDelegate;
     @Inject
-    DtlLocationService locationService;
+    DtlLocationInteractor locationInteractor;
     //
     @State
     ScreenMode screenMode = ScreenMode.NEARBY_LOCATIONS;
@@ -104,7 +104,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     private void onLocationObtained(Location location) {
         switch (screenMode) {
             case NEARBY_LOCATIONS:
-                locationService.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
+                locationInteractor.nearbyLocationPipe().send(new DtlNearbyLocationAction(location));
                 break;
             case AUTO_NEAR_ME:
                 DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()
@@ -112,14 +112,14 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
                         .longName(context.getString(R.string.dtl_near_me_caption))
                         .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(location))
                         .build();
-                locationService.locationPipe().send(DtlLocationCommand.change(dtlLocation));
+                locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
                 navigateToMerchants();
                 break;
         }
     }
 
     private void tryHideNearMeButton() {
-        locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
+        locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
                 .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> getView().hideNearMeButton());
@@ -148,7 +148,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     ///////////////////////////////////////////////////////////////////////////
 
     private void connectNearbyLocations() {
-        locationService.nearbyLocationPipe().observeWithReplay()
+        locationInteractor.nearbyLocationPipe().observeWithReplay()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlNearbyLocationAction>()
                         .onStart(command -> getView().showProgress())
@@ -170,8 +170,8 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
-        locationService.locationPipe().send(DtlLocationCommand.change(location));
-        filterService.filterMerchantsActionPipe().clearReplays();
+        locationInteractor.locationPipe().send(DtlLocationCommand.change(location));
+        filterInteractor.filterMerchantsActionPipe().clearReplays();
         navigateToMerchants();
     }
 

@@ -7,8 +7,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
@@ -19,9 +19,9 @@ import io.techery.janet.helper.ActionStateSubscriber;
 public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresenter.View> {
 
     @Inject
-    DtlMerchantService merchantService;
+    DtlMerchantInteractor merchantInteractor;
     @Inject
-    DtlTransactionService transactionService;
+    DtlTransactionInteractor transactionInteractor;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
@@ -33,7 +33,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
     @Override
     public void onInjected() {
         super.onInjected();
-        merchantService.merchantByIdPipe()
+        merchantInteractor.merchantByIdPipe()
                 .createObservable(new DtlMerchantByIdAction(merchantId))
                 .compose(ImmediateComposer.instance())
                 .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
@@ -44,7 +44,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        transactionService.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction -> {
@@ -55,14 +55,14 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
     }
 
     public void rescan() {
-        transactionService.transactionActionPipe()
+        transactionInteractor.transactionActionPipe()
                 .createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .doOnNext(transaction ->
                         photoUploadingManagerS3.cancelUploading(transaction.getUploadTask())
                 )
                 .flatMap(transaction ->
-                        transactionService.transactionActionPipe()
+                        transactionInteractor.transactionActionPipe()
                                 .createObservableResult(DtlTransactionAction.save(dtlMerchant,
                                         ImmutableDtlTransaction.copyOf(transaction).withUploadTask(null)))
                                 .map(DtlTransactionAction::getResult)
@@ -71,7 +71,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
     }
 
     public void scanQr() {
-        transactionService.transactionActionPipe()
+        transactionInteractor.transactionActionPipe()
                 .createObservableResult(DtlTransactionAction.update(dtlMerchant,
                         transaction -> ImmutableDtlTransaction.copyOf(transaction)
                                 .withIsVerified(true)))

@@ -25,8 +25,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantService;
-import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionService;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.fullscreen_image.DtlFullscreenImagePath;
@@ -49,9 +49,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     @Inject
     LocationDelegate locationDelegate;
     @Inject
-    DtlMerchantService merchantService;
+    DtlMerchantInteractor merchantInteractor;
     @Inject
-    DtlTransactionService transactionService;
+    DtlTransactionInteractor transactionInteractor;
     @Inject
     protected PhotoUploadingManagerS3 photoUploadingManagerS3;
     //
@@ -113,7 +113,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     }
 
     private void processTransaction() {
-        transactionService.transactionActionPipe()
+        transactionInteractor.transactionActionPipe()
                 .createObservable(DtlTransactionAction.get(merchant))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
@@ -140,13 +140,13 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
     private void checkTransactionOutOfDate(DtlTransaction transaction) {
         if (transaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
-            transactionService.transactionActionPipe().send(DtlTransactionAction.delete(merchant));
+            transactionInteractor.transactionActionPipe().send(DtlTransactionAction.delete(merchant));
         }
     }
 
     @Override
     public void onCheckInClicked() {
-        transactionService.transactionActionPipe()
+        transactionInteractor.transactionActionPipe()
                 .createObservable(DtlTransactionAction.get(merchant))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
@@ -157,7 +157,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                                 if (dtlTransaction.getUploadTask() != null) {
                                     photoUploadingManagerS3.cancelUploading(dtlTransaction.getUploadTask());
                                 }
-                                transactionService.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
+                                transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
                                 getView().openTransaction(merchant, dtlTransaction);
                                 TrackingHelper.dtlEarnView();
                             } else {
@@ -191,7 +191,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                 .lat(location.getLatitude())
                 .lng(location.getLongitude())
                 .build();
-        transactionService.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
+        transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
         //
         getView().setTransaction(dtlTransaction);
         //

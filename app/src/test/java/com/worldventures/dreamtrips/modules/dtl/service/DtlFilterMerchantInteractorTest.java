@@ -41,11 +41,11 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @PrepareForTest(DtlLocationHelper.class)
-public class DtlFilterMerchantServiceTest extends DtlBaseMerchantServiceTest {
+public class DtlFilterMerchantInteractorTest extends DtlBaseMerchantServiceTest {
 
     private final static Setting testDistanceSetting = new Setting(DISTANCE_UNITS, Setting.Type.SELECT, KILOMETERS);
 
-    private DtlFilterMerchantService filterMerchantService;
+    private DtlFilterMerchantInteractor filterMerchantInteractor;
     private Location testLocation;
 
     @Before
@@ -65,7 +65,7 @@ public class DtlFilterMerchantServiceTest extends DtlBaseMerchantServiceTest {
         PowerMockito.when(DtlLocationHelper.calculateDistance(any(LatLng.class), any(LatLng.class)))
                 .thenReturn(Double.valueOf(1));
 
-        filterMerchantService = new DtlFilterMerchantService(merchantService, locationService, locationDelegate, janet);
+        filterMerchantInteractor = new DtlFilterMerchantInteractor(merchantInteractor, locationInteractor, locationDelegate, janet);
         when(db.getSettings()).thenReturn(Collections.singletonList(testDistanceSetting));
         when(db.getLastSelectedOffersOnlyToggle()).thenReturn(false);
         when(db.getAmenities()).thenReturn(Collections.emptyList());
@@ -119,8 +119,8 @@ public class DtlFilterMerchantServiceTest extends DtlBaseMerchantServiceTest {
     @Test
     public void testDtlFilterMerchantsAction() {
         TestSubscriber<ActionState<DtlFilterMerchantsAction>> subscriber = new TestSubscriber<>();
-        filterMerchantService.filterMerchantsActionPipe().observe().subscribe(subscriber);
-        locationService.locationPipe().send(
+        filterMerchantInteractor.filterMerchantsActionPipe().observe().subscribe(subscriber);
+        locationInteractor.locationPipe().send(
                 DtlLocationCommand.change(
                         ImmutableDtlManualLocation.builder()
                                 .locationSourceType(LocationSourceType.FROM_MAP)
@@ -135,7 +135,7 @@ public class DtlFilterMerchantServiceTest extends DtlBaseMerchantServiceTest {
 
     private void checkFilterAction(DtlFilterDataAction filterDataAction, Func1<DtlFilterDataAction, Boolean> assertPredicate) {
         TestSubscriber<ActionState<DtlFilterDataAction>> subscriber = new TestSubscriber<>();
-        filterMerchantService.filterDataPipe()
+        filterMerchantInteractor.filterDataPipe()
                 .createObservable(filterDataAction)
                 .subscribe(subscriber);
         assertActionSuccess(subscriber, assertPredicate);

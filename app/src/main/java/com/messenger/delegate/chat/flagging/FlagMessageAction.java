@@ -5,11 +5,11 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class FlagMessageAction extends CommandActionBase<FlagMessageDTO> implements InjectableAction {
+public class FlagMessageAction extends Command<FlagMessageDTO> implements InjectableAction {
 
     @Inject
     MessengerServerFacade messengerServerFacade;

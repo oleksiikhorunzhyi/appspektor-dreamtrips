@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -63,9 +63,9 @@ public class MessagesPaginationDelegate {
                 .build()
         );
 
-        loadMessagesPipe.createObservableSuccess(new LoadChatMessagesCommand(conversationId,
+        loadMessagesPipe.createObservableResult(new LoadChatMessagesCommand(conversationId,
                 page, MAX_MESSAGES_PER_PAGE, beforeMessageTimestamp))
-                .map(CommandActionBase::getResult)
+                .map(Command::getResult)
                 .subscribe(this::paginationPageLoaded, throwable -> pageLoadFailed());
     }
 

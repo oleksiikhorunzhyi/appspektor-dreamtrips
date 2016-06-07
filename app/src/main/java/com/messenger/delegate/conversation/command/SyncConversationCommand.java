@@ -9,12 +9,12 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class SyncConversationCommand extends CommandActionBase<Conversation> implements InjectableAction {
+public class SyncConversationCommand extends Command<Conversation> implements InjectableAction {
 
     @Inject Janet janet;
     @Inject UsersDelegate usersDelegate;
@@ -29,8 +29,8 @@ public class SyncConversationCommand extends CommandActionBase<Conversation> imp
     @Override
     protected void run(CommandCallback<Conversation> callback) throws Throwable {
         janet.createPipe(LoadConversationCommand.class)
-                .createObservableSuccess(new LoadConversationCommand(conversationId))
-                .map(CommandActionBase::getResult)
+                .createObservableResult(new LoadConversationCommand(conversationId))
+                .map(Command::getResult)
                 .flatMap(conversation ->
                         usersDelegate.loadAndSaveUsers(ConversationHelper.getUsersFromConversation(conversation))
                                 .map(fetchUsersDataCommand -> conversation)

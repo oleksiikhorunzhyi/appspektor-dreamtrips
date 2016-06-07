@@ -12,7 +12,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -29,8 +29,8 @@ public class UsersDelegate {
     }
 
     public Observable<List<DataUser>> loadUsers(List<MessengerUser> messengerUsers) {
-        return fetchUsersDataPipe.createObservableSuccess(FetchUsersDataCommand.from(messengerUsers))
-                .map(CommandActionBase::getResult);
+        return fetchUsersDataPipe.createObservableResult(FetchUsersDataCommand.from(messengerUsers))
+                .map(Command::getResult);
     }
 
     public Observable<List<DataUser>> loadAndSaveUsers(List<MessengerUser> messengerUsers) {

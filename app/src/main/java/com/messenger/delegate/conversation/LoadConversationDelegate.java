@@ -8,7 +8,7 @@ import com.messenger.storage.dao.ConversationsDAO;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -25,8 +25,8 @@ public class LoadConversationDelegate {
     }
 
     public Observable<Conversation> loadConversationFromNetwork(String conversationId) {
-        return syncConversationPipe.createObservableSuccess(new SyncConversationCommand(conversationId))
-                .map(CommandActionBase::getResult);
+        return syncConversationPipe.createObservableResult(new SyncConversationCommand(conversationId))
+                .map(Command::getResult);
     }
 
     public Observable<DataConversation> loadConversationFromDb(String conversationId) {

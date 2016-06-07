@@ -36,12 +36,12 @@ public class MessengerSyncDelegate {
 
     private Observable<LoadContactsCommand> syncContacts() {
         return contactsPipe
-                .createObservableSuccess(new LoadContactsCommand());
+                .createObservableResult(new LoadContactsCommand());
     }
 
     private Observable<SyncConversationsCommand> syncConversations() {
         return conversationsPipe
-                .createObservableSuccess(new SyncConversationsCommand());
+                .createObservableResult(new SyncConversationsCommand());
     }
 
 }

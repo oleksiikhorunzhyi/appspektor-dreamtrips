@@ -11,12 +11,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class SyncConversationsCommand extends CommandActionBase<List<Conversation>> implements InjectableAction {
+public class SyncConversationsCommand extends Command<List<Conversation>> implements InjectableAction {
 
     @Inject Janet janet;
     @Inject UsersDelegate usersDelegate;
@@ -25,8 +25,8 @@ public class SyncConversationsCommand extends CommandActionBase<List<Conversatio
     @Override
     protected void run(CommandCallback<List<Conversation>> callback) throws Throwable {
         janet.createPipe(LoadConversationsCommand.class)
-                .createObservableSuccess(new LoadConversationsCommand())
-                .map(CommandActionBase::getResult)
+                .createObservableResult(new LoadConversationsCommand())
+                .map(Command::getResult)
                 .flatMap(conversations ->
                         usersDelegate.loadAndSaveUsers(ConversationHelper.getUsersFromConversations(conversations))
                                 .map(action -> conversations)

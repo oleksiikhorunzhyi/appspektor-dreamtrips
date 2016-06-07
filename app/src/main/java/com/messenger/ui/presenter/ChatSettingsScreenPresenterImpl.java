@@ -124,7 +124,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
     public void onLeaveChatClicked() {
         TrackingHelper.leaveConversation();
         chatGroupCommandsInteractor.getLeaveChatPipe()
-                .createObservableSuccess(new LeaveChatCommand(conversationId))
+                .createObservableResult(new LeaveChatCommand(conversationId))
                 .compose(bindView())
                 .subscribe(command -> {
                     Flow flow = Flow.get(getContext());

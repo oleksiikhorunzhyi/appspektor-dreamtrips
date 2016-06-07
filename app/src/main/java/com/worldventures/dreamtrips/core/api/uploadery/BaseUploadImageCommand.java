@@ -14,10 +14,10 @@ import android.support.annotation.Nullable;
 import java.io.File;
 import java.net.URISyntaxException;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import rx.Observable;
 
-public abstract class BaseUploadImageCommand<T> extends CommandActionBase<T> {
+public abstract class BaseUploadImageCommand<T> extends Command<T> {
 
     protected Observable<File> getFileObservable(Context context, String filePath) {
         return Observable.create(subscriber -> {

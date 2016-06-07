@@ -42,7 +42,7 @@ class UserDataFetcher {
                 .toList();
 
         return shortProfilesPipe
-                .createObservableSuccess(new GetShortProfileAction(userNames))
+                .createObservableResult(new GetShortProfileAction(userNames))
                 .map(action -> composeDataUsers(messengerUsers, action.getShortUsers()));
     }
 

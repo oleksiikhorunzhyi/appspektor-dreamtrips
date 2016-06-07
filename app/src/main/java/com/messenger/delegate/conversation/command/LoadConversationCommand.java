@@ -6,11 +6,11 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class LoadConversationCommand  extends CommandActionBase<Conversation> implements InjectableAction {
+public class LoadConversationCommand  extends Command<Conversation> implements InjectableAction {
 
     @Inject MessengerServerFacade messengerServerFacade;
 

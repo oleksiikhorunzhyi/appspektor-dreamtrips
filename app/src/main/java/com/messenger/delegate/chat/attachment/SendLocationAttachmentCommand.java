@@ -18,7 +18,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 
@@ -43,7 +43,7 @@ public class SendLocationAttachmentCommand extends BaseChatCommand<DataMessage> 
     }
 
     @Override
-    protected void run(CommandActionBase.CommandCallback<DataMessage> callback) {
+    protected void run(Command.CommandCallback<DataMessage> callback) {
         startSending();
         sendLocationMessage(locationAttachment.getLat(), locationAttachment.getLng())
                 .map(msg -> message)

@@ -8,12 +8,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.core.janet.errors.JanetActionException;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 
 import java.io.IOException;
 
 import io.techery.janet.CancelException;
+import io.techery.janet.helper.JanetActionException;
 import io.techery.janet.http.exception.HttpServiceException;
 import timber.log.Timber;
 

@@ -8,12 +8,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 
 @CommandAction
-public class LoadConversationsCommand extends CommandActionBase<List<Conversation>> implements InjectableAction {
+public class LoadConversationsCommand extends Command<List<Conversation>> implements InjectableAction {
 
     @Inject MessengerServerFacade messengerServerFacade;
 

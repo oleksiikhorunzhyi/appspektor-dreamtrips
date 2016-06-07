@@ -6,10 +6,10 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import javax.inject.Inject;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import rx.Observable;
 
-public abstract class BaseChatCommand<Result> extends CommandActionBase<Result> implements InjectableAction {
+public abstract class BaseChatCommand<Result> extends Command<Result> implements InjectableAction {
 
     protected final String conversationId;
 

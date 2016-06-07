@@ -176,6 +176,7 @@ public class ConversationsDAO extends BaseDAO {
 
                 "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+                "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'" +
 
                 "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                 "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +

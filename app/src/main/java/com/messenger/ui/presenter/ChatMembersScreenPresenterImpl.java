@@ -54,7 +54,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     UserSectionHelper userSectionHelper;
     @Inject
     UsersDAO usersDAO;
-    @Inject ProfileCrosser profileCrosser;
 
     private final RxSearchHelper<DataUser> searchHelper = new RxSearchHelper<>();
     protected final List<DataUser> futureParticipants = new CopyOnWriteArrayList<>();
@@ -140,11 +139,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         state.setSearchFilter(currentSearchFilter);
         state.setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
         super.onSaveInstanceState(bundle);
-    }
-
-    @Override
-    public void openUserProfile(DataUser user) {
-        profileCrosser.crossToProfile(user);
     }
 
     @Override

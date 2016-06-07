@@ -88,7 +88,6 @@ public class ChatMessagesEventDelegate {
                 .compose(new NonNullFilter<>())
                 .switchIfEmpty(loadConversationDelegate
                         .loadConversationFromNetworkAndRefreshFromDb(message.getConversationId()))
-                .filter(ConversationHelper::isPresent)
                 .map(conversation -> message)
                 .subscribe(this::saveReceivedMessage);
     }

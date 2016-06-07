@@ -39,8 +39,8 @@ public class GroupAvatarsView extends SimpleDraweeView {
     }
 
     private void init() {
-        getHierarchy()
-                .setRoundingParams(RoundingParams.asCircle());
+        getHierarchy().setFadeDuration(0);
+        getHierarchy().setRoundingParams(RoundingParams.asCircle());
     }
 
     public void setConversationAvatar(DataConversation conversation) {
@@ -58,16 +58,13 @@ public class GroupAvatarsView extends SimpleDraweeView {
                 .build();
 
         String avatarUrl = conversation.getAvatar();
+        setController(Fresco.newDraweeControllerBuilder()
+                .setOldController(getController())
+                .setUri(TextUtils.isEmpty(avatarUrl) ? Uri.EMPTY : Uri.parse(avatarUrl))
+                .build());
 
-        if (TextUtils.isEmpty(avatarUrl)) {
-            getHierarchy().setPlaceholderImage(drawable);
-        } else {
-            getHierarchy().setFailureImage(drawable);
-            setController(Fresco.newDraweeControllerBuilder()
-                    .setOldController(getController())
-                    .setUri(Uri.parse(avatarUrl))
-                    .build());
-        }
+        getHierarchy().setPlaceholderImage(drawable);
+        getHierarchy().setFailureImage(drawable);
     }
 
     private void setTripChatAvatar() {

@@ -52,7 +52,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     }
 
     public void share() {
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionService.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction ->
@@ -62,10 +62,10 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
 
     public void done() {
         if (stars != 0) {
-            transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+            transactionService.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                     .map(DtlTransactionAction::getResult)
                     .flatMap(transaction ->
-                            transactionService.rateActionPipe().createObservableSuccess(new DtlRateAction(dtlMerchant, stars, transaction))
+                            transactionService.rateActionPipe().createObservableResult(new DtlRateAction(dtlMerchant, stars, transaction))
                     ).compose(bindViewIoToMainComposer())
                     .subscribe(action -> {
                     }, apiErrorPresenter::handleError);
@@ -77,7 +77,7 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionService.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction -> view.setCongratulations(transaction.getDtlTransactionResult()),

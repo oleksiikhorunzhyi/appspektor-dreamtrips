@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.core.api.action;
 
 import java.util.concurrent.Callable;
 
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 
-public class CallableCommandAction<T> extends CommandActionBase<T> {
+public class CallableCommandAction<T> extends Command<T> {
 
     private final Callable<T> callable;
 

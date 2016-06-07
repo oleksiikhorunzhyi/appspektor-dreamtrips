@@ -7,8 +7,6 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
@@ -16,6 +14,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantService;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationService;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocationAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
@@ -119,7 +119,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     }
 
     private void tryHideNearMeButton() {
-        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+        locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
                 .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> getView().hideNearMeButton());

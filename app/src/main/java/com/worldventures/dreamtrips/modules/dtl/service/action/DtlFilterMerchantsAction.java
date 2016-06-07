@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
@@ -15,13 +14,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.ReadActionPipe;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
 @CommandAction
-public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant>> {
+public class DtlFilterMerchantsAction extends Command<List<DtlMerchant>> {
 
     private final ReadActionPipe<DtlMerchantsAction> merchantsActionPipe;
     private final ActionPipe<DtlLocationCommand> locationActionPipe;
@@ -43,7 +43,7 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
                 .flatMap(latLng ->
                         merchantsActionPipe.observeWithReplay()
                                 .first()
-                                .compose(JanetPlainActionComposer.instance())
+                                .compose(new ActionStateToActionTransformer<>())
                                 .map(DtlMerchantsAction::getResult)
                                 .map(merchants -> {
                                     Queryable.from(merchants).forEachR(DtlMerchant::sortPerks);
@@ -59,7 +59,7 @@ public class DtlFilterMerchantsAction extends CommandActionBase<List<DtlMerchant
     }
 
     private Observable<LatLng> getSearchLocation() {
-        return locationActionPipe.createObservableSuccess(DtlLocationCommand.last())
+        return locationActionPipe.createObservableResult(DtlLocationCommand.last())
                 .filter(DtlLocationCommand::isResultDefined)
                 .map(DtlLocationCommand::getResult)
                 .distinct(DtlLocation::getCoordinates)

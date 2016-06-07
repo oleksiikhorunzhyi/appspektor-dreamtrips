@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
-import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
@@ -45,7 +44,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionService.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction -> {
@@ -57,17 +56,15 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
 
     public void rescan() {
         transactionService.transactionActionPipe()
-                .createObservable(DtlTransactionAction.get(dtlMerchant))
-                .compose(JanetPlainActionComposer.instance())
+                .createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .doOnNext(transaction ->
                         photoUploadingManagerS3.cancelUploading(transaction.getUploadTask())
                 )
                 .flatMap(transaction ->
                         transactionService.transactionActionPipe()
-                                .createObservable(DtlTransactionAction.save(dtlMerchant,
+                                .createObservableResult(DtlTransactionAction.save(dtlMerchant,
                                         ImmutableDtlTransaction.copyOf(transaction).withUploadTask(null)))
-                                .compose(JanetPlainActionComposer.instance())
                                 .map(DtlTransactionAction::getResult)
                 ).compose(bindViewIoToMainComposer())
                 .subscribe(view::openScanReceipt, apiErrorPresenter::handleError);
@@ -75,7 +72,7 @@ public class DtlVerifyAmountPresenter extends JobPresenter<DtlVerifyAmountPresen
 
     public void scanQr() {
         transactionService.transactionActionPipe()
-                .createObservableSuccess(DtlTransactionAction.update(dtlMerchant,
+                .createObservableResult(DtlTransactionAction.update(dtlMerchant,
                         transaction -> ImmutableDtlTransaction.copyOf(transaction)
                                 .withIsVerified(true)))
                 .map(DtlTransactionAction::getResult)

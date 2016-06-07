@@ -8,7 +8,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
@@ -45,6 +44,7 @@ import flow.Flow;
 import flow.History;
 import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 
 import static rx.Observable.just;
@@ -104,7 +104,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         merchantService.merchantsActionPipe()
                 .observe()
                 .compose(bindViewIoToMainComposer())
-                .compose(JanetPlainActionComposer.instance())
+                .compose(new ActionStateToActionTransformer<>())
                 .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
                 .subscribe(s -> getView().informUser(R.string.dtl_no_merchants_caption),
                         throwable -> {});
@@ -133,7 +133,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
     private void updateToolbarTitle() {
         Observable.combineLatest(
-                locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+                locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
                         .map(DtlLocationCommand::getResult),
                 filterService.getFilterData().map(DtlFilterData::getSearchQuery),
                 Pair::new
@@ -154,7 +154,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     protected Observable<Location> getFirstCenterLocation() {
-        return locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+        return locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
                 .map(command -> {
                     Location lastPosition = db.getLastMapCameraPosition();
                     boolean validLastPosition = lastPosition != null && lastPosition.getLat() != 0 && lastPosition.getLng() != 0;
@@ -174,7 +174,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                     if (position.zoom < MapViewUtils.DEFAULT_ZOOM) {
                         return just(true);
                     }
-                    return locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+                    return locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
                             .compose(bindViewIoToMainComposer())
                             .map(command -> !DtlLocationHelper.checkLocation(MAX_DISTANCE,
                                     command.getResult().getCoordinates().asLatLng(),
@@ -188,7 +188,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         getView().showButtonLoadMerchants(false);
         showPins(dtlMerchants);
         //
-        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+        locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
                 .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {

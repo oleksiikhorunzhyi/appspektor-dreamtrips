@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 import android.support.v4.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
@@ -16,12 +15,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionHolder;
-import io.techery.janet.CommandActionBase;
+import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlSearchLocationAction extends CommandActionBase<List<DtlExternalLocation>> implements CachedAction<Pair<String, List<DtlExternalLocation>>>, InjectableAction {
+public class DtlSearchLocationAction extends Command<List<DtlExternalLocation>> implements CachedAction<Pair<String, List<DtlExternalLocation>>>, InjectableAction {
 
     private static final int API_SEARCH_QUERY_LENGTH = 3;
 
@@ -44,8 +43,7 @@ public class DtlSearchLocationAction extends CommandActionBase<List<DtlExternalL
     protected void run(CommandCallback<List<DtlExternalLocation>> callback) throws Throwable {
         if (needApiRequest()) {
             janet.createPipe(DtlLocationsHttpAction.class)
-                    .createObservable(new DtlLocationsHttpAction(apiQuery))
-                    .compose(JanetPlainActionComposer.instance())
+                    .createObservableResult(new DtlLocationsHttpAction(apiQuery))
                     .map(DtlLocationsHttpAction::getResponse)
                     .subscribe(response -> {
                         locations = response;

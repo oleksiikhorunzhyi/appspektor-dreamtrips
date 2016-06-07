@@ -68,7 +68,7 @@ public class DtlMerchantService {
 
     //TODO: move to action
     private void tryUpdateLocation(List<DtlMerchant> dtlMerchants) {
-        locationService.locationPipe().createObservableSuccess(DtlLocationCommand.last())
+        locationService.locationPipe().createObservableResult(DtlLocationCommand.last())
                 .filter(command -> {
                     LocationSourceType sourceType = command.getResult().getLocationSourceType();
                     return (sourceType == LocationSourceType.FROM_MAP || sourceType == LocationSourceType.NEAR_ME)

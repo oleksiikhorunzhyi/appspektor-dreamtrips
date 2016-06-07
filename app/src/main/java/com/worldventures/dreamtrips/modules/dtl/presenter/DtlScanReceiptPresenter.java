@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.worldventures.dreamtrips.core.janet.JanetPlainActionComposer;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
@@ -65,7 +64,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+        transactionService.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction -> {
@@ -96,7 +95,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
 
     private void checkVerification() {
         if (!TextUtils.isEmpty(amount))
-            transactionService.transactionActionPipe().createObservableSuccess(DtlTransactionAction.get(dtlMerchant))
+            transactionService.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
                     .map(DtlTransactionAction::getResult)
                     .filter(transaction -> transaction.getUploadTask() != null)
                     .compose(bindViewIoToMainComposer())
@@ -118,15 +117,14 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     public void verify() {
         TrackingHelper.dtlVerifyAmountUser(amount);
         transactionService.transactionActionPipe()
-                .createObservableSuccess(
+                .createObservableResult(
                         DtlTransactionAction.update(dtlMerchant,
                                 transaction -> ImmutableDtlTransaction.copyOf(transaction)
                                         .withBillTotal(Double.parseDouble(amount)))
                 )
                 .map(DtlTransactionAction::getResult)
-                .flatMap(transaction -> transactionService.estimatePointsActionPipe().createObservable(
+                .flatMap(transaction -> transactionService.estimatePointsActionPipe().createObservableResult(
                         new DtlEstimatePointsAction(dtlMerchant, transaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode()))
-                        .compose(JanetPlainActionComposer.instance())
                 ).subscribe(action -> {
         }, apiErrorPresenter::handleError);
     }

@@ -69,8 +69,8 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         dataUserSender = SqlUtils.convertToModel(true, DataUser.class, cursor);
         boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
         dataTranslation = translationExist ? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
-        String status =  cursor.getString(cursor.getColumnIndex(DataConversation$Table.TYPE));
-        isGroupMessage = !TextUtils.equals(status, ConversationType.CHAT);
+        String type =  cursor.getString(cursor.getColumnIndex(MessageDAO.CONVERSATION_TYPE));
+        isGroupMessage = !TextUtils.equals(type, ConversationType.CHAT);
         //
         messageCommonInflater.onCellBind(previousMessageFromSameUser, isUnread(), selected);
         userMessageHolderInflater.onCellBind(dataUserSender, isGroupMessage, previousMessageFromSameUser);

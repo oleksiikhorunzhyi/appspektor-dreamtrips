@@ -69,7 +69,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     @InjectView(R.id.noGoogleContainer)
     FrameLayout noGoogleContainer;
     @Optional
-    @InjectView(R.id.dtlToolbar)
+    @InjectView(R.id.expandableDtlToolbar)
     ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.redo_merchants)
     View loadMerchantsRoot;

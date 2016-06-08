@@ -23,16 +23,13 @@ import rx.subjects.PublishSubject;
 public class ChatTypingDelegate {
 
     private final GlobalEventEmitter messengerGlobalEmitter;
-    private final LoadConversationDelegate loadConversationDelegate;
     private final UsersDAO usersDAO;
 
     private PublishSubject<ChatChangeStateEvent> chatStateStream = PublishSubject.create();
 
     @Inject
-    public ChatTypingDelegate(MessengerServerFacade messengerServerFacade, UsersDAO usersDAO,
-                              LoadConversationDelegate loadConversationDelegate) {
+    public ChatTypingDelegate(MessengerServerFacade messengerServerFacade, UsersDAO usersDAO) {
         this.messengerGlobalEmitter = messengerServerFacade.getGlobalEventEmitter();
-        this.loadConversationDelegate = loadConversationDelegate;
         this.usersDAO = usersDAO;
     }
 
@@ -42,15 +39,9 @@ public class ChatTypingDelegate {
         };
         messengerGlobalEmitter.addOnChatStateChangedListener(listener);
 
-        Observable<DataConversation> conversationObservable = loadConversationDelegate
-                .loadConversationFromDb(conversationId)
-                .subscribeOn(Schedulers.io())
-                .cacheWithInitialCapacity(1);
-
         return chatStateStream.asObservable()
                 .onBackpressureBuffer()
                 .filter(chatChangeStateEvent -> TextUtils.equals(chatChangeStateEvent.conversationId, conversationId))
-                .filter(event -> ConversationHelper.isPresent(conversationObservable.toBlocking().first()))
                 .doOnUnsubscribe(() -> messengerGlobalEmitter.removeOnChatStateChangedListener(listener))
                 .map(stateEvent -> new Pair<>(stateEvent, usersDAO.getUserById(stateEvent.userId).toBlocking().first()))
                 .filter(chatChangeStateEventDataUserPair -> chatChangeStateEventDataUserPair.second != null);

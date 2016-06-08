@@ -22,19 +22,13 @@ public class MasterPathContainerView extends FramePathContainerView {
     public void dispatch(Flow.Traversal traversal, final Flow.TraversalCallback callback) {
 
         MasterDetailPath currentMaster = ((MasterDetailPath) traversal.origin.top()).getMaster();
-
         MasterDetailPath newMaster = ((MasterDetailPath) traversal.destination.top()).getMaster();
 
         // Short circuit if the new screen has the same master.
         if (getCurrentChild() != null && newMaster.equals(currentMaster)) {
             callback.onTraversalCompleted();
         } else {
-            super.dispatch(traversal, new Flow.TraversalCallback() {
-                @Override
-                public void onTraversalCompleted() {
-                    callback.onTraversalCompleted();
-                }
-            });
+            super.dispatch(traversal, () -> callback.onTraversalCompleted());
         }
     }
 

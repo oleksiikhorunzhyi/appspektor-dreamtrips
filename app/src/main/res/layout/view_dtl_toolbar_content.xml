@@ -10,7 +10,7 @@
     android:paddingRight="8dp"
     android:orientation="horizontal"
     android:focusableInTouchMode="true"
-    tools:background="@color/theme_main"
+    android:background="@color/theme_main"
     >
 
     <android.support.v7.widget.AppCompatEditText

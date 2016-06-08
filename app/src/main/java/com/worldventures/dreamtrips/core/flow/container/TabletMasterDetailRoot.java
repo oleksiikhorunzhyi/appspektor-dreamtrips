@@ -18,6 +18,7 @@ import flow.path.PathContainerView;
  * This view is shown only in landscape orientation on tablets
  */
 public class TabletMasterDetailRoot extends LinearLayout implements PathContainerView {
+    private FramePathContainerView superMasterContainer;
     private FramePathContainerView masterContainer;
     private FramePathContainerView detailContainer;
 
@@ -35,6 +36,7 @@ public class TabletMasterDetailRoot extends LinearLayout implements PathContaine
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        superMasterContainer = (FramePathContainerView) findViewById(R.id.master_toolbar_container);
         masterContainer = (FramePathContainerView) findViewById(R.id.master_container);
         detailContainer = (FramePathContainerView) findViewById(R.id.details_container);
     }
@@ -55,7 +57,7 @@ public class TabletMasterDetailRoot extends LinearLayout implements PathContaine
     public void dispatch(final Flow.Traversal traversal, Flow.TraversalCallback callback) {
         class CountdownCallback implements Flow.TraversalCallback {
             final Flow.TraversalCallback wrapped;
-            int countDown = 2;
+            int countDown = 3;
 
             CountdownCallback(Flow.TraversalCallback wrapped) {
                 this.wrapped = wrapped;
@@ -79,6 +81,7 @@ public class TabletMasterDetailRoot extends LinearLayout implements PathContaine
                 (path instanceof MasterDetailPath && ((MasterDetailPath) path).isMaster());
         detailContainer.setVisibility(fullScreenMaster ? GONE : VISIBLE);
         //
+        superMasterContainer.dispatch(traversal, callback);
         detailContainer.dispatch(traversal, callback);
         masterContainer.dispatch(traversal, callback);
     }

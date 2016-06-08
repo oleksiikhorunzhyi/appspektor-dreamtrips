@@ -193,22 +193,22 @@ public class ConversationsDAO extends BaseDAO {
                 "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
                 "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) "
         );
-
+        StringBuilder whereBuilder = new StringBuilder();
 
         boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("WHERE c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
+            whereBuilder.append("WHERE c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
         }
 
         if (!TextUtils.isEmpty(searchQuery)) {
-            String wherePattern = "AND (" +
-                    "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
+            whereBuilder.append(whereBuilder.length() == 0 ? "WHERE (" : "AND (");
+            String wherePattern = "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
                     "OR c." + DataConversation$Table.SUBJECT + " IS '' AND uu." + DataUser$Table.FIRSTNAME + " || ' ' || uu." + DataUser$Table.LASTNAME  + " LIKE '%" + searchQuery + "%')";
-            query.append(wherePattern);
-
+            whereBuilder.append(wherePattern);
         }
 
-        query.append("GROUP BY c." + DataConversation$Table._ID + " " +
+        query.append(whereBuilder)
+                .append("GROUP BY c." + DataConversation$Table._ID + " " +
                 "HAVING c." + DataConversation$Table.TYPE + "='" + ConversationType.CHAT + "' " +
                 "OR COUNT(p." + DataParticipant$Table.ID + ") > 1 " +
                 "ORDER BY c." + DataConversation$Table.LASTACTIVEDATE + " DESC"

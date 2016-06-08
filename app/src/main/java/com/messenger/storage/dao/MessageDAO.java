@@ -35,7 +35,7 @@ public class MessageDAO extends BaseDAO {
 
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
     public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
-
+    public static final String CONVERSATION_TYPE = DataConversation$Table.TABLE_NAME + "_" + DataConversation$Table.TYPE;
 
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -74,7 +74,7 @@ public class MessageDAO extends BaseDAO {
                         "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", " +
                         "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + ", " +
 
-                        "c." + DataConversation$Table.STATUS + " as " + DataConversation$Table.STATUS + " " +
+                        "c." + DataConversation$Table.TYPE + " as " + CONVERSATION_TYPE + " " +
 
                         "FROM " + DataMessage.TABLE_NAME + " m " +
                         "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +

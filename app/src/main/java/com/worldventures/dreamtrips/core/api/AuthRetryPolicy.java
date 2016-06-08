@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
 
 import java.util.List;
 
@@ -61,7 +62,9 @@ public class AuthRetryPolicy {
 
 
     public static boolean isLoginError(Throwable error) {
-        if (error instanceof HttpException) { // for janet-http
+        if (error instanceof SessionAbsentException) {
+            return true;
+        } else if (error instanceof HttpException) { // for janet-http
             HttpException cause = (HttpException) error;
             return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
         } else if (error instanceof RetrofitError) { // for retrofit
@@ -70,7 +73,7 @@ public class AuthRetryPolicy {
         } else if (error.getCause() != null) {
             return isLoginError(error.getCause());
         }
-        return true;
+        return false;
     }
 
     public static boolean isCredentialExist(SessionHolder<UserSession> appSessionHolder) {

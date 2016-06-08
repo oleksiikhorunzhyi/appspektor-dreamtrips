@@ -8,7 +8,7 @@ import io.techery.janet.http.annotations.Response;
 import io.techery.janet.http.annotations.Url;
 
 @HttpAction
-public class GlobalConfigAction {
+public class GetGlobalConfigurationHttpAction {
 
     @Url String url = BuildConfig.S3Api + "/settings_v4.json";
     @Response AppConfig appConfig;

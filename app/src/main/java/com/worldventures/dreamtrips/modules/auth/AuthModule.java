@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.auth;
 
 import com.worldventures.dreamtrips.modules.auth.presenter.LoginPresenter;
 import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
-import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
 
 import dagger.Module;
 

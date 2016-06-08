@@ -17,15 +17,15 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
-import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GlobalConfigCommand;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
 import org.apache.http.HttpStatus;
@@ -39,6 +39,7 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -47,6 +48,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import roboguice.util.temp.Ln;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
@@ -58,8 +61,6 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
     @Inject
-    protected LocalesHolder localeStorage;
-    @Inject
     @Global
     protected EventBus eventBus;
     @Inject
@@ -67,7 +68,7 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     LogoutDelegate logoutDelegate;
     @Inject
-    GlobalConfigManager globalConfigManager;
+    GlobalConfigInteractor globalConfigInteractor;
     //
     private final ErrorParser errorParser;
 
@@ -151,13 +152,17 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     private void reloadGlobalConfig(OnLoginSuccess onLoginSuccess, SpiceException error) {
-        globalConfigManager.loadGlobalConfig(() -> {
-            final UserSession userSession = appSessionHolder.get().get();
-            final String username = userSession.getUsername();
-            final String userPassword = userSession.getUserPassword();
-
-            loginUser(userPassword, username, onLoginSuccess);
-        }, () -> onLoginSuccess.result(null, error));
+        globalConfigInteractor.pipe().createObservableResult(new GlobalConfigCommand())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.from(Executors.newFixedThreadPool(5)))
+                .subscribe(appConfig -> {
+                    UserSession userSession = appSessionHolder.get().get();
+                    String username = userSession.getUsername();
+                    String userPassword = userSession.getUserPassword();
+                    loginUser(userPassword, username, onLoginSuccess);
+                }, throwable -> {
+                    onLoginSuccess.result(null, error);
+                });
     }
 
     public void login(RequestListener<LoginResponse> requestListener) {
@@ -165,7 +170,6 @@ public class DreamSpiceManager extends SpiceManager {
             UserSession userSession = appSessionHolder.get().get();
             String username = userSession.getUsername();
             String userPassword = userSession.getUserPassword();
-
             loginUser(userPassword, username, (loginResponse, error) -> {
                 if (requestListener != null) {
                     if (loginResponse != null) {

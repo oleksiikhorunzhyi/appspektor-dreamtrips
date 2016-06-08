@@ -9,8 +9,6 @@ import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 
 import java.net.CookieManager;
@@ -46,11 +44,11 @@ public class JanetModule {
         for (ActionService service : services) {
             service = new DaggerActionServiceWrapper(service, context);
             service = new TimberServiceWrapper(service);
-         //   service = new CacheResultWrapper(service) {{
-           //     for (ActionStorage storage : cacheStorages) {
-             //       bindStorage(storage.getActionClass(), storage);
-           //     }
-         //   }};
+            //   service = new CacheResultWrapper(service) {{
+            //     for (ActionStorage storage : cacheStorages) {
+            //       bindStorage(storage.getActionClass(), storage);
+            //     }
+            //   }};
             builder.addService(service);
         }
         return builder.build();
@@ -83,6 +81,7 @@ public class JanetModule {
         return new io.techery.janet.okhttp.OkClient(okHttpClient);
     }
 
+    @Singleton
     @Provides(type = Provides.Type.SET)
     ActionService provideHttpUploaderService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
         return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson));

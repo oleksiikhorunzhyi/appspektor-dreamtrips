@@ -17,6 +17,8 @@ import io.techery.janet.helper.JanetActionException;
 import io.techery.janet.http.exception.HttpServiceException;
 import timber.log.Timber;
 
+import static com.worldventures.dreamtrips.util.ThrowableUtils.getCauseByType;
+
 public class ApiErrorPresenter {
 
     ApiErrorView apiErrorView;
@@ -101,16 +103,6 @@ public class ApiErrorPresenter {
             return handleJanetHttpError(action, exception.getCause());
         }
         return false;
-    }
-
-    private <T> T getCauseByType(Class<T> causeType, Throwable exception) {
-        if (causeType.isInstance(exception)) {
-            return (T) exception;
-        }
-        if (exception.getCause() != null) {
-            return getCauseByType(causeType, exception.getCause());
-        }
-        return null;
     }
 
     private void logError(ErrorResponse errorResponse) {

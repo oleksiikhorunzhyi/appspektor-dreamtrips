@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.janet;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
@@ -12,6 +13,7 @@ import com.worldventures.dreamtrips.core.api.action.LogoutAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.modules.common.model.Session;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -60,7 +62,7 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
         return false;
     }
 
-    private void prepareHttpAction(BaseHttpAction action){
+    private void prepareHttpAction(BaseHttpAction action) {
         action.setAppVersionHeader(appVersionNameBuilder.getSemanticVersionName());
         action.setLanguageHeader(localeHelper.getDefaultLocaleFormatted());
         if (action instanceof AuthorizedHttpAction
@@ -89,34 +91,47 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
 
     @Override
     protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
-        A action = holder.action();
 
         //checking with retry-login policy
-        if ((action instanceof AuthorizedHttpAction)
-                && !(action instanceof LogoutAction)
-                && !retriedActions.remove(action)) {
-            boolean shouldRetry = retryPolicy.handle(e, () -> {
-                UserSession userSession = appSessionHolder.get().get();
-                String username = userSession.getUsername();
-                String userPassword = userSession.getUserPassword();
-                LoginAction loginAction = new LoginAction(username, userPassword);
-                prepareHttpAction(loginAction);
-                ActionState<LoginAction> loginState = loginActionPipe.createObservable(loginAction)
-                        .toBlocking()
-                        .last();
-                if (loginState.status == ActionState.Status.SUCCESS) {
-                    return loginState.action.getLoginResponse();
-                } else {
-                    Timber.w(loginState.exception, "Login error");
+        if ((holder.action() instanceof AuthorizedHttpAction)
+                && !(holder.action() instanceof LogoutAction)
+                && !retriedActions.remove(holder.action())) {
+            AuthorizedHttpAction action = (AuthorizedHttpAction) holder.action();
+            synchronized (this) {
+                if (!action.getAuthorizationHeader()
+                        .endsWith(appSessionHolder.get().get().getApiToken())) {
+                    prepareHttpAction(action);
+                    Timber.d("Action %s will be sent again because of invalid token", action);
+                    return true;
                 }
-                return null;
-            });
-            if (shouldRetry) {
-                Timber.d("Action %s will be sent again", action);
-                retriedActions.add(action);
+                boolean shouldRetry = retryPolicy.handle(e, () -> createSession(action));
+                if (shouldRetry) {
+                    Timber.d("Action %s will be sent again after relogining", action);
+                    prepareHttpAction(action);
+                    retriedActions.add(action);
+                }
+                return shouldRetry;
             }
-            return shouldRetry;
         }
         return false;
+    }
+
+    @Nullable
+    private Session createSession(AuthorizedHttpAction action) {
+        UserSession userSession = appSessionHolder.get().get();
+        String username = userSession.getUsername();
+        String userPassword = userSession.getUserPassword();
+        LoginAction loginAction = new LoginAction(username, userPassword);
+        prepareHttpAction(loginAction);
+        Timber.d("Relogin for %s", action);
+        ActionState<LoginAction> loginState = loginActionPipe.createObservable(loginAction)
+                .toBlocking()
+                .last();
+        if (loginState.status == ActionState.Status.SUCCESS) {
+            return loginState.action.getLoginResponse();
+        } else {
+            Timber.w(loginState.exception, "Login error");
+        }
+        return null;
     }
 }

@@ -14,12 +14,18 @@ import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigManager;
+import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.AuthInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
+import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
+import com.worldventures.dreamtrips.modules.common.delegate.StaticPagesInteractor;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -48,7 +54,7 @@ import io.techery.janet.Janet;
         injects = {
                 DreamSpiceManager.class,
                 DreamSpiceService.class,
-                AuthorizedDataUpdater.class,
+                CirclesInteractor.class,
                 VideoCachingDelegate.class,
                 VideoDownloadSpiceService.class,
                 PhotoUploadingManagerS3.class,
@@ -64,7 +70,12 @@ import io.techery.janet.Janet;
                 DtlMerchantManager.class,
                 DtlJobManager.class,
 
-                GlobalConfigManager.class,
+                GlobalConfigInteractor.class,
+                AuthorizedDataManager.class,
+                AppSettingsInteractor.class,
+                LocalesInteractor.class,
+                StaticPagesInteractor.class,
+                QueryTripsFilterDataInteractor.class,
         },
         library = true, complete = false
 )
@@ -75,9 +86,10 @@ public class ManagerModule {
         return new DreamSpiceManager(DreamSpiceService.class, injector);
     }
 
+    @Singleton
     @Provides
-    public AuthorizedDataUpdater provideDataUpdater(@ForApplication Injector injector) {
-        return new AuthorizedDataUpdater(injector);
+    public CirclesInteractor provideQueryCirclesInteractor(Janet janet) {
+        return new CirclesInteractor(janet);
     }
 
     @Provides
@@ -92,7 +104,7 @@ public class ManagerModule {
     }
 
     @Provides
-    public VideoDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
+    public VideoDownloadSpiceManager provideVideoDownloadSpiceManager() {
         return new VideoDownloadSpiceManager(VideoDownloadSpiceService.class);
     }
 
@@ -165,10 +177,9 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    GlobalConfigManager provideGlobalConfigManager(SessionHolder<UserSession> appSessionHolder,
-                                                   Janet janet,
-                                                   @Global EventBus eventBus) {
-        return new GlobalConfigManager(appSessionHolder, janet, eventBus);
+    GlobalConfigInteractor provideGlobalConfigManager(Janet janet,
+                                                      @Global EventBus eventBus) {
+        return new GlobalConfigInteractor(janet);
     }
 
     @Provides
@@ -199,5 +210,11 @@ public class ManagerModule {
     @Singleton
     TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
         return new TripFilterDataProvider(eventBus, repository);
+    }
+
+    @Provides
+    @Singleton
+    AuthorizedDataManager provideAuthorizedDataUpdater(SessionHolder<UserSession> userSessionSessionHolder, AuthInteractor authInteractor) {
+        return new AuthorizedDataManager(userSessionSessionHolder, authInteractor);
     }
 }

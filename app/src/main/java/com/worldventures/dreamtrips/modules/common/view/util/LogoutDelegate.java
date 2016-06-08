@@ -3,12 +3,14 @@ package com.worldventures.dreamtrips.modules.common.view.util;
 import android.content.Context;
 
 import com.messenger.delegate.FlagsDelegate;
-import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.storage.MessengerDatabase;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
+import com.worldventures.dreamtrips.core.preference.LocalesHolder;
+import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
@@ -38,7 +40,11 @@ public class LogoutDelegate {
     protected DTCookieManager cookieManager;
     @Inject
     FlagsDelegate flagsDelegate;
-    //
+    @Inject
+    LocalesHolder localesHolder;
+    @Inject
+    StaticPageHolder staticPageHolder;
+
     protected DreamSpiceManager dreamSpiceManager;
 
     private OnLogoutSuccessListener onLogoutSuccessListener;
@@ -54,7 +60,6 @@ public class LogoutDelegate {
     public void logout() {
         MessengerConnector.getInstance().disconnect();
         flagsDelegate.clearCache();
-
         String token = snappyRepository.getGcmRegToken();
         if (token != null) {
             if (!dreamSpiceManager.isStarted()) dreamSpiceManager.start(context);
@@ -89,6 +94,8 @@ public class LogoutDelegate {
         cookieManager.clearCookies();
         snappyRepository.clearAll();
         appSessionHolder.destroy();
+        staticPageHolder.destroy();
+        localesHolder.destroy();
         notificationDelegate.cancelAll();
         badgeUpdater.updateBadge(0);
         FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
@@ -99,7 +106,6 @@ public class LogoutDelegate {
     }
 
     public interface OnLogoutSuccessListener {
-
         void onLogoutSuccess();
     }
 }

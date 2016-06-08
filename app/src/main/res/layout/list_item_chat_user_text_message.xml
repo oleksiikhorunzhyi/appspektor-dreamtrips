@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -7,7 +8,7 @@
 
     <include layout="@layout/list_item_chat_date_entry"/>
 
-    <RelativeLayout
+    <android.support.percent.PercentRelativeLayout
         android:id="@+id/chat_message_container"
         style="@style/ChatMessageContainerStyle"
         android:layout_width="match_parent"
@@ -39,6 +40,10 @@
             android:layout_gravity="center_vertical"
             android:layout_toEndOf="@id/chat_item_avatar"
             android:layout_toRightOf="@id/chat_item_avatar"
+            android:layout_marginLeft="@dimen/chat_list_item_horizontal_padding"
+            android:layout_marginStart="@dimen/chat_list_item_horizontal_padding"
+            app:layout_marginRightPercent="@fraction/chat_list_text_incoming_message_right_margin"
+            app:layout_marginEndPercent="@fraction/chat_list_text_incoming_message_right_margin"
             tools:background="@drawable/dark_grey_bubble_comics"
             >
 
@@ -74,5 +79,5 @@
             android:textSize="@dimen/chat_list_translation_status_size"
             />
 
-    </RelativeLayout>
+    </android.support.percent.PercentRelativeLayout>
 </LinearLayout>

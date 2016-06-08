@@ -235,7 +235,7 @@
     <dimen name="chat_typing_circle_spacing">10dp</dimen>
     <dimen name="chat_typing_avatars_border">1dp</dimen>
     <dimen name="chat_list_item_vertical_padding">3dp</dimen>
-    <dimen name="chat_list_item_horizontal_padding">@dimen/list_item_horizontal_padding</dimen>
+    <dimen name="chat_list_item_horizontal_padding">4dp</dimen>
     <dimen name="chat_list_item_row_vertical_padding">18dp</dimen>
     <dimen name="chat_list_image_post_rounded_corners_radius">10dp</dimen>
 

@@ -60,6 +60,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
@@ -188,13 +189,27 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         conversationLoaded(conversationWithParticipants.first,
                                 conversationWithParticipants.second));
 
+        observeConversationStatusChange(source.map(pair -> pair.first));
+
         source.connect();
+    }
+
+    private void observeConversationStatusChange(Observable<DataConversation> source) {
+        source.map(ConversationHelper::isPresent)
+                .distinctUntilChanged()
+                .scan((previous, current) -> !previous && current)
+                .skip(1)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(changedToPresent -> {
+                    if (changedToPresent) messagesPaginationDelegate.loadFirstPage();
+                });
     }
 
     private void conversationLoaded(DataConversation conversation, List<DataUser> participants) {
         //noinspection all
         getView().setTitle(conversation, participants);
         getView().enableInput(ConversationHelper.isPresent(conversation));
+        getView().removeAllTypingUsers();
         enableUnreadMessagesUi(conversation);
     }
 

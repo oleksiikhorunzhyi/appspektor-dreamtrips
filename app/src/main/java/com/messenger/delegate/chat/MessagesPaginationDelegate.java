@@ -49,6 +49,7 @@ public class MessagesPaginationDelegate {
     public void loadFirstPage() {
         page = 0;
         beforeMessageTimestamp = 0;
+        hasMoreElements = true;
         loadNextPage();
     }
 

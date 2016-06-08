@@ -7,6 +7,9 @@ import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlDetailPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarPath;
+
+import flow.path.Path;
 
 @Layout(R.layout.screen_dtl_map)
 public class DtlMapPath extends DtlDetailPath {
@@ -45,5 +48,10 @@ public class DtlMapPath extends DtlDetailPath {
                             .findFragmentByTag(DtlMapScreenImpl.MAP_TAG))
                     .commit();
         }
+    }
+
+    @Override
+    public Path getSuperMasterPath() {
+        return MasterToolbarPath.INSTANCE;
     }
 }

@@ -10,9 +10,12 @@ import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlDetailPath;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarPath;
 
 import java.util.Collections;
 import java.util.List;
+
+import flow.path.Path;
 
 @Layout(R.layout.screen_dtl_details)
 public class DtlMerchantDetailsPath extends DtlDetailPath {
@@ -38,5 +41,10 @@ public class DtlMerchantDetailsPath extends DtlDetailPath {
     @Override
     public PathAttrs getAttrs() {
         return PathAttrs.WITHOUT_DRAWER;
+    }
+
+    @Override
+    public Path getSuperMasterPath() {
+        return MasterToolbarPath.INSTANCE;
     }
 }

@@ -47,6 +47,7 @@ public abstract class MessageViewHolder extends CursorViewHolder {
 
     protected boolean selected;
     protected boolean previousMessageFromSameUser;
+    protected boolean isOwnMessage;
     protected boolean needMarkUnreadMessage;
     protected boolean isGroupMessage;
 
@@ -72,12 +73,18 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         String type =  cursor.getString(cursor.getColumnIndex(MessageDAO.CONVERSATION_TYPE));
         isGroupMessage = !TextUtils.equals(type, ConversationType.CHAT);
         //
-        messageCommonInflater.onCellBind(previousMessageFromSameUser, isUnread(), selected);
+        messageCommonInflater.onCellBind(previousMessageFromSameUser, shouldMarkAsUnread() && isUnread(), selected);
         userMessageHolderInflater.onCellBind(dataUserSender, isGroupMessage, previousMessageFromSameUser);
     }
 
     private boolean isUnread() {
-        return dataMessage.getStatus() == MessageStatus.SENT && needMarkUnreadMessage;
+        return dataMessage.getStatus() == MessageStatus.SENT;
+    }
+
+    private boolean shouldMarkAsUnread() {
+        // server always keeps SENT status for our own messages,
+        // make sure we don't show our own messages as unread
+        return !isOwnMessage && needMarkUnreadMessage;
     }
 
     @OnLongClick(R.id.message_container)
@@ -104,6 +111,10 @@ public abstract class MessageViewHolder extends CursorViewHolder {
 
     public void setNeedMarkUnreadMessage(boolean needMarkUnreadMessage) {
         this.needMarkUnreadMessage = needMarkUnreadMessage;
+    }
+
+    public void setOwnMessage(boolean ownMessage) {
+        isOwnMessage = ownMessage;
     }
 
     public void setSelected(boolean selected) {

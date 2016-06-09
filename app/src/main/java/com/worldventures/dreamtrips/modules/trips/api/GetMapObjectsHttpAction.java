@@ -15,7 +15,7 @@ import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
 @HttpAction(value = "/api/trips/locations", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.GET)
-public class GetMapObjectsAction extends AuthorizedHttpAction {
+public class GetMapObjectsHttpAction extends AuthorizedHttpAction {
 
     @Query("query")
     String query;
@@ -54,7 +54,7 @@ public class GetMapObjectsAction extends AuthorizedHttpAction {
     @Response
     List<MapObjectHolder> mapObjects;
 
-    public GetMapObjectsAction(TripsFilterData tripsFilterData, LatLngBounds latLngBounds, String q) {
+    public GetMapObjectsHttpAction(TripsFilterData tripsFilterData, LatLngBounds latLngBounds, String q) {
         //Fields for server clustering
 //        top_left_lat = latLngBounds.northeast.latitude;
 //        top_left_lng = latLngBounds.southwest.longitude;

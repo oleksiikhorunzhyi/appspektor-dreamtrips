@@ -11,7 +11,6 @@ public class TripFilterDataProvider {
     EventBus eventBus;
     SnappyRepository db;
 
-
     public TripFilterDataProvider(EventBus eventBus, SnappyRepository db) {
         this.eventBus = eventBus;
         this.db = db;

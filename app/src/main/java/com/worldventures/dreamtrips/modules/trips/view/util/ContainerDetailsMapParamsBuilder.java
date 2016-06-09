@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 
@@ -37,6 +38,7 @@ public class ContainerDetailsMapParamsBuilder {
     private Point point;
     private Rect rect;
     private int tripsCount;
+    private boolean isTabletLandscape;
 
     public ContainerDetailsMapParamsBuilder context(Context context) {
         this.context = context;
@@ -58,62 +60,90 @@ public class ContainerDetailsMapParamsBuilder {
         return this;
     }
 
+    public ContainerDetailsMapParamsBuilder tabletLandscape(boolean isTabletLandscape) {
+        this.isTabletLandscape = isTabletLandscape;
+        return this;
+    }
+
     public Pair<FrameLayout.LayoutParams, TripMapDetailsAnchor> build() {
         return generateContainerLayoutParams();
     }
 
     private Pair<FrameLayout.LayoutParams, TripMapDetailsAnchor> generateContainerLayoutParams() {
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams params;
+        TripMapDetailsAnchor tripMapDetailsAnchor = null;
         //
         int tripHeight = (int) ViewUtils.pxFromDp(context, TRIP_HEIGHT_DP);
-        int tripWidth = (int) ViewUtils.pxFromDp(context, TRIP_WIDTH_DP);
-        int markerHeight = (int) ViewUtils.pxFromDp(context, (tripsCount == 1 ? PIN_HEIGHT_DP : CLUSTER_HEIGHT_DP));
-        int markerWidth = (int) ViewUtils.pxFromDp(context, (tripsCount == 1 ? PIN_WIDTH_DP : CLUSTER_WIDTH_DP));
-        int triangleHeight = (int) ViewUtils.pxFromDp(context, TRIANGLE_HEIGHT_DP);
-        int triangleWidth = (int) ViewUtils.pxFromDp(context, TRIANGLE_WIDTH_DP);
+        int tripsHeight = tripHeight * tripsCount;
         //
-        PointPosition pointPosition = getPointPosition();
-        params.gravity = getContainerGravity(pointPosition);
-        int horizontalMargin;
-        int anchorMargin;
-        if (canBeOnTop(tripHeight, tripWidth)) {
-            int offset = tripWidth / 2;
-            horizontalMargin = getContainerHorizontalMargin(pointPosition) - offset;
-            anchorMargin = 0;
+        if (isTabletLandscape) {
+            params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
             //
-            if (isOnTop(pointPosition)) {
-                params.topMargin = point.y - tripHeight - triangleHeight - markerHeight - VERTICAL_OFFSET;
-            } else {
-                params.bottomMargin = rect.bottom - point.y + markerHeight + VERTICAL_OFFSET;
-            }
-        } else {
-            horizontalMargin = getContainerHorizontalMargin(pointPosition) + markerWidth / 2 + HORIZONTAL_OFFSET;
+            int tripWidth = (int) ViewUtils.pxFromDp(context, TRIP_WIDTH_DP);
+            int markerHeight = (int) ViewUtils.pxFromDp(context, (tripsCount == 1 ? PIN_HEIGHT_DP : CLUSTER_HEIGHT_DP));
+            int markerWidth = (int) ViewUtils.pxFromDp(context, (tripsCount == 1 ? PIN_WIDTH_DP : CLUSTER_WIDTH_DP));
+            int triangleHeight = (int) ViewUtils.pxFromDp(context, TRIANGLE_HEIGHT_DP);
+            int triangleWidth = (int) ViewUtils.pxFromDp(context, TRIANGLE_WIDTH_DP);
             //
-            if (isOnTop(pointPosition) && tripsCount * tripHeight < point.y) {
-                params.topMargin = point.y - tripsCount * tripHeight / 2;
-                anchorMargin = point.y - params.topMargin - markerHeight / 2 - triangleWidth / 2;
-            } else if (isOnBottom(pointPosition) && (tripsCount * tripHeight / 2) < rect.bottom - point.y) {
-                params.bottomMargin = rect.bottom - point.y - tripsCount * tripHeight / 2;
-                int topMargin = rect.bottom - params.bottomMargin - (tripsCount * tripHeight);
-                anchorMargin = point.y - topMargin - markerHeight / 2 - triangleWidth / 2;
+            PointPosition pointPosition = getPointPosition();
+            params.gravity = getContainerGravity(pointPosition);
+            int horizontalMargin;
+            int anchorMargin;
+            if (canBeOnTop(tripHeight, tripWidth)) {
+                int offset = tripWidth / 2;
+                horizontalMargin = getContainerHorizontalMargin(pointPosition) - offset;
+                anchorMargin = 0;
+                //
+                if (isOnTop(pointPosition)) {
+                    params.topMargin = point.y - tripHeight - triangleHeight - markerHeight - VERTICAL_OFFSET;
+                } else {
+                    params.bottomMargin = rect.bottom - point.y + markerHeight + VERTICAL_OFFSET;
+                }
             } else {
-                params.topMargin = DEFAULT_MARGIN;
-                params.bottomMargin = DEFAULT_MARGIN;
-                int calculatedTopMargin = rect.bottom - params.bottomMargin - (tripsCount * tripHeight);
-                anchorMargin = point.y - (isOnBottom(pointPosition)
-                        && params.topMargin + params.bottomMargin + tripsCount * tripHeight < rect.bottom
-                        ? calculatedTopMargin : params.topMargin) - markerHeight / 2  - triangleWidth / 2;
+                horizontalMargin = getContainerHorizontalMargin(pointPosition) + markerWidth / 2 + HORIZONTAL_OFFSET;
+                //
+                if (isOnTop(pointPosition) && tripsHeight < point.y) {
+                    params.topMargin = point.y - tripsHeight / 2;
+                    anchorMargin = point.y - params.topMargin - markerHeight / 2 - triangleWidth / 2;
+                } else if (isOnBottom(pointPosition) && (tripsHeight / 2) < rect.bottom - point.y) {
+                    params.bottomMargin = rect.bottom - point.y - tripsHeight / 2;
+                    int topMargin = rect.bottom - params.bottomMargin - tripsHeight;
+                    anchorMargin = point.y - topMargin - markerHeight / 2 - triangleWidth / 2;
+                } else {
+                    params.topMargin = DEFAULT_MARGIN;
+                    params.bottomMargin = DEFAULT_MARGIN;
+                    int calculatedTopMargin = rect.bottom - params.bottomMargin - tripsHeight;
+                    anchorMargin = point.y - (isOnBottom(pointPosition)
+                            && params.topMargin + params.bottomMargin + tripsHeight < rect.bottom
+                            ? calculatedTopMargin : params.topMargin) - markerHeight / 2 - triangleWidth / 2;
+                }
             }
-        }
-        if (isOnLeft(pointPosition)) {
-            params.leftMargin = horizontalMargin;
+            if (isOnLeft(pointPosition)) {
+                params.leftMargin = horizontalMargin;
+            } else {
+                params.rightMargin = horizontalMargin;
+            }
+            //
+            tripMapDetailsAnchor = generateTripMapDetailsAnchor(pointPosition, tripHeight, tripWidth);
+            tripMapDetailsAnchor.setMargin(anchorMargin);
+            //
+            params.height = rect.bottom - 2 * DEFAULT_MARGIN < tripsHeight ? rect.bottom - 2 * DEFAULT_MARGIN : tripsHeight;
+            if (tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.BOTTOM) params.height += triangleHeight;
+            params.width = tripWidth;
+            if (tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.LEFT ||
+                    tripMapDetailsAnchor.getPointerPosition() == TripMapDetailsAnchor.Position.RIGHT) params.width += triangleHeight;
         } else {
-            params.rightMargin = horizontalMargin;
+            params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            //
+            int tripDetailSpacing = (int) context.getResources().getDimension(R.dimen.map_trip_detail_spacing);
+            //
+            params.height = tripsHeight > rect.bottom - tripDetailSpacing ? rect.bottom - tripDetailSpacing
+                    : tripsHeight;
+            params.gravity = Gravity.BOTTOM;
+            params.topMargin = tripDetailSpacing;
         }
-        //
-        TripMapDetailsAnchor tripMapDetailsAnchor = generateTripMapDetailsAnchor(pointPosition, tripHeight, tripWidth);
-        tripMapDetailsAnchor.setMargin(anchorMargin);
         return new Pair<>(params, tripMapDetailsAnchor);
     }
 

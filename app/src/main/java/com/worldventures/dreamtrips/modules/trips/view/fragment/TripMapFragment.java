@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,9 +32,9 @@ import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.map.reactive.MapObservableFactory;
-import com.worldventures.dreamtrips.modules.map.view.MapViewUtils;
 import com.worldventures.dreamtrips.modules.trips.model.TripClusterItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripMapDetailsAnchor;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -50,11 +51,14 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.Optional;
 import icepick.Icepick;
 import icepick.State;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
+
+import static com.worldventures.dreamtrips.modules.trips.view.util.ContainerDetailsMapParamsBuilder.TRIANGLE_HEIGHT_DP;
 
 @Layout(R.layout.fragment_trips_map)
 @MenuResource(R.menu.menu_map)
@@ -66,8 +70,25 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     protected ToucheableMapView mapView;
     @InjectView(R.id.container_info)
     protected FrameLayout containerInfo;
+    @InjectView(R.id.container_info_wrapper)
+    protected ViewGroup containerInfoWrapper;
     @InjectView(R.id.container_no_google)
     protected FrameLayout noGoogleContainer;
+    @Optional
+    @InjectView(R.id.left_pointer)
+    View leftPointer;
+    @Optional
+    @InjectView(R.id.right_pointer)
+    View rightPointer;
+    @Optional
+    @InjectView(R.id.bottom_pointer)
+    View bottomPointer;
+    @Optional
+    @InjectView(R.id.left_space)
+    View leftSpace;
+    @Optional
+    @InjectView(R.id.right_space)
+    View rightSpace;
 
     protected GoogleMap googleMap;
     private Bundle mapBundle;
@@ -217,8 +238,12 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                     selectedLocation = cluster.getPosition();
                     getPresenter().onMarkerClicked(tripClusterRenderer.getMarker(Queryable.from(cluster.getItems()).first()));
                 } else {
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(),
-                            googleMap.getCameraPosition().zoom + 1.0f), MapViewUtils.MAP_ANIMATION_DURATION, null);
+                    LatLngBounds.Builder builder = LatLngBounds.builder();
+                    for (TripClusterItem item : cluster.getItems()) {
+                        builder.include(item.getPosition());
+                    }
+                    final LatLngBounds bounds = builder.build();
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
                 }
                 return true;
             });
@@ -282,12 +307,12 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
-    public void moveTo(List<TripModel> trips, TripMapDetailsAnchor anchor) {
+    public void moveTo(List<TripModel> trips) {
         router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forFragment()
                 .containerId(R.id.container_info)
                 .fragmentManager(getChildFragmentManager())
                 .backStackEnabled(false)
-                .data(new TripMapListBundle(trips, anchor))
+                .data(new TripMapListBundle(trips))
                 .build());
     }
 
@@ -309,13 +334,12 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
 
     @Override
     public void removeTripsPopupInfo() {
-        if (getChildFragmentManager().findFragmentById(R.id.container_info) instanceof TripMapListFragment) {
-            router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
-                    .containerId(R.id.container_info)
-                    .fragmentManager(getChildFragmentManager())
-                    .build());
-            selectedLocation = null;
-        }
+        router.moveTo(Route.MAP_INFO, NavigationConfigBuilder.forRemoval()
+                .containerId(R.id.container_info)
+                .fragmentManager(getChildFragmentManager())
+                .build());
+        selectedLocation = null;
+        hideInfoContainer();
     }
 
     @Override
@@ -334,14 +358,19 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
 
     @Override
-    public TripMapDetailsAnchor updateContainerParams(int tripCount) {
+    public void updateContainerParams(int tripCount) {
         Rect rect = new Rect();
         mapView.getLocalVisibleRect(rect);
-        Pair<FrameLayout.LayoutParams, TripMapDetailsAnchor> pair = new ContainerDetailsMapParamsBuilder()
-                .mapRect(rect).markerPoint(googleMap.getProjection().toScreenLocation(selectedLocation))
-                .context(getContext()).tripsCount(tripCount).build();
-        containerInfo.setLayoutParams(pair.first);
-        return pair.second;
+        Pair<FrameLayout.LayoutParams, TripMapDetailsAnchor> pair =
+                new ContainerDetailsMapParamsBuilder()
+                        .mapRect(rect)
+                        .markerPoint(googleMap.getProjection().toScreenLocation(selectedLocation))
+                        .context(getContext())
+                        .tripsCount(tripCount)
+                        .tabletLandscape(isTabletLandscape())
+                        .build();
+        containerInfoWrapper.setLayoutParams(pair.first);
+        updatePointerPosition(pair.second);
     }
 
     @Override
@@ -350,6 +379,15 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
             int height = calculateOffset(size);
             animateToMarker(selectedLocation, height);
         }
+    }
+
+    @Override
+    public void showInfoContainer() {
+        containerInfoWrapper.setVisibility(View.VISIBLE);
+    }
+
+    public void hideInfoContainer() {
+        containerInfoWrapper.setVisibility(View.GONE);
     }
 
     protected void onMapLoaded() {
@@ -382,6 +420,43 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
                 }, error -> {
                     Timber.e(error, error.getMessage());
                 });
+    }
+
+    private void updatePointerPosition(TripMapDetailsAnchor anchor) {
+        if (anchor != null && isTabletLandscape()) {
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) containerInfo.getLayoutParams();
+            int margin = (int) ViewUtils.pxFromDp(getContext(), TRIANGLE_HEIGHT_DP);
+            switch (anchor.getPointerPosition()) {
+                case BOTTOM:
+                    bottomPointer.setVisibility(View.VISIBLE);
+                    leftPointer.setVisibility(View.GONE);
+                    rightPointer.setVisibility(View.GONE);
+                    params.bottomMargin = margin;
+                    params.leftMargin = 0;
+                    params.rightMargin = 0;
+                    break;
+                case LEFT:
+                    leftPointer.setVisibility(View.VISIBLE);
+                    bottomPointer.setVisibility(View.GONE);
+                    rightPointer.setVisibility(View.GONE);
+                    leftSpace.getLayoutParams().height = anchor.getMargin();
+                    leftSpace.requestLayout();
+                    params.leftMargin = margin;
+                    params.bottomMargin = 0;
+                    params.rightMargin = 0;
+                    break;
+                case RIGHT:
+                    rightPointer.setVisibility(View.VISIBLE);
+                    leftPointer.setVisibility(View.GONE);
+                    bottomPointer.setVisibility(View.GONE);
+                    rightSpace.getLayoutParams().height = anchor.getMargin();
+                    rightSpace.requestLayout();
+                    params.rightMargin = margin;
+                    params.bottomMargin = 0;
+                    params.leftMargin = 0;
+                    break;
+            }
+        }
     }
 
     protected void onMapTouched() {

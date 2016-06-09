@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.TripMapCell;
 import java.util.List;
 
 import butterknife.InjectView;
-import butterknife.Optional;
 
 @Layout(R.layout.fragment_trip_map_list)
 public class TripMapListFragment extends BaseFragmentWithArgs<TripMapListPresenter, TripMapListBundle>
@@ -31,21 +30,6 @@ public class TripMapListFragment extends BaseFragmentWithArgs<TripMapListPresent
 
     @InjectView(R.id.trip_list)
     RecyclerView tripView;
-    @Optional
-    @InjectView(R.id.left_pointer)
-    View leftPointer;
-    @Optional
-    @InjectView(R.id.right_pointer)
-    View rightPointer;
-    @Optional
-    @InjectView(R.id.bottom_pointer)
-    View bottomPointer;
-    @Optional
-    @InjectView(R.id.left_space)
-    View leftSpace;
-    @Optional
-    @InjectView(R.id.right_space)
-    View rightSpace;
 
     private BaseDelegateAdapter adapter;
 
@@ -59,26 +43,6 @@ public class TripMapListFragment extends BaseFragmentWithArgs<TripMapListPresent
 
         tripView.setLayoutManager(new LinearLayoutManager(getContext()));
         tripView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (isTabletLandscape() && getArgs().getAnchor() != null) {
-            switch (getArgs().getAnchor().getPointerPosition()) {
-                case BOTTOM:
-                    bottomPointer.setVisibility(View.VISIBLE);
-                    break;
-                case LEFT:
-                    leftPointer.setVisibility(View.VISIBLE);
-                    leftSpace.getLayoutParams().height = getArgs().getAnchor().getMargin();
-                    break;
-                case RIGHT:
-                    rightPointer.setVisibility(View.VISIBLE);
-                    rightSpace.getLayoutParams().height = getArgs().getAnchor().getMargin();
-                    break;
-            }
-        }
     }
 
     @Override

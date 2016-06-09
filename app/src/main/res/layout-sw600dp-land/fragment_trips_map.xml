@@ -10,16 +10,87 @@
         android:layout_height="match_parent"/>
 
     <FrameLayout
-        android:id="@+id/container_info"
+        android:id="@+id/container_info_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:id="@+id/container_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/left_pointer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Space
+                android:id="@+id/left_space"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_map_triangle_vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/right_pointer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Space
+                android:id="@+id/right_space"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rotation="180"
+                android:src="@drawable/ic_map_triangle_vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_pointer"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_map_triangle"/>
+        </LinearLayout>
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/container_no_google"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"

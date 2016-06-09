@@ -6,7 +6,7 @@
     >
 
     <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar
-        android:id="@+id/dtlToolbarTabletLandscape"
+        android:id="@+id/dtlToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />

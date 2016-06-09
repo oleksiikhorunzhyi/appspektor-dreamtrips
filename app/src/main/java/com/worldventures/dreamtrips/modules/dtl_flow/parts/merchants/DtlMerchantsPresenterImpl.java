@@ -135,13 +135,6 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                             apiErrorPresenter.handleActionError(action, throwable);
                         })
                         .onSuccess(action -> getView().setItems(action.getResult())));
-        //
-        filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                .first()
-                .map(DtlFilterDataAction::getResult)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(dtlFilterData ->
-                        getView().setFilterButtonState(!dtlFilterData.isDefault()));
     }
 
     @Override

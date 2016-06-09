@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.api.CreatePostCommand;
+import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoEntity;
 import com.worldventures.dreamtrips.modules.feed.model.CreatePhotoPostEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -39,7 +39,6 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Inspiration;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
-import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.YSBHPhoto;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 
@@ -70,6 +69,7 @@ public interface DreamTripsApi {
     String TYPE_MEMBER = "DTAPP";
     String TYPE_MEMBER_360 = "DTAPP360";
     String TYPE_REP = "dtapprep";
+    String TYPE_HELP = "DTAPPHELP";
 
     @FormUrlEncoded
     @POST("/api/sessions")

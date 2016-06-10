@@ -8,8 +8,8 @@ import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.extensions.DeleteMessageExtension;
-import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilterType;
 import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilter;
+import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilterType;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.LeftRoomPresence;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessageDeletedPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -196,7 +196,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     private void interceptIncomingMessageDeletedPresence(Stanza stanza) {
         MessageDeletedPresence messageDeletedPresence = (MessageDeletedPresence) stanza;
-        DeleteMessageExtension extension = (DeleteMessageExtension )messageDeletedPresence
+        DeleteMessageExtension extension = (DeleteMessageExtension) messageDeletedPresence
                 .getExtension(DeleteMessageExtension.NAMESPACE);
         notifyMessagesDeleted(extension.getDeletedMessageList());
     }
@@ -204,7 +204,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     private void filterAndInterceptIncomingPresence(Stanza stanza) {
         filterIncomingStanzaWithType(IncomingMessageFilterType.PRESENCE, stanza)
                 .subscribe(this::interceptIncomingPresence,
-                    e -> Timber.e(e, "Filters -- Error during filtering presence"));
+                        e -> Timber.e(e, "Filters -- Error during filtering presence"));
     }
 
     private void interceptIncomingPresence(Stanza stanza) {
@@ -219,7 +219,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         }
     }
 
-    private void processIncomingPresence(String userId, boolean online ) {
+    private void processIncomingPresence(String userId, boolean online) {
         // if our offline presence from another device and the current device is online we should resend online presence
         if (TextUtils.equals(facade.getUsername(), userId) && !online && facade.isConnected()) {
             facade.sendInitialPresence();
@@ -229,30 +229,36 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     }
 
     private boolean processGroupChatParticipantsActions(Presence presence, String fromJid) {
-        MUCUser extension = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
-        if (extension == null || !JidCreatorHelper.isGroupJid(fromJid))
+        MUCUser mucUser = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
+        if (mucUser == null || !JidCreatorHelper.isGroupJid(fromJid))
             return false;
         //
         String conversationId = JidCreatorHelper.obtainId(fromJid);
-        MUCItem item = extension.getItem();
+        MUCItem item = mucUser.getItem();
         MUCAffiliation affiliation = item.getAffiliation();
 
         if (isKickPresence(presence.getType(), affiliation)) {
             notifyOnKickListener(conversationId, JidCreatorHelper.obtainUserIdFromGroupJid(fromJid));
             return true;
+        } else if (isInvitePresence(mucUser)) {
+            String jid = mucUser.getItem().getJid();
+            String userId = jid == null ?
+                    JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
+
+            boolean isOnline = presence.getType() == Type.available;
+
+            notifyOnChatJoinedListener(ImmutableParticipant.builder()
+                    .userId(userId)
+                    .conversationId(conversationId)
+                    .affiliation(String.valueOf(affiliation))
+                    .build(), isOnline);
+            return true;
         }
+        return false;
+    }
 
-        String jid = extension.getItem().getJid();
-        String userId = jid == null ?
-                JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
-
-        boolean isOnline = presence.getType() == Type.available;
-        notifyOnChatJoinedListener(ImmutableParticipant.builder()
-                .userId(userId)
-                .conversationId(conversationId)
-                .affiliation(String.valueOf(affiliation))
-                .build(), isOnline);
-        return true;
+    private boolean isInvitePresence(MUCUser mucUser) {
+        return mucUser.getInvite() != null;
     }
 
     private boolean isKickPresence(Type type, MUCAffiliation affiliation) {

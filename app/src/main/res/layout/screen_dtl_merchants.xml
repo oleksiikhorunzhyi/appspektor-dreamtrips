@@ -2,7 +2,7 @@
 <com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rootView"
+    android:id="@+id/merchants_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -16,7 +16,7 @@
 
         <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/dtlToolbar"
+            android:id="@+id/expandableDtlToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:dtlt_collapsed="true"

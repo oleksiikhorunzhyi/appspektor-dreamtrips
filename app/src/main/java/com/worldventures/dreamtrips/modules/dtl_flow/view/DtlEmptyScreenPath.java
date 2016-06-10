@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 import flow.path.Path;
 
-@Layout(R.layout.screen_dtl_empty_stub)
-public class DtlEmptyPathStub extends Path {
-    public static final DtlEmptyPathStub INSTANCE = new DtlEmptyPathStub();
+@Layout(R.layout.screen_dtl_empty)
+public class DtlEmptyScreenPath extends Path {
+    public static final DtlEmptyScreenPath INSTANCE = new DtlEmptyScreenPath();
 }

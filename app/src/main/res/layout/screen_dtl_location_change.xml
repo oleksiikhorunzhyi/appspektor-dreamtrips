@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootView"
+    android:id="@+id/location_change_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_grey_background"
@@ -18,7 +18,7 @@
 
         <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/dtlToolbar"
+            android:id="@+id/expandableDtlToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:dtlt_collapsed="false"

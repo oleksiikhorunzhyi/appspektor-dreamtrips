@@ -18,7 +18,7 @@
 
         <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/dtlToolbar"
+            android:id="@+id/expandableDtlToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:dtlt_navigation_icon_src="@drawable/ic_menu_trip_list"

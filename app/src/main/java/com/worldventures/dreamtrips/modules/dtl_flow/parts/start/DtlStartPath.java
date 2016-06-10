@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlMasterPath;
-import com.worldventures.dreamtrips.modules.dtl_flow.view.DtlEmptyPathStub;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.DtlEmptyScreenPath;
 
 import flow.path.Path;
 
@@ -18,6 +18,6 @@ public class DtlStartPath extends DtlMasterPath {
 
     @Override
     public Path getEmpty() {
-        return DtlEmptyPathStub.INSTANCE;
+        return DtlEmptyScreenPath.INSTANCE;
     }
 }

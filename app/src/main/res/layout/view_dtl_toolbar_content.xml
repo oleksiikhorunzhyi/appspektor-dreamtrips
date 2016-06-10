@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootView"
+    android:id="@+id/dtl_toolbar_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:orientation="horizontal"
     android:focusableInTouchMode="true"
-    tools:background="@color/theme_main"
+    android:background="@color/theme_main"
     >
 
     <android.support.v7.widget.AppCompatEditText

@@ -51,7 +51,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     @Inject
     ActivityResultDelegate activityResultDelegate;
     //
-    @InjectView(R.id.dtlToolbar)
+    @InjectView(R.id.expandableDtlToolbar)
     ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.autoDetectNearMe)
     Button autoDetectNearMe;

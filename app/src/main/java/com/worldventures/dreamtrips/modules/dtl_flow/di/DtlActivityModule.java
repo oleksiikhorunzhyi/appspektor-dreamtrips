@@ -35,6 +35,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPresenterIm
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarPresenterImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPresenterImpl;
@@ -53,6 +55,8 @@ import dagger.Provides;
                 DtlMapPresenterImpl.class,
                 DtlMapScreenImpl.class,
                 DtlMapInfoPresenterImpl.class,
+                MasterToolbarScreenImpl.class,
+                MasterToolbarPresenterImpl.class,
                 DtlMapInfoScreenImpl.class,
                 DtlStartPresenterImpl.class,
                 DtlStartScreenImpl.class,

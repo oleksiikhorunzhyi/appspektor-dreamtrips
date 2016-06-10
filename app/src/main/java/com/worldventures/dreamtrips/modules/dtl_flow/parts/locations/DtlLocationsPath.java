@@ -44,7 +44,7 @@ public class DtlLocationsPath extends DtlMasterPath {
 
     @Override
     public PathAttrs getAttrs() {
-        return allowUserGoBack ? PathAttrs.WITH_DRAWER : PathAttrs.WITHOUT_DRAWER;
+        return allowUserGoBack ? PathAttrs.WITHOUT_DRAWER : PathAttrs.WITH_DRAWER;
     }
 
     public static class Builder {

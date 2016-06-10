@@ -6,7 +6,7 @@ public class ThrowableUtils {
         if (causeType.isInstance(exception)) {
             return (T) exception;
         }
-        if (exception.getCause() != null) {
+        if (exception != null && exception.getCause() != null) {
             return getCauseByType(causeType, exception.getCause());
         }
         return null;

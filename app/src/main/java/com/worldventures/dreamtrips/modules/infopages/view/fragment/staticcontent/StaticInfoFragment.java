@@ -11,8 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -20,7 +23,6 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
@@ -52,23 +54,17 @@ import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragmentWithArgs<T, UrlBundle>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    public static final String PRIVACY_TITLE = "Privacy Policy";
-    public static final String COOKIE_TITLE = "Cookie Policy";
-    public static final String FAQ_TITLE = "FAQ";
-    public static final String TERMS_TITLE = "Terms of Use";
-    public static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
-    public static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
-            + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "." + BuildConfig.versionPatch;
-
     @Inject
     protected StaticPageProvider provider;
 
     @InjectView(R.id.web_view)
-    protected WebView webView;
+    protected VideoEnabledWebView webView;
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.progressBarWeb)
-    protected ProgressBar progressBarWeb;
+    @InjectView(R.id.nonVideoLayout)
+    View nonVideoLayout;
+    @InjectView(R.id.videoLayout)
+    ViewGroup videoLayout;
 
     protected Bundle savedState;
     protected boolean isLoading;
@@ -163,7 +159,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
                 if (url.startsWith("mailto:")) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
                     startActivity(Intent.createChooser(emailIntent, getString(R.string.email_app_choose_dialog_title)));
@@ -202,8 +197,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 }
             }
         });
-        webView.setWebChromeClient(new WebChromeClient() {
 
+        VideoEnabledWebChromeClient webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, null, webView) {
             // file upload callback (Android 2.2 (API level 8) -- Android 2.3 (API level 10)) (hidden method)
             @SuppressWarnings("unused")
             public void openFileChooser(ValueCallback<Uri> uploadMsg) {
@@ -283,7 +278,37 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 return getString(R.string.choose_gallery);
             }
 
+        };
+        webChromeClient.setOnToggledFullscreen(fullscreen -> {
+            // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
+            AppCompatActivity compatActivity = (AppCompatActivity) StaticInfoFragment.this.activity.get();
+            if (fullscreen) {
+                if (compatActivity != null && compatActivity.getSupportActionBar() != null) {
+                    compatActivity.getSupportActionBar().hide();
+                }
+                WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
+                attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                getActivity().getWindow().setAttributes(attrs);
+                if (Build.VERSION.SDK_INT >= 14) {
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                }
+            } else {
+                if (compatActivity != null && compatActivity.getSupportActionBar() != null) {
+                    compatActivity.getSupportActionBar().show();
+                }
+                WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
+                attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                getActivity().getWindow().setAttributes(attrs);
+                if (Build.VERSION.SDK_INT >= 14) {
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                }
+            }
+
         });
+        webView.setWebChromeClient(webChromeClient);
+
         webView.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
@@ -413,7 +438,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class TermsOfServiceFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(TERMS_TITLE);
+            return provider.getTermsOfServiceUrl();
         }
 
         @Override
@@ -433,7 +458,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class CookiePolicyFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(COOKIE_TITLE);
+            return provider.getCookiePolicyUrl();
         }
 
         @Override
@@ -454,7 +479,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(FAQ_TITLE);
+            return provider.getFaqUrl();
         }
 
         @Override
@@ -469,12 +494,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
     }
 
-
     @Layout(R.layout.fragment_webview)
     public static class PrivacyPolicyFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(PRIVACY_TITLE);
+            return provider.getPrivacyPolicyUrl();
         }
 
         @Override
@@ -553,6 +577,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Layout(R.layout.fragment_webview)
     public static class BookItFragment extends BundleUrlFragment {
+
+        private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
+        private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
+                + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "." + BuildConfig.versionPatch;
 
         @Override
         public void load(String url) {

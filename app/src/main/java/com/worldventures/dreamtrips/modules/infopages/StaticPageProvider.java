@@ -9,6 +9,11 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 
 public class StaticPageProvider {
 
+    private static final String PRIVACY_TITLE = "Privacy Policy";
+    private static final String COOKIE_TITLE = "Cookie Policy";
+    private static final String FAQ_TITLE = "FAQ";
+    private static final String TERMS_TITLE = "Terms of Use";
+
     private StaticPageHolder storage;
     private SessionHolder<UserSession> appSessionHolder;
     private LocaleHelper localeHelper;
@@ -62,5 +67,21 @@ public class StaticPageProvider {
 
     public String getTrainingVideosURL() {
         return getConfig().getTrainingVideosURL();
+    }
+
+    public String getTermsOfServiceUrl() {
+        return getStaticInfoUrl(TERMS_TITLE);
+    }
+
+    public String getCookiePolicyUrl() {
+        return getStaticInfoUrl(COOKIE_TITLE);
+    }
+
+    public String getFaqUrl() {
+        return getStaticInfoUrl(FAQ_TITLE);
+    }
+
+    public String getPrivacyPolicyUrl() {
+        return getStaticInfoUrl(PRIVACY_TITLE);
     }
 }

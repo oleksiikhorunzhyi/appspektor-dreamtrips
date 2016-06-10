@@ -87,6 +87,7 @@
         <activity
             android:name=".modules.common.view.activity.ComponentActivity"
             android:configChanges="layoutDirection|locale"
+            android:hardwareAccelerated="true"
             android:parentActivityName=".modules.common.view.activity.MainActivity"
             android:windowSoftInputMode="adjustResize">
             <meta-data
@@ -111,7 +112,7 @@
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity" />
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
         </activity>
 
         <!--For result activities-->
@@ -124,9 +125,9 @@
         <!--Content Provider-->
 
         <provider
+            android:name="com.messenger.storage.MessengerDatabase$Provider"
             android:authorities="${applicationId}"
             android:exported="false"
-            android:name="com.messenger.storage.MessengerDatabase$Provider"
             />
 
         <!--Foreign activities-->
@@ -147,6 +148,7 @@
         <activity
             android:name="com.apptentive.android.sdk.ViewActivity"
             android:theme="@style/ApptentiveTheme.Transparent"/>
+
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true"/>

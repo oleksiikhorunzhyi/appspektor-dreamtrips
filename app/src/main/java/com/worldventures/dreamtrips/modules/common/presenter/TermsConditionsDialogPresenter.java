@@ -7,7 +7,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.AcceptTermsConditionsCommand;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 
 import javax.inject.Inject;
 
@@ -24,7 +23,7 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
     public void takeView(View view) {
         super.takeView(view);
         logoutDelegate.setOnLogoutSuccessListener(view::dismissDialog);
-        view.loadContent(provider.getStaticInfoUrl(StaticInfoFragment.TERMS_TITLE));
+        view.loadContent(provider.getTermsOfServiceUrl());
     }
 
     @Override

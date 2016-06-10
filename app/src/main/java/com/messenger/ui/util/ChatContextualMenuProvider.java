@@ -20,7 +20,6 @@ import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.ConversationHelper;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import javax.inject.Inject;
 
@@ -83,6 +82,7 @@ public class ChatContextualMenuProvider {
                     setTranslationsSubMenu(menu, message, currentUser, queryResult);
                     
                     if (currentUserMessage || !ConversationHelper.isTripChat(conversation)
+                            || ConversationHelper.isAbandoned(conversation)
                             || locationAttachment) {
                         menu.removeItem(R.id.action_flag);
                     }

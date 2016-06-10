@@ -74,7 +74,17 @@ public class AddChatMembersScreenPresenterImpl extends ChatMembersScreenPresente
 
         // TODO: 1/28/16 improve logic with getViewState().getSelectedContacts();
         conversationStream
-                .flatMap(conversation -> modifyConversation(conversation, newChatUsers, getView().getConversationName()))
+                .flatMap(conversation -> {
+                    String subject;
+                    // changing conversation subject is possible
+                    // oly when adding a member to a single chat
+                    if (ConversationHelper.isSingleChat(conversation)) {
+                        subject = getView().getConversationName();
+                    } else {
+                        subject = conversation.getSubject();
+                    }
+                    return modifyConversation(conversation, newChatUsers, subject);
+                })
                 .doOnNext(conversationPair -> saveModifiedConversation(conversationPair.first, newChatUsers, conversationPair.second))
                 .compose(bindViewIoToMainComposer())
                 .map(conversationPair -> conversationPair.first)

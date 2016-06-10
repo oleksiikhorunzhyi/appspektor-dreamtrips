@@ -1,12 +1,9 @@
 package com.messenger.delegate.chat;
 
-import android.text.TextUtils;
-
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.constant.MessageStatus;
-import com.messenger.messengerservers.model.Conversation;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.helper.ConversationHelper;
@@ -50,12 +47,12 @@ public class UnreadMessagesDelegate {
     }
 
     public void tryMarkAsReadMessage(DataMessage lastMessage) {
-        if (lastMessage.getStatus() == MessageStatus.READ || TextUtils.equals(lastMessage.getFromId(), getUsername())) {
-            return;
-        }
-
-        chatObservable
-                .filter(chat -> ConversationHelper.isPresent(conversationObservable.toBlocking().first()))
+        if (lastMessage.getStatus() == MessageStatus.READ) return;
+        conversationObservable
+                .take(1)
+                .filter(conversation -> conversation.getUnreadMessageCount() > 0)
+                .flatMap(conversation -> chatObservable
+                        .filter(chat -> ConversationHelper.isPresent(conversation)))
                 .flatMap(chat -> chat.sendReadStatus(lastMessage.getId()))
                 .flatMap(msgId -> markMessagesAsRead(lastMessage))
                 .flatMap(this::changeUnreadCounter)

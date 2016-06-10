@@ -74,7 +74,6 @@ public class GroupChatEventDelegate {
     private void handleRemovingMember(String conversationId, String userId) {
         Observable
                 .fromCallable(() -> removeFromConversation(conversationId, userId))
-                .flatMap(participant -> Observable.timer(1, TimeUnit.SECONDS).map(secs -> participant)) //TODO remove it, just to be sure it is hungarian sheet
                 .flatMap(dataParticipant ->  loadConversationDelegate.getSyncConversationPipe()
                         .createObservableResult(new SyncConversationCommand(conversationId)))
                 .subscribeOn(Schedulers.io())

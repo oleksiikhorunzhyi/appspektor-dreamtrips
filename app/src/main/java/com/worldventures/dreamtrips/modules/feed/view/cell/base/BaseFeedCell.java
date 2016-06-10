@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -77,8 +78,10 @@ public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<I
     }
 
     private boolean isForeignItem(FeedItem feedItem) {
+        Optional<UserSession> userSessionOptional = sessionHolder.get();
         return feedItem.getItem().getOwner() == null
-                || sessionHolder.get().get().getUser().getId() == (feedItem.getItem().getOwner().getId());
+                || !userSessionOptional.isPresent()
+                || userSessionOptional.get().getUser().getId() == (feedItem.getItem().getOwner().getId());
     }
 
     @Override

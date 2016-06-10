@@ -182,7 +182,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     }
 
     public void attachImages(MediaAttachment mediaAttachment) {
-        if (mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0) {
+        if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0) {
             return;
         }
         //
@@ -243,6 +243,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     }
 
     private void updatePickerState() {
+        if (view == null) return;
         if (isAllAttachmentsCompleted() && getRemainingPhotosCount() > 0) {
             view.enableImagePicker();
         } else {

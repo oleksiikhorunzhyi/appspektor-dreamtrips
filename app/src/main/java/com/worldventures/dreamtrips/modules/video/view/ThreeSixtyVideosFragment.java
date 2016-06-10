@@ -123,7 +123,7 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
                     .toList();
             if (adapterRecent != null) adapterRecent.setItems(recentObjects);
         } else {
-            adapterAll.setItems(videos);
+            if (adapterAll != null) adapterAll.setItems(videos);
         }
     }
 

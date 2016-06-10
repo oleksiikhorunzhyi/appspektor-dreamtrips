@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.modules.dtl_flow.view;
 
 import flow.path.Path;
 
-public interface SuperMasterPath {
+public interface MasterToolbarPath {
 
-    Path getSuperMasterPath();
+    Path getMasterToolbarPath();
 }

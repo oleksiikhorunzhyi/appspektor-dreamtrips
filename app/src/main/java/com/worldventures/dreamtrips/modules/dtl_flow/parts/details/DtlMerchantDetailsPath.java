@@ -44,7 +44,7 @@ public class DtlMerchantDetailsPath extends DtlDetailPath {
     }
 
     @Override
-    public Path getSuperMasterPath() {
+    public Path getMasterToolbarPath() {
         return MasterToolbarPath.INSTANCE;
     }
 }

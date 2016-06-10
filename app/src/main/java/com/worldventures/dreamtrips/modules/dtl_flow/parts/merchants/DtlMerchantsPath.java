@@ -23,7 +23,7 @@ public class DtlMerchantsPath extends DtlMasterPath {
     }
 
     @Override
-    public Path getSuperMasterPath() {
+    public Path getMasterToolbarPath() {
         return MasterToolbarPath.INSTANCE;
     }
 }

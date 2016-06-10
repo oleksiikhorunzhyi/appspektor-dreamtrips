@@ -58,17 +58,18 @@ public class GroupAvatarsView extends SimpleDraweeView {
                 .build();
 
         String avatarUrl = conversation.getAvatar();
+        getHierarchy().setPlaceholderImage(drawable);
+        getHierarchy().setFailureImage(drawable);
         setController(Fresco.newDraweeControllerBuilder()
                 .setOldController(getController())
                 .setUri(TextUtils.isEmpty(avatarUrl) ? Uri.EMPTY : Uri.parse(avatarUrl))
                 .build());
-
-        getHierarchy().setPlaceholderImage(drawable);
-        getHierarchy().setFailureImage(drawable);
     }
 
     private void setTripChatAvatar() {
-        GenericDraweeHierarchy history = getHierarchy();
-        history.setPlaceholderImage(ContextCompat.getDrawable(getContext(), R.drawable.ic_trip_chat));
+        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_trip_chat);
+        getHierarchy().setPlaceholderImage(drawable);
+        getHierarchy().setFailureImage(drawable);
+        setController(null);
     }
 }

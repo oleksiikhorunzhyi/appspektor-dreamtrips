@@ -41,8 +41,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.Master
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.search.SearchViewImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.search.SearchViewPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.start.DtlStartScreenImpl;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
@@ -73,8 +71,6 @@ import dagger.Provides;
                 DtlFullscreenImageScreenImpl.class,
                 ActivityPresenter.class,
                 DtlFilterPresenterImpl.class,
-                SearchViewImpl.class,
-                SearchViewPresenterImpl.class,
                 DtlLocationSearchHeaderCell.class,
                 DtlLocationCell.class,
                 DtlFilterAttributeCell.class,

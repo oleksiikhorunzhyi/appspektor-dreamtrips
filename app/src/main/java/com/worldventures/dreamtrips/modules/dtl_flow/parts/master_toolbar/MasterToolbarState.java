@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class MasterToolbarState extends ViewState {
 
-    private boolean show;
+    private boolean showPopup;
     private DtlLocationChangePresenterImpl.ScreenMode screenMode;
     private ArrayList<DtlExternalLocation> dtlNearbyLocations;
 
@@ -18,11 +18,11 @@ public class MasterToolbarState extends ViewState {
     }
 
     public void setPopupShowing(boolean show) {
-        this.show = show;
+        this.showPopup = show;
     }
 
     public boolean isPopupShowing() {
-        return show;
+        return showPopup;
     }
 
     public DtlLocationChangePresenterImpl.ScreenMode getScreenMode() {
@@ -54,14 +54,14 @@ public class MasterToolbarState extends ViewState {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeByte(this.show ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showPopup ? (byte) 1 : (byte) 0);
         dest.writeInt(this.screenMode == null ? -1 : this.screenMode.ordinal());
         dest.writeTypedList(this.dtlNearbyLocations);
     }
 
     protected MasterToolbarState(Parcel in) {
         super(in);
-        this.show = in.readByte() != 0;
+        this.showPopup = in.readByte() != 0;
         int tmpScreenMode = in.readInt();
         this.screenMode = tmpScreenMode == -1 ? null : DtlLocationChangePresenterImpl.ScreenMode.values()[tmpScreenMode];
         this.dtlNearbyLocations = in.createTypedArrayList(DtlExternalLocation.CREATOR);

@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchCell;
@@ -151,7 +150,7 @@ public class MasterToolbarScreenImpl
     protected void setupPopup() {
         Observable<Boolean> focus = RxView.focusChanges(toolbar.getLocationSearchInput());
         Observable<Boolean> clicks = RxView.clicks(toolbar.getLocationSearchInput())
-                .flatMap(aVoid -> Observable.fromCallable(() -> Boolean.TRUE));
+                .flatMap(aVoid -> Observable.just(Boolean.TRUE));
 
         Observable.merge(clicks, focus)
                 .compose(RxLifecycle.bindView(this))
@@ -169,9 +168,9 @@ public class MasterToolbarScreenImpl
     private void setupRecyclerView() {
         adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injector);
         adapter.registerCell(DtlExternalLocation.class, DtlLocationSearchCell.class);
-        adapter.registerCell(DtlLocationSearchHeaderCell.HEADER.class, DtlLocationSearchHeaderCell.class);
+        adapter.registerCell(DtlLocationSearchHeaderCell.HeaderModel.class, DtlLocationSearchHeaderCell.class);
         adapter.registerDelegate(DtlExternalLocation.class, this);
-        adapter.registerDelegate(DtlLocationSearchHeaderCell.HEADER.class, aVoid -> getPresenter().loadNearMeRequested());
+        adapter.registerDelegate(DtlLocationSearchHeaderCell.HeaderModel.class, aVoid -> getPresenter().loadNearMeRequested());
         //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.dtl_location_change_list_divider), false));
@@ -194,13 +193,13 @@ public class MasterToolbarScreenImpl
         hideProgress();
         //
         adapter.clear();
-        adapter.addItem(0, new DtlLocationSearchHeaderCell.HEADER());
+        adapter.addItem(0, DtlLocationSearchHeaderCell.HeaderModel.INSTANCE);
         adapter.addItems(dtlExternalLocations);
     }
 
     @Override
     public void hideNearMeButton() {
-        adapter.remove(DtlLocationSearchHeaderCell.HEADER.INSTANCE);
+        adapter.remove(DtlLocationSearchHeaderCell.HeaderModel.INSTANCE);
     }
 
     @Override

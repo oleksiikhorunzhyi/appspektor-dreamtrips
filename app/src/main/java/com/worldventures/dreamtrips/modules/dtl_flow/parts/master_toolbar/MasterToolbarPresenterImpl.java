@@ -214,7 +214,6 @@ public class MasterToolbarPresenterImpl
 
     private void tryHideNearMeButton() {
         locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-
                 .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> getView().hideNearMeButton());

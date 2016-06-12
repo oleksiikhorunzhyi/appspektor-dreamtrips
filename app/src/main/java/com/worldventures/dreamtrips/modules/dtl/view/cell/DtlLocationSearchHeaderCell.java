@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_dtl_location_header_cell)
-public class DtlLocationSearchHeaderCell extends AbstractDelegateCell<DtlLocationSearchHeaderCell.HEADER, CellDelegate<DtlLocationSearchHeaderCell.HEADER>> {
+public class DtlLocationSearchHeaderCell extends AbstractDelegateCell<DtlLocationSearchHeaderCell.HeaderModel, CellDelegate<DtlLocationSearchHeaderCell.HeaderModel>> {
 
     @InjectView(R.id.autoDetectNearMe)
     Button autoDetectNearMe;
@@ -37,8 +37,11 @@ public class DtlLocationSearchHeaderCell extends AbstractDelegateCell<DtlLocatio
     public void prepareForReuse() {
     }
 
-    public static final class HEADER {
+    public static final class HeaderModel {
 
-        public static final HEADER INSTANCE = new HEADER();
+        private HeaderModel() {
+        }
+
+        public static final HeaderModel INSTANCE = new HeaderModel();
     }
 }

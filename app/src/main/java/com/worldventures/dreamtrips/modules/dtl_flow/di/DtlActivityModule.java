@@ -13,6 +13,8 @@ import com.worldventures.dreamtrips.modules.dtl.presenter.DtlVerifyAmountPresent
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationChangeCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
@@ -69,10 +71,12 @@ import dagger.Provides;
                 DtlFullscreenImageScreenImpl.class,
                 ActivityPresenter.class,
                 DtlFilterPresenterImpl.class,
+                DtlLocationSearchHeaderCell.class,
                 DtlLocationCell.class,
                 DtlFilterAttributeCell.class,
                 DtlFilterAttributeHeaderCell.class,
                 DtlMerchantExpandableCell.class,
+                DtlLocationSearchCell.class,
                 DtlPerkCell.class,
                 DtlPointsCell.class,
                 DtlLocationChangeCell.class,

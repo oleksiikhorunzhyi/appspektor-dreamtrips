@@ -86,6 +86,10 @@ public class DtlToolbar extends LinearLayout {
         locationSearchInput.selectAll(); // TODO :: 01.06.16 ??? WHAT?
     }
 
+    public AppCompatEditText getLocationSearchInput() {
+        return locationSearchInput;
+    }
+
     public void setToolbarCaptions(@Nullable String searchQuery, String locationTitle) {
         this.searchQuery = searchQuery;
         this.locationTitle = locationTitle;

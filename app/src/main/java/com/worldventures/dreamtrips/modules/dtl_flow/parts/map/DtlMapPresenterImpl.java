@@ -93,6 +93,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                         .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
         //
         updateToolbarTitle();
+        bindToolbarTitleUpdates();
         updateFilterButtonState();
     }
 
@@ -102,7 +103,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         if (visibility == View.VISIBLE) getView().prepareMap();
     }
 
-    protected void connectService() {
+    protected void connectInteractors() {
         merchantInteractor.merchantsActionPipe()
                 .observe()
                 .compose(bindViewIoToMainComposer())
@@ -115,7 +116,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlMerchantsAction>()
                         .onStart(action -> getView().showProgress(true)));
-        //
         filterInteractor.filterMerchantsActionPipe()
                 .observeWithReplay()
                 .compose(bindViewIoToMainComposer())
@@ -125,7 +125,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                             apiErrorPresenter.handleActionError(action, throwable);
                         })
                         .onSuccess(action -> onMerchantsLoaded(action.getResult())));
-        //
         filterInteractor.filterDataPipe().observeSuccess()
                 .map(DtlFilterDataAction::getResult)
                 .compose(bindViewIoToMainComposer())
@@ -134,8 +133,12 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     private void updateToolbarTitle() {
+        // TODO :: 12.06.16 maybe merge this with bindToolbarTitleUpdates method below
+        // so far seems like it might be not safe to use pipe's observeSuccessWithReplay()
+        // observable in combineLatest
         Observable.combineLatest(
-                locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
+                locationInteractor.locationPipe().observeSuccessWithReplay()
+                        .first()
                         .map(DtlLocationCommand::getResult),
                 filterInteractor.filterDataPipe().observeSuccessWithReplay()
                         .first()
@@ -143,7 +146,18 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                         .map(DtlFilterData::getSearchQuery),
                 Pair::new
         ).compose(bindViewIoToMainComposer())
-//                .take(1)
+                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
+    }
+
+    private void bindToolbarTitleUpdates() {
+        Observable.combineLatest(
+                locationInteractor.locationPipe().observeSuccess()
+                        .map(DtlLocationCommand::getResult),
+                filterInteractor.filterDataPipe().observeSuccess()
+                        .map(DtlFilterDataAction::getResult)
+                        .map(DtlFilterData::getSearchQuery),
+                Pair::new)
+                .compose(bindViewIoToMainComposer())
                 .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
     }
 
@@ -164,7 +178,9 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
         return locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
                 .map(command -> {
                     Location lastPosition = db.getLastMapCameraPosition();
-                    boolean validLastPosition = lastPosition != null && lastPosition.getLat() != 0 && lastPosition.getLng() != 0;
+                    boolean validLastPosition = lastPosition != null
+                            && lastPosition.getLat() != 0
+                            && lastPosition.getLng() != 0;
                     DtlLocation lastSelectedLocation = command.getResult();
                     return validLastPosition ? lastPosition : (command.isResultDefined() ?
                             lastSelectedLocation.getCoordinates() : new Location(0d, 0d));
@@ -190,7 +206,6 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     protected void onMerchantsLoaded(List<DtlMerchant> dtlMerchants) {
-        //
         getView().showProgress(false);
         getView().showButtonLoadMerchants(false);
         showPins(dtlMerchants);
@@ -240,7 +255,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     @Override
     public void onMapLoaded() {
         mapReady = true;
-        connectService();
+        connectInteractors();
         //
         getFirstCenterLocation()
                 .compose(bindViewIoToMainComposer())

@@ -95,7 +95,7 @@
         android:id="@+id/scan_receipt_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="@string/dtl_receipt_note"/>
+        android:text="@string/dtl_verify_amount_note"/>
 
 
     <FrameLayout

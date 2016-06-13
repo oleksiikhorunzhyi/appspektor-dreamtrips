@@ -75,6 +75,12 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if (getView().isTabletLandscape()) {
+            // this path is not applicable for tablet landscape - it is embedded in DtlToolbar
+            History history = History.single(new DtlMerchantsPath());
+            Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+            return;
+        }
         apiErrorPresenter.setView(getView());
         //
         tryHideNearMeButton();

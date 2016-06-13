@@ -19,10 +19,10 @@ import java.util.Locale;
 
 public class TripsFilterData implements Serializable {
 
-    private static final int MIN_NIGHT = 0;
-    private static final int MAX_NIGHTS = 9;
-    private static final int MIN_PRICE = 100;
-    private static final int MAX_PRICE = 500;
+    public static final int MIN_NIGHTS = 0;
+    public static final int MAX_NIGHTS = 9;
+    public static final int MIN_PRICE = 100;
+    public static final int MAX_PRICE = 500;
 
     private int minNights;
     private int maxNights;
@@ -37,7 +37,7 @@ public class TripsFilterData implements Serializable {
     private Date endDate;
 
     public Integer getMinNights() {
-        return minNights <= MIN_NIGHT ? null : minNights;
+        return minNights <= MIN_NIGHTS ? null : minNights;
     }
 
     public void setMinNights(int minNights) {
@@ -92,7 +92,7 @@ public class TripsFilterData implements Serializable {
         this.showSoldOut = showSoldOut;
     }
 
-    public String getStartDate() {
+    public String getStartDateFormatted() {
         return DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()));
     }
 
@@ -100,8 +100,24 @@ public class TripsFilterData implements Serializable {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public String getEndDateFormatted() {
         return DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()));
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public ArrayList<RegionModel> getAcceptedRegions() {
+        return acceptedRegions;
+    }
+
+    public ArrayList<ActivityModel> getAcceptedActivities() {
+        return acceptedActivities;
     }
 
     public void setEndDate(Date endDate) {
@@ -129,7 +145,7 @@ public class TripsFilterData implements Serializable {
         tripsFilterData.maxPrice = MAX_PRICE;
         tripsFilterData.minPrice = MIN_PRICE;
         tripsFilterData.maxNights = MAX_NIGHTS;
-        tripsFilterData.minNights = MIN_NIGHT;
+        tripsFilterData.minNights = MIN_NIGHTS;
         tripsFilterData.showSoldOut = false;
 
         Calendar calendar = Calendar.getInstance();
@@ -163,26 +179,4 @@ public class TripsFilterData implements Serializable {
 
         return new ArrayList<>(parentActivities);
     }
-
-    public String getFilterAnalyticString() {
-        List<String> filters = new ArrayList<>();
-        filters.add(String.format("%d-%d", minNights, Math.min(maxNights, 9)));
-        filters.add(String.format("%.0f-%.0f", minPrice, Math.min(maxPrice, 500)));
-        filters.add(DateTimeUtils.convertDateToString(startDate, new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())));
-        filters.add(DateTimeUtils.convertDateToString(endDate, new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault())));
-        filters.add(String.valueOf(showSoldOut));
-        filters.add(String.valueOf(showRecentlyAdded));
-        filters.add(String.valueOf(showFavorites));
-        return TextUtils.join(",", filters);
-    }
-
-    public String getAcceptedRegionsAnalyticString() {
-        return TextUtils.join(",", Queryable.from(acceptedRegions).map(RegionModel::getName).toList());
-    }
-
-    public String getAcceptedActivitiesAnalyticString() {
-        return TextUtils.join(",", Queryable.from(acceptedActivities).filter(activity -> activity.getParentId() == 0)
-                .map(ActivityModel::getName).toList());
-    }
-
 }

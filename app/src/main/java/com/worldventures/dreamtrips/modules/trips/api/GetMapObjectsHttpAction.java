@@ -66,8 +66,8 @@ public class GetMapObjectsHttpAction extends AuthorizedHttpAction {
         durationMax = tripsFilterData.getMaxNights();
         priceMin = tripsFilterData.getMinPrice();
         priceMax = tripsFilterData.getMaxPrice();
-        startDate = tripsFilterData.getStartDate();
-        endDate = tripsFilterData.getEndDate();
+        startDate = tripsFilterData.getStartDateFormatted();
+        endDate = tripsFilterData.getEndDateFormatted();
         regions = tripsFilterData.getAcceptedRegionsIds();
         activities = tripsFilterData.getAcceptedActivitiesIds();
         soldOut = tripsFilterData.isShowSoldOut();

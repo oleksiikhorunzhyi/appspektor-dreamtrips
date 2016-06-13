@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import java.util.ArrayList;
@@ -137,7 +138,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void acceptFilters() {
         eventBus.removeStickyEvent(FilterBusEvent.class);
         eventBus.postSticky(new FilterBusEvent(tripFilterData));
-        TrackingHelper.actionFilterTrips(tripFilterData);
+        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData, regions, parentActivities));
     }
 
     public void resetFilters() {
@@ -156,7 +157,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         FilterBusEvent filterBusEvent = new FilterBusEvent(tripFilterData);
         eventBus.removeAllStickyEvents();
         eventBus.postSticky(filterBusEvent);
-        TrackingHelper.actionFilterTrips(tripFilterData);
+        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData, regions, parentActivities));
     }
 
     private List<ActivityModel> getParentActivities() {

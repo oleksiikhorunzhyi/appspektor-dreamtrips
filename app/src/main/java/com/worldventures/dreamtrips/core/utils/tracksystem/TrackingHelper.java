@@ -14,8 +14,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
+import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
-import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import org.intellij.lang.annotations.MagicConstant;
 
@@ -709,7 +709,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
     }
 
-    public static void actionFilterTrips(TripsFilterData filterData) {
+    public static void actionFilterTrips(TripsFilterDataAnalyticsWrapper filterData) {
         Map data = new HashMap<>();
         data.put(ATTRIBUTE_FILTER, "1");
         data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());

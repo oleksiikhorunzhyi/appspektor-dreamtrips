@@ -97,7 +97,6 @@
     <string name="chat_settings_row_clear_history">Borrar historial</string>
     <string name="chat_settings_row_leave_chat">Dejar chat</string>
     <string name="chat_settings_row_delete_chat">Borrar chat</string>
-    <string name="chat_settings_group_chat_info_text_format">Este chat fue creado por %1$s en %2$s</string>
     <string name="chat_settings_menu_settings">Configuraciones</string>
     <string name="chat_settings_menu_edit_chat_name">Editar nombre de chat</string>
     <string name="chat_settings_menu_edit_change_chat_image">Cambiar imagen de chat</string>

@@ -6,6 +6,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
 import com.messenger.delegate.chat.command.LeaveChatCommand;
 import com.messenger.entities.DataConversation;
@@ -76,7 +77,14 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                         .compose(bindViewIoToMainComposer());
 
         conversationWithParticipantObservable
-                .subscribe(conversation -> onConversationChanged(conversation.first, conversation.second));
+                .subscribe(conversationPair -> {
+                    DataConversation conversation = conversationPair.first;
+                    List<DataUser> participants = conversationPair.second;
+                    DataUser owner = Queryable.from(participants)
+                            .filter(user -> ConversationHelper.isOwner(conversation, user))
+                            .firstOrDefault();
+                    onConversationChanged(conversation, owner, participants);
+                });
 
         Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantReplayObservable =
                 conversationWithParticipantObservable.take(1).replay(1).autoConnect();
@@ -106,9 +114,10 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         }
     }
 
-    protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
+    protected void onConversationChanged(DataConversation conversation, DataUser owner, List<DataUser> participants) {
         ChatSettingsScreen screen = getView();
         screen.setConversation(conversation);
+        screen.setOwner(owner);
         screen.setParticipants(conversation, participants);
     }
 
@@ -183,7 +192,6 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                 .subscribe(conversation -> {
                     conversation.setSubject(newSubject);
                     conversationsDAO.save(conversation);
-                    getView().setConversation(conversation);
                 }, throwable -> {
                     getView().showErrorDialog(R.string.chat_settings_error_change_subject);
                 });

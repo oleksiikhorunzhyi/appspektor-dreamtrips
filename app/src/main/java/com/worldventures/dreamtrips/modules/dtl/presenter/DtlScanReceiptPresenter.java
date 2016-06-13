@@ -77,11 +77,9 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                         view.preSetBillAmount(transaction.getBillTotal());
                         this.amount = String.valueOf(transaction.getBillTotal());
                     }
+                    checkVerification(transaction);
                 }, apiErrorPresenter::handleError);
         //
-
-        //
-        checkVerification();
         //
         view.showCurrency(dtlMerchant.getDefaultCurrency());
         //
@@ -94,13 +92,18 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     private void checkVerification() {
-        if (!TextUtils.isEmpty(amount))
-            transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
-                    .map(DtlTransactionAction::getResult)
-                    .filter(transaction -> transaction.getUploadTask() != null)
-                    .compose(bindViewIoToMainComposer())
-                    .subscribe(transaction -> view.enableVerification(), apiErrorPresenter::handleError);
-        else view.disableVerification();
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(this::checkVerification, apiErrorPresenter::handleError);
+    }
+
+    private void checkVerification(DtlTransaction transaction) {
+        if (!TextUtils.isEmpty(amount) && transaction.getUploadTask() != null) {
+            view.enableVerification();
+        } else {
+            view.disableVerification();
+        }
     }
 
     private void bindApiJob() {
@@ -125,8 +128,9 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                 .map(DtlTransactionAction::getResult)
                 .flatMap(transaction -> transactionInteractor.estimatePointsActionPipe().createObservableResult(
                         new DtlEstimatePointsAction(dtlMerchant, transaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode()))
-                ).subscribe(action -> {
-        }, apiErrorPresenter::handleError);
+                ).compose(bindViewIoToMainComposer())
+                .subscribe(action -> {
+                }, apiErrorPresenter::handleError);
     }
 
     private void attachDtPoints(Double points) {
@@ -181,9 +185,8 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                         transaction -> ImmutableDtlTransaction.copyOf(transaction)
                                 .withUploadTask(uploadTask)))
                 .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onSuccess(action -> checkVerification(action.getResult()))
                         .onFail(apiErrorPresenter::handleActionError));
-        //
-        checkVerification();
     }
 
     public interface View extends RxView, ApiErrorView {

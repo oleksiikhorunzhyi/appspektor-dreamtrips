@@ -74,6 +74,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
     }
 
     public void reload() {
+        if(view == null) return;
+        //
         page = 1;
         noMoreItems = false;
         if (loadWithStatus) {
@@ -83,11 +85,13 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
         doRequest(createGetTripsQuery(), items -> {
             loading = false;
             //
-            view.finishLoading();
-            //
-            view.getAdapter().clear();
-            view.getAdapter().addItems(items);
-            view.getAdapter().notifyDataSetChanged();
+            if (view != null) {
+                view.finishLoading();
+                //
+                view.getAdapter().clear();
+                view.getAdapter().addItems(items);
+                view.getAdapter().notifyDataSetChanged();
+            }
         });
     }
 

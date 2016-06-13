@@ -7,14 +7,17 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.List;
 
@@ -69,6 +72,14 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
         }
         groupAvatarsView.setConversationAvatar(conversation);
         groupAvatarsView.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void setOwner(DataUser owner) {
+        String createdByText = getResources()
+                .getString(R.string.chat_settings_group_chat_info_text_format, owner.getName());
+        infoTextView.setVisibility(VISIBLE);
+        infoTextView.setText(createdByText);
     }
 
     @Override

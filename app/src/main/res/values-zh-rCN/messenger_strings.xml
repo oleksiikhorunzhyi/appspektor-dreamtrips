@@ -97,7 +97,6 @@
     <string name="chat_settings_row_clear_history">清除历史记录</string>
     <string name="chat_settings_row_leave_chat">离开聊天</string>
     <string name="chat_settings_row_delete_chat">删除聊天</string>
-    <string name="chat_settings_group_chat_info_text_format">该聊天是由%1$s在%2$s上创建</string>
     <string name="chat_settings_menu_settings">设置</string>
     <string name="chat_settings_menu_edit_chat_name">编辑聊天名</string>
     <string name="chat_settings_menu_edit_change_chat_image">更改聊天图像</string>

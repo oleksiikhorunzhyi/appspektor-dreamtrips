@@ -261,7 +261,7 @@
     <string name="profile_update_info">Actualizați informații</string>
     <string name="profile_zero_trip_images">Imagini din călătorie</string>
     <string name="profile_zero_bucket_list">Articole pe Lista de dorințe</string>
-    <string name="profile_trip_images">%1$d de imagini din călătorie</string>
+    <string name="profile_trip_images">%1$d imagini din călătorie</string>
     <string name="profile_bucket_list">%1$d articole pe Lista de dorințe</string>
     <string name="profile_post">Postați</string>
     <string name="profile_friends">Prieteni</string>
@@ -274,7 +274,7 @@
     <string name="bucket_delete_dialog">Sigur doriți să ștergeți acest articol de pe Lista de dorințe?</string>
 
     <string name="action_add_to_bucket">Adăugați pe Lista de dorințe</string>
-    <string name="profile_dream_trips">%1$d călătorii Dream Trips</string>
+    <string name="profile_dream_trips">%1$d Dream Trips</string>
     <string name="profile_add_friend">Adăugați prieten</string>
     <string name="profile_friend_request" formatted="false">%1$s v-a trimis o cerere de prietenie</string>
     <string name="profile_accept">Confirmați</string>
@@ -451,7 +451,7 @@
     <string name="terms_and_conditions_accept">Optare</string>
     <string name="terms_and_conditions_reject">Nu acum</string>
 
-    <string name="camera">Cameră</string>
+    <string name="camera">Aparat foto</string>
     <string name="add_from_facebook">Adăugați de pe Facebook</string>
 
     <string name="photos_selected">%1$d selectate</string>
@@ -467,13 +467,13 @@
     <string name="no_mutual_friends">Nu aveți niciun prieten comun</string>
 
     <string name="photo_limitation_message">Alegeți până la %1$d fotografii</string>
-    <string name="pending">În așteptare…</string>
+    <string name="pending">În așteptare...</string>
 
     <string name="back">Înapoi</string>
     <string name="logout_component">Deconectare</string>
     <string name="start_typing_name">Începeți să introduceți numele</string>
 
-    <string name="multiple_dates">Date multiple, %1$s…</string>
+    <string name="multiple_dates">Date multiple, %1$s...</string>
 
     <string name="tag_photo">v-a etichetat pe</string>
 

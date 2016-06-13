@@ -162,7 +162,7 @@
     <string name="completed">Klar</string>
     <string name="action_share">Dela</string>
     <string name="recent_header">Nyligen tillagd 360-upplevelse</string>
-    <string name="recent_videos">Nyligen tillagda</string>
+    <string name="recently_added">Nyligen tillagda</string>
     <string name="featured_header">Utvald 360-upplevelse</string>
     <string name="title_activity_success_story_details">FramgångsberättelseDetaljerAktivitet</string>
     <string name="hello_world">Hej världen!</string>

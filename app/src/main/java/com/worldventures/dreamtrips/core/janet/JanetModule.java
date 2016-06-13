@@ -10,6 +10,7 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.dreamtrips.modules.membership.presenter.interactor.PodcastInteractor;
 
 import java.net.CookieManager;
 import java.util.Set;
@@ -85,6 +86,12 @@ public class JanetModule {
     @Provides(type = Provides.Type.SET)
     ActionService provideHttpUploaderService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
         return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson));
+    }
+
+    @Singleton
+    @Provides
+    PodcastInteractor providePodcastInteractor(Janet janet) {
+        return new PodcastInteractor(janet);
     }
 
 }

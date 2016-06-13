@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesComm
 import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageConfigCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.UpdateAuthInfoCommand;
+import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 
 import dagger.Module;
 
@@ -23,7 +24,8 @@ import dagger.Module;
                 GlobalConfigCommand.class,
                 CirclesCommand.class,
                 AppSettingsCommand.class,
-                UpdateAuthInfoCommand.class
+                UpdateAuthInfoCommand.class,
+                PodcastCommand.class
         },
         complete = false, library = true)
 public class JanetCommandModule {

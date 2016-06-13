@@ -162,7 +162,7 @@
     <string name="completed">Ολοκληρώθηκε</string>
     <string name="action_share">Κοινοποίηση</string>
     <string name="recent_header">Εμπειρία 360 που προστέθηκε πρόσφατα</string>
-    <string name="recent_videos">Πρόσφατες προσθήκες</string>
+    <string name="recently_added">Πρόσφατες προσθήκες</string>
     <string name="featured_header">Επιλεγμένη εμπειρία 360</string>
     <string name="title_activity_success_story_details">SuccessStoryDetailsActivity</string>
     <string name="hello_world">Γεια σου, κόσμε!</string>

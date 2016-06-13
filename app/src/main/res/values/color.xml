@@ -61,6 +61,8 @@
 
     <color name="perks_text_color">#222222</color>
 
+    <color name="pin_progress_bg_for_white_holder">#A5A5A5</color>
+
     <color name="open">#6ebffc</color>
     <color name="closed">#fe5353</color>
     <color name="facebook_color">#3C5A99</color>

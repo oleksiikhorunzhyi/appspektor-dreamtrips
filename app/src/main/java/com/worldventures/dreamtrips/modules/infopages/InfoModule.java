@@ -15,9 +15,9 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFrag
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.AuthorizedStaticInfoFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
-import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
-import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
+import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.presenter.ThreeSixtyVideosPresenter;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
@@ -41,8 +41,8 @@ import dagger.Provides;
                 StaticInfoFragment.EnrollRepFragment.class,
 
                 VideoCell.class,
-                VideoHeaderLightCell.class,
-                VideoHeaderCell.class,
+                MediaHeaderLightCell.class,
+                MediaHeaderCell.class,
 
                 ThreeSixtyVideosFragment.class,
                 ThreeSixtyVideosPresenter.class,

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/spacing_small">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/image"
+        android:layout_width="@dimen/size_huge"
+        android:layout_height="@dimen/size_huge"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:placeholderImage="@drawable/podcast_placeholder"
+        fresco:placeholderImageScaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/play"
+        android:layout_width="@dimen/size_huge"
+        android:layout_height="@dimen/size_huge"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_podcast_play"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_toLeftOf="@+id/download_progress"
+        android:layout_toRightOf="@id/image"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/abc_text_size_subhead_material"
+            android:textStyle="bold"
+            tools:text="Podcast"/>
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/abc_text_size_small_material"
+            tools:text="Category"/>
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/abc_text_size_small_material"
+            tools:text="12:45 min"/>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/abc_text_size_small_material"
+            tools:text="Feb 31, 2066"/>
+
+    </LinearLayout>
+
+    <com.worldventures.dreamtrips.modules.common.view.custom.PinProgressButton
+        android:id="@id/download_progress"
+        android:layout_width="@dimen/pin_progress_button_size"
+        android:layout_height="@dimen/pin_progress_button_size"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/spacing_small"
+        custom:circleColor="@color/pin_progress_bg_for_white_holder"/>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/abc_text_size_small_material"
+        tools:text="Buck is a build system developed and used by Facebook. It encourages the creation of small, reusable modules consisting of code and resources, and supports a variety of languages on many platforms."/>
+
+</RelativeLayout>

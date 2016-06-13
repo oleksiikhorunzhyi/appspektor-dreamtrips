@@ -44,6 +44,10 @@ public class BaseRouter {
         startActivityIntent(intent);
     }
 
+    protected void startActivity(Intent intent) {
+        getContext().startActivity(intent);
+    }
+
     @Deprecated
     protected void startActivity(Class<? extends InjectingActivity> activityClass, Bundle bundle) {
         Intent intent = new Intent(getContext(), activityClass);

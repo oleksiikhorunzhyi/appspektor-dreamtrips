@@ -162,7 +162,7 @@
     <string name="completed">Selesai</string>
     <string name="action_share">Berkongsi</string>
     <string name="recent_header">Pengalaman 360 Baru Ditambah</string>
-    <string name="recent_videos">Baru Ditambah</string>
+    <string name="recently_added">Baru Ditambah</string>
     <string name="featured_header">Menonjolkan Pengalaman 360</string>
     <string name="title_activity_success_story_details">AktivitiButiranCeritaKejayaan</string>
     <string name="hello_world">Helo dunia!</string>

@@ -293,4 +293,7 @@
     <dimen name="in_app_notification_close_button_padding_right">19dp</dimen>
     <!--end in app notifications-->
 
+    <!--Common-->
+    <dimen name="pin_progress_button_size">48dp</dimen>
+
 </resources>

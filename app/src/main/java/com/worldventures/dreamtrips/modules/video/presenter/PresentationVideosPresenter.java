@@ -4,13 +4,13 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceManager;
+import com.worldventures.dreamtrips.core.api.FileDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
-import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
-import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
+import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;
+import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Category;
@@ -30,9 +30,9 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     @ForApplication
     protected Injector injector;
     @Inject
-    protected VideoDownloadSpiceManager videoDownloadSpiceManager;
+    protected FileDownloadSpiceManager fileDownloadSpiceManager;
 
-    protected VideoCachingDelegate videoCachingDelegate;
+    protected FileCachingDelegate fileCachingDelegate;
 
     protected List<Object> currentItems;
 
@@ -43,23 +43,23 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        videoCachingDelegate = new VideoCachingDelegate(db, context, injector, videoDownloadSpiceManager);
-        videoCachingDelegate.setView(this.view);
+        fileCachingDelegate = new FileCachingDelegate(db, context, injector, fileDownloadSpiceManager);
+        fileCachingDelegate.setView(this.view);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (!videoDownloadSpiceManager.isStarted()) {
-            videoDownloadSpiceManager.start(context);
+        if (!fileDownloadSpiceManager.isStarted()) {
+            fileDownloadSpiceManager.start(context);
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (videoDownloadSpiceManager.isStarted()) {
-            videoDownloadSpiceManager.shouldStop();
+        if (fileDownloadSpiceManager.isStarted()) {
+            fileDownloadSpiceManager.shouldStop();
         }
     }
 
@@ -71,11 +71,11 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     }
 
     public void onDeleteAction(CachedEntity videoEntity) {
-        videoCachingDelegate.onDeleteAction(videoEntity);
+        fileCachingDelegate.onDeleteAction(videoEntity);
     }
 
     public void onCancelAction(CachedEntity cacheEntity) {
-        videoCachingDelegate.onCancelAction(cacheEntity);
+        fileCachingDelegate.onCancelAction(cacheEntity);
         TrackingHelper.videoAction(TrackingHelper.ACTION_MEMBERSHIP,
                 getAccountUserId(), TrackingHelper.ACTION_MEMBERSHIP_LOAD_CANCELED, cacheEntity.getName());
     }
@@ -99,10 +99,9 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
 
     private void attachCacheToVideos(List<Category> categories) {
         Queryable.from(categories).forEachR(cat -> Queryable.from(cat.getVideos()).forEachR(video -> {
-            CachedEntity e = db.getDownloadVideoEntity(video.getUid());
+            CachedEntity e = db.getDownloadMediaEntity(video.getUid());
             video.setCacheEntity(e);
         }));
-
     }
 
     protected void addCategories(List<Category> categories) {
@@ -113,7 +112,7 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     }
 
     protected void addCategoryHeader(String category, List<Video> videos, int categoryIndex) {
-        currentItems.add(new VideoHeader(category));
+        currentItems.add(new MediaHeader(category));
         currentItems.addAll(videos);
     }
 
@@ -125,9 +124,9 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
                 boolean inProgress = cachedVideo.getProgress() > 0;
                 boolean cached = cachedVideo.isCached(context);
                 if (!failed && inProgress && !cached) {
-                    DownloadVideoListener listener = new DownloadVideoListener(cachedVideo, videoCachingDelegate);
+                    DownloadFileListener listener = new DownloadFileListener(cachedVideo, fileCachingDelegate);
                     injector.inject(listener);
-                    videoDownloadSpiceManager.addListenerIfPending(
+                    fileDownloadSpiceManager.addListenerIfPending(
                             InputStream.class,
                             cachedVideo.getUuid(),
                             listener
@@ -138,18 +137,18 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
     }
 
     public void downloadVideo(CachedEntity cachedEntity) {
-        videoCachingDelegate.downloadVideo(cachedEntity);
+        fileCachingDelegate.downloadFile(cachedEntity);
     }
 
     public void deleteCachedVideo(CachedEntity cachedEntity) {
-        videoCachingDelegate.deleteCachedVideo(cachedEntity);
+        fileCachingDelegate.deleteCachedFile(cachedEntity);
     }
 
     public void cancelCachingVideo(CachedEntity cachedEntity) {
-        videoCachingDelegate.cancelCachingVideo(cachedEntity);
+        fileCachingDelegate.cancelCachingFile(cachedEntity);
     }
 
-    public interface View extends Presenter.View, VideoCachingDelegate.View {
+    public interface View extends Presenter.View, FileCachingDelegate.View {
 
         void startLoading();
 

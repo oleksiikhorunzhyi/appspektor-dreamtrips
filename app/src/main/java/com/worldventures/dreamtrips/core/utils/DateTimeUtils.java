@@ -42,6 +42,7 @@ public class DateTimeUtils {
     public static final String FEED_DATE_FORMAT = "MMM d 'at' h:mma";
     public static final String DEFAULT_ISO_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String ISO_FORMAT_WITH_TIMEZONE = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String PODCAST_DATE_FORMAT = "MMM d, yyyy";
 
     private DateTimeUtils() {
     }

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.video.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
@@ -30,9 +30,9 @@ public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<Three
             featuredVideos.addAll(Queryable.from(cat.getVideos()).filter(Video::isFeatured).toList());
         });
 
-        currentItems.add(new VideoHeader(context.getString(R.string.featured_header)));
+        currentItems.add(new MediaHeader(context.getString(R.string.featured_header)));
         currentItems.addAll(featuredVideos);
-        currentItems.add(new VideoHeader(context.getString(R.string.recent_header)));
+        currentItems.add(new MediaHeader(context.getString(R.string.recent_header)));
         currentItems.addAll(recentVideos);
 
         view.setItems(currentItems);

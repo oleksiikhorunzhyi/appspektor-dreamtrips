@@ -40,6 +40,9 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
         if (showInvite()) {
             screens.add(new FragmentItem(Route.INVITE, context.getString(R.string.invite_and_share)));
         }
+        if (showPodcasts()) {
+            screens.add(new FragmentItem(Route.PODCASTS, context.getString(R.string.podcasts)));
+        }
         return screens;
     }
 
@@ -49,6 +52,10 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
 
     private boolean showInvite() {
         return !featureManager.available(Feature.REP_TOOLS);
+    }
+
+    private boolean showPodcasts() {
+        return featureManager.available(Feature.MEMBERSHIP);
     }
 
     public void trackState(int position) {

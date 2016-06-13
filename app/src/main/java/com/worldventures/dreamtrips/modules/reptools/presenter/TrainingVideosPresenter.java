@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
@@ -92,7 +92,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     private void setHeaderLocale() {
         if (currentItems != null && currentItems.size() > 0) {
-            VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
+            MediaHeader firstHeader = (MediaHeader) currentItems.get(0);
             firstHeader.setVideoLocale(videoLocale);
             firstHeader.setVideoLanguage(videoLanguage);
             view.localeLoaded();
@@ -101,7 +101,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     @Override
     protected void addCategoryHeader(String category, List<Video> videos, int index) {
-        currentItems.add(new VideoHeader(category, index == 0));
+        currentItems.add(new MediaHeader(category, index == 0));
         currentItems.addAll(videos);
     }
 

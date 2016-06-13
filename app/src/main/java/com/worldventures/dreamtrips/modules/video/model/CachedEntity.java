@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.video.model;
 
 import android.content.Context;
+import android.os.Environment;
 
 import java.io.File;
 import java.io.Serializable;
@@ -14,7 +15,6 @@ public class CachedEntity implements Serializable {
     protected String uuid;
     protected int downloadId;
     protected String name;
-
 
     public CachedEntity(String url, String id, String name) {
         this.url = url;
@@ -37,6 +37,10 @@ public class CachedEntity implements Serializable {
         return new File(getFilePath(context, getUrl())).exists() && getProgress() == 100;
     }
 
+    public boolean isCached(String type) {
+        return new File(getFileForStorage(type, getUrl())).exists() && getProgress() == 100;
+    }
+
     public String getName() {
         return name;
     }
@@ -54,11 +58,17 @@ public class CachedEntity implements Serializable {
     }
 
     public static String getFilePath(Context context, String url) {
-        return context.getFilesDir().toString() + File.separator + getFileName(url);
+        return context.getFilesDir().getPath() + File.separator + getFileName(url);
     }
 
     public static String getExternalFilePath(Context context, String url) {
-        return context.getExternalCacheDir().toString() + File.separator + getFileName(url);
+        return context.getExternalCacheDir().getPath() + File.separator + getFileName(url);
+    }
+
+    public static String getFileForStorage(String type, String url){
+        File podcastsPath = Environment.getExternalStoragePublicDirectory(type);
+        podcastsPath.mkdirs();
+        return podcastsPath + File.separator + getFileName(url);
     }
 
     public String getUuid() {
@@ -71,7 +81,7 @@ public class CachedEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "CachedVideo{" +
+        return "CachedEntity{" +
                 "url='" + url + '\'' +
                 ", failed=" + failed +
                 ", progress=" + progress +

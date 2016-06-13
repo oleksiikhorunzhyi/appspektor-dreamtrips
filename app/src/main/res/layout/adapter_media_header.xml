@@ -39,16 +39,13 @@
             android:padding="1dp"
             app:actualImageScaleType="fitXY"
             app:placeholderImage="@drawable/ic_flag_placeholder"
-            app:placeholderImageScaleType="fitXY"
-            />
+            app:placeholderImageScaleType="fitXY"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_spinner_drop_down"
-            />
+            android:src="@drawable/ic_spinner_drop_down"/>
     </LinearLayout>
-
 
 </LinearLayout>
 

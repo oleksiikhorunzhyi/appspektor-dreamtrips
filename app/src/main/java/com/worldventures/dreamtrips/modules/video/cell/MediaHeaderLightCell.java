@@ -5,10 +5,10 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
-@Layout(R.layout.adapter_video_header)
-public class VideoHeaderLightCell extends VideoHeaderCell {
+@Layout(R.layout.adapter_media_header)
+public class MediaHeaderLightCell extends MediaHeaderCell {
 
-    public VideoHeaderLightCell(View view) {
+    public MediaHeaderLightCell(View view) {
         super(view);
     }
 

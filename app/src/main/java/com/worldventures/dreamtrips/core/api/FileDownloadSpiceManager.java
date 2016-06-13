@@ -7,7 +7,7 @@ import com.octo.android.robospice.SpiceService;
 
 import roboguice.util.temp.Ln;
 
-public class VideoDownloadSpiceManager extends SpiceManager{
+public class FileDownloadSpiceManager extends SpiceManager{
     /**
      * Creates a {@link SpiceManager}. Typically this occurs in the construction
      * of an Activity or Fragment. This method will check if the service to bind
@@ -15,10 +15,9 @@ public class VideoDownloadSpiceManager extends SpiceManager{
      *
      * @param spiceServiceClass the service class to bind to.
      */
-    public VideoDownloadSpiceManager(Class<? extends SpiceService> spiceServiceClass) {
+    public FileDownloadSpiceManager(Class<? extends SpiceService> spiceServiceClass) {
         super(spiceServiceClass);
 
         Ln.getConfig().setLoggingLevel(Log.ERROR);
-
     }
 }

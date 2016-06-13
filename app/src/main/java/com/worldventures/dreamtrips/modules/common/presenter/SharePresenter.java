@@ -7,6 +7,7 @@ import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
@@ -44,7 +45,7 @@ public class SharePresenter extends Presenter<SharePresenter.View> {
                 new RequestListener<InputStream>() {
                     @Override
                     public void onRequestFailure(SpiceException spiceException) {
-                        view.informUser("Can't share file");
+                        view.informUser(R.string.share_error);
                     }
 
                     @Override

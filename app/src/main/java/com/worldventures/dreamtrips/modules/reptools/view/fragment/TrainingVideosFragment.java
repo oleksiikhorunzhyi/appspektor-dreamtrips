@@ -6,7 +6,7 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoHeaderDelegate;
 import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
@@ -28,7 +28,7 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
         }
 
         @Override
-        public void onCellClicked(VideoHeader model) {
+        public void onCellClicked(MediaHeader model) {
 
         }
     };
@@ -42,7 +42,7 @@ public class TrainingVideosFragment extends PresentationVideosFragment<TrainingV
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        adapter.registerDelegate(VideoHeader.class, videoHeaderDelegate);
+        adapter.registerDelegate(MediaHeader.class, videoHeaderDelegate);
     }
 
     @Override

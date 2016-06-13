@@ -162,7 +162,7 @@
     <string name="completed">完成</string>
     <string name="action_share">分享</string>
     <string name="recent_header">新增360体验</string>
-    <string name="recent_videos">最近添加的</string>
+    <string name="recently_added">最近添加的</string>
     <string name="featured_header">精选360体验</string>
     <string name="title_activity_success_story_details">成功故事详细活动</string>
     <string name="hello_world">您好，世界！</string>

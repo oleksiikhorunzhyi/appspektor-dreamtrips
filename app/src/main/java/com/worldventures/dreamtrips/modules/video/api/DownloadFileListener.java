@@ -11,7 +11,7 @@ import com.octo.android.robospice.request.listener.RequestProgressListener;
 import com.techery.spares.module.qualifier.Global;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.video.VideoCachingDelegate;
+import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.io.InputStream;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import de.greenrobot.event.EventBus;
 import timber.log.Timber;
 
-public class DownloadVideoListener implements PendingRequestListener<InputStream>, RequestProgressListener {
+public class DownloadFileListener implements PendingRequestListener<InputStream>, RequestProgressListener {
 
     public static final int START_VALUE = 10;
     public static final int RESIDUE = 90;
@@ -35,13 +35,13 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
     protected SnappyRepository db;
 
     protected CachedEntity entity;
-    protected VideoCachingDelegate videoCachingDelegate;
+    protected FileCachingDelegate fileCachingDelegate;
 
     protected int lastProgress = -1;
 
-    public DownloadVideoListener(CachedEntity entity, VideoCachingDelegate videoCachingDelegate) {
+    public DownloadFileListener(CachedEntity entity, FileCachingDelegate fileCachingDelegate) {
         this.entity = entity;
-        this.videoCachingDelegate = videoCachingDelegate;
+        this.fileCachingDelegate = fileCachingDelegate;
     }
 
     @Override
@@ -50,8 +50,8 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
         if (!(spiceException instanceof RequestCancelledException)) {
             Toast.makeText(context, context.getString(R.string.fail), Toast.LENGTH_SHORT).show();
             entity.setIsFailed(true);
-            db.saveDownloadVideoEntity(entity);
-            if (videoCachingDelegate != null) videoCachingDelegate.updateItem(entity);
+            db.saveDownloadMediaEntity(entity);
+            if (fileCachingDelegate != null) fileCachingDelegate.updateItem(entity);
         }
     }
 
@@ -70,14 +70,14 @@ public class DownloadVideoListener implements PendingRequestListener<InputStream
             }
             lastProgress = progress;
             entity.setProgress(progress);
-            db.saveDownloadVideoEntity(entity);
-            if (videoCachingDelegate != null) videoCachingDelegate.updateItem(entity);
+            db.saveDownloadMediaEntity(entity);
+            if (fileCachingDelegate != null) fileCachingDelegate.updateItem(entity);
         }
     }
 
     @Override
     public void onRequestNotFound() {
         Timber.v("onRequestNotFound");
-        if (videoCachingDelegate != null) videoCachingDelegate.downloadVideo(entity);
+        if (fileCachingDelegate != null) fileCachingDelegate.downloadFile(entity);
     }
 }

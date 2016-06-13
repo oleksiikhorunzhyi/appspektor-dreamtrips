@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -57,7 +56,7 @@ public class SnappyRepository {
     public static final String POST = "post";
     public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
     public static final String BUCKET_PHOTO_CREATION_ITEM = "BUCKET_PHOTO_CREATION_ITEM";
-    public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
+    public static final String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
     public static final String INVITE_MEMBER = "INVITE_MEMBER ";
     public static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
     public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
@@ -247,15 +246,15 @@ public class SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Video
+    // Media
     ///////////////////////////////////////////////////////////////////////////
 
-    public void saveDownloadVideoEntity(CachedEntity e) {
-        act(db -> db.put(VIDEO_UPLOAD_ENTITY + e.getUuid(), e));
+    public void saveDownloadMediaEntity(CachedEntity e) {
+        act(db -> db.put(MEDIA_UPLOAD_ENTITY + e.getUuid(), e));
     }
 
-    public CachedEntity getDownloadVideoEntity(String id) {
-        return actWithResult(db -> db.get(VIDEO_UPLOAD_ENTITY + id, CachedEntity.class))
+    public CachedEntity getDownloadMediaEntity(String id) {
+        return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class))
                 .orNull();
     }
 

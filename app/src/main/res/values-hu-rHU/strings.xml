@@ -162,7 +162,7 @@
     <string name="completed">Kész</string>
     <string name="action_share">Megosztás</string>
     <string name="recent_header">Legutóbb hozzáadott 360 élmény</string>
-    <string name="recent_videos">Legutóbb hozzáadott</string>
+    <string name="recently_added">Legutóbb hozzáadott</string>
     <string name="featured_header">Kiemelt 360 élmény</string>
     <string name="title_activity_success_story_details">Sikertörténet részletes adatai</string>
     <string name="hello_world">Helló, világ!</string>

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.video.cell;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -8,14 +9,14 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoHeaderDelegate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-@Layout(R.layout.adapter_video_header)
-public class VideoHeaderCell extends AbstractDelegateCell<VideoHeader, VideoHeaderDelegate> {
+@Layout(R.layout.adapter_media_header)
+public class MediaHeaderCell extends AbstractDelegateCell<MediaHeader, VideoHeaderDelegate> {
 
     @InjectView(R.id.header)
     TextView header;
@@ -26,14 +27,14 @@ public class VideoHeaderCell extends AbstractDelegateCell<VideoHeader, VideoHead
     @InjectView(R.id.spinner_language)
     SimpleDraweeView flag;
 
-    public VideoHeaderCell(View view) {
+    public MediaHeaderCell(View view) {
         super(view);
     }
 
     @Override
     protected void syncUIStateWithModel() {
-        if (android.text.TextUtils.isEmpty(getModelObject().getTitle())) {
-            header.setText(itemView.getContext().getString(R.string.recent_videos));
+        if (TextUtils.isEmpty(getModelObject().getTitle())) {
+            header.setText(itemView.getContext().getString(R.string.recently_added));
         } else {
             header.setText(getModelObject().getTitle());
         }
@@ -56,6 +57,5 @@ public class VideoHeaderCell extends AbstractDelegateCell<VideoHeader, VideoHead
 
     @Override
     public void prepareForReuse() {
-
     }
 }

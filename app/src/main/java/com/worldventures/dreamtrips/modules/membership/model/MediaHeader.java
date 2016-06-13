@@ -3,19 +3,19 @@ package com.worldventures.dreamtrips.modules.membership.model;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 
-public class VideoHeader {
+public class MediaHeader {
 
     private String title;
     private boolean showLanguage;
     private VideoLocale videoLocale;
     private VideoLanguage videoLanguage;
 
-    public VideoHeader(String title, boolean showLanguage) {
+    public MediaHeader(String title, boolean showLanguage) {
         this.title = title;
         this.showLanguage = showLanguage;
     }
 
-    public VideoHeader(String title) {
+    public MediaHeader(String title) {
         this.title = title;
     }
 

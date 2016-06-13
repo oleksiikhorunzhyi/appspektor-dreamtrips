@@ -92,13 +92,13 @@ public class MasterToolbarPresenterImpl
         super.onAttachedToWindow();
         apiErrorPresenter.setView(getView());
         //
-        connectDtlLocationChanges();
+        bindToolbarTitleUpdates();
         connectFilterDataChanges();
         //
         //
         tryHideNearMeButton();
         // remember this observable - we will start listening to search below only after this fires
-        Observable<DtlLocation> locationObservable = connectDtlLocationUpdate();
+        Observable<DtlLocation> locationObservable = updateToolbarTitle();
         //
         connectNearbyLocations();
         connectLocationsSearch();
@@ -121,19 +121,6 @@ public class MasterToolbarPresenterImpl
                 });
     }
 
-    private void connectDtlLocationChanges() {
-        Observable.combineLatest(
-                locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-                        .map(DtlLocationCommand::getResult),
-                filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                        .first()
-                        .map(DtlFilterDataAction::getResult)
-                        .map(DtlFilterData::getSearchQuery),
-                Pair::new
-        ).compose(bindViewIoToMainComposer())
-                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
-    }
-
     @Override
     public void applyOffersOnlyFilterState(boolean enabled) {
         filterInteractor.filterDataPipe()
@@ -153,21 +140,39 @@ public class MasterToolbarPresenterImpl
                 .subscribe(this::search);
     }
 
-    private Observable<DtlLocation> connectDtlLocationUpdate() {
-        Observable<DtlLocation> locationObservable = locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-                .map(DtlLocationCommand::getResult)
-                .compose(bindViewIoToMainComposer());
+    private Observable<DtlLocation> updateToolbarTitle() {
+        Observable<DtlLocation> dtlLocationChanges =
+                locationInteractor.locationPipe().observeSuccessWithReplay()
+                        .first()
+                        .map(DtlLocationCommand::getResult)
+                        .compose(bindViewIoToMainComposer());
         Observable.combineLatest(
-                locationObservable,
+                // TODO :: 12.06.16 maybe merge this with bindToolbarTitleUpdates method below
+                // so far seems like it might be not safe to use pipe's observeSuccessWithReplay()
+                // observable in combineLatest
+                dtlLocationChanges,
                 filterInteractor.filterDataPipe().observeSuccessWithReplay()
                         .first()
                         .map(DtlFilterDataAction::getResult)
                         .map(DtlFilterData::getSearchQuery),
-                Pair::new
-        ).take(1).subscribe(pair -> {
-            getView().updateToolbarTitle(pair.first, pair.second);
-        });
-        return locationObservable;
+                Pair::new)
+                .take(1)
+                .subscribe(pair -> {
+                    getView().updateToolbarTitle(pair.first, pair.second);
+                });
+        return dtlLocationChanges;
+    }
+
+    private void bindToolbarTitleUpdates() {
+        Observable.combineLatest(
+                locationInteractor.locationPipe().observeSuccess()
+                        .map(DtlLocationCommand::getResult),
+                filterInteractor.filterDataPipe().observeSuccess()
+                        .map(DtlFilterDataAction::getResult)
+                        .map(DtlFilterData::getSearchQuery),
+                Pair::new)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
     }
 
     private void connectLocationDelegateNoFallback() {

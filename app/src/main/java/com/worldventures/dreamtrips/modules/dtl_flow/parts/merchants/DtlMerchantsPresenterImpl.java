@@ -91,15 +91,18 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .subscribe(s -> redirectToLocations(), e -> {});
         //
         Observable.combineLatest(
-                locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
+                // TODO :: 12.06.16 maybe merge this with bindToolbarTitleUpdates method below
+                // so far seems like it might be not safe to use pipe's observeSuccessWithReplay()
+                // observable in combineLatest
+                locationInteractor.locationPipe().observeSuccessWithReplay()
+                        .first()
                         .map(DtlLocationCommand::getResult),
                 filterInteractor.filterDataPipe().observeSuccessWithReplay()
                         .first()
                         .map(DtlFilterDataAction::getResult)
                         .map(DtlFilterData::getSearchQuery),
-                Pair::new
-        ).compose(bindViewIoToMainComposer())
-//                .take(1)
+                Pair::new)
+                .compose(bindViewIoToMainComposer())
                 .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
         //
         filterInteractor.filterDataPipe().observeSuccessWithReplay()
@@ -107,6 +110,20 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .map(DtlFilterDataAction::getResult)
                 .map(DtlFilterData::isOffersOnly)
                 .subscribe(getView()::toggleDiningFilterSwitch);
+        //
+        bindToolbarTitleUpdates();
+    }
+
+    private void bindToolbarTitleUpdates() {
+        Observable.combineLatest(
+                locationInteractor.locationPipe().observeSuccess()
+                        .map(DtlLocationCommand::getResult),
+                filterInteractor.filterDataPipe().observeSuccess()
+                        .map(DtlFilterDataAction::getResult)
+                        .map(DtlFilterData::getSearchQuery),
+                Pair::new
+        ).compose(bindViewIoToMainComposer())
+                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
     }
 
     private void connectFilterDataChanges() {

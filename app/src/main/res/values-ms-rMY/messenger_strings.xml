@@ -2,7 +2,7 @@
 <resources>
     <!-- messenger-->
 
-    <string name="messenger">Messenger</string>
+    <string name="messenger">Aplikasi Pesanan</string>
     <string name="chat">Sembang</string>
 
     <!---->
@@ -10,7 +10,7 @@
     <!---->
     <string name="conversation_list_title">Perbualan</string>
 
-    <string name="conversation_list_spinner_item_all_chats">Semua Sembang</string>
+    <string name="conversation_list_spinner_item_all_chats">Semua Bualan</string>
     <string name="conversation_list_spinner_item_group_chats">Kumpulan Sembang</string>
 
     <string name="conversation_list_search_hint">Cari perbualan ...</string>
@@ -36,14 +36,14 @@
     <!---->
     <!--New chat-->
     <!---->
-    <string name="new_chat_title">Sembang Baru</string>
+    <string name="new_chat_title">Bualan Baru</string>
     <string name="new_chat_toast_no_users_selected_error">Sila pilih beberapa orang pengguna terlebih dahulu</string>
     <string name="new_multi_user_chat_not_supported">Mencipta perbualan berkumpulan tidak disokong</string>
     <string name="new_chat_error_loading_contacts">Tidak dapat memuatkan kenalan</string>
     <string name="new_chat_new_conversation_title_hint">Tetapkan nama perbualan</string>
     <string name="new_chat_chosen_contacts_header_empty">"Tambah: "</string>
     <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Tambah</string>
-    <string name="new_chat_list_item_section_close_friends">Kawan Rapat</string>
+    <string name="new_chat_list_item_section_close_friends">RAKAN RAPAT</string>
     <string name="menu_done">Selesai</string>
 
     <!---->

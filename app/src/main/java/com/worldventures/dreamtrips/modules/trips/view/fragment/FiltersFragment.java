@@ -47,23 +47,23 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         super.afterCreateView(rootView);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        this.recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
 
-        this.arrayListAdapter = new BaseDelegateAdapter<>(getActivity(), this);
-        this.arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
-        this.arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
-        this.arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
-        this.arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
-        this.arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
-        this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
-        this.arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
-        this.arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
-        this.arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
+        arrayListAdapter = new BaseDelegateAdapter<>(getActivity(), this);
+        arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
+        arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
+        arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
+        arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
+        arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
+        arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
+        arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
+        arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
+        arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
 
         new FiltersCallbackHandler().init(arrayListAdapter, getPresenter());
 
-        this.recyclerView.setHasFixedSize(false);
-        this.recyclerView.setAdapter(this.arrayListAdapter);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setAdapter(arrayListAdapter);
     }
 
     @Override

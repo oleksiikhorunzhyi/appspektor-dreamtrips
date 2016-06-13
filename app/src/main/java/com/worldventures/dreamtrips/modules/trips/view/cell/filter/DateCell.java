@@ -62,16 +62,20 @@ public class DateCell extends AbstractDelegateCell<DateFilterItem, DateCell.Dele
             calendar.setTime(getModelObject().getStartDate());
         }
 
-        Calendar startDate = Calendar.getInstance();
-        startDate.setTime(getModelObject().getStartDate());
-        int startYear = startDate.get(Calendar.YEAR);
+        int minYear = Calendar.getInstance().get(Calendar.YEAR);
 
-        DatePickerDialog datePickerDialog =
-                DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH), false);
-        datePickerDialog.setYearRange(startYear, calendar.get(Calendar.YEAR) + 5);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH), false);
+        datePickerDialog.setYearRange(minYear, getMaxYear(datePickerDialog, minYear));
         datePickerDialog.show(fragmentManager, tag);
+    }
+
+    private int getMaxYear(DatePickerDialog datePickerDialog, int tripStartYear) {
+        int dialogMaxYear = datePickerDialog.getMaxYear();
+        int endYear = tripStartYear + 5;
+        return endYear > dialogMaxYear ? dialogMaxYear : endYear;
     }
 
     @Override

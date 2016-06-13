@@ -74,17 +74,7 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     public void setParticipants(DataConversation conversation, List<DataUser> participants) {
         ConversationUIHelper.setTitle(chatNameTextView, conversation, participants, false);
-        String chatDescriptionFormat = getContext()
-                .getString(R.string.chat_settings_group_chat_description);
-        int onlineCount = 0;
-        for (DataUser user : participants) {
-            if (user.isOnline()) {
-                onlineCount++;
-            }
-        }
-        String chatDescription = String.format(chatDescriptionFormat, participants.size(),
-                onlineCount);
-        chatDescriptionTextView.setText(chatDescription);
+        ConversationUIHelper.setSubtitle(chatDescriptionTextView, conversation, participants);
 
         if (membersSettingsRow == null) {
             membersSettingsRow = new ChatSettingsRow(getContext());
@@ -94,11 +84,6 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
         }
         String membersFormat = getContext().getString(R.string.chat_settings_row_members_format);
         membersSettingsRow.setTitle(String.format(membersFormat, participants.size()));
-    }
-
-    @Override
-    protected int getLeaveChatButtonStringRes() {
-        return R.string.chat_settings_row_leave_chat;
     }
 
     @NonNull
@@ -130,5 +115,10 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     public void hideChangingAvatarProgressBar() {
         groupAvatarsViewProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setLeaveButtonVisible(boolean visible) {
+        leaveChatButton.setVisibility(visible ? VISIBLE : GONE);
     }
 }

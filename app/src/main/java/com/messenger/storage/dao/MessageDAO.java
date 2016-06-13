@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
+import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataLocationAttachment;
 import com.messenger.entities.DataLocationAttachment$Table;
 import com.messenger.entities.DataMessage;
@@ -33,7 +35,7 @@ public class MessageDAO extends BaseDAO {
 
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
     public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
-
+    public static final String CONVERSATION_TYPE = DataConversation$Table.TABLE_NAME + "_" + DataConversation$Table.TYPE;
 
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -44,20 +46,6 @@ public class MessageDAO extends BaseDAO {
                 .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
                         "WHERE " + DataMessage$Table._ID + "=?")
                 .withSelectionArgs(new String[]{messageId})
-                .build();
-
-        return query(q, DataMessage.CONTENT_URI)
-                .compose(DaoTransformers.toEntity(DataMessage.class));
-    }
-
-    public Observable<DataMessage> getMessageByAttachmentId(String attachmentId) {
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT m.* " +
-                        "FROM " + DataMessage$Table.TABLE_NAME + " m " +
-                        "LEFT JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
-                        "ON a." + DataAttachment$Table.MESSAGEID + "= m." + DataMessage$Table._ID + " " +
-                        "WHERE a." + DataAttachment$Table._ID + "=?")
-                .withSelectionArgs(new String[]{attachmentId})
                 .build();
 
         return query(q, DataMessage.CONTENT_URI)
@@ -83,8 +71,10 @@ public class MessageDAO extends BaseDAO {
                         "l." + DataLocationAttachment$Table.LNG + " as " + DataLocationAttachment$Table.LNG + ", " +
 
                         "t." + DataTranslation$Table._ID + " as " + TRANSLATION_ID + ", " +
-                        "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", "+
-                        "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + " "+
+                        "t." + DataTranslation$Table.TRANSLATION + " as " + DataTranslation$Table.TRANSLATION + ", " +
+                        "t." + DataTranslation$Table.TRANSLATESTATUS + " as " + DataTranslation$Table.TRANSLATESTATUS + ", " +
+
+                        "c." + DataConversation$Table.TYPE + " as " + CONVERSATION_TYPE + " " +
 
                         "FROM " + DataMessage.TABLE_NAME + " m " +
                         "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
@@ -97,6 +87,8 @@ public class MessageDAO extends BaseDAO {
                         "ON a." + DataLocationAttachment$Table._ID + "=l." + DataLocationAttachment$Table._ID + " " +
                         "LEFT JOIN " + DataTranslation.TABLE_NAME + " t " +
                         "ON m." + DataMessage$Table._ID + "=t." + DataTranslation$Table._ID + " " +
+                        "LEFT JOIN " + DataConversation.TABLE_NAME + " c " +
+                        "ON m." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
 
                         "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
                         "AND m." + DataMessage$Table.SYNCTIME + " >=? " +
@@ -156,7 +148,7 @@ public class MessageDAO extends BaseDAO {
         getContentResolver().update(DataMessage.CONTENT_URI, contentValues, DataMessage$Table._ID + "=?", new String[]{msgId});
     }
 
-    public DataMessage fromCursor(Cursor cursor, boolean moveToFirst) {
+    public static DataMessage fromCursor(Cursor cursor, boolean moveToFirst) {
         return SqlUtils.convertToModel(!moveToFirst, DataMessage.class, cursor);
     }
 

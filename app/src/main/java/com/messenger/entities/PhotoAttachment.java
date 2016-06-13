@@ -10,6 +10,7 @@ import java.util.Date;
 
 public class PhotoAttachment implements IFullScreenObject {
 
+    private final String photoAttachmentId;
     private final String messageId;
     private final String conversationId;
     private final User user;
@@ -18,12 +19,13 @@ public class PhotoAttachment implements IFullScreenObject {
     private final boolean flaggingEnabled;
 
     public PhotoAttachment(Parcel source) {
-        this.messageId = source.readString();
-        this.conversationId = source.readString();
-        this.image = source.readParcelable(Image.class.getClassLoader());
-        this.user = source.readParcelable(User.class.getClassLoader());
-        this.date = (Date) source.readSerializable();
-        this.flaggingEnabled = source.readInt() == 1;
+        photoAttachmentId = source.readString();
+        messageId = source.readString();
+        conversationId = source.readString();
+        image = source.readParcelable(Image.class.getClassLoader());
+        user = source.readParcelable(User.class.getClassLoader());
+        date = (Date) source.readSerializable();
+        flaggingEnabled = source.readInt() == 1;
     }
 
     public static final Creator<PhotoAttachment> CREATOR = new Creator<PhotoAttachment>() {
@@ -37,6 +39,7 @@ public class PhotoAttachment implements IFullScreenObject {
     };
 
     private PhotoAttachment(Builder builder) {
+        photoAttachmentId = builder.photoAttachmentId;
         messageId = builder.messageId;
         conversationId = builder.conversationId;
         user = builder.user;
@@ -110,6 +113,10 @@ public class PhotoAttachment implements IFullScreenObject {
         return 0;
     }
 
+    public String getPhotoAttachmentId() {
+        return photoAttachmentId;
+    }
+
     public Date getDate() {
         return date;
     }
@@ -128,6 +135,7 @@ public class PhotoAttachment implements IFullScreenObject {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(photoAttachmentId);
         dest.writeString(messageId);
         dest.writeString(conversationId);
         dest.writeParcelable(image, flags);
@@ -138,6 +146,7 @@ public class PhotoAttachment implements IFullScreenObject {
 
 
     public static final class Builder {
+        private String photoAttachmentId;
         private String messageId;
         private String conversationId;
         private User user;
@@ -146,6 +155,11 @@ public class PhotoAttachment implements IFullScreenObject {
         private boolean flaggingEnabled;
 
         public Builder() {
+        }
+
+        public Builder photoAttachmentId(String attachmentId) {
+            this.photoAttachmentId = attachmentId;
+            return this;
         }
 
         public Builder messageId(String messageId) {

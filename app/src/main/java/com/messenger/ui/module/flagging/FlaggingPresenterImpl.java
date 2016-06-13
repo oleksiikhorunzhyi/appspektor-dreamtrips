@@ -2,11 +2,10 @@ package com.messenger.ui.module.flagging;
 
 import android.text.TextUtils;
 
-import com.messenger.api.ErrorParser;
 import com.messenger.api.GetFlagsAction;
 import com.messenger.api.exception.UiMessageException;
 import com.messenger.delegate.FlagsDelegate;
-import com.messenger.delegate.chat.flagging.FlagMessageAction;
+import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.ui.module.ModuleStatefulPresenterImpl;
@@ -34,44 +33,8 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     public FlaggingPresenterImpl(FlaggingView view, Injector injector) {
         super(view);
         injector.inject(this);
-        view.setPresenter(this);
         bindToFlagging();
-    }
-
-    private void bindToFlagging() {
-        flagMessageDelegate.observeOngoingFlagging()
-                .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ActionStateSubscriber<FlagMessageAction>()
-                        .onStart(this::onFlaggingStarted)
-                        .onSuccess(this::onFlaggingSuccess)
-                        .onFail(this::onFlagginError)
-                );
-    }
-
-    private void onFlaggingSuccess(FlagMessageAction action) {
-        Timber.d("[Flagging] Result obtained, stop progress");
-        flagMessageDelegate.clearReplays();
-        getView().hideFlaggingProgressDialog();
-        if (TextUtils.equals(action.getResult().messageId(), getState().getMessageId())) {
-            getView().showFlaggingSuccess();
-        }
-        //
-        setState(createNewState());
-    }
-
-    private void onFlagginError(FlagMessageAction action, Throwable e) {
-        Timber.e(e, "Smth went wrong while flagging");
-        flagMessageDelegate.clearReplays();
-        getView().hideFlaggingProgressDialog();
-        getView().showFlaggingError();
-        //
-        setState(createNewState());
-    }
-
-    private void onFlaggingStarted(FlagMessageAction action) {
-        Timber.d("[Flagging] Flagging is in progress, wait");
-        getView().showFlaggingProgressDialog();
+        view.getCanceledDialogsStream().subscribe(aVoid -> resetState());
     }
 
     @Override
@@ -81,10 +44,47 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
     @Override
     public void flagMessage(String conversationId, String messageId) {
+        resetState();
         getState().setMessageId(messageId);
         getState().setConversationId(conversationId);
         getState().setDialogState(FlaggingState.DialogState.LOADING_FLAGS);
         loadFlags();
+    }
+
+    private void bindToFlagging() {
+        flagMessageDelegate.observeOngoingFlagging()
+                .compose(bindView())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ActionStateSubscriber<FlagMessageCommand>()
+                        .onStart(this::onFlaggingStarted)
+                        .onSuccess(this::onFlaggingSuccess)
+                        .onFail(this::onFlagginError)
+                );
+    }
+
+    private void onFlaggingSuccess(FlagMessageCommand action) {
+        Timber.d("[Flagging] Result obtained, stop progress");
+        flagMessageDelegate.clearReplays();
+        getView().hideFlaggingProgressDialog();
+        if (TextUtils.equals(action.getResult().messageId(), getState().getMessageId())) {
+            getView().showFlaggingSuccess();
+        }
+        //
+        resetState();
+    }
+
+    private void onFlagginError(FlagMessageCommand action, Throwable e) {
+        Timber.e(e, "Smth went wrong while flagging");
+        flagMessageDelegate.clearReplays();
+        getView().hideFlaggingProgressDialog();
+        getView().showFlaggingError();
+        //
+        resetState();
+    }
+
+    private void onFlaggingStarted(FlagMessageCommand action) {
+        Timber.d("[Flagging] Flagging is in progress, wait");
+        getView().showFlaggingProgressDialog();
     }
 
     private void loadFlags() {
@@ -121,19 +121,23 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
     public void onFlagTypeChosen(Flag flag) {
         getState().setFlag(flag);
         if (flag.isRequireDescription()) {
+            getState().setDialogState(FlaggingState.DialogState.REASON);
             showFlagReasonDialog();
         } else {
+            getState().setDialogState(FlaggingState.DialogState.CONFIRMATION);
             showFlagConfirmationDialog();
         }
     }
 
     private void showFlagReasonDialog() {
-        getView().showFlagReasonDialog(getState().getFlag());
+        getView().showFlagReasonDialog(getState().getFlag(), getState().getReasonDescription())
+                .subscribe(text -> getState().setReasonDescription(text.toString()));
     }
 
     @Override
     public void onFlagReasonProvided(String reason) {
         getState().setReasonDescription(reason);
+        getState().setDialogState(FlaggingState.DialogState.CONFIRMATION);
         showFlagConfirmationDialog();
     }
 

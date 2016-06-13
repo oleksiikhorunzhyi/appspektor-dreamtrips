@@ -26,9 +26,12 @@ public abstract class TextMessageViewHolder extends MessageViewHolder {
     @Override
     public void bindCursor(Cursor cursor) {
         super.bindCursor(cursor);
-        if (MessageVersionHelper.isUnsupported(dataMessage.getVersion(), dataAttachment.getType()))
+        if (MessageVersionHelper.isUnsupported(dataMessage.getVersion(), dataAttachment.getType())) {
             showUnsupportMessage();
-        else showMessage();
+        } else {
+            messageTextView.setAutoLinkMask(Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS);
+            showMessage();
+        }
 
         messageTextView.setMovementMethod(LinkHandlerMovementMethod.getInstance());
     }
@@ -40,7 +43,6 @@ public abstract class TextMessageViewHolder extends MessageViewHolder {
     }
 
     protected void showMessage() {
-        messageTextView.setAutoLinkMask(Linkify.WEB_URLS);
         messageTextView.setText(TruncateUtils.truncate(dataMessage.getText(),
                 messageTextView.getResources().getInteger(R.integer.messenger_max_message_length)));
     }

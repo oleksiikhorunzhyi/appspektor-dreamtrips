@@ -44,6 +44,13 @@ public class SwipeableUserCell extends UserCell<SwipeDataUser, SwipeableUserCell
         });
     }
 
+    @Override
+    protected void setUserOnline(DataUser user) {
+        if (getModelObject().onlineStatusAvailable) {
+            super.setUserOnline(user);
+        }
+    }
+
     public interface Delegate extends CellDelegate<SwipeDataUser> {
         void onDeleteUserRequired(SwipeDataUser user);
     }

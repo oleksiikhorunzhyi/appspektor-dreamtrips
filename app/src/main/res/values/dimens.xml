@@ -191,6 +191,7 @@
     <dimen name="conversation_list_item_conversation_unread_messages_count_textview_top_margin">5dp</dimen>
     <dimen name="conversation_list_item_vertical_padding">@dimen/list_item_vertical_padding</dimen>
     <dimen name="conversation_list_item_horizontal_padding">@dimen/list_item_horizontal_padding</dimen>
+    <item name="conversation_list_item_closed_conversation_alpha" format="float" type="dimen">0.3</item>
 
     <!-- New chat screen -->
     <dimen name="new_chat_progress_bar_margin_top">50dp</dimen>
@@ -236,9 +237,14 @@
     <dimen name="chat_typing_circle_spacing">10dp</dimen>
     <dimen name="chat_typing_avatars_border">1dp</dimen>
     <dimen name="chat_list_item_vertical_padding">3dp</dimen>
-    <dimen name="chat_list_item_horizontal_padding">@dimen/list_item_horizontal_padding</dimen>
+    <dimen name="chat_list_item_horizontal_padding">4dp</dimen>
     <dimen name="chat_list_item_row_vertical_padding">18dp</dimen>
     <dimen name="chat_list_image_post_rounded_corners_radius">10dp</dimen>
+
+    <dimen name="chat_error_message_textview_text_size">10sp</dimen>
+    <dimen name="chat_error_message_space_between_icon_and_text">3dp</dimen>
+    <dimen name="chat_error_message_top_padding">8dp</dimen>
+    <dimen name="chat_error_message_bottom_padding">4dp</dimen>
 
     <!-- Chat settings screen -->
     <dimen name="chat_settings_chat_info_vertical_margin">40dp</dimen>

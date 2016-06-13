@@ -3,13 +3,11 @@ package com.messenger.ui.presenter;
 import android.support.annotation.StringDef;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataUser;
 import com.messenger.ui.view.conversation.ConversationListScreen;
 import com.messenger.ui.viewstate.ConversationListViewState;
 
 public interface ConversationListScreenPresenter extends MessengerPresenter<ConversationListScreen,
         ConversationListViewState> {
-    DataUser getUser();
 
     void onConversationSelected(DataConversation conversation);
 

@@ -44,7 +44,8 @@ public class LogoutDelegate {
     LocalesHolder localesHolder;
     @Inject
     StaticPageHolder staticPageHolder;
-
+    @Inject
+    MessengerConnector messengerConnector;
     protected DreamSpiceManager dreamSpiceManager;
 
     private OnLogoutSuccessListener onLogoutSuccessListener;
@@ -58,7 +59,7 @@ public class LogoutDelegate {
     }
 
     public void logout() {
-        MessengerConnector.getInstance().disconnect();
+        messengerConnector.disconnect();
         flagsDelegate.clearCache();
         String token = snappyRepository.getGcmRegToken();
         if (token != null) {

@@ -136,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/chat_settings_action_button_top_margin"
+                        android:visibility="gone"
                         android:background="@drawable/button_chat_settings_white"
                         android:text="@string/chat_settings_row_clear_history"
                         android:textColor="@color/chat_settings_action_white_button_text_color"
@@ -147,7 +148,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/chat_settings_action_button_top_margin"
                         android:background="@drawable/button_chat_settings_red"
-                        android:text="@string/chat_settings_row_clear_history"
+                        android:text="@string/chat_settings_row_leave_chat"
+                        android:visibility="gone"
                         android:textColor="@color/chat_settings_action_red_button_text_color"
                         android:textSize="@dimen/chat_settings_action_buttons_text_size"/>
 

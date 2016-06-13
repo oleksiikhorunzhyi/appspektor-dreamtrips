@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.flow.path.StyledPath;
@@ -39,7 +38,6 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
     View loadingView;
     @InjectView(R.id.chat_settings_error_view)
     View errorView;
-
     @InjectView(R.id.chat_settings_group_avatars_view)
     GroupAvatarsView groupAvatarsView;
     @InjectView(R.id.chat_settings_single_chat_avatar_view)
@@ -48,14 +46,10 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
     TextView chatNameTextView;
     @InjectView(R.id.chat_settings_chat_description_text_view)
     TextView chatDescriptionTextView;
-
     @InjectView(R.id.char_settings_rows_parent)
     ViewGroup chatSettingsRows;
-    @InjectView(R.id.chat_settings_clear_history_button)
-    Button clearHistoryButton;
     @InjectView(R.id.chat_settings_leave_chat_button)
     Button leaveChatButton;
-
     @InjectView(R.id.chat_settings_toolbar)
     Toolbar toolbar;
 
@@ -102,17 +96,9 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
         parent.addView(notificationsSettingsRow);
     }
 
-    @Override
-    public void setNotificationSettingStatus(boolean checked) {
-        notificationsSettingsRow.setSwitchChecked(checked);
-    }
-
     protected void initUi() {
         toolbarPresenter = new ToolbarPresenter(toolbar, getContext());
         toolbarPresenter.attachPathAttrs(getPath().getAttrs());
-        // hide the button until we have user story
-        clearHistoryButton.setVisibility(View.GONE);
-        leaveChatButton.setText(getLeaveChatButtonStringRes());
     }
 
     @Override
@@ -160,8 +146,6 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
                 .show();
     }
 
-    protected abstract @StringRes int getLeaveChatButtonStringRes();
-
     @Override
     public void showSubjectDialog(String currentSubject) {
         new ChangeSubjectDialog(getContext(), currentSubject)
@@ -174,19 +158,7 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
     }
 
     @Override
-    public void showEmptySubjectDialog() {
-        Toast.makeText(getContext(), R.string.chat_settings_error_empty_subject,
-                Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void setConversation(@NonNull DataConversation conversation) {
-    }
-
-    @Override
-    public void prepareViewForOwner(boolean isOwner) {
-        if (!isOwner) return;
-        leaveChatButton.setVisibility(GONE);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.messenger.delegate;
 
-import com.messenger.delegate.chat.flagging.FlagMessageAction;
+import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageDTO;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.FlagMessageException;
@@ -128,7 +128,7 @@ public class FlagMessageDelegateTest extends BaseTest {
                 .addService(new BaseCommandActionServiceWrapper() {
                     @Override
                     protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
-                        ((FlagMessageAction) holder.action()).setMessengerServerFacade(messengerServerFacade);
+                        ((FlagMessageCommand) holder.action()).setMessengerServerFacade(messengerServerFacade);
                         return false;
                     }
                 })

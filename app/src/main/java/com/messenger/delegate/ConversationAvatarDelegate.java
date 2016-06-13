@@ -22,11 +22,11 @@ public class ConversationAvatarDelegate {
         this.readChangeAvatarCommandActionPipe = changeAvatarCommandActionPipe.asReadOnly();
     }
 
-    public void setAvatarToConversation(DataConversation conversation, String photoPath) {
-        changeAvatarCommandActionPipe.send(new SetAvatarUploadCommand(conversation, photoPath));}
+    public void setAvatarToConversation(String conversationId, String photoPath) {
+        changeAvatarCommandActionPipe.send(new SetAvatarUploadCommand(conversationId, photoPath));}
 
-    public void removeAvatar(DataConversation conversation) {
-        changeAvatarCommandActionPipe.send(new RemoveAvatarCommand(conversation));
+    public void removeAvatar(String conversationId) {
+        changeAvatarCommandActionPipe.send(new RemoveAvatarCommand(conversationId));
     }
 
     public ReadOnlyActionPipe<ChangeAvatarCommand> getReadChangeAvatarCommandActionPipe() {

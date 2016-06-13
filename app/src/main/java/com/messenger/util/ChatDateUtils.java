@@ -16,10 +16,6 @@ public class ChatDateUtils {
         return today;
     }
 
-    public static long calendarDaysBetweenDates(Date startDate, Date dateEnd) {
-        return calendarDaysBetweenDates(startDate.getTime(), dateEnd.getTime());
-    }
-
     public static long calendarDaysBetweenDates(long startDate, long dateEnd) {
         Calendar start = Calendar.getInstance();
         start.setTimeZone(TimeZone.getDefault());

@@ -9,6 +9,8 @@ public interface MessengerMediaPickerDelegate {
 
     void showPhotoPicker();
 
+    void showMultiPhotoPicker();
+
     void hidePhotoPicker();
 
     Observable<String> getImagePathsStream();

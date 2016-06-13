@@ -1,6 +1,7 @@
 package com.messenger.delegate;
 
 import com.messenger.delegate.chat.ChatMessagesEventDelegate;
+import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.ImmutableDeletedMessage;
 import com.messenger.storage.dao.ConversationsDAO;

@@ -7,7 +7,7 @@ public abstract class ModuleViewImpl<P extends ModulePresenter> implements Modul
 
     private View parentView;
 
-    private P presenter;
+    protected P presenter;
 
     private View.OnAttachStateChangeListener parentAttachedStateListener
             = new View.OnAttachStateChangeListener() {
@@ -42,11 +42,6 @@ public abstract class ModuleViewImpl<P extends ModulePresenter> implements Modul
     @Override
     public P getPresenter() {
         return presenter;
-    }
-
-    @Override
-    public void setPresenter(P presenter) {
-        this.presenter = presenter;
     }
 
     public Context getContext() {

@@ -5,14 +5,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import com.messenger.entities.DataAttachment;
-import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.ChatCellDelegate;
@@ -36,19 +36,20 @@ public abstract class MessageViewHolder extends CursorViewHolder {
     protected DataAttachment dataAttachment;
     protected DataUser dataUserSender;
     protected DataTranslation dataTranslation;
-    protected DataConversation dataConversation;
 
     @InjectView(R.id.chat_date)
     public TextView dateTextView;
     @InjectView(R.id.message_container)
     public FrameLayout messageContainer;
     @Optional
-    @InjectView(R.id.view_switcher)
-    public ViewSwitcher retrySwitcher;
+    @InjectView(R.id.view_retry_send)
+    public View viewRetrySend;
 
     protected boolean selected;
     protected boolean previousMessageFromSameUser;
+    protected boolean isOwnMessage;
     protected boolean needMarkUnreadMessage;
+    protected boolean isGroupMessage;
 
     protected ChatCellDelegate cellDelegate;
 
@@ -69,13 +70,21 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         dataUserSender = SqlUtils.convertToModel(true, DataUser.class, cursor);
         boolean translationExist = !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(MessageDAO.TRANSLATION_ID)));
         dataTranslation = translationExist ? SqlUtils.convertToModel(true, DataTranslation.class, cursor) : null;
+        String type =  cursor.getString(cursor.getColumnIndex(MessageDAO.CONVERSATION_TYPE));
+        isGroupMessage = !TextUtils.equals(type, ConversationType.CHAT);
         //
-        messageCommonInflater.onCellBind(previousMessageFromSameUser, isUnread(), selected);
-        userMessageHolderInflater.onCellBind(dataUserSender, dataConversation, previousMessageFromSameUser);
+        messageCommonInflater.onCellBind(previousMessageFromSameUser, shouldMarkAsUnread() && isUnread(), selected);
+        userMessageHolderInflater.onCellBind(dataUserSender, isGroupMessage, previousMessageFromSameUser);
     }
 
     private boolean isUnread() {
-        return dataMessage.getStatus() == MessageStatus.SENT && needMarkUnreadMessage;
+        return dataMessage.getStatus() == MessageStatus.SENT;
+    }
+
+    private boolean shouldMarkAsUnread() {
+        // server always keeps SENT status for our own messages,
+        // make sure we don't show our own messages as unread
+        return !isOwnMessage && needMarkUnreadMessage;
     }
 
     @OnLongClick(R.id.message_container)
@@ -85,10 +94,9 @@ public abstract class MessageViewHolder extends CursorViewHolder {
     }
 
     @Optional
-    @OnClick(R.id.retry)
+    @OnClick(R.id.view_retry_send)
     void onRetry() {
         cellDelegate.onRetryClicked(dataMessage);
-        retrySwitcher.showNext();
     }
 
     @Optional
@@ -101,12 +109,12 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         this.cellDelegate = cellDelegate;
     }
 
-    public void setConversation(DataConversation dataConversation) {
-        this.dataConversation = dataConversation;
-    }
-
     public void setNeedMarkUnreadMessage(boolean needMarkUnreadMessage) {
         this.needMarkUnreadMessage = needMarkUnreadMessage;
+    }
+
+    public void setOwnMessage(boolean ownMessage) {
+        isOwnMessage = ownMessage;
     }
 
     public void setSelected(boolean selected) {

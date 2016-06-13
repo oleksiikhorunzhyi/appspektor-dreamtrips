@@ -4,7 +4,7 @@ import com.messenger.entities.PhotoAttachment;
 import com.messenger.ui.module.flagging.FlaggingPresenter;
 import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
 import com.messenger.ui.module.flagging.FlaggingView;
-import com.messenger.util.ChatTimestampFormatter;
+import com.messenger.ui.util.chat.ChatTimestampFormatter;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -32,7 +32,7 @@ public class MessageImageFullscreenPresenter extends FullScreenPresenter<PhotoAt
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        flaggingPresenter = new FlaggingPresenterImpl(view.getFlaggingView(), injector);
+        flaggingPresenter = view.getFlaggingView().getPresenter();
         //
         view.setShowFlag(photo.isFlaggingEnabled());
         if (photo.getDate() != null) {

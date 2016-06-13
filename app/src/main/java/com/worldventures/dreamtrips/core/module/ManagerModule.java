@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.messenger.storage.dao.PhotoDAO;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
@@ -177,8 +178,7 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    GlobalConfigInteractor provideGlobalConfigManager(Janet janet,
-                                                      @Global EventBus eventBus) {
+    GlobalConfigInteractor provideGlobalConfigManager(Janet janet) {
         return new GlobalConfigInteractor(janet);
     }
 
@@ -215,7 +215,9 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    AuthorizedDataManager provideAuthorizedDataUpdater(SessionHolder<UserSession> userSessionSessionHolder, AuthInteractor authInteractor) {
-        return new AuthorizedDataManager(userSessionSessionHolder, authInteractor);
+    AuthorizedDataManager provideAuthorizedDataUpdater(SessionHolder<UserSession> userSessionSessionHolder,
+                                                       AuthInteractor authInteractor,
+                                                       MessengerConnector messengerConnector) {
+        return new AuthorizedDataManager(userSessionSessionHolder, authInteractor, messengerConnector);
     }
 }

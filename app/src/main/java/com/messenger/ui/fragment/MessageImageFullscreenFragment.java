@@ -1,24 +1,20 @@
 package com.messenger.ui.fragment;
 
-import android.graphics.drawable.Animatable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.request.ImageRequest;
 import com.messenger.entities.PhotoAttachment;
 import com.messenger.ui.module.flagging.FlaggingView;
 import com.messenger.ui.module.flagging.FullScreenFlaggingViewImpl;
 import com.messenger.ui.presenter.MessageImageFullscreenPresenter;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -44,7 +40,7 @@ public class MessageImageFullscreenFragment extends FullScreenPhotoFragment<Mess
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        flaggingView = new FullScreenFlaggingViewImpl(rootView);
+        flaggingView = new FullScreenFlaggingViewImpl(rootView, (Injector) getActivity());
     }
 
     @Override
@@ -79,29 +75,39 @@ public class MessageImageFullscreenFragment extends FullScreenPhotoFragment<Mess
         }
     }
 
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        flaggingView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        flaggingView.onRestoreInstanceState(savedInstanceState);
+    }
+
     private void loadImage(Image image) {
         ivImage.requestLayout();
-        ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (ivImage != null) {
-                    int previewWidth = getResources().getDimensionPixelSize(R.dimen.chat_image_width);
-                    int previewHeight = getResources().getDimensionPixelSize(R.dimen.chat_image_height);
 
-                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setLowResImageRequest(GraphicUtils.createResizeImageRequest(Uri.parse(image.getUrl()),
-                                    previewWidth, previewHeight))
-                            .setImageRequest(GraphicUtils.createResizeImageRequest(Uri.parse(image.getUrl()),
-                                    ivImage.getWidth(), ivImage.getHeight()))
-                            .build();
+        Runnable task = () -> {
+            // this method is called for previous fragment, which has difference between position of
+            // this fragment and displayed one is greater than count of visible items divided by 2 + 1
+            // And the width of one is 0.
+            if (ivImage != null && ivImage.getWidth() > 0 && ivImage.getHeight() > 0) {
+                int previewWidth = getResources().getDimensionPixelSize(R.dimen.chat_image_width);
+                int previewHeight = getResources().getDimensionPixelSize(R.dimen.chat_image_height);
 
-                    ivImage.setController(draweeController);
+                DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                        .setLowResImageRequest(GraphicUtils.createResizeImageRequest(Uri.parse(image.getUrl()),
+                                previewWidth, previewHeight))
+                        .setImageRequest(GraphicUtils.createResizeImageRequest(Uri.parse(image.getUrl()),
+                                ivImage.getWidth(), ivImage.getHeight()))
+                        .build();
 
-                    ViewUtils.removeSupportGlobalLayoutListener(ivImage, this);
-                }
+                ivImage.setController(draweeController);
             }
-        });
+        };
+        ViewUtils.runTaskAfterMeasure(ivImage, task);
     }
 
 }

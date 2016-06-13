@@ -2,9 +2,11 @@ package com.messenger.delegate;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.converter.UserConverter;
+import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.model.Participant;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
@@ -53,8 +55,11 @@ public class StartChatDelegate {
                 .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
     }
 
-    public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction) {
-        startSingleChat(user, crossingAction, null);
+    public void startSingleChat(String userId, @NotNull Action1<DataConversation> crossingAction) {
+        usersDAO.getUserById(userId).take(1)
+                .flatMap(this::startSingleChatObservable)
+                .compose(new IoToMainComposer<>())
+                .subscribe(crossingAction, throwable -> Timber.e(throwable, "Error"));
     }
 
     public void startSingleChat(DataUser user, @NotNull Action1<DataConversation> crossingAction,
@@ -74,7 +79,7 @@ public class StartChatDelegate {
         return createConversationHelper.createNewConversation(Collections.singletonList(participant), "")
                 .doOnNext(dataConversation -> {
                     //there is no owners in single chat
-                    DataParticipant relationship = new DataParticipant(dataConversation.getId(), participant.getId(), Participant.Affiliation.MEMBER);
+                    DataParticipant relationship = new DataParticipant(dataConversation.getId(), participant.getId(), Affiliation.MEMBER);
 
                     participantsDAO.save(Collections.singletonList(relationship));
                     conversationsDAO.save(Collections.singletonList(dataConversation));
@@ -91,9 +96,9 @@ public class StartChatDelegate {
                 .doOnNext(conversation -> {
                     conversation.setOwnerId(ownerId);
                     List<DataParticipant> relationships = Queryable.from(participant).map(user ->
-                            new DataParticipant(conversation.getId(), user.getId(), Participant.Affiliation.MEMBER)).toList();
+                            new DataParticipant(conversation.getId(), user.getId(), Affiliation.MEMBER)).toList();
                     // we are participants too and if conversation is group then we're owner otherwise we're member
-                    relationships.add(new DataParticipant(conversation.getId(), ownerId, Participant.Affiliation.OWNER));
+                    relationships.add(new DataParticipant(conversation.getId(), ownerId, Affiliation.OWNER));
 
                     participantsDAO.save(relationships);
                     conversationsDAO.save(Collections.singletonList(conversation));

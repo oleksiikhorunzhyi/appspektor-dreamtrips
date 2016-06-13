@@ -7,7 +7,6 @@ import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
-import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
@@ -31,8 +30,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     @Inject
     SnappyRepository snappyRepository;
-    @Inject
-    Router router;
     @Inject
     ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
     @Inject
@@ -90,7 +87,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         db.cleanLastMapCameraPosition();
         locationManager.cleanLocation();
     }
-
 
     public void onEvent(ConnectivityChanged event) {
         ConnectivityStatus status = event.getConnectivityStatus();

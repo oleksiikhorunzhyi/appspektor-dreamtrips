@@ -1,6 +1,6 @@
 package com.messenger.delegate.chat;
 
-import com.messenger.delegate.LoadConversationDelegate;
+import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -8,10 +8,10 @@ import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Collections;
 import java.util.List;
@@ -84,13 +84,12 @@ public class ChatMessagesEventDelegate {
     }
 
     private void trySaveReceivedMessage(Message message, DataConversation conversationFromBD) {
-        if (conversationFromBD == null) {
-            String conversationId = message.getConversationId();
-            loadConversationDelegate.loadConversationFromNetwork(conversationId)
-                    .subscribe(dataConversation -> saveReceivedMessage(message));
-        } else {
-            saveReceivedMessage(message);
-        }
+        Observable.just(conversationFromBD)
+                .compose(new NonNullFilter<>())
+                .switchIfEmpty(loadConversationDelegate
+                        .loadConversationFromNetworkAndRefreshFromDb(message.getConversationId()))
+                .map(conversation -> message)
+                .subscribe(this::saveReceivedMessage);
     }
 
     private void saveReceivedMessage(Message message) {

@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">No se pudo cargar la configuración del chat</string>
     <string name="chat_settings_single_chat_online">en internet</string>
     <string name="chat_settings_single_chat_offline">no en internet</string>
-    <string name="chat_settings_group_chat_description">%1$d miembros, %2$d conectados a internet</string>
     <string name="chat_settings_row_notifications">Notificaciones</string>
     <string name="chat_settings_row_shared_content">Contenido compartido</string>
     <string name="chat_settings_row_members_format">Miembros %1$d)</string>
@@ -107,7 +106,6 @@
     <string name="chat_settings_leave_group_chat_format">¿Estás seguro que deseas salir de %1$s chat?</string>
     <string name="chat_settings_error_change_subject">No se puede cambiar el tema sin conexión de red</string>
     <string name="chat_settings_error_changing_avatar_subject">No se puede cambiar el avatar de la conversación sin conexión de red</string>
-    <string name="chat_settings_error_empty_subject">Por Favor, introducir el nombre de la conversación</string>
     <!---->
     <!--Add new members -->
     <!---->

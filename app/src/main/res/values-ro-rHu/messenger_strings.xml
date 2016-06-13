@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">Setările conversațiilor nu s-au putut încărca</string>
     <string name="chat_settings_single_chat_online">online</string>
     <string name="chat_settings_single_chat_offline">offline</string>
-    <string name="chat_settings_group_chat_description">%1$d membri, %2$d online</string>
     <string name="chat_settings_row_notifications">Notificări</string>
     <string name="chat_settings_row_shared_content">Conținut partajat</string>
     <string name="chat_settings_row_members_format">Membri (%1$d)</string>
@@ -107,7 +106,6 @@
     <string name="chat_settings_leave_group_chat_format">Sigur doriți să părăsiți chatul %1$s?</string>
     <string name="chat_settings_error_change_subject">Nu puteți schimba subiectul fără o conexiune la internet </string>
     <string name="chat_settings_error_changing_avatar_subject">Nu puteți schimba avatarul conversației dacă nu aveți conexiune la rețea</string>
-    <string name="chat_settings_error_empty_subject">Introduceți numele conversației</string>
     <!---->
     <!--Add new members -->
     <!---->

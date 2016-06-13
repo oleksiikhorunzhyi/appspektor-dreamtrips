@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.R;
 import butterknife.OnClick;
 
 @Layout(R.layout.list_item_contact)
-public class CheckableUserCell extends UserCell<SelectableDataUser, CheckableUserCell.Delegate> {
+public class CheckableUserCell extends UserCell<SelectableDataUser, CellDelegate<SelectableDataUser>> {
 
     public CheckableUserCell(View view) {
         super(view);
@@ -30,11 +30,6 @@ public class CheckableUserCell extends UserCell<SelectableDataUser, CheckableUse
         return getModelObject().getDataUser();
     }
 
-    @OnClick(R.id.contact_icon)
-    void onAvatarClick() {
-        cellDelegate.onCellClicked(getModelObject());
-    }
-
     void onSelectChanged() {
         SelectableDataUser model = getModelObject();
         if (!model.isSelectionEnabled()) {
@@ -43,10 +38,6 @@ public class CheckableUserCell extends UserCell<SelectableDataUser, CheckableUse
         boolean selected = !model.isSelected();
         model.setSelected(selected);
         tickImageView.setSelected(selected);
-        cellDelegate.onItemSelectChanged(model);
-    }
-
-    public interface Delegate extends CellDelegate<SelectableDataUser> {
-        void onItemSelectChanged(SelectableDataUser item);
+        cellDelegate.onCellClicked(model);
     }
 }

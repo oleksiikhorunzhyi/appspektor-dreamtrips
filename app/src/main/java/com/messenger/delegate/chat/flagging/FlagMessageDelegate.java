@@ -8,17 +8,17 @@ import rx.schedulers.Schedulers;
 
 public class FlagMessageDelegate {
 
-    private final ActionPipe<FlagMessageAction> flaggingPipe;
+    private final ActionPipe<FlagMessageCommand> flaggingPipe;
 
     public FlagMessageDelegate(Janet janet) {
-        flaggingPipe = janet.createPipe(FlagMessageAction.class, Schedulers.io());
+        flaggingPipe = janet.createPipe(FlagMessageCommand.class, Schedulers.io());
     }
 
     public void flagMessage(FlagMessageDTO flagMessageDTO) {
-        flaggingPipe.send(new FlagMessageAction(flagMessageDTO));
+        flaggingPipe.send(new FlagMessageCommand(flagMessageDTO));
     }
 
-    public Observable<ActionState<FlagMessageAction>> observeOngoingFlagging() {
+    public Observable<ActionState<FlagMessageCommand>> observeOngoingFlagging() {
         return flaggingPipe.observeWithReplay();
     }
 

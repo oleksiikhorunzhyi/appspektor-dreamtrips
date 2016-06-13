@@ -1,27 +1,28 @@
 package com.messenger.ui.widget.inappnotification.messanger;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.TextView;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
+import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataUser;
+import com.messenger.notification.model.GroupNotificationData;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 
 public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
-
     @InjectView(R.id.in_app_notif_avatar_group)
     GroupAvatarsView avatarViewGroup;
-    @InjectView(R.id.in_app_notif_title)
-    TextView titleTextView;
-    @InjectView(R.id.in_app_notif_text)
-    TextView textTextView;
 
     public InAppNotificationViewGroup(Context context) {
         super(context);
@@ -43,21 +44,24 @@ public class InAppNotificationViewGroup extends InAppMessengerNotificationView {
         super.initialize();
     }
 
-    public void setConversation(DataConversation conversation) {
+    public void bindNotification(GroupNotificationData notification) {
+        super.bindNotification(notification);
+        DataConversation conversation = notification.getConversation();
         avatarViewGroup.setConversationAvatar(conversation);
+        setTitle(conversation, notification.getParticipants());
+    }
+
+    protected void setTitle(DataConversation conversation, List<DataUser> participants) {
+        String groupName = conversation.getSubject();
+        setTitle(TextUtils.isEmpty(groupName) ? concatParticipantNames(participants) : groupName);
+    }
+
+    private String concatParticipantNames(List<DataUser> participants) {
+        return Queryable.from(participants).map(DataUser::getName).joinStrings(", ");
     }
 
     @Override
-    public void setTitle(String title) {
-        titleTextView.setText(title);
-    }
-
-    @Override
-    public void setText(String text) {
-        textTextView.setText(text);
-    }
-
-    public void setImageRes(@DrawableRes int drawableId) {
-        avatarViewGroup.setImageDrawable(drawableId);
+    protected String getMessageText(DataUser sender, DataMessage dataMessage, @Nullable String attachmentType) {
+        return String.format("%s: %s", sender.getName(), super.getMessageText(sender, dataMessage, attachmentType));
     }
 }

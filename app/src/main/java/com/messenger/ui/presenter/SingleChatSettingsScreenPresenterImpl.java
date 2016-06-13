@@ -21,19 +21,18 @@ public class SingleChatSettingsScreenPresenterImpl extends ChatSettingsScreenPre
     @Named(PROFILE)
     RouteCreator<Integer> routeCreator;
 
-    protected final ProfileCrosser profileCrosser;
+    @Inject
+    ProfileCrosser profileCrosser;
 
     public SingleChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector, conversationId);
-
-        profileCrosser = new ProfileCrosser(context, routeCreator);
     }
 
     @Override
     public void onConversationAvatarClick() {
         participantsObservable
                 .flatMap(Observable::from)
-                .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
+                .filter(participant -> !TextUtils.equals(currentUser.getId(), participant.getId()))
                 .take(1)
                 .subscribe(profileCrosser::crossToProfile);
     }

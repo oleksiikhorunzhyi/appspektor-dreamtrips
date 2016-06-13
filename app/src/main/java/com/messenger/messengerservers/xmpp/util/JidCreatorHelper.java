@@ -1,9 +1,8 @@
 package com.messenger.messengerservers.xmpp.util;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
-
-import com.messenger.messengerservers.model.MessengerUser;
 
 import java.util.UUID;
 
@@ -20,13 +19,8 @@ public final class JidCreatorHelper {
         return TextUtils.isEmpty(userId) ? null : userId + "@" + SERVICE_NAME;
     }
 
-    public static String obtainGroupJid(String roomName) {
+    public static String obtainGroupJid(@Nullable String roomName) {
         return (roomName != null ? roomName : UUID.randomUUID().toString()) + "@" + GROUP_SERVICE_NAME;
-    }
-
-    @Deprecated
-    public static MessengerUser obtainUser(String jid) {
-        return new MessengerUser(obtainId(jid));
     }
 
     public static String obtainId(@NonNull String jid) {

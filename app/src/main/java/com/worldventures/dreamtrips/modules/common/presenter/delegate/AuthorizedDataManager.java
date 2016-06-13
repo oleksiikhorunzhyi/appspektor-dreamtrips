@@ -16,14 +16,16 @@ import rx.functions.Action1;
 
 public class AuthorizedDataManager {
 
-    SessionHolder<UserSession> appSessionHolder;
-    AuthInteractor authInteractor;
-    Observable<UpdateAuthInfoCommand> authObservable;
-    boolean inProgress;
+    private final MessengerConnector messengerConnector;
+    private final SessionHolder<UserSession> appSessionHolder;
+    private final AuthInteractor authInteractor;
+    private Observable<UpdateAuthInfoCommand> authObservable;
+    private boolean inProgress;
 
-    public AuthorizedDataManager(SessionHolder<UserSession> appSessionHolder, AuthInteractor authInteractor) {
+    public AuthorizedDataManager(SessionHolder<UserSession> appSessionHolder, AuthInteractor authInteractor, MessengerConnector messengerConnector) {
         this.appSessionHolder = appSessionHolder;
         this.authInteractor = authInteractor;
+        this.messengerConnector = messengerConnector;
     }
 
     public void updateData(AuthDataSubscriber authDataSubscriber) {
@@ -49,7 +51,7 @@ public class AuthorizedDataManager {
     private void done(UpdateAuthInfoCommand command) {
         if (DreamSpiceManager.isCredentialExist(appSessionHolder)) {
             TrackingHelper.setUserId(Integer.toString(appSessionHolder.get().get().getUser().getId()));
-            MessengerConnector.getInstance().connectAfterGlobalConfig();
+            messengerConnector.connect();
             onSuccess();
         }
     }

@@ -17,8 +17,8 @@ import butterknife.Optional;
 public class UserMessageHolderInflater {
 
     private DataUser dataUser;
-    private DataConversation dataConversation;
     private boolean previousMessageFromSameUser;
+    private boolean isGroup;
 
     @Optional
     @InjectView(R.id.chat_item_avatar)
@@ -31,11 +31,10 @@ public class UserMessageHolderInflater {
         ButterKnife.inject(this, itemView);
     }
 
-    public void onCellBind(DataUser dataUser, DataConversation dataConversation,
-                           boolean previousMessageFromSameUser) {
+    public void onCellBind(DataUser dataUser, boolean isGroup, boolean previousMessageFromSameUser) {
         this.dataUser = dataUser;
-        this.dataConversation = dataConversation;
         this.previousMessageFromSameUser = previousMessageFromSameUser;
+        this.isGroup = isGroup;
 
         if (avatarImageView != null) updateAvatar();
         if (nameTextView != null) updateName();
@@ -52,8 +51,7 @@ public class UserMessageHolderInflater {
     }
 
     private void updateName() {
-        if (ConversationHelper.isGroup(dataConversation)
-                && dataUser != null
+        if (isGroup && dataUser != null
                 && !previousMessageFromSameUser) {
             nameTextView.setVisibility(View.VISIBLE);
             nameTextView.setText(dataUser.getName());

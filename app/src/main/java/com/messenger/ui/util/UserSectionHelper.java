@@ -8,7 +8,7 @@ import android.util.Pair;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.model.Participant;
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.model.Group;
 import com.messenger.ui.model.SelectableDataUser;
@@ -87,9 +87,10 @@ public class UserSectionHelper {
                                                            DataConversation conversation) {
         boolean isAdmin = TextUtils.equals(conversation.getOwnerId(), getCurrentUserId());
         boolean isTripConversation = ConversationHelper.isTripChat(conversation);
+        boolean enableOnlineMembersStatuses = ConversationHelper.isPresent(conversation);
         Map<String, Collection<SwipeDataUser>> groupedMap = Queryable.from(members)
                 .groupToMap(pair -> getUserGroup(pair.first, pair.second, isTripConversation),
-                        pair -> toSwipeDataUser(pair.first, pair.second, isAdmin));
+                        pair -> toSwipeDataUser(pair.first, pair.second, isAdmin, enableOnlineMembersStatuses));
 
         return convertToGroups(groupedMap);
     }
@@ -132,13 +133,14 @@ public class UserSectionHelper {
                 return name;
         }
     }
-
-    private SwipeDataUser toSwipeDataUser(DataUser user, String affiliation, boolean isOwner) {
-        return new SwipeDataUser(user, isOwner && !TextUtils.equals(affiliation, Participant.Affiliation.OWNER));
+    private SwipeDataUser toSwipeDataUser(DataUser user, String affiliation, boolean isOwner,
+                                          boolean onlineStatusEnabled) {
+        return new SwipeDataUser(user, isOwner && !TextUtils.equals(affiliation, Affiliation.OWNER),
+                onlineStatusEnabled);
     }
 
     private String getUserGroup(DataUser user, String affiliation, boolean isTripConversation) {
-        if (TextUtils.equals(affiliation, Participant.Affiliation.OWNER)) return ADMIN_TYPE;
+        if (TextUtils.equals(affiliation, Affiliation.OWNER)) return ADMIN_TYPE;
         else if (isTripConversation && user.isHost()) return HOST_TYPE;
         else return user.getFirstName().substring(0, 1).toUpperCase();
     }

@@ -10,6 +10,4 @@ public interface Chat {
     Observable<String> sendReadStatus(String messageId);
 
     Observable<String> setCurrentState(@ChatState.State String state);
-
-    void close();
 }

@@ -7,8 +7,8 @@ import io.techery.janet.command.annotations.CommandAction;
 @CommandAction
 public class RemoveAvatarCommand extends ChangeAvatarCommand {
 
-    public RemoveAvatarCommand(DataConversation conversation) {
-        super(conversation);
+    public RemoveAvatarCommand(String conversationId) {
+        super(conversationId);
     }
 
     @Override

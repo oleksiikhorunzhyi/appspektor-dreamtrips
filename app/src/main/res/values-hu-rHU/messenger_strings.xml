@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading"> Nem lehet betölteni a csevegési beállításokat </string>
     <string name="chat_settings_single_chat_online">online</string>
     <string name="chat_settings_single_chat_offline">offline</string>
-    <string name="chat_settings_group_chat_description">%1$d tag, %2$d online</string>
     <string name="chat_settings_row_notifications">Értesítések</string>
     <string name="chat_settings_row_shared_content">Megosztott tartalom</string>
     <string name="chat_settings_row_members_format">Tagok (%1$d)</string>
@@ -107,7 +106,6 @@
     <string name="chat_settings_leave_group_chat_format">Biztosan ki akarsz lépni ebből a %1$s beszélgetésből</string>
     <string name="chat_settings_error_change_subject">Hálózati kapcsolat nélkül nem változtathatod meg a tárgyat</string>
     <string name="chat_settings_error_changing_avatar_subject">Nem lehet megváltoztatni a beszélgetés logóját hálózati kapcsolat nélkül</string>
-    <string name="chat_settings_error_empty_subject">Kérjük, add meg a beszélgetés nevét</string>
     <!---->
     <!--Add new members -->
     <!---->

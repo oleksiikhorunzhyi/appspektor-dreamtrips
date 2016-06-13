@@ -90,7 +90,6 @@
     <string name="chat_settings_error_loading">無法加載聊天設置</string>
     <string name="chat_settings_single_chat_online">線上</string>
     <string name="chat_settings_single_chat_offline">當前離線</string>
-    <string name="chat_settings_group_chat_description">%1$d成員，%2$d線上</string>
     <string name="chat_settings_row_notifications">通知</string>
     <string name="chat_settings_row_shared_content">共享內容</string>
     <string name="chat_settings_row_members_format">會員（ %1$d ）</string>
@@ -107,7 +106,6 @@
     <string name="chat_settings_leave_group_chat_format">您確定您想退出%1$s聊天嗎？</string>
     <string name="chat_settings_error_change_subject">沒有網絡連接，您不能更改主題</string>
     <string name="chat_settings_error_changing_avatar_subject">沒有網絡連接，您不能更改聊天化身</string>
-    <string name="chat_settings_error_empty_subject">請輸入談話名稱</string>
     <!---->
     <!--Add new members -->
     <!---->

@@ -4,6 +4,7 @@ import android.net.SSLCertificateSocketFactory;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.innahema.collections.query.functions.Predicate;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -20,6 +21,7 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.PingManager;
 
@@ -37,7 +39,7 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     private static final long PACKET_REPLAY_TIMEOUT = TimeUnit.SECONDS.toMillis(60L);
     private static final int TIME_PING_INTERVAL = 45; // secs
-    private static final String WV_API_PROTOCOL_VERSION = "2.0";
+    private static final String WV_API_PROTOCOL_VERSION = "3.0";
 
     private XmppServerParams serverParams;
     // TODO: 4/28/16 not rx way
@@ -57,13 +59,14 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final BehaviorSubject<XMPPConnection> connectionSubject = BehaviorSubject.create();
     private final BehaviorSubject<ConnectionStatus> connectionStatusSubject = BehaviorSubject.create();
 
-    public XmppServerFacade(XmppServerParams serverParams, Gson gson) {
-        this.gson = gson;
+    public XmppServerFacade(XmppServerParams serverParams, XmppGlobalEventEmitter globalEventEmitter, Gson gson) {
         this.serverParams = serverParams;
+        this.gson = gson;
+        this.globalEventEmitter = globalEventEmitter;
+        globalEventEmitter.setFacade(this);
         PingManager.setDefaultPingInterval(TIME_PING_INTERVAL);
         loaderManager = new XmppLoaderManager(this);
         paginationManager = new XmppPaginationManager(this);
-        globalEventEmitter = new XmppGlobalEventEmitter(this);
         chatManager = new XmppChatManager(this);
     }
 

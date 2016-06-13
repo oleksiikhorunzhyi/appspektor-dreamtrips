@@ -120,7 +120,7 @@
     <color name="conversation_list_last_message_date">@color/conversation_list_message</color>
     <color name="conversation_list_more_button_background">#505050</color>
     <color name="conversation_list_delete_button_background">#FA6D6D</color>
-    <color name="conversation_list_closed_conversation">#FB7687</color>
+    <color name="conversation_list_closed_conversation">#FE5B5C</color>
 
     <!-- Chat settings screen -->
     <color name="chat_settings_chat_name_title_textview">#0F0F0F</color>
@@ -147,6 +147,9 @@
     <color name="translation_state_translated">#53B5FE</color>
 
     <color name="cropping_selected_button">#41A4FD</color>
+
+    <color name="chat_error_message_color">#EC6A6A</color>
+    <color name="retry_send_message_dialog_button_text_color">#2b9bf3</color>
 
     <!--end messenger-->
 </resources>

@@ -25,13 +25,7 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
         }
 
         boolean isError = dataMessage.getStatus() == MessageStatus.ERROR;
-        int viewVisible = isError ? View.VISIBLE : View.GONE;
-        if (viewVisible != retrySwitcher.getVisibility()) {
-            retrySwitcher.setVisibility(viewVisible);
-        }
-        if (isError && retrySwitcher.getCurrentView().getId() == R.id.progress_bar) {
-            retrySwitcher.showPrevious();
-        }
+        viewRetrySend.setVisibility(isError ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R.id.chat_image_error)
@@ -51,7 +45,7 @@ public class OwnImageMessageViewHolder extends ImageMessageViewHolder {
         if (dataMessage.getStatus() == MessageStatus.ERROR &&
                     dataPhotoAttachment.getUploadState() == DataPhotoAttachment.PhotoAttachmentStatus.UPLOADED) {
             errorView.setVisibility(View.VISIBLE);
-            retrySwitcher.setVisibility(View.GONE);
+            viewRetrySend.setVisibility(View.GONE);
         }
     }
 

@@ -10,6 +10,7 @@ import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.extensions.DeleteMessageExtension;
 import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilter;
 import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilterType;
+import com.messenger.messengerservers.xmpp.stanzas.PresenceStatus;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.LeftRoomPresence;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessageDeletedPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -240,7 +241,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         if (isKickPresence(presence.getType(), affiliation)) {
             notifyOnKickListener(conversationId, JidCreatorHelper.obtainUserIdFromGroupJid(fromJid));
             return true;
-        } else if (isInvitePresence(mucUser)) {
+        } else if (isInvitePresence(presence)) {
             String jid = mucUser.getItem().getJid();
             String userId = jid == null ?
                     JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
@@ -257,8 +258,8 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         return false;
     }
 
-    private boolean isInvitePresence(MUCUser mucUser) {
-        return mucUser.getInvite() != null;
+    private boolean isInvitePresence(Presence presence) {
+        return TextUtils.equals(presence.getStatus(), PresenceStatus.INVITED);
     }
 
     private boolean isKickPresence(Type type, MUCAffiliation affiliation) {

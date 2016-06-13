@@ -55,6 +55,7 @@ public class ParseUtils {
         presence.setTo(parser.getAttributeValue("", "to"));
         presence.setFrom(parser.getAttributeValue("", "from"));
         presence.setStanzaId(parser.getAttributeValue("", "id"));
+        presence.setStatus(parser.getAttributeValue("", "status"));
 
         // Parse sub-elements
         outerloop: while (true) {

@@ -38,7 +38,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/abc_text_size_subhead_material"
+            android:textSize="@dimen/font_normal"
             android:textStyle="bold"
             tools:text="Podcast"/>
 
@@ -47,21 +47,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/abc_text_size_small_material"
+            android:textSize="@dimen/font_medium"
             tools:text="Category"/>
 
         <TextView
             android:id="@+id/duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/abc_text_size_small_material"
+            android:textSize="@dimen/font_medium"
             tools:text="12:45 min"/>
 
         <TextView
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/abc_text_size_small_material"
+            android:textSize="@dimen/font_medium"
             tools:text="Feb 31, 2066"/>
 
     </LinearLayout>
@@ -83,7 +83,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/abc_text_size_small_material"
+        android:textSize="@dimen/font_medium"
         tools:text="Buck is a build system developed and used by Facebook. It encourages the creation of small, reusable modules consisting of code and resources, and supports a variety of languages on many platforms."/>
 
 </RelativeLayout>

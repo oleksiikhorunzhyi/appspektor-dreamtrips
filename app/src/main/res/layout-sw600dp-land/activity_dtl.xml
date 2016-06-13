@@ -28,7 +28,7 @@
             >
 
             <com.worldventures.dreamtrips.core.flow.container.MasterToolbarPathContainerView
-                android:id="@+id/master_toolbar_container"
+                android:id="@id/master_toolbar_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />

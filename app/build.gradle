@@ -3,6 +3,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
+apply plugin: 'newrelic'
 //
 apply from: 'helper-methods.gradle'
 
@@ -26,14 +27,15 @@ android {
 
     // App version
     def versionMajor = 1
-    def versionMinor = 10
+    def versionMinor = 11
     def versionPatch = 0
-    def versionBuild = 21  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 7  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"
+    String DEV_PRE_MARSHMALLOW_CODE = "devpremarshmallow"
     String EXTERNAL_CODE = "external"
-    String[] BUILD_CODES = [DEV_CODE, EXTERNAL_CODE]
+    String[] BUILD_CODES = [DEV_PRE_MARSHMALLOW_CODE, DEV_CODE, EXTERNAL_CODE]
     //
     String DTL_CODE = "dtl"
     String MESSENGER_CODE = "messenger"
@@ -42,15 +44,45 @@ android {
     String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE]
     //
     String STAGE_CODE = "stage"
+    String PREPROD_CODE = "preprod"
     String PERF_CODE = "perf"
     String PROD_CODE = "prod"
-    String[] CONFIG_CODES = [STAGE_CODE, PERF_CODE, PROD_CODE]
+    String[] CONFIG_CODES = [STAGE_CODE, PREPROD_CODE, PERF_CODE, PROD_CODE]
     //
     def APP_ID_BASE = "com.worldventures.dreamtrips"
     def APP_VERSION_NAME_BASE = "${versionMajor}.${versionMinor}.${versionPatch}"
     //
     def ALLOW_BUILD_LOG = true
     def BUILD_LOG_TAG = "BUILD_LOG"
+    //
+    def CONFIG_MAP_DEFAULT = [
+            'DreamTripsApi'    : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
+            'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
+            'MESSENGER_API_URL': '"dtmsgapp-dev.worldventures.biz"',
+    ]
+    def CONFIG_MAP_PREPROD = [
+            'DreamTripsApi'    : '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net"',
+            'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
+            'MESSENGER_API_URL': '"dtmsgapp-dev.worldventures.biz"',
+    ]
+    def CONFIG_MAP_DTL = [
+            'DreamTripsApi': '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
+    ]
+    def CONFIG_MAP_PERF = [
+            'DreamTripsApi': '"http://dtapp-perf.worldventures.biz"',
+    ]
+    def CONFIG_MAP_PROD = [
+            'DreamTripsApi'    : '"https://dtapp.worldventures.biz"',
+            'S3Api'            : '"http://dtappprd.s3.amazonaws.com/config"',
+            'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
+    ]
+    //
+    def CONFIG_MAPS = [
+            "dtl"    : CONFIG_MAP_DTL,
+            "preprod": CONFIG_MAP_PREPROD,
+            "perf"   : CONFIG_MAP_PERF,
+            "prod"   : CONFIG_MAP_PROD,
+    ]
 
     defaultConfig {
         applicationId APP_ID_BASE
@@ -82,19 +114,24 @@ android {
 
         buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
+        buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
         ext.enableCrashlytics = true
         //
         buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
         buildConfigField 'String', 'versionMinor', "\"${versionMinor}\""
         buildConfigField 'String', 'versionPatch', "\"${versionPatch}\""
         buildConfigField 'String', 'versionBuild', "\"${versionBuild}\""
-
+        //
         buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp-dev.worldventures.biz"'
         buildConfigField 'int', 'MESSENGER_API_PORT', '5222'
-
+        //
         manifestPlaceholders = [:]
         manifestPlaceholders['fabricApiKey'] = "21da61424102fe8cf2f861fa914442a098312625"
         manifestPlaceholders['surveyApiToken'] = "7bfd74f4bc1d1273aa54a5b0b6f7a8bd4c8eeaf36c6e902a1f0d66398f6707ba"
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 
     flavorDimensions "build", "stream", "config"
@@ -104,6 +141,11 @@ android {
         dev {
             dimension "build"
             minSdkVersion 23
+            ext.enableCrashlytics = false
+            buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
+        }
+        devpremarshmallow {
+            dimension "build"
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
@@ -119,40 +161,32 @@ android {
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
-        stage {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net/"'
-        }
-        perf {
-            dimension "config"
-            buildConfigField 'String', 'DreamTripsApi', '"http://dtapp-perf.worldventures.biz"'
-        }
+        stage { dimension "config" }
+        preprod { dimension "config" }
+        perf { dimension "config" }
         prod {
             dimension "config"
             //
             manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
-            //
-            buildConfigField 'String', 'DreamTripsApi', '"https://dtapp.worldventures.biz"'
-            buildConfigField 'String', 'S3Api', '"http://dtappprd.s3.amazonaws.com/config"'
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
-            buildConfigField 'String', 'MESSENGER_API_URL', '"dtmsgapp.worldventures.biz"'
+            buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'true'
         }
     }
 
     variantFilter { variant ->
         variant.ignore = true
         //
-        String build = variant.flavors.get(0).name.toLowerCase() // dev / external
+        String build = variant.flavors.get(0).name.toLowerCase() // dev / devpremarshmallow / external
         String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / stable
-        String config = variant.flavors.get(2).name.toLowerCase() // stage / perf / prod
+        String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
         //
-        if (variant.buildType.name.equals("debug") && config.equals(STAGE_CODE)) {
+        if (variant.buildType.name.equals("debug") && (config.equals(STAGE_CODE) || config.equals(PREPROD_CODE))) {
             variant.ignore = false
             return
         }
         //
         if (variant.buildType.name.equals("release")) {
-            if (build.equals(EXTERNAL_CODE) && containsAnyOf(config, STAGE_CODE, PERF_CODE)) {
+            if (build.equals(EXTERNAL_CODE) && containsAnyOf(config, STAGE_CODE, PREPROD_CODE, PERF_CODE)) {
                 variant.ignore = false
             }
             if (build.equals(EXTERNAL_CODE) && stream.equals(STABLE_CODE) && config.equals(PROD_CODE)) {
@@ -164,17 +198,43 @@ android {
     // TODO : move to external method later
     android.applicationVariants.all { variant ->
 
-        ///////////////////////////////////////////////////////////////////////////
-        // appId constructor
-        ///////////////////////////////////////////////////////////////////////////
-
         String flavorName = variant.flavorName.toLowerCase()
         String buildSuffix, streamSuffix, configSuffix
         //
         buildSuffix = oneOfSubstrings(flavorName, BUILD_CODES)
         streamSuffix = oneOfSubstrings(flavorName, STREAM_CODES)
         configSuffix = oneOfSubstrings(flavorName, CONFIG_CODES)
+
+        ///////////////////////////////////////////////////////////////////////////
+        // Patch config from config maps
+        ///////////////////////////////////////////////////////////////////////////
+
+        CONFIG_MAP_DEFAULT.each { entry ->
+            buildConfigField 'String', entry.key, entry.value
+        }
         //
+        if (CONFIG_MAPS.containsKey(buildSuffix)) {
+            CONFIG_MAPS.get(buildSuffix).each { entry ->
+                buildConfigField 'String', entry.key, entry.value
+            }
+        }
+        //
+        if (CONFIG_MAPS.containsKey(streamSuffix)) {
+            CONFIG_MAPS.get(streamSuffix).each { entry ->
+                buildConfigField 'String', entry.key, entry.value
+            }
+        }
+        //
+        if (CONFIG_MAPS.containsKey(configSuffix)) {
+            CONFIG_MAPS.get(configSuffix).each { entry ->
+                buildConfigField 'String', entry.key, entry.value
+            }
+        }
+
+        ///////////////////////////////////////////////////////////////////////////
+        // appId constructor
+        ///////////////////////////////////////////////////////////////////////////
+
         if (streamSuffix.equals(STABLE_CODE) && configSuffix.equals(PROD_CODE)) {
             writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
                     "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
@@ -186,7 +246,8 @@ android {
         //
         String generatedAppId = APP_ID_BASE
         //
-        if (buildSuffix.equals(DEV_CODE)) generatedAppId += ".${buildSuffix}"
+        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
+            generatedAppId += ".${DEV_CODE}"
         if (!streamSuffix.equals(STABLE_CODE)) generatedAppId += ".${streamSuffix}"
         if (!configSuffix.equals(PROD_CODE)) generatedAppId += ".${configSuffix}"
         //
@@ -198,7 +259,8 @@ android {
 
         String versionName = APP_VERSION_NAME_BASE
         //
-        if (buildSuffix.equals(DEV_CODE)) versionName += "-${buildSuffix}"
+        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
+            versionName += "-${DEV_CODE}"
         if (!streamSuffix.equals(STABLE_CODE)) versionName += "-${streamSuffix}"
         if (!configSuffix.equals(PROD_CODE)) {
             versionName += "-${configSuffix}"
@@ -274,7 +336,6 @@ android {
 }
 
 def googleLibrariesVersion = '23.3.0'
-def janetVersion = '0.2.3'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -283,12 +344,12 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // janet
-    compile "com.github.techery.janet:http-service:${janetVersion}"
-    apt "com.github.techery.janet:http-service-compiler:${janetVersion}"
-    compile "com.github.techery.janet:janet:${janetVersion}"
-    compile "com.github.techery.janet:command-service:${janetVersion}"
-    compile "com.github.techery.janet:okhttp:${janetVersion}"
-    compile "com.github.techery.janet:gson:${janetVersion}"
+    compile "com.github.techery:janet:1.0.3"
+    compile "com.github.techery:janet-command:1.0.1"
+    compile "com.github.techery.janet-http:service:1.0.2"
+    apt "com.github.techery.janet-http:service-compiler:1.0.2"
+    compile "com.github.techery.janet-http:client-okhttp:1.0.2"
+    compile "com.github.techery.janet-converters:gson:1.0.1"
     compile 'com.squareup.okhttp:logging-interceptor:2.+'
     // Data storage, flow
     compile 'de.greenrobot:eventbus:2.4.0'
@@ -319,12 +380,13 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.newrelic.agent.android:android-agent:5.6.0'
     compile 'com.apptentive:apptentive-android:2.0.1@aar'
     compile 'com.github.techery:job-executor:0.1.1'
     compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'io.reactivex:rxjava:1.1.1'
+    compile 'io.reactivex:rxjava:1.1.5'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
     compile 'com.trello:rxlifecycle:0.4.0'
@@ -339,6 +401,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:${googleLibrariesVersion}"
     compile "com.android.support:cardview-v7:${googleLibrariesVersion}"
     compile "com.android.support:recyclerview-v7:${googleLibrariesVersion}"
+    compile "com.android.support:percent:${googleLibrariesVersion}"
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.getbase:floatingactionbutton:1.10.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
@@ -362,8 +425,6 @@ dependencies {
     compile 'com.sothree.slidinguppanel:library:3.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     // Util
-    compile "com.github.hotchemi:permissionsdispatcher:2.0.8"
-    apt "com.github.hotchemi:permissionsdispatcher-processor:2.0.8"
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.intellij:annotations:12.0'
@@ -404,4 +465,9 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.assertj:assertj-core:1.7.1'
+    //
+    testCompile "org.powermock:powermock-module-junit4:1.6.4"
+    testCompile "org.powermock:powermock-module-junit4-rule:1.6.4"
+    testCompile "org.powermock:powermock-api-mockito:1.6.4"
+    testCompile "org.powermock:powermock-classloading-xstream:1.6.4"
 }

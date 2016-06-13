@@ -3,6 +3,7 @@ package com.messenger.ui.widget;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
@@ -48,17 +49,24 @@ public class ChatItemFrameLayout extends FrameLayout {
         calculateSpacings();
     }
 
-    private void setMargins() {
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) getLayoutParams();
-        params.setMargins(
-                isOwn ? freeSpaceForMessageRowOwnMessage : params.leftMargin,
-                params.topMargin,
-                isOwn ? params.rightMargin : freeSpaceForMessageRowUserMessage,
-                params.bottomMargin);
+    @Override
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
+        setMargins((MarginLayoutParams) params);
+        super.setLayoutParams(params);
+    }
+
+    private void setMargins(ViewGroup.MarginLayoutParams params) {
+        int startMargin = isOwn ? freeSpaceForMessageRowOwnMessage : params.leftMargin;
+        int endMargin = isOwn ? params.rightMargin : freeSpaceForMessageRowUserMessage;
+        params.setMargins(startMargin, params.topMargin, endMargin, params.bottomMargin);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginStart(startMargin);
+            params.setMarginEnd(endMargin);
+        }
     }
 
     public void setPreviousMessageFromSameUser(boolean previousMessageFromSameUser) {
-        setMargins();
         setBackgroundResource(previousMessageFromSameUser
                 ? backgroundForFollowingMessage : backgroundForInitialMessage);
     }

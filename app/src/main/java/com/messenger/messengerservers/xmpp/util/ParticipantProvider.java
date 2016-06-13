@@ -4,13 +4,14 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.model.Participant;
-import com.messenger.messengerservers.xmpp.stanzas.ConversationParticipantsIQ;
-import com.messenger.messengerservers.xmpp.stanzas.ObtainConversationIQ;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.ConversationParticipantsIQ;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.ObtainConversationParticipantsIQ;
 import com.messenger.messengerservers.xmpp.providers.ConversationParticipantsProvider;
 import com.raizlabs.android.dbflow.annotation.NotNull;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 import java.util.ArrayList;
@@ -21,13 +22,13 @@ import timber.log.Timber;
 
 public class ParticipantProvider {
 
-    private AbstractXMPPConnection connection;
+    private XMPPConnection connection;
 
     public interface OnGroupChatParticipantsLoaded {
         void onLoaded(Participant owner, List<Participant> participants, boolean abandoned);
     }
 
-    public ParticipantProvider(AbstractXMPPConnection connection) {
+    public ParticipantProvider(XMPPConnection connection) {
         this.connection = connection;
         ProviderManager.addIQProvider(
                 ConversationParticipantsIQ.ELEMENT_QUERY, ConversationParticipantsIQ.NAMESPACE,
@@ -44,7 +45,7 @@ public class ParticipantProvider {
     }
 
     public void loadMultiUserChatParticipants(String conversationId, @NotNull OnGroupChatParticipantsLoaded listener) {
-        ObtainConversationIQ participantsPacket = new ObtainConversationIQ();
+        ObtainConversationParticipantsIQ participantsPacket = new ObtainConversationParticipantsIQ();
         participantsPacket.setTo(JidCreatorHelper.obtainGroupJid(conversationId));
         participantsPacket.setFrom(connection.getUser());
 

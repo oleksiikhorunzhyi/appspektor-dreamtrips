@@ -11,7 +11,6 @@ public class BaseHttpAction {
     @RequestHeader("Accept") public String acceptHeader = "application/com.dreamtrips.api+json;version=" + BuildConfig.API_VERSION;
     @SuppressLint("DefaultLocale")
     @RequestHeader("DT-App-Platform") public String platformHeader = String.format("android-%d", Build.VERSION.SDK_INT);
-    @RequestHeader("Authorization") public String authorizationHeader;
     @RequestHeader("Accept-Language") public String languageHeader;
     @RequestHeader("DT-App-Version") public String appVersionHeader;
 
@@ -33,14 +32,6 @@ public class BaseHttpAction {
 
     public void setLanguageHeader(String languageHeader) {
         this.languageHeader = languageHeader;
-    }
-
-    public String getAuthorizationHeader() {
-        return authorizationHeader;
-    }
-
-    public void setAuthorizationHeader(String authorizationHeader) {
-        this.authorizationHeader = authorizationHeader;
     }
 
     public String getAcceptHeader() {

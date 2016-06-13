@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 
-import android.Manifest;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +18,9 @@ import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.api.error.FieldError;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
+import com.worldventures.dreamtrips.core.permission.PermissionConstants;
+import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
+import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlEnrollWizard;
@@ -34,21 +35,18 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_scan_qr)
-@RuntimePermissions
 public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodePresenter, MerchantIdBundle>
         implements DtlScanQrCodePresenter.View, ZXingScannerView.ResultHandler {
 
     @Inject
     @Named(RouteCreatorModule.DTL_TRANSACTION)
     RouteCreator<DtlTransaction> routeCreator;
+    @Inject
+    PermissionDispatcher permissionDispatcher;
+
     //
     @InjectView(R.id.name)
     TextView name;
@@ -79,21 +77,23 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
     public void onResume() {
         super.onResume();
         ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_barcode_title);
-        DtlScanQrCodeFragmentPermissionsDispatcher.startCameraWithCheck(this);
+        permissionDispatcher.requestPermission(PermissionConstants.CAMERA_PERMISSIONS)
+                .compose(this::bind)
+                .subscribe(new PermissionSubscriber()
+                        .onPermissionGrantedAction(this::startCamera)
+                        .onPermissionRationaleAction(this::showRationaleForCamera)
+                        .onPermissionDeniedAction(this::showDeniedForCamera));
         scanner.setResultHandler(this);
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA)
     void startCamera() {
         scanner.startCamera();
     }
 
-    @OnShowRationale(Manifest.permission.CAMERA)
-    void showRationaleForCamera(PermissionRequest request) {
+    void showRationaleForCamera() {
         Snackbar.make(getView(), R.string.permission_camera_rationale, Snackbar.LENGTH_SHORT).show();
     }
 
-    @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
         Snackbar.make(getView(), R.string.no_camera_permission, Snackbar.LENGTH_SHORT).show();
     }
@@ -114,11 +114,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
     public void onPause() {
         super.onPause();
         scanner.stopCamera();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        DtlScanQrCodeFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override

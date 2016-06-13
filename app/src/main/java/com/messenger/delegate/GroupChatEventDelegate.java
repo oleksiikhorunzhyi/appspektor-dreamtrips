@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 
 import javax.inject.Inject;
 
-import dagger.Lazy;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -36,11 +35,8 @@ public class GroupChatEventDelegate {
     UsersDAO usersDAO;
     @Inject
     SessionHolder<UserSession> currentUserSession;
-
     @Inject
-    LoaderDelegate loaderDelegate;
-    @Inject
-    Lazy<CreateConversationHelper> createConversationHelperLazy;
+    LoadConversationDelegate loadConversationDelegate;
 
     @Inject
     public GroupChatEventDelegate(@ForApplication Injector injector) {
@@ -51,13 +47,7 @@ public class GroupChatEventDelegate {
         if (currentUserSession.get() == null || currentUserSession.get().get() == null
                 || !currentUserSession.get().isPresent()) return;
 
-        String currentUserId = currentUserSession.get().get().getUser().getUsername();
-
-        createConversationHelperLazy.get().createConversation(conversationId, currentUserId)
-                .flatMap(conversation -> {
-                    conversationsDAO.save(conversation);
-                    return loaderDelegate.loadParticipants(conversationId);
-                }).subscribe(dataUsers -> {}, throwable -> Timber.d(throwable, ""));
+        loadConversationDelegate.loadConversationFromNetwork(conversationId);
     }
 
     public void onSubjectChanged(String conversationId, String subject){

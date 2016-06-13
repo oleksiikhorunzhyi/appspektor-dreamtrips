@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- messenger-->
+
+    <string name="messenger">Messenger</string>
+    <string name="chat">Beszélgetés</string>
+
+    <!---->
+    <!--Conversation List -->
+    <!---->
+    <string name="conversation_list_title">Beszélgetések</string>
+
+    <string name="conversation_list_spinner_item_all_chats">Az összes beszélgetés</string>
+    <string name="conversation_list_spinner_item_group_chats">Csoportos beszélgetések</string>
+
+    <string name="conversation_list_search_hint">Beszélgetések keresése…</string>
+    <string name="conversation_list_search_edittext_hint">Csoportok és személyek keresése</string>
+    <string name="conversation_list_item_last_message_text_format_you">Ön: %1$s</string>
+    <string name="conversation_list_item_last_message_image_format_you">Elküldted a fényképet</string>
+    <string name="conversation_list_item_last_message_image">fénykép elküldve</string>
+    <string name="conversation_list_item_last_message_location_format_you">Elküldött helyzet</string>
+    <string name="conversation_list_item_last_message_location">elküldött helyzet</string>
+    <string name="conversation_list_last_message_date_format_yesterday">Tegnap</string>
+    <string name="conversation_list_abandoned">Bezárás</string>
+    <string name="conversation_list_swipe_button_delete">Törlés</string>
+    <string name="conversation_list_delete_dialog_message">Biztos, hogy törli a beszélgetést?</string>
+    <string name="conversation_list_delete_dialog_pos_button">Törlés</string>
+    <string name="conversation_list_swipe_button_more">Több</string>
+    <string-array name="conversation_list_more_actions">
+        <item>Megjelölés olvasatlanként</item>
+        <item>Értesítések kikapcsolása</item>
+        <item>Mégse</item>
+    </string-array>
+
+
+    <!---->
+    <!--New chat-->
+    <!---->
+    <string name="new_chat_title">Új csevegés</string>
+    <string name="new_chat_toast_no_users_selected_error">Kérjük, először válassz ki néhány felhasználót</string>
+    <string name="new_multi_user_chat_not_supported">A csoportos csevegés létrehozása nem támogatott</string>
+    <string name="new_chat_error_loading_contacts">A névjegyeket nem lehet betölteni</string>
+    <string name="new_chat_new_conversation_title_hint">Beszélgetés nevének megadása</string>
+    <string name="new_chat_chosen_contacts_header_empty">"Hozzáadás: "</string>
+    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Hozzáadás</string>
+    <string name="new_chat_list_item_section_close_friends">Közeli barátok</string>
+    <string name="menu_done">Kész</string>
+
+    <!---->
+    <!--Chat -->
+    <!---->
+    <string name="chat_subtitle_format_single_chat_online">online</string>
+    <string name="chat_subtitle_format_single_chat_offline">offline</string>
+    <string name="chat_subtitle_format_group_chat_format">%1$d tag, %2$d online</string>
+    <string name="chat_subtitle_format_group_chat_offline">Nincs elérhető felhasználó</string>
+    <string name="chat_message_edittext_hint">Az üzeneted</string>
+    <string name="chat_message_send_button_text">Küldés</string>
+    <string name="chat_error_loading">Nem lehet betölteni a csevegési előzményeket</string>
+    <string name="chat_unread_messages_textview_format">%1$d olvasatlan üzeneted van</string>
+    <string name="chat_more_typing_users_hint_format">, és még %1$d</string>
+    <string name="chat_list_date_entry_today">Ma</string>
+    <string name="chat_list_date_entry_yesterday">Tegnap</string>
+    <string name="chat_contextual_copy_message">Másolás</string>
+    <string name="chat_contextual_translate_message">Fordítás</string>
+    <string name="chat_contextual_revert_translate_message">Eredeti mutatása</string>
+    <string name="chat_contextual_start_chat_format">Üzenet %1$s</string>
+    <string name="chat_contextual_flag">Jelölés</string>
+    <string name="chat_share_dialog_location">Helyzet megosztása</string>
+    <string name="chat_share_dialog_image">Kép megosztása</string>
+    <string name="chat_share_dialog_cancel">Mégse</string>
+    <string name="chat_could_not_share_location">Nem sikerült megosztani a helyzetet</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Betöltés…</string>
+    <string name="chat_flag_dialog_reason_title">Jelölés</string>
+    <string name="chat_flag_dialog_reason_hint">Írja be az okot</string>
+    <string name="chat_flag_dialog_reason_positive_button">Elfogadás</string>
+    <string name="chat_flag_dialog_reason_negative_button">Mégse</string>
+    <string name="chat_flag_dialog_confirmation_title">Megerősítés</string>
+    <string name="chat_flag_dialog_confirmation_message_format">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt az üzenetet %1$s számára. Folytatod?</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Küldés</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Mégse</string>
+    <string name="chat_flag_dialog_flagging_progress">Megjelölés ...</string>
+    <string name="chat_flag_failed">Üzenet megjelölés sikertelen</string>
+
+    <!---->
+    <!--Chat Settings -->
+    <!---->
+    <string name="chat_settings_single_chat">Csevegési beállítások</string>
+    <string name="chat_settings_group_chat"> Csoport csevegési beállítások </string>
+    <string name="chat_settings_error_loading"> Nem lehet betölteni a csevegési beállításokat </string>
+    <string name="chat_settings_single_chat_online">online</string>
+    <string name="chat_settings_single_chat_offline">offline</string>
+    <string name="chat_settings_group_chat_description">%1$d tag, %2$d online</string>
+    <string name="chat_settings_row_notifications">Értesítések</string>
+    <string name="chat_settings_row_shared_content">Megosztott tartalom</string>
+    <string name="chat_settings_row_members_format">Tagok (%1$d)</string>
+    <string name="chat_settings_row_assign_new_admin">Új admin kijelölése</string>
+    <string name="chat_settings_row_clear_history">Előzmények törlése</string>
+    <string name="chat_settings_row_leave_chat">Kilépés a csevegésből</string>
+    <string name="chat_settings_row_delete_chat">Csevegés törlése</string>
+    <string name="chat_settings_group_chat_info_text_format">Ezt a csevegést %1$s ekkor: %2$s hozta létre</string>
+    <string name="chat_settings_menu_settings">Beállítások</string>
+    <string name="chat_settings_menu_edit_chat_name">Csevegési név szerkesztése</string>
+    <string name="chat_settings_menu_edit_change_chat_image">Beszélgetés kép módosítása</string>
+    <string name="chat_settings_menu_edit_remove_chat_image">Beszélgetés kép törlése</string>
+    <string name="chat_settings_leave_group_chat">Biztosan ki akarsz lépni ebből a beszélgetésből</string>
+    <string name="chat_settings_leave_group_chat_format">Biztosan ki akarsz lépni ebből a %1$s beszélgetésből</string>
+    <string name="chat_settings_error_change_subject">Hálózati kapcsolat nélkül nem változtathatod meg a tárgyat</string>
+    <string name="chat_settings_error_changing_avatar_subject">Nem lehet megváltoztatni a beszélgetés logóját hálózati kapcsolat nélkül</string>
+    <string name="chat_settings_error_empty_subject">Kérjük, add meg a beszélgetés nevét</string>
+    <!---->
+    <!--Add new members -->
+    <!---->
+    <string name="chat_add_new_members_title">Új tag hozzáadása</string>
+    <!---->
+    <!--Edit chat members -->
+    <!---->
+    <string name="edit_chat_members_title">Tagok (%1$d)</string>
+    <string name="edit_chat_members_search_hint"> Tagok keresése… </string>
+    <string name="edit_chat_members_row_button_delete">Törlés</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_message">Szeretnél törölni ezt a felhasználót a csevegésből?</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Törlés</string>
+    <string name="edit_chat_members_admin_section">Rendszergazda</string>
+    <string name="edit_chat_members_host_section">Helyszíni Támogatás</string>
+    <!--Messenger notifications-->
+    <string name="push_unsupported_message">A csatolmány megtekintéséhez, kérjük, töltsd le a legújabb DreamTrips alkalmazást</string>
+    <!---->
+    <!---->
+    <!--Messenger misc -->
+    <!---->
+    <string name="subject">Tárgy</string>
+    <string name="change_subject">Csevegési név megadása</string>
+    <string name="sent_photo">fénykép elküldve</string>
+    <string name="sent_location">elküldött helyzet</string>
+    <string name="unread_conversation">Beszélgetések</string>
+
+    <string name="disconnected_overlay_disconnected_message">A kapcsolat megszakadt</string>
+    <string name="disconnected_overlay_connecting_message">Csatlakozás</string>
+
+    <string name="warning_no_internet_connection">Nincs internetkapcsolat</string>
+
+    <string name="chat_update_proposition"><![CDATA[A csatolmány megtekintéséhez, kérjük, töltsd le a legújabb DreamTrips <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">alkalmazást</a>]]></string>
+
+    <string name="translate_from">Lefordítva</string>
+    <string name="translate_error">Fordítási hiba</string>
+    <!-- messenger ends-->
+</resources>

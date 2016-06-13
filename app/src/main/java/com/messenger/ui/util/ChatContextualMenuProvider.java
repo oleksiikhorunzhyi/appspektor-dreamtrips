@@ -11,6 +11,7 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
@@ -25,14 +26,17 @@ public class ChatContextualMenuProvider {
     private Context context;
     private UsersDAO usersDAO;
     private TranslationsDAO translationsDAO;
+    private DataUser currentUser;
 
-    public ChatContextualMenuProvider(Context context, UsersDAO usersDAO, TranslationsDAO translationsDAO) {
+    public ChatContextualMenuProvider(Context context, DataUser currentUser,
+                                      UsersDAO usersDAO, TranslationsDAO translationsDAO) {
         this.context = context;
         this.usersDAO = usersDAO;
+        this.currentUser = currentUser;
         this.translationsDAO = translationsDAO;
     }
 
-    public Observable<Menu> provideMenu(DataMessage message, DataUser currentUser,
+    public Observable<Menu> provideMenu(DataMessage message,
                                         Observable<DataConversation> conversationObservable,
                                         Observable<DataAttachment> attachmentObservable) {
         return Observable
@@ -46,9 +50,14 @@ public class ChatContextualMenuProvider {
                     Menu menu = new MenuBuilder(context);
                     new SupportMenuInflater(context).inflate(R.menu.menu_chat_contextual, menu);
 
+                    boolean currentUserMessage = currentUser.getId().equals(message.getFromId());
+                    DataConversation conversation = queryResult.conversation;
+                    DataAttachment attachment = queryResult.attachment;
+                    boolean locationAttachment = attachment != null
+                            && AttachmentType.LOCATION.equals(attachment.getType());
+
                     // cannot chat with yourself, doesn't make sense to start new 1 : 1 chat with the same user either
-                    if (currentUser.getId().equals(message.getFromId())
-                            || ConversationHelper.isSingleChat(queryResult.conversation)
+                    if (currentUserMessage || ConversationHelper.isSingleChat(conversation)
                             || queryResult.messageAuthor == null) {
                         menu.removeItem(R.id.action_start_chat);
                     } else {
@@ -57,11 +66,16 @@ public class ChatContextualMenuProvider {
                         menu.findItem(R.id.action_start_chat).setTitle(title);
                     }
                     // attachment is not null, copying of attachment is not supported
-                    if (queryResult.attachment != null) {
+                    if (attachment != null) {
                         menu.removeItem(R.id.action_copy_message);
                     }
 
                     setTranslationsSubMenu(menu, message, currentUser, queryResult);
+                    
+                    if (currentUserMessage || !ConversationHelper.isTripChat(conversation)
+                            || locationAttachment) {
+                        menu.removeItem(R.id.action_flag);
+                    }
                     return menu;
                 });
     }

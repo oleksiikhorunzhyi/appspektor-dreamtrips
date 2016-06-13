@@ -10,8 +10,6 @@ import com.techery.spares.module.Injector;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public class ChatFacadeInitializer implements AppInitializer {
 
     @Inject
@@ -48,12 +46,13 @@ public class ChatFacadeInitializer implements AppInitializer {
             }
         });
 
+        emitter.addOnMessagesDeletedListener(chatFacadeManager::onMessagesDeleted);
+
         emitter.addOnSubjectChangesListener(chatFacadeManager::onSubjectChanged);
 
         emitter.addOnAvatarChangeListener(chatFacadeManager::onAvatarChanged);
 
         emitter.addInvitationListener((conversationId) -> {
-            Timber.i("Chat invited :: chat=%s", conversationId);
             chatFacadeManager.onChatInvited(conversationId);
         });
 

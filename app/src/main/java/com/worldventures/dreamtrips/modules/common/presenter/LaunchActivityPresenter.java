@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.GetLocaleQuery;
@@ -71,6 +72,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     DtlLocationManager locationManager;
     @Inject
     GlobalConfigManager globalConfigManager;
+    @Inject
+    AuthorizedDataUpdater authorizedDataUpdater;
 
     private boolean requestInProgress = false;
 
@@ -108,10 +111,12 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     private void onLocaleSuccess(ArrayList<AvailableLocale> locales) {
         localeStorage.put(locales);
         UserSession userSession = appSessionHolder.get().isPresent() ? appSessionHolder.get().get() : null;
-        if (userSession != null && userSession.getApiToken() != null)
+        if (userSession != null && userSession.getApiToken() != null) {
             loadSettings();
-        else
+            authorizedDataUpdater.updateData(dreamSpiceManager);
+        } else {
             done();
+        }
     }
 
     private void loadSettings() {
@@ -148,7 +153,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
             UserSession userSession = appSessionHolder.get().get();
             TrackingHelper.setUserId(Integer.toString(userSession.getUser().getId()));
             activityRouter.openMain();
-            MessengerConnector.getInstance().connect();
+
+            MessengerConnector.getInstance().connectAfterGlobalConfig();
         } else {
             router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())

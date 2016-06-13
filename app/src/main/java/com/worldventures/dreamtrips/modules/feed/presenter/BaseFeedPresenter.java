@@ -72,9 +72,13 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
         super.takeView(view);
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems, !noMoreFeeds);
-        } else {
-            refreshFeed();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshFeed();
     }
 
     /////////////////////////////////////

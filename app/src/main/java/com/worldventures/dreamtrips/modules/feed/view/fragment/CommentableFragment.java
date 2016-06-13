@@ -150,6 +150,8 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     private void showKeyboard() {
         recyclerView.postDelayed(() -> {
+            if (recyclerView == null || inputContainer == null || input == null) return;
+            //
             recyclerView.scrollBy(0, Integer.MAX_VALUE);
             inputContainer.setVisibility(View.VISIBLE);
             input.requestFocus();

@@ -101,7 +101,7 @@
     <string-array name="photo_dialog_items">
         <item>Take Photo</item>
         <item>Choose Photo</item>
-        <item>@string/choose_fb</item>
+        <item>Choose from Facebook</item>
     </string-array>
     <string-array name="share_dialog_items">
         <item>Facebook</item>
@@ -200,20 +200,11 @@
         <item>In six month</item>
         <item>This year</item>
         <item>Next year</item>
-        <item>@string/someday</item>
-    </string-array>
-    <string-array name="dialog_add_bucket_photo">
-        <item>@string/choose_fb</item>
-        <item>@string/choose_camera</item>
-        <item>@string/choose_gallery</item>
+        <item>Someday</item>
     </string-array>
     <string name="choose_fb">Choose from Facebook</string>
     <string name="choose_camera">Take a Photo</string>
     <string name="choose_gallery">Choose a Photo</string>
-    <string-array name="dialog_action_bucket_photo">
-        <item>@string/bucket_photo_cover</item>
-        <item>@string/bucket_photo_delete</item>
-    </string-array>
     <string name="uploading_photo">Uploading photo</string>
     <string name="bucket_photo_cover">Set as cover</string>
     <string name="bucket_photo_delete">Delete</string>
@@ -266,12 +257,6 @@
     <string name="last_sent">Last Sent</string>
     <string name="search_trips">Search Trips</string>
     <string name="search">Search</string>
-
-    <string-array name="dialog_add_bucket_photo_multiselect">
-        <item>@string/choose_fb</item>
-        <item>@string/choose_camera</item>
-        <item>@string/choose_multiselect</item>
-    </string-array>
 
     <string name="profile_update_info">Update Info</string>
     <string name="profile_zero_trip_images">Trip Images</string>
@@ -387,14 +372,6 @@
     <string name="configuration_acitve_button">Try again</string>
     <string name="configuration_failed">Configuration loading failed</string>
     <string name="email_app_choose_dialog_title">Choose Application</string>
-
-    <string name="users_who_liked_with_name_zero">@string/users_who_liked_with_first_zero</string>
-    <string name="users_who_liked_with_name_one">@string/users_who_liked_with_first_single</string>
-    <string name="users_who_liked_with_name_other">@string/users_who_liked_with_first_multiple</string>
-
-    <string name="account_who_liked_item_zero">@string/account_who_liked_with_first_zero</string>
-    <string name="account_who_liked_item_one">@string/users_who_liked_with_first_single</string>
-    <string name="account_who_liked_item_other">@string/users_who_liked_with_first_multiple</string>
 
     <string name="account_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> like this</string>
     <string name="users_who_liked_with_first_zero" formatted="false">&lt;b>%s&lt;/b> likes this</string>
@@ -640,5 +617,7 @@
 
     <string name="add_title">Add a title</string>
     <string name="flag_sent_success_msg">Content has been flagged</string>
+
+    <string name="location_name_length_message">The location name may not be greater than 255 characters.</string>
 
 </resources>

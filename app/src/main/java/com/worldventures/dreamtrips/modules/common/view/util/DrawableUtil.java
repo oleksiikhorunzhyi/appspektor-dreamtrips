@@ -42,7 +42,6 @@ public class DrawableUtil {
 
     public Pair<String, Size> compressAndRotateImage(String fileImage, int scale) {
         FileOutputStream stream = null;
-        BufferedInputStream bstream = null;
         Bitmap bitmap = null;
         try {
             BitmapFactory.Options optionsForGettingDimensions = new BitmapFactory.Options();
@@ -100,7 +99,6 @@ public class DrawableUtil {
         } finally {
             try {
                 if (bitmap != null) bitmap.recycle();
-                StreamHelper.close(bstream);
                 StreamHelper.flush(stream);
                 StreamHelper.close(stream);
             } catch (Exception e) {

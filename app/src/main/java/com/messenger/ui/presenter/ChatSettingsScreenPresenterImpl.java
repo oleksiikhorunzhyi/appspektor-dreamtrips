@@ -7,14 +7,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.messenger.delegate.ChatLeavingDelegate;
+import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.messengerservers.chat.MultiUserChat;
+import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.messengerservers.listeners.OnChatLeftListener;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.synchmechanism.ConnectionStatus;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
@@ -81,21 +81,19 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantObservable =
                 conversationsDAO.getConversationWithParticipants(conversationId)
                 .compose(new NonNullFilter<>())
-                .take(1)
                 .compose(bindViewIoToMainComposer());
 
-        conversationObservable = conversationWithParticipantObservable
-                .map(conversationWithParticipant -> conversationWithParticipant.first)
-                .replay(1)
-                .autoConnect();
-
-        participantsObservable = conversationWithParticipantObservable
-                .map(conversationWithParticipant -> conversationWithParticipant.second)
-                .replay(1)
-                .autoConnect();
-
         conversationWithParticipantObservable
-                .subscribe(conversation -> onConversationLoaded(conversation.first, conversation.second));
+                .subscribe(conversation -> onConversationChanged(conversation.first, conversation.second));
+
+        Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantReplayObservable =
+                conversationWithParticipantObservable.take(1).replay(1).autoConnect();
+
+        conversationObservable = conversationWithParticipantReplayObservable
+                .map(conversationWithParticipant -> conversationWithParticipant.first);
+
+        participantsObservable = conversationWithParticipantReplayObservable
+                .map(conversationWithParticipant -> conversationWithParticipant.second);
     }
 
     @Override
@@ -116,7 +114,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         }
     }
 
-    protected void onConversationLoaded(DataConversation conversation, List<DataUser> participants) {
+    protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
         ChatSettingsScreen screen = getView();
         screen.prepareViewForOwner(isUserOwner(conversation));
         screen.setConversation(conversation);
@@ -178,7 +176,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     @Override
     public void onLeaveButtonClick() {
-        if (currentConnectivityStatus != ConnectionStatus.CONNECTED) return;
+        if (currentConnectivityStatus != SyncStatus.CONNECTED) return;
 
         conversationObservable
                 .map(this::getLeaveConversationMessage)
@@ -196,14 +194,16 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
 
     @Override
     public void applyNewChatSubject(String subject) {
-        if (TextUtils.isEmpty(subject)) {
+        final String newSubject = subject == null? null : subject.trim();
+
+        if (TextUtils.isEmpty(newSubject)) {
             getView().showEmptySubjectDialog();
             return;
         }
 
-        Observable<MultiUserChat> multiUserChatObservable = facade.getChatManager()
-                .createMultiUserChatObservable(conversationId, facade.getUsername())
-                .flatMap(multiUserChat -> multiUserChat.setSubject(subject))
+        Observable<GroupChat> multiUserChatObservable = facade.getChatManager()
+                .createGroupChatObservable(conversationId, facade.getUsername())
+                .flatMap(multiUserChat -> multiUserChat.setSubject(newSubject))
                 .map(multiUserChat -> {
                     multiUserChat.close();
                     return multiUserChat;
@@ -213,7 +213,7 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                 (multiUserChat, conversation) -> conversation)
                 .compose(new IoToMainComposer<>())
                 .subscribe(conversation -> {
-                    conversation.setSubject(subject);
+                    conversation.setSubject(newSubject);
                     conversationsDAO.save(conversation);
                     getView().setConversation(conversation);
                 }, throwable -> {

@@ -2,17 +2,10 @@ package com.messenger.synchmechanism;
 
 
 import com.messenger.delegate.LoaderDelegate;
-import com.messenger.delegate.UserProcessor;
-import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataParticipant;
 import com.messenger.entities.DataUser;
-import com.messenger.storage.dao.AttachmentDAO;
-import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.MessageDAO;
-import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.UsersDAO;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import timber.log.Timber;

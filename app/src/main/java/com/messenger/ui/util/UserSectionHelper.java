@@ -2,8 +2,8 @@ package com.messenger.ui.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;

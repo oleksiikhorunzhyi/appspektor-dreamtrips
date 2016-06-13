@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- messenger-->
+
+    <string name="messenger">Messenger</string>
+    <string name="chat">Συνομιλία</string>
+
+    <!---->
+    <!--Conversation List -->
+    <!---->
+    <string name="conversation_list_title">Συζητήσεις</string>
+
+    <string name="conversation_list_spinner_item_all_chats">Όλες οι συνομιλίες</string>
+    <string name="conversation_list_spinner_item_group_chats">Ομαδικές συνομιλίες</string>
+
+    <string name="conversation_list_search_hint">Αναζήτηση συζητήσεων…</string>
+    <string name="conversation_list_search_edittext_hint">Αναζήτηση ομάδων και ατόμων</string>
+    <string name="conversation_list_item_last_message_text_format_you">Εσείς: %1$s</string>
+    <string name="conversation_list_item_last_message_image_format_you">Στείλατε φωτογραφία</string>
+    <string name="conversation_list_item_last_message_image">εστάλη φωτογραφία</string>
+    <string name="conversation_list_item_last_message_location_format_you">Στείλατε τοποθεσία</string>
+    <string name="conversation_list_item_last_message_location">Αποστολή τοποθεσίας</string>
+    <string name="conversation_list_last_message_date_format_yesterday">Εχθές</string>
+    <string name="conversation_list_abandoned">Κλειστό</string>
+    <string name="conversation_list_swipe_button_delete">Διαγραφή</string>
+    <string name="conversation_list_delete_dialog_message">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη συνομιλία;</string>
+    <string name="conversation_list_delete_dialog_pos_button">Διαγραφή</string>
+    <string name="conversation_list_swipe_button_more">Περισσότερα</string>
+    <string-array name="conversation_list_more_actions">
+        <item>Να σημειωθεί ως μη αναγνωσμένο</item>
+        <item>Απενεργοποίηση ειδοποιήσεων</item>
+        <item>Ακύρωση</item>
+    </string-array>
+
+
+    <!---->
+    <!--New chat-->
+    <!---->
+    <string name="new_chat_title">Νέα συνομιλία</string>
+    <string name="new_chat_toast_no_users_selected_error">Παρακαλούμε επιλέξτε κάποιους χρήστες πρώτα</string>
+    <string name="new_multi_user_chat_not_supported">Η δημιουργία ομαδικής συνομιλίας δεν υποστηρίζεται</string>
+    <string name="new_chat_error_loading_contacts">Δεν φορτώθηκαν επαφές</string>
+    <string name="new_chat_new_conversation_title_hint">Ορισμός ονόματος συζήτησης</string>
+    <string name="new_chat_chosen_contacts_header_empty">"Προσθήκη: "</string>
+    <string name="new_chat_chosen_contacts_header_contacts_list_start_value">Προσθήκη</string>
+    <string name="new_chat_list_item_section_close_friends">Στενοί φίλοι</string>
+    <string name="menu_done">Ολοκληρώθηκε</string>
+
+    <!---->
+    <!--Chat -->
+    <!---->
+    <string name="chat_subtitle_format_single_chat_online">σε σύνδεση</string>
+    <string name="chat_subtitle_format_single_chat_offline">εκτός σύνδεσης</string>
+    <string name="chat_subtitle_format_group_chat_format">%1$d μέλη, %2$d σε σύνδεση</string>
+    <string name="chat_subtitle_format_group_chat_offline">Κανένας συνδεδεμένος χρήστης </string>
+    <string name="chat_message_edittext_hint">Το μήνυμά σας</string>
+    <string name="chat_message_send_button_text">Αποστολή</string>
+    <string name="chat_error_loading">Δεν φορτώθηκε το ιστορικό της συνομιλίας</string>
+    <string name="chat_unread_messages_textview_format">Έχετε %1$d μη αναγνωσμένα μηνύματα</string>
+    <string name="chat_more_typing_users_hint_format">και %1$d άλλα</string>
+    <string name="chat_list_date_entry_today">Σήμερα</string>
+    <string name="chat_list_date_entry_yesterday">Εχθές</string>
+    <string name="chat_contextual_copy_message">Αντιγραφή</string>
+    <string name="chat_contextual_translate_message">Μετάφραση</string>
+    <string name="chat_contextual_revert_translate_message">Δείξε αρχικό</string>
+    <string name="chat_contextual_start_chat_format">Μήνυμα%1$s</string>
+    <string name="chat_contextual_flag">Σημαία</string>
+    <string name="chat_share_dialog_location">Κοινοποίηση τοποθεσίας</string>
+    <string name="chat_share_dialog_image">Κοινοποίηση εικόνας</string>
+    <string name="chat_share_dialog_cancel">Ακύρωση</string>
+    <string name="chat_could_not_share_location">Δεν μπορεί να γίνει κοινοποίηση τοποθεσίας</string>
+    <!-- flagging related -->
+    <string name="chat_flag_dialog_progress_loading_flags">Φόρτωση…</string>
+    <string name="chat_flag_dialog_reason_title">Σημαία</string>
+    <string name="chat_flag_dialog_reason_hint">Πληκτρολογήστε τον λόγο</string>
+    <string name="chat_flag_dialog_reason_positive_button">Αποδοχή</string>
+    <string name="chat_flag_dialog_reason_negative_button">Ακύρωση</string>
+    <string name="chat_flag_dialog_confirmation_title">Επιβεβαίωση</string>
+    <string name="chat_flag_dialog_confirmation_message_format">Το προσωπικό της WorldVentures θα ειδοποιηθεί για να αναθεωρήσει αυτό το μήνυμα για %1$s. Θέλετε να συνεχίσετε;</string>
+    <string name="chat_flag_dialog_confirmation_positive_button">Αποστολή</string>
+    <string name="chat_flag_dialog_confirmation_negative_button">Ακύρωση</string>
+    <string name="chat_flag_dialog_flagging_progress">Επισημαίνεται...</string>
+    <string name="chat_flag_failed">Αποτυχία επισήμανσης μηνύματος</string>
+
+    <!---->
+    <!--Chat Settings -->
+    <!---->
+    <string name="chat_settings_single_chat">Ρυθμίσεις συνομιλίας</string>
+    <string name="chat_settings_group_chat">Ρυθμίσεις Ομαδικής Συνομιλίας</string>
+    <string name="chat_settings_error_loading">Δεν φορτώθηκαν οι ρυθμίσεις συνομιλίας</string>
+    <string name="chat_settings_single_chat_online">σε σύνδεση</string>
+    <string name="chat_settings_single_chat_offline">εκτός σύνδεσης</string>
+    <string name="chat_settings_group_chat_description">%1$d μέλη, %2$d σε σύνδεση</string>
+    <string name="chat_settings_row_notifications">Ειδοποιήσεις</string>
+    <string name="chat_settings_row_shared_content">Κοινόχρηστο περιεχόμενο</string>
+    <string name="chat_settings_row_members_format">Μέλη (%1$d)</string>
+    <string name="chat_settings_row_assign_new_admin">Ορίστε νέο διαχειριστή</string>
+    <string name="chat_settings_row_clear_history">Καθαρισμός ιστορικού</string>
+    <string name="chat_settings_row_leave_chat">Αποχώρηση από τη συνομιλία</string>
+    <string name="chat_settings_row_delete_chat">Διαγραφή συνομιλίας</string>
+    <string name="chat_settings_group_chat_info_text_format">Αυτή η συνομιλία δημιουργήθηκε από %1$s στις %2$s</string>
+    <string name="chat_settings_menu_settings">Ρυθμίσεις</string>
+    <string name="chat_settings_menu_edit_chat_name">Επεξεργασία ονόματος συνομιλίας</string>
+    <string name="chat_settings_menu_edit_change_chat_image">Αλλαγή εικόνας συνομιλίας</string>
+    <string name="chat_settings_menu_edit_remove_chat_image">Μετακίνηση εικόνας συνομιλίας</string>
+    <string name="chat_settings_leave_group_chat">Είστε σίγουροι ότι θέλετε να αποσυρθείτε από αυτή τη συνομιλία;</string>
+    <string name="chat_settings_leave_group_chat_format">Είστε σίγουροι ότι θέλετε να αποσυρθείτε από%1$s τη συνομιλία;</string>
+    <string name="chat_settings_error_change_subject">Δεν μπορείτε να αλλάξετε θέμα χωρίς σύνδεση στο διαδίκτυο</string>
+    <string name="chat_settings_error_changing_avatar_subject">Δεν μπορείτε να αλλάξετε το εικονίδιο σας στη συνομιλία αν δεν είστε συνδεδεμένοι στο διαδίκτυο</string>
+    <string name="chat_settings_error_empty_subject">Παρακαλούμε εισάγετε όνομα συνομιλίας</string>
+    <!---->
+    <!--Add new members -->
+    <!---->
+    <string name="chat_add_new_members_title">Προσθέστε νέο μέλος</string>
+    <!---->
+    <!--Edit chat members -->
+    <!---->
+    <string name="edit_chat_members_title">Μέλη (%1$d)</string>
+    <string name="edit_chat_members_search_hint">Αναζήτηση μελών…</string>
+    <string name="edit_chat_members_row_button_delete">Διαγραφή</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_message">Θέλετε να διαγράψετε αυτό το χρήστη από τη συνομιλία;</string>
+    <string name="edit_chat_dialog_confirm_user_deletion_button_delete">Διαγραφή</string>
+    <string name="edit_chat_members_admin_section">Διαχειριστής</string>
+    <string name="edit_chat_members_host_section">Υποστήριξη στον Προορισμό</string>
+    <!--Messenger notifications-->
+    <string name="push_unsupported_message">Για να δείτε το επισυναπτόμενο, αναβαθμήστε την Εφαρμογή DreamTrips με την τελευταία έκδοση</string>
+    <!---->
+    <!---->
+    <!--Messenger misc -->
+    <!---->
+    <string name="subject">Θέμα</string>
+    <string name="change_subject">Εισάγετε όνομα συνομιλίας</string>
+    <string name="sent_photo">εστάλη φωτογραφία</string>
+    <string name="sent_location">αποστολή τοποθεσίας</string>
+    <string name="unread_conversation">Συζητήσεις</string>
+
+    <string name="disconnected_overlay_disconnected_message">Η σύνδεση χάθηκε</string>
+    <string name="disconnected_overlay_connecting_message">Σύνδεση…</string>
+
+    <string name="warning_no_internet_connection">Δεν υπάρχει σύνδεση στο διαδίκτυο</string>
+
+    <string name="chat_update_proposition"><![CDATA[Για να δείτε το επισυναπτόμενο, αναβαθμήστε την Εφαρμογή DreamTrips με την τελευταία έκδοση <a href=\"https://play.google.com/store/apps/details?id=com.worldventures.dreamtrips\">εδώ</a>]]></string>
+
+    <string name="translate_from">Μεταφράστηκε</string>
+    <string name="translate_error">Σφάλμα μετάφρασης</string>
+    <!-- messenger ends-->
+</resources>

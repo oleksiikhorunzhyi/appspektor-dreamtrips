@@ -3,13 +3,13 @@ package com.messenger.ui.presenter;
 import android.database.Cursor;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.view.chat.ChatScreen;
 import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
+import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
 
@@ -17,8 +17,6 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
     boolean sendMessage(String message);
 
     void retrySendMessage(DataMessage message);
-
-    DataUser getUser();
 
     void onNextPageReached();
 
@@ -34,6 +32,8 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onImagesPicked(List<BasePhotoPickerModel> images);
 
+    void onMapClicked(LatLng latLng);
+
     void onShowContextualMenu(DataMessage message);
 
     void onCopyMessageTextToClipboard(DataMessage message);
@@ -44,7 +44,6 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
 
     void onStartNewChatForMessageOwner(DataMessage message);
 
-    void onMapClicked(LatLng latLng);
-
+    void onFlagMessageAttempt(DataMessage message);
 }
 

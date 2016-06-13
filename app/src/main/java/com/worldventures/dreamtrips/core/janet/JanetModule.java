@@ -8,6 +8,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
+import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 
 import java.net.CookieManager;
 import java.util.Set;
@@ -20,7 +22,6 @@ import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.ActionService;
 import io.techery.janet.CommandActionService;
-import io.techery.janet.HttpActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.http.HttpClient;
 
@@ -31,16 +32,19 @@ public class JanetModule {
     public static final String JANET_QUALIFIER = "JANET";
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionService provideCommandService(@ForApplication Context context) {
-        return new DaggerCommandServiceWrapper(new CommandActionService(), context);
+    ActionService provideCommandService() {
+        return new CommandActionService();
     }
 
     @Singleton
     @Provides
-    Janet provideJanet(Set<ActionService> services) {
+    Janet provideJanet(Set<ActionService> services, @ForApplication Context context) {
         Janet.Builder builder = new Janet.Builder();
         for (ActionService service : services) {
-            builder.addService(new TimberServiceWrapper(service));
+            service = new DaggerActionServiceWrapper(service, context);
+            service = new TimberServiceWrapper(service);
+            service = new CacheResultWrapper(service);
+            builder.addService(service);
         }
         return builder.build();
     }
@@ -73,8 +77,8 @@ public class JanetModule {
     }
 
     @Provides(type = Provides.Type.SET)
-    ActionService provideHttpUploaderService(@ForApplication Context appContext,  HttpClient httpClient, Gson gson) {
-        return new AuthHttpServiceWrapper(new HttpActionService(BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson)), appContext );
+    ActionService provideHttpUploaderService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
+        return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson));
     }
 
 }

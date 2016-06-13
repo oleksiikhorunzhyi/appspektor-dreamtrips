@@ -4,12 +4,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.ui.adapter.holder.conversation.BaseConversationViewHolder;
-import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.ConversationUIHelper;
 
 public abstract class BaseGroupConversationViewHolder extends BaseConversationViewHolder {
-
-    private ConversationHelper conversationHelper = new ConversationHelper();
 
     public BaseGroupConversationViewHolder(View itemView) {
         super(itemView);
@@ -22,6 +19,6 @@ public abstract class BaseGroupConversationViewHolder extends BaseConversationVi
         if (TextUtils.isEmpty(conversationName)) {
             conversationName = participantsList;
         }
-        conversationHelper.setGroupChatTitle(nameTextView, conversationName, participantsCount);
+        ConversationUIHelper.setGroupChatTitle(nameTextView, conversationName, participantsCount);
     }
 }

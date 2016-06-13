@@ -5,33 +5,45 @@ import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.chat.SingleUserChat;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
-import com.messenger.messengerservers.xmpp.stanzas.StatusMessageStanza;
+import com.messenger.messengerservers.xmpp.stanzas.outgoing.StatusMessageStanza;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 
-import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.chat.Chat;
 import org.jivesoftware.smack.chat.ChatManager;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 
-public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
+import rx.Observable;
 
-    @Nullable
-    private Chat chat;
+public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
     private final String companionId;
 
     public XmppSingleUserChat(final XmppServerFacade facade, @Nullable String companionId, @Nullable String roomId) {
         super(facade, roomId);
         this.companionId = companionId;
-        connectToFacade();
+    }
+
+    protected Observable<Chat> provideChatObservable() {
+        return facade.getConnectionObservable()
+                .map(this::createChat);
     }
 
     @Override
-    protected void trySendSmackMessage(org.jivesoftware.smack.packet.Message message) throws SmackException.NotConnectedException {
-        if (chat == null) throw new SmackException.NotConnectedException();
-
-        chat.sendMessage(message);
+    protected Observable<Void> trySendSmackMessage(Message message) {
+        return provideChatObservable()
+                .take(1)
+                .flatMap(chat -> Observable.create(subscriber -> {
+                    try {
+                        chat.sendMessage(message);
+                        subscriber.onNext(null);
+                        subscriber.onCompleted();
+                    } catch (SmackException.NotConnectedException e) {
+                        subscriber.onError(e);
+                    }
+                }));
     }
 
     @Override
@@ -40,7 +52,7 @@ public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
                 JidCreatorHelper.obtainUserJid(companionId), Type.chat);
     }
 
-    public void setConnection(@NonNull AbstractXMPPConnection connection) {
+    private Chat createChat(@NonNull XMPPConnection connection) {
         String userJid = facade.getUsername();
         String companionJid = null;
 
@@ -53,7 +65,7 @@ public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
         }
 
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
-        chat = chatManager.getThreadChat(roomId);
+        Chat chat = chatManager.getThreadChat(roomId);
 
         if (chat == null) {
             if (companionJid == null) {
@@ -61,6 +73,8 @@ public class XmppSingleUserChat extends XmppChat implements SingleUserChat {
             }
             chat = chatManager.createChat(companionJid, roomId, null);
         }
+
+        return chat;
     }
 
 }

@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
-import com.worldventures.dreamtrips.core.session.AuthorizedDataUpdater;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
@@ -63,8 +62,6 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject
     @Global
     protected EventBus eventBus;
-    @Inject
-    AuthorizedDataUpdater authorizedDataUpdater;
     @Inject
     DTErrorHandler dtErrorHandler;
     @Inject
@@ -188,7 +185,6 @@ public class DreamSpiceManager extends SpiceManager {
             loginResponse.setSession(session);
             handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
                     username, userPassword);
-            authorizedDataUpdater.updateData(this);
             onLoginSuccess.result(loginResponse, null);
         }, error -> {
             onLoginSuccess.result(null, getParcedException(request, error));

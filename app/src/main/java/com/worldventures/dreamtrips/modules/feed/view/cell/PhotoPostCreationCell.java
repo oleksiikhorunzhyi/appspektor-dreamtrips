@@ -106,7 +106,6 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
                     showTagViewGroup();
                 }
                 invalidateAddTagBtn();
-
             });
 
             PipelineDraweeController draweeController = GraphicUtils.provideFrescoResizingController(
@@ -185,6 +184,7 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     }
 
     private void showError() {
+        fabProgress.setVisibility(View.VISIBLE);
         fabProgress.showProgress(false);
         fabProgress.setIcon(R.drawable.ic_upload_retry, R.drawable.ic_upload_retry);
         int color = itemView.getResources().getColor(R.color.bucket_red);

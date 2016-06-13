@@ -74,7 +74,7 @@ public class EditPhotoPresenter extends ActionEntityPresenter<EditPhotoPresenter
     }
 
     private boolean isLocationChanged() {
-        return photo.getLocation().getLat() != location.getLat() || photo.getLocation().getLng() != location.getLng();
+        return !photo.getLocation().equals(location);
     }
 
     private boolean isTagsChanged() {

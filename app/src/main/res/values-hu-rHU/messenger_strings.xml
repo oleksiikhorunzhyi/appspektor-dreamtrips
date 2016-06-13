@@ -67,7 +67,7 @@
     <string name="chat_contextual_flag">Jelölés</string>
     <string name="chat_share_dialog_location">Helyzet megosztása</string>
     <string name="chat_share_dialog_image">Kép megosztása</string>
-    <string name="chat_share_dialog_cancel">Törlés</string>
+    <string name="chat_share_dialog_cancel">Mégse</string>
     <string name="chat_could_not_share_location">Nem sikerült megosztani a helyzetet</string>
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Betöltés…</string>

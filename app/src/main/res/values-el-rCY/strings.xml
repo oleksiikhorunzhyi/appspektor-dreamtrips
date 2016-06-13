@@ -4,14 +4,14 @@
     <string name="web_title">Web</string>
     <string name="new_photo">Web</string>
     <string name="detailed_trip">Λεπτομερές ταξίδι</string>
-    <string name="membership">ΣΥΝΔΡΟΜΗ</string>
+    <string name="membership">Συνδρομή</string>
     <string name="trip_images">Εικόνες από Ταξίδια</string>
     <string name="bucket_list">Καλάθι Αγορών</string>
     <string name="dtl">Ανακαλύψτε</string>
     <string name="my_profile">Το προφίλ μου</string>
     <string name="terms">Όροι</string>
     <string name="terms_of_service">Όροι υπηρεσίας</string>
-    <string name="faq">Σ.Ε</string>
+    <string name="faq">Συχνές ερωτήσεις</string>
     <string name="privacy">Πολιτική Προστασίας Προσωπικών Δεδομένων</string>
     <string name="cookie">Πολιτική για τα Cookies</string>
     <string name="action_settings">Ρυθμίσεις</string>
@@ -49,7 +49,7 @@
     <string name="user_password_hint">Κωδικός πρόσβασης μέλους της WV</string>
     <string name="type_your_reason">Πληκτρολογήστε τον λόγο</string>
     <string name="filter_region_header">ΠΕΡΙΟΧΗ</string>
-    <string name="filter_duration_header">ΔΙΑΡΚΕΙΑ (ΝΥΧΤΕΣ)</string>
+    <string name="filter_duration_header">ΔΙΑΡΚΕΙΑ (ΔΙΑΝΥΚΤΕΡΕΥΣΕΙΣ)</string>
     <string name="filter_price_header">ΤΙΜΗ ($)</string>
     <string name="filter_select_all">ΕΠΙΛΟΓΗ ΟΛΩΝ</string>
     <string name="filter_show_sold_out">ΕΜΦΑΝΙΣΗ SOLD OUT ΤΑΞΙΔΙΩΝ</string>
@@ -242,7 +242,7 @@
 
     <string name="invite_add_last_name">Επώνυμο</string>
     <string name="preview_template">Προεπισκόπηση φόρμας</string>
-    <string name="selected">επιλέχθηκαν %1$d</string>
+    <string name="selected">Επιλέχθηκαν %1$d</string>
     <string name="error_personal_message_is_empty">Το προσωπικό μήνυμα δεν πρέπει να είναι κενό</string>
     <string name="email_is_not_valid">Το Email δεν είναι έγκυρο</string>
     <string name="invitation_deselect_all">Αποεπιλογή όλων</string>
@@ -418,7 +418,7 @@
     <string name="notifaction_new">Νέο</string>
     <string name="notifaction_older">Παλαιότερο</string>
 
-    <string name="all">Όλα</string>
+    <string name="all">ΟΛΟΙ</string>
     <string name="you">Εσείς</string>
 
     <string name="likes_count_one">%1$d Μου αρέσει</string>
@@ -454,7 +454,7 @@
     <string name="camera">Κάμερα</string>
     <string name="add_from_facebook">Προσθήκη από το Facebook</string>
 
-    <string name="photos_selected">επιλέχθηκαν %1$d</string>
+    <string name="photos_selected">Επιλέχθηκαν %1$d</string>
 
     <string name="no_friends">Δεν έχετε ακόμα φίλους σε αυτό τον κατάλογο</string>
     <string name="feed_add_friends">Προσθήκη φίλων</string>
@@ -467,7 +467,7 @@
     <string name="no_mutual_friends">Δεν έχετε κοινούς φίλους</string>
 
     <string name="photo_limitation_message">Επιλέξτε έως %1$d φωτογραφίες</string>
-    <string name="pending">Σε εκκρεμότητα…</string>
+    <string name="pending">Σε εκκρεμότητα...</string>
 
     <string name="back">Πίσω</string>
     <string name="logout_component">Αποσύνδεση</string>

@@ -2,7 +2,7 @@
 <resources>
     <!-- messenger-->
 
-    <string name="messenger">Πρόγραμμα ανταλλαγής άμεσων μηνυμάτων</string>
+    <string name="messenger">Messenger</string>
     <string name="chat">Συνομιλία</string>
 
     <!---->

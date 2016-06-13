@@ -16,6 +16,7 @@ import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
@@ -134,13 +135,15 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         TrackingHelper.leaveConversation();
         chatGroupCommandsInteractor.getLeaveChatPipe()
                 .createObservableResult(new LeaveChatCommand(conversationId))
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(command -> {
                     Flow flow = Flow.get(getContext());
-                    History newHistory = flow.getHistory()
-                            .buildUpon().clear().push(ConversationsPath.MASTER_PATH)
+                    History history = flow.getHistory()
+                            .buildUpon().clear()
+                            .push(ConversationsPath.MASTER_PATH)
+                            .push(new ChatPath(command.getConversationId()))
                             .build();
-                    flow.setHistory(newHistory, Flow.Direction.FORWARD);
+                    flow.setHistory(history, Flow.Direction.BACKWARD);
                 }, e -> Timber.e(e, "Can't leave chat"));
     }
 

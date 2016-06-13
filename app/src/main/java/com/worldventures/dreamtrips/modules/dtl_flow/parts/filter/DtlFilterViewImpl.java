@@ -14,7 +14,6 @@ import com.hannesdorfmann.mosby.mvp.layout.MvpLinearLayout;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.module.Injector;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.selectable.MultiSelectionManager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.SelectableHeaderItem;
@@ -24,7 +23,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterD
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlFilterAttributeCell;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.rx.DrawerToggleObservable;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DtlFilterAttributeHeaderCell;
 
 import java.util.List;
@@ -60,16 +58,6 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
         init(context);
     }
 
-    public DtlFilterViewImpl(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    public DtlFilterViewImpl(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context);
-    }
-
     @Override
     public DtlFilterPresenter createPresenter() {
         return new DtlFilterPresenterImpl();
@@ -79,20 +67,9 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
         ButterKnife.inject(this, LayoutInflater.from(context).inflate(R.layout.fragment_dtl_filters, this, true));
     }
 
-    private void connectDrawerListener() {
-        DrawerToggleObservable.create(ButterKnife.<DrawerLayout>findById(getRootView(), R.id.drawer))
-                .compose(RxLifecycle.bindView(this))
-                .subscribe(this::onDrawerToggle);
-    }
-
-    private void onDrawerToggle(int gravity) {
-        getPresenter().onDrawerToggle(gravity == Gravity.RIGHT);
-    }
-
     public void setInjector(Injector injector) {
         this.injector = injector;
         attachAdapter();
-        connectDrawerListener();
     }
 
     private void attachAdapter() {
@@ -104,7 +81,7 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
         selectionManager = new MultiSelectionManager(recyclerView);
         selectionManager.setEnabled(true);
         //
-        recyclerView.setLayoutManager(provideLayoutManager());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(selectionManager.provideWrappedAdapter(baseDelegateAdapter));
     }
 
@@ -153,18 +130,13 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
     }
 
     @Override
-    public void attachFilterData(DtlFilterData filterData) {
-        if (filterData.hasAmenities()) setupAttributesHeader(filterData);
-        syncUi(filterData);
-    }
-
-    @Override
     public void syncUi(DtlFilterData filterData) {
         rangeBarDistance.setRangePinsByValue(10f, (float) filterData.getMaxDistance());
         rangeBarPrice.setRangePinsByValue(filterData.getMinPrice(), filterData.getMaxPrice());
         distanceCaption.setText(getContext().getString(R.string.dtl_distance,
                 getContext().getString(filterData.getDistanceType() == DistanceType.MILES ?
                         R.string.mi : R.string.km)));
+        if (filterData.hasAmenities()) setupAttributesHeader(filterData);
         updateSelection(filterData);
         drawHeaderSelection();
     }
@@ -192,9 +164,5 @@ public class DtlFilterViewImpl extends MvpLinearLayout<FilterView, DtlFilterPres
     private void setupAttributesHeader(DtlFilterData filterData) {
         baseDelegateAdapter.clearAndUpdateItems(filterData.getAmenities());
         baseDelegateAdapter.addItem(0, new SelectableHeaderItem(getContext().getString(R.string.dtl_amenities), true));
-    }
-
-    protected RecyclerView.LayoutManager provideLayoutManager() {
-        return new LinearLayoutManager(getContext());
     }
 }

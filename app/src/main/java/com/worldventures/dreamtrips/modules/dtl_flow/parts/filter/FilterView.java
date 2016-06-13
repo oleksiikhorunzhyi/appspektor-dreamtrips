@@ -18,13 +18,6 @@ public interface FilterView extends MvpView{
     DtlFilterParameters getFilterParameters();
 
     /**
-     * Fully update UI state with given filter parameters, <br />
-     * including (re-)adding amenities to filter
-     * @param filterData dataSet to map to UI
-     */
-    void attachFilterData(DtlFilterData filterData);
-
-    /**
      * Update UI state with given filter parameters
      * @param filterData dataSet to map to UI
      */

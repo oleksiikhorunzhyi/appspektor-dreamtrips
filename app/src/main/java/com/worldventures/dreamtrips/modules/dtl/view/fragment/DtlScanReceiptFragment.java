@@ -88,7 +88,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
         dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
         //
         amountInput.addValidator(new AmountValidator(getString(R.string.dtl_amount_invalid)));
-        scanReceiptNode.setText(Html.fromHtml(getString(R.string.dtl_receipt_note)));
+        scanReceiptNode.setText(Html.fromHtml(getString(R.string.dtl_verify_amount_note)));
         progressDialog = ProgressDialogFragment.create();
     }
 

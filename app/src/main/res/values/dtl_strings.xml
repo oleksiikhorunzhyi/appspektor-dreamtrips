@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance, %s</string>
-    <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
     <string name="dtl_receipt_scan">Capture Receipt</string>
     <string name="dtl_receipt_rescan">Recapture</string>
     <string name="dtl_receipt_verify">Verify Amount</string>

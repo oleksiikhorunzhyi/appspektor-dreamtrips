@@ -291,12 +291,12 @@ public class MasterToolbarPresenterImpl
         getView().setItems(locations);
     }
 
+    // TODO :: Move map to selected location when new location selected
     @Override
     public void locationSelected(DtlExternalLocation dtlExternalLocation) {
 //        trackLocationSelection(location); // TODO :: 4/20/16 new analytics
         locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlExternalLocation));
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates().asAndroidLocation()));
-        navigateAway();
     }
 }

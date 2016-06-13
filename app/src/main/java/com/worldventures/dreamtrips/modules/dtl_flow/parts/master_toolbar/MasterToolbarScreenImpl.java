@@ -159,10 +159,7 @@ public class MasterToolbarScreenImpl
 
     protected void onPopupVisibilityChange(boolean visible) {
         if (visible) popupWindow.showAsDropDown(toolbar.getLocationSearchInput());
-        else if (popupWindow.isShowing()){
-            hideNearMeButton();
-            popupWindow.dismiss();
-        }
+        else if (popupWindow.isShowing()) popupWindow.dismiss();
     }
 
     private void setupRecyclerView() {

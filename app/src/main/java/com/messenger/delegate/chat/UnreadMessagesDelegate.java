@@ -50,7 +50,6 @@ public class UnreadMessagesDelegate {
         if (lastMessage.getStatus() == MessageStatus.READ) return;
         conversationObservable
                 .take(1)
-                .filter(conversation -> conversation.getUnreadMessageCount() > 0)
                 .flatMap(conversation -> chatObservable
                         .filter(chat -> ConversationHelper.isPresent(conversation)))
                 .flatMap(chat -> chat.sendReadStatus(lastMessage.getId()))

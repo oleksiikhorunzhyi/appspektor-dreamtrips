@@ -136,7 +136,6 @@ public class MasterToolbarScreenImpl
         searchContentView = LayoutInflater.from(getContext()).inflate(R.layout.view_dtl_location_search, null);
         searchContentView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         //
-        popupWindow = new PopupWindow(searchContentView, searchContentView.getMeasuredWidth(), WindowManager.LayoutParams.MATCH_PARENT);
         popupWindow = new PopupWindow(searchContentView, searchContentView.getMeasuredWidth(), WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
         popupWindow.setBackgroundDrawable(new ColorDrawable());

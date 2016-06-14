@@ -44,11 +44,11 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
                 : getModelObject().getAvailabilityDates().toString());
         price.setText(getModelObject().getPrice().toString());
         if (getModelObject().isFeatured()) {
-            mark.setBackgroundColor(itemView.getResources().getColor(R.color.bucket_blue, null));
+            mark.setBackgroundColor(itemView.getResources().getColor(R.color.bucket_blue));
             mark.setText(R.string.featured_trip);
             mark.setVisibility(View.VISIBLE);
         } else if (getModelObject().isSoldOut()) {
-            mark.setBackgroundColor(itemView.getResources().getColor(R.color.bucket_red, null));
+            mark.setBackgroundColor(itemView.getResources().getColor(R.color.bucket_red));
             mark.setText(R.string.sold_out_trip);
             mark.setVisibility(View.VISIBLE);
         } else {

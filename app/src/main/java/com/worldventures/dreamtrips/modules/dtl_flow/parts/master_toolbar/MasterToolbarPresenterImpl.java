@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Pair;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -24,7 +23,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlNearbyLocation
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlSearchLocationAction;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePresenterImpl;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsPath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +31,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 
-import flow.Flow;
-import flow.History;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -92,18 +87,17 @@ public class MasterToolbarPresenterImpl
         super.onAttachedToWindow();
         apiErrorPresenter.setView(getView());
         //
-        bindToolbarTitleUpdates();
+        bindToolbarLocationCaptionUpdates();
         connectFilterDataChanges();
-        //
         //
         tryHideNearMeButton();
         // remember this observable - we will start listening to search below only after this fires
-        Observable<DtlLocation> locationObservable = updateToolbarTitle();
+        updateToolbarTitles();
         //
         connectNearbyLocations();
         connectLocationsSearch();
         connectLocationDelegateNoFallback();
-        connectToolbarLocationSearch(locationObservable.take(1));
+        connectToolbarLocationSearchInput();
         //
         filterInteractor.filterDataPipe().observeSuccessWithReplay()
                 .first()
@@ -132,47 +126,34 @@ public class MasterToolbarPresenterImpl
         filterInteractor.filterDataPipe().send(DtlFilterDataAction.applySearch(query));
     }
 
-    private void connectToolbarLocationSearch(Observable<DtlLocation> dtlLocationObservable) {
+    private void connectToolbarLocationSearchInput() {
         getView().provideLocationSearchObservable()
-                .skipUntil(dtlLocationObservable)
+                .filter(dtlLocationCommand -> getView().isSearchPopupShowing())
                 .debounce(250L, TimeUnit.MILLISECONDS)
                 .compose(bindView())
-                .subscribe(this::search);
+                .subscribe(this::locationSearch);
     }
 
-    private Observable<DtlLocation> updateToolbarTitle() {
-        Observable<DtlLocation> dtlLocationChanges =
-                locationInteractor.locationPipe().observeSuccessWithReplay()
-                        .first()
-                        .map(DtlLocationCommand::getResult)
-                        .compose(bindViewIoToMainComposer());
-        Observable.combineLatest(
-                // TODO :: 12.06.16 maybe merge this with bindToolbarTitleUpdates method below
-                // so far seems like it might be not safe to use pipe's observeSuccessWithReplay()
-                // observable in combineLatest
-                dtlLocationChanges,
-                filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                        .first()
-                        .map(DtlFilterDataAction::getResult)
-                        .map(DtlFilterData::getSearchQuery),
-                Pair::new)
-                .take(1)
-                .subscribe(pair -> {
-                    getView().updateToolbarTitle(pair.first, pair.second);
-                });
-        return dtlLocationChanges;
-    }
-
-    private void bindToolbarTitleUpdates() {
-        Observable.combineLatest(
-                locationInteractor.locationPipe().observeSuccess()
-                        .map(DtlLocationCommand::getResult),
-                filterInteractor.filterDataPipe().observeSuccess()
-                        .map(DtlFilterDataAction::getResult)
-                        .map(DtlFilterData::getSearchQuery),
-                Pair::new)
+    private void updateToolbarTitles() {
+        locationInteractor.locationPipe().observeSuccessWithReplay()
+                .first()
+                .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
+                .subscribe(getView()::updateToolbarLocationTitle);
+        filterInteractor.filterDataPipe().observeSuccessWithReplay()
+                .first()
+                .compose(bindViewIoToMainComposer())
+                .map(DtlFilterDataAction::getResult)
+                .map(DtlFilterData::getSearchQuery)
+                .subscribe(getView()::updateToolbarSearchCaption);
+    }
+
+    private void bindToolbarLocationCaptionUpdates() {
+        locationInteractor.locationPipe().observeSuccess()
+                .filter(dtlLocationCommand -> !getView().isSearchPopupShowing())
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(getView()::updateToolbarLocationTitle);
     }
 
     private void connectLocationDelegateNoFallback() {
@@ -236,7 +217,7 @@ public class MasterToolbarPresenterImpl
         getView().setItems(action.getResult());
     }
 
-    private void search(String query) {
+    private void locationSearch(String query) {
         screenMode = DtlLocationChangePresenterImpl.ScreenMode.SEARCH;
         locationInteractor.searchLocationPipe().cancelLatest();
         locationInteractor.searchLocationPipe().send(new DtlSearchLocationAction(query.trim()));
@@ -256,7 +237,6 @@ public class MasterToolbarPresenterImpl
     public void onLocationResolutionDenied() {
         getView().hideProgress();
     }
-
 
     private void onLocationError(Throwable e) {
         if (e instanceof LocationDelegate.LocationException)

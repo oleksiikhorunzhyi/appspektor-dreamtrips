@@ -12,6 +12,10 @@ import rx.Observable;
 
 public interface DtlMerchantsScreen extends DtlScreen {
 
+    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
+
+    void updateToolbarSearchCaption(@Nullable String searchCaption);
+
     void setItems(List<DtlMerchant> dtlMerchants);
 
     void showProgress();
@@ -19,8 +23,6 @@ public interface DtlMerchantsScreen extends DtlScreen {
     void hideProgress();
 
     void toggleSelection(DtlMerchant DtlMerchant);
-
-    void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
 
     void toggleDiningFilterSwitch(boolean enabled);
 

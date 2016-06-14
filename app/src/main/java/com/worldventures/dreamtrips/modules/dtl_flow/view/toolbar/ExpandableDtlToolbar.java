@@ -187,12 +187,16 @@ public class ExpandableDtlToolbar extends DtlToolbar {
                     TextUtils.isEmpty(searchQuery) ? defaultEmptySearchCaption : searchQuery;
             if (TextUtils.isEmpty(searchQuery)) {
                 merchantSearchInput.setHint(searchQueryTitle + " " + locationTitle);
-                merchantSearchInput.setText("");
             } else {
                 merchantSearchInput.setText(prepareSpannedTopCaption(searchQueryTitle, locationTitle));
             }
         } else {
-            super.updateToolbarCaptions();
+            if (TextUtils.isEmpty(searchQuery)) {
+                merchantSearchInput.setHint(defaultEmptySearchCaption);
+            }
+            if (!merchantSearchInput.hasFocus()) merchantSearchInput.setText(searchQuery);
+            locationSearchInput.setText(locationTitle);
+            locationSearchInput.selectAll();
         }
     }
 

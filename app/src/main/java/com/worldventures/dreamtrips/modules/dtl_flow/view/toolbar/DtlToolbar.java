@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
@@ -81,18 +80,27 @@ public class DtlToolbar extends LinearLayout {
         if (TextUtils.isEmpty(searchQuery)) {
             merchantSearchInput.setHint(defaultEmptySearchCaption);
         }
-        merchantSearchInput.setText(TextUtils.isEmpty(searchQuery) ? "" : searchQuery);
         locationSearchInput.setText(locationTitle);
-        locationSearchInput.selectAll(); // TODO :: 01.06.16 ??? WHAT?
+        locationSearchInput.selectAll();
     }
 
     public AppCompatEditText getLocationSearchInput() {
         return locationSearchInput;
     }
 
-    public void setToolbarCaptions(@Nullable String searchQuery, String locationTitle) {
+    public void setCaptions(String searchQuery, String locationTitle) {
         this.searchQuery = searchQuery;
         this.locationTitle = locationTitle;
+        updateToolbarCaptions();
+    }
+
+    public void setLocationCaption(String locationTitle) {
+        this.locationTitle = locationTitle;
+        updateToolbarCaptions();
+    }
+
+    public void setSearchCaption(String searchCaption) {
+        this.searchQuery = searchCaption;
         updateToolbarCaptions();
     }
 

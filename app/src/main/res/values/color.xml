@@ -148,7 +148,7 @@
     <color name="chat_settings_divider">#e1e1e1</color>
     <color name="chat_settings_action_white_button_text_color">@color/chat_settings_row_text_view</color>
     <color name="chat_settings_action_red_button_text_color">@color/white</color>
-    <color name="chat_settings_group_info_text_view_color">#3e3d3e</color>
+    <color name="chat_settings_group_info_text_view_color">#803e3d3e</color>
     <color name="chat_settings_background">#FAFAFA</color>
 
     <!-- Chat memvers screen -->

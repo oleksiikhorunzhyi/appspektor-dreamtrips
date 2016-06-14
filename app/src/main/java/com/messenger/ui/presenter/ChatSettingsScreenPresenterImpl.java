@@ -6,6 +6,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
 import com.messenger.delegate.chat.command.LeaveChatCommand;
 import com.messenger.entities.DataConversation;
@@ -15,6 +16,7 @@ import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
@@ -76,7 +78,14 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                         .compose(bindViewIoToMainComposer());
 
         conversationWithParticipantObservable
-                .subscribe(conversation -> onConversationChanged(conversation.first, conversation.second));
+                .subscribe(conversationPair -> {
+                    DataConversation conversation = conversationPair.first;
+                    List<DataUser> participants = conversationPair.second;
+                    DataUser owner = Queryable.from(participants)
+                            .filter(user -> ConversationHelper.isOwner(conversation, user))
+                            .firstOrDefault();
+                    onConversationChanged(conversation, owner, participants);
+                });
 
         Observable<Pair<DataConversation, List<DataUser>>> conversationWithParticipantReplayObservable =
                 conversationWithParticipantObservable.take(1).replay(1).autoConnect();
@@ -106,9 +115,10 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         }
     }
 
-    protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
+    protected void onConversationChanged(DataConversation conversation, DataUser owner, List<DataUser> participants) {
         ChatSettingsScreen screen = getView();
         screen.setConversation(conversation);
+        screen.setOwner(owner);
         screen.setParticipants(conversation, participants);
     }
 
@@ -125,13 +135,15 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
         TrackingHelper.leaveConversation();
         chatGroupCommandsInteractor.getLeaveChatPipe()
                 .createObservableResult(new LeaveChatCommand(conversationId))
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(command -> {
                     Flow flow = Flow.get(getContext());
-                    History newHistory = flow.getHistory()
-                            .buildUpon().clear().push(ConversationsPath.MASTER_PATH)
+                    History history = flow.getHistory()
+                            .buildUpon().clear()
+                            .push(ConversationsPath.MASTER_PATH)
+                            .push(new ChatPath(command.getConversationId()))
                             .build();
-                    flow.setHistory(newHistory, Flow.Direction.FORWARD);
+                    flow.setHistory(history, Flow.Direction.BACKWARD);
                 }, e -> Timber.e(e, "Can't leave chat"));
     }
 
@@ -183,7 +195,6 @@ public abstract class ChatSettingsScreenPresenterImpl<C extends ChatSettingsScre
                 .subscribe(conversation -> {
                     conversation.setSubject(newSubject);
                     conversationsDAO.save(conversation);
-                    getView().setConversation(conversation);
                 }, throwable -> {
                     getView().showErrorDialog(R.string.chat_settings_error_change_subject);
                 });

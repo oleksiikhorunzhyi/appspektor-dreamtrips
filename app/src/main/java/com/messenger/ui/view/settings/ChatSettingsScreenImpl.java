@@ -50,6 +50,8 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
     ViewGroup chatSettingsRows;
     @InjectView(R.id.chat_settings_leave_chat_button)
     Button leaveChatButton;
+    @InjectView(R.id.chat_settings_group_chat_info_textview)
+    TextView infoTextView;
     @InjectView(R.id.chat_settings_toolbar)
     Toolbar toolbar;
 

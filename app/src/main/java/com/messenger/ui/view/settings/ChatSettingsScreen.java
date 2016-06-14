@@ -19,6 +19,8 @@ public interface ChatSettingsScreen extends MessengerScreen {
 
     void setConversation(@NonNull DataConversation conversation);
 
+    void setOwner(DataUser owner);
+
     void setParticipants(DataConversation conversation, List<DataUser> participants);
 
     void showSubjectDialog(String currentSubject);

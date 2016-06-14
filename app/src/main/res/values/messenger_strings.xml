@@ -106,7 +106,7 @@
     <string name="chat_settings_row_clear_history">Clear history</string>
     <string name="chat_settings_row_leave_chat">Leave chat</string>
     <string name="chat_settings_row_delete_chat">Delete chat</string>
-    <string name="chat_settings_group_chat_info_text_format">This chat was created by %1$s on %2$s</string>
+    <string name="chat_settings_group_chat_info_text_format">This group was created by %s</string>
     <string name="chat_settings_menu_settings">Settings</string>
     <string name="chat_settings_menu_edit_chat_name">Edit chat name</string>
     <string name="chat_settings_menu_edit_change_chat_image">Change chat image</string>

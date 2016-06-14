@@ -26,6 +26,6 @@ public class FullScreenFlaggingViewImpl extends FlaggingViewImpl {
     @Override
     public void showFlagsListDialog(List<Flag> flags) {
         FlagPopupMenu popupMenu = new FlagPopupMenu(getContext(), flagView);
-        popupMenu.show(flags, flag -> getPresenter().onFlagTypeChosen(flag));
+        flagView.post(() -> popupMenu.show(flags, flag -> getPresenter().onFlagTypeChosen(flag)));
     }
 }

@@ -71,8 +71,8 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
     }
 
     @Override
-    protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
-        super.onConversationChanged(conversation, participants);
+    protected void onConversationChanged(DataConversation conversation, DataUser owner, List<DataUser> participants) {
+        super.onConversationChanged(conversation, owner, participants);
         getView().setLeaveButtonVisible(ConversationHelper.isPresent(conversation)
                 && !ConversationHelper.isOwner(conversation, currentUser));
     }

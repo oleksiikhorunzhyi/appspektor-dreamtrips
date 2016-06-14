@@ -3,7 +3,6 @@ package com.messenger.ui.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 
 import com.messenger.delegate.CropImageDelegate;
@@ -16,8 +15,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
-import com.worldventures.dreamtrips.core.flow.path.AttributedPath;
-import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
@@ -27,7 +24,6 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import flow.Flow;
 import flow.History;
-import flow.path.Path;
 
 @Layout(R.layout.activity_base_messenger)
 public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> {
@@ -119,21 +115,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
     @Override
     protected MessengerActivityPresenter createPresentationModel(Bundle savedInstanceState) {
         return new MessengerActivityPresenter();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Flow
-    ///////////////////////////////////////////////////////////////////////////
-    void setNavigation(Path path) {
-        boolean enabled = false;
-        if (path instanceof AttributedPath) {
-            PathAttrs attrs = ((AttributedPath) path).getAttrs();
-            enabled = attrs.isDrawerEnabled();
-        }
-        //
-        drawerLayout.setDrawerLockMode(enabled ?
-                DrawerLayout.LOCK_MODE_UNLOCKED :
-                DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Override

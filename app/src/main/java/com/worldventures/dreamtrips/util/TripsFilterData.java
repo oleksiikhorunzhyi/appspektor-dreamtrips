@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.util;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -29,12 +30,13 @@ public class TripsFilterData implements Serializable {
     private double minPrice;
     private double maxPrice;
     private boolean showSoldOut;
-    private ArrayList<RegionModel> acceptedRegions = new ArrayList<>();
-    private ArrayList<ActivityModel> acceptedActivities = new ArrayList<>();
     private boolean showFavorites;
     private boolean showRecentlyAdded;
     private Date startDate;
     private Date endDate;
+    //
+    private ArrayList<RegionModel> allRegions = new ArrayList<>();
+    private ArrayList<ActivityModel> allParentActivities = new ArrayList<>();
 
     public Integer getMinNights() {
         return minNights <= MIN_NIGHTS ? null : minNights;
@@ -68,20 +70,38 @@ public class TripsFilterData implements Serializable {
         this.maxPrice = maxPrice;
     }
 
+    @Nullable
     public String getAcceptedRegionsIds() {
-        return TextUtils.join(",", Queryable.from(acceptedRegions).map(BaseEntity::getId).toList());
+        if (Queryable.from(allRegions).firstOrDefault(region -> !region.isChecked()) == null) {
+            return null;
+        }
+        return TextUtils.join(",", Queryable.from(allRegions).filter(RegionModel::isChecked)
+                .map(BaseEntity::getId).toList());
     }
 
-    public void setAcceptedRegions(ArrayList<RegionModel> acceptedRegions) {
-        this.acceptedRegions = acceptedRegions;
-    }
-
+    @Nullable
     public String getAcceptedActivitiesIds() {
-        return TextUtils.join(",", Queryable.from(acceptedActivities).map(BaseEntity::getId).toList());
+        if (Queryable.from(allParentActivities).firstOrDefault(activity -> !activity.isChecked()) == null) {
+            return null;
+        }
+        return TextUtils.join(",", Queryable.from(allParentActivities).filter(ActivityModel::isChecked)
+                .map(BaseEntity::getId).toList());
     }
 
-    public void setAcceptedActivities(ArrayList<ActivityModel> acceptedActivities) {
-        this.acceptedActivities = acceptedActivities;
+    public void setAllRegions(ArrayList<RegionModel> allRegions) {
+        this.allRegions = allRegions;
+    }
+
+    public void setAllParentActivities(ArrayList<ActivityModel> allParentActivities) {
+        this.allParentActivities = allParentActivities;
+    }
+
+    public ArrayList<RegionModel> getAllRegions() {
+        return allRegions;
+    }
+
+    public ArrayList<ActivityModel> getAllParentActivities() {
+        return allParentActivities;
     }
 
     public int isShowSoldOut() {
@@ -110,14 +130,6 @@ public class TripsFilterData implements Serializable {
 
     public Date getEndDate() {
         return endDate;
-    }
-
-    public ArrayList<RegionModel> getAcceptedRegions() {
-        return acceptedRegions;
-    }
-
-    public ArrayList<ActivityModel> getAcceptedActivities() {
-        return acceptedActivities;
     }
 
     public void setEndDate(Date endDate) {
@@ -153,11 +165,11 @@ public class TripsFilterData implements Serializable {
         calendar.add(Calendar.MONTH, 12);
         tripsFilterData.endDate = calendar.getTime();
 
-        tripsFilterData.acceptedRegions = new ArrayList<>();
-        tripsFilterData.acceptedRegions.addAll(getRegions(db));
+        tripsFilterData.allRegions = new ArrayList<>();
+        tripsFilterData.allRegions.addAll(getRegions(db));
 
-        tripsFilterData.acceptedActivities = new ArrayList<>();
-        tripsFilterData.acceptedActivities.addAll(getThemes(db));
+        tripsFilterData.allParentActivities = new ArrayList<>();
+        tripsFilterData.allParentActivities.addAll(getThemes(db));
 
         tripsFilterData.showFavorites = false;
         tripsFilterData.showRecentlyAdded = false;
@@ -170,7 +182,7 @@ public class TripsFilterData implements Serializable {
     }
 
     private static List<ActivityModel> getParentActivities(List<ActivityModel> activities) {
-        return Queryable.from(activities).filter(input -> input.getParentId() == 0).toList();
+        return Queryable.from(activities).filter(ActivityModel::isParent).toList();
     }
 
     private static ArrayList<ActivityModel> getThemes(SnappyRepository db) {

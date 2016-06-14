@@ -39,8 +39,6 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     @State
     ArrayList<RegionModel> regions = new ArrayList<>();
     @State
-    ArrayList<ActivityModel> activities = new ArrayList<>();
-    @State
     ArrayList<ActivityModel> parentActivities = new ArrayList<>();
 
     /**
@@ -88,13 +86,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     public void loadFilters() {
-        activities.addAll(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class));
         parentActivities.addAll(getParentActivities());
         regions.addAll(db.readList(SnappyRepository.REGIONS, RegionModel.class));
     }
 
     public void fillData() {
-        if (regions != null && activities != null) {
+        if (regions != null && parentActivities != null) {
             List<Object> data = new ArrayList<>();
             data.clear();
             data.add(dateFilterItem);
@@ -138,7 +135,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void acceptFilters() {
         eventBus.removeStickyEvent(FilterBusEvent.class);
         eventBus.postSticky(new FilterBusEvent(tripFilterData));
-        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData, regions, parentActivities));
+        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
     }
 
     public void resetFilters() {
@@ -157,36 +154,12 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         FilterBusEvent filterBusEvent = new FilterBusEvent(tripFilterData);
         eventBus.removeAllStickyEvents();
         eventBus.postSticky(filterBusEvent);
-        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData, regions, parentActivities));
+        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
     }
 
     private List<ActivityModel> getParentActivities() {
-        return Queryable.from(activities).filter(input -> input.getParentId() == 0).toList();
-    }
-
-    private ArrayList<RegionModel> getAcceptedRegions() {
-        ArrayList<RegionModel> regionsList = new ArrayList<>();
-        if (regions != null) {
-            Queryable.from(regions).filter(RegionModel::isChecked).forEachR(regionsList::add);
-        }
-
-        return regionsList;
-    }
-
-    private ArrayList<ActivityModel> getAcceptedThemes() {
-        ArrayList<ActivityModel> themesList = new ArrayList<>();
-        if (parentActivities != null) {
-            themesList = new ArrayList<>();
-            for (ActivityModel activity : parentActivities) {
-                if (activity.isChecked()) {
-                    themesList.addAll(Queryable.from(activities).filter((input) -> input.getParentId()
-                            == activity.getId()).toList());
-                    themesList.add(activity);
-                }
-            }
-        }
-
-        return themesList;
+        return Queryable.from(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class))
+                .filter(ActivityModel::isParent).toList();
     }
 
     public void onEvent(RequestFilterDataEvent event) {
@@ -227,13 +200,13 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
     public void onCheckBoxAllRegionsPressedEvent(boolean isChecked) {
         setRegionsChecked(isChecked);
-        tripFilterData.setAcceptedRegions(getAcceptedRegions());
+        tripFilterData.setAllRegions(regions);
         view.dataSetChanged();
     }
 
     public void onCheckBoxAllThemePressedEvent(boolean isChecked) {
         setThemesChecked(isChecked);
-        tripFilterData.setAcceptedActivities(getAcceptedThemes());
+        tripFilterData.setAllParentActivities(parentActivities);
         view.dataSetChanged();
     }
 
@@ -250,7 +223,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             }
         }
         themeHeaderModel.setChecked(allIsChecked);
-        tripFilterData.setAcceptedActivities(new ArrayList<>(Queryable.from(parentActivities).filter(ActivityModel::isChecked).toList()));
+        tripFilterData.setAllParentActivities(parentActivities);
         view.dataSetChanged();
     }
 
@@ -263,7 +236,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             }
         }
         regionHeaderModel.setChecked(allIsChecked);
-        tripFilterData.setAcceptedRegions(new ArrayList<>(Queryable.from(regions).filter(RegionModel::isChecked).toList()));
+        tripFilterData.setAllRegions(regions);
         view.dataSetChanged();
     }
 

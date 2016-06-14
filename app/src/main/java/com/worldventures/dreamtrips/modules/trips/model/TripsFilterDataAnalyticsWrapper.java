@@ -39,8 +39,7 @@ public class TripsFilterDataAnalyticsWrapper {
     private List<RegionModel> allRegions;
     private List<ActivityModel> allParentActivities;
 
-    public TripsFilterDataAnalyticsWrapper(@NonNull TripsFilterData tripsFilterData, @NonNull List<RegionModel> allRegions,
-                                           @NonNull List<ActivityModel> allParentActivities) {
+    public TripsFilterDataAnalyticsWrapper(@NonNull TripsFilterData tripsFilterData) {
         this.minNights = tripsFilterData.getMinNights() == null ? TripsFilterData.MIN_NIGHTS : tripsFilterData.getMinNights();
         this.maxNights = tripsFilterData.getMaxNights() == null ? TripsFilterData.MAX_NIGHTS : tripsFilterData.getMaxNights();
         this.minPrice = tripsFilterData.getMinPrice() == null ? TripsFilterData.MIN_PRICE : tripsFilterData.getMinPrice();
@@ -54,8 +53,8 @@ public class TripsFilterDataAnalyticsWrapper {
         this.isShowRecentlyAdded = tripsFilterData.isShowRecentlyAdded() == 1;
         this.isShowSoldOut = tripsFilterData.isShowSoldOut() == 1;
         //
-        this.allRegions = allRegions;
-        this.allParentActivities = allParentActivities;
+        this.allRegions = tripsFilterData.getAllRegions();
+        this.allParentActivities = tripsFilterData.getAllParentActivities();
     }
 
     public String getFilterAnalyticString() {

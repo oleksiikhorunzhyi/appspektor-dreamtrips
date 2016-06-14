@@ -119,6 +119,7 @@ public class MessengerConnector {
                         messengerServerFacade.setActive(result);
                         connectionStream.onNext(SyncStatus.CONNECTED);
                     }, e -> {
+                        disconnect();
                         Timber.e(e, "Sync failed");
                         connectionStream.onNext(SyncStatus.ERROR);
                     });

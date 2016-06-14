@@ -35,7 +35,8 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
 
     @Override
     protected void syncUIStateWithModel() {
-        cover.setImageURI(Uri.parse(getModelObject().getThumb(itemView.getResources())));
+        int coverSize = itemView.getResources().getDimensionPixelSize(R.dimen.map_trip_detail_cover_size);
+        cover.setImageURI(Uri.parse(getModelObject().getThumb(coverSize, coverSize)));
         title.setText(getModelObject().getName());
         location.setText(getModelObject().getGeoLocation().getName());
         date.setText(getModelObject().isHasMultipleDates()

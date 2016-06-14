@@ -8,8 +8,8 @@
               android:orientation="horizontal">
 
     <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="match_parent">
+        android:layout_width="@dimen/map_trip_detail_cover_size"
+        android:layout_height="@dimen/map_trip_detail_cover_size">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/trip_cover"

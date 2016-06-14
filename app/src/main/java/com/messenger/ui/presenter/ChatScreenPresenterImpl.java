@@ -206,10 +206,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void conversationLoaded(DataConversation conversation, List<DataUser> participants) {
+        ChatScreen screen = getView();
         //noinspection all
-        getView().setTitle(conversation, participants);
-        getView().enableInput(ConversationHelper.isPresent(conversation));
-        getView().removeAllTypingUsers();
+        screen.setTitle(conversation, participants);
+        boolean conversationIsPresent = ConversationHelper.isPresent(conversation);
+        screen.enableInput(conversationIsPresent);
+        if (!conversationIsPresent) {
+            hidePhotoPicker();
+        }
+        screen.removeAllTypingUsers();
         enableUnreadMessagesUi(conversation);
     }
 

@@ -47,7 +47,8 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
                         Observable.fromCallable(() -> createChat(connection)));
     }
 
-    private MultiUserChat createChat(XMPPConnection connection) throws ProtocolException {
+    private MultiUserChat createChat(XMPPConnection connection)
+            throws ProtocolException, AccessConversationDeniedException {
         String jid = JidCreatorHelper.obtainGroupJid(roomId);
         MultiUserChat chat = MultiUserChatManager
                 .getInstanceFor(connection).getMultiUserChat(jid);

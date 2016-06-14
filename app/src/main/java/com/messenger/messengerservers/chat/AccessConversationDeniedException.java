@@ -1,4 +1,4 @@
 package com.messenger.messengerservers.chat;
 
-public class AccessConversationDeniedException extends IllegalStateException {
+public class AccessConversationDeniedException extends Exception {
 }

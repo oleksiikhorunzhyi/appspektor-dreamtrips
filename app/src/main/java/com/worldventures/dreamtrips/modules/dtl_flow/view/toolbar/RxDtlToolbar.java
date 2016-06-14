@@ -92,6 +92,8 @@ public class RxDtlToolbar {
     /**
      * Create an observable of character sequences for text changes on {@code view}.
      * <p>
+     * <em>Note:</em> reacts only when text changes and view has focus.
+     * <p>
      * <em>Warning:</em> Values emitted by this observable are <b>mutable</b> and owned by the host
      * {@code TextView} and thus are <b>not safe</b> to cache or delay reading (such as by observing
      * on a different thread). If you want to cache or delay reading the items emitted then you must
@@ -108,12 +110,15 @@ public class RxDtlToolbar {
     public static Observable<String> merchantSearchTextChanges(@NonNull DtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
-        return RxTextView.textChanges(dtlToolbar.getMerchantSearchView())
-                .map(CharSequence::toString);
+        return RxTextView.textChangeEvents(dtlToolbar.getMerchantSearchView())
+                .filter(textViewTextChangeEvent -> textViewTextChangeEvent.view().hasFocus())
+                .map(textViewTextChangeEvent -> textViewTextChangeEvent.text().toString());
     }
 
     /**
      * Create an observable of character sequences for text changes on {@code view}.
+     * <p>
+     * <em>Note:</em> reacts only when text changes and view has focus.
      * <p>
      * <em>Warning:</em> Values emitted by this observable are <b>mutable</b> and owned by the host
      * {@code TextView} and thus are <b>not safe</b> to cache or delay reading (such as by observing
@@ -131,8 +136,9 @@ public class RxDtlToolbar {
     public static Observable<String> locationSearchTextChanges(@NonNull DtlToolbar dtlToolbar) {
         checkNotNull(dtlToolbar, "dtlToolbar == null");
         checkNotNull(dtlToolbar.getMerchantSearchView(), "view == null");
-        return RxTextView.textChanges(dtlToolbar.getLocationSearchView())
-                .map(CharSequence::toString);
+        return RxTextView.textChangeEvents(dtlToolbar.getLocationSearchView())
+                .filter(textViewTextChangeEvent -> textViewTextChangeEvent.view().hasFocus())
+                .map(textViewTextChangeEvent -> textViewTextChangeEvent.text().toString());
     }
 
     /**

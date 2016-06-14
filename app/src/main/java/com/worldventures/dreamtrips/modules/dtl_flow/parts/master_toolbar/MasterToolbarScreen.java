@@ -13,7 +13,9 @@ import rx.Observable;
 
 public interface MasterToolbarScreen extends DtlScreen {
 
-    void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String appliedSearchQuery);
+    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
+
+    void updateToolbarSearchCaption(@Nullable String searchCaption);
 
     void toggleDiningFilterSwitch(boolean enabled);
 

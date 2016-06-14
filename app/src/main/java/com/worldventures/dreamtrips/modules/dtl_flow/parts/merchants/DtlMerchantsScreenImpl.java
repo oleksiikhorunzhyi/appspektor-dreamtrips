@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantCellDelegate;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
@@ -109,22 +110,16 @@ public class DtlMerchantsScreenImpl
     }
 
     @Override
-    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
-                                   @Nullable String actualSearchQuery) {
-        if (dtlLocation == null || dtlToolbar == null) return;
-        switch (dtlLocation.getLocationSourceType()) {
-            case NEAR_ME:
-            case EXTERNAL:
-                dtlToolbar.setToolbarCaptions(actualSearchQuery, dtlLocation.getLongName());
-                break;
-            case FROM_MAP:
-                String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
-                        getResources().getString(R.string.dtl_nearby_caption_empty) :
-                        getResources().getString(R.string.dtl_nearby_caption_format,
-                                dtlLocation.getLongName());
-                dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
-                break;
-        }
+    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
+        if (dtlToolbar == null) return;
+        dtlToolbar.setLocationCaption(DtlToolbarHelper
+                .provideLocationCaption(getResources(), dtlLocation));
+    }
+
+    @Override
+    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
+        if (dtlToolbar == null) return;
+        dtlToolbar.setSearchCaption(searchCaption);
     }
 
     @Override

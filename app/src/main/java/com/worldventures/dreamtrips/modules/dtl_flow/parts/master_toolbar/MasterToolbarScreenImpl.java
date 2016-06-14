@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDec
 import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.ui.view.cell.CellDelegate;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
@@ -32,6 +34,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeade
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
 import java.util.List;
@@ -87,10 +90,6 @@ public class MasterToolbarScreenImpl
                 .skipWhile(TextUtils::isEmpty)
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(getPresenter()::applySearch);
-        RxDtlToolbar.locationInputFocusChanges(toolbar)
-                .skip(1)
-                .compose(RxLifecycle.bindView(this))
-                .subscribe(aBoolean -> informUser("TODO show location change"));
         RxDtlToolbar.filterButtonClicks(toolbar)
                 .compose(RxLifecycle.bindView(this))
                 .subscribe(aVoid -> ((FlowActivity) getActivity()).openRightDrawer());
@@ -99,24 +98,15 @@ public class MasterToolbarScreenImpl
                 .subscribe(getPresenter()::applyOffersOnlyFilterState);
     }
 
+    @Override
+    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
+        toolbar.setLocationCaption(DtlToolbarHelper
+                .provideLocationCaption(getResources(), dtlLocation));
+    }
 
     @Override
-    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
-                                   @Nullable String actualSearchQuery) {
-        if (dtlLocation == null) return;
-        switch (dtlLocation.getLocationSourceType()) {
-            case NEAR_ME:
-            case EXTERNAL:
-                toolbar.setToolbarCaptions(actualSearchQuery, dtlLocation.getLongName());
-                break;
-            case FROM_MAP:
-                String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
-                        getResources().getString(R.string.dtl_nearby_caption_empty) :
-                        getResources().getString(R.string.dtl_nearby_caption_format,
-                                dtlLocation.getLongName());
-                toolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
-                break;
-        }
+    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
+        toolbar.setSearchCaption(searchCaption);
     }
 
     @Override
@@ -137,10 +127,11 @@ public class MasterToolbarScreenImpl
         searchContentView = LayoutInflater.from(getContext()).inflate(R.layout.view_dtl_location_search, null);
         searchContentView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         //
-        popupWindow = new PopupWindow(searchContentView, searchContentView.getMeasuredWidth(), WindowManager.LayoutParams.MATCH_PARENT);
+        popupWindow = new PopupWindow(searchContentView, searchContentView.getMeasuredWidth(), WindowManager.LayoutParams.WRAP_CONTENT);
         popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
         popupWindow.setOutsideTouchable(true);
-        //popupWindow.setOnDismissListener(() -> SoftInputUtil.hideSoftInputMethod(this)); TODO :: think about hide keyboard
+        popupWindow.setOnDismissListener(() -> SoftInputUtil.hideSoftInputMethod(this));
         //
         this.progress = ButterKnife.findById(searchContentView, R.id.progress);
         this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);

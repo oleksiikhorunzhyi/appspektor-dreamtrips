@@ -81,7 +81,7 @@ public class TabletMasterDetailRoot extends LinearLayout implements PathContaine
                 (path instanceof MasterDetailPath && ((MasterDetailPath) path).isMaster());
         detailContainer.setVisibility(fullScreenMaster ? GONE : VISIBLE);
         //
-        superMasterContainer.dispatch(traversal, callback);
+        if (superMasterContainer != null) superMasterContainer.dispatch(traversal, callback);
         detailContainer.dispatch(traversal, callback);
         masterContainer.dispatch(traversal, callback);
     }

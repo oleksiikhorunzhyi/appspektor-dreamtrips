@@ -197,7 +197,6 @@ public class MasterToolbarPresenterImpl
                         .build();
                 locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
                 filterInteractor.filterMerchantsActionPipe().clearReplays();
-                navigateAway();
                 break;
             case SEARCH:
                 break;
@@ -235,11 +234,6 @@ public class MasterToolbarPresenterImpl
 
     private void onSearchFinished(DtlSearchLocationAction action) {
         getView().setItems(action.getResult());
-    }
-
-    private void navigateAway() {
-        History history = History.single(new DtlMerchantsPath()); // TODO :: 4/28/16 proper previous screen
-        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     private void search(String query) {
@@ -291,7 +285,6 @@ public class MasterToolbarPresenterImpl
         getView().setItems(locations);
     }
 
-    // TODO :: Move map to selected location when new location selected
     @Override
     public void locationSelected(DtlExternalLocation dtlExternalLocation) {
 //        trackLocationSelection(location); // TODO :: 4/20/16 new analytics

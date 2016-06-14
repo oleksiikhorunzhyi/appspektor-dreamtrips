@@ -16,12 +16,15 @@ import rx.subjects.PublishSubject;
 public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Parcelable> extends MvpBasePresenter<V>
         implements ViewStateMvpPresenter<V, S> {
 
-    @State S state;
+    @State protected S state;
+
+    @Override public S getViewState() {
+        return state;
+    }
 
     PublishSubject<Void> detachStopper = PublishSubject.create();
 
     PublishSubject<Void> visibilityStopper = PublishSubject.create();
-
 
     @Override public void onSaveInstanceState(Bundle bundle) {
         Icepick.saveInstanceState(this, bundle);
@@ -60,14 +63,6 @@ public abstract class BaseViewStateMvpPresenter<V extends MvpView, S extends Par
     protected <T> Observable.Transformer<T, T> bindView() {
         return input -> input.takeUntil(detachStopper);
     }
-
-    @Override public S getViewState() {
-        return state;
-    }
-
-    ///////////////////////////////////////////////////
-    /////// Helpers
-    //////////////////////////////////////////////////
 
     protected <T> Observable.Transformer<T, T> bindVisibilityIoToMainComposer() {
         return input -> input

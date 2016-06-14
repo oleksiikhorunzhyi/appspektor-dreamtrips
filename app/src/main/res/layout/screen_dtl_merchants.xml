@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/merchants_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        >
+
+        <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/expandableDtlToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:dtlt_collapsed="true"
+            app:dtlt_focused_mode="undefined"
+            app:dtlt_navigation_icon_src="@drawable/ic_menu_trip_map"
+            />
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/screen_dtl_merchants_content" />
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants.DtlMerchantsScreenImpl>

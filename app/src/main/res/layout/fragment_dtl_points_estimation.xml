@@ -44,7 +44,7 @@
         android:id="@+id/info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dtl_cities_background"
+        android:background="@color/light_grey_background"
         android:gravity="center"
         android:lines="2"
         android:padding="@dimen/spacing_small"

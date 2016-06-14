@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.DtlApi;
 import com.worldventures.dreamtrips.core.api.SharedServicesApi;
 import com.worldventures.dreamtrips.core.api.UploaderyApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
@@ -137,13 +136,6 @@ public class ApiModule {
                 .registerTypeAdapter(Setting.class, new SettingsSerializer())
                 .registerTypeAdapter(MapObjectHolder.class, new MapObjectDeserializer<>())
                 .create();
-    }
-
-    @Provides
-    @Singleton
-    DtlApi provideDtlApi(RestAdapter.Builder builder, DTErrorHandler errorHandler) {
-        return builder.setErrorHandler(errorHandler).build()
-                .create(DtlApi.class);
     }
 
     private RestAdapter createRestAdapter(String endpoint, GsonConverter gsonConverter) {

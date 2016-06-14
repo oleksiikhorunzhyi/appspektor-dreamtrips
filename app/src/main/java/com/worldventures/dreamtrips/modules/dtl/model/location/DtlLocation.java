@@ -12,4 +12,26 @@ public interface DtlLocation {
     Location getCoordinates();
 
     String getAnalyticsName();
+
+    DtlLocation UNDEFINED = new DtlLocation() {
+        @Override
+        public LocationSourceType getLocationSourceType() {
+            return LocationSourceType.UNDEFINED;
+        }
+
+        @Override
+        public String getLongName() {
+            return null;
+        }
+
+        @Override
+        public com.worldventures.dreamtrips.modules.trips.model.Location getCoordinates() {
+            return new Location(0, 0);
+        }
+
+        @Override
+        public String getAnalyticsName() {
+            return ""; //TODO: need to set specific name for situations when location is undefined.
+        }
+    };
 }

@@ -69,6 +69,7 @@ public interface DreamTripsApi {
     String TYPE_MEMBER = "DTAPP";
     String TYPE_MEMBER_360 = "DTAPP360";
     String TYPE_REP = "dtapprep";
+    String TYPE_HELP = "DTAPPHELP";
 
     @FormUrlEncoded
     @POST("/api/sessions")

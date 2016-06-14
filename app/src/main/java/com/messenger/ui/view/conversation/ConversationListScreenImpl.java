@@ -24,7 +24,7 @@ import android.widget.CheckedTextView;
 import android.widget.Spinner;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.flow.path.StyledPath;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
 import com.messenger.ui.adapter.swipe.SwipeableAdapterManager;
 import com.messenger.ui.presenter.ConversationListScreenPresenter;

@@ -13,7 +13,9 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirec
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlLocationManager;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 
 import javax.inject.Inject;
 
@@ -25,9 +27,6 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI
 
 
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
-
-    private NetworkEvents networkEvents;
-
     @Inject
     SnappyRepository snappyRepository;
     @Inject
@@ -37,10 +36,13 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject
     SnappyRepository db;
     @Inject
-    DtlLocationManager locationManager;
+    DtlLocationInteractor dtlLocationInteractor;
     @Inject
     AuthorizedDataManager authorizedDataManager;
-    AuthorizedDataManager.AuthDataSubscriber authDataSubscriber;
+
+    private AuthorizedDataManager.AuthDataSubscriber authDataSubscriber;
+
+    private NetworkEvents networkEvents;
 
     private AuthorizedDataManager.AuthDataSubscriber getAuthDataSubscriber() {
         if (authDataSubscriber == null || authDataSubscriber.isUnsubscribed()) {
@@ -85,7 +87,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     public void initDtl() {
         db.cleanLastSelectedOffersOnlyToggle();
         db.cleanLastMapCameraPosition();
-        locationManager.cleanLocation();
+        dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
     }
 
     public void onEvent(ConnectivityChanged event) {

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dtl_toolbar_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:orientation="horizontal"
+    android:focusableInTouchMode="true"
+    android:background="@color/theme_main"
+    >
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/dtlToolbarMerchantSearchInput"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        style="@style/DtlToolbarInput"
+        android:textColorHint="@color/dtlt_input_hint_color"
+        android:drawableLeft="@drawable/ic_dtlt_search_input"
+        tools:text="Mexican"
+        />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/dtlToolbarLocationSearchInput"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        style="@style/DtlToolbarInput"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="8dp"
+        android:textColorHint="@color/dtlt_input_hint_color"
+        android:drawableLeft="@drawable/ic_dtlt_location_input"
+        tools:text="London"
+        />
+
+    <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlFilterButton
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="@dimen/dtlfb_width"
+        android:layout_height="@dimen/dtlfb_height"
+        android:layout_gravity="center_vertical"
+        app:dtlfb_show_separator="false"
+        app:dtlfb_disabled_background_color="@color/theme_main"
+        app:dtlfb_enabled_background_color="@color/dtlfb_enabled_background_color"
+        app:dtlfb_disabled_caption_color="@android:color/white"
+        app:dtlfb_enabled_caption_color="@android:color/white"
+        app:dtlfb_enabled_icon="@drawable/ic_dtl_filter_button_enabled"
+        app:dtlfb_disabled_icon="@drawable/ic_dtl_filter_button_enabled"
+        tools:background="@color/dtlfb_disabled_background_color"
+        />
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/filterDiningsSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_margin="8dp"
+        android:gravity="center"
+        android:checked="false"
+        android:text="@string/dtl_show_offers_only"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/dtlfb_caption_text_size"
+        android:textAllCaps="true"
+        textAllCaps="true"
+        app:switchPadding="@dimen/dtlfb_icon_padding"
+        app:theme="@style/Theme.DreamTripsTheme"
+        />
+</LinearLayout>

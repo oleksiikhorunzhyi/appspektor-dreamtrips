@@ -17,7 +17,7 @@
         sothree:umanoParallaxOffset="0dp"
         sothree:umanoShadowHeight="4dp">
 
-        <com.messenger.flow.container.TabletMasterDetailRoot
+        <com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot
             android:id="@+id/root_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 tools:layout="@layout/fragment_navigation_drawer"/>
 
-            <com.messenger.flow.container.MasterPathContainerView
+            <com.worldventures.dreamtrips.core.flow.container.MasterPathContainerView
                 android:id="@id/master_container"
                 android:layout_width="@dimen/messenger_master_width"
                 android:layout_height="match_parent"
@@ -41,12 +41,12 @@
                 android:background="@color/list_item_divider_color"
                 />
 
-            <com.messenger.flow.container.DetailContainerView
+            <com.worldventures.dreamtrips.core.flow.container.DetailContainerView
                 android:id="@id/details_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-        </com.messenger.flow.container.TabletMasterDetailRoot>
+        </com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot>
 
     </com.messenger.ui.widget.MessengerPhotoPickerLayout>
 

@@ -136,6 +136,10 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         });
     }
 
+    public void sendAnalytic(String action, String name) {
+        TrackingHelper.actionMembershipVideo(action, name);
+    }
+
     public void downloadVideo(CachedEntity cachedEntity) {
         fileCachingDelegate.downloadFile(cachedEntity);
     }

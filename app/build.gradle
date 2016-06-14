@@ -23,7 +23,7 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     // App version
     def versionMajor = 1
@@ -393,6 +393,7 @@ dependencies {
     compile 'com.trello:rxlifecycle-components:0.4.0'
     compile 'io.reactivex:rxjava-debug:1.0.3'
     // Ui
+    compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
     compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
     compile "com.android.support:design:${googleLibrariesVersion}"
     compile 'com.github.traex.expandablelayout:library:1.3'
@@ -421,7 +422,7 @@ dependencies {
     compile 'com.yalantis:ucrop:1.2.+'
     compile 'com.github.dmytrodanylyk.shadow-layout:library:1.0.3'
     compile 'me.leolin:ShortcutBadger:1.1.3@aar'
-    compile 'com.github.techery:ProperRatingBar:v0.0.3'
+    compile 'com.github.techery:ProperRatingBar:0.0.4'
     compile 'com.sothree.slidinguppanel:library:3.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     // Util
@@ -435,8 +436,8 @@ dependencies {
     compile 'com.innahema:collections-query:0.2.9'
     compile 'net.danlew:android.joda:2.9.0'
     compile 'com.badoo.mobile:android-weak-handler:1.1'
-    compile 'frankiesardo:icepick:3.1.0'
-    apt 'frankiesardo:icepick-processor:3.1.0'
+    compile 'frankiesardo:icepick:3.2.0'
+    apt 'frankiesardo:icepick-processor:3.2.0'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
@@ -462,7 +463,8 @@ dependencies {
 
     // Testing
     testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.4'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.assertj:assertj-core:1.7.1'
     //

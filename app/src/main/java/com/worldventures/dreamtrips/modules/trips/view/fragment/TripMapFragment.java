@@ -499,4 +499,3 @@ public class TripMapFragment extends RxBaseFragment<TripMapPresenter> implements
     }
     //
 }
-

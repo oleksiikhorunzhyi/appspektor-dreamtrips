@@ -115,6 +115,15 @@
                 android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
         </activity>
 
+        <!--Dtl activities-->
+        <activity
+            android:name=".modules.dtl_flow.DtlActivity"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity" />
+        </activity>
+
         <!--For result activities-->
 
         <receiver android:name=".modules.friends.notification.FriendRejectActionReceiver"/>

@@ -7,8 +7,8 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
@@ -16,26 +16,28 @@ import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
+
+import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.View> implements TransferListener {
 
     @Inject
-    SnappyRepository db;
+    DtlMerchantInteractor merchantInteractor;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
-    @Inject
-    DtlJobManager jobManager;
+    DtlTransactionInteractor transactionInteractor;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
     private TransferObserver transferObserver;
-    private DtlTransaction dtlTransaction;
 
     public DtlScanQrCodePresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -44,7 +46,12 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
+        merchantInteractor.merchantByIdPipe()
+                .createObservable(new DtlMerchantByIdAction(merchantId))
+                .compose(ImmediateComposer.instance())
+                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> dtlMerchant = action.getResult()));
     }
 
     @Override
@@ -52,61 +59,101 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         super.takeView(view);
         apiErrorPresenter.setView(view);
         //
-        dtlTransaction = db.getDtlTransaction(dtlMerchant.getId());
         view.setMerchant(dtlMerchant);
         //
-        if (dtlTransaction.isMerchantCodeScanned()) checkReceiptUploading();
+        transactionInteractor.transactionActionPipe().createObservable(DtlTransactionAction.get(dtlMerchant))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> {
+                            DtlTransaction transaction = action.getResult();
+                            if (transaction != null && transaction.isMerchantCodeScanned()) {
+                                checkReceiptUploading(transaction);
+                            }
+                        }));
         //
         bindApiJob();
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.earnPointsExecutor)
-                .onProgress(() -> view.showProgress(R.string.dtl_wait_for_earn))
-                .onError(apiErrorPresenter::handleError)
-                .onSuccess(this::processTransactionResult);
+        transactionInteractor.earnPointsActionPipe().observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>()
+                        .onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(this::processTransactionResult));
     }
 
     public void codeScanned(String scannedQr) {
         TrackingHelper.dtlScanMerchant(scannedQr);
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withMerchantToken(scannedQr);
-        db.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+        transactionInteractor.transactionActionPipe().createObservable(DtlTransactionAction.get(dtlMerchant))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> {
+                            if (action.getResult() != null) {
+                                DtlTransaction dtlTransaction = action.getResult();
+                                dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
+                                        .withMerchantToken(scannedQr);
+                                transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(dtlMerchant, dtlTransaction));
+                                checkReceiptUploading(dtlTransaction);
+                            }
+                        }));
+
         //
-        checkReceiptUploading();
+
     }
 
     public void photoUploadFailed() {
-        db.cleanDtlTransaction(dtlMerchant.getId(), dtlTransaction);
-        //
-        if (view != null) view.openScanReceipt(dtlTransaction);
+        transactionInteractor.transactionActionPipe().createObservable(DtlTransactionAction.clean(dtlMerchant))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> {
+                            if (action.getResult() != null) {
+                                if (view != null) view.openScanReceipt(action.getResult());
+                            }
+                        }));
+
     }
 
     private void onReceiptUploaded() {
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(dtlTransaction.getUploadTask()));
-        jobManager.earnPointsExecutor.createJobWith(dtlMerchant.getId(),
-                dtlMerchant.getDefaultCurrency().getCode(),
-                dtlTransaction).subscribe();
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(Command::getResult)
+                .map(transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                        .withReceiptPhotoUrl(photoUploadingManagerS3.getResultUrl(transaction.getUploadTask())))
+                .subscribe(dtlTransaction -> transactionInteractor.earnPointsActionPipe().send(
+                        new DtlEarnPointsAction(dtlMerchant, dtlTransaction)
+                ), apiErrorPresenter::handleError);
+
     }
 
     @Override
     public void handleError(SpiceException error) {
         super.handleError(error);
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withMerchantToken(null);
-        db.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .map(transaction -> ImmutableDtlTransaction.copyOf(transaction).withMerchantToken(null))
+                .flatMap(transaction ->
+                        transactionInteractor.transactionActionPipe()
+                                .createObservableResult(DtlTransactionAction.save(dtlMerchant, transaction))
+                )
+                .compose(bindViewIoToMainComposer())
+                .subscribe(action -> {
+                }, apiErrorPresenter::handleError);
     }
 
-    private void processTransactionResult(DtlTransactionResult result) {
-        TrackingHelper.dtlPointsEarned(Double.valueOf(result.getEarnedPoints()).intValue());
+    private void processTransactionResult(DtlEarnPointsAction action) {
+        TrackingHelper.dtlPointsEarned(Double.valueOf(action.getResult().getEarnedPoints()).intValue());
         view.hideProgress();
         //
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withDtlTransactionResult(result);
-        db.saveDtlTransaction(dtlMerchant.getId(), dtlTransaction);
+        transactionInteractor.transactionActionPipe()
+                .send(DtlTransactionAction.save(action.getMerchant(),
+                        ImmutableDtlTransaction.copyOf(action.getTransaction())
+                                .withDtlTransactionResult(action.getResult())));
+        ;
         //
-        eventBus.postSticky(new DtlTransactionSucceedEvent(dtlTransaction));
+        eventBus.postSticky(new DtlTransactionSucceedEvent(action.getTransaction()));
         view.finish();
     }
 
@@ -114,8 +161,8 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     // Receipt uploading
     ///////////////////////////////////////////////////////////////////////////
 
-    private void checkReceiptUploading() {
-        UploadTask uploadTask = dtlTransaction.getUploadTask();
+    private void checkReceiptUploading(DtlTransaction transaction) {
+        UploadTask uploadTask = transaction.getUploadTask();
         //
         transferObserver =
                 photoUploadingManagerS3.getTransferById(uploadTask.getAmazonTaskId());
@@ -123,7 +170,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         switch (transferObserver.getState()) {
             case FAILED:
                 //restart upload if failed
-                transferObserver = photoUploadingManagerS3.upload(dtlTransaction.getUploadTask());
+                transferObserver = photoUploadingManagerS3.upload(transaction.getUploadTask());
                 uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
                 setListener();
                 break;
@@ -147,18 +194,23 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
 
     @Override
     public void onStateChanged(int id, TransferState state) {
-        if (Integer.valueOf(dtlTransaction.getUploadTask().getAmazonTaskId()) == id) {
-            switch (state) {
-                case COMPLETED:
-                    onReceiptUploaded();
-                    break;
-                case FAILED:
-                    receiptUploadError();
-                    break;
-                case WAITING_FOR_NETWORK:
-                    view.noConnection();
-            }
-        }
+        transactionInteractor.transactionActionPipe()
+                .createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .filter(transaction -> Integer.valueOf(transaction.getUploadTask().getAmazonTaskId()) == id)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(transaction -> {
+                    switch (state) {
+                        case COMPLETED:
+                            onReceiptUploaded();
+                            break;
+                        case FAILED:
+                            receiptUploadError();
+                            break;
+                        case WAITING_FOR_NETWORK:
+                            view.noConnection();
+                    }
+                }, apiErrorPresenter::handleError);
     }
 
     @Override

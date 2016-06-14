@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.dialog.ChangeSubjectDialog;
 import com.messenger.ui.dialog.LeaveChatDialog;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
@@ -23,6 +22,7 @@ import com.messenger.ui.widget.AvatarView;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.messenger.ui.widget.GroupAvatarsView;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

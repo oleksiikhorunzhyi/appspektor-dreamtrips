@@ -11,10 +11,11 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageC
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.UpdateAuthInfoCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlJanetActionsModule;
 
 import dagger.Module;
 
-@Module(includes = {MessengerJanetCommandModule.class},
+@Module(includes = {MessengerJanetCommandModule.class, DtlJanetActionsModule.class},
         injects = {
                 UploaderyImageCommand.class,
                 SimpleUploaderyCommand.class,

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar
+        android:id="@+id/dtlToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar.MasterToolbarScreenImpl>

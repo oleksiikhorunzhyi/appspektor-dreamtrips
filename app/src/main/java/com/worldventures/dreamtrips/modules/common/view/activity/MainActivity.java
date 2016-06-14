@@ -31,6 +31,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawerListener;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
 
@@ -205,6 +207,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     private void itemSelected(ComponentDescription component) {
         if (component.getKey().equals(MessengerActivityModule.MESSENGER)) {
             MessengerActivity.startMessenger(this);
+            return;
+        }
+        if (component.getKey().equals(DtlActivityModule.DTL)) {
+            closeLeftDrawer();
+            DtlActivity.startDtl(this);
             return;
         }
         //

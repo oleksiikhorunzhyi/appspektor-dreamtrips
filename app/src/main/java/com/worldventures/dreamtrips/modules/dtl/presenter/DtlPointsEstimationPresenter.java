@@ -4,14 +4,19 @@ import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimationPresenter.View> {
 
@@ -21,9 +26,9 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     protected final String merchantId;
 
     @Inject
-    DtlJobManager jobManager;
+    DtlTransactionInteractor transactionInteractor;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
+    DtlMerchantInteractor merchantInteractor;
     //
     private DtlMerchant dtlMerchant;
 
@@ -34,7 +39,12 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
+        merchantInteractor.merchantByIdPipe()
+                .createObservable(new DtlMerchantByIdAction(merchantId))
+                .compose(ImmediateComposer.instance())
+                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> dtlMerchant = action.getResult()));
     }
 
     @Override
@@ -46,17 +56,19 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.estimatePointsExecutor)
-                .onProgress(view::showProgress)
-                .onSuccess(dataHolder -> view.showEstimatedPoints(dataHolder.getPointsInteger()))
-                .onError(throwable -> apiErrorPresenter.handleError(throwable));
+        transactionInteractor.estimatePointsActionPipe().observeWithReplay()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
+                        .onStart(action -> view.showProgress())
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> view.showEstimatedPoints(action.getEstimationPointsHolder().getPointsInteger())));
     }
 
     public void onCalculateClicked(String userInput) {
         if (!validateInput(userInput)) return;
         //
-        jobManager.estimatePointsExecutor.createJobWith(merchantId, Double.valueOf(userInput),
-                dtlMerchant.getDefaultCurrency().getCode()).subscribe();
+        transactionInteractor.estimatePointsActionPipe()
+                .send(new DtlEstimatePointsAction(dtlMerchant, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
     }
 
     protected boolean validateInput(String pointsInput) {

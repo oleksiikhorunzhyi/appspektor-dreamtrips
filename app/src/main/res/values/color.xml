@@ -42,13 +42,12 @@
 
     <color name="user_status_text_shadow">#AA000000</color>
 
+    <color name="dtlOfferItemExpirationBackground">#53B5FE</color>
     <color name="dtl_tab_text_normal">#B1B2B1</color>
     <color name="dtl_tab_text_selected">#005e92</color>
     <color name="dtl_tab_indicator">#53b5fe</color>
-    <color name="dtl_tab_background_normal">@android:color/white</color>
-    <color name="dtl_tab_background_selected">#EDEDED</color>
 
-    <color name="dtl_cities_background">#eeeeee</color>
+    <color name="light_grey_background">#eeeeee</color>
     <color name="dtl_cities_text_color">#929292</color>
     <color name="dtl_badge_color">#8896a6b6</color>
 
@@ -65,6 +64,24 @@
 
     <color name="open">#6ebffc</color>
     <color name="closed">#fe5353</color>
+
+    <!-- <DTL Toolbar colors> -->
+    <!-- these shall have 'dtlt_' prefix -->
+    <color name="dtlt_input_text_color">#222</color>
+    <color name="dtlt_location_change_city_name">#222</color>
+    <color name="dtlt_location_separator">#C2C2C2</color>
+    <color name="dtlt_input_hint_color">#9B9B9B</color>
+    <!-- </DTL Toolbar dimens> -->
+
+    <!-- <DTL FilterButton colors> -->
+    <!-- these shall have 'dtlfb_' prefix -->
+    <color name="dtlfb_enabled_background_color">#53b5fe</color>
+    <color name="dtlfb_disabled_background_color">@android:color/white</color>
+    <color name="dtlfb_enabled_caption_color">@android:color/white</color>
+    <color name="dtlfb_disabled_caption_color">#222</color>
+    <color name="dtlfb_ceparator_color">#979797</color>
+    <!-- </DTL FilterButton dimens> -->
+
     <color name="facebook_color">#3C5A99</color>
     <color name="share_camera_color">#929292</color>
     <color name="share_photo_bg_color">#EEEEEE</color>

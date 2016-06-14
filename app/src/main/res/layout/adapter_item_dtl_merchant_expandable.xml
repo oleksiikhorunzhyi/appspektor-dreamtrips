@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/cellRootView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_marginTop="@dimen/spacing_small"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:id="@+id/merchantCellBodyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
+                android:id="@+id/merchantCoverImage"
+                android:layout_width="@dimen/dtlMerchantCoverImageWidth"
+                android:layout_height="@dimen/dtlMerchantCoverImageHeight"
+                android:layout_gravity="center_vertical"
+                app:actualImageScaleType="centerInside"
+                app:placeholderImage="@drawable/ic_trip_image_placeholder"
+                tools:src="@drawable/ic_trip_image_placeholder"
+                />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                >
+
+                <TextView
+                    android:id="@+id/merchantName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    style="@style/DreamMerchantTextAppearance"
+                    tools:text="Miguel's Cantina"
+                    />
+
+                <TextView
+                    android:id="@+id/merchantCategories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textSize="13sp"
+                    tools:text="Mexican, Latinamerican"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|bottom"
+                    >
+
+                    <TextView
+                        android:id="@+id/merchantOpenClosedStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:textStyle="bold"
+                        tools:text="Open Now"
+                        />
+
+                    <TextView
+                        android:id="@+id/merchantDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="@dimen/spacing_small"
+                        android:layout_toLeftOf="@+id/merchantPricing"
+                        android:textColor="@color/gray_btn_bg_pressed_color"
+                        tools:text="1.7 miles"
+                        />
+
+                    <io.techery.properratingbar.ProperRatingBar
+                        android:id="@+id/merchantPricing"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_gravity="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        app:prb_symbolicTick="$"
+                        app:prb_symbolicTickNormalColor="@color/grey"
+                        app:prb_symbolicTickSelectedColor="@color/dtl_tab_text_selected"
+                        app:prb_totalTicks="4"
+                        />
+                </RelativeLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/offers_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_lighter"
+                />
+
+            <TextView
+                android:id="@+id/view_points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_small"
+                android:layout_marginLeft="@dimen/spacing_small"
+                android:background="@drawable/background_badge_points"
+                android:drawableLeft="@drawable/ic_points_dtl"
+                android:drawablePadding="5dp"
+                android:layout_centerVertical="true"
+                android:text="@string/points"
+                />
+
+            <TextView
+                android:id="@+id/view_perks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_small"
+                android:layout_margin="@dimen/spacing_small"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/view_points"
+                android:background="@drawable/background_badge_perk"
+                android:drawableLeft="@drawable/ic_perk_dtl"
+                android:drawablePadding="5dp"
+                android:text="@string/perks"
+                />
+
+            <ImageView
+                android:id="@+id/perk_toggle_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/spacing_normal"
+                tools:src="@drawable/ic_arrow_down_grey"
+                />
+
+            <TextView
+                android:id="@+id/perk_toggle_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/perk_toggle_view"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:text="@string/friend_hide"
+                android:visibility="gone"
+                tools:visibility="visible"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/expandedContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -12,7 +12,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderLightCell;
@@ -149,7 +148,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
 
     @Override
     public void sendAnalytic(String action, String name) {
-        TrackingHelper.actionMembershipVideo(action, name);
+        getPresenter().sendAnalytic(action, name);
     }
 
     @Override

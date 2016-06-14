@@ -1,9 +1,10 @@
 package com.worldventures.dreamtrips.modules.common.view;
 
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import android.support.annotation.StringRes;
 
-public interface ApiErrorView extends Presenter.View {
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
+
+public interface ApiErrorView {
 
     /**
      * Called in actual view implementation when api error occurs
@@ -18,4 +19,15 @@ public interface ApiErrorView extends Presenter.View {
      */
     void onApiCallFailed();
 
+    /**
+     * Show user a short textual message, e.g. a {@link android.support.design.widget.Snackbar Snackbar}
+     * @param stringId string resource id to show
+     */
+    void informUser(@StringRes int stringId);
+
+    /**
+     * Show user a short textual message, e.g. a {@link android.support.design.widget.Snackbar Snackbar}
+     * @param string message to show
+     */
+    void informUser(String message);
 }

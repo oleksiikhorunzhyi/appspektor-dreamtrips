@@ -40,6 +40,11 @@ public abstract class DtlFilterData {
 
     public abstract List<DtlMerchantAttribute> getSelectedAmenities();
 
+    @Value.Default
+    public boolean isOffersOnly() {
+        return false;
+    }
+
     public static DtlFilterData merge(DtlFilterParameters filterParameters, DtlFilterData filterData) {
         return ImmutableDtlFilterData.copyOf(filterData)
                 .withMinPrice(filterParameters.getMinPrice())
@@ -51,5 +56,13 @@ public abstract class DtlFilterData {
     @Value.Derived
     public boolean hasAmenities() {
         return !getAmenities().isEmpty();
+    }
+
+    @Value.Derived
+    public boolean isDefault() {
+        return getMinPrice() == DtlFilterParameters.MIN_PRICE &&
+                getMaxPrice() == DtlFilterParameters.MAX_PRICE &&
+                getMaxDistance() == DtlFilterParameters.MAX_DISTANCE &&
+                getAmenities().size() == getSelectedAmenities().size();
     }
 }

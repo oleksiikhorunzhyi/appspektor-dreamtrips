@@ -39,7 +39,8 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmen
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
-import com.worldventures.dreamtrips.modules.dtl.DtlModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -81,6 +82,7 @@ import dagger.Provides;
                 DownloadFileListener.class,
                 PresentationVideosPresenter.class,
                 MessengerActivity.class,
+                DtlActivity.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,
@@ -124,8 +126,8 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
-        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlModule.DTL));
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
+        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlActivityModule.DTL));
         featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
@@ -138,7 +140,7 @@ public class CommonModule {
 
         activeComponents.add(SettingsModule.SETTINGS);
 
-        activeComponents.add(InfoModule.FAQ);
+        activeComponents.add(InfoModule.HELP);
         activeComponents.add(InfoModule.TERMS);
 
         activeComponents.add(TripsModule.MAP_TRIPS);

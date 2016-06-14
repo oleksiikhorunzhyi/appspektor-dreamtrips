@@ -118,7 +118,16 @@
     <!-- dimen for dtl place items -->
     <dimen name="dtlPlaceItemMargin">8dp</dimen>
     <dimen name="dtlPlaceItemRoundRadius">5dp</dimen>
-    <dimen name="dtlPlaceImageHeight">172dp</dimen>
+    <dimen name="dtlMerchantCoverImageWidth">118dp</dimen>
+    <dimen name="dtlMerchantCoverImageHeight">87dp</dimen>
+    <dimen name="dtlOfferCoverDetailImageWidth">95dp</dimen>
+    <dimen name="dtlOfferCoverDetailImageHeight">70dp</dimen>
+    <dimen name="dtlOfferCoverImageWidth">80dp</dimen>
+    <dimen name="dtlOfferCoverImageHeight">55dp</dimen>
+    <dimen name="dtlOfferExpirationWidth">59dp</dimen>
+    <dimen name="dtlOfferExpirationHeight">19dp</dimen>
+    <dimen name="dtlOfferExpirationTopMargin">10dp</dimen>
+    <dimen name="dtlOfferExpirationTextSize">9sp</dimen>
     <dimen name="dtlPlaceBadgeSize">65dp</dimen>
     <dimen name="dtlPlaceBadgeMargin">16dp</dimen>
     <dimen name="dtlPlaceNameTextSize">20sp</dimen>
@@ -132,8 +141,16 @@
     <dimen name="dtlReceiptHeight">326dp</dimen>
     <dimen name="dtlReceiptHeightSmall">300dp</dimen>
     <dimen name="dtlScanReceiptPadding">16dp</dimen>
+    <dimen name="dtlScanQrMerchantCoverSize">72dp</dimen>
+    <dimen name="dtlInnerMapPadding">20dp</dimen>
 
     <dimen name="dtlContentWidth">400dp</dimen>
+
+    <!-- dimen for DtlFilterButton -->
+    <dimen name="dtlfb_width">128dp</dimen>
+    <dimen name="dtlfb_height">48dp</dimen>
+    <dimen name="dtlfb_caption_text_size">14sp</dimen>
+    <dimen name="dtlfb_icon_padding">12dp</dimen>
 
     <!-- dimen for dtl points calculation dialog -->
     <dimen name="dtlCalculationCalculateButtonTextSize">14sp</dimen>
@@ -297,4 +314,22 @@
     <!--Common-->
     <dimen name="pin_progress_button_size">48dp</dimen>
 
+    <!-- <DTL Toolbar dimens> -->
+    <!-- these shall have 'dtlt_' prefix -->
+    <dimen name="dtlt_row_height">56dp</dimen>
+    <dimen name="dtlt_icon_size">22dp</dimen>
+    <dimen name="dtlt_icon_vertical_margin">10dp</dimen>
+    <dimen name="dtlt_icon_side_margin">16dp</dimen>
+    <dimen name="dtlt_action_view_size">26dp</dimen>
+    <dimen name="dtlt_action_view_vertical_margin">8dp</dimen>
+    <dimen name="dtlt_action_view_side_margin">14dp</dimen>
+    <dimen name="dtlt_input_vertical_margin">10dp</dimen>
+    <dimen name="dtlt_input_round_radius">2dp</dimen>
+    <dimen name="dtlt_input_elevation">2dp</dimen>
+    <dimen name="dtlt_input_vertical_padding">7dp</dimen>
+    <dimen name="dtlt_input_side_padding">9dp</dimen>
+    <dimen name="dtlt_input_text_size">13sp</dimen>
+    <dimen name="dtlt_input_drawable_padding">6dp</dimen>
+    <dimen name="dtlt_second_row_side_padding">54dp</dimen>
+    <!-- </DTL Toolbar dimens> -->
 </resources>

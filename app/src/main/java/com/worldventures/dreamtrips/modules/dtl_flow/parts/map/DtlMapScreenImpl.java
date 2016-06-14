@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.map;
 import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,6 +35,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.info.DtlMapInfoScreenImpl;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 import com.worldventures.dreamtrips.modules.map.model.DtlClusterItem;
@@ -311,22 +311,16 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     }
 
     @Override
-    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
-                                   @Nullable String actualSearchQuery) {
-        if (dtlLocation == null || dtlToolbar == null) return;
-        switch (dtlLocation.getLocationSourceType()) {
-            case NEAR_ME:
-            case EXTERNAL:
-                dtlToolbar.setToolbarCaptions(actualSearchQuery, dtlLocation.getLongName());
-                break;
-            case FROM_MAP:
-                String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
-                        getResources().getString(R.string.dtl_nearby_caption_empty) :
-                        getResources().getString(R.string.dtl_nearby_caption_format,
-                                dtlLocation.getLongName());
-                dtlToolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
-                break;
-        }
+    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
+        if (dtlToolbar == null) return;
+        dtlToolbar.setLocationCaption(DtlToolbarHelper
+                .provideLocationCaption(getResources(), dtlLocation));
+    }
+
+    @Override
+    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
+        if (dtlToolbar == null) return;
+        dtlToolbar.setSearchCaption(searchCaption);
     }
 
     @Override

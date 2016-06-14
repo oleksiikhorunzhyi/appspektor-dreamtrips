@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
@@ -35,6 +34,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeade
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
+import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
 import java.util.List;
@@ -98,24 +98,15 @@ public class MasterToolbarScreenImpl
                 .subscribe(getPresenter()::applyOffersOnlyFilterState);
     }
 
+    @Override
+    public void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation) {
+        toolbar.setLocationCaption(DtlToolbarHelper
+                .provideLocationCaption(getResources(), dtlLocation));
+    }
 
     @Override
-    public void updateToolbarTitle(@Nullable DtlLocation dtlLocation,
-                                   @Nullable String actualSearchQuery) {
-        if (dtlLocation == null) return;
-        switch (dtlLocation.getLocationSourceType()) {
-            case NEAR_ME:
-            case EXTERNAL:
-                toolbar.setToolbarCaptions(actualSearchQuery, dtlLocation.getLongName());
-                break;
-            case FROM_MAP:
-                String locationTitle = TextUtils.isEmpty(dtlLocation.getLongName()) ?
-                        getResources().getString(R.string.dtl_nearby_caption_empty) :
-                        getResources().getString(R.string.dtl_nearby_caption_format,
-                                dtlLocation.getLongName());
-                toolbar.setToolbarCaptions(actualSearchQuery, locationTitle);
-                break;
-        }
+    public void updateToolbarSearchCaption(@Nullable String searchCaption) {
+        toolbar.setSearchCaption(searchCaption);
     }
 
     @Override

@@ -90,20 +90,17 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
                 .subscribe(s -> redirectToLocations(), e -> {});
         //
-        Observable.combineLatest(
-                // TODO :: 12.06.16 maybe merge this with bindToolbarTitleUpdates method below
-                // so far seems like it might be not safe to use pipe's observeSuccessWithReplay()
-                // observable in combineLatest
-                locationInteractor.locationPipe().observeSuccessWithReplay()
-                        .first()
-                        .map(DtlLocationCommand::getResult),
-                filterInteractor.filterDataPipe().observeSuccessWithReplay()
-                        .first()
-                        .map(DtlFilterDataAction::getResult)
-                        .map(DtlFilterData::getSearchQuery),
-                Pair::new)
+        locationInteractor.locationPipe().observeSuccessWithReplay()
+                .first()
+                .map(DtlLocationCommand::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
+                .subscribe(getView()::updateToolbarLocationTitle);
+        filterInteractor.filterDataPipe().observeSuccessWithReplay()
+                .first()
+                .compose(bindViewIoToMainComposer())
+                .map(DtlFilterDataAction::getResult)
+                .map(DtlFilterData::getSearchQuery)
+                .subscribe(getView()::updateToolbarSearchCaption);
         //
         filterInteractor.filterDataPipe().observeSuccessWithReplay()
                 .first()
@@ -111,19 +108,14 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .map(DtlFilterData::isOffersOnly)
                 .subscribe(getView()::toggleDiningFilterSwitch);
         //
-        bindToolbarTitleUpdates();
+        bindToolbarLocationCaptionUpdates();
     }
 
-    private void bindToolbarTitleUpdates() {
-        Observable.combineLatest(
-                locationInteractor.locationPipe().observeSuccess()
-                        .map(DtlLocationCommand::getResult),
-                filterInteractor.filterDataPipe().observeSuccess()
-                        .map(DtlFilterDataAction::getResult)
-                        .map(DtlFilterData::getSearchQuery),
-                Pair::new
-        ).compose(bindViewIoToMainComposer())
-                .subscribe(pair -> getView().updateToolbarTitle(pair.first, pair.second));
+    private void bindToolbarLocationCaptionUpdates() {
+        locationInteractor.locationPipe().observeSuccess()
+                .map(DtlLocationCommand::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(getView()::updateToolbarLocationTitle);
     }
 
     private void connectFilterDataChanges() {

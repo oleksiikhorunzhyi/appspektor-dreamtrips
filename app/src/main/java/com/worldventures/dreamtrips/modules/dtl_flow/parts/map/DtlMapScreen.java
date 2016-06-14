@@ -16,6 +16,10 @@ import rx.Observable;
 
 public interface DtlMapScreen extends DtlScreen {
 
+    void updateToolbarLocationTitle(@Nullable DtlLocation dtlLocation);
+
+    void updateToolbarSearchCaption(@Nullable String searchCaption);
+
     GoogleMap getMap();
 
     void prepareMap();
@@ -43,8 +47,6 @@ public interface DtlMapScreen extends DtlScreen {
     void showButtonLoadMerchants(boolean show);
 
     void zoom(float zoom);
-
-    void updateToolbarTitle(@Nullable DtlLocation dtlLocation, @Nullable String actualSearchQuery);
 
     void tryHideMyLocationButton(boolean hide);
 

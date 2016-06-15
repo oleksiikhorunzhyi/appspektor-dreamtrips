@@ -78,7 +78,7 @@ public class DtlMerchantHelper {
     public static Spannable getOfferExpiringCaption(Resources resources, DtlOffer offerData) {
         String format = resources.getString(R.string.offer_expiration_format);
         DateTime expiringDate = new DateTime(offerData.getEndDate().getTime());
-        String caption = expiringDate.toString(DateTimeFormat.forPattern("d MMM"));
+        String caption = expiringDate.toString(DateTimeFormat.forPattern("MMMM d"));
         String captionFormatted = String.format(format, caption);
         Spannable spanned = new SpannableString(captionFormatted);
         spanned.setSpan(new StyleSpan(Typeface.BOLD),

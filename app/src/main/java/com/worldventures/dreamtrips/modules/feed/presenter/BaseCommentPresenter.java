@@ -187,13 +187,14 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
                     }, this::handleError);
     }
 
-    private void itemDeleted(FeedEntity model) {
+    protected void itemDeleted(FeedEntity model) {
         eventBus.post(new FeedEntityDeletedEvent(model));
         //
+        back();
+    }
 
-        if (!view.isTabletLandscape()) {
-            view.back();
-        }
+    protected void back() {
+        view.back();
     }
 
     private void sendAnalytic(String actionAttribute) {

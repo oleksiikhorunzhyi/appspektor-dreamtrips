@@ -37,6 +37,11 @@ public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityD
         view.showDetails(entityData.first, entityData.second);
     }
 
+    @Override
+    protected void back() {
+        if (!isSlave) view.back();
+    }
+
     public interface View extends FeedDetailsPresenter.View {
 
         void showDetails(Route route, Parcelable extra);

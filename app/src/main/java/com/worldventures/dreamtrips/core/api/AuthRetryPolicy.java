@@ -45,9 +45,10 @@ public class AuthRetryPolicy {
         Timber.d("Handling user session");
 
         User sessionUser = session.getUser();
-
-        UserSession userSession = appSessionHolder.get().get();
-
+        UserSession userSession = new UserSession();
+        if (appSessionHolder.get().isPresent()) {
+            userSession = appSessionHolder.get().get();
+        }
         userSession.setUser(sessionUser);
         userSession.setApiToken(session.getToken());
         userSession.setLegacyApiToken(session.getSsoToken());

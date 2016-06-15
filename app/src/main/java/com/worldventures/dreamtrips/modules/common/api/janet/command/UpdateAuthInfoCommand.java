@@ -80,7 +80,7 @@ public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAc
     private Observable<ArrayList<Circle>> circles() {
         return Observable.just(featureManager.available(Feature.SOCIAL))
                 .flatMap(featureAvailable -> {
-                    if (featureAvailable) {
+                    if (!featureAvailable) {
                         return Observable.just(new ArrayList<>());
                     } else {
                         return queryCirclesInteractor.pipe().createObservableResult(new CirclesCommand())

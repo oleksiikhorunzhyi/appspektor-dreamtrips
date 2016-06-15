@@ -620,4 +620,16 @@
 
     <string name="location_name_length_message">地点名称不得超过255个字符。</string>
 
+    <string name="featured_trip">精选旅行</string>
+    <string name="sold_out_trip">售罄</string>
+
+    <string name="podcasts">播客</string>
+    <string name="delete_cached_podcast_title">播客</string>
+    <string name="delete_cached_podcast_text">您确定您想从本地缓存中删除播客？</string>
+    <string name="cancel_cached_podcast_title">播客</string>
+    <string name="cancel_cached_podcast_text">您确定要取消文件下载？</string>
+    <string name="audio_app_not_found_exception">未找到应用播放音频</string>
+    <string name="complete_action_with">完成操作</string>
+    <string name="error_fail_to_load_podcast">无法加载播客</string>
+
 </resources>

@@ -620,4 +620,16 @@
 
     <string name="location_name_length_message">Το όνομα της τοποθεσίας δεν μπορεί να είναι μεγαλύτερο από 255 χαρακτήρες.</string>
 
+    <string name="featured_trip">ΠΡΟΤΕΙΝΟΜΕΝΟ ΤΑΞΙΔΙ</string>
+    <string name="sold_out_trip">Εξαντλήθηκε</string>
+
+    <string name="podcasts">Ψηφιακά αρχεία</string>
+    <string name="delete_cached_podcast_title">Ψηφιακό αρχείο</string>
+    <string name="delete_cached_podcast_text">Είστε σίγουροι ότι θέλετε να διαγράψετε το ψηφιακό αρχείο από την τοπική μνήμη;</string>
+    <string name="cancel_cached_podcast_title">Ψηφιακό αρχείο</string>
+    <string name="cancel_cached_podcast_text">Είστε σίγουροι ότι θέλετε να ακυρώσετε τη λήψη του αρχείου;</string>
+    <string name="audio_app_not_found_exception">Η εφαρμογή για την αναπαραγωγή ήχου δεν βρέθηκε</string>
+    <string name="complete_action_with">Ολοκλήρωση ενέργειας με</string>
+    <string name="error_fail_to_load_podcast">Αποτυχία φόρτωσης ψηφιακού αρχείου</string>
+
 </resources>

@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFac
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.FeedActionPanelView;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
@@ -105,9 +104,9 @@ public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<I
         sendAnalyticEvent(TrackingHelper.ATTRIBUTE_EDIT);
     }
 
-    private void sendAnalyticEvent(String eventType) {
-        FeedItem feedItem = getModelObject();
-        getEventBus().post(new FeedItemAnalyticEvent(eventType, feedItem.getItem().getUid(), feedItem.getType()));
+    protected void sendAnalyticEvent(String eventType) {
+        TrackingHelper.sendActionItemFeed(eventType, getModelObject().getItem().getUid(),
+                getModelObject().getType());
     }
 
     protected abstract void onMore();

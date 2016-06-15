@@ -17,8 +17,6 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoBundle;
@@ -78,9 +76,8 @@ public class PhotoFeedItemDetailsCell extends FeedItemDetailsCell<PhotoFeedItem>
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                     .data(data)
                     .build());
-
-            getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, getModelObject().getItem().getUid(),
-                    FeedEntityHolder.Type.PHOTO));
+            //
+            sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
         });
     }
 

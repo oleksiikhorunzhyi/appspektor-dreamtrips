@@ -33,7 +33,8 @@ public class TrackingHelper {
     public static final String ACTION_LOGIN = "login";
 
     public static final String ACTION_DREAMTRIPS = "dreamtrips";
-    public static final String ACTION_DREAMTRIPS_TRIP_DETAIL = "dreamtrips.tripdetail";
+    public static final String ACTION_DREAMTRIPS_SOCIAL_DETAIL = "dreamtrips:socialdetail";
+    public static final String ACTION_DREAMTRIPS_TRIP_DETAIL = "dreamtrips:tripdetail";
     public static final String ACTION_PHOTOS_YSBH = "photos-ysbh";
     public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
     public static final String ACTION_PHOTOS_MINE = "photos-mine";
@@ -662,7 +663,13 @@ public class TrackingHelper {
                 break;
         }
         data.put(actionAttribute, itemId);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_ACTIVITY_FEED, data);
+        String action;
+        if (actionAttribute.equals(ATTRIBUTE_VIEW)) {
+            action = ACTION_DREAMTRIPS_SOCIAL_DETAIL;
+        } else {
+            action = ACTION_ACTIVITY_FEED;
+        }
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
     }
 
     public static void tapFeedButton(@MagicConstant(stringValues = {ATTRIBUTE_OPEN_FRIENDS, ATTRIBUTE_ADD_FRIENDS,

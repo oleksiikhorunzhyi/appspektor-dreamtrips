@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
@@ -22,7 +21,6 @@ import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadMoreEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -215,7 +213,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         }
 
         if (type != FeedEntityHolder.Type.UNDEFINED) {
-            eventBus.post(new FeedItemAnalyticEvent(actionAttribute, id, type));
+            TrackingHelper.sendActionItemFeed(actionAttribute, id, type);
         }
     }
 

@@ -2,9 +2,9 @@ package com.messenger.messengerservers.xmpp.chats;
 
 import android.util.Pair;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.ProtocolException;
+import com.messenger.messengerservers.chat.AccessConversationDeniedException;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
@@ -16,6 +16,7 @@ import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.XMPPError;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
 
@@ -42,19 +43,29 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
 
     protected Observable<MultiUserChat> provideChatObservable() {
         return facade.getConnectionObservable()
-                .map(this::createChat);
+                .flatMap(connection ->
+                        Observable.fromCallable(() -> createChat(connection)));
     }
 
-    private MultiUserChat createChat(XMPPConnection connection) {
+    private MultiUserChat createChat(XMPPConnection connection)
+            throws ProtocolException, AccessConversationDeniedException {
         String jid = JidCreatorHelper.obtainGroupJid(roomId);
         MultiUserChat chat = MultiUserChatManager
                 .getInstanceFor(connection).getMultiUserChat(jid);
 
         if (chat.isJoined()) return chat;
+
         try {
             chat.createOrJoin(userId);
-        } catch (IllegalStateException | XMPPException.XMPPErrorException | SmackException e) {
-            Timber.e(e, "SetConnection");
+        } catch (XMPPException.XMPPErrorException e) {
+            XMPPError error = e.getXMPPError();
+            if (error != null && error.getType() == XMPPError.Type.AUTH) {
+                throw new AccessConversationDeniedException();
+            } else {
+                throw new ProtocolException(e);
+            }
+        } catch (SmackException e) {
+            throw new ProtocolException(e);
         }
 
         return chat;

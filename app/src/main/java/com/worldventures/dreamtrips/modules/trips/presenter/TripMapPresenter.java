@@ -77,6 +77,7 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
     public void applySearch(String query) {
         this.query = query;
+        //
         removeInfoIfNeeded();
         reloadMapObjects();
     }
@@ -133,17 +134,19 @@ public class TripMapPresenter extends Presenter<TripMapPresenter.View> {
 
     public void reloadMapObjects() {
         //local clustering
-        compositeSubscription.add(tripMapInteractor.mapObjectsPipe()
-                .createObservableResult(new GetMapObjectsHttpAction(tripFilterDataProvider.get(),
-                        view.getMap().getProjection().getVisibleRegion().latLngBounds, query))
-                .doOnNext(getMapObjectsAction -> updateMapObjectsList(getMapObjectsAction.getMapObjects()))
-                .flatMap(getMapObjectsAction -> Observable.just(getMapObjectsAction.getMapObjects())
-                        .flatMap(mapObjectHolders -> Observable.from(mapObjectHolders).map(TripClusterItem::new).toList()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onTripMapObjectsLoaded,
-                        error -> {
-                            Timber.e(error, error.getMessage());
-                        }));
+        if (view != null) {
+            compositeSubscription.add(tripMapInteractor.mapObjectsPipe()
+                    .createObservableResult(new GetMapObjectsHttpAction(tripFilterDataProvider.get(),
+                            view.getMap().getProjection().getVisibleRegion().latLngBounds, query))
+                    .doOnNext(getMapObjectsAction -> updateMapObjectsList(getMapObjectsAction.getMapObjects()))
+                    .flatMap(getMapObjectsAction -> Observable.just(getMapObjectsAction.getMapObjects())
+                            .flatMap(mapObjectHolders -> Observable.from(mapObjectHolders).map(TripClusterItem::new).toList()))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::onTripMapObjectsLoaded,
+                            error -> {
+                                Timber.e(error, error.getMessage());
+                            }));
+        }
         //
     }
 

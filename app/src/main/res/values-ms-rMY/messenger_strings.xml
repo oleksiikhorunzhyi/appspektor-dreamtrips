@@ -52,9 +52,11 @@
     <string name="chat_subtitle_format_single_chat_online">dalam talian</string>
     <string name="chat_subtitle_format_single_chat_offline">luar talian</string>
     <string name="chat_subtitle_format_group_chat_format">%1$d ahli, %2$d dalam talian</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d ahli</string>
     <string name="chat_subtitle_format_group_chat_offline">Tiada pengguna di atas talian</string>
     <string name="chat_message_edittext_hint">Pesanan anda</string>
     <string name="chat_message_send_button_text">Hantar</string>
+    <string name="chat_message_sending_disabled">Anda tidak boleh menghantar mesej kerana anda bukan peserta lagi</string>
     <string name="chat_error_loading">Tidak dapat memuatkan sejarah perbualan </string>
     <string name="chat_unread_messages_textview_format">Anda mempunyai %1$d pesanan belum dibaca</string>
     <string name="chat_more_typing_users_hint_format">dan %1$d lebih lagi</string>
@@ -69,6 +71,11 @@
     <string name="chat_share_dialog_image">Kongsi imej</string>
     <string name="chat_share_dialog_cancel">Batalkan</string>
     <string name="chat_could_not_share_location">Lokasi tidak dapat dikongsi</string>
+    <string name="chat_error_marker_not_delivered">Tidak Dihantar</string>
+    <string name="chat_retry_send_message_dialog_resend_message">Hantar semula mesej?</string>
+    <string name="chat_retry_send_message_dialog_resend">HANTAR SEMULA</string>
+    <string name="chat_retry_send_message_dialog_cancel">Batal</string>
+
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Sedang memuat…</string>
     <string name="chat_flag_dialog_reason_title">Bendera</string>
@@ -97,6 +104,7 @@
     <string name="chat_settings_row_clear_history">Padam sejarah</string>
     <string name="chat_settings_row_leave_chat">Meninggalkan Sembang</string>
     <string name="chat_settings_row_delete_chat">Hapus Sembang</string>
+    <string name="chat_settings_group_chat_info_text_format">Perbualan ini dicipta oleh %1$s pada %2$s</string>
     <string name="chat_settings_menu_settings">Tetapan</string>
     <string name="chat_settings_menu_edit_chat_name"> Edit nama perbualan </string>
     <string name="chat_settings_menu_edit_change_chat_image">Tukar imej sembang</string>

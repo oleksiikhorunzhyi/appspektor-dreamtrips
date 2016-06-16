@@ -71,12 +71,13 @@ public class MessagesPaginationDelegate {
     }
 
     private void pageLoadFailed() {
-        page--;
         paginationStateObservable.onNext(ImmutablePaginationStatus.builder()
                 .status(Status.FAILED)
                 .page(page)
                 .build()
         );
+        page--;
+        loading.set(false);
     }
 
     private void paginationPageLoaded(List<Message> loadedMessages) {

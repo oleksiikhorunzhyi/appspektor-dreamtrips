@@ -251,10 +251,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void handlePaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus) {
         switch (paginationStatus.getStatus()) {
             case START:
-                loadConversationDelegate.loadConversationFromDb(conversationId)
-                        .compose(new IoToMainComposer<>())
-                        .subscribe(conversation
-                                -> handleStartPaginationStatus(paginationStatus, conversation));
+                DataConversation conversation = loadConversationDelegate
+                        .loadConversationFromDb(conversationId).toBlocking().first();
+                handleStartPaginationStatus(paginationStatus, conversation);
                 break;
             case SUCCESS:
                 if (paginationStatus.getPage() == 1 && paginationStatus.getLoadedElementsCount() == 0) {

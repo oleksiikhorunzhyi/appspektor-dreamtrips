@@ -15,6 +15,7 @@ import de.greenrobot.event.EventBus;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.schedulers.Schedulers;
 
 @CommandAction
 public class GlobalConfigCommand extends Command<AppConfig> implements InjectableAction {
@@ -29,7 +30,7 @@ public class GlobalConfigCommand extends Command<AppConfig> implements Injectabl
 
     @Override
     protected void run(CommandCallback<AppConfig> callback) throws Throwable {
-        janet.createPipe(GetGlobalConfigurationHttpAction.class)
+        janet.createPipe(GetGlobalConfigurationHttpAction.class, Schedulers.io())
                 .createObservableResult(new GetGlobalConfigurationHttpAction())
                 .map(GetGlobalConfigurationHttpAction::getAppConfig)
                 .doOnNext(this::processAppConfig)

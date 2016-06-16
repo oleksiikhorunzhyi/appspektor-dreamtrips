@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbs
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -25,7 +24,6 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 @CommandAction
 public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAction {
@@ -60,7 +58,6 @@ public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAc
 
         Observable.zip(sessionQueries, args -> (Void) null)
                 .timeout(30, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.from(Executors.newFixedThreadPool(5)))
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 
@@ -80,11 +77,12 @@ public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAc
     private Observable<ArrayList<Circle>> circles() {
         return Observable.just(featureManager.available(Feature.SOCIAL))
                 .flatMap(featureAvailable -> {
-                    if (!featureAvailable) {
-                        return Observable.just(new ArrayList<>());
-                    } else {
-                        return queryCirclesInteractor.pipe().createObservableResult(new CirclesCommand())
+                    if (featureAvailable) {
+                        return queryCirclesInteractor.pipe()
+                                .createObservableResult(new CirclesCommand())
                                 .map(Command::getResult);
+                    } else {
+                        return Observable.just(new ArrayList<>());
                     }
                 });
     }

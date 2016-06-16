@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.schedulers.Schedulers;
 
 @CommandAction
 public class AppSettingsCommand extends Command<SettingsHolder> implements InjectableAction, UiErrorAction {
@@ -25,7 +26,7 @@ public class AppSettingsCommand extends Command<SettingsHolder> implements Injec
 
     @Override
     protected void run(CommandCallback<SettingsHolder> callback) throws Throwable {
-        janet.createPipe(GetAppSettingsHttpAction.class)
+        janet.createPipe(GetAppSettingsHttpAction.class, Schedulers.io())
                 .createObservableResult(new GetAppSettingsHttpAction())
                 .map(GetAppSettingsHttpAction::getSettingsHolder)
                 .doOnNext(action -> {

@@ -20,6 +20,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @CommandAction
 public class StaticPageConfigCommand extends Command<StaticPageConfig> implements InjectableAction {
@@ -36,9 +37,10 @@ public class StaticPageConfigCommand extends Command<StaticPageConfig> implement
 
     @Override
     protected void run(CommandCallback<StaticPageConfig> callback) throws Throwable {
-        this.configPipe = janet.createPipe(GetStaticPagesHttpAction.class);
+        configPipe = janet.createPipe(GetStaticPagesHttpAction.class, Schedulers.io());
         Observable.concat(fromCache(), fromNetwork())
-                .first(sp -> sp != null).subscribe(callback::onSuccess, callback::onFail);
+                .first(sp -> sp != null)
+                .subscribe(callback::onSuccess, callback::onFail);
     }
 
     private Observable<StaticPageConfig> fromNetwork() {

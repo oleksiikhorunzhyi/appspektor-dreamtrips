@@ -16,6 +16,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @CommandAction
 public class TripsFilterDataCommand extends Command<Pair<GetActivitiesHttpAction, GetRegionsHttpAction>> implements InjectableAction, UiErrorAction {
@@ -27,11 +28,15 @@ public class TripsFilterDataCommand extends Command<Pair<GetActivitiesHttpAction
 
     @Override
     protected void run(CommandCallback<Pair<GetActivitiesHttpAction, GetRegionsHttpAction>> callback) {
-        ActionPipe<GetActivitiesHttpAction> activitiesActionPipe = janet.createPipe(GetActivitiesHttpAction.class);
-        ActionPipe<GetRegionsHttpAction> regionsActionPipe = janet.createPipe(GetRegionsHttpAction.class);
+        ActionPipe<GetActivitiesHttpAction> activitiesActionPipe = janet
+                .createPipe(GetActivitiesHttpAction.class, Schedulers.io());
+        ActionPipe<GetRegionsHttpAction> regionsActionPipe = janet
+                .createPipe(GetRegionsHttpAction.class, Schedulers.io());
 
-        Observable<GetActivitiesHttpAction> activitiesObservable = activitiesActionPipe.createObservableResult(new GetActivitiesHttpAction());
-        Observable<GetRegionsHttpAction> regionsObservable = regionsActionPipe.createObservableResult(new GetRegionsHttpAction());
+        Observable<GetActivitiesHttpAction> activitiesObservable = activitiesActionPipe
+                .createObservableResult(new GetActivitiesHttpAction());
+        Observable<GetRegionsHttpAction> regionsObservable = regionsActionPipe
+                .createObservableResult(new GetRegionsHttpAction());
 
         Observable.zip(activitiesObservable, regionsObservable, Pair::new)
                 .doOnNext(pair -> {

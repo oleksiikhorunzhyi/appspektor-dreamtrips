@@ -20,6 +20,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 @CommandAction
 public class LocalesCommand extends Command<List<AvailableLocale>> implements InjectableAction, UiErrorAction {
@@ -33,7 +34,7 @@ public class LocalesCommand extends Command<List<AvailableLocale>> implements In
 
     @Override
     protected void run(CommandCallback<List<AvailableLocale>> callback) throws Throwable {
-        this.localeActionActionPipe = janet.createPipe(GetLocalesHttpAction.class);
+        localeActionActionPipe = janet.createPipe(GetLocalesHttpAction.class, Schedulers.io());
         Observable.concat(fromCache(), fromNetwork())
                 .first(availableLocales -> availableLocales != null && !availableLocales.isEmpty())
                 .subscribe(callback::onSuccess, callback::onFail);

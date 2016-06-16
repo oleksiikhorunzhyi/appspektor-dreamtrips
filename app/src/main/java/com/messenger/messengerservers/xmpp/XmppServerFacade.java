@@ -4,7 +4,6 @@ import android.net.SSLCertificateSocketFactory;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.innahema.collections.query.functions.Predicate;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -16,12 +15,13 @@ import com.messenger.messengerservers.xmpp.util.StringGenerator;
 import com.messenger.util.CrashlyticsTracker;
 import com.worldventures.dreamtrips.BuildConfig;
 
+import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.PingManager;
 
@@ -59,6 +59,14 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final BehaviorSubject<XMPPConnection> connectionSubject = BehaviorSubject.create();
     private final BehaviorSubject<ConnectionStatus> connectionStatusSubject = BehaviorSubject.create();
 
+    private final ConnectionListener connectionListener = new AbstractConnectionClosedListener() {
+
+        @Override
+        public void connectionTerminated() {
+            connectionStatusSubject.onNext(ConnectionStatus.DISCONNECTED);
+        }
+    };
+
     public XmppServerFacade(XmppServerParams serverParams, XmppGlobalEventEmitter globalEventEmitter, Gson gson) {
         this.serverParams = serverParams;
         this.gson = gson;
@@ -82,7 +90,9 @@ public class XmppServerFacade implements MessengerServerFacade {
                 .setSendPresence(false)
                 .setDebuggerEnabled(BuildConfig.DEBUG)
                 .build());
+
         connection.setPacketReplyTimeout(PACKET_REPLAY_TIMEOUT);
+        connection.addConnectionListener(connectionListener);
         connection.addAsyncStanzaListener(packet -> CrashlyticsTracker.trackError(new SmackException(packet.toString())),
                 stanza -> stanza != null && stanza.getError() != null && !TextUtils.isEmpty(stanza.getError().toString()));
         return connection;

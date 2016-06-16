@@ -107,7 +107,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     private void bindApiJob() {
-        transactionInteractor.estimatePointsActionPipe().observeWithReplay()
+        transactionInteractor.estimatePointsActionPipe().observe()
                 .takeUntil(state -> state.status == ActionState.Status.SUCCESS
                         || state.status == ActionState.Status.FAIL)
                 .compose(bindViewIoToMainComposer())

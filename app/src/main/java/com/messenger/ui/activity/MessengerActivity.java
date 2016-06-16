@@ -44,11 +44,10 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         super.onCreate(savedInstanceState);
         //
         MonitoringHelper.setInteractionName(this);
-        //
-        conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         //
         initPickerLayout();
         //

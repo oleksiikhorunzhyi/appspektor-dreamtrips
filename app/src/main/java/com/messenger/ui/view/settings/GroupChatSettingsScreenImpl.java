@@ -7,10 +7,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
@@ -76,10 +74,12 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
 
     @Override
     public void setOwner(DataUser owner) {
-        String createdByText = getResources()
-                .getString(R.string.chat_settings_group_chat_info_text_format, owner.getName());
-        infoTextView.setVisibility(VISIBLE);
-        infoTextView.setText(createdByText);
+        if (owner != null) {
+            String createdByText = getResources()
+                    .getString(R.string.chat_settings_group_chat_info_text_format, owner.getName());
+            infoTextView.setVisibility(VISIBLE);
+            infoTextView.setText(createdByText);
+        }
     }
 
     @Override

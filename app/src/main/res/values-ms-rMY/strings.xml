@@ -620,4 +620,16 @@
 
     <string name="location_name_length_message">Nama lokasi tidak boleh melebihi 255 aksara.</string>
 
+    <string name="featured_trip">Perjalanan Yang Ditampilkan</string>
+    <string name="sold_out_trip">Habis Jual</string>
+
+    <string name="podcasts">Fail media digital</string>
+    <string name="delete_cached_podcast_title">Fail media digital</string>
+    <string name="delete_cached_podcast_text">Adakah anda pasti anda mahu menghapuskan fail media digital daripada cache setempat? </string>
+    <string name="cancel_cached_podcast_title">Fail media digital</string>
+    <string name="cancel_cached_podcast_text">Adakah anda pasti anda mahu batal muat turun fail?</string>
+    <string name="audio_app_not_found_exception">Aplikasi untuk memainkan audio tidak didapati</string>
+    <string name="complete_action_with">Lengkapkan tindakan dengan</string>
+    <string name="error_fail_to_load_podcast">Gagal untuk memuatkan fail media digital</string>
+
 </resources>

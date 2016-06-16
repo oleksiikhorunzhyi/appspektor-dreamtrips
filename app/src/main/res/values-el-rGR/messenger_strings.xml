@@ -52,9 +52,11 @@
     <string name="chat_subtitle_format_single_chat_online">σε σύνδεση</string>
     <string name="chat_subtitle_format_single_chat_offline">εκτός σύνδεσης</string>
     <string name="chat_subtitle_format_group_chat_format">%1$d μέλη, %2$d σε σύνδεση</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d μέλη</string>
     <string name="chat_subtitle_format_group_chat_offline">Κανένας συνδεδεμένος χρήστης </string>
     <string name="chat_message_edittext_hint">Το μήνυμά σας</string>
     <string name="chat_message_send_button_text">Αποστολή</string>
+    <string name="chat_message_sending_disabled">Δεν μπορείτε να στέλνετε μηνύματα γιατί δεν συμμετέχετε πλέον στη συζήτηση</string>
     <string name="chat_error_loading">Δεν φορτώθηκε το ιστορικό της συνομιλίας</string>
     <string name="chat_unread_messages_textview_format">Έχετε %1$d μη αναγνωσμένα μηνύματα</string>
     <string name="chat_more_typing_users_hint_format">και %1$d άλλα</string>
@@ -69,6 +71,11 @@
     <string name="chat_share_dialog_image">Κοινοποίηση εικόνας</string>
     <string name="chat_share_dialog_cancel">Ακύρωση</string>
     <string name="chat_could_not_share_location">Δεν μπορεί να γίνει κοινοποίηση τοποθεσίας</string>
+    <string name="chat_error_marker_not_delivered">Δεν Παραδόθηκε</string>
+    <string name="chat_retry_send_message_dialog_resend_message">Επαναποστολή μηνύματος;</string>
+    <string name="chat_retry_send_message_dialog_resend">ΕΠΑΝΑΛΗΨΗ ΑΠΟΣΤΟΛΗΣ</string>
+    <string name="chat_retry_send_message_dialog_cancel">Ακύρωση</string>
+
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Φόρτωση…</string>
     <string name="chat_flag_dialog_reason_title">Σημαία</string>
@@ -97,6 +104,7 @@
     <string name="chat_settings_row_clear_history">Καθαρισμός ιστορικού</string>
     <string name="chat_settings_row_leave_chat">Αποχώρηση από τη συνομιλία</string>
     <string name="chat_settings_row_delete_chat">Διαγραφή συνομιλίας</string>
+    <string name="chat_settings_group_chat_info_text_format">Αυτή η συνομιλία δημιουργήθηκε από %1$s στις %2$s</string>
     <string name="chat_settings_menu_settings">Ρυθμίσεις</string>
     <string name="chat_settings_menu_edit_chat_name">Επεξεργασία ονόματος συνομιλίας</string>
     <string name="chat_settings_menu_edit_change_chat_image">Αλλαγή εικόνας συνομιλίας</string>

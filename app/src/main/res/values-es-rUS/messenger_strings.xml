@@ -52,9 +52,11 @@
     <string name="chat_subtitle_format_single_chat_online">en internet</string>
     <string name="chat_subtitle_format_single_chat_offline">no en internet</string>
     <string name="chat_subtitle_format_group_chat_format">%1$d miembros, %2$d conectados a internet</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d miembros</string>
     <string name="chat_subtitle_format_group_chat_offline">No hay usuarios conectados</string>
     <string name="chat_message_edittext_hint">Tu mensaje</string>
     <string name="chat_message_send_button_text">Enviar</string>
+    <string name="chat_message_sending_disabled">No puedes enviar mensajes porque ya no eres un participante.</string>
     <string name="chat_error_loading">No se pudo cargar el historial de chat</string>
     <string name="chat_unread_messages_textview_format">Tienes %1$d mensajes no leídos</string>
     <string name="chat_more_typing_users_hint_format">y %1$d Más</string>
@@ -69,6 +71,11 @@
     <string name="chat_share_dialog_image">Compartir imagen</string>
     <string name="chat_share_dialog_cancel">Cancelar</string>
     <string name="chat_could_not_share_location">No se pudo compartir ubicación</string>
+    <string name="chat_error_marker_not_delivered">No enviado</string>
+    <string name="chat_retry_send_message_dialog_resend_message">¿Volver a enviar el mensaje ? </string>
+    <string name="chat_retry_send_message_dialog_resend">REENVIAR</string>
+    <string name="chat_retry_send_message_dialog_cancel">Cancelar</string>
+
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Cargando...</string>
     <string name="chat_flag_dialog_reason_title">Marcar</string>
@@ -97,6 +104,7 @@
     <string name="chat_settings_row_clear_history">Borrar historial</string>
     <string name="chat_settings_row_leave_chat">Dejar chat</string>
     <string name="chat_settings_row_delete_chat">Borrar chat</string>
+    <string name="chat_settings_group_chat_info_text_format">Este chat fue creado por %1$s en %2$s</string>
     <string name="chat_settings_menu_settings">Configuraciones</string>
     <string name="chat_settings_menu_edit_chat_name">Editar nombre de chat</string>
     <string name="chat_settings_menu_edit_change_chat_image">Cambiar imagen de chat</string>

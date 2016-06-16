@@ -52,9 +52,11 @@
     <string name="chat_subtitle_format_single_chat_online">online</string>
     <string name="chat_subtitle_format_single_chat_offline">offline</string>
     <string name="chat_subtitle_format_group_chat_format">%1$d membri, %2$d online</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d membri</string>
     <string name="chat_subtitle_format_group_chat_offline">Niciun utilizator online </string>
     <string name="chat_message_edittext_hint">Mesajul dvs. </string>
     <string name="chat_message_send_button_text">Trimiteți</string>
+    <string name="chat_message_sending_disabled">Nu puteți să trimiteți mesaje deoarece nu mai sunteți participant</string>
     <string name="chat_error_loading">Istoria conversației nu s-a putut încărca </string>
     <string name="chat_unread_messages_textview_format">Aveți %1$d mesaje necitite </string>
     <string name="chat_more_typing_users_hint_format">și încă %1$d</string>
@@ -69,6 +71,11 @@
     <string name="chat_share_dialog_image">Partajați imaginea</string>
     <string name="chat_share_dialog_cancel">Anulați</string>
     <string name="chat_could_not_share_location">Nu s-a putut partaja locația</string>
+    <string name="chat_error_marker_not_delivered">Nu a fost livrat</string>
+    <string name="chat_retry_send_message_dialog_resend_message">Retrimiteți mesajul?</string>
+    <string name="chat_retry_send_message_dialog_resend">Retrimiteți</string>
+    <string name="chat_retry_send_message_dialog_cancel">Anulați</string>
+
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Se încarcă…</string>
     <string name="chat_flag_dialog_reason_title">Marcați</string>
@@ -97,6 +104,7 @@
     <string name="chat_settings_row_clear_history">Goliți istoricul</string>
     <string name="chat_settings_row_leave_chat">Păsăriți chatul</string>
     <string name="chat_settings_row_delete_chat">Ștergeți chat</string>
+    <string name="chat_settings_group_chat_info_text_format">Această conversație a fost creată de %1$s în data de %2$s </string>
     <string name="chat_settings_menu_settings">Setări</string>
     <string name="chat_settings_menu_edit_chat_name">Editați numele conversației</string>
     <string name="chat_settings_menu_edit_change_chat_image">Schimbați imaginea chatului</string>

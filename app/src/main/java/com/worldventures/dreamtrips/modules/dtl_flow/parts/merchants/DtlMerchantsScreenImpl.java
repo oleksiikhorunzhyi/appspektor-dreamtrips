@@ -156,6 +156,8 @@ public class DtlMerchantsScreenImpl
     @Override
     public void showProgress() {
         weakHandler.post(() -> {
+            if (refreshLayout == null) return;
+            //
             refreshLayout.setRefreshing(true);
             emptyView.setVisibility(GONE);
         });
@@ -164,6 +166,8 @@ public class DtlMerchantsScreenImpl
     @Override
     public void hideProgress() {
         weakHandler.post(() -> {
+            if (refreshLayout == null) return;
+            //
             refreshLayout.setRefreshing(false);
             emptyView.setVisibility(VISIBLE);
         });

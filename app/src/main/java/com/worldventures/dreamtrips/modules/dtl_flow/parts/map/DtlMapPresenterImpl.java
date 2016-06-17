@@ -104,6 +104,14 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     }
 
     protected void connectInteractors() {
+        // TODO :: temporary solutions
+        locationInteractor.locationPipe().observeSuccess()
+                .map(DtlLocationCommand::getResult)
+                .filter(command -> tabletAnalytic.isTabletLandscape())
+                .distinctUntilChanged(loc -> loc.getCoordinates().asLatLng())
+                .map(DtlLocation::getCoordinates)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(loc -> getView().animateTo(loc.asLatLng(), 0));
         merchantInteractor.merchantsActionPipe()
                 .observe()
                 .compose(bindViewIoToMainComposer())
@@ -247,6 +255,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
     @Override
     public void onMapLoaded() {
         mapReady = true;
+        //
         connectInteractors();
         //
         getFirstCenterLocation()
@@ -266,6 +275,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> tryHideMyLocationButton(false),
                         throwable -> tryHideMyLocationButton(true));
+
     }
 
     @Override

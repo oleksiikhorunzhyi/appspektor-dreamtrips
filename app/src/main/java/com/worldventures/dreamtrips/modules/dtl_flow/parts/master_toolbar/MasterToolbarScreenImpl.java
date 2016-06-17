@@ -49,7 +49,7 @@ import timber.log.Timber;
 
 public class MasterToolbarScreenImpl
         extends DtlLayout<MasterToolbarScreen, MasterToolbarPresenter, MasterToolbarPath>
-        implements MasterToolbarScreen, ActivityResultDelegate.ActivityResultListener, CellDelegate<DtlExternalLocation> {
+        implements MasterToolbarScreen, ActivityResultDelegate.ActivityResultListener {
 
     @Inject
     ActivityResultDelegate activityResultDelegate;
@@ -157,8 +157,9 @@ public class MasterToolbarScreenImpl
         adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injector);
         adapter.registerCell(DtlExternalLocation.class, DtlLocationSearchCell.class);
         adapter.registerCell(DtlLocationSearchHeaderCell.HeaderModel.class, DtlLocationSearchHeaderCell.class);
-        adapter.registerDelegate(DtlExternalLocation.class, this);
-        adapter.registerDelegate(DtlLocationSearchHeaderCell.HeaderModel.class, aVoid -> getPresenter().loadNearMeRequested());
+        //
+        adapter.registerDelegate(DtlExternalLocation.class, location -> onLocationClicked((DtlExternalLocation) location));
+        adapter.registerDelegate(DtlLocationSearchHeaderCell.HeaderModel.class, aVoid -> onNearMeClicked());
         //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.dtl_location_change_list_divider), false));
@@ -212,10 +213,14 @@ public class MasterToolbarScreenImpl
         ViewUtils.setViewVisibility(View.VISIBLE, recyclerView);
     }
 
-    @Override
-    public void onCellClicked(DtlExternalLocation location) {
+    public void onLocationClicked(DtlExternalLocation location) {
         hideSoftInput();
         getPresenter().locationSelected(location);
+    }
+
+    private void onNearMeClicked() {
+        hideSoftInput();
+        getPresenter().loadNearMeRequested();
     }
 
     @Override

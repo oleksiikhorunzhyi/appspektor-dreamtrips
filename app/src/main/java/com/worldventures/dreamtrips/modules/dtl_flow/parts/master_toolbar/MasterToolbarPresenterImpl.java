@@ -99,6 +99,10 @@ public class MasterToolbarPresenterImpl
         connectLocationDelegateNoFallback();
         connectToolbarLocationSearchInput();
         //
+        connectFilterToogle();
+    }
+
+    private void connectFilterToogle() {
         filterInteractor.filterDataPipe().observeSuccessWithReplay()
                 .first()
                 .map(DtlFilterDataAction::getResult)

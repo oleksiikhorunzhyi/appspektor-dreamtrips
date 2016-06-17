@@ -43,11 +43,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@color/black"
             android:textSize="@dimen/font_normal"
             android:textStyle="bold"
-            tools:text="NYC TV AND MOVIE TOUR"/>
+            tools:text="NYC TV AND MOVIE TOUR AND EWE CALIFORNIA. MOJNO EHAT TRALALA"/>
 
         <TextView
             android:id="@+id/trip_location"
@@ -69,9 +69,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/trip_price"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/blue"
             android:textSize="@dimen/font_medium"
-            tools:text="Aug 26-29, 2016"/>
+            tools:text="Aug 26, 2016-Aug 29, 2016"/>
 
         <TextView
             android:id="@+id/trip_price"

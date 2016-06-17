@@ -14,6 +14,9 @@ import timber.log.Timber;
 public class ChatStateExtension implements ExtensionElement {
     public static final String NAMESPACE = "jabber:x:event";
     public static final String ELEMENT = "x";
+
+    public static final String ELEMENT_COMPOSING = "composing";
+    public static final String ELEMENT_DISPLAYED = "displayed";
     @ChatState.State
     private final String state;
 
@@ -64,12 +67,16 @@ public class ChatStateExtension implements ExtensionElement {
                     String name = parser.getName();
                     if (name == null) continue;
                     switch (name) {
-                        case "composing":
+                        case ELEMENT_COMPOSING:
                             return new ChatStateExtension(ChatState.COMPOSING);
+                        case ELEMENT_DISPLAYED:
+                            state = ChatState.NONE;
+                            break;
                     }
                 }
             }
             catch (Exception ex) {
+                state = ChatState.NONE;
                 Timber.e(ex, "ChatStateExtension pars xml");
             }
             return new ChatStateExtension(state);

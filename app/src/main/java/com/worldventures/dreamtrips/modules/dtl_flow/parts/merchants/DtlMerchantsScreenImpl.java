@@ -52,7 +52,6 @@ public class DtlMerchantsScreenImpl
     //
     BaseDelegateAdapter baseDelegateAdapter;
     SelectionManager selectionManager;
-    WeakHandler weakHandler;
 
     @Override
     protected void onFinishInflate() {
@@ -65,7 +64,6 @@ public class DtlMerchantsScreenImpl
         super.onPostAttachToWindowView();
         initDtlToolbar();
         //
-        weakHandler = new WeakHandler(Looper.getMainLooper());
         baseDelegateAdapter = new BaseDelegateAdapter(getActivity(), injector);
         baseDelegateAdapter.registerCell(DtlMerchant.class, DtlMerchantExpandableCell.class);
         baseDelegateAdapter.registerDelegate(DtlMerchant.class, this);
@@ -143,7 +141,8 @@ public class DtlMerchantsScreenImpl
     @Override
     public void setItems(List<DtlMerchant> merchants) {
         hideProgress();
-        weakHandler.post(() -> baseDelegateAdapter.setItems(merchants));
+        //
+        baseDelegateAdapter.setItems(merchants);
     }
 
     @Override
@@ -155,22 +154,14 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public void showProgress() {
-        weakHandler.post(() -> {
-            if (refreshLayout == null) return;
-            //
-            refreshLayout.setRefreshing(true);
-            emptyView.setVisibility(GONE);
-        });
+        refreshLayout.setRefreshing(true);
+        emptyView.setVisibility(GONE);
     }
 
     @Override
     public void hideProgress() {
-        weakHandler.post(() -> {
-            if (refreshLayout == null) return;
-            //
-            refreshLayout.setRefreshing(false);
-            emptyView.setVisibility(VISIBLE);
-        });
+        refreshLayout.setRefreshing(false);
+        emptyView.setVisibility(VISIBLE);
     }
 
     @Override

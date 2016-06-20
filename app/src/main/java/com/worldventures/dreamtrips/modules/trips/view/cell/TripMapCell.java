@@ -41,7 +41,7 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
         location.setText(getModelObject().getGeoLocation().getName());
         date.setText(getModelObject().isHasMultipleDates()
                 ? String.format(date.getResources().getString(R.string.multiple_dates), getModelObject().getAvailabilityDates().getStartDateString())
-                : getModelObject().getAvailabilityDates().getDateWithYear());
+                : getModelObject().getAvailabilityDates().toString());
         price.setText(getModelObject().getPrice().toString());
         if (getModelObject().isFeatured()) {
             mark.setBackgroundColor(itemView.getResources().getColor(R.color.bucket_blue));

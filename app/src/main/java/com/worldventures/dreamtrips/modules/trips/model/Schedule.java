@@ -67,7 +67,8 @@ public class Schedule implements Serializable {
         return simpleDateFormatMonthDay.format(getStartDate());
     }
 
-    public String getDateWithYear() {
+    @Override
+    public String toString() {
         Calendar calendarStart = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         calendarStart.setTimeInMillis(startOn.getTime());
         Calendar calendarEnd = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -82,21 +83,5 @@ public class Schedule implements Serializable {
                         simpleDateFormatYearMonthDay.format(getEndDate()) :
                         simpleDateFormatYearDay.format(getEndDate()))
                 .toString();
-    }
-
-    @Override
-    public String toString() {
-        Calendar calendarStart = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendarStart.setTimeInMillis(startOn.getTime());
-        Calendar calendarEnd = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        calendarEnd.setTimeInMillis(endOn.getTime());
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(simpleDateFormatMonthDay.format(getStartDate()));
-        builder.append(" - ");
-        builder.append(calendarEnd.get(Calendar.MONTH) != calendarStart.get(Calendar.MONTH) ?
-                simpleDateFormatMonthDay.format(getEndDate()) :
-                simpleDateFormatDay.format(getEndDate()));
-        return builder.toString();
     }
 }

@@ -10,6 +10,7 @@ import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.command.ChangeAvatarCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import java.io.File;
@@ -28,6 +30,7 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -100,7 +103,14 @@ public class MultiChatSettingsScreenPresenter extends ChatSettingsScreenPresente
         //noinspection ConstantConditions
         getView().showChangingAvatarProgressBar();
         getViewState().setUploadAvatar(UploadingState.UPLOADING);
-        conversationAvatarDelegate.setAvatarToConversation(conversationId, path);
+        // delay setting avatar till sync is finished to avoid scenario when its value in
+        // our database is overriden by cached data from sync
+        connectionStatusStream
+                .filter(status -> status == SyncStatus.CONNECTED)
+                .take(1)
+                .subscribe(syncStatus -> {
+                    conversationAvatarDelegate.setAvatarToConversation(conversationId, path);
+                });
     }
 
     protected void onChangeAvatarSuccess() {

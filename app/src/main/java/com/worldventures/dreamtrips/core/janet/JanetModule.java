@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.modules.membership.presenter.interactor.PodcastInteractor;
 
 import java.net.CookieManager;
-import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -93,7 +92,7 @@ public class JanetModule {
 
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionService provideAnalyticsService(Collection<Tracker> trackers) {
+    ActionService provideAnalyticsService(Set<Tracker> trackers) {
         return new AnalyticsService(trackers);
     }
 

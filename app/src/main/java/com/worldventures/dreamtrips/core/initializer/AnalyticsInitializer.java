@@ -5,14 +5,14 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
-import java.util.Collection;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 public class AnalyticsInitializer implements AppInitializer {
 
     @Inject
-    Collection<Tracker> trackers;
+    Set<Tracker> trackers;
 
     @Override
     public void initialize(Injector injector) {

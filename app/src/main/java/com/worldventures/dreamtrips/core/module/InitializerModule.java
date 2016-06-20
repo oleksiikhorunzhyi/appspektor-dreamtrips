@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.messenger.di.MessengerInitializerModule;
 import com.techery.spares.application.AppInitializer;
+import com.worldventures.dreamtrips.core.initializer.AnalyticsInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.initializer.DtlInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
@@ -30,7 +31,7 @@ import dagger.Provides;
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
                 DtlInitializer.class,
-
+                AnalyticsInitializer.class,
         },
         includes = {
                 MessengerInitializerModule.class
@@ -44,6 +45,11 @@ public class InitializerModule {
         return injector -> {
             //nothing to do here
         };
+    }
+
+    @Provides(type = Provides.Type.SET)
+    AppInitializer provideAnalyticsInitializer() {
+        return new AnalyticsInitializer();
     }
 
     @Provides(type = Provides.Type.SET)

@@ -1,16 +1,18 @@
 package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 
 import com.adobe.mobile.Analytics;
 import com.adobe.mobile.Config;
 import com.worldventures.dreamtrips.BuildConfig;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdobeTracker extends ITracker {
+public class AdobeTracker extends Tracker {
+
+    public static final String TRACKER_KEY = "adobe_tracker";
 
     private static final String DEFAULT_PREFIX = "dta:";
 
@@ -18,18 +20,26 @@ public class AdobeTracker extends ITracker {
     private static final String CHANNEL_VALUE = "App:Dreamtrips";
 
     @Override
-    public void onCreate(BaseActivity activity) {
+    public String getKey() {
+        return TRACKER_KEY;
+    }
+
+    @Override
+    public void onCreate(@Nullable Activity activity) {
+        if (checkNullAndWarn(activity)) return;
         Config.setDebugLogging(BuildConfig.DEBUG);
         Config.setContext(activity.getApplicationContext());
     }
 
     @Override
-    public void onResume(Activity activity) {
+    public void onResume(@Nullable Activity activity) {
+        if (checkNullAndWarn(activity)) return;
         Config.collectLifecycleData();
     }
 
     @Override
-    public void onPause(Activity activity) {
+    public void onPause(@Nullable Activity activity) {
+        if (checkNullAndWarn(activity)) return;
         Config.pauseCollectingLifecycleData();
     }
 

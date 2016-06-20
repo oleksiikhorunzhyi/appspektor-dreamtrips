@@ -56,6 +56,7 @@ import dagger.Provides;
                 MessengerModule.class,
                 //
                 JanetModule.class,
+                AnalyticsModule.class,
                 SessionProcessingModule.class,
                 //
                 FlaggingModule.class,

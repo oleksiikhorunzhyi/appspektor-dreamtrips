@@ -14,8 +14,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
+import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
@@ -50,6 +52,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     LocationDelegate locationDelegate;
     @Inject
     DtlMerchantInteractor merchantInteractor;
+    @Inject
+    AnalyticsInteractor analyticsInteractor;
     @Inject
     DtlTransactionInteractor transactionInteractor;
     @Inject
@@ -195,7 +199,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         //
         getView().setTransaction(dtlTransaction);
         //
-        TrackingHelper.dtlCheckin(merchant.getId());
+        analyticsInteractor.send(new CheckinEvent(merchant));
     }
 
     @Override

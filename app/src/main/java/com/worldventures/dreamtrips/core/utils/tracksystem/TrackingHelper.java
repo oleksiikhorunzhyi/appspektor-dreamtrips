@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
-import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -19,10 +19,15 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
 import org.intellij.lang.annotations.MagicConstant;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Deprecated - use {@link AnalyticsInteractor}
+ */
+@Deprecated
 public class TrackingHelper {
 
     private static final String KEY_ADOBE_TRACKER = "adobe_tracker";
@@ -92,55 +97,54 @@ public class TrackingHelper {
     public static final String TYPE = "type";
     public static final String ID = "id";
 
-    private static Map<String, ITracker> trackers;
+    private static Map<String, Tracker> trackers = new HashMap<>();
 
-    static {
-        trackers = new HashMap<>(3);
-        trackers.put(KEY_ADOBE_TRACKER, new AdobeTracker());
-        trackers.put(KEY_APPTENTIVE_TRACKER, new ApptentiveTracker());
+    public static void init(Collection<Tracker> trackerSet) {
+        Queryable.from(trackerSet).forEachR(tracker ->
+                trackers.put(tracker.getKey(), tracker));
     }
 
     private TrackingHelper() {
     }
 
-    public static void onCreate(BaseActivity activity) {
-        for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
+    public static void onCreate(Activity activity) {
+        for (Map.Entry<String, Tracker> entry : trackers.entrySet()) {
             entry.getValue().onCreate(activity);
         }
     }
 
     public static void onStart(Activity activity) {
-        for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
+        for (Map.Entry<String, Tracker> entry : trackers.entrySet()) {
             entry.getValue().onStart(activity);
         }
     }
 
     public static void onStop(Activity activity) {
-        for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
+        for (Map.Entry<String, Tracker> entry : trackers.entrySet()) {
             entry.getValue().onStop(activity);
         }
     }
 
     public static void onResume(Activity activity) {
-        for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
+        for (Map.Entry<String, Tracker> entry : trackers.entrySet()) {
             entry.getValue().onResume(activity);
         }
     }
 
     public static void onPause(Activity activity) {
-        for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
+        for (Map.Entry<String, Tracker> entry : trackers.entrySet()) {
             entry.getValue().onPause(activity);
         }
     }
 
     public static void onSaveInstanceState(Bundle outState) {
-        for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
+        for (Map.Entry<String, Tracker> entry : trackers.entrySet()) {
             entry.getValue().onSaveInstanceState(outState);
         }
     }
 
     public static void onRestoreInstanceState(Bundle savedInstanceState) {
-        for (Map.Entry<String, ITracker> entry : trackers.entrySet()) {
+        for (Map.Entry<String, Tracker> entry : trackers.entrySet()) {
             entry.getValue().onRestoreInstanceState(savedInstanceState);
         }
     }
@@ -165,7 +169,6 @@ public class TrackingHelper {
         data.put(pageType, id);
         trackMemberAction(category, action, data);
     }
-
 
     ///////////////////////////////////////////////////////////////////////////
     // Tracking actions deprecated
@@ -626,7 +629,7 @@ public class TrackingHelper {
         }
     }
 
-    private static Map prepareAttributeMap(String attribute) {
+    public static Map prepareAttributeMap(String attribute) {
         Map data = new HashMap<>();
         if (attribute != null) data.put(attribute, "1");
         return data;

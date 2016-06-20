@@ -130,7 +130,10 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
                 .toList()
                 .subscribe(
                         this::onPodcastsLoaded,
-                        throwable -> view.informUser(new HumaneErrorTextFactory().create(throwable)));
+                        throwable -> {
+                            if (view != null)
+                                view.informUser(new HumaneErrorTextFactory().create(throwable));
+                        });
     }
 
     @NonNull
@@ -166,9 +169,12 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
         List<Object> items = new ArrayList<>();
         items.add(new MediaHeader(context.getString(R.string.recently_added)));
         items.addAll(podcasts);
-        view.setItems(items);
-        view.notifyItemChanged(null);
-        view.finishLoading();
+
+        if (view != null) {
+            view.setItems(items);
+            view.notifyItemChanged(null);
+            view.finishLoading();
+        }
 
         noMoreItems = podcasts.size() < PODCAST_PRE_PAGE;
         loading = false;

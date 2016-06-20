@@ -5,7 +5,8 @@
     <string name="dtl_merchant_tab_offers">报价</string>
     <string name="dtl_merchant_tab_dining">餐饮</string>
     <string name="dtl_near_me_caption">靠近我</string>
-    <string name="dtl_nearby_caption">附近</string>
+    <string name="dtl_nearby_caption_format">%1$s附近</string>
+    <string name="dtl_nearby_caption_empty">附近</string>
     <string name="dtl_autodetect_location">自动检测我的位置</string>
     <string name="dtl_no_merchants_caption">这里没有商家</string>
     <string name="dtl_load_merchants_here_button_caption">重做商家搜索</string>
@@ -45,6 +46,7 @@
     <string name="dtl_amount_invalid">金额无效</string>
     <string name="dtl_invalid">输入无效</string>
     <string name="dtl_verify_amount">确认金额</string>
+    <string name="dtl_verify_amount_note">注意： 金额应是发票上注明的总量，不包括小费和税</string>
     <string name="dtl_total_amount">总金额：</string>
     <string name="dtl_verify_earn_hint">您可以赚取 </string>
     <string name="dtl_check_in">入住并赚取</string>
@@ -54,8 +56,8 @@
     <string name="suggest_merchant_title">DT Local 工具</string>
     <string name="dtl_details_share_title">我将赚取%1$sDreamTrips点数</string>
     <string name="dtl_details_share_title_earned" formatted="false">我在%2$s赚取了%1$sDreamTrips点数</string>
-    <string name="dtl_wait_for_receipt">稍候…上传收据</string>
-    <string name="dtl_wait_for_earn">稍候…赚取点数</string>
+    <string name="dtl_wait_for_receipt">稍候...上传收据</string>
+    <string name="dtl_wait_for_earn">稍候...赚取点数</string>
     <string name="dtl_wait_for_offers">搜索附近的优惠。</string>
     <string name="dtl_wait_for_dinings">搜索附近的商家。</string>
     <string name="dtl_estimator_explanation">点数计算是根据在商家最低消费以及一周的哪一天</string>
@@ -71,9 +73,21 @@
     <string name="point_estimator">点数估计</string>
     <string name="km">公里</string>
     <string name="mi">英里</string>
+    <string name="points">点数</string>
+    <string name="perks">好处</string>
+    <string name="everyday">每天</string>
+    <string name="perks_terms">条款和条件</string>
+    <string name="perks_formatted" formatted="false">%1$d优惠</string>
     <string name="dtl_coming_soon_offers">报价即将推出</string>
     <string name="dtl_show_offers_only">只显示优惠</string>
+    <string name="dtl_earn_points">赚取DreamTrips点数</string>
     <string name="dtl_details_share_title_without_points">我使用DreamTrips应用程序发现了%1$s</string>
     <string name="details_collapsed_text_caption">显示更多</string>
     <string name="details_expanded_text_caption">显示更少</string>
+    <string name="offer_expiration_format">直到%1$s</string>
+
+    <!-- DtlToolbar strings -->
+    <string name="dtlt_search_hint">食品及饮料</string>
+    <!-- DtlFilterButton strings -->
+    <string name="dtlfb_caption">筛选</string>
 </resources>

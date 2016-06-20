@@ -5,7 +5,8 @@
     <string name="dtl_merchant_tab_offers">Προσφορές</string>
     <string name="dtl_merchant_tab_dining">Γεύματα</string>
     <string name="dtl_near_me_caption">Κοντά μου</string>
-    <string name="dtl_nearby_caption">Κοντά</string>
+    <string name="dtl_nearby_caption_format">κοντά %1$s</string>
+    <string name="dtl_nearby_caption_empty">Κοντά</string>
     <string name="dtl_autodetect_location">Αυτόματος εντοπισμός της τοποθεσίας μου</string>
     <string name="dtl_no_merchants_caption">Δεν υπάρχουν εμπορικά καταστήματα εδώ</string>
     <string name="dtl_load_merchants_here_button_caption">Νέα αναζήτηση εμπορικών καταστημάτων</string>
@@ -45,6 +46,7 @@
     <string name="dtl_amount_invalid">Το ποσό δεν είναι έγκυρο</string>
     <string name="dtl_invalid">Μη έγκυρη εισαγωγή</string>
     <string name="dtl_verify_amount">Επαλήθευση ποσού</string>
+    <string name="dtl_verify_amount_note">Σημείωση: Το ποσό θα πρέπει να είναι το συνολικό του λογαριασμού αφαιρουμένου του φόρου και του φιλοδωρήματος.</string>
     <string name="dtl_total_amount">Συνολικό ποσό:</string>
     <string name="dtl_verify_earn_hint">Μπορείτε να κερδίσετε </string>
     <string name="dtl_check_in">Δηλώστε παρουσία &amp; κερδίστε</string>
@@ -54,8 +56,8 @@
     <string name="suggest_merchant_title">Εργαλεία DT Local</string>
     <string name="dtl_details_share_title">Θα κερδίσω πόντους Dreamtrips σε %1$s</string>
     <string name="dtl_details_share_title_earned" formatted="false">Έχω κερδίσει %1$s DreamTrips Πόντους σε %2$s</string>
-    <string name="dtl_wait_for_receipt">Περιμένετε… Γίνεται αποστολή της απόδειξης</string>
-    <string name="dtl_wait_for_earn">Περιμένετε … Κερδίζετε πόντους</string>
+    <string name="dtl_wait_for_receipt">Περιμένετε... Γίνεται αποστολή της απόδειξης</string>
+    <string name="dtl_wait_for_earn">Περιμένετε ... Κερδίζετε πόντους</string>
     <string name="dtl_wait_for_offers">Αναζήτηση κοντινών προσφορών.</string>
     <string name="dtl_wait_for_dinings">Αναζήτηση κοντινών εμπορικών καταστημάτων.</string>
     <string name="dtl_estimator_explanation">Οι πόντοι υπολογίζονται βάσει ενός ελάχιστου ποσού που έχει δαπανηθεί στον έμπορο και της ημέρας της εβδομάδας</string>
@@ -71,9 +73,21 @@
     <string name="point_estimator">Εκτίμηση πόντων</string>
     <string name="km">χλμ.</string>
     <string name="mi">λεπ.</string>
+    <string name="points">Πόντοι</string>
+    <string name="perks">Προνόμια</string>
+    <string name="everyday">Καθημερινά</string>
+    <string name="perks_terms">Όροι &amp; Προϋποθέσεις</string>
+    <string name="perks_formatted" formatted="false">%1$d Δώρα</string>
     <string name="dtl_coming_soon_offers">Προσφορές που ξεκινούν προσεχώς</string>
     <string name="dtl_show_offers_only">Δείξε μόνο προσφορές</string>
+    <string name="dtl_earn_points">Κερδίστε DreamTrips Πόντους</string>
     <string name="dtl_details_share_title_without_points">Ανακάλυψα το %1$s χρησιμοποιώντας την εφαρμογή DreamTrips</string>
     <string name="details_collapsed_text_caption">Δείξε Περισσότερα</string>
     <string name="details_expanded_text_caption">Δείξε Λιγότερα</string>
+    <string name="offer_expiration_format">Μέχρι %1$s</string>
+
+    <!-- DtlToolbar strings -->
+    <string name="dtlt_search_hint">Φαγητό &amp; Ποτά</string>
+    <!-- DtlFilterButton strings -->
+    <string name="dtlfb_caption">Φίλτρα</string>
 </resources>

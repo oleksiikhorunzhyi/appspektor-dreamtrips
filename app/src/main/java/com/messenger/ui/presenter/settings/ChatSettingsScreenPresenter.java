@@ -1,5 +1,6 @@
-package com.messenger.ui.presenter;
+package com.messenger.ui.presenter.settings;
 
+import com.messenger.ui.presenter.MessengerPresenter;
 import com.messenger.ui.view.settings.ChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 
@@ -8,16 +9,6 @@ public interface ChatSettingsScreenPresenter<C extends ChatSettingsScreen> exten
 
     void onClearChatHistoryClicked();
 
-    void onLeaveChatClicked();
-
     void onNotificationsSwitchClicked(boolean isChecked);
-
-    void onMembersRowClicked();
-
-    void onConversationAvatarClick();
-
-    void applyNewChatSubject(String subject);
-
-    void onLeaveButtonClick();
 }
 

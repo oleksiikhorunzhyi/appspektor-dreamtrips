@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.parts.merchants;
 
 import android.content.Context;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.adapter.expandable.ExpandableLayoutManager;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -73,7 +75,6 @@ public class DtlMerchantsScreenImpl
         recyclerView.setEmptyView(emptyView);
         //
         refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
-        // we use SwipeRefreshLayout only for loading indicator - disable manual triggering by user
         refreshLayout.setEnabled(false);
     }
 
@@ -140,6 +141,7 @@ public class DtlMerchantsScreenImpl
     @Override
     public void setItems(List<DtlMerchant> merchants) {
         hideProgress();
+        //
         baseDelegateAdapter.setItems(merchants);
     }
 
@@ -153,11 +155,13 @@ public class DtlMerchantsScreenImpl
     @Override
     public void showProgress() {
         refreshLayout.setRefreshing(true);
+        emptyView.setVisibility(GONE);
     }
 
     @Override
     public void hideProgress() {
         refreshLayout.setRefreshing(false);
+        emptyView.setVisibility(VISIBLE);
     }
 
     @Override
@@ -174,13 +178,13 @@ public class DtlMerchantsScreenImpl
 
     @Override
     public boolean isToolbarCollapsed() {
-        if (dtlToolbar == null) return true;
-        return dtlToolbar.isCollapsed();
+        return dtlToolbar == null || dtlToolbar.isCollapsed();
     }
 
     @Override
     protected void onDetachedFromWindow() {
         selectionManager.release();
+        recyclerView.setAdapter(null);
         super.onDetachedFromWindow();
     }
 

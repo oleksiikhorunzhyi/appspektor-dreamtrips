@@ -85,6 +85,7 @@
     <string name="details_collapsed_text_caption">Show More</string>
     <string name="details_expanded_text_caption">Show Less</string>
     <string name="offer_expiration_format">Until %s</string>
+    <string name="merchants_list_empty_text">Places coming soon</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Food &amp; Drinks</string>

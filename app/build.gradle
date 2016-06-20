@@ -4,6 +4,7 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
+apply plugin: 'kotlin-android'
 //
 apply from: 'helper-methods.gradle'
 
@@ -19,6 +20,7 @@ repositories {
     maven { url "http://dl.bintray.com/populov/maven" }
     maven { url "https://github.com/shaubert/maven-repo/raw/master/snapshots" }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
+    maven { url "http://repository.jetbrains.com/all" }
 }
 
 android {
@@ -333,6 +335,9 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
     useLibrary 'org.apache.http.legacy'
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 def googleLibrariesVersion = '23.3.0'
@@ -463,13 +468,19 @@ dependencies {
 
     // Testing
     testCompile 'junit:junit:4.12'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
-    testCompile 'org.powermock:powermock-module-junit4:1.6.4'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.assertj:assertj-core:1.7.1'
     //
-    testCompile "org.powermock:powermock-module-junit4:1.6.4"
-    testCompile "org.powermock:powermock-module-junit4-rule:1.6.4"
-    testCompile "org.powermock:powermock-api-mockito:1.6.4"
-    testCompile "org.powermock:powermock-classloading-xstream:1.6.4"
+    testCompile 'org.powermock:powermock-module-junit4:1.6.4'
+    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.4'
+    testCompile 'org.powermock:powermock-api-mockito:1.6.4'
+    testCompile 'org.powermock:powermock-classloading-xstream:1.6.4'
+    testCompile 'org.jetbrains.spek:spek:1.0.9'
+    testCompile 'org.jetbrains.kotlin:kotlin-stdlib:1.0.2'
+    testCompile 'org.jetbrains.kotlin:kotlin-reflect:1.0.2'
+    testCompile 'io.reactivex:rxkotlin:0.55.0'
+    testCompile 'io.reactivex:rxjava:1.1.5'
+    testCompile ('com.nhaarman:mockito-kotlin:0.5.0'){
+        exclude group : 'org.mockito', module : 'mockito-core'
+    }
 }

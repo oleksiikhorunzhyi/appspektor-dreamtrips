@@ -8,27 +8,35 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/spacing_small">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/image"
-        android:layout_width="@dimen/size_huge"
-        android:layout_height="@dimen/size_huge"
-        fresco:actualImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/podcast_placeholder"
-        fresco:placeholderImageScaleType="fitXY"/>
+    <FrameLayout
+        android:id="@+id/image_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/play"
-        android:layout_width="@dimen/size_huge"
-        android:layout_height="@dimen/size_huge"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_podcast_play"/>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/image"
+            android:layout_width="@dimen/size_huge"
+            android:layout_height="@dimen/size_huge"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/podcast_placeholder"
+            fresco:placeholderImageScaleType="fitXY"/>
+
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="@dimen/podcast_play_icon_size"
+            android:layout_height="@dimen/podcast_play_icon_size"
+            android:scaleType="centerInside"
+            android:layout_gravity="bottom"
+            android:src="@drawable/ic_podcast_play_small"/>
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/spacing_small"
         android:layout_toLeftOf="@+id/download_progress"
-        android:layout_toRightOf="@id/image"
+        android:layout_toRightOf="@id/image_holder"
         android:orientation="vertical">
 
         <TextView
@@ -78,7 +86,7 @@
         android:id="@+id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/image"
+        android:layout_below="@+id/image_holder"
         android:layout_marginTop="@dimen/spacing_small"
         android:ellipsize="end"
         android:maxLines="2"

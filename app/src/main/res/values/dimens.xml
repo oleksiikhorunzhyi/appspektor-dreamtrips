@@ -75,6 +75,9 @@
     <dimen name="locale_flag_size_width">38dp</dimen>
     <dimen name="locale_flag_size_height">22dp</dimen>
 
+    <!-- dimen for video items -->
+    <dimen name="podcast_play_icon_size">24dp</dimen>
+
     /////Map info sizes
     <dimen name="map_trip_info_size">275dp</dimen>
     <dimen name="map_trip_image_size">150dp</dimen>

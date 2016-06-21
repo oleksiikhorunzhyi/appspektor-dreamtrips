@@ -29,7 +29,7 @@ public interface MasterToolbarScreen extends DtlScreen {
 
     void hideProgress();
 
-    void hideNearMeButton();
+    void updateButtonState();
 
     void showSearchPopup();
 

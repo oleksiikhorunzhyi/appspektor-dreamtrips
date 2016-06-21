@@ -28,10 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -55,6 +57,8 @@ public class MasterToolbarPresenterImpl
     ArrayList<DtlExternalLocation> dtlNearbyLocations = new ArrayList<>();
     //
     private Subscription locationRequestNoFallback;
+    //
+    private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.TRUE); // TODO move to action
 
     public MasterToolbarPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -183,8 +187,6 @@ public class MasterToolbarPresenterImpl
                 locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
                 filterInteractor.filterMerchantsActionPipe().clearReplays();
                 break;
-            case SEARCH:
-                break;
         }
     }
 
@@ -202,10 +204,11 @@ public class MasterToolbarPresenterImpl
     }
 
     private void tryHideNearMeButton() {
-        locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-                .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
+        locationInteractor.locationPipe().observeSuccess()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(command -> getView().hideNearMeButton());
+                .distinctUntilChanged(Command::getResult)
+                .doOnNext(command -> showAutodetectButton.set(command.getResult().getLocationSourceType() != LocationSourceType.NEAR_ME))
+                .subscribe(command -> getView().updateButtonState());
     }
 
     private void connectLocationsSearch() {
@@ -240,6 +243,11 @@ public class MasterToolbarPresenterImpl
     @Override
     public void onLocationResolutionDenied() {
         getView().hideProgress();
+    }
+
+    @Override
+    public boolean needShowAutodetectButton() {
+        return showAutodetectButton.get();
     }
 
     private void onLocationError(Throwable e) {

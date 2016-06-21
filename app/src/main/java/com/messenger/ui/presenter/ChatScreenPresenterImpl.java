@@ -48,6 +48,7 @@ import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.PickLocationDelegate;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
@@ -348,7 +349,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void retryClicked(DataMessage dataMessage) {
-        getView().showRetrySendMessageDialog(dataMessage);
+        loadConversationDelegate.loadConversationFromDb(conversationId)
+                .compose(bindViewIoToMainComposer())
+                .filter(ConversationHelper::isPresent)
+                .subscribe(conversation -> getView().showRetrySendMessageDialog(dataMessage));
     }
 
     @Override

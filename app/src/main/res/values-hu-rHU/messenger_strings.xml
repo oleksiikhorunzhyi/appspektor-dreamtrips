@@ -104,7 +104,7 @@
     <string name="chat_settings_row_clear_history">Előzmények törlése</string>
     <string name="chat_settings_row_leave_chat">Kilépés a csevegésből</string>
     <string name="chat_settings_row_delete_chat">Csevegés törlése</string>
-    <string name="chat_settings_group_chat_info_text_format">Ezt a csevegést %1$s ekkor: %2$s hozta létre</string>
+    <string name="chat_settings_group_chat_info_text_format">Ezt a csoportot %s hozta létre</string>
     <string name="chat_settings_menu_settings">Beállítások</string>
     <string name="chat_settings_menu_edit_chat_name">Csevegési név szerkesztése</string>
     <string name="chat_settings_menu_edit_change_chat_image">Beszélgetés kép módosítása</string>

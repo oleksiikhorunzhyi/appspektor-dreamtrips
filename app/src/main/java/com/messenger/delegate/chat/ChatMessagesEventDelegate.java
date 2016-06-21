@@ -1,5 +1,7 @@
 package com.messenger.delegate.chat;
 
+import android.util.Pair;
+
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
@@ -54,7 +56,13 @@ public class ChatMessagesEventDelegate {
     }
 
     public void onPreSendMessage(Message message) {
-        saveMessage(message, MessageStatus.SENDING);
+        conversationsDAO.getConversation(message.getConversationId()).take(1)
+                // to be on par with iOS app do not set status
+                // SENDING to messages being resent to from abandoned conversations
+                // so that "Not Delivered" would not disappear
+                .map(conversation -> ConversationHelper.isAbandoned(conversation)
+                        ? MessageStatus.ERROR : MessageStatus.SENDING)
+                .subscribe(status -> saveMessage(message, status));
     }
 
     public void onSendMessage(Message message) {

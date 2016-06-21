@@ -50,7 +50,7 @@
         android:padding="6dp"
         >
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -59,32 +59,34 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 android:src="@drawable/perks_icon"
-                />
+                android:id="@+id/perkTitleImage"/>
 
             <TextView
                 android:id="@+id/perks_title"
-                style="@style/DreamMerchantTextAppearance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="31dp"
+                style="@style/DreamMerchantTextAppearance"
+                android:layout_toRightOf="@+id/perkTitleImage"
                 android:maxLines="2"
-                tools:text="Complimentary Margarita"
-                />
-        </FrameLayout>
+                android:textSize="15sp"
+                android:paddingTop="2dp"
+                android:paddingBottom="4dp"
+                tools:text="Complimentary Margarita"/>
 
         <TextView
             android:id="@+id/perks_operation_days"
-            style="@style/DreamMerchantHeaderTextAppearance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="31dp"
-            android:textColor="@color/dtl_tab_indicator"
+            style="@style/DreamMerchantHeaderTextAppearance"
             android:textSize="12sp"
+            android:textColor="@color/dtl_tab_indicator"
+            android:layout_toRightOf="@+id/perkTitleImage"
+            android:layout_below="@id/perks_title"
             tools:text="Everyday"
             />
+        </RelativeLayout>
     </LinearLayout>
 
     <ImageView

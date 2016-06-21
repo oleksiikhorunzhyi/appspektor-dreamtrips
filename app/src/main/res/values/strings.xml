@@ -632,4 +632,6 @@
     <string name="complete_action_with">Complete action with</string>
     <string name="error_fail_to_load_podcast">Failed to load podcast</string>
 
+    <string name="min">min</string>
+
 </resources>

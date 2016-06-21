@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class SingleChatSettingsScreenPresenterImpl extends BaseChatSettingsScreenPresenter<ChatSettingsScreen>
+public class SingleChatSettingsScreenPresenterImpl extends BaseChatSettingsScreenPresenterImpl<ChatSettingsScreen>
         implements SingleChatSettingsScreenPresenter {
 
     @Inject ProfileCrosser profileCrosser;

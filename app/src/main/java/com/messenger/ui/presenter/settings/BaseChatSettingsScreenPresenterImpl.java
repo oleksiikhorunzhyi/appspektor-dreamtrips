@@ -23,8 +23,8 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public abstract class BaseChatSettingsScreenPresenter<C extends ChatSettingsScreen> extends MessengerPresenterImpl<C,
-        ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
+public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettingsScreen>
+        extends MessengerPresenterImpl<C, ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
 
     protected String conversationId;
     protected Observable<DataConversation> conversationObservable;
@@ -34,7 +34,7 @@ public abstract class BaseChatSettingsScreenPresenter<C extends ChatSettingsScre
     @Inject MessengerServerFacade facade;
     @Inject ConversationsDAO conversationsDAO;
 
-    public BaseChatSettingsScreenPresenter(Context context, Injector injector, String conversationId) {
+    public BaseChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector);
         this.conversationId = conversationId;
     }

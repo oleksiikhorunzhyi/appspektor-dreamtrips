@@ -2,6 +2,8 @@ package com.messenger.ui.view.settings;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -25,6 +27,7 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
+import rx.functions.Action0;
 
 public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath>
         extends BaseChatSettingsScreen<GroupChatSettingsScreen, GroupChatSettingsScreenPresenter, P>
@@ -155,5 +158,12 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath>
     @Override
     public void setLeaveButtonVisible(boolean visible) {
         leaveChatButton.setVisibility(visible ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void showMessage(@StringRes int text, Action0 action) {
+        Snackbar.make(this, text, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.retry, v -> action.call())
+                .show();
     }
 }

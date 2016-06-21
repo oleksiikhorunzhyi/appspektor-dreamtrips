@@ -12,6 +12,7 @@ import com.messenger.delegate.command.ChangeAvatarCommand;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.view.settings.GroupChatSettingsScreen;
 import com.messenger.ui.viewstate.ChatSettingsViewState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -30,7 +31,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsScreenPresenter {
+public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsScreenPresenterImpl {
 
     @Inject CropImageDelegate cropImageDelegate;
     @Inject PermissionDispatcher permissionDispatcher;
@@ -174,4 +175,22 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
                 });
     }
 
+    protected void onChangeAvatarSuccess() {
+        getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.UPLOADED);
+        GroupChatSettingsScreen screen = getView();
+        if (screen != null) {
+            screen.invalidateToolbarMenu();
+            screen.hideChangingAvatarProgressBar();
+        }
+    }
+
+    protected void onChangeAvatarFailed(Throwable throwable) {
+        getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.ERROR);
+        Timber.e(throwable, "");
+        GroupChatSettingsScreen screen = getView();
+        if (screen != null) {
+            screen.hideChangingAvatarProgressBar();
+            screen.showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+        }
+    }
 }

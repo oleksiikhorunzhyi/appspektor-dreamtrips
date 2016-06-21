@@ -14,7 +14,6 @@ import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatPath;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
-import com.messenger.ui.viewstate.ChatSettingsViewState.UploadingState;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -27,11 +26,13 @@ import flow.Flow;
 import flow.History;
 import timber.log.Timber;
 
-public abstract class BaseGroupChatSettingsScreenPresenter extends BaseChatSettingsScreenPresenter<GroupChatSettingsScreen>
+public abstract class BaseGroupChatSettingsScreenPresenterImpl
+        extends BaseChatSettingsScreenPresenterImpl<GroupChatSettingsScreen>
         implements GroupChatSettingsScreenPresenter {
 
     @Inject ChatGroupCommandsInteractor chatGroupCommandsInteractor;
-    public BaseGroupChatSettingsScreenPresenter(Context context, Injector injector, String conversationId) {
+
+    public BaseGroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector, conversationId);
     }
 
@@ -50,25 +51,6 @@ public abstract class BaseGroupChatSettingsScreenPresenter extends BaseChatSetti
         getView().setOwner(owner);
         getView().setLeaveButtonVisible(ConversationHelper.isPresent(conversation)
                 && !ConversationHelper.isOwner(conversation, currentUser));
-    }
-
-    protected void onChangeAvatarSuccess() {
-        getViewState().setUploadAvatar(UploadingState.UPLOADED);
-        GroupChatSettingsScreen screen = getView();
-        if (screen != null) {
-            screen.invalidateToolbarMenu();
-            screen.hideChangingAvatarProgressBar();
-        }
-    }
-
-    protected void onChangeAvatarFailed(Throwable throwable) {
-        getViewState().setUploadAvatar(UploadingState.ERROR);
-        Timber.e(throwable, "");
-        GroupChatSettingsScreen screen = getView();
-        if (screen != null) {
-            screen.hideChangingAvatarProgressBar();
-            screen.showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
-        }
     }
 
     @Override
@@ -95,7 +77,10 @@ public abstract class BaseGroupChatSettingsScreenPresenter extends BaseChatSetti
 
     @Override
     public void onLeaveButtonClick() {
-        if (currentConnectivityStatus != SyncStatus.CONNECTED) return;
+        if (currentConnectivityStatus != SyncStatus.CONNECTED) {
+            getView().showMessage(R.string.no_connection, this::onLeaveButtonClick);
+            return;
+        }
 
         conversationObservable
                 .map(this::getLeaveConversationMessage)

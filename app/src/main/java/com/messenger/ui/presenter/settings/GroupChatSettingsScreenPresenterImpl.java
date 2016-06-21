@@ -59,7 +59,7 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
                     }
                 });
 
-        conversationAvatarInteractor.getSendAvatarCommandPipe()
+        conversationAvatarInteractor.getSendChatAvatarCommandPipe()
                 .observe()
                 .compose(bindView())
                 .filter(this::filterActionState)
@@ -169,15 +169,8 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
         //noinspection ConstantConditions
         getView().showChangingAvatarProgressBar();
         getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.UPLOADING);
-        // delay setting avatar till sync is finished to avoid scenario when its value in
-        // our database is overriden by cached data from sync
-        connectionStatusStream
-                .filter(status -> status == SyncStatus.CONNECTED)
-                .take(1)
-                .subscribe(syncStatus -> {
-                    conversationAvatarInteractor.getSetChatAvatarCommandPipe()
-                            .send(new SetChatAvatarCommand(conversationId, path));
-                });
+        conversationAvatarInteractor.getSetChatAvatarCommandPipe()
+                .send(new SetChatAvatarCommand(conversationId, path));
     }
 
     protected void onChangeAvatarSuccess() {

@@ -13,25 +13,19 @@ import io.techery.janet.Janet;
 
 @Singleton
 public class ConversationAvatarInteractor {
-    private final ActionPipe<UploadChatAvatarCommand> uploadAvatarCommandPipe;
-    private final ActionPipe<SendChatAvatarCommand> sendAvatarCommandPipe;
+    private final ActionPipe<SendChatAvatarCommand> sendChatAvatarCommandActionPipe;
     private final ActionPipe<SetChatAvatarCommand> setChatAvatarCommandPipe;
     private final ActionPipe<RemoveChatAvatarCommand> removeChatAvatarCommandPipe;
 
     @Inject
     ConversationAvatarInteractor(Janet janet) {
-        this.uploadAvatarCommandPipe = janet.createPipe(UploadChatAvatarCommand.class);
-        this.sendAvatarCommandPipe = janet.createPipe(SendChatAvatarCommand.class);
+        this.sendChatAvatarCommandActionPipe = janet.createPipe(SendChatAvatarCommand.class);
         this.setChatAvatarCommandPipe = janet.createPipe(SetChatAvatarCommand.class);
         this.removeChatAvatarCommandPipe = janet.createPipe(RemoveChatAvatarCommand.class);
     }
 
-    public ActionPipe<UploadChatAvatarCommand> getUploadAvatarCommandPipe() {
-        return uploadAvatarCommandPipe;
-    }
-
-    public ActionPipe<SendChatAvatarCommand> getSendAvatarCommandPipe() {
-        return sendAvatarCommandPipe;
+    public ActionPipe<SendChatAvatarCommand> getSendChatAvatarCommandPipe() {
+        return sendChatAvatarCommandActionPipe;
     }
 
     public ActionPipe<SetChatAvatarCommand> getSetChatAvatarCommandPipe() {

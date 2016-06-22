@@ -186,6 +186,7 @@ public class MasterToolbarPresenterImpl
                         .build();
                 locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
                 filterInteractor.filterMerchantsActionPipe().clearReplays();
+                merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(location));
                 break;
         }
     }

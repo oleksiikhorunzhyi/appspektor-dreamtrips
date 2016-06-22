@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
         android:layout_margin="8dp"
-        android:gravity="center"
+        android:gravity="right"
         android:checked="false"
         android:text="@string/dtl_show_offers_only"
         android:textColor="@android:color/white"

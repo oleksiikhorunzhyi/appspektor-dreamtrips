@@ -43,7 +43,6 @@ public class TrackingHelper {
     public static final String ACTION_PHOTOS_YSBH = "photos-ysbh";
     public static final String ACTION_PHOTOS_ALL_USERS = "photos-allusers";
     public static final String ACTION_PHOTOS_MINE = "photos-mine";
-    public static final String ACTION_ENROLL_MEMBER = "membership-enroll";
     public static final String ACTION_ENROLL_MERCHANT = "membership-enroll-merchant";
     public static final String ACTION_FAQ = "FAQ";
     public static final String ACTION_PRIVACY = "terms-privacy";
@@ -84,7 +83,8 @@ public class TrackingHelper {
     public static final String ACTION_PROFILE_PHOTO_UPLOAD_START = "profile_photo_upload_start";
     public static final String ACTION_PROFILE_PHOTO_UPLOAD_FINISH = "profile_photo_upload_finish";
 
-    public static final String ACTION_MEMBERSHIP_VIDEOS = "membership-videos";
+    public static final String ACTION_MEMBERSHIP_VIDEOS = "membership:videos";
+    public static final String ACTION_MEMBERSHIP_PODCASTS = "membership:podcasts";
     public static final String ACTION_MEMBERSHIP_PLAY = "member_videos_play";
     public static final String ACTION_MEMBERSHIP_LOAD_START = "member_videos_download_start";
     public static final String ACTION_MEMBERSHIP_LOAD_CANCELED = "member_videos_download_cancel";
@@ -261,7 +261,7 @@ public class TrackingHelper {
     }
 
     public static void enrollMember(String memberId) {
-        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MEMBER);
+        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_ENROLL);
     }
 
     public static void enrollMerchant(String memberId) {
@@ -339,6 +339,10 @@ public class TrackingHelper {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_INVITE);
     }
 
+    public static void podcasts(String memberId) {
+        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
+    }
+
     public static void inviteShareContacts(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_INVITE_CONTACTS);
     }
@@ -408,7 +412,7 @@ public class TrackingHelper {
     public static final String ACTION_INSPIRE_ME_IMAGES = "inspire_me_images";
     public static final String ACTION_360_VIDEOS = "360_videos";
     public static final String ACTION_MEMBERSHIP = "membership";
-    public static final String ACTION_MEMBERSHIP_ENROLL = "membership-enroll";
+    public static final String ACTION_MEMBERSHIP_ENROLL = "membership:enroll-member";
     public static final String ACTION_LOGOUT = "Logout";
     public static final String ACTION_TERMS_PRIVACY = "terms-privacy";
     public static final String ACTION_TERMS_SERVICE = "terms_service";
@@ -697,13 +701,17 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(ACTION_DREAMTRIPS, ATTRIBUTE_LIST);
     }
 
-    public static void viewTripDetails(String tripId, String tripName, String searchQuery) {
+    public static void viewTripDetails(String tripId, String tripName, String searchQuery,
+                                       TripsFilterDataAnalyticsWrapper filterData) {
         Map data = new HashMap<>();
         data.put("trip_id", tripName + "-" + tripId);
-        data.put(ATTRIBUTE_VIEW, tripId);
+        data.put(ATTRIBUTE_VIEW, 1);
         if (!TextUtils.isEmpty(searchQuery)) {
             data.put(ATTRIBUTE_TRIP_SEARCH, searchQuery);
         }
+        data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
+        data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegionsAnalyticString());
+        data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivitiesAnalyticString());
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS_TRIP_DETAIL, data);
     }
 
@@ -713,16 +721,24 @@ public class TrackingHelper {
     }
 
     public static void actionItemDreamtrips(@MagicConstant(stringValues = {ATTRIBUTE_BUCKET_LIST,
-            ATTRIBUTE_FAVORITE, ATTRIBUTE_BOOK_IT}) String eventType, String tripId, String tripName) {
+            ATTRIBUTE_FAVORITE}) String eventType, String tripId, String tripName) {
         Map data = new HashMap<>();
         data.put("trip_id", tripName + "-" + tripId);
         data.put(eventType, tripId);
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
     }
 
+    public static void actionBookIt(@MagicConstant(stringValues = {ATTRIBUTE_BOOK_IT})
+                                    String eventType, String tripId, String tripName) {
+        Map data = new HashMap<>();
+        data.put("trip_id", tripName + "-" + tripId);
+        data.put(eventType, 1);
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_DREAMTRIPS, data);
+    }
+
     public static void actionFilterTrips(TripsFilterDataAnalyticsWrapper filterData) {
         Map data = new HashMap<>();
-        data.put(ATTRIBUTE_FILTER, "1");
+        data.put(ATTRIBUTE_FILTER, 1);
         data.put(ATTRIBUTE_TRIP_FILTERS, filterData.getFilterAnalyticString());
         data.put(ATTRIBUTE_TRIP_REGION_FILTERS, filterData.getAcceptedRegionsAnalyticString());
         data.put(ATTRIBUTE_TRIP_THEME_FILTERS, filterData.getAcceptedActivitiesAnalyticString());

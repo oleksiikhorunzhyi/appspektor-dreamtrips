@@ -51,6 +51,7 @@ public class AdobeTracker extends Tracker {
         data.put(CHANNEL_KEY, CHANNEL_VALUE);
 
         Analytics.trackState(prepareAction(action), data);
+        Analytics.trackAction(prepareAction(action), data);
     }
 
     private String prepareAction(String action) {

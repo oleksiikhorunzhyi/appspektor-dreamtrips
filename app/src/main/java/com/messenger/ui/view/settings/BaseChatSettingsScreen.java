@@ -13,9 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.messenger.entities.DataConversation;
-import com.messenger.ui.dialog.ChangeSubjectDialog;
-import com.messenger.ui.dialog.LeaveChatDialog;
-import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
+import com.messenger.ui.presenter.settings.ChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.AvatarView;
@@ -28,8 +26,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P extends StyledPath>
-        extends MessengerPathLayout<S, ChatSettingsScreenPresenter<S>, P>
+public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, Presenter extends ChatSettingsScreenPresenter<Screen>, Path extends StyledPath>
+        extends MessengerPathLayout<Screen, Presenter, Path>
         implements ChatSettingsScreen {
 
     @InjectView(R.id.chat_settings_content_view)
@@ -59,11 +57,11 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
 
     protected ChatSettingsRow notificationsSettingsRow;
 
-    public ChatSettingsScreenImpl(Context context) {
+    public BaseChatSettingsScreen(Context context) {
         super(context);
     }
 
-    public ChatSettingsScreenImpl(Context context, AttributeSet attrs) {
+    public BaseChatSettingsScreen(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -137,27 +135,6 @@ public abstract class ChatSettingsScreenImpl<S extends ChatSettingsScreen, P ext
         getPresenter().onClearChatHistoryClicked();
     }
 
-    @OnClick(R.id.chat_settings_leave_chat_button)
-    void onLeaveChatButtonClicked() {
-        getPresenter().onLeaveButtonClick();
-    }
-
-    public void showLeaveChatDialog(String message) {
-        new LeaveChatDialog(getContext(), message)
-                .setPositiveListener(getPresenter()::onLeaveChatClicked)
-                .show();
-    }
-
-    @Override
-    public void showSubjectDialog(String currentSubject) {
-        new ChangeSubjectDialog(getContext(), currentSubject)
-                .setPositiveListener(this::onSubjectEntered)
-                .show();
-    }
-
-    private void onSubjectEntered(String subject) {
-        getPresenter().applyNewChatSubject(subject);
-    }
 
     @Override
     public void setConversation(@NonNull DataConversation conversation) {

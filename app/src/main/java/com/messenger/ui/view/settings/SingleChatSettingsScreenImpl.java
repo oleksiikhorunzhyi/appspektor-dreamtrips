@@ -4,19 +4,18 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.view.View;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
-import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
-import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
+import com.messenger.ui.presenter.settings.SingleChatSettingsScreenPresenter;
+import com.messenger.ui.presenter.settings.SingleChatSettingsScreenPresenterImpl;
 import com.worldventures.dreamtrips.R;
 
 import java.util.List;
 
 import butterknife.OnClick;
 
-public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSettingsScreen, SingleSettingsPath> {
+public class SingleChatSettingsScreenImpl extends BaseChatSettingsScreen<ChatSettingsScreen, SingleChatSettingsScreenPresenter, SingleSettingsPath> {
 
     public SingleChatSettingsScreenImpl(Context context) {
         super(context);
@@ -38,11 +37,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
     }
 
     @Override
-    public void setOwner(DataUser owner) {
-        // nothing to do here
-    }
-
-    @Override
     public void setParticipants(DataConversation conversation, List<DataUser> participants) {
         if (participants.isEmpty()) return;
         //
@@ -57,7 +51,7 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
 
     @NonNull
     @Override
-    public ChatSettingsScreenPresenter createPresenter() {
+    public SingleChatSettingsScreenPresenter createPresenter() {
         return new SingleChatSettingsScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 }

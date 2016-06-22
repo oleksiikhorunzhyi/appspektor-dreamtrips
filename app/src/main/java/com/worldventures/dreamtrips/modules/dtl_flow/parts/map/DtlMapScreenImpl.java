@@ -81,7 +81,6 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
     private ClusterManager<DtlClusterItem> clusterManager;
     private Marker locationPin;
     private GoogleMap googleMap;
-    private MapFragment mapFragment;
 
     public DtlMapScreenImpl(Context context) {
         super(context);
@@ -150,21 +149,22 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
 
     @Override
     public void prepareMap() {
-        mapFragment = (MapFragment) getActivity().getFragmentManager()
-                .findFragmentByTag(MAP_TAG);
-        if (mapFragment == null || !mapFragment.isAdded()) {
-            mapFragment = MapFragment.newInstance();
-            getActivity().getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
-                    .commit();
-        }
+        releaseMapFragment();
+        //
+        MapFragment mapFragment = MapFragment.newInstance();
+        getActivity().getFragmentManager()
+                .beginTransaction()
+                .add(R.id.mapFragmentContainer, mapFragment, MAP_TAG)
+                .commit();
+        //
         mapFragment.getMapAsync(map -> {
             googleMap = map;
             googleMap.clear();
             googleMap.setMyLocationEnabled(true);
+            //
             MapViewUtils.setLocationButtonGravity(mapFragment.getView(), 16,
-                    RelativeLayout.ALIGN_PARENT_END, RelativeLayout.ALIGN_PARENT_BOTTOM);
+                    RelativeLayout.ALIGN_PARENT_END,
+                    RelativeLayout.ALIGN_PARENT_BOTTOM);
             onMapLoaded();
         });
         mapTouchView.setOnTouchListener((v, event) -> {
@@ -179,14 +179,17 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
         if (googleMap != null) {
             googleMap = null;
         }
-        android.app.Fragment fragment = getActivity().getFragmentManager()
-                .findFragmentByTag(MAP_TAG);
-        if (fragment != null) {
-            getActivity().getFragmentManager()
-                    .beginTransaction()
-                    .remove(fragment)
-                    .commit();
-        }
+        releaseMapFragment();
+    }
+
+    private void releaseMapFragment() {
+        android.app.Fragment fragment = getActivity().getFragmentManager().findFragmentByTag(MAP_TAG);
+        if (fragment == null) return;
+        //
+        getActivity().getFragmentManager()
+                .beginTransaction()
+                .remove(fragment)
+                .commit();
     }
 
     @Override
@@ -290,7 +293,7 @@ public class DtlMapScreenImpl extends DtlLayout<DtlMapScreen, DtlMapPresenter, D
                 new DtlMapInfoPath(FlowUtil.currentMaster(this), merchant), Path.contextFactory());
         DtlMapInfoScreenImpl infoView =
                 (DtlMapInfoScreenImpl) LayoutInflater.from(getContext()).cloneInContext(newContext)
-                .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
+                        .inflate(FlowUtil.layoutFrom(DtlMapInfoPath.class), infoContainer, false);
         infoView.setInjector(injector);
         infoContainer.addView(infoView);
     }

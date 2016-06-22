@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:gravity="bottom"
         sothree:umanoOverlay="true"
-        sothree:umanoPanelHeight="@dimen/picker_panel_height"
+        sothree:umanoPanelHeight="0dp"
         sothree:umanoParallaxOffset="0dp"
         sothree:umanoShadowHeight="4dp">
 

@@ -103,9 +103,13 @@ public class PhotoPickerLayout extends SlidingUpPanelLayout {
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
-        if (isShown) {
-            post(() -> this.showPanel(multiPickEnabled, pickLimit));
-        }
+        post(() -> {
+            if (isShown) {
+                this.showPanel(multiPickEnabled, pickLimit);
+            } else {
+                this.hidePanel();
+            }
+        });
     }
 
     @Override

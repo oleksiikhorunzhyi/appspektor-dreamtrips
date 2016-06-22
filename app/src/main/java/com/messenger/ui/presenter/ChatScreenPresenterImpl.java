@@ -14,20 +14,19 @@ import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.chat.ChatExtensionInteractor;
-import com.messenger.delegate.chat.ChatTypingDelegate;
 import com.messenger.delegate.chat.MessagesPaginationDelegate;
 import com.messenger.delegate.chat.MessagesPaginationDelegate.PaginationStatus;
 import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
+import com.messenger.delegate.chat.typing.SendChatStateDelegate;
+import com.messenger.delegate.chat.typing.TypingManager;
 import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
 import com.messenger.delegate.chat.event.ChatEventInteractor;
-import com.messenger.delegate.chat.typing.ChatStateDelegate;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.ConnectionException;
-import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -83,9 +82,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject ChatToolbarMenuProvider chatToolbarMenuProvider;
     @Inject ChatContextualMenuProvider contextualMenuProvider;
     @Inject ChatUserInteractionHelper chatUserInteractionHelper;
-    @Inject ChatTypingDelegate chatTypingDelegate;
+    @Inject TypingManager typingManager;
     @Inject ConversationAnalyticsDelegate conversationAnalyticsDelegate;
-    @Inject ChatStateDelegate chatStateDelegate;
+    @Inject SendChatStateDelegate sendChatStateDelegate;
     @Inject ConversationsDAO conversationDAO;
     @Inject MessageDAO messageDAO;
     @Inject NotificationDelegate notificationDelegate;
@@ -171,9 +170,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
                     if (connectionStatus == SyncStatus.CONNECTED) {
                         messagesPaginationDelegate.loadFirstPage();
-                    } else {
-                        // TODO Feb 29, 2016 Implement it in more Rx way
-                        getView().removeAllTypingUsers();
                     }
                 }, e -> Timber.w("Unable to connect connectivity status"));
     }
@@ -222,7 +218,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         screen.enableInput(conversationIsPresent);
         if (!conversationIsPresent) {
             hidePhotoPicker();
-            screen.removeAllTypingUsers();
         }
         enableUnreadMessagesUi(conversation);
     }
@@ -317,29 +312,20 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     //////////////////////////////////////////////////////////////////////////
 
     private void connectChatStateDelegate() {
-        chatStateDelegate.init(conversationId);
-        chatStateDelegate.connectTypingStartAction(getView().getEditMessageObservable())
+        sendChatStateDelegate.init(conversationId);
+        sendChatStateDelegate.connectTypingStartAction(getView().getEditMessageObservable())
                 .compose(bindVisibility())
                 .subscribe();
-        chatStateDelegate.connectTypingStopAction(getView().getEditMessageObservable())
+        sendChatStateDelegate.connectTypingStopAction(getView().getEditMessageObservable())
                 .compose(bindVisibility())
                 .subscribe();
     }
 
     private void connectChatTypingStream() {
-        chatTypingDelegate
-                .connectChatTypingStream(conversationId)
+        typingManager
+                .getTypingObservable(conversationId)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(pair -> {
-                    switch (pair.first.state) {
-                        case ChatState.COMPOSING:
-                            getView().addTypingUser(pair.second);
-                            break;
-                        case ChatState.PAUSE:
-                            getView().removeTypingUser(pair.second);
-                            break;
-                    }
-                }, e -> Timber.w("Unable to connect chat stream"));
+                .subscribe(getView()::changeTypingUsers, e -> Timber.e(e, ""));
     }
 
     ///////////////////////////////////////////////////////////////////////////

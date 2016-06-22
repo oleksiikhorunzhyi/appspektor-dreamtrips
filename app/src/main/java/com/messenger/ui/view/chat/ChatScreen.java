@@ -27,13 +27,9 @@ public interface ChatScreen extends MessengerScreen {
 
     void setTitle(DataConversation conversation, List<DataUser> users);
 
-    void addTypingUser(DataUser user);
+    void changeTypingUsers(List<DataUser> user);
 
     void setShowMarkUnreadMessage(boolean needShow);
-
-    void removeTypingUser(DataUser uxzser);
-
-    void removeAllTypingUsers();
 
     void showMessages(Cursor cursor);
 

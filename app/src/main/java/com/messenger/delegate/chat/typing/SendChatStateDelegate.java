@@ -10,20 +10,20 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 import rx.Observable;
 
-public class ChatStateDelegate {
+public class SendChatStateDelegate {
 
     public static final int START_TYPING_DELAY = 1000;
     public static final int STOP_TYPING_DELAY = 2000;
 
-    private ActionPipe<ChatStateCommand> chatStateActionPipe;
+    private ActionPipe<SendChatStateCommand> chatStateActionPipe;
 
     private String conversationId;
 
     private boolean typing;
 
     @Inject
-    public ChatStateDelegate(Janet janet) {
-        this.chatStateActionPipe = janet.createPipe(ChatStateCommand.class);
+    public SendChatStateDelegate(Janet janet) {
+        this.chatStateActionPipe = janet.createPipe(SendChatStateCommand.class);
     }
 
     public void init(String conversationId) {
@@ -38,7 +38,7 @@ public class ChatStateDelegate {
                 .filter(text -> !typing)
                 .doOnNext(dataConversation -> {
                     typing = true;
-                    chatStateActionPipe.send(new ChatStateCommand(conversationId, ChatState.COMPOSING));
+                    chatStateActionPipe.send(new SendChatStateCommand(conversationId, ChatState.COMPOSING));
                 })
                 .map(dataConversation -> ChatState.COMPOSING);
     }
@@ -49,7 +49,7 @@ public class ChatStateDelegate {
                 .debounce(STOP_TYPING_DELAY, TimeUnit.MILLISECONDS)
                 .doOnNext(dataConversation -> {
                     typing = false;
-                    chatStateActionPipe.send(new ChatStateCommand(conversationId, ChatState.PAUSE));
+                    chatStateActionPipe.send(new SendChatStateCommand(conversationId, ChatState.PAUSE));
                 })
                 .map(dataConversation -> ChatState.PAUSE);
     }

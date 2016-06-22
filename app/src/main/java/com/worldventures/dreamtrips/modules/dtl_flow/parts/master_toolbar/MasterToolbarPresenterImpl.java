@@ -280,6 +280,7 @@ public class MasterToolbarPresenterImpl
     @Override
     public void locationSelected(DtlExternalLocation dtlExternalLocation) {
 //        trackLocationSelection(location); // TODO :: 4/20/16 new analytics
+        locationInteractor.searchLocationPipe().clearReplays();
         locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlExternalLocation));
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates().asAndroidLocation()));

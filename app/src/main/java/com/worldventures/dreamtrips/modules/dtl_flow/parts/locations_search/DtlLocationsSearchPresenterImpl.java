@@ -83,6 +83,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
         trackLocationSelection(location);
+        locationInteractor.searchLocationPipe().clearReplays();
         locationInteractor.locationPipe().send(DtlLocationCommand.change(location));
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         History history = History.single(new DtlMerchantsPath());

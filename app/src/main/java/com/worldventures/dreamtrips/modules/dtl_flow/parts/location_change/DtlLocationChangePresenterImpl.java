@@ -181,7 +181,6 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
     private void tryHideNearMeButton() {
         locationInteractor.locationPipe().createObservableResult(DtlLocationCommand.last())
-
                 .filter(command -> command.getResult().getLocationSourceType() == LocationSourceType.NEAR_ME)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> getView().hideNearMeButton());
@@ -206,8 +205,14 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private void navigateAway() {
+        clearCacheBeforeCloseScreen();
+        //
         History history = History.single(new DtlMerchantsPath()); // TODO :: 4/28/16 proper previous screen
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+    }
+
+    private void clearCacheBeforeCloseScreen() {
+        locationInteractor.searchLocationPipe().clearReplays();
     }
 
     private void search(String query) {

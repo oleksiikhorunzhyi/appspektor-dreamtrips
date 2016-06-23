@@ -350,7 +350,7 @@ android {
     }
 }
 
-def googleLibrariesVersion = '23.3.0'
+def googleLibrariesVersion = '24.0.0'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -385,10 +385,10 @@ dependencies {
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
-    compile 'com.google.android.gms:play-services-vision:8.4.0'
+    compile 'com.google.android.gms:play-services-maps:9.0.2'
+    compile 'com.google.android.gms:play-services-gcm:9.0.2'
+    compile 'com.google.android.gms:play-services-location:9.0.2'
+    compile 'com.google.android.gms:play-services-vision:9.0.2'
     //
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'

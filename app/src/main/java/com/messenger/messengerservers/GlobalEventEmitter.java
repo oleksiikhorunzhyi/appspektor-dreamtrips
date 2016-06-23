@@ -78,7 +78,7 @@ public abstract class GlobalEventEmitter {
         friendsAddedListeners.add(listener);
     }
 
-    protected void notifyFriendsAdded(List<String> userIds) {
+    protected void notifyFriendsAdded(Collection<String> userIds) {
         for (FriendsAddedListener listener : friendsAddedListeners) {
             listener.onFriendsAdded(userIds);
         }

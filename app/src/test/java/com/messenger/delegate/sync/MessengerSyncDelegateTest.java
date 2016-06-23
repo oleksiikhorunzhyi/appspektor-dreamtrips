@@ -2,6 +2,7 @@ package com.messenger.delegate.sync;
 
 import com.messenger.delegate.conversation.command.SyncConversationsCommand;
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
+import com.messenger.delegate.roster.LoadContactsCommand;
 import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.constant.Affiliation;
@@ -116,6 +117,18 @@ public class MessengerSyncDelegateTest extends BaseTest {
         daggerActionService.registerProvider(UsersDAO.class, () -> usersDAO);
 
         messengerSyncDelegate = new MessengerSyncDelegate(janet);
+    }
+
+    @Test
+    public void testLoadContacts() {
+        TestSubscriber<ActionState<LoadContactsCommand>> testSubscriber = new TestSubscriber<>();
+        messengerSyncDelegate.getContactsPipe().createObservable(new LoadContactsCommand())
+                .subscribe(testSubscriber);
+
+        verify(usersDelegate, times(1)).loadUsers(testUsers);
+        verify(usersDAO, times(1)).unfriendAll();
+        verify(usersDAO, times(1)).save(anyList());
+        assertActionSuccess(testSubscriber, action -> action.getResult() != null);
     }
 
     @Test

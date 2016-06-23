@@ -1,7 +1,7 @@
 package com.messenger.messengerservers.listeners;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface FriendsAddedListener {
-    void onFriendsAdded(List<String> userIds);
+    void onFriendsAdded(Collection<String> userIds);
 }

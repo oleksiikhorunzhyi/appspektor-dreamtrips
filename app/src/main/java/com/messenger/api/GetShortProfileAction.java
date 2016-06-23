@@ -2,6 +2,7 @@ package com.messenger.api;
 
 
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
+import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.ArrayList;

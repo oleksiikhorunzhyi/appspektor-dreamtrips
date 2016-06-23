@@ -25,8 +25,8 @@ public class VerifyAmountEvent extends DtlAnalyticsAction {
     final String currencyCode;
 
     public VerifyAmountEvent(DtlMerchant dtlMerchant, String currencyCode,
-                             String enteredAmount) {
-        this.enteredAmount = enteredAmount;
+                             Double enteredAmount) {
+        this.enteredAmount = enteredAmount.toString();
         merchantName = dtlMerchant.getDisplayName();
         merchantId = dtlMerchant.getId();
         this.currencyCode = currencyCode;

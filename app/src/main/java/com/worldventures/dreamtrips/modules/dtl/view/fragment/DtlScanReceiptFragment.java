@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -71,7 +70,7 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
     private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            getPresenter().onAmountChanged(s.toString());
+            getPresenter().onAmountChanged(Double.valueOf(s.toString()));
         }
     };
 

@@ -6,12 +6,10 @@ import android.support.annotation.Nullable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
@@ -100,8 +98,6 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                                 navigatePath(new DtlMerchantsPath());
                                 break;
                             case EXTERNAL:
-                                TrackingHelper.dtlLocationLoaded(
-                                        ((DtlExternalLocation) command.getResult()).getId());
                                 navigatePath(new DtlMerchantsPath());
                                 break;
                         }

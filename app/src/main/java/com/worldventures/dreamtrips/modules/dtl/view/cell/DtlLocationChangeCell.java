@@ -8,8 +8,13 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocationType;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -20,6 +25,9 @@ public class DtlLocationChangeCell
 
     @InjectView(R.id.locationName)
     TextView locationName;
+
+    @Inject
+    AnalyticsInteractor analyticsInteractor;
 
     public DtlLocationChangeCell(View view) {
         super(view);
@@ -44,6 +52,8 @@ public class DtlLocationChangeCell
 
     @OnClick(R.id.dtlLocationCellRoot)
     void cellClicked() {
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new LocationSearchEvent(getModelObject())));
         cellDelegate.onCellClicked(getModelObject());
     }
 

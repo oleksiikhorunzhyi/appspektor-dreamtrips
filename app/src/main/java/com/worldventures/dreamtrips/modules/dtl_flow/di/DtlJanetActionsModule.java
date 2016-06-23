@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl_flow.di;
 
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
@@ -16,7 +18,9 @@ import dagger.Module;
                 DtlTransactionAction.class,
                 DtlMerchantByIdAction.class,
                 DtlMerchantsAction.class,
-                DtlSearchLocationAction.class
+                DtlSearchLocationAction.class,
+                DtlAnalyticsCommand.class,
+                MerchantDetailsViewCommand.class,
         },
         complete = false, library = true)
 public class DtlJanetActionsModule {

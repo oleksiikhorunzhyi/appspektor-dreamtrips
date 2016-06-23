@@ -7,8 +7,9 @@ import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
@@ -63,6 +64,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         super.onAttachedToWindow();
         apiErrorPresenter.setView(getView());
         //
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new MerchantsListingViewEvent()));
+        //
         getView().getToggleObservable()
                 .subscribe(offersOnly -> filterInteractor.filterDataPipe()
                         .send(DtlFilterDataAction.applyOffersOnly(offersOnly)));
@@ -88,7 +92,8 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .compose(new ActionStateToActionTransformer<>())
                 .filter(action -> !getView().isTabletLandscape())
                 .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
-                .subscribe(s -> redirectToLocations(), e -> {});
+                .subscribe(s -> redirectToLocations(), e -> {
+                });
         //
         locationInteractor.locationPipe().observeSuccessWithReplay()
                 .first()
@@ -185,9 +190,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .take(1)
                 .subscribe(pair -> {
                     if (TextUtils.isEmpty(pair.first)) return;
-                    TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
-                            pair.first,
-                            pair.second);
+                    analyticsInteractor.dtlAnalyticsCommandPipe()
+                            .send(DtlAnalyticsCommand.create(
+                                    new MerchantFromSearchEvent(pair.first)));
                 });
         navigateToDetails(merchant, null);
     }

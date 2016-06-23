@@ -88,16 +88,17 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        analyticsInteractor.send(new LifecycleEvent(LifecycleEvent.ACTION_ONSAVESTATE, outState),
-                AndroidSchedulers.mainThread());
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(LifecycleEvent.ACTION_ONSAVESTATE, outState),
+                        AndroidSchedulers.mainThread());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        analyticsInteractor
+        analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(LifecycleEvent.ACTION_ONRESTORESTATE, savedInstanceState),
-                AndroidSchedulers.mainThread());
+                        AndroidSchedulers.mainThread());
     }
 
     @Override

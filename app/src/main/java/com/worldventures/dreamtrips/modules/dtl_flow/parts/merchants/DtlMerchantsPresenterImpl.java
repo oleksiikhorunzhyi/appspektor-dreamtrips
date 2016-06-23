@@ -230,9 +230,4 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         apiErrorPresenter.dropView();
         super.onDetachedFromWindow();
     }
-
-    @Override
-    public int getToolbarMenuRes() {
-        return R.menu.menu_dtl_list;
-    }
 }

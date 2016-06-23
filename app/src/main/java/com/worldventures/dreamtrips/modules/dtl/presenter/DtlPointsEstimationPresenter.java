@@ -58,7 +58,7 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     }
 
     private void bindApiJob() {
-        transactionInteractor.estimatePointsActionPipe().observeWithReplay()
+        transactionInteractor.estimatePointsActionPipe().observe()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
                         .onStart(action -> view.showProgress())

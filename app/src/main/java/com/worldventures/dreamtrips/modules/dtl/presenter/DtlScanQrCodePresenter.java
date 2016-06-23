@@ -155,6 +155,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         //
         eventBus.postSticky(new DtlTransactionSucceedEvent(action.getTransaction()));
         view.finish();
+        transactionInteractor.earnPointsActionPipe().clearReplays();
     }
 
     ///////////////////////////////////////////////////////////////////////////

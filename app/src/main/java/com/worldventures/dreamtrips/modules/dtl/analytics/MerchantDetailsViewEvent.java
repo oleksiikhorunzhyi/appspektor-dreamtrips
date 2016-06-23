@@ -2,12 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Analytics;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
-@Analytics(action = "local:Restaurant-Listings:Merchant View", trackers = AdobeTracker.TRACKER_KEY)
+@AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View", trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantDetailsViewEvent extends DtlAnalyticsAction {
 
     @Attribute("merchantname")

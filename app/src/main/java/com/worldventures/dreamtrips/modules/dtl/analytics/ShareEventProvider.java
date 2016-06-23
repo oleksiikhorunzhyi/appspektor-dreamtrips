@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Analytics;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -21,7 +21,7 @@ public final class ShareEventProvider {
         return new MerchantShareEvent(dtlMerchant, sharingType);
     }
 
-    @Analytics(action = "local:Restaurant-Listings:Merchant View:Congratulations:Share",
+    @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Congratulations:Share",
             trackers = AdobeTracker.TRACKER_KEY)
     public static class TransactionSuccessShareEvent extends BaseDtlShareEvent {
 
@@ -30,7 +30,7 @@ public final class ShareEventProvider {
         }
     }
 
-    @Analytics(action = "local:Restaurant-Listings:Merchant View:Share",
+    @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Share",
             trackers = AdobeTracker.TRACKER_KEY)
     public static class MerchantShareEvent extends BaseDtlShareEvent {
 

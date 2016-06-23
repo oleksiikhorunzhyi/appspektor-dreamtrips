@@ -4,11 +4,11 @@ import android.location.Location;
 import android.support.annotation.Nullable;
 
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Analytics;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-@Analytics(action = "local:Restaurant-Listings:directions", trackers = AdobeTracker.TRACKER_KEY)
+@AnalyticsEvent(action = "local:Restaurant-Listings:directions", trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantMapDestinationEvent extends DtlAnalyticsAction {
 
     @Attribute("map")

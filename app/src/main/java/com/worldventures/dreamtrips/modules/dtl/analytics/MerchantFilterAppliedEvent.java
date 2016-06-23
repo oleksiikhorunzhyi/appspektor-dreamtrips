@@ -2,13 +2,13 @@ package com.worldventures.dreamtrips.modules.dtl.analytics;
 
 import com.worldventures.dreamtrips.core.utils.TextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Analytics;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 
 import java.util.Locale;
 
-@Analytics(action = "Local:Refine Search", trackers = AdobeTracker.TRACKER_KEY)
+@AnalyticsEvent(action = "Local:Refine Search", trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantFilterAppliedEvent extends DtlAnalyticsAction {
 
     @Attribute("dtlprice")

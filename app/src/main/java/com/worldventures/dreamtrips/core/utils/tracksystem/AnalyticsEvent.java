@@ -8,7 +8,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(TYPE)
 @Retention(RUNTIME)
-public @interface Analytics {
+public @interface AnalyticsEvent {
 
     String category() default "";
 

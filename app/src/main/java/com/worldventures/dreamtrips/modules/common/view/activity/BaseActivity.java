@@ -61,36 +61,41 @@ public abstract class BaseActivity extends InjectingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         MonitoringHelper.setInteractionName(this);
         super.onCreate(savedInstanceState);
-        analyticsInteractor.send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONCREATE),
-                AndroidSchedulers.mainThread());
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONCREATE),
+                        AndroidSchedulers.mainThread());
     }
 
     @Override
     protected void onStart() {
-        analyticsInteractor.send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTART),
-                AndroidSchedulers.mainThread());
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTART),
+                        AndroidSchedulers.mainThread());
         super.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        analyticsInteractor.send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTOP),
-                AndroidSchedulers.mainThread());
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTOP),
+                        AndroidSchedulers.mainThread());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        analyticsInteractor.send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONRESUME),
-                AndroidSchedulers.mainThread());
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONRESUME),
+                        AndroidSchedulers.mainThread());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        analyticsInteractor.send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONPAUSE),
-                AndroidSchedulers.mainThread());
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONPAUSE),
+                        AndroidSchedulers.mainThread());
     }
 
     @Override

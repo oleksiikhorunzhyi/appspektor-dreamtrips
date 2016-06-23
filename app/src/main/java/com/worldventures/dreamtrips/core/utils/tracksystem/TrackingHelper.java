@@ -2,16 +2,10 @@ package com.worldventures.dreamtrips.core.utils.tracksystem;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
 import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
@@ -21,7 +15,6 @@ import org.intellij.lang.annotations.MagicConstant;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -483,65 +476,12 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_FACEBOOK = "facebook";
     public static final String ATTRIBUTE_TWITTER = "twitter";
     public static final String ATTRIBUTE_SHARING_UNRESOLVED = "unknown";
-    public static final String ATTRIBUTE_MERCHANT = "merchant";
-    public static final String ATTRIBUTE_VERIFY = "verify";
-    public static final String ATTRIBUTE_EARN = "earn";
-    public static final String ATTRIBUTE_CHECKIN = "checkin";
     public static final String ATTRIBUTE_SELECT = "select";
-    public static final String ATTRIBUTE_LOAD = "load";
-    public static final String ATTRIBUTE_CAPTURE = "capture";
-    public static final String ATTRIBUTE_SCAN = "scan";
-    public static final String ATTRIBUTE_COMPLETED = "completed";
     public static final String ATTRIBUTE_TRIP_FILTERS = "tripfilters";
     public static final String ATTRIBUTE_TRIP_REGION_FILTERS = "tripregionfilters";
     public static final String ATTRIBUTE_TRIP_THEME_FILTERS = "tripthemefilters";
     public static final String ATTRIBUTE_TRIP_SEARCH = "tripsearch";
     public static final String ATTRIBUTE_NUMBER_OF_UPLOADED_PHOTOS = "uploadamt";
-
-    // ---------------- DTL new Actions
-    public static final String DTL_ACTION_SELECT_LOCATION_FROM_SEARCH = "Local:City Search";
-    public static final String DTL_ACTION_OFFERS_TAB = "Local:Offers";
-    public static final String DTL_ACTION_DINING_TAB = "Local:Dining";
-    public static final String DTL_ACTION_SEARCH_DINNING = "Local:Dining:Restaurant Search";
-    public static final String DTL_ACTION_SEARCH_OFFERS = "Local:Offers:Restaurant Search";
-    public static final String DTL_ACTION_FILTER_PLACES = "Local:Refine Search";
-
-    // ---------------- DTL actions
-    public static final String DTL_ACTION_LOCATION_LOADED = "local";
-    public static final String DTL_ACTION_SELECT_LOCATION_FROM_NEARBY = "local.nearby";
-    public static final String DTL_ACTION_SEARCH_PLACES = "local.search";
-    public static final String DTL_ACTION_CHANGE_CITY = "local.change";
-    public static final String DTL_ACTION_MAP_VIEW = "local.map";
-    public static final String DTL_ACTION_OFFER_VIEW = "local.offers.view";
-    public static final String DTL_ACTION_DINING_VIEW = "local.dinner.view";
-    public static final String DTL_ACTION_MERCHANT = "local.merchant";
-    public static final String DTL_ACTION_MERCHANT_VIEW = "local.merchant.view";
-    public static final String DTL_ACTION_CHECKIN = "local.checkin";
-    public static final String DTL_ACTION_ESTIMATOR_VIEW = "local.points";
-    public static final String DTL_ACTION_DIRECTIONS_VIEW = "local.directions";
-    public static final String DTL_ACTION_EARN_VIEW = "local.earn";
-    public static final String DTL_ACTION_CAPTURE_RECEIPT = "local.capture";
-    public static final String DTL_ACTION_VERIFY_AMOUNT = "local.verify";
-    public static final String DTL_ACTION_SCAN_MERCHANT = "local.scan";
-    public static final String DTL_ACTION_POINTS_EARNED = "local.points";
-    public static final String DTL_ACTION_SHARE = "local.share";
-
-    // ---------------- DTL attributes
-    public static final String DTL_ATTRIBUTE_CITY_SEARCH = "dtlcitysearch";
-    public static final String DTL_QUERY = "searchquery";
-    public static final String DTL_ATTRIBUTE_LOCATION = "place_id";
-    public static final String DTL_ATTRIBUTE_SHARE = "share_id";
-    public static final String DTL_ATTRIBUTE_MERCHANT = "merchant_id";
-    public static final String DTL_ATTRIBUTE_AMOUNT = "amount_id";
-    public static final String DTL_ATTRIBUTE_POINTS = "points_id";
-    public static final String DTL_ATTRIBUTE_COORDINATES = "coordinates_id";
-    public static final String DTL_ATTRIBUTE_SCAN_QR = "scan_id";
-    public static final String DTL_ATTRIBUTE_CAPTURE = "capture_id";
-    public static final String DTL_ATTRIBUTE_FILTER_PRICE = "dtlprice";
-    public static final String DTL_ATTRIBUTE_FILTER_DISTANCE = "dtldistance";
-    public static final String DTL_ATTRIBUTE_SEARCH_RESULTS = "results_id";
-    public static final String DTL_LOCATION = "dtllocation";
-    public static final String DTL_LOCATION_METHOD = "locationmethod";
 
     // ---------------- Messenger actions
     public static final String MESSENGER_ACTION_INBOX = "Messenger:Conversations"; //capture the number of conversations in the inbox
@@ -847,7 +787,7 @@ public class TrackingHelper {
 
     public static void actionMembershipEnrollMerchantScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
             ATTRIBUTE_LOADING_ERROR}) String eventType) {
-        sendSimpleAttributetoAdobeTracker(DTL_ACTION_MERCHANT_VIEW, eventType);
+        sendSimpleAttributetoAdobeTracker("local.merchant.view", eventType);
     }
 
     public static void actionMembershipVideo(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_DOWNLOAD})
@@ -972,176 +912,5 @@ public class TrackingHelper {
             ACTION_TERMS_COOKIE}) String tab, @MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
             ATTRIBUTE_LOADING_ERROR}) String eventType) {
         sendSimpleAttributetoAdobeTracker(tab, eventType);
-    }
-
-    // ---------------- DTL
-
-    public static void dtlLocationLoaded(String locationId) {
-        Map data = prepareAttributeMap(ATTRIBUTE_LOAD);
-        data.put(DTL_ATTRIBUTE_LOCATION, locationId);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_LOCATION_LOADED, data);
-    }
-
-    public static void dtlSelectLocation(@MagicConstant(stringValues = {DTL_ACTION_SELECT_LOCATION_FROM_NEARBY,
-            DTL_ACTION_SELECT_LOCATION_FROM_SEARCH}) String action, String locationId) {
-        Map data = prepareAttributeMap(ATTRIBUTE_SELECT);
-        data.put(DTL_ATTRIBUTE_LOCATION, locationId);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
-    }
-
-    public static void searchLocation(DtlExternalLocation location) {
-        Map data = new HashMap<>();
-        data.put(DTL_ATTRIBUTE_CITY_SEARCH, location.getAnalyticsName());
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_SELECT_LOCATION_FROM_SEARCH,
-                data);
-    }
-
-    public static void dtlMerchantsTab(
-            @MagicConstant(stringValues = {DTL_ACTION_OFFERS_TAB, DTL_ACTION_DINING_TAB})
-            String tabType, DtlLocation dtlLocation) {
-        Map<String, Object> data = new HashMap<>(2);
-
-        data.put(DTL_LOCATION, dtlLocation.getAnalyticsName());
-
-        switch (dtlLocation.getLocationSourceType()) {
-            case NEAR_ME:
-                data.put(DTL_LOCATION_METHOD, "Near me");
-                break;
-            case EXTERNAL:
-                data.put(DTL_LOCATION_METHOD, "Search");
-                break;
-            case FROM_MAP:
-                data.put(DTL_LOCATION_METHOD, "Map");
-                break;
-        }
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, tabType, data);
-    }
-
-    public static void trackMerchantOpenedFromSearch(DtlMerchantType dtlMerchantType, String query,
-                                                     DtlLocation dtlLocation) {
-        String action = dtlMerchantType == DtlMerchantType.OFFER ? DTL_ACTION_SEARCH_OFFERS :
-                DTL_ACTION_SEARCH_DINNING;
-        Map data = new HashMap<>();
-        data.put(DTL_QUERY, query);
-        data.put(DTL_LOCATION, dtlLocation.getAnalyticsName());
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, action, data);
-    }
-
-    public static void dtlMerchantSearch(String query, int resultsNumber) {
-        Map data = prepareAttributeMap(ATTRIBUTE_SEARCH);
-        data.put(DTL_ATTRIBUTE_SEARCH_RESULTS, query + ":" + String.valueOf(resultsNumber));
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_SEARCH_PLACES, data);
-    }
-
-    public static void dtlMerchantFilter(DtlFilterData filterData) {
-        Map data = new HashMap<>();
-        String price = String.format(Locale.getDefault(), "%d-%d",
-                filterData.getMinPrice(), filterData.getMaxPrice());
-        String distance = String.format(Locale.getDefault(), "10-%.0f%s",
-                filterData.getMaxDistance(),
-                filterData.getDistanceType().getTypeNameForAnalytics());
-        data.put(DTL_ATTRIBUTE_FILTER_PRICE, price);
-        data.put(DTL_ATTRIBUTE_FILTER_DISTANCE, distance);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_FILTER_PLACES, data);
-    }
-
-    public static void dtlChangeLocation(String locationId) {
-        Map data = prepareAttributeMap(ATTRIBUTE_SEARCH);
-        data.put(DTL_ATTRIBUTE_LOCATION, locationId);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_CHANGE_CITY, data);
-    }
-
-    public static void dtlMapDestination(@Nullable Double userOriginLat, @Nullable Double userOriginLng,
-                                         Double destinationLat, Double destinationLng) {
-        // location value format: "o=lat,lng;d=lat,lng", 'o' for user origin, 'd' for destination
-        // can be "d=lat,lng" if user origin unknown when GPS disabled (user origin == null)
-        StringBuilder stringBuilder = new StringBuilder();
-        if (userOriginLat != null && userOriginLng != null) {
-            stringBuilder.append("o=").append(userOriginLat)
-                    .append(",").append(userOriginLng).append(";");
-        }
-        stringBuilder.append("d=").append(destinationLat).append(",").append(destinationLng);
-
-        Map data = prepareAttributeMap(ATTRIBUTE_MAP);
-        data.put(DTL_ATTRIBUTE_COORDINATES, stringBuilder.toString());
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_MAP_VIEW, data);
-    }
-
-    public static void dtlMerchantView(@MagicConstant(stringValues = {DTL_ACTION_OFFER_VIEW, DTL_ACTION_DINING_VIEW})
-                                       String merchantTypeAction, String merchantId) {
-        Map data = prepareAttributeMap(ATTRIBUTE_VIEW);
-        data.put(DTL_ATTRIBUTE_MERCHANT, merchantId);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, merchantTypeAction, data);
-    }
-
-    public static void dtlSuggestMerchant(@Nullable DtlMerchant place) {
-        Map data = prepareAttributeMap(ATTRIBUTE_MERCHANT);
-        if (place != null) {
-            data.put(DTL_ATTRIBUTE_MERCHANT, new StringBuilder()
-                    .append(place.getId())
-                    .append(place.getDisplayName())
-                    .append(":")
-                    .append(place.getCity())
-                    .append(":")
-                    .append(place.getState()).toString()
-            );
-        }
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_MERCHANT, data);
-    }
-
-    public static void dtlSuggestMerchantView() {
-        sendSimpleAttributetoAdobeTracker(DTL_ACTION_MERCHANT_VIEW, ATTRIBUTE_VIEW);
-    }
-
-    public static void dtlCheckin(String merchantId) {
-        Map data = prepareAttributeMap(ATTRIBUTE_CHECKIN);
-        data.put(DTL_ATTRIBUTE_MERCHANT, merchantId);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_CHECKIN, data);
-    }
-
-    public static void dtlPointsEstimationView() {
-        sendSimpleAttributetoAdobeTracker(DTL_ACTION_ESTIMATOR_VIEW, ATTRIBUTE_VIEW);
-    }
-
-    public static void dtlDirectionsView() {
-        sendSimpleAttributetoAdobeTracker(DTL_ACTION_DIRECTIONS_VIEW, ATTRIBUTE_VIEW);
-    }
-
-    public static void dtlEarnView() {
-        sendSimpleAttributetoAdobeTracker(DTL_ACTION_EARN_VIEW, ATTRIBUTE_VIEW);
-    }
-
-    public static void dtlCaptureReceipt(String filePath) {
-        Map data = prepareAttributeMap(ATTRIBUTE_CAPTURE);
-        data.put(DTL_ATTRIBUTE_CAPTURE, filePath);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_CAPTURE_RECEIPT, data);
-    }
-
-    public static void dtlVerifyAmountSuccess() {
-        sendSimpleAttributetoAdobeTracker(DTL_ACTION_VERIFY_AMOUNT, ATTRIBUTE_COMPLETED);
-    }
-
-    public static void dtlVerifyAmountUser(String enteredAmount) {
-        Map data = prepareAttributeMap(ATTRIBUTE_VERIFY);
-        data.put(DTL_ATTRIBUTE_AMOUNT, enteredAmount);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_VERIFY_AMOUNT, data);
-    }
-
-    public static void dtlScanMerchant(String qrMerchantToken) {
-        Map data = prepareAttributeMap(ATTRIBUTE_SCAN);
-        data.put(DTL_ATTRIBUTE_SCAN_QR, qrMerchantToken);
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_SCAN_MERCHANT, data);
-    }
-
-    public static void dtlPointsEarned(int value) {
-        Map data = prepareAttributeMap(ATTRIBUTE_EARN);
-        data.put(DTL_ATTRIBUTE_POINTS, String.valueOf(value));
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_POINTS_EARNED, data);
-    }
-
-    public static void dtlShare(@ShareType String sharingType) {
-        Map data = prepareAttributeMap(ATTRIBUTE_SHARE);
-        data.put(DTL_ATTRIBUTE_SHARE, resolveSharingType(sharingType));
-        trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, DTL_ACTION_SHARE, data);
     }
 }

@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.tracksystem.Analytics;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
@@ -31,7 +31,7 @@ public class AnalyticsService extends ActionService {
 
     @Override
     protected Class getSupportedAnnotationType() {
-        return Analytics.class;
+        return AnalyticsEvent.class;
     }
 
     @Override
@@ -90,15 +90,15 @@ public class AnalyticsService extends ActionService {
 
     @Nullable
     private String getCategory(ActionHolder holder) {
-        return holder.action().getClass().getAnnotation(Analytics.class).category();
+        return holder.action().getClass().getAnnotation(AnalyticsEvent.class).category();
     }
 
     private static String getAction(ActionHolder holder) {
-        return holder.action().getClass().getAnnotation(Analytics.class).action();
+        return holder.action().getClass().getAnnotation(AnalyticsEvent.class).action();
     }
 
     private static String[] getTypes(ActionHolder holder) {
-        return holder.action().getClass().getAnnotation(Analytics.class).trackers();
+        return holder.action().getClass().getAnnotation(AnalyticsEvent.class).trackers();
     }
 
     private static Map<String, Object> getData(ActionHolder holder) throws IllegalAccessException {
@@ -144,13 +144,6 @@ public class AnalyticsService extends ActionService {
         public FieldAttribute(String name, String value) {
             this.name = name;
             this.value = value;
-        }
-    }
-
-    public static class AnalyticsServiceException extends JanetException {
-
-        public AnalyticsServiceException(Throwable cause) {
-            super(cause);
         }
     }
 }

@@ -37,7 +37,8 @@ public class DtlFilterPresenterImpl implements DtlFilterPresenter {
 
     @Override
     public void apply() {
-        filterInteractor.filterDataPipe().send(DtlFilterDataAction.applyParams(view.getFilterParameters()));
+        filterInteractor.filterDataPipe()
+                .send(DtlFilterDataAction.applyParams(view.getFilterParameters()));
         closeDrawer();
     }
 

@@ -8,7 +8,7 @@ import org.intellij.lang.annotations.MagicConstant;
 
 import java.lang.ref.WeakReference;
 
-@Analytics(
+@AnalyticsEvent(
         category = LifecycleEvent.LIFECYCLE_CATEGORY,
         trackers = {
                 AdobeTracker.TRACKER_KEY,

@@ -5,7 +5,8 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantFromSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlMapInfoReadyEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlShowMapInfoEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.ToggleMerchantSelectionEvent;
@@ -53,7 +54,6 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
         getView().visibleLayout(true);
     }
 
-
     @Override
     public void onMarkerClick() {
         eventBus.post(new ToggleMerchantSelectionEvent(merchant));
@@ -72,9 +72,9 @@ public class DtlMapInfoPresenterImpl extends DtlPresenterImpl<DtlMapInfoScreen, 
                         .map(DtlLocationCommand::getResult)
                         .map(location -> new Pair<>(query, location)))
                 .subscribe(pair -> {
-                    TrackingHelper.trackMerchantOpenedFromSearch(merchant.getMerchantType(),
-                            pair.first,
-                            pair.second);
+                    analyticsInteractor.dtlAnalyticsCommandPipe()
+                            .send(DtlAnalyticsCommand.create(
+                                    new MerchantFromSearchEvent(pair.first)));
                 });
     }
 

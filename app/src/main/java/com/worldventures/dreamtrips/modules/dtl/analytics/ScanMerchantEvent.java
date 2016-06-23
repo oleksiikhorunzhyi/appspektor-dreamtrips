@@ -5,11 +5,11 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
-@AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Check-In",
+@AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:QR Scan",
         trackers = AdobeTracker.TRACKER_KEY)
-public class CheckinEvent extends DtlAnalyticsAction {
+public class ScanMerchantEvent extends DtlAnalyticsAction {
 
-    @Attribute("checkin")
+    @Attribute("scan")
     final String attribute = "1";
 
     @Attribute("merchantID")
@@ -18,16 +18,13 @@ public class CheckinEvent extends DtlAnalyticsAction {
     @Attribute("merchantname")
     final String merchantName;
 
-    @Attribute("areperksavail")
-    final String perksAvailable;
+    @Attribute("scan_id")
+    final String merchantToken;
 
-    @Attribute("arepointsavail")
-    final String pointsAvailable;
-
-    public CheckinEvent(DtlMerchant merchant) {
-        merchantId = merchant.getId();
-        merchantName = merchant.getDisplayName();
-        perksAvailable = merchant.hasPerks() ? "Yes" : "No";
-        pointsAvailable = merchant.hasPoints() ? "Yes" : "No";
+    public ScanMerchantEvent(DtlMerchant dtlMerchant,
+                             String merchantToken) {
+        this.merchantToken = merchantToken;
+        merchantId = dtlMerchant.getId();
+        merchantName = dtlMerchant.getDisplayName();
     }
 }

@@ -87,13 +87,6 @@ public class DtlDetailsScreenImpl
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        //
-        getPresenter().trackScreen();
-    }
-
-    @Override
     protected void onPostAttachToWindowView() {
         inflateToolbarMenu(toolbar);
         //

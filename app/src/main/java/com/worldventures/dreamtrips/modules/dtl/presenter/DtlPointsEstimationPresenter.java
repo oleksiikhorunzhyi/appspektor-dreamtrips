@@ -7,6 +7,8 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorCalculateEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -67,8 +69,12 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     public void onCalculateClicked(String userInput) {
         if (!validateInput(userInput)) return;
         //
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(dtlMerchant)));
+        //
         transactionInteractor.estimatePointsActionPipe()
-                .send(new DtlEstimatePointsAction(dtlMerchant, Double.valueOf(userInput), dtlMerchant.getDefaultCurrency().getCode()));
+                .send(new DtlEstimatePointsAction(dtlMerchant, Double.valueOf(userInput),
+                        dtlMerchant.getDefaultCurrency().getCode()));
     }
 
     protected boolean validateInput(String pointsInput) {

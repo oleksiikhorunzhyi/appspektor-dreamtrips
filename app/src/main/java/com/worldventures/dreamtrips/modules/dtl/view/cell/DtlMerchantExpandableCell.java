@@ -15,7 +15,10 @@ import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpandEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -25,6 +28,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMed
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -47,6 +52,9 @@ public class DtlMerchantExpandableCell
     @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
     @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
     @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
+
+    @Inject
+    AnalyticsInteractor analyticsInteractor;
 
     private final LayoutInflater inflater;
 
@@ -156,6 +164,11 @@ public class DtlMerchantExpandableCell
     @OnClick(R.id.offers_container)
     void togglExpandClicked() {
         getModelObject().toggleExpanded();
+        if (getModelObject().isExpanded()) {
+            analyticsInteractor.dtlAnalyticsCommandPipe()
+                    .send(DtlAnalyticsCommand.create(
+                            new MerchantsListingExpandEvent(getModelObject())));
+        }
         cellDelegate.onExpandedToggle(getAdapterPosition());
     }
 

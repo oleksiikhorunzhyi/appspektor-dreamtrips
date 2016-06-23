@@ -14,10 +14,14 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CheckinEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantMapDestinationEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorViewEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
@@ -53,8 +57,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     @Inject
     DtlMerchantInteractor merchantInteractor;
     @Inject
-    AnalyticsInteractor analyticsInteractor;
-    @Inject
     DtlTransactionInteractor transactionInteractor;
     @Inject
     protected PhotoUploadingManagerS3 photoUploadingManagerS3;
@@ -72,6 +74,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
+        //
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant)));
         //
         getView().setMerchant(merchant);
         getView().expandOffers(getViewState().getOffers() != null ?
@@ -163,7 +168,6 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                                 }
                                 transactionInteractor.transactionActionPipe().send(DtlTransactionAction.clean(merchant));
                                 getView().openTransaction(merchant, dtlTransaction);
-                                TrackingHelper.dtlEarnView();
                             } else {
                                 getView().disableCheckinButton();
                                 locationDelegate.requestLocationUpdate()
@@ -199,7 +203,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         //
         getView().setTransaction(dtlTransaction);
         //
-        analyticsInteractor.send(new CheckinEvent(merchant));
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant)));
     }
 
     @Override
@@ -223,32 +228,17 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         getView().share(merchant);
     }
 
-    /**
-     * Analytic-related
-     */
-    @Override
-    public void trackScreen() {
-        if (merchant == null) return;
-        //
-        String merchantTypeAction = merchant.hasNoOffers() ?
-                TrackingHelper.DTL_ACTION_DINING_VIEW : TrackingHelper.DTL_ACTION_OFFER_VIEW;
-        TrackingHelper.dtlMerchantView(merchantTypeAction, merchant.getId());
-    }
-
-    /**
-     * Analytic-related
-     */
     @Override
     public void trackSharing(@ShareType String type) {
-        TrackingHelper.dtlShare(type);
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(
+                        ShareEventProvider.provideMerchantShareEvent(merchant, type)));
     }
 
-    /**
-     * Analytic-related
-     */
     @Override
     public void trackPointEstimator() {
-        TrackingHelper.dtlPointsEstimationView();
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new PointsEstimatorViewEvent(merchant)));
     }
 
     @Override
@@ -256,16 +246,15 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         locationDelegate.getLastKnownLocation()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(location -> {
-                    TrackingHelper.dtlMapDestination(location.getLatitude(), location.getLongitude(),
-                            merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
-                    TrackingHelper.dtlDirectionsView();
+                    analyticsInteractor.dtlAnalyticsCommandPipe()
+                            .send(DtlAnalyticsCommand.create(
+                                    new MerchantMapDestinationEvent(location, merchant)));
                     getView().showMerchantMap(intent);
                 }, e -> {
-                    TrackingHelper.dtlMapDestination(null, null,
-                            merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng());
-                    TrackingHelper.dtlDirectionsView();
+                    analyticsInteractor.dtlAnalyticsCommandPipe()
+                            .send(DtlAnalyticsCommand.create(
+                                    new MerchantMapDestinationEvent(null, merchant)));
                     getView().showMerchantMap(intent);
-                    Timber.e(e, "Something went wrong while location update for analytics. Possibly GPS is off");
                 });
     }
 }

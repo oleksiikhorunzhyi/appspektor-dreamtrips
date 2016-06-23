@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -13,8 +12,8 @@ import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
-import com.worldventures.dreamtrips.modules.dtl.analytics.VerifyAmountEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.VerifyAmountEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -42,7 +41,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     DtlTransactionInteractor transactionInteractor;
     //
     @State
-    String amount;
+    double amount;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
@@ -77,7 +76,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                     //
                     if (transaction.getBillTotal() != 0d) {
                         view.preSetBillAmount(transaction.getBillTotal());
-                        this.amount = String.valueOf(transaction.getBillTotal());
+                        this.amount = transaction.getBillTotal();
                     }
                     checkVerification(transaction);
                 }, apiErrorPresenter::handleError);
@@ -88,7 +87,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
         bindApiJob();
     }
 
-    public void onAmountChanged(String amount) {
+    public void onAmountChanged(double amount) {
         this.amount = amount;
         checkVerification();
     }
@@ -101,7 +100,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     private void checkVerification(DtlTransaction transaction) {
-        if (!TextUtils.isEmpty(amount) && transaction.getUploadTask() != null) {
+        if (amount > 0d && transaction.getUploadTask() != null) {
             view.enableVerification();
         } else {
             view.disableVerification();
@@ -128,7 +127,7 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                 .createObservableResult(
                         DtlTransactionAction.update(dtlMerchant,
                                 transaction -> ImmutableDtlTransaction.copyOf(transaction)
-                                        .withBillTotal(Double.parseDouble(amount)))
+                                        .withBillTotal(amount))
                 )
                 .map(DtlTransactionAction::getResult)
                 .flatMap(transaction -> transactionInteractor.estimatePointsActionPipe().createObservableResult(

@@ -146,11 +146,4 @@ public class AnalyticsService extends ActionService {
             this.value = value;
         }
     }
-
-    public static class AnalyticsServiceException extends JanetException {
-
-        public AnalyticsServiceException(Throwable cause) {
-            super(cause);
-        }
-    }
 }

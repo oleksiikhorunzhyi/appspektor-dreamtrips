@@ -1,27 +1,24 @@
 package com.messenger.delegate.chat.typing;
 
-import com.messenger.entities.DataTyping;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.MessengerServerFacade;
-import com.messenger.storage.dao.TypingDAO;
+import com.messenger.storage.dao.UsersDAO;
+
+import org.immutables.value.Value;
 
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import rx.Observable;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 
-@Singleton
 public class TypingManager {
-    private final TypingDAO typingDAO;
+    private final TypingStore typingStore;
+    private final UsersDAO usersDAO;
 
-    @Inject public TypingManager(MessengerServerFacade serverFacade, TypingDAO typingDAO) {
-        this.typingDAO = typingDAO;
+    public TypingManager(MessengerServerFacade serverFacade, UsersDAO usersDAO, TypingStore typingStore) {
+        this.typingStore = typingStore;
+        this.usersDAO = usersDAO;
 
         serverFacade.getStatusObservable()
                 .filter(this::filterConnectionStatus)
@@ -32,35 +29,37 @@ public class TypingManager {
         return connectionStatus == ConnectionStatus.DISCONNECTED || connectionStatus == ConnectionStatus.ERROR;
     }
 
-    public void clearCache() {
-        executeObservable(typingDAO::deleteAll)
-                .subscribe();
+    private void clearCache() {
+        typingStore.deleteAll();
     }
 
     public void userStartTyping(String conversationId, String userId) {
-        executeObservable(() -> typingDAO.save(new DataTyping(conversationId, userId)))
-                .subscribe();
+        typingStore.add(conversationId, userId);
     }
 
     public void userStopTyping(String conversationId, String userId) {
-        executeObservable(() -> typingDAO.deleteById(DataTyping.generateId(conversationId, userId)))
-                .subscribe();
+        typingStore.delete(conversationId, userId);
     }
 
     public void userOffline(String userId) {
-        executeObservable(() -> typingDAO.deleteByUserId(userId))
-                .subscribe();
+        typingStore.deleteByUserId(userId);
     }
 
     public Observable<List<DataUser>> getTypingObservable(String conversationId) {
-        return typingDAO.getTypingUser(conversationId)
+        return typingStore.getTypingUsers(conversationId)
+                .map(this::obtainDataUser)
                 .doOnNext(Collections::sort);
     }
 
-    protected Observable<Void> executeObservable(Action0 action) {
-        return Observable.<Void>create(subscriber -> {
-            action.call();
-            subscriber.onCompleted();
-        }).subscribeOn(Schedulers.io());
+    private List<DataUser> obtainDataUser(List<String> userIds) {
+        return usersDAO.getExitingUserByIds(userIds).toBlocking().first();
+    }
+
+    @Value.Immutable
+    interface TypingModel {
+
+        String getUserId();
+
+        String getConversationId();
     }
 }

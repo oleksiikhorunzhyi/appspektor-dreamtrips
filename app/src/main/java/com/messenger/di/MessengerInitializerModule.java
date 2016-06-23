@@ -8,7 +8,6 @@ import com.messenger.initializer.MessengerInitializer;
 import com.messenger.initializer.PresenceListenerInitializer;
 import com.messenger.initializer.RosterListenerInitializer;
 import com.messenger.initializer.StorageInitializer;
-import com.messenger.initializer.TypingInitializer;
 import com.techery.spares.application.AppInitializer;
 import com.techery.spares.module.qualifier.ForApplication;
 
@@ -22,8 +21,7 @@ import dagger.Provides;
                 RosterListenerInitializer.class,
                 StorageInitializer.class,
                 PresenceListenerInitializer.class,
-                ChatFacadeInitializer.class,
-                TypingInitializer.class
+                ChatFacadeInitializer.class
         },
         complete = false, library = true
 )
@@ -57,10 +55,5 @@ public class MessengerInitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideFailedMessageInitializer() {
         return new FailedMessageInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideTypingInitializer() {
-        return new TypingInitializer();
     }
 }

@@ -12,7 +12,6 @@ import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.storage.dao.PhotoDAO;
 import com.messenger.storage.dao.TranslationsDAO;
-import com.messenger.storage.dao.TypingDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -106,11 +105,5 @@ public class MessengerStorageModule {
     @Singleton
     MediaDAO provideMediaAttachmentDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
         return new MediaDAO(rxContentResolver, context);
-    }
-
-    @Provides
-    @Singleton
-    TypingDAO typingDAO(@Named(DB_FLOW_RX_RESOLVER) RxContentResolver rxContentResolver, @ForApplication Context context) {
-        return new TypingDAO(context, rxContentResolver);
     }
 }

@@ -36,7 +36,7 @@ public class UsersDAO extends BaseDAO {
         sb.setCharAt(sb.length() - 1, ')');
 
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT " + DataUser$Table._ID +
+                .withSelection("SELECT * " +
                         " FROM " + DataUser.TABLE_NAME +
                         " WHERE " + DataUser$Table._ID + " in " + sb.toString())
                         .build();

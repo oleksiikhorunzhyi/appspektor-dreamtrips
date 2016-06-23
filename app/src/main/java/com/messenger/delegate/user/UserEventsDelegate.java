@@ -8,7 +8,7 @@ import com.messenger.storage.dao.UsersDAO;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,22 +31,15 @@ public class UserEventsDelegate {
     // Friends related
     ///////////////////////////////////////////////////////////////////////////
 
-    public void friendsAdded(Collection<String> userIds) {
-        Queryable.from(userIds).forEachR(this::friendAdded);
-    }
+    public void friendsAdded(List<String> userIds) {
+        Observable.from(userIds)
+                .map(userId -> {
+                    MessengerUser messengerUser = new MessengerUser(userId);
+                    messengerUser.setType(UserType.FRIEND);
 
-    private void friendAdded(String userId) {
-        getUser(userId)
-                .flatMap(user -> {
-                    if (user == null) {
-                        MessengerUser messengerUser = new MessengerUser(userId);
-                        messengerUser.setType(UserType.FRIEND);
-                        return usersDelegate.loadUsers(Collections.singletonList(messengerUser));
-                    } else {
-                        user.setFriend(true);
-                        return Observable.just(Collections.singletonList(user));
-                    }
-                })
+                    return messengerUser;
+                }).toList()
+                .flatMap(usersDelegate::loadUsers)
                 .subscribe(usersDAO::save, e -> Timber.e(e, "Failed to add friend"));
     }
 

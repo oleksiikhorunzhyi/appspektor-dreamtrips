@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Nem lehet kevesebb mint 0!</string>
     <string name="dtl_price">Ár ($)</string>
     <string name="dtl_distance">Távolság, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;Megjegyzés:&lt;/b&gt; a számlán a teljes összegnek kell szerepelnie, kivéve a borravalót és az adót </string>
     <string name="dtl_receipt_scan">Nyugta rögzítése</string>
     <string name="dtl_receipt_rescan">Újabb felvétel</string>
     <string name="dtl_receipt_verify">Összeg ellenőrzése</string>
@@ -85,6 +84,9 @@
     <string name="details_collapsed_text_caption">Több</string>
     <string name="details_expanded_text_caption">Kevesebb</string>
     <string name="offer_expiration_format">%1$s -ig</string>
+    <string name="training_no_video">Videók jönnek hamarosan</string>
+    <string name="help">Segítség</string>
+    <string name="merchants_list_empty_text">Hamarosan jönnek a helyek</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Étel &amp; Ital</string>

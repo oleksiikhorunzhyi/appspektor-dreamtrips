@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Tidak boleh kurang daripada 0!</string>
     <string name="dtl_price">Harga ($)</string>
     <string name="dtl_distance">Jarak, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;Pemberitahuan:&lt;/b&gt; jumlahnya sepatutnya jumlah yang tertera pada bil, tidak termasuk tips dan cukai</string>
     <string name="dtl_receipt_scan">Mengambil Gambar Resit</string>
     <string name="dtl_receipt_rescan">Ambil gambar semula</string>
     <string name="dtl_receipt_verify">Sahkan amaun</string>
@@ -85,6 +84,9 @@
     <string name="details_collapsed_text_caption">Tunjukkan Selanjutnya </string>
     <string name="details_expanded_text_caption">Tunjukkan Kurang</string>
     <string name="offer_expiration_format">Sehingga %1$s</string>
+    <string name="training_no_video">Video yang akan datang tidak lama lagi</string>
+    <string name="help">Bantuan</string>
+    <string name="merchants_list_empty_text">Tempat yang akan datang tidak lama lagi</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Makanan &amp; Minuman</string>

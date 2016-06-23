@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">不能小于0！</string>
     <string name="dtl_price">价格</string>
     <string name="dtl_distance">距离， %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;注意： &lt;/b&gt;金额应是发票上注明的总量，不包括小费和税</string>
     <string name="dtl_receipt_scan">捕捉收据</string>
     <string name="dtl_receipt_rescan">重新捕捉</string>
     <string name="dtl_receipt_verify">确认金额</string>
@@ -85,6 +84,9 @@
     <string name="details_collapsed_text_caption">显示更多</string>
     <string name="details_expanded_text_caption">显示更少</string>
     <string name="offer_expiration_format">直到%1$s</string>
+    <string name="training_no_video">视频即将推出</string>
+    <string name="help">帮助</string>
+    <string name="merchants_list_empty_text">即将推出新新地点</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">食品及饮料</string>

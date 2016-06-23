@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Δεν μπορεί να είναι λιγότερο από 0!</string>
     <string name="dtl_price">Τιμή ($)</string>
     <string name="dtl_distance">Απόσταση, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;Σημείωση: &lt;/b&gt; το πσοό πρέπει να είναι το συνολικό του λογαριασμού, μη συμπεριλαμβανομένων των φόρων και του φιλοδωρήματος</string>
     <string name="dtl_receipt_scan">Αποθήκευση απόδειξης</string>
     <string name="dtl_receipt_rescan">Νέα αποθήκευση</string>
     <string name="dtl_receipt_verify">Επαλήθευση ποσού</string>
@@ -85,6 +84,9 @@
     <string name="details_collapsed_text_caption">Δείξε Περισσότερα</string>
     <string name="details_expanded_text_caption">Δείξε Λιγότερα</string>
     <string name="offer_expiration_format">Μέχρι %1$s</string>
+    <string name="training_no_video">Προσεχή βίντεο</string>
+    <string name="help">Βοήθεια</string>
+    <string name="merchants_list_empty_text">Προσεχή σημεία</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Φαγητό &amp; Ποτά</string>

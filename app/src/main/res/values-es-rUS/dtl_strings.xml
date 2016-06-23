@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">¡No puede ser menor a 0!</string>
     <string name="dtl_price">Precio ($)</string>
     <string name="dtl_distance">Distancia, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;Nota:&lt;/b&gt; la cantidad debe ser el total en la factura sin incluir propina e impuestos</string>
     <string name="dtl_receipt_scan">Captura de recibo</string>
     <string name="dtl_receipt_rescan">Volver a capturar</string>
     <string name="dtl_receipt_verify">Verificar cantidad</string>
@@ -85,6 +84,9 @@
     <string name="details_collapsed_text_caption">Mostrar más</string>
     <string name="details_expanded_text_caption">Muestra menos</string>
     <string name="offer_expiration_format">Hasta %1$s</string>
+    <string name="training_no_video">Videos próximamente</string>
+    <string name="help">Ayuda</string>
+    <string name="merchants_list_empty_text">Nuevos lugares próximamente</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Comida y Bebidas</string>

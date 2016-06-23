@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Kan inte vara mindre än 0!</string>
     <string name="dtl_price">Pris ($)</string>
     <string name="dtl_distance">Avstånd, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;Notera:&lt;/b&gt; beloppet bör vara den totala summan från räkningen, tips och skatt ska inte inkluderas</string>
     <string name="dtl_receipt_scan">Registrera kvitto</string>
     <string name="dtl_receipt_rescan">Ta en ny bild</string>
     <string name="dtl_receipt_verify">Verifiera belopp</string>
@@ -85,6 +84,9 @@
     <string name="details_collapsed_text_caption">Visa mer</string>
     <string name="details_expanded_text_caption">Visa mindre</string>
     <string name="offer_expiration_format">Till och med %1$s</string>
+    <string name="training_no_video">Videor kommer snart</string>
+    <string name="help">Hjälp</string>
+    <string name="merchants_list_empty_text">Platser kommer snart</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Mat och dryck</string>

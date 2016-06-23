@@ -20,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Nu poate fi mai mic decât 0!</string>
     <string name="dtl_price">Preț ($)</string>
     <string name="dtl_distance">Distanță, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt; Notă: &lt;/b&gt; totalul sumei trebuie să fie cel de pe factură, fără T.V.A. și bacșiș</string>
     <string name="dtl_receipt_scan">Scanați nota de plată</string>
     <string name="dtl_receipt_rescan">Rescanați</string>
     <string name="dtl_receipt_verify">Confirmați suma</string>
@@ -85,6 +84,9 @@
     <string name="details_collapsed_text_caption">Arătați mai multe</string>
     <string name="details_expanded_text_caption">Arătați mai puține</string>
     <string name="offer_expiration_format">Până la %1$s</string>
+    <string name="training_no_video">Videoclipuri în curând</string>
+    <string name="help">Ajutor</string>
+    <string name="merchants_list_empty_text">Locuri în curând</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Mâncare și băuturi</string>

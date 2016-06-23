@@ -18,6 +18,7 @@ public class AdobeTracker extends Tracker {
 
     private static final String CHANNEL_KEY = "channel";
     private static final String CHANNEL_VALUE = "App:Dreamtrips";
+    private static final String ACTION = "action";
 
     @Override
     public String getKey() {
@@ -49,9 +50,9 @@ public class AdobeTracker extends Tracker {
         if (headerData != null) data.putAll(headerData);
 
         data.put(CHANNEL_KEY, CHANNEL_VALUE);
+        data.put(ACTION, prepareAction(action));
 
         Analytics.trackState(prepareAction(action), data);
-        Analytics.trackAction(prepareAction(action), data);
     }
 
     private String prepareAction(String action) {

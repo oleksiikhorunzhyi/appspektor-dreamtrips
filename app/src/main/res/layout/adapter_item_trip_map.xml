@@ -35,7 +35,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp">
+        android:paddingTop="@dimen/map_trip_padding_vertical"
+        android:paddingBottom="@dimen/map_trip_padding_vertical"
+        android:paddingLeft="@dimen/map_trip_padding_horizontal"
+        android:paddingRight="@dimen/map_trip_padding_horizontal">
 
         <TextView
             android:id="@+id/trip_title"
@@ -61,7 +64,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/connecting_overlay_text_color"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             tools:text="New York, NY, United States"/>
 
         <TextView
@@ -71,6 +74,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/trip_price"
+            android:layout_marginRight="@dimen/spacing_tiny"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/blue"

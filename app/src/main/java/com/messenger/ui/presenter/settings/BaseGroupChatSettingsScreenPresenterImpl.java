@@ -45,12 +45,16 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl
     @Override
     protected void onConversationChanged(DataConversation conversation, List<DataUser> participants) {
         super.onConversationChanged(conversation, participants);
+
+        boolean conversationPresent = ConversationHelper.isPresent(conversation);
         DataUser owner = Queryable.from(participants)
                 .filter(user -> ConversationHelper.isOwner(conversation, user))
                 .firstOrDefault();
-        getView().setOwner(owner);
-        getView().setLeaveButtonVisible(ConversationHelper.isPresent(conversation)
-                && !ConversationHelper.isOwner(conversation, currentUser));
+
+        GroupChatSettingsScreen view = getView();
+        view.setOwner(owner);
+        view.setClearButtonVisible(conversationPresent);
+        view.setLeaveButtonVisible(conversationPresent && !ConversationHelper.isOwner(conversation, currentUser));
     }
 
     @Override

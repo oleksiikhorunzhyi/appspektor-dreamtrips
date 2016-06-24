@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -46,6 +47,8 @@ public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, 
     TextView chatDescriptionTextView;
     @InjectView(R.id.char_settings_rows_parent)
     ViewGroup chatSettingsRows;
+    @InjectView(R.id.chat_settings_clear_history_button)
+    Button clearChatButton;
     @InjectView(R.id.chat_settings_leave_chat_button)
     Button leaveChatButton;
     @InjectView(R.id.chat_settings_group_chat_info_textview)
@@ -135,6 +138,15 @@ public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, 
         getPresenter().onClearChatHistoryClicked();
     }
 
+    @Override
+    public void showClearChatDialog() {
+        new AlertDialog.Builder(getContext(), R.style.RetrySendMessageDialogStyle)
+                .setMessage(R.string.chat_settings_clear_chat_confirmation_text)
+                .setNegativeButton(R.string.chat_settings_clear_chat_cancel, null)
+                .setPositiveButton(R.string.chat_settings_clear_chat_ok,
+                        (dialog, which) -> presenter.onClearChatHistory())
+                .show();
+    }
 
     @Override
     public void setConversation(@NonNull DataConversation conversation) {

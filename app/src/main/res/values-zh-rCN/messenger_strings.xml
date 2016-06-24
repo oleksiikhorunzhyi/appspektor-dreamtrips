@@ -101,7 +101,6 @@
     <string name="chat_settings_row_shared_content">共享内容</string>
     <string name="chat_settings_row_members_format">会员（ %1$d ）</string>
     <string name="chat_settings_row_assign_new_admin">指派新的管理员</string>
-    <string name="chat_settings_row_clear_history">清除历史记录</string>
     <string name="chat_settings_row_leave_chat">离开聊天</string>
     <string name="chat_settings_row_delete_chat">删除聊天</string>
     <string name="chat_settings_group_chat_info_text_format">该聊天是由%1$s在%2$s上创建</string>

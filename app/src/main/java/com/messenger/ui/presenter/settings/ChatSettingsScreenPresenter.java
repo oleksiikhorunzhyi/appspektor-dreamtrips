@@ -9,6 +9,8 @@ public interface ChatSettingsScreenPresenter<C extends ChatSettingsScreen> exten
 
     void onClearChatHistoryClicked();
 
+    void onClearChatHistory();
+
     void onNotificationsSwitchClicked(boolean isChecked);
 }
 

@@ -101,7 +101,6 @@
     <string name="chat_settings_row_shared_content">Delat innehåll</string>
     <string name="chat_settings_row_members_format">Medlemmar (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Lägg till en ny admin</string>
-    <string name="chat_settings_row_clear_history">Rensa historik</string>
     <string name="chat_settings_row_leave_chat">Lämna chatt</string>
     <string name="chat_settings_row_delete_chat">Ta bort chatt</string>
     <string name="chat_settings_group_chat_info_text_format">Denna chatt skapades av %1$s den %2$s </string>

@@ -20,6 +20,8 @@ public interface GroupChatSettingsScreen extends ChatSettingsScreen {
 
     void setLeaveButtonVisible(boolean visible);
 
+    void setClearButtonVisible(boolean visible);
+
     void setOwner(DataUser owner);
 
     void showSubjectDialog(String currentSubject);

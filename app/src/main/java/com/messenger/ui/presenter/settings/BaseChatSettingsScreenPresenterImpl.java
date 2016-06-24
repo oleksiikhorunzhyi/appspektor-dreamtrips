@@ -105,6 +105,12 @@ public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettings
 
     @Override
     public void onClearChatHistoryClicked() {
+        getView().showClearChatDialog();
+    }
+
+    @Override
+    public void onClearChatHistory() {
+
     }
 
     @Override

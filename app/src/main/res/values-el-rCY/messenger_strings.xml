@@ -101,7 +101,6 @@
     <string name="chat_settings_row_shared_content">Κοινόχρηστο περιεχόμενο</string>
     <string name="chat_settings_row_members_format">Μέλη (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Ορίστε νέο διαχειριστή</string>
-    <string name="chat_settings_row_clear_history">Καθαρισμός ιστορικού</string>
     <string name="chat_settings_row_leave_chat">Αποχώρηση από τη συνομιλία</string>
     <string name="chat_settings_row_delete_chat">Διαγραφή συνομιλίας</string>
     <string name="chat_settings_group_chat_info_text_format">Αυτή η συνομιλία δημιουργήθηκε από %1$s στις %2$s</string>

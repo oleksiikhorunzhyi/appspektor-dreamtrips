@@ -101,7 +101,6 @@
     <string name="chat_settings_row_shared_content">Conținut partajat</string>
     <string name="chat_settings_row_members_format">Membri (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Alocați un nou administrator</string>
-    <string name="chat_settings_row_clear_history">Goliți istoricul</string>
     <string name="chat_settings_row_leave_chat">Păsăriți chatul</string>
     <string name="chat_settings_row_delete_chat">Ștergeți chat</string>
     <string name="chat_settings_group_chat_info_text_format">Această conversație a fost creată de %1$s în data de %2$s </string>

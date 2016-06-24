@@ -3,6 +3,7 @@ package com.messenger.messengerservers.model;
 import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 
 public class Message {
     private String id;
@@ -10,12 +11,12 @@ public class Message {
     private String toId;
     private String deleted;
 
-    @Nullable
-    private MessageBody messageBody;
+    @Nullable private MessageBody messageBody;
     // ms
     private long date;
     private String conversationId;
     private int status;
+    private @MessageType.Type String type;
 
     public Message() {
     }
@@ -29,6 +30,7 @@ public class Message {
         setConversationId(builder.conversationId);
         setStatus(builder.status);
         setDeleted(builder.deleted);
+        setType(builder.type);
     }
 
     public String getId() {
@@ -97,6 +99,14 @@ public class Message {
         this.deleted = deleted;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public static final class Builder {
         private String id;
         private String fromId;
@@ -104,8 +114,9 @@ public class Message {
         private MessageBody messageBody;
         private long date;
         private String conversationId;
-        private int status;
+        private @MessageStatus.Status int status;
         private String deleted;
+        private @MessageType.Type String type;
 
         public Builder() {
         }
@@ -147,6 +158,11 @@ public class Message {
 
         public Builder deleted(String val) {
             deleted = val;
+            return this;
+        }
+
+        public Builder type(@MessageType.Type String type) {
+            this.type = type;
             return this;
         }
 

@@ -2,8 +2,10 @@ package com.messenger.entities;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
@@ -37,6 +39,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @Column Date date;
     @Column String conversationId;
     @MessageStatus.Status @Column int status;
+    @MessageType.Type @Column String type;
     @Column long syncTime;
     @Column int version = MESSAGE_FORMAT_VERSION;
 
@@ -50,6 +53,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setToId(message.getToId());
         setStatus(message.getStatus());
         setDate(new Date(message.getDate()));
+        setType(message.getType());
 
         MessageBody body = message.getMessageBody();
         if (body != null) {
@@ -68,6 +72,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setDate(builder.date);
         setSyncTime(builder.syncTime);
         setStatus(builder.status);
+        setType(type);
     }
 
     public void setLocale(String locale) {
@@ -150,6 +155,14 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         this.syncTime = syncTime;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
@@ -189,6 +202,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         private String locale;
         private int status;
         private long syncTime;
+        private @MessageType.Type String type;
 
         public Builder() {
         }
@@ -238,6 +252,11 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
             return this;
         }
 
+        public Builder type(@MessageType.Type String type) {
+            this.type = type;
+            return this;
+        }
+
         public DataMessage build() {
             return new DataMessage(this);
         }
@@ -250,6 +269,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
                 .id(id)
                 .conversationId(conversationId)
                 .status(status)
+                .type(type)
                 .build();
     }
 }

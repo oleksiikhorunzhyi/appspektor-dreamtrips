@@ -83,9 +83,16 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlEarnPointsAction>()
                         .onStart(action -> view.showProgress(R.string.dtl_wait_for_earn))
-                        .onFail(apiErrorPresenter::handleActionError)
+                        .onFail(this::onEarnError)
                         .onSuccess(this::processTransactionResult));
     }
+
+    private void onEarnError(DtlEarnPointsAction action, Throwable throwable) {
+        apiErrorPresenter.handleActionError(action, throwable);
+        cleanTransactionToken();
+    }
+
+
 
     public void codeScanned(String scannedQr) {
         tryLogInvalidQr(scannedQr);
@@ -169,6 +176,18 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         transactionInteractor.earnPointsActionPipe().clearReplays();
     }
 
+
+    private void cleanTransactionToken() {
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .map(transaction -> ImmutableDtlTransaction.copyOf(transaction).withMerchantToken(null))
+                .flatMap(transaction ->
+                        transactionInteractor.transactionActionPipe()
+                                .createObservableResult(DtlTransactionAction.save(dtlMerchant, transaction))
+                )
+                .compose(bindViewIoToMainComposer())
+                .subscribe(action -> {}, apiErrorPresenter::handleError);
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Receipt uploading
     ///////////////////////////////////////////////////////////////////////////
@@ -243,6 +262,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     @Override
     public void dropView() {
         super.dropView();
+        transactionInteractor.earnPointsActionPipe().clearReplays();
         if (transferObserver != null) transferObserver.setTransferListener(null);
     }
 

@@ -134,9 +134,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                                 checkTransactionOutOfDate(transaction);
                             }
                             getView().setTransaction(transaction);
-
                         }));
-
     }
 
     private void checkSucceedEvent(DtlTransaction transaction) {
@@ -149,7 +147,12 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
     private void checkTransactionOutOfDate(DtlTransaction transaction) {
         if (transaction.isOutOfDate(Calendar.getInstance().getTimeInMillis())) {
-            transactionInteractor.transactionActionPipe().send(DtlTransactionAction.delete(merchant));
+            transactionInteractor.transactionActionPipe()
+                    .createObservable(DtlTransactionAction.delete(merchant))
+                    .compose(bindViewIoToMainComposer())
+                    .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                            .onFail(apiErrorPresenter::handleActionError)
+                            .onSuccess(action -> getView().setTransaction(action.getResult())));
         }
     }
 

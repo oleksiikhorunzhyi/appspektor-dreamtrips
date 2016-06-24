@@ -6,6 +6,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 
+import java.util.Locale;
+
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Congratulations",
         trackers = AdobeTracker.TRACKER_KEY)
 public class TransactionSuccessEvent extends DtlAnalyticsAction {
@@ -40,8 +42,8 @@ public class TransactionSuccessEvent extends DtlAnalyticsAction {
         perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
         currencyCode = dtlMerchant.getDefaultCurrency().getCode();
-        earnedAmount = String.valueOf(Math.round(
-                dtlTransaction.getDtlTransactionResult().getEarnedPoints()));
-        spentAmount = String.valueOf(Math.round(dtlTransaction.getBillTotal()));
+        earnedAmount = String.format(Locale.US, "%.0f",
+                dtlTransaction.getDtlTransactionResult().getEarnedPoints());
+        spentAmount = String.format(Locale.US, "%.2f", dtlTransaction.getBillTotal());
     }
 }

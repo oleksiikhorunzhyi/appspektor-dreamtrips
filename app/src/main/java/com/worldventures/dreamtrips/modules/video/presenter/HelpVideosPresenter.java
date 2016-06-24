@@ -16,6 +16,11 @@ public class HelpVideosPresenter extends TrainingVideosPresenter {
     }
 
     @Override
+    protected boolean isNeedToSendAnalytics() {
+        return false;
+    }
+
+    @Override
     protected void trackAnalyticsOnPostResume() {
         // Add analytics if needed when fragment resumed
     }

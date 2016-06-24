@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.HumaneErrorTextFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
@@ -205,6 +206,10 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
         } catch (ActivityNotFoundException e) {
             view.informUser(R.string.audio_app_not_found_exception);
         }
+    }
+
+    public void track() {
+        TrackingHelper.podcasts(getAccountUserId());
     }
 
     public interface View extends RxView, FileCachingDelegate.View {

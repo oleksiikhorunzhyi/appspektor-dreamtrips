@@ -152,6 +152,15 @@ public class PresentationVideosPresenter<T extends PresentationVideosPresenter.V
         fileCachingDelegate.cancelCachingFile(cachedEntity);
     }
 
+    public void track() {
+        if (isNeedToSendAnalytics())
+            TrackingHelper.memberVideos(getAccountUserId());
+    }
+
+    protected boolean isNeedToSendAnalytics() {
+        return true;
+    }
+
     public interface View extends Presenter.View, FileCachingDelegate.View {
 
         void startLoading();

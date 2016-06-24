@@ -41,6 +41,11 @@ public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> ext
     }
 
     @Override
+    protected boolean isNeedToSendAnalytics() {
+        return false;
+    }
+
+    @Override
     protected void loadOnStart() {
         loadLocales();
     }

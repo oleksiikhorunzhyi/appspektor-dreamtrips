@@ -76,6 +76,12 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
             case OTA:
                 TrackingHelper.ota(getAccountUserId());
                 break;
+            case ENROLL_MEMBER:
+                TrackingHelper.enrollMember(getAccountUserId());
+                break;
+            case ENROLL_MERCHANT:
+                TrackingHelper.enrollMerchant(getAccountUserId());
+                break;
         }
     }
 

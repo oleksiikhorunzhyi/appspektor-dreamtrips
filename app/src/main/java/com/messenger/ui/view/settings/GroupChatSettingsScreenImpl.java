@@ -161,6 +161,11 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath>
     }
 
     @Override
+    public void setClearButtonVisible(boolean visible) {
+        clearChatButton.setVisibility(visible ? VISIBLE : GONE);
+    }
+
+    @Override
     public void showMessage(@StringRes int text, Action0 action) {
         Snackbar.make(this, text, Snackbar.LENGTH_SHORT)
                 .setAction(R.string.retry, v -> action.call())

@@ -15,6 +15,8 @@ public interface ChatSettingsScreen extends MessengerScreen {
 
     void showContent();
 
+    void showClearChatDialog();
+
     void showError(Throwable e);
 
     void setConversation(@NonNull DataConversation conversation);

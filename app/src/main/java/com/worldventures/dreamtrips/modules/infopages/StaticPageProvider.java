@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 
 public class StaticPageProvider {
 
@@ -42,7 +43,7 @@ public class StaticPageProvider {
         return enrollUrlFromServer + "&" + additionalParams;
     }
 
-    public String getEnrollMerchantUrl() {
+    public String getEnrollMerchantUrl(MerchantIdBundle args) {
         StringBuilder builder = new StringBuilder(BuildConfig.DreamTripsApi);
         builder
                 .append("/gateway/dtl/enroll_merchant")
@@ -50,6 +51,11 @@ public class StaticPageProvider {
                 .append("&sso=").append(appSessionHolder.get().get().getLegacyApiToken())
                 .append("&locale=").append(appSessionHolder.get().get().getUser().getLocale())
         ;
+        //
+        if (args != null) {
+            builder.append("&intent=suggestProspect").append("&prospectId=")
+                    .append(args.getMerchantId());
+        }
         return builder.toString();
     }
 

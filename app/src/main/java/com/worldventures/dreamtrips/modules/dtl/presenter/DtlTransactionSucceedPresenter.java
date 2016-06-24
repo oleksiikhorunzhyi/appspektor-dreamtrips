@@ -2,10 +2,12 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
+import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionSuccessEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -19,7 +21,8 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 
-public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionSucceedPresenter.View> {
+public class DtlTransactionSucceedPresenter
+        extends JobPresenter<DtlTransactionSucceedPresenter.View> {
 
     @Inject
     DtlMerchantInteractor merchantInteractor;
@@ -52,24 +55,27 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     }
 
     public void share() {
-        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe()
+                .createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(transaction ->
-                                view.showShareDialog((int) transaction.getDtlTransactionResult().getEarnedPoints(), dtlMerchant),
+                .subscribe(transaction -> view.showShareDialog(
+                        (int) transaction.getDtlTransactionResult().getEarnedPoints(), dtlMerchant),
                         apiErrorPresenter::handleError);
     }
 
     public void done() {
         if (stars != 0) {
-            transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+            transactionInteractor.transactionActionPipe()
+                    .createObservableResult(DtlTransactionAction.get(dtlMerchant))
                     .map(DtlTransactionAction::getResult)
                     .flatMap(transaction ->
-                            transactionInteractor.rateActionPipe().createObservableResult(new DtlRateAction(dtlMerchant, stars, transaction))
+                            transactionInteractor.rateActionPipe()
+                                    .createObservableResult(
+                                            new DtlRateAction(dtlMerchant, stars, transaction))
                     ).compose(bindViewIoToMainComposer())
                     .subscribe(action -> {
                     }, apiErrorPresenter::handleError);
-
         }
     }
 
@@ -77,10 +83,16 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+        transactionInteractor.transactionActionPipe()
+                .createObservableResult(DtlTransactionAction.get(dtlMerchant))
                 .map(DtlTransactionAction::getResult)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(transaction -> view.setCongratulations(transaction.getDtlTransactionResult()),
+                .subscribe(transaction -> {
+                            view.setCongratulations(transaction.getDtlTransactionResult());
+                            analyticsInteractor.dtlAnalyticsCommandPipe()
+                                    .send(DtlAnalyticsCommand.create(
+                                            new TransactionSuccessEvent(dtlMerchant, transaction)));
+                        },
                         apiErrorPresenter::handleError);
         bindApiPipe();
     }
@@ -91,11 +103,10 @@ public class DtlTransactionSucceedPresenter extends JobPresenter<DtlTransactionS
                         .onFail(apiErrorPresenter::handleActionError));
     }
 
-    /**
-     * Analytic-related
-     */
     public void trackSharing(@ShareType String type) {
-        TrackingHelper.dtlShare(type);
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(
+                        ShareEventProvider.provideTransactionSuccessShareEvent(dtlMerchant, type)));
     }
 
     public interface View extends ApiErrorView, RxView {

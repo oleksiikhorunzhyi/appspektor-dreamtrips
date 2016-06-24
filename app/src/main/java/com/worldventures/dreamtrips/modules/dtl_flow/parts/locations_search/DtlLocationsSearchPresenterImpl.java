@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
@@ -82,18 +81,11 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
 
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
-        trackLocationSelection(location);
+        locationInteractor.searchLocationPipe().clearReplays();
         locationInteractor.locationPipe().send(DtlLocationCommand.change(location));
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         History history = History.single(new DtlMerchantsPath());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-    }
-
-    /**
-     * Analytic-related
-     */
-    private void trackLocationSelection(DtlExternalLocation newLocation) {
-        TrackingHelper.searchLocation(newLocation);
     }
 
     @Override

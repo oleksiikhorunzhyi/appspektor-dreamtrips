@@ -20,7 +20,6 @@ import com.google.android.gms.common.api.Status;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.jakewharton.rxbinding.view.RxView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
-import com.techery.spares.ui.view.cell.CellDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -37,7 +36,9 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelper;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -178,17 +179,19 @@ public class MasterToolbarScreenImpl
     }
 
     @Override
-    public void setItems(List<DtlExternalLocation> dtlExternalLocations) {
+    public void setItems(List<DtlExternalLocation> items) {
         hideProgress();
         //
-        adapter.clear();
-        adapter.addItem(0, DtlLocationSearchHeaderCell.HeaderModel.INSTANCE);
-        adapter.addItems(dtlExternalLocations);
+        List<Object> locations = new CopyOnWriteArrayList<>(items);
+        if (getPresenter().needShowAutodetectButton()) {
+            locations.add(0, DtlLocationSearchHeaderCell.HeaderModel.INSTANCE);
+        }
+        adapter.clearAndUpdateItems(locations);
     }
 
     @Override
-    public void hideNearMeButton() {
-        adapter.remove(DtlLocationSearchHeaderCell.HeaderModel.INSTANCE);
+    public void updateButtonState() {
+        setItems(Collections.emptyList()); // update only header if needed
     }
 
     @Override

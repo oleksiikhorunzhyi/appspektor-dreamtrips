@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
@@ -38,6 +39,8 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     protected EventBus eventBus;
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    protected AnalyticsInteractor analyticsInteractor;
     @Inject
     protected FeatureManager featureManager;
     @Inject

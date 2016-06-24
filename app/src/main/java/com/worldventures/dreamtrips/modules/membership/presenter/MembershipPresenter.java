@@ -73,6 +73,9 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
             case INVITE:
                 TrackingHelper.inviteShare(getAccountUserId());
                 break;
+            case PODCASTS:
+                TrackingHelper.podcasts(getAccountUserId());
+                break;
         }
     }
 

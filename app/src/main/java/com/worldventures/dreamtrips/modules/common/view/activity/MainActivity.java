@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.MenuPressedEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.MainActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
@@ -43,6 +44,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import icepick.State;
+import rx.android.schedulers.AndroidSchedulers;
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
@@ -86,13 +88,17 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        TrackingHelper.onSaveInstanceState(outState);
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(LifecycleEvent.ACTION_ONSAVESTATE, outState),
+                        AndroidSchedulers.mainThread());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        TrackingHelper.onRestoreInstanceState(savedInstanceState);
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(LifecycleEvent.ACTION_ONRESTORESTATE, savedInstanceState),
+                        AndroidSchedulers.mainThread());
     }
 
     @Override
@@ -109,9 +115,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         setUpBurger();
         setUpMenu();
         //
-
         BaseFragment currentFragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.container_main);
-
+        //
         if (currentComponent == null && currentFragment != null) {
             currentComponent = rootComponentsProvider.getComponentByFragment(currentFragment.getClass());
         }
@@ -168,7 +173,8 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     }
 
     private void setUpBurger() {
-        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open,
+                R.string.drawer_close) {
             @Override
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
@@ -184,12 +190,12 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
                 eventBus.post(new MenuPressedEvent());
             }
         };
-
+        //
         drawerLayout.setDrawerListener(mDrawerToggle);
-
+        //
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
+        //
         this.drawerLayout.post(mDrawerToggle::syncState);
     }
 
@@ -287,7 +293,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
                         getPresentationModel().logout();
                     }
                 }).show();
-
     }
 
     boolean handleBackPressed() {

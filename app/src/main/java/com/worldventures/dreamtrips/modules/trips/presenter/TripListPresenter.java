@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripQueryData;
+import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import javax.inject.Inject;
@@ -181,7 +182,8 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
     public void onEvent(TripItemAnalyticEvent event) {
         if (event.getActionAttribute().equals(TrackingHelper.ATTRIBUTE_VIEW)) {
-            TrackingHelper.viewTripDetails(event.getTripId(), event.getTripName(), view.isSearchOpened() ? query : "");
+            TrackingHelper.viewTripDetails(event.getTripId(), event.getTripName(),
+                    view.isSearchOpened() ? query : "", new TripsFilterDataAnalyticsWrapper(tripFilterDataProvider.get()));
         } else {
             TrackingHelper.actionItemDreamtrips(event.getActionAttribute(), event.getTripId(), event.getTripName());
         }

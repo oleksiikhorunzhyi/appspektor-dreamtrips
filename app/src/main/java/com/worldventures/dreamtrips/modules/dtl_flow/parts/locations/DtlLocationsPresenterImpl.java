@@ -6,7 +6,6 @@ import android.location.Location;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
@@ -136,13 +135,6 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
         else onLocationResolutionDenied();
     }
 
-    /**
-     * Analytic-related
-     */
-    private void trackLocationSelection(DtlExternalLocation newLocation) {
-        TrackingHelper.searchLocation(newLocation);
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Nearby stuff
     ///////////////////////////////////////////////////////////////////////////
@@ -169,7 +161,6 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
 
     @Override
     public void onLocationSelected(DtlExternalLocation location) {
-        trackLocationSelection(location);
         locationInteractor.locationPipe().send(DtlLocationCommand.change(location));
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         navigateToMerchants();

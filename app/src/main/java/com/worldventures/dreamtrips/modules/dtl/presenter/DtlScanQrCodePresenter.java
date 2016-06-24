@@ -5,14 +5,17 @@ import android.support.annotation.StringRes;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.services.cognitoidentity.model.InvalidParameterException;
+import com.crashlytics.android.Crashlytics;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.ScanMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -85,8 +88,9 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     }
 
     public void codeScanned(String scannedQr) {
-        TrackingHelper.dtlScanMerchant(scannedQr);
-        transactionInteractor.transactionActionPipe().createObservable(DtlTransactionAction.get(dtlMerchant))
+        tryLogInvalidQr(scannedQr);
+        transactionInteractor.transactionActionPipe()
+                .createObservable(DtlTransactionAction.get(dtlMerchant))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
                         .onFail(apiErrorPresenter::handleActionError)
@@ -95,13 +99,18 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
                                 DtlTransaction dtlTransaction = action.getResult();
                                 dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
                                         .withMerchantToken(scannedQr);
-                                transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(dtlMerchant, dtlTransaction));
+                                transactionInteractor
+                                        .transactionActionPipe()
+                                        .send(DtlTransactionAction.save(dtlMerchant, dtlTransaction));
                                 checkReceiptUploading(dtlTransaction);
                             }
                         }));
+    }
 
-        //
-
+    private void tryLogInvalidQr(String scannedCode) {
+        if (scannedCode.matches("^[a-zA-Z0-9]+$")) return;
+        Crashlytics.log("Invalid QR code scanned: " + scannedCode);
+        Crashlytics.logException(new InvalidParameterException("Invalid QR code scan detected"));
     }
 
     public void photoUploadFailed() {
@@ -144,7 +153,9 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
     }
 
     private void processTransactionResult(DtlEarnPointsAction action) {
-        TrackingHelper.dtlPointsEarned(Double.valueOf(action.getResult().getEarnedPoints()).intValue());
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new ScanMerchantEvent(dtlMerchant,
+                        action.getTransaction().getMerchantToken())));
         view.hideProgress();
         //
         transactionInteractor.transactionActionPipe()
@@ -155,6 +166,7 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         //
         eventBus.postSticky(new DtlTransactionSucceedEvent(action.getTransaction()));
         view.finish();
+        transactionInteractor.earnPointsActionPipe().clearReplays();
     }
 
     ///////////////////////////////////////////////////////////////////////////

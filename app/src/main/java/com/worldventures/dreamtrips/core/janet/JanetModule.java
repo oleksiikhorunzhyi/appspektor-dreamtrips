@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.modules.membership.presenter.interactor.PodcastInteractor;
 
 import java.net.CookieManager;
@@ -90,9 +91,14 @@ public class JanetModule {
     }
 
     @Singleton
+    @Provides(type = Provides.Type.SET)
+    ActionService provideAnalyticsService(Set<Tracker> trackers) {
+        return new AnalyticsService(trackers);
+    }
+
+    @Singleton
     @Provides
     PodcastInteractor providePodcastInteractor(Janet janet) {
         return new PodcastInteractor(janet);
     }
-
 }

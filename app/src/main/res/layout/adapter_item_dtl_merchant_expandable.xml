@@ -33,18 +33,22 @@
                 tools:src="@drawable/ic_trip_image_placeholder"
                 />
 
-            <FrameLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
+                android:paddingLeft="@dimen/spacing_small"
+                android:paddingRight="@dimen/spacing_small"
+                android:paddingTop="@dimen/spacing_medium"
+                android:paddingBottom="@dimen/spacing_small"
                 >
 
                 <TextView
                     android:id="@+id/merchantName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|top"
                     style="@style/DreamMerchantTextAppearance"
+                    android:maxLines="2"
+                    android:minHeight="20dp"
                     tools:text="Miguel's Cantina"
                     />
 
@@ -52,7 +56,7 @@
                     android:id="@+id/merchantCategories"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
+                    android:layout_below="@+id/merchantName"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:textSize="13sp"
@@ -62,7 +66,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|bottom"
+                    android:layout_alignParentBottom="true"
                     >
 
                     <TextView
@@ -97,7 +101,7 @@
                         app:prb_totalTicks="4"
                         />
                 </RelativeLayout>
-            </FrameLayout>
+            </RelativeLayout>
         </LinearLayout>
 
         <RelativeLayout

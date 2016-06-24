@@ -182,7 +182,6 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
     @Override
     public void onApiCallFailed() {
         hideProgress();
-        scanner.startCamera();
     }
 
     @Override
@@ -207,6 +206,7 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
                             case DtlTransaction.MERCHANT_TOKEN:
                             default:
                                 sweetAlertDialog.dismissWithAnimation();
+                                scanner.startCamera();
                                 break;
                         }
                     });

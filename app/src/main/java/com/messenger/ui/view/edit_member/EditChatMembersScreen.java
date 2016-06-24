@@ -1,5 +1,7 @@
 package com.messenger.ui.view.edit_member;
 
+import android.support.annotation.StringRes;
+
 import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
 
@@ -26,4 +28,6 @@ public interface EditChatMembersScreen extends MessengerScreen {
     void restoreSearchQuery(String query);
 
     Observable<CharSequence> getSearchObservable();
+
+    void showMessage(@StringRes int text);
 }

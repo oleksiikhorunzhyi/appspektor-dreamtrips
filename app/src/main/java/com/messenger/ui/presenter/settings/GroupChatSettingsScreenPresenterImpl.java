@@ -6,9 +6,11 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.messenger.delegate.ConversationAvatarDelegate;
+import com.messenger.delegate.ConversationAvatarInteractor;
 import com.messenger.delegate.CropImageDelegate;
-import com.messenger.delegate.command.ChangeAvatarCommand;
+import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
+import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
+import com.messenger.delegate.command.avatar.SetChatAvatarCommand;
 import com.messenger.messengerservers.chat.GroupChat;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
@@ -35,7 +37,7 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
 
     @Inject CropImageDelegate cropImageDelegate;
     @Inject PermissionDispatcher permissionDispatcher;
-    @Inject ConversationAvatarDelegate conversationAvatarDelegate;
+    @Inject ConversationAvatarInteractor conversationAvatarInteractor;
 
     public GroupChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector, conversationId);
@@ -57,12 +59,12 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
                     }
                 });
 
-        conversationAvatarDelegate.getReadChangeAvatarCommandActionPipe()
+        conversationAvatarInteractor.getSendChatAvatarCommandPipe()
                 .observe()
                 .compose(bindView())
                 .filter(this::filterActionState)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ActionStateSubscriber<ChangeAvatarCommand>()
+                .subscribe(new ActionStateSubscriber<SendChatAvatarCommand>()
                         .onFail((command, throwable) -> onChangeAvatarFailed(throwable))
                         .onSuccess(command -> onChangeAvatarSuccess())
                 );
@@ -120,7 +122,9 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
     protected void onRemoveAvatar() {
         //noinspection ConstantConditions
         getView().showChangingAvatarProgressBar();
-        conversationAvatarDelegate.removeAvatar(conversationId);
+        conversationAvatarInteractor
+                .getRemoveChatAvatarCommandPipe()
+                .send(new RemoveChatAvatarCommand(conversationId));
     }
 
     private void onEditChatName() {
@@ -156,7 +160,7 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
                 });
     }
 
-    private boolean filterActionState(ActionState<ChangeAvatarCommand> commandActionState) {
+    private boolean filterActionState(ActionState<SendChatAvatarCommand> commandActionState) {
         return TextUtils.equals(commandActionState.action.getConversationId(), conversationId);
     }
 
@@ -165,14 +169,8 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
         //noinspection ConstantConditions
         getView().showChangingAvatarProgressBar();
         getViewState().setUploadAvatar(ChatSettingsViewState.UploadingState.UPLOADING);
-        // delay setting avatar till sync is finished to avoid scenario when its value in
-        // our database is overriden by cached data from sync
-        connectionStatusStream
-                .filter(status -> status == SyncStatus.CONNECTED)
-                .take(1)
-                .subscribe(syncStatus -> {
-                    conversationAvatarDelegate.setAvatarToConversation(conversationId, path);
-                });
+        conversationAvatarInteractor.getSetChatAvatarCommandPipe()
+                .send(new SetChatAvatarCommand(conversationId, path));
     }
 
     protected void onChangeAvatarSuccess() {

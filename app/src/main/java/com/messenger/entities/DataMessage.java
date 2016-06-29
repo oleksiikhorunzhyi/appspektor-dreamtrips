@@ -63,18 +63,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         }
     }
 
-    private DataMessage(Builder builder) {
-        setId(builder.id);
-        setConversationId(builder.conversationId);
-        setFromId(builder.from);
-        setToId(builder.to);
-        setText(builder.text);
-        setDate(builder.date);
-        setSyncTime(builder.syncTime);
-        setStatus(builder.status);
-        setType(type);
-    }
-
     public void setLocale(String locale) {
         this.locale = locale;
     }
@@ -193,72 +181,64 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     }
 
     public static final class Builder {
-        private String id;
-        private String conversationId;
-        private String from;
-        private String to;
-        private String text;
-        private Date date;
-        private String locale;
-        private int status;
-        private long syncTime;
-        private @MessageType.Type String type;
+        private DataMessage message;
 
         public Builder() {
+            message = new DataMessage();
         }
 
-        public Builder id(String val) {
-            this.id = val;
+        public Builder id(String id) {
+            message.setId(id);
             return this;
         }
 
         public Builder conversationId(String conversationId) {
-            this.conversationId = conversationId;
+            message.setConversationId(conversationId);
             return this;
         }
 
-        public Builder from(String val) {
-            from = val;
+        public Builder from(String fromId) {
+            message.setFromId(fromId);
             return this;
         }
 
-        public Builder to(String val) {
-            to = val;
+        public Builder to(String toId) {
+            message.setToId(toId);
             return this;
         }
 
-        public Builder text(String val) {
-            text = val;
+        public Builder text(String text) {
+            message.setText(text);
             return this;
         }
 
-        public Builder date(Date val) {
-            date = val;
+        public Builder date(Date date) {
+            message.setDate(date);
             return this;
         }
 
-        public Builder locale(String val) {
-            locale = val;
+        public Builder locale(String locale) {
+            message.setLocale(locale);
             return this;
         }
 
-        public Builder status(@MessageStatus.Status int val) {
-            status = val;
+        public Builder status(@MessageStatus.Status int status) {
+            message.setStatus(status);
             return this;
         }
 
-        public Builder syncTime(long val) {
-            syncTime = val;
+        public Builder syncTime(long syncTime) {
+            message.setSyncTime(syncTime);
             return this;
         }
 
         public Builder type(@MessageType.Type String type) {
-            this.type = type;
+            message.setType(type);
             return this;
         }
 
         public DataMessage build() {
-            return new DataMessage(this);
+            return message;
         }
     }
 

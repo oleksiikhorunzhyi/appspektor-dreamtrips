@@ -2,9 +2,11 @@ package com.messenger.di;
 
 import com.messenger.delegate.chat.attachment.SendImageAttachmentCommand;
 import com.messenger.delegate.chat.attachment.SendLocationAttachmentCommand;
+import com.messenger.delegate.chat.command.ClearChatCommand;
 import com.messenger.delegate.chat.command.KickChatCommand;
 import com.messenger.delegate.chat.command.LeaveChatCommand;
 import com.messenger.delegate.chat.command.LoadChatMessagesCommand;
+import com.messenger.delegate.chat.command.RevertChatClearingCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
 import com.messenger.delegate.chat.message.RetrySendMessageCommand;
@@ -42,7 +44,10 @@ import dagger.Module;
         UploadChatAvatarCommand.class,
         SendChatAvatarCommand.class,
         SetChatAvatarCommand.class,
-        RemoveChatAvatarCommand.class},
+        RemoveChatAvatarCommand.class,
+        ClearChatCommand.class,
+        RevertChatClearingCommand.class
+},
         complete = false, library = true)
 public class MessengerJanetCommandModule {
 

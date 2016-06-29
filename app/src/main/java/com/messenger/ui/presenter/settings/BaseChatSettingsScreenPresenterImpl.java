@@ -4,7 +4,8 @@ import android.content.Context;
 import android.util.Pair;
 import android.view.MenuItem;
 
-import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
+import com.messenger.delegate.chat.ClearChatInteractor;
+import com.messenger.delegate.chat.command.ClearChatCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -21,7 +22,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import timber.log.Timber;
 
 public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettingsScreen>
         extends MessengerPresenterImpl<C, ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
@@ -33,6 +36,7 @@ public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettings
     @Inject DataUser currentUser;
     @Inject MessengerServerFacade facade;
     @Inject ConversationsDAO conversationsDAO;
+    @Inject ClearChatInteractor clearChatInteractor;
 
     public BaseChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector);
@@ -110,7 +114,11 @@ public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettings
 
     @Override
     public void onClearChatHistory() {
-
+        clearChatInteractor.getClearChatCommandActionPipe()
+                .createObservable(new ClearChatCommand(conversationId))
+                .subscribe(new ActionStateSubscriber<ClearChatCommand>()
+                .onSuccess(clearChatCommand -> Timber.d("SUCCESS %s", clearChatCommand))
+                .onFail((clearChatCommand, throwable) -> Timber.d(throwable, "FAILED %s", clearChatCommand)));
     }
 
     @Override

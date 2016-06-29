@@ -27,6 +27,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.DurationFieldType;
 import org.joda.time.LocalTime;
+import org.joda.time.chrono.ISOChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -77,7 +78,8 @@ public class DtlMerchantHelper {
 
     public static Spannable getOfferExpiringCaption(Resources resources, DtlOffer offerData) {
         String format = resources.getString(R.string.offer_expiration_format);
-        DateTime expiringDate = new DateTime(offerData.getEndDate().getTime());
+        DateTime expiringDate = new DateTime(offerData.getEndDate().getTime(),
+                ISOChronology.getInstance(DateTimeZone.UTC));
         String caption = expiringDate.toString(DateTimeFormat.forPattern("MMM d"));
         String captionFormatted = String.format(format, caption);
         Spannable spanned = new SpannableString(captionFormatted);

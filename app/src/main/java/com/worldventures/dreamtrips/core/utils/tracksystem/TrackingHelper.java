@@ -149,6 +149,17 @@ public class TrackingHelper {
         trackers.get(KEY_APPTENTIVE_TRACKER).trackEvent(category, action, data);
     }
 
+    private static void trackMemberActionAdobe(String category, String action, Map<String, Object> data) {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(category, action, data);
+    }
+
+    private static void trackPageViewAbode(String category, String memberId, String action) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(FIELD_MEMBER_ID, memberId);
+        data.put(ATTRIBUTE_VIEW, "1");
+        trackMemberActionAdobe(category, action, data);
+    }
+
     private static void trackPageView(String category, String memberId, String action) {
         Map<String, Object> data = new HashMap<>();
         data.put(FIELD_MEMBER_ID, memberId);
@@ -254,10 +265,12 @@ public class TrackingHelper {
 
     public static void enrollMember(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_ENROLL);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_ENROLL);
     }
 
     public static void enrollMerchant(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
     }
 
     public static void profile(String memberId) {
@@ -293,6 +306,7 @@ public class TrackingHelper {
 
     public static void memberVideos(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
     }
 
     public static void videoAction(String action, String memberId, String label, String videoName) {
@@ -329,10 +343,12 @@ public class TrackingHelper {
 
     public static void inviteShare(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
     }
 
     public static void podcasts(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
     }
 
     public static void inviteShareContacts(String memberId) {

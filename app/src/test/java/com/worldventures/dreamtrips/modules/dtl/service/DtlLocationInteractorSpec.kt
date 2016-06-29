@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.service
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.core.test.BaseSpec
-import com.worldventures.dreamtrips.core.test.MockHttpActionService
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand
@@ -13,6 +12,7 @@ import io.techery.janet.ActionHolder
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
+import io.techery.janet.http.test.MockHttpActionService
 import rx.observers.TestSubscriber
 
 class DtlLocationInteractorSpec : BaseSpec({

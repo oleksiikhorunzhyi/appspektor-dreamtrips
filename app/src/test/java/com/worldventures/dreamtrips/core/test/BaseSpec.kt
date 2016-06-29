@@ -34,10 +34,31 @@ open class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
             val arg = invocation.arguments[0] as String
             arg.isEmpty()
         }
+        PowerMockito.`when`(TextUtils.equals(anyString(), anyString()))
+                .thenAnswer { invocation ->
+                    val args = invocation.arguments[0] as List<CharSequence>
+                    val a = args[0]
+                    val b = args[1]
+
+                    if (a === b) true
+                    val length = a.length
+                    if (length == b.length) {
+                        if (a is String && b is String) {
+                            a.equals(b)
+                        } else {
+                            for ((index, value) in a.withIndex()) {
+                                if (value != b[index]) false
+                            }
+
+                            true
+                        }
+                    }
+
+                    false
+                }
     }
 
     companion object {
-
         init {
             RxJavaPlugins.getInstance().registerSchedulersHook(object : RxJavaSchedulersHook() {
                 override fun getIOScheduler(): Scheduler {

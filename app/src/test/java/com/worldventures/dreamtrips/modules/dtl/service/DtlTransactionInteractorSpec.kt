@@ -4,7 +4,6 @@ import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.core.test.BaseSpec
-import com.worldventures.dreamtrips.core.test.MockHttpActionService
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
@@ -19,6 +18,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAct
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
+import io.techery.janet.http.test.MockHttpActionService
 import org.junit.Before
 import org.mockito.Mockito.any
 import org.mockito.Mockito.eq
@@ -122,7 +122,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
         }
     }
 
-    describe("DtlRateAction"){
+    describe("DtlRateAction") {
         it("should send DtlRateAction") {
             val subscriber = TestSubscriber<ActionState<DtlRateAction>>()
             transactionInteractor.rateActionPipe()
@@ -132,7 +132,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
         }
     }
 
-    describe("DtlEarnPointsAction"){
+    describe("DtlEarnPointsAction") {
         it("should send DtlEarnPointsAction") {
             val subscriber = TestSubscriber<ActionState<DtlEarnPointsAction>>()
             transactionInteractor.earnPointsActionPipe()

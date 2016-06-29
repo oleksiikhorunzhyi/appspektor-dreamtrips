@@ -25,7 +25,7 @@ public class DtlMerchantDetailsPath extends DtlDetailPath {
 
     public DtlMerchantDetailsPath(MasterDetailPath path, @NonNull DtlMerchant merchant, @Nullable List<Integer> preExpandOfferPositions) {
         super(path);
-        Preconditions.checkNotNull(merchant, "Merchant can not be null or empty");
+        Preconditions.checkNotNull(merchant, "Merchant can not be null");
         this.merchant = merchant;
         this.preExpandOfferPositions = preExpandOfferPositions != null ? preExpandOfferPositions : Collections.emptyList();
     }

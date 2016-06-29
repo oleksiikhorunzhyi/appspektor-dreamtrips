@@ -25,9 +25,8 @@ public class DtlMerchantByIdAction extends Command<DtlMerchant> implements Injec
 
     @Override
     protected void run(CommandCallback<DtlMerchant> callback) throws Throwable {
-        merchantInteractor.merchantsActionPipe().observeWithReplay()
+        merchantInteractor.merchantsActionPipe().observeSuccessWithReplay()
                 .first()
-                .compose(new ActionStateToActionTransformer<>())
                 .map(DtlMerchantsAction::getResult)
                 .flatMap(Observable::from)
                 .filter(merchant -> merchant.getId().equals(merchantId))

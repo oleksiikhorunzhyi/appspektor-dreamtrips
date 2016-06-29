@@ -92,8 +92,6 @@ public class DtlScanQrCodePresenter extends JobPresenter<DtlScanQrCodePresenter.
         cleanTransactionToken();
     }
 
-
-
     public void codeScanned(String scannedQr) {
         tryLogInvalidQr(scannedQr);
         transactionInteractor.transactionActionPipe()

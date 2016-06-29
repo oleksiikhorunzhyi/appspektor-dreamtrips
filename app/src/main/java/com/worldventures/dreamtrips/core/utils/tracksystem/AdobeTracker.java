@@ -35,7 +35,7 @@ public class AdobeTracker extends Tracker {
     @Override
     public void onResume(@Nullable Activity activity) {
         if (checkNullAndWarn(activity)) return;
-        Config.collectLifecycleData();
+        Config.collectLifecycleData(activity);
     }
 
     @Override

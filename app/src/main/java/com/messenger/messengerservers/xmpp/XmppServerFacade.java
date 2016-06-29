@@ -4,11 +4,13 @@ import android.net.SSLCertificateSocketFactory;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.messenger.messengerservers.ChatExtensions;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
 import com.messenger.messengerservers.chat.ChatManager;
+import com.messenger.messengerservers.xmpp.providers.ClearQIProvider;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.InitialPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGenerator;
@@ -22,6 +24,7 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.PingManager;
 
@@ -52,6 +55,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final PaginationManager paginationManager;
     private final XmppGlobalEventEmitter globalEventEmitter;
     private final ChatManager chatManager;
+    private final XmppChatExtensions actionHolder;
 
     // TODO: 4/28/16 remove GSON, use converter interface
     private final Gson gson;
@@ -76,6 +80,13 @@ public class XmppServerFacade implements MessengerServerFacade {
         loaderManager = new XmppLoaderManager(this);
         paginationManager = new XmppPaginationManager(this);
         chatManager = new XmppChatManager(this);
+        actionHolder = new XmppChatExtensions(this);
+
+        initCustomProviders();
+    }
+
+    private void initCustomProviders() {
+        ProviderManager.addIQProvider(ClearQIProvider.ELEMENT_QUERY, ClearQIProvider.NAME_SPACE, new ClearQIProvider());
     }
 
     private MessengerConnection createConnection() {
@@ -204,6 +215,11 @@ public class XmppServerFacade implements MessengerServerFacade {
     @Override
     public Observable<ConnectionStatus> getStatusObservable() {
         return connectionStatusSubject.asObservable();
+    }
+
+    @Override
+    public ChatExtensions getChatExtensions() {
+        return actionHolder;
     }
 
     public Gson getGson() {

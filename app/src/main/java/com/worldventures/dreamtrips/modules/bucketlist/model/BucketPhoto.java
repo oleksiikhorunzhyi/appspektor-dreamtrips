@@ -47,6 +47,10 @@ public class BucketPhoto implements IFullScreenObject, Serializable, Parcelable 
         this.originUrl = originUrl;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public void setIsCover(boolean isCover) {
         this.isCover = isCover;
     }

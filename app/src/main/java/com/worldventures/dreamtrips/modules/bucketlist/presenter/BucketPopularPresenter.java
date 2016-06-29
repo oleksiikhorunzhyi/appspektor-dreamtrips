@@ -3,12 +3,14 @@ package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 import android.app.Activity;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocationQuery;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 
@@ -16,16 +18,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
+import rx.android.schedulers.AndroidSchedulers;
 
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
+
+public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
     @Inject
     Activity activity;
+
     @Inject
-    BucketItemManager bucketItemManager;
+    BucketInteractor bucketInteractor;
 
     private BucketItem.BucketType type;
 
-    SweetDialogHelper sweetDialogHelper;
+    private SweetDialogHelper sweetDialogHelper;
 
     public BucketPopularPresenter(BucketItem.BucketType type) {
         super();
@@ -36,8 +43,6 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
     @Override
     public void onResume() {
         super.onResume();
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-
         if (view.getAdapter().getCount() == 0) reload();
     }
 
@@ -59,29 +64,31 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         view.getAdapter().flushFilter();
     }
 
-    public void onAdd(PopularBucketItem popularBucketItem, int position){
+    public void onAdd(PopularBucketItem popularBucketItem, int position) {
         add(popularBucketItem, false, position);
     }
 
-    public void onDone(PopularBucketItem popularBucketItem, int position){
+    public void onDone(PopularBucketItem popularBucketItem, int position) {
         add(popularBucketItem, true, position);
     }
 
     private void add(PopularBucketItem popularBucketItem, boolean done, int position) {
-        bucketItemManager.addBucketItemFromPopular(popularBucketItem, done, type,
-                item -> {
-                    if (view != null) {
-                        eventBus.post(new BucketItemUpdatedEvent(item));
-                        sweetDialogHelper.notifyItemAddedToBucket(activity, item);
-                        view.getAdapter().remove(popularBucketItem);
-                    }
-                },
-                spiceException -> {
-                    if (view != null) {
-                        popularBucketItem.setLoading(false);
-                        view.getAdapter().notifyDataSetChanged();
-                        handleError(spiceException);
-                    }
+        view.bind(bucketInteractor.createPipe()
+                .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+                        .type(type.getName())
+                        .id(String.valueOf(popularBucketItem.getId()))
+                        .status(done ? COMPLETED : NEW)
+                        .build()))
+                .map(CreateBucketItemHttpAction::getResponse)
+                .observeOn(AndroidSchedulers.mainThread()))
+                .subscribe(bucketItem -> {
+                    sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
+                    view.getAdapter().remove(popularBucketItem);
+                }, throwable -> {
+                    handleError(throwable);
+
+                    popularBucketItem.setLoading(false);
+                    view.getAdapter().notifyDataSetChanged();
                 });
     }
 
@@ -102,13 +109,11 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         super.handleError(error);
     }
 
-    public interface View extends Presenter.View {
-
+    public interface View extends RxView {
         FilterableArrayListAdapter<PopularBucketItem> getAdapter();
 
         void startLoading();
 
         void finishLoading();
     }
-
 }

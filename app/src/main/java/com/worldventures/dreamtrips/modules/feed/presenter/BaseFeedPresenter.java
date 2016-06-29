@@ -10,7 +10,9 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.api.DeleteBucketItemCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
@@ -41,6 +43,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extends Presenter<V> {
 
@@ -49,6 +53,10 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
+
+    @Inject
+    BucketInteractor bucketInteractor;
+
     protected boolean loading = true;
     protected boolean noMoreFeeds = false;
 
@@ -117,7 +125,7 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     /////////////////////////////////////
-    ////// Feed load more
+    ////// Feed loadPipe more
     /////////////////////////////////////
 
     protected abstract DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date);
@@ -236,18 +244,23 @@ public abstract class BaseFeedPresenter<V extends BaseFeedPresenter.View> extend
     }
 
     public void onEvent(DeleteBucketEvent event) {
-        if (view.isVisibleOnScreen())
-            doRequest(new DeleteBucketItemCommand(event.getEntity().getUid()),
-                    aVoid -> itemDeleted(event.getEntity()));
+        if (view.isVisibleOnScreen()) {
+            BucketItem item = event.getEntity();
 
+            view.bind(bucketInteractor.deleteItemPipe()
+                    .createObservable(new DeleteItemHttpAction(item.getUid()))
+                    .observeOn(AndroidSchedulers.mainThread()))
+                    .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>()
+                            .onSuccess(deleteItemAction -> itemDeleted(item)));
+        }
     }
 
     public void onEvent(EditBucketEvent event) {
         if (!view.isVisibleOnScreen()) return;
         //
         BucketBundle bundle = new BucketBundle();
-        bundle.setType(event.getType());
-        bundle.setBucketItemUid(event.getUid());
+        bundle.setType(event.type());
+        bundle.setBucketItem(event.bucketItem());
 
         view.showEdit(bundle);
     }

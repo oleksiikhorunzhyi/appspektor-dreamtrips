@@ -1,18 +1,16 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.support.annotation.Nullable;
-
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.UpdateItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketCoverBody;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -25,46 +23,34 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
+import icepick.State;
+import rx.android.schedulers.AndroidSchedulers;
 
-    @Inject
-    BucketItemManager bucketItemManager;
+public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.View> extends Presenter<V> {
     @Inject
     protected SnappyRepository db;
 
-    protected BucketItem.BucketType type;
-    protected String bucketItemId;
-    protected int ownerId;
+    @Inject
+    protected BucketInteractor bucketInteractor;
 
-    protected BucketItem bucketItem;
+    @State
+    BucketItem.BucketType type;
+
+    @State
+    int ownerId;
+
+    @State
+    BucketItem bucketItem;
 
     public BucketDetailsBasePresenter(BucketBundle bundle) {
-        super();
         type = bundle.getType();
-        bucketItemId = bundle.getBucketItemUid();
+        bucketItem = bundle.getBucketItem();
         ownerId = bundle.getOwnerId();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
-        restoreBucketItem();
-
-        syncUI();
-    }
-
-    protected void restoreBucketItem() {
-        if (ownerId == 0) {
-            bucketItem = getBucketItemManager().getBucketItem(type, bucketItemId);
-        } else {
-            bucketItem = getBucketItemManager().getSingleBucketItem(type, bucketItemId, ownerId);
-        }
-    }
-
-    public void onEventMainThread(BucketItemUpdatedEvent event) {
-        restoreBucketItem();
         syncUI();
     }
 
@@ -76,23 +62,15 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
             view.setPeople(bucketItem.getFriends());
             view.setTags(bucketItem.getBucketTags());
             view.setTime(BucketItemInfoUtil.getTime(context, bucketItem));
-
-            List photos = getBucketPhotos();
-            if (photos != null) {
-                view.setImages(photos);
-            }
         }
     }
 
-    @Nullable
-    protected List getBucketPhotos() {
-        List<BucketPhoto> photos = bucketItem.getPhotos();
+    protected void putCoverPhotoAsFirst(List<BucketPhoto> photos) {
         if (!photos.isEmpty()) {
             int coverIndex = Math.max(photos.indexOf(bucketItem.getCoverPhoto()), 0);
             photos.get(coverIndex).setIsCover(true);
             photos.add(0, photos.remove(coverIndex));
         }
-        return photos;
     }
 
 
@@ -131,7 +109,7 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
      */
     public void openFullScreen(int position) {
         if (isTabTrulyVisible()) {
-            eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItemId));
+            eventBus.post(new BucketItemPhotoAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW_PHOTO, bucketItem.getUid()));
             openFullScreen(bucketItem.getPhotos().get(position));
         }
     }
@@ -159,18 +137,25 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
     }
 
     public void saveCover(BucketPhoto photo) {
-        getBucketItemManager().updateBucketItemCoverId(bucketItem, photo.getFSId(), this);
-    }
-
-    protected BucketItemManager getBucketItemManager() {
-        return bucketItemManager;
+        view.bind(bucketInteractor.updatePipe()
+                .createObservableResult(new UpdateItemHttpAction(ImmutableBucketCoverBody.builder()
+                        .id(bucketItem.getUid())
+                        .status(bucketItem.getStatus())
+                        .type(bucketItem.getType())
+                        .coverId(photo.getFSId())
+                        .build()))
+                .map(UpdateItemHttpAction::getResponse)
+                .observeOn(AndroidSchedulers.mainThread()))
+                .subscribe(item -> {
+                    bucketItem = item;
+                    syncUI();
+                }, this::handleError);
     }
 
     @Override
     public void dropView() {
         super.dropView();
     }
-
 
     public interface View extends RxView {
         void setTitle(String title);
@@ -190,9 +175,5 @@ public class BucketDetailsBasePresenter<V extends BucketDetailsBasePresenter.Vie
         void openFullscreen(FullScreenImagesBundle data);
 
         void setImages(List photos);
-
-        BucketPhotoCreationItem getBucketPhotoUploadTask(String filePath);
-
-
     }
 }

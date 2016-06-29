@@ -33,10 +33,13 @@ import com.techery.spares.ui.fragment.FragmentHelper;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemClickedEvent;
@@ -51,7 +54,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAu
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
@@ -59,11 +61,12 @@ import com.worldventures.dreamtrips.util.PopupMenuUtils;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
+import rx.Observable;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_bucket_list)
 @MenuResource(R.menu.menu_bucket)
-public class BucketListFragment<T extends BucketListPresenter> extends BaseFragment<T>
+public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFragment<T>
         implements BucketListPresenter.View {
 
     public static final String BUNDLE_TYPE = "BUNDLE_TYPE";
@@ -287,6 +290,12 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
                 .build());
     }
 
+    @Override
+    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
+        return observable.compose(RxLifecycle
+                .bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
+    }
+
     private void actionFilter() {
         View menuItemView = getActivity().findViewById(R.id.action_filter); // SAME ID AS MENU ID
 
@@ -354,7 +363,7 @@ public class BucketListFragment<T extends BucketListPresenter> extends BaseFragm
     @Override
     protected T createPresenter(Bundle savedInstanceState) {
         BucketItem.BucketType type = (BucketItem.BucketType) getArguments().getSerializable(BUNDLE_TYPE);
-        return (T) new BucketListPresenter(type, getObjectGraph());
+        return (T) new BucketListPresenter(type);
     }
 
     @Override

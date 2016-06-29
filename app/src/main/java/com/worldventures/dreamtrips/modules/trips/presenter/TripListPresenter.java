@@ -6,13 +6,16 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
 import com.worldventures.dreamtrips.core.preference.Prefs;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
 import com.worldventures.dreamtrips.core.utils.events.LikeTripPressedEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -25,22 +28,27 @@ import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalytics
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import javax.inject.Inject;
-
 import icepick.State;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class TripListPresenter extends Presenter<TripListPresenter.View> {
-
     public static final int PER_PAGE = 20;
+
     @Inject
     Activity activity;
+
     @Inject
     Prefs prefs;
-    @Inject
-    BucketItemManager bucketItemManager;
+
     @Inject
     FeedEntityManager entityManager;
+
+    @Inject
+    BucketInteractor bucketInteractor;
+
     @Inject
     TripFilterDataProvider tripFilterDataProvider;
+
     @State
     String query;
 
@@ -69,7 +77,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
     @Override
     public void onResume() {
         super.onResume();
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
+
         loadWithStatus = true;
         reload();
     }
@@ -168,12 +176,19 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
     public void onAddToBucket(TripModel trip) {
         if (trip.isInBucketList()) {
-            bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
-                sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
-            }, spiceException -> {
-                trip.setInBucketList(!trip.isInBucketList());
-                handleError(spiceException);
-            });
+            view.bind(bucketInteractor.createPipe()
+                    .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+                            .type("trip")
+                            .id(trip.getTripId())
+                            .build()))
+                    .map(CreateBucketItemHttpAction::getResponse)
+                    .observeOn(AndroidSchedulers.mainThread()))
+                    .subscribe(bucketItem -> {
+                        sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
+                    }, throwable -> {
+                        trip.setInBucketList(!trip.isInBucketList());
+                        handleError(throwable);
+                    });
         } else {
             trip.setInBucketList(!trip.isInBucketList());
             onFailure();
@@ -212,7 +227,7 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
         return query;
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void dataSetChanged();
 
@@ -228,5 +243,4 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
         boolean isSearchOpened();
     }
-
 }

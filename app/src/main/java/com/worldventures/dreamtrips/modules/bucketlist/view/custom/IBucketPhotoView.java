@@ -1,23 +1,16 @@
 package com.worldventures.dreamtrips.modules.bucketlist.view.custom;
 
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
+import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
 
 import java.util.List;
 
 public interface IBucketPhotoView {
-    void setImages(List<BucketPhoto> images);
+    void addItemInProgressState(EntityStateHolder<BucketPhoto> photoStateHolder);
 
-    void addImageToStart(BucketPhotoCreationItem images);
+    void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder);
 
-    BucketPhotoCreationItem getBucketPhotoUploadTask(String filePath);
+    void removeItem(EntityStateHolder<BucketPhoto> photo);
 
-    void replace(BucketPhotoCreationItem photoUploadTask, BucketPhoto bucketPhoto);
-
-    void deleteImage(BucketPhoto photo);
-
-    void deleteImage(BucketPhotoCreationItem photo);
-
-    void itemChanged(Object item);
-
+    void setImages(List<EntityStateHolder<BucketPhoto>> images);
 }

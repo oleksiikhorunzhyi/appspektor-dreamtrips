@@ -3,20 +3,20 @@ package com.worldventures.dreamtrips.modules.feed.event;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 
 public class EditBucketEvent {
+    private BucketItem bucketItem;
 
-    private String uid;
     private BucketItem.BucketType type;
 
-    public EditBucketEvent(String uid, BucketItem.BucketType type) {
-        this.uid = uid;
+    public EditBucketEvent(BucketItem bucketItem, BucketItem.BucketType type) {
+        this.bucketItem = bucketItem;
         this.type = type;
     }
 
-    public BucketItem.BucketType getType() {
+    public BucketItem.BucketType type() {
         return type;
     }
 
-    public String getUid() {
-        return uid;
+    public BucketItem bucketItem() {
+        return bucketItem;
     }
 }

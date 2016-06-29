@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemUpdatedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -37,8 +37,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
+    @Inject
+    FeedEntityManager entityManager;
+
+    @Inject
+    BucketInteractor bucketInteractor;
+    //
 
     @State
     FeedEntity feedEntity;
@@ -48,36 +56,25 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     private int commentsCount = 0;
     private boolean loadInitiated;
 
-    @Inject
-    FeedEntityManager entityManager;
-    @Inject
-    BucketItemManager bucketItemManager;
-
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+
+        entityManager.setRequestingPresenter(this);
     }
 
     @Override
     public void takeView(T view) {
         super.takeView(view);
         view.setDraftComment(draftComment);
-        view.setLikersPanel(feedEntity);
+        view.setLikePanel(feedEntity);
         //
         if (isNeedCheckCommentsWhenStart())
             checkCommentsAndLikesToLoad();
-    }
-
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        entityManager.setRequestingPresenter(this);
-    }
-
-    @Override
-    public void onResume() {
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
-        //
-        super.onResume();
     }
 
     /**
@@ -160,8 +157,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         if (!view.isVisibleOnScreen()) return;
         //
         BucketBundle bundle = new BucketBundle();
-        bundle.setType(event.getType());
-        bundle.setBucketItemUid(event.getUid());
+        bundle.setType(event.type());
+        bundle.setBucketItem(event.bucketItem());
 
         view.showEdit(bundle);
     }
@@ -179,12 +176,19 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     }
 
     public void onEvent(DeleteBucketEvent event) {
-        if (view.isVisibleOnScreen())
-            bucketItemManager.deleteBucketItem(event.getEntity(), bucketItemManager.getType(event.getEntity().getType()),
-                    jsonObject -> {
-                        itemDeleted(event.getEntity());
-                        eventBus.post(new BucketItemUpdatedEvent(event.getEntity()));
-                    }, this::handleError);
+        if (view.isVisibleOnScreen()) {
+            BucketItem bucketItemToDelete = event.getEntity();
+
+            view.bind(bucketInteractor.deleteItemPipe()
+                    .createObservable(new DeleteItemHttpAction(bucketItemToDelete.getUid()))
+                    .observeOn(AndroidSchedulers.mainThread()))
+                    .subscribe(new ActionStateSubscriber<DeleteItemHttpAction>()
+                            .onSuccess(deleteItemAction -> itemDeleted(bucketItemToDelete))
+                            .onFail((deleteItemAction, throwable) -> {
+                                view.setLoading(false); //TODO: review, after leave from robospice completely
+                                handleError(throwable);
+                            }));
+        }
     }
 
     protected void itemDeleted(FeedEntity model) {
@@ -240,17 +244,11 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         } else {
             feedEntity.setFirstLikerName(null);
         }
-        view.setLikersPanel(feedEntity);
+        view.setLikePanel(feedEntity);
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.setLoading(false);
-    }
-
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void addComments(List<Comment> commentList);
 
@@ -274,7 +272,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         void showEdit(BucketBundle bucketBundle);
 
-        void setLikersPanel(FeedEntity entity);
+        void setLikePanel(FeedEntity entity);
 
         void back();
     }

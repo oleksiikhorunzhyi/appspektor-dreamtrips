@@ -25,7 +25,6 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBI
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 
-
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
     @Inject
     SnappyRepository snappyRepository;
@@ -69,7 +68,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         BusWrapper busWrapper = getGreenRobotBusWrapper(eventBus);
         networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
         networkEvents.register();
-        snappyRepository.removeAllBucketItemPhotoCreations();
+
+        startPreloadChain();
     }
 
     @Override

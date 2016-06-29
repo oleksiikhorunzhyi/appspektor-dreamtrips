@@ -4,27 +4,37 @@ import android.app.Activity;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 
 import javax.inject.Inject;
 
-public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Presenter<V> {
+import rx.android.schedulers.AndroidSchedulers;
+import rx.subscriptions.CompositeSubscription;
 
+public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Presenter<V> {
     @Inject
     Activity activity;
+
     @Inject
     SnappyRepository db;
+
     @Inject
-    BucketItemManager bucketItemManager;
+    BucketInteractor bucketInteractor;
+
     @Inject
     FeedEntityManager feedEntityManager;
 
     protected TripModel trip;
-    protected SweetDialogHelper sweetDialogHelper;
+
+    private SweetDialogHelper sweetDialogHelper;
+
+    private CompositeSubscription subscriptions;
 
     public BaseTripPresenter(TripModel trip) {
         this.trip = trip;
@@ -43,20 +53,41 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
     @Override
     public void onResume() {
         super.onResume();
-        bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         initData();
     }
 
-    protected void initData() {
+    @Override
+    public void takeView(V view) {
+        super.takeView(view);
+
+        subscriptions = new CompositeSubscription();
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+
+        subscriptions.unsubscribe();
+    }
+
+    private void initData() {
         view.setup(trip);
     }
 
     public void addTripToBucket() {
-        bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
-            trip.setInBucketList(true);
-            view.setup(trip);
-            sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
-        }, this);
+        subscriptions.add(bucketInteractor.createPipe()
+                .createObservableResult(new CreateBucketItemHttpAction(ImmutableBucketBodyImpl.builder()
+                        .type("trip")
+                        .id(trip.getTripId())
+                        .build()))
+                .map(CreateBucketItemHttpAction::getResponse)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bucketItem -> {
+                    trip.setInBucketList(true);
+                    view.setup(trip);
+
+                    sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
+                }, this::handleError));
     }
 
     public void likeTrip() {
@@ -77,11 +108,7 @@ public class BaseTripPresenter<V extends BaseTripPresenter.View> extends Present
         }
     }
 
-    private void toggleTripLike() {
-    }
-
     public interface View extends Presenter.View {
         void setup(TripModel tripModel);
     }
-
 }

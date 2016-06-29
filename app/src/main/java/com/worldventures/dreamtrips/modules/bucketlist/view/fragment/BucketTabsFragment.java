@@ -25,6 +25,7 @@ import java.util.Map;
 
 import butterknife.InjectView;
 import icepick.State;
+import rx.Observable;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 
@@ -143,5 +144,10 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     @Override
     public int getCurrentTabPosition() {
         return currentPosition;
+    }
+
+    @Override
+    public <T> Observable<T> bind(Observable<T> observable) {
+        return observable;
     }
 }

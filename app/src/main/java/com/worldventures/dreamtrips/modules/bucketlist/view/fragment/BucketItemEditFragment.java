@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,11 +24,10 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenter;
-import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemEditPresenterView;
-import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoCellDelegate;
+import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder;
+import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPhotoUploadCellDelegate;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.BucketPhotosView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.bundle.PickerBundle;
@@ -47,7 +45,7 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketIt
 @Layout(R.layout.fragment_bucket_item_edit)
 @MenuResource(R.menu.menu_bucket_quick)
 public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
-        implements BucketItemEditPresenterView, DatePickerDialog.OnDateSetListener {
+        implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
 
     @Optional
     @InjectView(R.id.done)
@@ -119,7 +117,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
     private void onSaveItem() {
         hideMediaPicker();
-        getPresenter().saveItem(true);
+        getPresenter().saveItem();
     }
 
     private void openDatePicker() {
@@ -146,7 +144,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     }
 
     @Override
-    public void afterCreateView(View rootView) {
+    public void afterCreateView(android.view.View rootView) {
         super.afterCreateView(rootView);
         setupPhotoCellCallbacks();
         bucketPhotosView.init(this);
@@ -161,20 +159,20 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
                 showMediaPicker();
             }
         });
-        bucketPhotosView.setBucketPhotoUploadCellDelegate(getPresenter()::onUploadTaskClicked);
-        bucketPhotosView.setBucketPhotoCellDelegate(new BucketPhotoCellDelegate() {
+        bucketPhotosView.setBucketPhotoUploadCellDelegate(new BucketPhotoUploadCellDelegate() {
             @Override
             public void deletePhotoRequest(BucketPhoto photo) {
                 getPresenter().deletePhotoRequest(photo);
             }
 
             @Override
-            public void choosePhoto(BucketPhoto photo) {
+            public void selectPhotoAsCover(BucketPhoto photo) {
                 getPresenter().saveCover(photo);
             }
 
             @Override
-            public void onCellClicked(BucketPhoto model) {
+            public void onCellClicked(EntityStateHolder<BucketPhoto> model) {
+                getPresenter().onUploadTaskClicked(model);
             }
         });
     }
@@ -190,11 +188,11 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
         ArrayAdapter<CategoryItem> adapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_dropdown_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCategory.setVisibility(View.VISIBLE);
+        spinnerCategory.setVisibility(android.view.View.VISIBLE);
         spinnerCategory.setAdapter(adapter);
         AdapterView.OnItemSelectedListener onItemSelectedListenerCategory = new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
                 categorySelected = true;
             }
 
@@ -226,7 +224,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
     @Override
     public void done() {
-        loadingView.setVisibility(View.GONE);
+        loadingView.setVisibility(android.view.View.GONE);
         getActivity().onBackPressed();
         hideSoftInput(editTextDescription);
     }
@@ -310,12 +308,27 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
 
     @Override
     public void showLoading() {
-        loadingView.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(android.view.View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        loadingView.setVisibility(View.GONE);
+        loadingView.setVisibility(android.view.View.GONE);
+    }
+
+    @Override
+    public void addItemInProgressState(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
+        bucketPhotosView.addItemInProgressState(photoEntityStateHolder);
+    }
+
+    @Override
+    public void changeItemState(EntityStateHolder<BucketPhoto> photoEntityStateHolder) {
+        bucketPhotosView.changeItemState(photoEntityStateHolder);
+    }
+
+    @Override
+    public void deleteImage(EntityStateHolder<BucketPhoto> photoStateHolder) {
+        bucketPhotosView.removeItem(photoStateHolder);
     }
 
     @Override
@@ -328,36 +341,6 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
     @Override
     public void setImages(List photos) {
         bucketPhotosView.setImages(photos);
-    }
-
-    @Override
-    public void addImage(BucketPhotoCreationItem uploadTask) {
-        bucketPhotosView.addImageToStart(uploadTask);
-    }
-
-    @Override
-    public void deleteImage(BucketPhoto bucketPhoto) {
-        bucketPhotosView.deleteImage(bucketPhoto);
-    }
-
-    @Override
-    public void itemChanged(BucketPhotoCreationItem uploadTask) {
-        bucketPhotosView.itemChanged(uploadTask);
-    }
-
-    @Override
-    public void replace(BucketPhotoCreationItem bucketPhotoUploadTask, BucketPhoto bucketPhoto) {
-        bucketPhotosView.replace(bucketPhotoUploadTask, bucketPhoto);
-    }
-
-    @Override
-    public BucketPhotoCreationItem getBucketPhotoUploadTask(String filePath) {
-        return bucketPhotosView.getBucketPhotoUploadTask(filePath);
-    }
-
-    @Override
-    public void deleteImage(BucketPhotoCreationItem task) {
-        bucketPhotosView.deleteImage(task);
     }
 
     @Override

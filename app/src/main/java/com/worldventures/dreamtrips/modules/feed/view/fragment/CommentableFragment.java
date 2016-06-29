@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
@@ -22,6 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapper;
 import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFactory;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
@@ -50,7 +49,7 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_comments)
-public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends BaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
+public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends RxBaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
 
     @InjectView(R.id.list)
     protected EmptyRecyclerView recyclerView;
@@ -173,7 +172,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     }
 
     @Override
-    public void setLikersPanel(FeedEntity entity) {
+    public void setLikePanel(FeedEntity entity) {
         if (likersPanel == null || !getArgs().showLikersPanel()) return;
         likersPanelHelper.setup(likersPanel, entity);
         likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid(), entity.getLikesCount())));

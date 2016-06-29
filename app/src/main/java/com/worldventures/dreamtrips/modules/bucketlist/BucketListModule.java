@@ -69,7 +69,7 @@ import dagger.Provides;
                 ForeignBucketTabPresenter.class,
                 ForeignBucketListFragment.class,
                 BucketItemStaticCell.class,
-                ForeignBucketListPresenter.class,
+                ForeignBucketListPresenter.class
         },
         complete = false,
         library = true

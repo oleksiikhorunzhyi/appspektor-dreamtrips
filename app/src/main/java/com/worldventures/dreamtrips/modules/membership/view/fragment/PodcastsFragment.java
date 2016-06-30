@@ -88,6 +88,12 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) getPresenter().track();
+    }
+
+    @Override
     public void onDestroyView() {
         recyclerView.setAdapter(null);
         stateDelegate.onDestroyView();

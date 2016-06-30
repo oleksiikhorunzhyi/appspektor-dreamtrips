@@ -205,8 +205,8 @@ public class DtlScanQrCodeFragment extends RxBaseFragmentWithArgs<DtlScanQrCodeP
                                 break;
                             case DtlTransaction.MERCHANT_TOKEN:
                             default:
-                                scanner.startCamera();
                                 sweetAlertDialog.dismissWithAnimation();
+                                scanner.startCamera();
                                 break;
                         }
                     });

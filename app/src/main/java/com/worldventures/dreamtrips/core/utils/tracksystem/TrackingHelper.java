@@ -57,7 +57,6 @@ public class TrackingHelper {
     public static final String ACTION_SS_LIKE = "success_story_like";
     public static final String ACTION_SS_UNLIKE = "success_story_like";
 
-    public static final String ACTION_INVITE = "invite_share";
     public static final String ACTION_INVITE_CONTACTS = "invite_share_select_contacts";
     public static final String ACTION_TEMPLATE = "invite_share_template";
     public static final String ACTION_SEND_EMAIL = "invite_share_send_email";
@@ -148,6 +147,17 @@ public class TrackingHelper {
 
     private static void trackMemberAction(String category, String action, Map<String, Object> data) {
         trackers.get(KEY_APPTENTIVE_TRACKER).trackEvent(category, action, data);
+    }
+
+    private static void trackMemberActionAdobe(String category, String action, Map<String, Object> data) {
+        trackers.get(KEY_ADOBE_TRACKER).trackEvent(category, action, data);
+    }
+
+    private static void trackPageViewAbode(String category, String memberId, String action) {
+        Map<String, Object> data = new HashMap<>();
+        data.put(FIELD_MEMBER_ID, memberId);
+        data.put(ATTRIBUTE_VIEW, "1");
+        trackMemberActionAdobe(category, action, data);
     }
 
     private static void trackPageView(String category, String memberId, String action) {
@@ -255,10 +265,12 @@ public class TrackingHelper {
 
     public static void enrollMember(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_ENROLL);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_ENROLL);
     }
 
     public static void enrollMerchant(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_ENROLL_MERCHANT);
     }
 
     public static void profile(String memberId) {
@@ -294,6 +306,7 @@ public class TrackingHelper {
 
     public static void memberVideos(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_VIDEOS);
     }
 
     public static void videoAction(String action, String memberId, String label, String videoName) {
@@ -329,11 +342,13 @@ public class TrackingHelper {
     }
 
     public static void inviteShare(String memberId) {
-        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_INVITE);
+        trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE);
     }
 
     public static void podcasts(String memberId) {
         trackPageView(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
+        trackPageViewAbode(CATEGORY_NAV_MENU, memberId, ACTION_MEMBERSHIP_PODCASTS);
     }
 
     public static void inviteShareContacts(String memberId) {
@@ -341,7 +356,7 @@ public class TrackingHelper {
     }
 
     public static void inviteShareTemplate(String memberId, int templateId) {
-        trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_INVITE, ACTION_TEMPLATE, String.valueOf(templateId));
+        trackSpecificPageView(CATEGORY_NAV_MENU, memberId, ACTION_REP_TOOLS_INVITE_SHARE, ACTION_TEMPLATE, String.valueOf(templateId));
     }
 
     public static void inviteShareAction(String category, int templateId, int count) {
@@ -468,7 +483,6 @@ public class TrackingHelper {
     public static final String ATTRIBUTE_EDIT_IMAGE = "edit_image";
     public static final String ATTRIBUTE_DELETE_IMAGE = "delete_image";
     public static final String ATTRIBUTE_LIKE_IMAGE = "like_image";
-    public static final String ATTRIBUTE_LOADED = "loaded";
     public static final String ATTRIBUTE_LOADING_ERROR = "loading_error";
     public static final String ATTRIBUTE_ADD_CONTACT = "add_contact";
     public static final String ATTRIBUTE_SHOW_ALL = "show_all";
@@ -697,8 +711,7 @@ public class TrackingHelper {
 
     // ---------------- Book Travel
 
-    public static void actionBookTravelScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+    public static void actionBookTravelScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW}) String eventType) {
         sendSimpleAttributetoAdobeTracker(ACTION_BOOK_TRAVEL, eventType);
     }
 
@@ -780,13 +793,11 @@ public class TrackingHelper {
         sendSimpleAttributetoAdobeTracker(tab, ATTRIBUTE_LIST);
     }
 
-    public static void actionMembershipEnrollMemberScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+    public static void actionMembershipEnrollMemberScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW}) String eventType) {
         sendSimpleAttributetoAdobeTracker(ACTION_MEMBERSHIP_ENROLL, eventType);
     }
 
-    public static void actionMembershipEnrollMerchantScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+    public static void actionMembershipEnrollMerchantScreen(@MagicConstant(stringValues = {ATTRIBUTE_VIEW}) String eventType) {
         sendSimpleAttributetoAdobeTracker("local.merchant.view", eventType);
     }
 
@@ -890,8 +901,7 @@ public class TrackingHelper {
         trackers.get(KEY_ADOBE_TRACKER).trackEvent(null, ACTION_REP_TOOLS_TRAINING_VIDEO, data);
     }
 
-    public static void actionRepToolsEnrollment(@MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+    public static void actionRepToolsEnrollment(@MagicConstant(stringValues = {ATTRIBUTE_VIEW}) String eventType) {
         sendSimpleAttributetoAdobeTracker(ACTION_REP_TOOLS_REP_ENROLLMENT, eventType);
     }
 
@@ -909,8 +919,7 @@ public class TrackingHelper {
     // ---------------- Terms
 
     public static void actionTermsTab(@MagicConstant(stringValues = {ACTION_TERMS_PRIVACY, ACTION_TERMS_SERVICE,
-            ACTION_TERMS_COOKIE}) String tab, @MagicConstant(stringValues = {ATTRIBUTE_VIEW, ATTRIBUTE_LOADED,
-            ATTRIBUTE_LOADING_ERROR}) String eventType) {
+            ACTION_TERMS_COOKIE}) String tab, @MagicConstant(stringValues = {ATTRIBUTE_VIEW}) String eventType) {
         sendSimpleAttributetoAdobeTracker(tab, eventType);
     }
 }

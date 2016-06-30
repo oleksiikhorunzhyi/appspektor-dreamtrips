@@ -7,6 +7,8 @@ import android.util.Pair;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.LocationSearchEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
@@ -271,8 +273,13 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
 
     @Override
     public void locationSelected(DtlExternalLocation dtlExternalLocation) {
-//        trackLocationSelection(location); // TODO :: 4/20/16 new analytics
-        locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlExternalLocation));
+        locationInteractor.locationPipe()
+                .createObservableResult(DtlLocationCommand.change(dtlExternalLocation))
+                .map(dtlLocationCommand -> dtlLocationCommand.getResult())
+                .cast(DtlExternalLocation.class)
+                .subscribe(dtlLocation -> analyticsInteractor.dtlAnalyticsCommandPipe()
+                        .send(DtlAnalyticsCommand.create(
+                                new LocationSearchEvent(dtlLocation))));
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates().asAndroidLocation()));
         navigateAway();

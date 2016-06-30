@@ -43,6 +43,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public abstract class BaseActivity extends InjectingActivity {
 
@@ -63,14 +64,14 @@ public abstract class BaseActivity extends InjectingActivity {
         super.onCreate(savedInstanceState);
         analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONCREATE),
-                        AndroidSchedulers.mainThread());
+                        Schedulers.immediate());
     }
 
     @Override
     protected void onStart() {
         analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTART),
-                        AndroidSchedulers.mainThread());
+                        Schedulers.immediate());
         super.onStart();
     }
 
@@ -79,7 +80,7 @@ public abstract class BaseActivity extends InjectingActivity {
         super.onStop();
         analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTOP),
-                        AndroidSchedulers.mainThread());
+                        Schedulers.immediate());
     }
 
     @Override
@@ -87,7 +88,7 @@ public abstract class BaseActivity extends InjectingActivity {
         super.onResume();
         analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONRESUME),
-                        AndroidSchedulers.mainThread());
+                        Schedulers.immediate());
     }
 
     @Override
@@ -95,7 +96,7 @@ public abstract class BaseActivity extends InjectingActivity {
         super.onPause();
         analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONPAUSE),
-                        AndroidSchedulers.mainThread());
+                        Schedulers.immediate());
     }
 
     @Override

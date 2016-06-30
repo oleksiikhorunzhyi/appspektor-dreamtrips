@@ -27,12 +27,14 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.DurationFieldType;
 import org.joda.time.LocalTime;
+import org.joda.time.chrono.ISOChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class DtlMerchantHelper {
 
@@ -71,15 +73,18 @@ public class DtlMerchantHelper {
         return Days.daysBetween(currentDate, expirationDate).isLessThan(Days.SEVEN);
     }
 
-    public static Spannable getOfferExpiringCaption(Context context, DtlOffer offerData) {
-        return getOfferExpiringCaption(context.getResources(), offerData);
+    public static Spannable getOfferExpiringCaption(Context context, DtlOffer offerData,
+                                                    Locale locale) {
+        return getOfferExpiringCaption(context.getResources(), offerData, locale);
     }
 
-    public static Spannable getOfferExpiringCaption(Resources resources, DtlOffer offerData) {
+    public static Spannable getOfferExpiringCaption(Resources resources, DtlOffer offerData,
+                                                    Locale locale) {
         String format = resources.getString(R.string.offer_expiration_format);
-        DateTime expiringDate = new DateTime(offerData.getEndDate().getTime());
+        DateTime expiringDate = new DateTime(offerData.getEndDate().getTime(),
+                ISOChronology.getInstance(DateTimeZone.UTC));
         String caption = expiringDate.toString(DateTimeFormat.forPattern("MMM d"));
-        String captionFormatted = String.format(format, caption);
+        String captionFormatted = String.format(locale, format, caption);
         Spannable spanned = new SpannableString(captionFormatted);
         spanned.setSpan(new StyleSpan(Typeface.BOLD),
                 captionFormatted.length() - caption.length(), captionFormatted.length(),

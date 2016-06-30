@@ -25,7 +25,7 @@ public class TripsFilterDataAnalyticsWrapper {
     public static final String PRICE_FORMAT = "%.0f-%.0f";
 
     public static final String DEFAULT_FIELDS_DELIMITER = ",";
-    public static final String BOOLEAN_FIELDS_DELIMITER = "-";
+    public static final String BOOLEAN_FIELDS_DELIMITER = ",";
 
     private int minNights;
     private int maxNights;

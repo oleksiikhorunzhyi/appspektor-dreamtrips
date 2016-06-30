@@ -44,7 +44,7 @@ import javax.inject.Inject;
 
 import butterknife.InjectView;
 import icepick.State;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 @Layout(R.layout.activity_main)
 public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
@@ -90,7 +90,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         super.onSaveInstanceState(outState);
         analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(LifecycleEvent.ACTION_ONSAVESTATE, outState),
-                        AndroidSchedulers.mainThread());
+                        Schedulers.immediate());
     }
 
     @Override
@@ -98,7 +98,7 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         super.onRestoreInstanceState(savedInstanceState);
         analyticsInteractor.analyticsActionPipe()
                 .send(new LifecycleEvent(LifecycleEvent.ACTION_ONRESTORESTATE, savedInstanceState),
-                        AndroidSchedulers.mainThread());
+                        Schedulers.immediate());
     }
 
     @Override

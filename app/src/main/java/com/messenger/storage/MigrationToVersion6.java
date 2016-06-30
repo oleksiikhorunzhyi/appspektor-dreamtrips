@@ -1,15 +1,18 @@
 package com.messenger.storage;
 
-import com.messenger.entities.DataMessage;
+import android.database.sqlite.SQLiteDatabase;
+
 import com.messenger.entities.DataMessage$Table;
+import com.messenger.messengerservers.constant.MessageType;
 import com.raizlabs.android.dbflow.annotation.Migration;
-import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
 @Migration(version = 6, databaseName = MessengerDatabase.NAME)
-public class MigrationToVersion6 extends AlterTableMigration<DataMessage> {
+public class MigrationToVersion6 extends BaseTableMigration {
 
-    public MigrationToVersion6() {
-        super(DataMessage.class);
-        addColumn(String.class, DataMessage$Table.TYPE);
+    @Override
+    public void migrate(SQLiteDatabase database) {
+        addColumn(database, DataMessage$Table.TABLE_NAME, DATA_TYPE_TEXT, DataMessage$Table.TYPE);
+        updateAllRowsInColumn(database, DataMessage$Table.TABLE_NAME, DataMessage$Table.TYPE, MessageType.MESSAGE);
     }
 }
+

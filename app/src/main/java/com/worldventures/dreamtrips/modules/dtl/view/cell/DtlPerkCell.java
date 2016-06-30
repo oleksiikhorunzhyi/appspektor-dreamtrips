@@ -6,10 +6,13 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
@@ -19,6 +22,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
@@ -26,17 +31,26 @@ import butterknife.OnClick;
 public class DtlPerkCell
         extends AbstractDelegateCell<DtlOffer, CellDelegate<DtlOffer>> {
 
-    @InjectView(R.id.perk_logo) ImageryDraweeView image;
-    @InjectView(R.id.perks_description) TextView title;
-    @InjectView(R.id.perks_operation_days) TextView operationDays;
-    @InjectView(R.id.expirationBar) AppCompatTextView expirationBar;
+    @InjectView(R.id.perk_logo)
+    ImageryDraweeView image;
+    @InjectView(R.id.perks_description)
+    TextView title;
+    @InjectView(R.id.perks_operation_days)
+    TextView operationDays;
+    @InjectView(R.id.expirationBar)
+    AppCompatTextView expirationBar;
+
+    @Inject
+    protected SessionHolder<UserSession> sessionHolder;
+    @Inject
+    LocaleHelper localeHelper;
 
     public DtlPerkCell(View view) {
         super(view);
     }
 
     @OnClick(R.id.perks_view)
-    protected void onPerkClick(){
+    protected void onPerkClick() {
         cellDelegate.onCellClicked(getModelObject());
     }
 
@@ -62,7 +76,8 @@ public class DtlPerkCell
     private void bindExpirationBar() {
         if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
             ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
-                    getOfferExpiringCaption(itemView.getContext(), getModelObject()));
+                    getOfferExpiringCaption(itemView.getContext(), getModelObject(),
+                            localeHelper.getAccountLocale(sessionHolder.get().get().getUser())));
         } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
     }
 

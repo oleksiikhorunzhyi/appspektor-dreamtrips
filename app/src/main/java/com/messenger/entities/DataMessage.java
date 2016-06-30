@@ -2,7 +2,6 @@ package com.messenger.entities;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.constant.MessageType;
@@ -25,8 +24,6 @@ import java.util.Date;
 public class DataMessage extends BaseProviderModel<DataMessage> {
     public static final String TABLE_NAME = "Messages";
 
-    public static final int MESSAGE_FORMAT_VERSION = 1;
-
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
@@ -41,7 +38,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @MessageStatus.Status @Column int status;
     @MessageType.Type @Column String type;
     @Column long syncTime;
-    @Column int version = MESSAGE_FORMAT_VERSION;
 
     public DataMessage() {
     }
@@ -58,7 +54,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         MessageBody body = message.getMessageBody();
         if (body != null) {
             setText(body.getText());
-            setVersion(body.getVersion());
             setLocale(body.getLocale());
         }
     }
@@ -69,14 +64,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
 
     public String getLocaleName(){
         return locale;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public String getId() {

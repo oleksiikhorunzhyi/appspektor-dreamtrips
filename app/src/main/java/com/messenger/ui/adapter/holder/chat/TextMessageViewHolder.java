@@ -26,7 +26,7 @@ public abstract class TextMessageViewHolder extends MessageViewHolder {
     @Override
     public void bindCursor(Cursor cursor) {
         super.bindCursor(cursor);
-        if (MessageVersionHelper.isUnsupported(dataMessage.getVersion(), dataAttachment.getType())) {
+        if (MessageVersionHelper.isUnsupported(dataAttachment.getType())) {
             showUnsupportMessage();
         } else {
             messageTextView.setAutoLinkMask(Linkify.WEB_URLS | Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS);

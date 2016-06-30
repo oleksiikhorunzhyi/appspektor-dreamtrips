@@ -2,6 +2,7 @@ package com.messenger.messengerservers.xmpp.util;
 
 import android.text.TextUtils;
 
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.LeftRoomPresence;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessageDeletedPresence;
 
@@ -148,6 +149,19 @@ public class ParseUtils {
                     }
                     break;
             }
+        }
+    }
+
+    public static @MessageType.Type String parseMessageType(String messageType) {
+        switch (messageType) {
+            case "join":
+                return MessageType.SYSTEM_JOIN;
+            case "leave":
+                return MessageType.SYSTEM_JOIN;
+            case "kick":
+                return MessageType.SYSTEM_JOIN;
+            default:
+                return MessageType.MESSAGE;
         }
     }
 }

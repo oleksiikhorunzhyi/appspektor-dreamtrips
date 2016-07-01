@@ -8,11 +8,13 @@ import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.innahema.collections.query.functions.Action1;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -85,7 +87,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
 
     @Override
     public void showFriendDialog(User user) {
-        ImageView userPhoto = ButterKnife.findById(feedView, R.id.user_photo);
+        ImageView userPhoto = ButterKnife.findById(statePaginatedRecyclerViewManager.stateRecyclerView, R.id.user_photo);
         if (userPhoto != null) {
             userPhoto.setDrawingCacheEnabled(true);
             new FriendActionDialogDelegate(getActivity(), getEventBus())
@@ -105,6 +107,11 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     protected void initialToolbar() {
         profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
+    }
+
+    @Override
+    protected BaseDelegateAdapter createAdapter() {
+        return new IgnoreFirstItemAdapter(getContext(), this);
     }
 
     @Override

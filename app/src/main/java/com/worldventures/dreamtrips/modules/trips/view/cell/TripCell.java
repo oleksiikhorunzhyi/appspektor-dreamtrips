@@ -33,7 +33,6 @@ public class TripCell extends AbstractCell<TripModel> {
         super.afterInject();
         tripFeedViewInjector = new TripFeedViewInjector(itemView, router, getEventBus());
         tripFeedViewInjector.setSyncStateListener(this::syncUIStateWithModel);
-
     }
 
     @Override

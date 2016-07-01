@@ -2,82 +2,64 @@ package com.worldventures.dreamtrips.modules.profile.view.fragment;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.modules.bucketlist.view.adapter.IgnoreFirstItemAdapter;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
-import com.worldventures.dreamtrips.modules.feed.view.fragment.BaseFeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
+import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
+import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
-import butterknife.InjectView;
+import java.util.List;
 
-public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFeedFragment<T, UserBundle>
-        implements ProfilePresenter.View {
+import javax.inject.Inject;
+
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.Optional;
+
+public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBaseFragmentWithArgs<T, UserBundle>
+        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @InjectView(R.id.profile_toolbar)
     protected Toolbar profileToolbar;
-
     @InjectView(R.id.profile_toolbar_title)
     protected TextView profileToolbarTitle;
-
     @InjectView(R.id.profile_user_status)
     protected TextView profileToolbarUserStatus;
 
+    @Inject
+    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+
     private int scrollArea;
+
+    private Bundle savedInstanceState;
+
+    protected StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
         calculateScrollArea();
-    }
-
-    private void calculateScrollArea() {
-        TypedValue tv = new TypedValue();
-        int actionBarHeight = 0;
-        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        int profilePhotoHeight = getResources().getDimensionPixelSize(R.dimen.profile_cover_height);
-        scrollArea = profilePhotoHeight - actionBarHeight;
-    }
-
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
-
-        feedView.addItemDecoration(new SideMarginsItemDecorator());
-        feedView.setOffsetYListener(yOffset -> {
-            float percent = calculateOffset();
-            setToolbarAlpha(percent);
-            if (percent >= 1.0) {
-                profileToolbarTitle.setVisibility(View.VISIBLE);
-                profileToolbarUserStatus.setVisibility(View.VISIBLE);
-            } else {
-                profileToolbarTitle.setVisibility(View.INVISIBLE);
-                profileToolbarUserStatus.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        initialToolbar();
-        restorePostIfNeeded();
-    }
-
-    protected abstract void initialToolbar();
-
-    private void restorePostIfNeeded() {
-
     }
 
     @Override
@@ -90,20 +72,126 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
     }
 
     @Override
-    public void setUser(User user) {
-        if (adapter.getItems().contains(user)) {
-            adapter.updateItem(user);
-        } else {
-            adapter.addItem(0, user);
-            adapter.notifyItemInserted(0);
-        }
+    public void onDestroyView() {
+        setToolbarAlpha(100);
+        super.onDestroyView();
+    }
 
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        BaseDelegateAdapter adapter = createAdapter();
+        statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+        statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
+        statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator());
+        statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
+            float percent = calculateOffset();
+            setToolbarAlpha(percent);
+            if (percent >= 1.0) {
+                profileToolbarTitle.setVisibility(View.VISIBLE);
+                profileToolbarUserStatus.setVisibility(View.VISIBLE);
+            } else {
+                profileToolbarTitle.setVisibility(View.INVISIBLE);
+                profileToolbarUserStatus.setVisibility(View.INVISIBLE);
+            }
+        });
+        //
+        fragmentWithFeedDelegate.init(adapter);
+        registerAdditionalCells();
+        registerCellDelegates();
+        //
+        initialToolbar();
+    }
+
+    @Override
+    public void setUser(User user) {
+        if (fragmentWithFeedDelegate.getItems().contains(user)) {
+            fragmentWithFeedDelegate.updateItem(user);
+        } else {
+            fragmentWithFeedDelegate.addItem(0, user);
+            fragmentWithFeedDelegate.notifyItemInserted(0);
+        }
+        //
         ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
         profileToolbarTitle.setText(user.getFullName());
     }
 
+    @Override
+    public void openFriends() {
+        fragmentWithFeedDelegate.openFriends(null);
+    }
+
+    @Override
+    public void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle) {
+        fragmentWithFeedDelegate.openBucketList(route, foreignBucketBundle);
+    }
+
+    @Override
+    public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
+        fragmentWithFeedDelegate.openTripImages(route, tripImagesBundle);
+    }
+
+    @Override
+    public void openPost() {
+        fragmentWithFeedDelegate.openPost(getChildFragmentManager());
+    }
+
+    @Override
+    public void notifyUserChanged() {
+        fragmentWithFeedDelegate.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshFeedItems(List<FeedItem> events) {
+        fragmentWithFeedDelegate.clearItems();
+        fragmentWithFeedDelegate.addItems(events);
+        if (!statePaginatedRecyclerViewManager.isNoMoreElements()) fragmentWithFeedDelegate.addItem(new LoadMoreModel());
+        fragmentWithFeedDelegate.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRefresh() {
+        getPresenter().onRefresh();
+    }
+
+    @Override
+    public void startLoading() {
+        statePaginatedRecyclerViewManager.startLoading();
+    }
+
+    @Override
+    public void finishLoading() {
+        statePaginatedRecyclerViewManager.finishLoading();
+    }
+
+    @Override
+    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
+        statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+    }
+
+    @Override
+    public void showEdit(BucketBundle bucketBundle) {
+        fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
+    }
+
+    public void onEvent(CommentIconClickedEvent event) {
+        fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
+    }
+
+    @Optional
+    @OnClick(R.id.tv_search_friends)
+    public void onFriendsSearchClicked() {
+        fragmentWithFeedDelegate.openFriendsSearch();
+    }
+
+    protected abstract void initialToolbar();
+
+    protected abstract BaseDelegateAdapter createAdapter();
+
     private float calculateOffset() {
-        return Math.min(feedView.getScrollOffset() / (float) scrollArea, 1);
+        return Math.min(statePaginatedRecyclerViewManager.stateRecyclerView.getScrollOffset() / (float) scrollArea, 1);
     }
 
     private void setToolbarAlpha(float percentage) {
@@ -113,55 +201,21 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends BaseFe
         profileToolbar.setBackgroundDrawable(c);
     }
 
-    @Override
-    public void openFriends() {
-        router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity().build());
-    }
-
-    @Override
-    public void openBucketList(Route route, ForeignBucketTabsBundle foreignBucketBundle) {
-        router.moveTo(route, NavigationConfigBuilder.forActivity()
-                .data(foreignBucketBundle)
-                .build());
-    }
-
-    @Override
-    public void openTripImages(Route route, TripsImagesBundle tripImagesBundle) {
-        router.moveTo(route, NavigationConfigBuilder.forActivity()
-                .data(tripImagesBundle)
-                .build());
-    }
-
-    @Override
-    public void openPost() {
-        router.moveTo(Route.POST_CREATE, NavigationConfigBuilder.forFragment()
-                .backStackEnabled(false)
-                .fragmentManager(getActivity().getSupportFragmentManager())
-                .containerId(R.id.container_details_floating)
-                .build());
-    }
-
-    @Override
-    protected BaseArrayListAdapter createAdapter() {
-        return new IgnoreFirstItemAdapter(feedView.getContext(), this);
-    }
-
-    @Override
-    public void notifyUserChanged() {
-        feedView.getAdapter().notifyDataSetChanged();
-    }
-
-    protected void openUser(User user) {
-        if (this.getPresenter().getUser().getId() != user.getId()) {
-            super.openUser(user);
-        } else {
-            feedView.smoothScrollToPosition(0);
+    private void calculateScrollArea() {
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 0;
+        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
         }
+        int profilePhotoHeight = getResources().getDimensionPixelSize(R.dimen.profile_cover_height);
+        scrollArea = profilePhotoHeight - actionBarHeight;
     }
 
-    @Override
-    public void onDestroyView() {
-        setToolbarAlpha(100);
-        super.onDestroyView();
+    private void registerAdditionalCells() {
+        fragmentWithFeedDelegate.registerAdditionalCell(User.class, ProfileCell.class);
+    }
+
+    private void registerCellDelegates() {
+        fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
     }
 }

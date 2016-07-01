@@ -65,6 +65,8 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
+import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 
 import dagger.Module;
@@ -145,6 +147,9 @@ import de.greenrobot.event.EventBus;
                 EditPostPresenter.class,
                 EditPhotoFragment.class,
                 EditPhotoPresenter.class,
+
+                StatePaginatedRecyclerViewManager.class,
+
         },
         complete = false,
         library = true
@@ -173,5 +178,10 @@ public class FeedModule {
     @Provides
     FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(Router router, @Global EventBus eventBus, Presenter.TabletAnalytic tabletAnalytic) {
         return new FeedActionPanelViewActionHandler(router, eventBus);
+    }
+
+    @Provides
+    FragmentWithFeedDelegate provideFragmentWithFeedDelegate(Router router) {
+        return new FragmentWithFeedDelegate(router);
     }
 }

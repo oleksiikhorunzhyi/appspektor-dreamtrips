@@ -7,7 +7,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.messenger.entities.DataAttachment;
-import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataTranslation;

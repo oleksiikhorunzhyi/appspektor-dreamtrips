@@ -7,6 +7,7 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
@@ -52,6 +53,7 @@ import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -208,6 +210,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ChatScreen screen = getView();
         //noinspection all
         screen.setTitle(conversation, participants);
+        screen.enableReloadChatButton(new Date());
         boolean conversationIsPresent = ConversationHelper.isPresent(conversation);
         screen.enableInput(conversationIsPresent);
         if (!conversationIsPresent) {
@@ -534,6 +537,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void disconnectFromPhotoPicker() {
         messengerMediaPickerDelegate.unregister();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Reload Chat History
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onReloadHistoryRequired() {
+        Toast.makeText(getContext(), "МИР! ТРУД! МАЙ!", Toast.LENGTH_SHORT).show();
     }
 
     ///////////////////////////////////////////////////////////////////////////

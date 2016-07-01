@@ -264,6 +264,13 @@
     <dimen name="chat_error_message_top_padding">8dp</dimen>
     <dimen name="chat_error_message_bottom_padding">4dp</dimen>
 
+    <dimen name="chat_reload_history_element_margin_top">15dp</dimen>
+    <dimen name="chat_reload_history_info_text_margin_left_right">20dp</dimen>
+    <dimen name="chat_reload_history_reload_text_margin_bottom">8dp</dimen>
+    <dimen name="chat_reload_history_space_between_text_and_icon">6dp</dimen>
+    <dimen name="chat_reload_history_date_text_size">12sp</dimen>
+    <dimen name="chat_reload_history_text_size">14sp</dimen>
+
     <!-- Chat settings screen -->
     <dimen name="chat_settings_chat_info_vertical_margin">40dp</dimen>
     <dimen name="chat_settings_chat_info_horizontal_margin">40dp</dimen>

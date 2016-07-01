@@ -11,6 +11,7 @@ import com.messenger.ui.view.layout.MessengerScreen;
 
 import com.messenger.ui.model.AttachmentMenuItem;
 
+import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -56,4 +57,8 @@ public interface ChatScreen extends MessengerScreen {
     void refreshChatTimestampView(int position);
 
     void enableInput(boolean enabled);
+
+    void enableReloadChatButton(Date clearChatDate);
+
+    void disableReloadChatButton();
 }

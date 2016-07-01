@@ -49,6 +49,8 @@ public class ChatFacadeInitializer implements AppInitializer {
         emitter.addInvitationListener(chatFacadeManager::onChatInvited);
         emitter.addOnChatLeftListener(chatFacadeManager::onChatLeft);
         emitter.addOnKickListener(chatFacadeManager::onKicked);
+        emitter.addOnClearChatEventListener(chatFacadeManager::onClearChat);
+        emitter.addOnRevertClearingEventListener(chatFacadeManager::onRevertClearing);
     }
 
 }

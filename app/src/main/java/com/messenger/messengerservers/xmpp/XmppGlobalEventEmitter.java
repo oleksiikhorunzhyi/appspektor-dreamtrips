@@ -4,13 +4,18 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.messengerservers.GlobalEventEmitter;
+import com.messenger.messengerservers.event.ImmutableClearChatEvent;
+import com.messenger.messengerservers.event.ImmutableRevertClearingEvent;
 import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.extensions.DeleteMessageExtension;
 import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilter;
 import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilterType;
+import com.messenger.messengerservers.xmpp.providers.ClearIQProvider;
+import com.messenger.messengerservers.xmpp.stanzas.ClearChatIQ;
 import com.messenger.messengerservers.xmpp.stanzas.PresenceStatus;
+import com.messenger.messengerservers.xmpp.stanzas.RevertClearChatIQ;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.LeftRoomPresence;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessageDeletedPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
@@ -53,6 +58,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
 
     public XmppGlobalEventEmitter(Map<IncomingMessageFilterType, List<IncomingMessageFilter>> filters) {
         this.filters = filters;
+        initProviders();
     }
 
     public void setFacade(XmppServerFacade facade) {
@@ -60,6 +66,19 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         this.facade = facade;
         facade.getConnectionObservable()
                 .subscribe(this::prepareManagers);
+    }
+
+    private void initProviders() {
+        ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT,
+                ChatStateExtension.NAMESPACE, new ChatStateExtension.Provider());
+        ProviderManager.addExtensionProvider(ChangeAvatarExtension.ELEMENT,
+                ChangeAvatarExtension.NAMESPACE, ChangeAvatarExtension.PROVIDER);
+        ProviderManager.addExtensionProvider(DeleteMessageExtension.ELEMENT,
+                DeleteMessageExtension.NAMESPACE, new DeleteMessageExtension.Provider());
+
+        ProviderManager.addIQProvider(ClearIQProvider.ELEMENT_QUERY,
+                ClearIQProvider.NAME_SPACE, new ClearIQProvider());
+
     }
 
     private void prepareManagers(XMPPConnection connection) {
@@ -71,13 +90,10 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 LeftRoomPresence.LEAVE_PRESENCE_FILTER);
         connection.addAsyncStanzaListener(this::filterAndInterceptIncomingMessageDeletedPresence,
                 MessageDeletedPresence.DELETED_PRESENCE_FILTER);
-
-        ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT,
-                ChatStateExtension.NAMESPACE, new ChatStateExtension.Provider());
-        ProviderManager.addExtensionProvider(ChangeAvatarExtension.ELEMENT,
-                ChangeAvatarExtension.NAMESPACE, ChangeAvatarExtension.PROVIDER);
-        ProviderManager.addExtensionProvider(DeleteMessageExtension.ELEMENT,
-                DeleteMessageExtension.NAMESPACE, new DeleteMessageExtension.Provider());
+        connection.addAsyncStanzaListener(this::interceptClearChatIncomingStanza,
+                new StanzaTypeFilter(ClearChatIQ.class));
+        connection.addAsyncStanzaListener(this::interceptRevertClearingChatIncomingStanza,
+                new StanzaTypeFilter(RevertClearChatIQ.class));
 
         MultiUserChatManager.getInstanceFor(connection).addInvitationListener(XmppGlobalEventEmitter.this::onChatInvited);
 
@@ -206,6 +222,23 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         filterIncomingStanzaWithType(IncomingMessageFilterType.PRESENCE, stanza)
                 .subscribe(this::interceptIncomingPresence,
                         e -> Timber.e(e, "Filters -- Error during filtering presence"));
+    }
+
+    private void interceptClearChatIncomingStanza(Stanza stanza) {
+        ClearChatIQ clearIq = (ClearChatIQ) stanza;
+        notifyOnClearChatEventListener(ImmutableClearChatEvent.builder()
+                .conversationId(clearIq.getChatId())
+                .clearTime(clearIq.getClearDate())
+                .build()
+        );
+    }
+
+    private void interceptRevertClearingChatIncomingStanza(Stanza stanza) {
+        RevertClearChatIQ revertIq = (RevertClearChatIQ) stanza;
+        notifyOnRevertClearingEventListener(ImmutableRevertClearingEvent.builder()
+                .conversationId(revertIq.getChatId())
+                .build()
+        );
     }
 
     private void interceptIncomingPresence(Stanza stanza) {

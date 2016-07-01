@@ -18,7 +18,6 @@ import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import java.util.List;
 
 import rx.Observable;
-import timber.log.Timber;
 
 class BaseDAO {
     private final Context context;

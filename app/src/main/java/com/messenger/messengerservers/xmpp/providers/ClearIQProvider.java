@@ -11,7 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class ClearQIProvider extends IQProvider<BaseClearChatIQ> {
+public class ClearIQProvider extends IQProvider<BaseClearChatIQ> {
     public static final String ELEMENT_QUERY = "query";
     public static final String NAME_SPACE = "worldventures.com#user-clear-chat";
 
@@ -46,9 +46,9 @@ public class ClearQIProvider extends IQProvider<BaseClearChatIQ> {
         }
 
         if (time > -1) {
-            return new ClearChatIQ(conversationId, null, time);
+            return new ClearChatIQ(conversationId, time);
         } else {
-            return new RevertClearChatIQ(conversationId, null);
+            return new RevertClearChatIQ(conversationId);
         }
     }
 

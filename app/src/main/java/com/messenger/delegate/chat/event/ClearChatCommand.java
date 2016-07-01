@@ -1,4 +1,4 @@
-package com.messenger.delegate.chat.command;
+package com.messenger.delegate.chat.event;
 
 import android.net.Uri;
 import android.text.TextUtils;
@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.messenger.entities.DataPhotoAttachment;
-import com.messenger.messengerservers.ChatExtensions;
+import com.messenger.messengerservers.event.ClearChatEvent;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.storage.dao.PhotoDAO;
@@ -22,25 +22,25 @@ import rx.Observable;
 
 @CommandAction
 public class ClearChatCommand extends Command<Void> implements InjectableAction {
+    private final ClearChatEvent clearChatEvent;
 
-    @Inject ChatExtensions chatExtensions;
     @Inject ConversationsDAO conversationsDAO;
     @Inject MessageDAO messageDAO;
     @Inject PhotoDAO photoDAO;
 
-    private final String conversationId;
-
-    public ClearChatCommand(String conversationId) {
-        this.conversationId = conversationId;
+    public ClearChatCommand(ClearChatEvent clearChatEvent) {
+        this.clearChatEvent = clearChatEvent;
     }
 
     @Override
     protected void run(CommandCallback<Void> callback) throws Throwable {
-        chatExtensions
-                .clearChat(conversationId, System.currentTimeMillis())
-                .doOnNext(event -> conversationsDAO.setClearDate(event.getConversationId(), event.clearTime()))
-                .flatMap(event -> clearCache(event.getConversationId()))
+        clearCache(clearChatEvent.getConversationId())
+                .doOnNext(aVoid -> setClearDate())
                 .subscribe(callback::onSuccess, callback::onFail);
+    }
+
+    private void setClearDate() {
+        conversationsDAO.setClearDate(clearChatEvent.getConversationId(), clearChatEvent.clearTime());
     }
 
     private Observable<Void> clearCache(String conversationId) {
@@ -65,6 +65,5 @@ public class ClearChatCommand extends Command<Void> implements InjectableAction 
             if (TextUtils.isEmpty(url)) continue;
             imagePipeline.evictFromCache(Uri.parse(url));
         }
-
     }
 }

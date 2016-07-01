@@ -10,7 +10,6 @@ import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.PaginationManager;
 import com.messenger.messengerservers.chat.ChatManager;
-import com.messenger.messengerservers.xmpp.providers.ClearQIProvider;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.InitialPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.StringGenerator;
@@ -24,7 +23,6 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SASLAuthentication;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.ping.PingManager;
 
@@ -81,12 +79,6 @@ public class XmppServerFacade implements MessengerServerFacade {
         paginationManager = new XmppPaginationManager(this);
         chatManager = new XmppChatManager(this);
         chatExtensions = new XmppChatExtensions(this);
-
-        initCustomProviders();
-    }
-
-    private void initCustomProviders() {
-        ProviderManager.addIQProvider(ClearQIProvider.ELEMENT_QUERY, ClearQIProvider.NAME_SPACE, new ClearQIProvider());
     }
 
     private MessengerConnection createConnection() {

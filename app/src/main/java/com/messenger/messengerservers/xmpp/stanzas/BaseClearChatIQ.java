@@ -9,9 +9,10 @@ public abstract class BaseClearChatIQ extends IQ {
 
     private final String chatId;
 
-    public BaseClearChatIQ(String chatId) {
+    public BaseClearChatIQ(String chatId,  String userJid) {
         super(ELEMENT_QUERY, NAMESPACE);
         setType(Type.set);
+        setTo(userJid);
         this.chatId = chatId;
     }
 

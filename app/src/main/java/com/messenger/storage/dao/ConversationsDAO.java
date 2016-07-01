@@ -229,6 +229,20 @@ public class ConversationsDAO extends BaseDAO {
                 DataConversation$Table._ID + "=?", new String[]{conversationId});
     }
 
+    public int setClearDate(String conversationId, long date) {
+        ContentValues contentValues = new ContentValues(1);
+        contentValues.put(DataConversation$Table.CLEARTIME, date);
+        return getContentResolver().update(DataConversation.CONTENT_URI, contentValues,
+                DataConversation$Table._ID + "=?", new String[]{conversationId});
+    }
+
+    public int setUnreadCount(String conversationId, int unreadCount) {
+        ContentValues contentValues = new ContentValues(1);
+        contentValues.put(DataConversation$Table.UNREADMESSAGECOUNT, unreadCount);
+        return getContentResolver().update(DataConversation.CONTENT_URI, contentValues,
+                DataConversation$Table._ID + "=?", new String[]{conversationId});
+    }
+
     public void incrementUnreadField(String conversationId) {
         new Update<>(DataConversation.class)
                 .set(DataConversation$Table.UNREADMESSAGECOUNT + " = " + DataConversation$Table.UNREADMESSAGECOUNT + " +1 ")

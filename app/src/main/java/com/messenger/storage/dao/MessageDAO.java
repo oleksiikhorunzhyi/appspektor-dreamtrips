@@ -120,6 +120,37 @@ public class MessageDAO extends BaseDAO {
         });
     }
 
+    public void deleteMessagesByConversation(String conversationId) {
+        // TODO: fucking sqlite does not execute DELETE with JOINed tables
+        // TODO: somewhen we replace this code via FOREIGN KEY
+        String selectAttachments =
+                "SELECT " + DataAttachment$Table._ID + " " +
+                        "FROM " + DataAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+        String queryClearLocation =
+                "DELETE FROM " + DataLocationAttachment.TABLE_NAME + " " +
+                "WHERE " + DataLocationAttachment$Table._ID + " IN (" + selectAttachments + ")";
+        String queryClearPhoto =
+                "DELETE FROM " + DataPhotoAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " IN (" + selectAttachments + ")";
+        String queryClearAttachment =
+                "DELETE FROM " + DataAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+        String queryClearMessages =
+                "DELETE FROM " + DataMessage$Table.TABLE_NAME + " " +
+                        "WHERE " + DataMessage$Table.CONVERSATIONID + "=?";
+
+        getWritableDatabase().rawQuery(queryClearLocation, new String[] {conversationId});
+        getWritableDatabase().rawQuery(queryClearPhoto, new String[] {conversationId});
+        getWritableDatabase().rawQuery(queryClearAttachment, new String[] {conversationId});
+        getWritableDatabase().rawQuery(queryClearMessages, new String[] {conversationId});
+
+        getContentResolver().notifyChange(DataMessage.CONTENT_URI, null);
+        getContentResolver().notifyChange(DataAttachment.CONTENT_URI, null);
+        getContentResolver().notifyChange(DataPhotoAttachment.CONTENT_URI, null);
+        getContentResolver().notifyChange(DataLocationAttachment.CONTENT_URI, null);
+    }
+
     public void save(List<DataMessage> messages) {
         bulkInsert(messages, new DataMessage$Adapter(), DataMessage.CONTENT_URI);
     }

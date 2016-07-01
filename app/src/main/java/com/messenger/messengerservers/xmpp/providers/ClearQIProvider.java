@@ -46,9 +46,9 @@ public class ClearQIProvider extends IQProvider<BaseClearChatIQ> {
         }
 
         if (time > -1) {
-            return new ClearChatIQ(conversationId, time);
+            return new ClearChatIQ(conversationId, null, time);
         } else {
-            return new RevertClearChatIQ(conversationId);
+            return new RevertClearChatIQ(conversationId, null);
         }
     }
 

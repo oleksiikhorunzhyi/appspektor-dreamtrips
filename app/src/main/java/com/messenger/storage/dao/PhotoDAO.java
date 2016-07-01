@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
@@ -48,6 +49,22 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
     @Override
     protected String getIDColumnName() {
         return DataPhotoAttachment$Table.PHOTOATTACHMENTID;
+    }
+
+    public Observable<List<DataPhotoAttachment>> getPhotoAttachments(String conversationId) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT p.* " +
+                        "FROM " + DataPhotoAttachment.TABLE_NAME + " p " +
+                        "INNER JOIN " + DataAttachment$Table.TABLE_NAME + " a " +
+                        "ON a." + DataAttachment$Table._ID + "=p." + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " " +
+                        "INNER JOIN " + DataMessage$Table.TABLE_NAME + " m " +
+                        "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
+
+                        "WHERE m." + DataMessage$Table.CONVERSATIONID + "=?")
+                .withSelectionArgs(new String[]{conversationId}).build();
+
+        return query(q, DataPhotoAttachment.CONTENT_URI)
+                .compose(DaoTransformers.toEntityList(DataPhotoAttachment.class));
     }
 
     public Observable<List<DataPhotoAttachment>> getErrorAttachments() {

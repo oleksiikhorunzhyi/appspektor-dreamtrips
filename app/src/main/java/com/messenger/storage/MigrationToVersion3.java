@@ -11,7 +11,7 @@ import com.messenger.entities.DataUser$Table;
 import com.raizlabs.android.dbflow.annotation.Migration;
 
 @Migration(version = 3, databaseName = MessengerDatabase.NAME)
-public class MigrationToVersion3 extends BaseDropTableMigration {
+public class MigrationToVersion3 extends BaseTableMigration {
 
     @Override
     public void migrate(SQLiteDatabase database) {

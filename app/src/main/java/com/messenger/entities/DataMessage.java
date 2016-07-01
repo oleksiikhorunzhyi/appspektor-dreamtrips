@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.model.MessageBody;
 import com.messenger.storage.MessengerDatabase;
@@ -23,8 +24,6 @@ import java.util.Date;
 public class DataMessage extends BaseProviderModel<DataMessage> {
     public static final String TABLE_NAME = "Messages";
 
-    public static final int MESSAGE_FORMAT_VERSION = 1;
-
     @ContentUri(path = TABLE_NAME, type = ContentUri.ContentType.VND_MULTIPLE + TABLE_NAME)
     public static final Uri CONTENT_URI = MessengerDatabase.buildUri(TABLE_NAME);
 
@@ -37,8 +36,8 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     @Column Date date;
     @Column String conversationId;
     @MessageStatus.Status @Column int status;
+    @MessageType.Type @Column String type;
     @Column long syncTime;
-    @Column int version = MESSAGE_FORMAT_VERSION;
 
     public DataMessage() {
     }
@@ -50,24 +49,13 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         setToId(message.getToId());
         setStatus(message.getStatus());
         setDate(new Date(message.getDate()));
+        setType(message.getType());
 
         MessageBody body = message.getMessageBody();
         if (body != null) {
             setText(body.getText());
-            setVersion(body.getVersion());
             setLocale(body.getLocale());
         }
-    }
-
-    private DataMessage(Builder builder) {
-        setId(builder.id);
-        setConversationId(builder.conversationId);
-        setFromId(builder.from);
-        setToId(builder.to);
-        setText(builder.text);
-        setDate(builder.date);
-        setSyncTime(builder.syncTime);
-        setStatus(builder.status);
     }
 
     public void setLocale(String locale) {
@@ -76,14 +64,6 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
 
     public String getLocaleName(){
         return locale;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 
     public String getId() {
@@ -150,6 +130,14 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         this.syncTime = syncTime;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public Uri getDeleteUri() {
         return CONTENT_URI;
@@ -180,66 +168,64 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
     }
 
     public static final class Builder {
-        private String id;
-        private String conversationId;
-        private String from;
-        private String to;
-        private String text;
-        private Date date;
-        private String locale;
-        private int status;
-        private long syncTime;
+        private DataMessage message;
 
         public Builder() {
+            message = new DataMessage();
         }
 
-        public Builder id(String val) {
-            this.id = val;
+        public Builder id(String id) {
+            message.setId(id);
             return this;
         }
 
         public Builder conversationId(String conversationId) {
-            this.conversationId = conversationId;
+            message.setConversationId(conversationId);
             return this;
         }
 
-        public Builder from(String val) {
-            from = val;
+        public Builder from(String fromId) {
+            message.setFromId(fromId);
             return this;
         }
 
-        public Builder to(String val) {
-            to = val;
+        public Builder to(String toId) {
+            message.setToId(toId);
             return this;
         }
 
-        public Builder text(String val) {
-            text = val;
+        public Builder text(String text) {
+            message.setText(text);
             return this;
         }
 
-        public Builder date(Date val) {
-            date = val;
+        public Builder date(Date date) {
+            message.setDate(date);
             return this;
         }
 
-        public Builder locale(String val) {
-            locale = val;
+        public Builder locale(String locale) {
+            message.setLocale(locale);
             return this;
         }
 
-        public Builder status(@MessageStatus.Status int val) {
-            status = val;
+        public Builder status(@MessageStatus.Status int status) {
+            message.setStatus(status);
             return this;
         }
 
-        public Builder syncTime(long val) {
-            syncTime = val;
+        public Builder syncTime(long syncTime) {
+            message.setSyncTime(syncTime);
+            return this;
+        }
+
+        public Builder type(@MessageType.Type String type) {
+            message.setType(type);
             return this;
         }
 
         public DataMessage build() {
-            return new DataMessage(this);
+            return message;
         }
     }
 
@@ -250,6 +236,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
                 .id(id)
                 .conversationId(conversationId)
                 .status(status)
+                .type(type)
                 .build();
     }
 }

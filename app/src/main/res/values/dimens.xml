@@ -292,6 +292,8 @@
     <dimen name="chat_image_height">120dp</dimen>
     <dimen name="chat_image_width">186dp</dimen>
 
+    <dimen name="chat_item_list_system_message_text_size">12sp</dimen>
+
     <!-- Messenger misc -->
     <dimen name="messenger_swappable_action_button_text_size">13sp</dimen>
     <dimen name="messenger_swappable_action_button_padding">16dp</dimen>

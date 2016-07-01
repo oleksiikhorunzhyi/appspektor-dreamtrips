@@ -17,6 +17,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.view.ViewLayoutChangeEvent;
+import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
@@ -70,6 +71,10 @@ public class MerchantOffersInflater extends MerchantDataInflater {
 
     private List<OfferClickListener> offerClickListeners = new ArrayList<>();
     private Map<Integer, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
+
+    public MerchantOffersInflater(Injector injector) {
+        injector.inject(this);
+    }
 
     public void registerOfferClickListener(OfferClickListener listener) {
         this.offerClickListeners.add(listener);

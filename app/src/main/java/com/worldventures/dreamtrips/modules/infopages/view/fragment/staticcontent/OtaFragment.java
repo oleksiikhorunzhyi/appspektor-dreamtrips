@@ -7,10 +7,11 @@ import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 @Layout(R.layout.fragment_webview)
 @MenuResource(R.menu.menu_mock)
-public class OtaFragment extends AuthorizedStaticInfoFragment {
+public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
 
     @Override
     protected String getURL() {

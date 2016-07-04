@@ -18,6 +18,8 @@ public class TextualPost extends BaseFeedEntity {
 
     private Location location;
 
+    private List<Hashtag> hashtags = new ArrayList<>();
+
     public String getDescription() {
         return description;
     }
@@ -32,6 +34,14 @@ public class TextualPost extends BaseFeedEntity {
 
     public void setAttachments(List<FeedEntityHolder> attachments) {
         this.attachments = attachments;
+    }
+
+    public List<Hashtag> getHashtags() {
+        return hashtags;
+    }
+
+    public void setHashtags(List<Hashtag> hashtags) {
+        this.hashtags = hashtags;
     }
 
     @NotNull

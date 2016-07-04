@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
@@ -14,11 +13,15 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
+import com.worldventures.dreamtrips.modules.feed.model.Hashtag;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
@@ -39,7 +42,7 @@ import butterknife.Optional;
 public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @InjectView(R.id.post)
-    TextView post;
+    HashtagTextView post;
     @InjectView(R.id.card_view_wrapper)
     View cardViewWrapper;
     @Optional
@@ -68,17 +71,19 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
         if (width > 0) {
             itemView.setVisibility(View.VISIBLE);
             processAttachments(obj.getItem().getAttachments());
-            processPostText(obj.getItem().getDescription());
+            processPostText(obj.getItem());
         } else {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
         }
     }
 
-    private void processPostText(String postText) {
-        if (!TextUtils.isEmpty(postText)) {
+    private void processPostText(TextualPost textualPost) {
+        if (!TextUtils.isEmpty(textualPost.getDescription())) {
             post.setVisibility(View.VISIBLE);
-            post.setText(postText);
+            post.setText(String.format("%s", textualPost.getDescription()));
+            post.setHashtagClickListener(this::openHashtagFeeds);
+            post.highlightHashtags(textualPost.getHashtags());
         } else {
             post.setVisibility(View.GONE);
         }
@@ -150,6 +155,13 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
                     return new CollageItem(photo.getImages().getUrl(), photo.getWidth(), photo.getHeight());
                 })
                 .toList();
+    }
+
+    private void openHashtagFeeds(String hashtag) {
+        router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
+                .data(new FeedHashtagBundle(hashtag))
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
+                .build());
     }
 
     @Override

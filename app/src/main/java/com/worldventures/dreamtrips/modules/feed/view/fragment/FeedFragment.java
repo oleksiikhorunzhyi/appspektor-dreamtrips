@@ -114,10 +114,10 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
         super.afterCreateView(rootView);
         BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
         statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+        statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
         statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
         statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
-        statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
         if (isTabletLandscape()) {
             fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(),
                     getPresenter().getAccount());

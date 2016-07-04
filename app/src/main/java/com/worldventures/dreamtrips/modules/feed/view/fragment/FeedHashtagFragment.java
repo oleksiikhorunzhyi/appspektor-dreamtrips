@@ -16,15 +16,17 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
-import com.worldventures.dreamtrips.modules.feed.view.custom.FeedView;
+import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 import icepick.Icepick;
@@ -34,10 +36,6 @@ import icepick.State;
 @Layout(R.layout.fragment_hashtag_feed)
 public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPresenter, FeedHashtagBundle> implements FeedHashtagPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.feeds)
-    FeedView feedView;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
     @InjectView(R.id.empty_view)
     ViewGroup emptyView;
     @InjectView(R.id.suggestions)
@@ -48,39 +46,31 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @State
     String query;
 
-    private WeakHandler weakHandler;
-    private Bundle savedInstanceState;
-    private BaseArrayListAdapter feedAdapter;
+    @Inject
+    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+
     private BaseArrayListAdapter suggestionAdapter;
-    private RecyclerViewStateDelegate stateDelegate;
+
+    private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
+    private Bundle savedInstanceState;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        stateDelegate = new RecyclerViewStateDelegate();
-        stateDelegate.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
-        weakHandler = new WeakHandler();
         this.savedInstanceState = savedInstanceState;
     }
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        stateDelegate.setRecyclerView(feedView);
-        feedAdapter = new BaseDelegateAdapter<>(feedView.getContext(), this);
-        feedView.setup(savedInstanceState, feedAdapter);
-        feedView.setEmptyView(emptyView);
-        feedView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int itemCount = recyclerView.getLayoutManager().getItemCount();
-                int lastVisibleItemPosition = feedView.getLayoutManager().findLastVisibleItemPosition();
-                getPresenter().scrolled(itemCount, lastVisibleItemPosition);
-            }
-        });
-        refreshLayout.setOnRefreshListener(this);
-        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        BaseDelegateAdapter adapter = new BaseDelegateAdapter<>(getContext(), this);
+        statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
+        statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
+        statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
+        statePaginatedRecyclerViewManager.setOnRefreshListener(this);
+        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadFeeds());
+        fragmentWithFeedDelegate.init(adapter);
     }
 
     @Override
@@ -150,15 +140,14 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     @Override
     public void addFeedItems(List items) {
-        int itemsCount = feedAdapter.getCount() - 1;
-        feedAdapter.addItems(items);
-        feedAdapter.notifyItemRangeInserted(itemsCount, items.size());
+        fragmentWithFeedDelegate.addItems(items);
+        fragmentWithFeedDelegate.notifyDataSetChanged();
     }
 
     @Override
     public void clearFeedItems() {
-        feedAdapter.clear();
-        feedAdapter.notifyDataSetChanged();
+        fragmentWithFeedDelegate.clearItems();
+        fragmentWithFeedDelegate.notifyDataSetChanged();
     }
 
     @Override
@@ -181,16 +170,12 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     @Override
     public void startLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(true);
-        });
+        statePaginatedRecyclerViewManager.startLoading();
     }
 
     @Override
     public void finishLoading() {
-        weakHandler.post(() -> {
-            if (refreshLayout != null) refreshLayout.setRefreshing(false);
-        });
+        statePaginatedRecyclerViewManager.finishLoading();
     }
 
 }

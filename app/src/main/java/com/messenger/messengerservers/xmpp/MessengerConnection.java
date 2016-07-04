@@ -2,6 +2,7 @@ package com.messenger.messengerservers.xmpp;
 
 import com.messenger.messengerservers.xmpp.util.ParseUtils;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -23,13 +24,17 @@ public class MessengerConnection extends XMPPTCPConnection {
         ParserUtils.assertAtStartTag(parser);
         int parserDepth = parser.getDepth();
         Stanza stanza = null;
+
         try {
             if (Presence.ELEMENT.equals(parser.getName())) {
                 stanza = ParseUtils.parsePresence(parser);
+            } else if (Message.ELEMENT.equals(parser.getName())) {
+                stanza = ParseUtils.parseMessage(parser);
             } else {
                 stanza = PacketParserUtils.parseStanza(parser);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
                     parserDepth);
             UnparsablePacket message = new UnparsablePacket(content, e);

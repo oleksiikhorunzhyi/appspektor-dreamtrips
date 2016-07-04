@@ -38,6 +38,11 @@ public class MessageDAO extends BaseDAO {
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
     public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
     public static final String CONVERSATION_TYPE = DataConversation$Table.TABLE_NAME + "_" + DataConversation$Table.TYPE;
+    public static final String USER_ID = DataUser$Table.TABLE_NAME + "_" + DataUser$Table._ID;
+    public static final String USER_FIRST_NAME = DataUser$Table.TABLE_NAME + "_" + DataUser$Table.FIRSTNAME;
+    public static final String USER_LAST_NAME = DataUser$Table.TABLE_NAME + "_" + DataUser$Table.LASTNAME;
+
+    public static final String ATTACHMENT_TYPE = DataAttachment$Table.TABLE_NAME + "_" + DataAttachment$Table.TYPE;
 
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -57,13 +62,19 @@ public class MessageDAO extends BaseDAO {
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, " +
+                        // message author
                         "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
                         "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
+                        // message recipient
+                        "uu." + DataUser$Table._ID + " as " + USER_ID + ", " +
+                        "uu." + DataUser$Table.FIRSTNAME + " as " + USER_FIRST_NAME + ", " +
+                        "uu." + DataUser$Table.LASTNAME + " as " + USER_LAST_NAME + ", " +
+
                         "a." + DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
-                        "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
+                        "a." + DataAttachment$Table.TYPE + " as " + ATTACHMENT_TYPE + ", " +
 
                         "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", " +
                         "p." + DataPhotoAttachment$Table.LOCALPATH + " as " + DataPhotoAttachment$Table.LOCALPATH + ", " +
@@ -81,6 +92,8 @@ public class MessageDAO extends BaseDAO {
                         "FROM " + DataMessage.TABLE_NAME + " m " +
                         "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
                         "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
+                        "LEFT JOIN " + DataUser$Table.TABLE_NAME + " uu " +
+                        "ON m." + DataMessage$Table.TOID + "=uu." + DataUser$Table._ID + " " +
                         "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
                         "LEFT JOIN " + DataPhotoAttachment.TABLE_NAME + " p " +

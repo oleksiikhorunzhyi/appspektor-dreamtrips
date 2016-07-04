@@ -130,7 +130,7 @@ public class DataMessage extends BaseProviderModel<DataMessage> {
         this.syncTime = syncTime;
     }
 
-    public String getType() {
+    public @MessageType.Type String getType() {
         return type;
     }
 

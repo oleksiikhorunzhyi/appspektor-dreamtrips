@@ -11,6 +11,7 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
+import com.messenger.storage.dao.MessageDAO;
 import com.techery.spares.adapter.AdapterHelper;
 import com.techery.spares.annotations.Layout;
 
@@ -33,7 +34,7 @@ public class ChatViewHolderProvider {
         cursor.moveToPosition(position);
 
         boolean own = isOwnMessage(cursor);
-        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
+        String attachmentType = cursor.getString(cursor.getColumnIndex(MessageDAO.ATTACHMENT_TYPE));
 
         return Queryable.from(chatViewHolderInfoSet).first(info -> (info.isOwn() == own)
                     && TextUtils.equals(attachmentType, info.getType())).getViewType();

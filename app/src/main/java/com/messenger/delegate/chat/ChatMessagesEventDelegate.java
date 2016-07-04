@@ -1,24 +1,28 @@
 package com.messenger.delegate.chat;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.techery.janet.Janet;
 import rx.Notification;
 import rx.Observable;
 import rx.observables.ConnectableObservable;
@@ -33,17 +37,20 @@ public class ChatMessagesEventDelegate {
     private MessageDAO messageDAO;
     private LoadConversationDelegate loadConversationDelegate;
     private DecomposeMessagesHelper decomposeMessagesHelper;
+    private UsersDelegate usersDelegate;
 
     private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
     @Inject
     public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO, MessageDAO messageDAO,
                                      LoadConversationDelegate loadConversationDelegate,
-                                     DecomposeMessagesHelper decomposeMessagesHelper) {
+                                     DecomposeMessagesHelper decomposeMessagesHelper,
+                                     UsersDelegate usersDelegate) {
         this.conversationsDAO = conversationsDAO;
         this.messageDAO = messageDAO;
         this.loadConversationDelegate = loadConversationDelegate;
         this.decomposeMessagesHelper = decomposeMessagesHelper;
+        this.usersDelegate = usersDelegate;
     }
 
     public void onReceivedMessage(Message message) {
@@ -88,7 +95,9 @@ public class ChatMessagesEventDelegate {
                 .compose(new NonNullFilter<>())
                 .switchIfEmpty(loadConversationDelegate
                         .loadConversationFromNetworkAndRefreshFromDb(message.getConversationId()))
-                .map(conversation -> message)
+                .flatMap(conversation -> usersDelegate.loadMissingUsers(Queryable.from(message.getToId(),
+                        message.getFromId()).notNulls().toList()))
+                .map(loadedMissingUsers -> message)
                 .subscribe(this::saveReceivedMessage);
     }
 

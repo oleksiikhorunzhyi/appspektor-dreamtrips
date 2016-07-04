@@ -34,6 +34,7 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
     private static final String CONVERSATION_KICKED = "kicked";
     private static final String CONVERSATION_TYPE = "type";
     private static final String CONVERSATION_SUBJECT = "subject";
+    private static final String CONVERSATION_CLEAR_DATE = "clear-date";
 
     private static final String LAST_MESSAGE = "last-message";
     private static final String LAST_MESSAGE_ID = "client_msg_id";
@@ -79,6 +80,7 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
         int unreadMessageCount = ParserUtils.getIntegerAttribute(parser, CONVERSATION_UNREAD_COUNT, 0);
         boolean kicked = ParserUtils.getBooleanAttribute(parser, CONVERSATION_KICKED, false);
         long leftTime = ParserUtils.getLongAttribute(parser, CONVERSATION_LEFT_TIME, 0);
+        long clearDate = ParserUtils.getLongAttribute(parser, CONVERSATION_CLEAR_DATE, 0);
 
         Message lastMessage = null;
         long timestamp = 0;
@@ -92,9 +94,10 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
                 .type(type.toLowerCase())
                 .subject(subject)
                 .avatar(avatar)
-                .lastActiveDate(timestamp)
+                .lastActiveDate(clearDate != 0 ? clearDate : timestamp)
                 .lastMessage(lastMessage)
                 .leftTime(leftTime)
+                .clearDate(clearDate)
                 .status(obtainConversationStatus(leftTime, kicked))
                 .unreadMessageCount(unreadMessageCount)
                 .build();

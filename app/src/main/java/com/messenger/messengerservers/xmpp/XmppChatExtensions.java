@@ -7,8 +7,11 @@ import com.messenger.messengerservers.event.ImmutableRevertClearingEvent;
 import com.messenger.messengerservers.event.RevertClearingEvent;
 import com.messenger.messengerservers.xmpp.stanzas.ClearChatIQ;
 import com.messenger.messengerservers.xmpp.stanzas.RevertClearChatIQ;
+import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 
 import rx.Observable;
+
+import static com.messenger.messengerservers.xmpp.util.JidCreatorHelper.obtainUserJid;
 
 public class XmppChatExtensions implements ChatExtensions {
 
@@ -24,7 +27,8 @@ public class XmppChatExtensions implements ChatExtensions {
                 .getConnectionObservable()
                 .take(1)
                 .flatMap(connection ->
-                        XmppSendWithResponseObservable.send(connection, new ClearChatIQ(chatId, clearToDate)))
+                        XmppSendWithResponseObservable.send(connection, new ClearChatIQ(chatId,
+                                obtainUserJid(facade.getUsername()), clearToDate)))
                 .map(stanza -> (ClearChatIQ) stanza)
                 .map(clearIq -> ImmutableClearChatEvent.builder()
                         .conversationId(clearIq.getChatId())
@@ -38,7 +42,8 @@ public class XmppChatExtensions implements ChatExtensions {
                 .getConnectionObservable()
                 .take(1)
                 .flatMap(connection ->
-                        XmppSendWithResponseObservable.send(connection, new RevertClearChatIQ(chatId)))
+                        XmppSendWithResponseObservable.send(connection, new RevertClearChatIQ(chatId,
+                                obtainUserJid(facade.getUsername()))))
                 .map(stanza -> (RevertClearChatIQ) stanza)
                 .map(revertIq -> ImmutableRevertClearingEvent.builder()
                         .conversationId(revertIq.getChatId())

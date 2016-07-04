@@ -1,8 +1,10 @@
 package com.messenger.storage.dao;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -118,6 +120,42 @@ public class MessageDAO extends BaseDAO {
                 subscriber.onError(e);
             }
         });
+    }
+
+    public void deleteMessagesByConversation(String conversationId) {
+        // TODO: fucking sqlite does not execute DELETE with JOINed tables
+        // TODO: somewhen we replace this code via FOREIGN KEY
+        String selectAttachments =
+                "SELECT " + DataAttachment$Table._ID + " " +
+                        "FROM " + DataAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+        String queryClearLocation =
+                "DELETE FROM " + DataLocationAttachment.TABLE_NAME + " " +
+                "WHERE " + DataLocationAttachment$Table._ID + " IN (" + selectAttachments + ")";
+        String queryClearPhoto =
+                "DELETE FROM " + DataPhotoAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " IN (" + selectAttachments + ")";
+        String queryClearAttachment =
+                "DELETE FROM " + DataAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+        String queryClearMessages =
+                "DELETE FROM " + DataMessage$Table.TABLE_NAME + " " +
+                        "WHERE " + DataMessage$Table.CONVERSATIONID + "=?";
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        db.execSQL(queryClearLocation, new String[] {conversationId});
+        db.execSQL(queryClearPhoto, new String[] {conversationId});
+        db.execSQL(queryClearAttachment, new String[] {conversationId});
+        db.execSQL(queryClearMessages, new String[] {conversationId});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.notifyChange(DataMessage.CONTENT_URI, null);
+        contentResolver.notifyChange(DataAttachment.CONTENT_URI, null);
+        contentResolver.notifyChange(DataPhotoAttachment.CONTENT_URI, null);
+        contentResolver.notifyChange(DataLocationAttachment.CONTENT_URI, null);
     }
 
     public void save(List<DataMessage> messages) {

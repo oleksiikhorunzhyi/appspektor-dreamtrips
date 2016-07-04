@@ -229,7 +229,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Subscription connectMessagesStream(long syncTime) {
         return messageDAO
                 .getMessagesBySyncTime(conversationId, syncTime)
-                .filter(cursor -> cursor.getCount() > 0)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(cursor -> getView().showMessages(cursor),
                         e -> Timber.w("Unable to get messages"));

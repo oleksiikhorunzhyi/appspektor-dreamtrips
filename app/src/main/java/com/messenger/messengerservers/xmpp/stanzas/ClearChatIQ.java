@@ -5,7 +5,12 @@ public class ClearChatIQ extends BaseClearChatIQ {
     private final long clearDate;
 
     public ClearChatIQ(String chatId, long clearDate) {
-        super(chatId);
+        super(chatId, null);
+        this.clearDate = clearDate;
+    }
+
+    public ClearChatIQ(String chatId, String userJid, long clearDate) {
+        super(chatId, userJid);
         this.clearDate = clearDate;
     }
 

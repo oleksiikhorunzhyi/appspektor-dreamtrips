@@ -1,31 +1,28 @@
 package com.messenger.delegate.chat.command;
 
 import com.messenger.messengerservers.ChatExtensions;
+import com.messenger.messengerservers.event.RevertClearingEvent;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
-import timber.log.Timber;
 
 @CommandAction
-public class RevertChatClearingCommand extends Command<Void> {
+public class RevertClearingChatServerCommand extends Command<RevertClearingEvent> {
 
     private final String conversationId;
 
     @Inject ChatExtensions chatExtensions;
 
-    public RevertChatClearingCommand(String conversationId) {
+    public RevertClearingChatServerCommand(String conversationId) {
         this.conversationId = conversationId;
     }
 
     @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
+    protected void run(CommandCallback<RevertClearingEvent> callback) throws Throwable {
         chatExtensions
                 .revertChatClearing(conversationId)
-                .doOnNext(event -> Timber.d("REVERT CLEARING %s", event))
-                // TODO handle result
-                .map(event -> (Void) null)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 }

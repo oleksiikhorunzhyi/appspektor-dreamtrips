@@ -4,7 +4,12 @@ public class RevertClearChatIQ extends BaseClearChatIQ {
     public static final String ELEMENT_REMOVE_CLEARING = "remove-clear";
 
     public RevertClearChatIQ(String conversationId) {
-        super(conversationId);
+        super(conversationId, null);
+    }
+
+
+    public RevertClearChatIQ(String conversationId, String userJid) {
+        super(conversationId, userJid);
     }
 
     @Override

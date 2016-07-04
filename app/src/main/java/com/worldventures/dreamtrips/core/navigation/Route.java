@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbum
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.DescriptionCreatorFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
@@ -67,9 +68,9 @@ import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettin
 import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.SettingsGroupFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
@@ -144,6 +145,7 @@ public enum Route {
     EDIT_COMMENT(EditCommentFragment.class, R.string.empty),
     POST_CREATE(CreateFeedPostFragment.class),
     PHOTO_CREATE(CreateTripImageFragment.class),
+    PHOTO_CREATION_DESC(DescriptionCreatorFragment.class, R.string.add_text),
     EDIT_POST(EditPostFragment.class),
     EDIT_PHOTO(EditPhotoFragment.class),
     ADD_LOCATION(LocationFragment.class),

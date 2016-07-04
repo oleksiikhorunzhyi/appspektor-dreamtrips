@@ -215,6 +215,7 @@
     <dimen name="conversation_list_item_vertical_padding">@dimen/list_item_vertical_padding</dimen>
     <dimen name="conversation_list_item_horizontal_padding">@dimen/list_item_horizontal_padding</dimen>
     <item name="conversation_list_item_closed_conversation_alpha" format="float" type="dimen">0.3</item>
+    <dimen name="divider_height" format="float">0.5dp</dimen>
 
     <!-- New chat screen -->
     <dimen name="new_chat_progress_bar_margin_top">50dp</dimen>

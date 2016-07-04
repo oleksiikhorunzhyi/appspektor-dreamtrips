@@ -26,12 +26,14 @@ import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInf
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
@@ -52,6 +54,7 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragm
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.DescriptionCreatorFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
@@ -147,6 +150,9 @@ import de.greenrobot.event.EventBus;
                 EditPostPresenter.class,
                 EditPhotoFragment.class,
                 EditPhotoPresenter.class,
+                DescriptionCreatorFragment.class,
+                DescriptionCreatorPresenter.class,
+                HashtagSuggestionCell.class,
 
                 StatePaginatedRecyclerViewManager.class,
 

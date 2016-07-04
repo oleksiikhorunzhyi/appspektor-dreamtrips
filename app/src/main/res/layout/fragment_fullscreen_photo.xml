@@ -15,14 +15,15 @@
             android:id="@+id/iv_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            fresco:actualImageScaleType="fitCenter"/>
+            fresco:actualImageScaleType="fitCenter"
+            fresco:placeholderImage="@drawable/fullscreen_placeholder"
+            fresco:placeholderImageScaleType="fitCenter"/>
 
         <com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.PhotoTagHolder
             android:id="@+id/taggable_holder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible"/>
-
     </FrameLayout>
 
     <View
@@ -146,7 +147,6 @@
                     android:textSize="14dp"
                     android:visibility="gone"/>
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -250,10 +250,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:src="@drawable/ic_fs_edit"/>
-
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
-
 </FrameLayout>

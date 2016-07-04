@@ -151,7 +151,8 @@ public class DtlExternalLocation implements DtlLocation, Parcelable {
         private LatLng currentLocation;
 
         public DtlNearestComparator(android.location.Location currentLocation) {
-            this.currentLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            this.currentLocation = new LatLng(currentLocation.getLatitude(),
+                    currentLocation.getLongitude());
         }
 
         @Override

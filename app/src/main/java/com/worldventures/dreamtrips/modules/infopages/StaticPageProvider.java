@@ -32,41 +32,39 @@ public class StaticPageProvider {
     }
 
     public String getStaticInfoUrl(String title) {
-        if (storage.get().isPresent()) return storage.get().get().getUrlByTitle(title);
+        if (storage.get().isPresent())
+            return getLocalizedUrl(storage.get().get().getUrlByTitle(title));
         else return "";
     }
 
     public String getEnrollMemberUrl() {
         String enrollUrlFromServer = getConfig().getEnrollMemberURL(appSessionHolder.get().get().getUsername());
         String additionalParams = "utm_medium=MobileApp&utm_source=MobileApp&utm_campaign=MobileApp";
-        return enrollUrlFromServer + "&" + additionalParams;
+        return getLocalizedUrl(enrollUrlFromServer + "&" + additionalParams);
     }
 
     public String getEnrollMerchantUrl() {
         StringBuilder builder = new StringBuilder(BuildConfig.DreamTripsApi);
-        builder
-                .append("/gateway/dtl/enroll_merchant")
+        builder.append("/gateway/dtl/enroll_merchant")
                 .append("?username=").append(appSessionHolder.get().get().getUsername())
                 .append("&sso=").append(appSessionHolder.get().get().getLegacyApiToken())
-                .append("&locale=").append(appSessionHolder.get().get().getUser().getLocale())
-        ;
+                .append("&locale=").append(appSessionHolder.get().get().getUser().getLocale());
         return builder.toString();
     }
 
     public String getEnrollRepUrl() {
-        return getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername());
+        return getLocalizedUrl(getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername()));
     }
 
     public String getOtaPageURL() {
         UserSession userSession = appSessionHolder.get().get();
-        return getConfig().getOtaPageURL()
+        return getLocalizedUrl(getConfig().getOtaPageURL())
                 .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
-                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken())
-                .replace(AppConfig.LOCALE, localeHelper.getDefaultLocaleFormatted());
+                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
     }
 
     public String getTrainingVideosURL() {
-        return getConfig().getTrainingVideosURL();
+        return getLocalizedUrl(getConfig().getTrainingVideosURL());
     }
 
     public String getTermsOfServiceUrl() {
@@ -83,5 +81,11 @@ public class StaticPageProvider {
 
     public String getPrivacyPolicyUrl() {
         return getStaticInfoUrl(PRIVACY_TITLE);
+    }
+
+    private String getLocalizedUrl(String url) {
+        return url.replace(AppConfig.LOCALE, localeHelper.getDefaultLocaleFormatted())
+                .replace(AppConfig.COUNTRY, localeHelper.getDefaultLocale().getCountry())
+                .replace(AppConfig.LANGUAGE, localeHelper.getDefaultLocale().getLanguage());
     }
 }

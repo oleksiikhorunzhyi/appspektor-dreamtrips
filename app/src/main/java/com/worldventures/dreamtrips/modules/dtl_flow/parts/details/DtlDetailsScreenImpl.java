@@ -95,7 +95,7 @@ public class DtlDetailsScreenImpl
         //
         activityResultDelegate.addListener(this);
         //
-        merchantDataInflater = new MerchantOffersInflater();
+        merchantDataInflater = new MerchantOffersInflater(injector);
         merchantInfoInflater = new MerchantInfoInflater();
         merchantDataInflater.registerOfferClickListener(offer -> getPresenter().onOfferClick(offer));
         merchantDataInflater.setView(this);

@@ -23,7 +23,8 @@ public enum DistanceType {
             return MILES; // safety-patch, should never happen
         }
         if (!setting.getName().equals(SettingsFactory.DISTANCE_UNITS))
-            throw new IllegalArgumentException(SettingsFactory.DISTANCE_UNITS + " setting must be provided!");
+            throw new IllegalArgumentException(SettingsFactory.DISTANCE_UNITS +
+                    " setting must be provided!");
         //
         return setting.getValue().equals(SettingsFactory.MILES) ? MILES : KMS;
     }

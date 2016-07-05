@@ -31,7 +31,7 @@ public interface DtlLocation {
 
         @Override
         public String getAnalyticsName() {
-            return ""; //TODO: need to set specific name for situations when location is undefined.
+            return "";
         }
     };
 }

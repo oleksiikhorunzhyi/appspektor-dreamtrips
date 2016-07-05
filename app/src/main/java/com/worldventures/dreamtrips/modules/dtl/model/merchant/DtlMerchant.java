@@ -218,7 +218,9 @@ public class DtlMerchant {
         DtlOfferPoints points = (DtlOfferPoints) Queryable.from(getOffers())
                 .filter(DtlOffer::isPoint)
                 .firstOrDefault();
-        return points != null ? Queryable.from(points.getCurrencies()).firstOrDefault(DtlCurrency::isDefault) : null;
+        return points != null ?
+                Queryable.from(points.getCurrencies())
+                        .firstOrDefault(DtlCurrency::isDefault) : null;
     }
 
     public boolean hasNoOffers() {
@@ -282,12 +284,13 @@ public class DtlMerchant {
         return displayName + " " + distance;
     }
 
-    public static final Comparator<DtlMerchant> DISTANCE_COMPARATOR = new Comparator<DtlMerchant>() {
-        @Override
-        public int compare(DtlMerchant lhs, DtlMerchant rhs) {
-            if (lhs.distance == rhs.distance) return 0;
-            if (lhs.distance > rhs.distance) return 1;
-            else return -1;
-        }
-    };
+    public static final Comparator<DtlMerchant> DISTANCE_COMPARATOR =
+            new Comparator<DtlMerchant>() {
+                @Override
+                public int compare(DtlMerchant lhs, DtlMerchant rhs) {
+                    if (lhs.distance == rhs.distance) return 0;
+                    if (lhs.distance > rhs.distance) return 1;
+                    else return -1;
+                }
+            };
 }

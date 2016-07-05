@@ -13,6 +13,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.xmlpull.v1.XmlPullParser;
 
+import timber.log.Timber;
+
 public class MessengerConnection extends XMPPTCPConnection {
 
     public MessengerConnection(XMPPTCPConnectionConfiguration config) {
@@ -34,7 +36,7 @@ public class MessengerConnection extends XMPPTCPConnection {
                 stanza = PacketParserUtils.parseStanza(parser);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e, "Could not parse stanza packet");
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
                     parserDepth);
             UnparsablePacket message = new UnparsablePacket(content, e);

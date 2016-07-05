@@ -11,45 +11,59 @@ import android.widget.TextView;
 
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
-import com.messenger.ui.adapter.holder.CursorViewHolder;
+import com.messenger.storage.dao.MessageDAO;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
+import timber.log.Timber;
+
+import static com.messenger.messengerservers.constant.MessageType.SYSTEM_JOIN;
+import static com.messenger.messengerservers.constant.MessageType.SYSTEM_KICK;
+import static com.messenger.messengerservers.constant.MessageType.SYSTEM_LEAVE;
 
 @Layout(R.layout.list_item_chat_system_message)
-public class SystemMessageViewHolder extends CursorViewHolder {
+public class SystemMessageViewHolder extends MessageViewHolder {
 
-    @InjectView(R.id.system_message_text)
+    @InjectView(R.id.message_container)
     TextView systemMessageText;
 
     DataUser dataUserRecipient;
-    DataUser dataUserSender;
-    String conversationType;
-    String currentUserId;
 
     public SystemMessageViewHolder(View itemView) {
         super(itemView);
     }
 
     public void bindCursor(Cursor cursor) {
-        //// TODO: 6/30/16 fetch data entities and call showSystemMessage
-        //showSystemMessage();
+        super.bindCursor(cursor);
+        dataUserRecipient = convertRecipient(cursor);
+        showSystemMessage();
+    }
+
+    private DataUser convertRecipient(Cursor cursor) {
+        String recipientId = cursor.getString(cursor.getColumnIndex(MessageDAO.USER_ID));
+        String recipientFirstName = cursor.getString(cursor.getColumnIndex(MessageDAO.USER_FIRST_NAME));
+        String recipientLastName = cursor.getString(cursor.getColumnIndex(MessageDAO.USER_LAST_NAME));
+        DataUser user = new DataUser(recipientId);
+        user.setFirstName(recipientFirstName);
+        user.setLastName(recipientLastName);
+        return user;
     }
 
     public void showSystemMessage() {
-        Spanned systemMessage = new SpannableString("");
-        //// TODO: 6/30/16 replace all constant with feature message type
-        int messageType = 9;
-        switch (messageType) {
-            case 0:
+        CharSequence systemMessage;
+        switch (dataMessage.getType()) {
+            case SYSTEM_KICK:
                 systemMessage = obtainKickSystemMessage();
                 break;
-            case 1:
+            case SYSTEM_LEAVE:
                 systemMessage = obtainLeftSystemMessage();
                 break;
-            case 2:
+            case SYSTEM_JOIN:
                 systemMessage = obtainJoinSystemMessage();
+                break;
+            default:
+                systemMessage = new SpannableString("");
                 break;
         }
 

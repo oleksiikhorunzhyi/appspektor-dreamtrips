@@ -29,7 +29,7 @@ public class ChatAdapter extends HeaderableCursorRecyclerViewAdapter<MessageView
 
     @Override
     public MessageViewHolder onCreateElementViewHolder(ViewGroup parent, int viewType) {
-        MessageViewHolder messageViewHolder = viewHolderProvider.provideViewHolder(parent, viewType);
+        MessageViewHolder messageViewHolder = viewHolderProvider.provideViewHolder(getCursor(), parent, viewType);
         messageViewHolder.setCellDelegate(cellDelegate);
         return messageViewHolder;
     }

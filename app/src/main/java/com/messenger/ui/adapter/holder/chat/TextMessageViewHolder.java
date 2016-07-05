@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
 import butterknife.InjectView;
 import butterknife.OnLongClick;
 
-public abstract class TextMessageViewHolder extends MessageViewHolder {
+public abstract class TextMessageViewHolder extends UserMessageViewHolder {
 
     @InjectView(R.id.chat_message)
     protected TextView messageTextView;

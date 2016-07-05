@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -37,29 +36,31 @@
             android:src="@drawable/ic_success_story_search"/>
     </RelativeLayout>
 
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#ffc6c6c6"
-        />
+        android:background="#ffc6c6c6"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v4.widget.SwipeRefreshLayout
+        <com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText
             android:id="@+id/swipe_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible">
 
-            <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-                android:id="@+id/recyclerViewFriends"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent">
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+                <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+                    android:id="@+id/recyclerViewFriends"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+        </com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText>
 
         <RelativeLayout
             android:id="@+id/empty"
@@ -92,9 +93,6 @@
                 android:text="@string/friend_global_search"
                 android:textColor="#3D76A1"
                 android:textSize="22dp"/>
-
         </RelativeLayout>
-
     </FrameLayout>
-
 </LinearLayout>

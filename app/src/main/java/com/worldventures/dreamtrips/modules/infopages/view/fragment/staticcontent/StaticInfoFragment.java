@@ -513,7 +513,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment {
+    public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
         @Override
         protected String getURL() {
             return provider.getEnrollMemberUrl();

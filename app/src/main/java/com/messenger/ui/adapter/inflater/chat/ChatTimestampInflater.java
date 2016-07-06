@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
+import com.messenger.ui.adapter.holder.chat.SystemMessageViewHolder;
 import com.messenger.ui.util.chat.ChatTimestampProvider;
 import com.messenger.ui.util.chat.anim.TimestampAnimationType;
 
@@ -38,27 +39,30 @@ public class ChatTimestampInflater {
         this.adapter = adapter;
     }
 
-    public boolean bindTimeStampIfNeeded(MessageViewHolder holder, Cursor cursor, int position) {
+    //Note: positionInCursor != positionInAdapter, because there might be headers
+    public boolean bindTimeStampIfNeeded(MessageViewHolder holder, Cursor cursor, int positionInCursor, int headerCount) {
+        int positionInAdapter = positionInCursor + headerCount;
+
         int messageStatus = cursor.getInt(cursor.getColumnIndex(DataMessage$Table.STATUS));
         if (messageStatus == MessageStatus.ERROR) {
             holder.dateTextView.setVisibility(View.GONE);
             return false;
         }
 
-        boolean manualTimestamp = manualTimestampPosition == position;
-        boolean automaticTimestamp = timestampProvider.shouldShowAutomaticTimestamp(cursor);
+        boolean manualTimestamp = manualTimestampPosition == positionInAdapter;
+        boolean automaticTimestamp = timestampProvider.shouldShowAutomaticTimestamp(cursor) || holder instanceof SystemMessageViewHolder;
 
         holder.getTimestampClickableView().setOnClickListener(view -> {
             if ((manualTimestamp || !automaticTimestamp)) {
-                clickedTimestampPositionsObservable.onNext(position);
+                clickedTimestampPositionsObservable.onNext(positionInAdapter);
             }
         });
 
-        TimestampAnimationType pendingAnimationType = pendingAnimations.get(position);
+        TimestampAnimationType pendingAnimationType = pendingAnimations.get(positionInAdapter);
         bindNonAnimatedTimestampIfNeeded(pendingAnimationType != null, timestampProvider.getTimestamp(cursor),
                 manualTimestamp, automaticTimestamp, holder.dateTextView);
 
-        return position == manualTimestampPosition;
+        return positionInAdapter == manualTimestampPosition;
     }
 
     public void showManualTimestampForPosition(int position) {

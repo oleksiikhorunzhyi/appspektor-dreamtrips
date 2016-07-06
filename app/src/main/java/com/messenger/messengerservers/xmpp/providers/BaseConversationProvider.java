@@ -132,7 +132,7 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
                 .conversationId(thread)
                 .status(unread ? MessageStatus.SENT  : MessageStatus.READ)
                 .messageBody(messageBodyParser.parseMessageBody(parser.nextText()))
-                // server only sends usual messages as last message
+                // TODO Parse system messages here as well when fix from backend team is deployed
                 .type(MessageType.MESSAGE)
                 .build();
     }

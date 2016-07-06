@@ -198,7 +198,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 SystemMessageExtension systemMessageExtension =
                         messageXMPP.getExtension(SystemMessageExtension.ELEMENT, SystemMessageExtension.NAMESPACE);
                 com.messenger.messengerservers.model.Message systemMessage =
-                        messageConverter.convertToSystemMessage(messageXMPP, systemMessageExtension);
+                        messageConverter.convertSystemMessage(messageXMPP, systemMessageExtension);
                 notifyGlobalMessage(systemMessage, EVENT_INCOMING);
                 break;
             case MESSAGE:

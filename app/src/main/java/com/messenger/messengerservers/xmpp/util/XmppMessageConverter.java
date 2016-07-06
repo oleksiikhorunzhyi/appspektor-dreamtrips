@@ -48,8 +48,8 @@ public final class XmppMessageConverter {
         return builder.build();
     }
 
-    public Message convertToSystemMessage(org.jivesoftware.smack.packet.Message message,
-                                          SystemMessageExtension systemMessageExtension) {
+    public Message convertSystemMessage(org.jivesoftware.smack.packet.Message message,
+                                        SystemMessageExtension systemMessageExtension) {
         Message.Builder builder = new Message.Builder()
                 .conversationId(JidCreatorHelper.obtainId(message.getFrom()))
                 .id(message.getStanzaId());

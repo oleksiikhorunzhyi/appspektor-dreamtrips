@@ -35,6 +35,8 @@ public class UserMessageViewHolder extends MessageViewHolder {
     @Optional
     @InjectView(R.id.view_retry_send)
     public View viewRetrySend;
+    @InjectView(R.id.message_container)
+    public View messageContainer;
 
     protected boolean isGroupMessage;
     protected boolean previousMessageFromSameUser;
@@ -103,4 +105,8 @@ public class UserMessageViewHolder extends MessageViewHolder {
         return !isOwnMessage && needMarkUnreadMessage;
     }
 
+    @Override
+    public View getTimestampClickableView() {
+        return messageContainer;
+    }
 }

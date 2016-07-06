@@ -16,7 +16,6 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
-import timber.log.Timber;
 
 import static com.messenger.messengerservers.constant.MessageType.SYSTEM_JOIN;
 import static com.messenger.messengerservers.constant.MessageType.SYSTEM_KICK;
@@ -25,10 +24,10 @@ import static com.messenger.messengerservers.constant.MessageType.SYSTEM_LEAVE;
 @Layout(R.layout.list_item_chat_system_message)
 public class SystemMessageViewHolder extends MessageViewHolder {
 
-    @InjectView(R.id.message_container)
-    TextView systemMessageText;
+    @InjectView(R.id.chat_system_message_text_view)
+    TextView systemMessageTextView;
 
-    DataUser dataUserRecipient;
+    protected DataUser dataUserRecipient;
 
     public SystemMessageViewHolder(View itemView) {
         super(itemView);
@@ -50,7 +49,7 @@ public class SystemMessageViewHolder extends MessageViewHolder {
         return user;
     }
 
-    public void showSystemMessage() {
+    private void showSystemMessage() {
         CharSequence systemMessage;
         switch (dataMessage.getType()) {
             case SYSTEM_KICK:
@@ -67,10 +66,10 @@ public class SystemMessageViewHolder extends MessageViewHolder {
                 break;
         }
 
-        systemMessageText.setText(systemMessage, TextView.BufferType.SPANNABLE);
+        systemMessageTextView.setText(systemMessage, TextView.BufferType.SPANNABLE);
     }
 
-    protected Spanned obtainJoinSystemMessage(){
+    private Spanned obtainJoinSystemMessage(){
         Resources resources = itemView.getResources();
 
         if (TextUtils.equals(conversationType, ConversationType.TRIP)){
@@ -80,7 +79,7 @@ public class SystemMessageViewHolder extends MessageViewHolder {
         }
     }
 
-    protected Spanned obtainKickSystemMessage(){
+    private Spanned obtainKickSystemMessage(){
         Resources resources = itemView.getResources();
 
         if (TextUtils.equals(conversationType, ConversationType.TRIP)){
@@ -90,28 +89,33 @@ public class SystemMessageViewHolder extends MessageViewHolder {
         }
     }
 
-    protected Spanned obtainLeftSystemMessage() {
+    private Spanned obtainLeftSystemMessage() {
         Resources resources = itemView.getResources();
         return Html.fromHtml(isItMe(dataUserSender)? resources.getString(R.string.system_message_you_left_the_chat) :
             resources.getString(R.string.system_message_left, dataUserSender.getDisplayedName()));
     }
 
-    protected String obtainUserTextWithCapitalLetter() {
+    private String obtainUserTextWithCapitalLetter() {
         return isItMe(dataUserRecipient) ? itemView.getResources().getString(R.string.system_message_you) :
                 dataUserRecipient.getDisplayedName();
     }
 
-    protected String obtainUserTextWithoutCapitalLetter() {
+    private String obtainUserTextWithoutCapitalLetter() {
         return isItMe(dataUserRecipient) ? itemView.getResources().getString(R.string.system_message_you).toLowerCase() :
                 dataUserRecipient.getDisplayedName();
     }
 
-    protected String obtainAdminText() {
+    private String obtainAdminText() {
         return isItMe(dataUserSender)? itemView.getResources().getString(R.string.system_message_you) :
                 itemView.getResources().getString(R.string.system_message_admin, dataUserSender.getDisplayedName());
     }
 
-    protected boolean isItMe(DataUser dataUser) {
+    private boolean isItMe(DataUser dataUser) {
         return TextUtils.equals(dataUser.getId(), currentUserId);
+    }
+
+    @Override
+    public View getTimestampClickableView() {
+        return systemMessageTextView;
     }
 }

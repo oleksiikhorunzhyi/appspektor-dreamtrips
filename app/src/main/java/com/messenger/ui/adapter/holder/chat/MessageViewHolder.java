@@ -26,8 +26,6 @@ public abstract class MessageViewHolder extends CursorViewHolder {
 
     @InjectView(R.id.chat_date)
     public TextView dateTextView;
-    @InjectView(R.id.message_container)
-    public View messageContainer;
 
     protected boolean selected;
     protected boolean isOwnMessage;
@@ -77,7 +75,5 @@ public abstract class MessageViewHolder extends CursorViewHolder {
         this.selected = selected;
     }
 
-    public View getTimestampClickableView() {
-        return messageContainer;
-    }
+    public abstract View getTimestampClickableView();
 }

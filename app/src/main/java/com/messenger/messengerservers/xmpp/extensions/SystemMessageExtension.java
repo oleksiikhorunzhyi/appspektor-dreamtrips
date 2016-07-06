@@ -15,6 +15,11 @@ public class SystemMessageExtension implements ExtensionElement {
     public static final String NAMESPACE = "worldventures.com#user";
     public static final String ELEMENT = "service";
 
+    public static final String ATTRIBUTE_TO = "to";
+    public static final String ATTRIBUTE_FROM = "from";
+    public static final String ATTRIBUTE_TIMESTAMP = "timestamp";
+    public static final String ATTRIBUTE_TYPE = "type";
+
     private String from;
     private String to;
     private String type;
@@ -75,13 +80,13 @@ public class SystemMessageExtension implements ExtensionElement {
             try {
                 do {
                     if (parser.getEventType() == XmlPullParser.START_TAG && ELEMENT.equals(parser.getName())) {
-                        String to = parser.getAttributeValue("", "to");
+                        String to = parser.getAttributeValue("", ATTRIBUTE_TO);
                         if (!TextUtils.isEmpty(to)) {
                             systemMessage.setTo(to);
                         }
-                        systemMessage.setFrom(parser.getAttributeValue("", "from"));
-                        systemMessage.setTimestamp(ParserUtils.getLongAttribute(parser, "timestamp", 0));
-                        systemMessage.setType(parser.getAttributeValue("", "type"));
+                        systemMessage.setFrom(parser.getAttributeValue("", ATTRIBUTE_FROM));
+                        systemMessage.setTimestamp(ParserUtils.getLongAttribute(parser, ATTRIBUTE_TIMESTAMP, 0));
+                        systemMessage.setType(parser.getAttributeValue("", ATTRIBUTE_TYPE));
                     }
                     parser.next();
                 } while (parser.getEventType() != XmlPullParser.END_TAG);

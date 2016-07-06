@@ -2,75 +2,112 @@ package com.worldventures.dreamtrips.modules.social.bucket
 
 import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand
-import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.http.annotations.HttpAction
 import io.techery.janet.http.test.MockHttpActionService
-import org.mockito.Mockito
 import rx.functions.Func1
 import rx.observers.TestSubscriber
-import java.util.*
+import kotlin.test.assertNotNull
 
 class BucketListInteractorSpec : BucketInteractorBaseSpec({
-    describe("bucket list actions") {
+    beforeEach {
+        mockMemoryStorage = spy()
+        mockDb = spy()
+
+        httpStubWrapper = mockHttpService().wrapStub()
+        httpStubWrapper.callback = spy()
+
+        daggerCommandActionService = CommandActionService()
+                .wrapCache()
+                .bindStorageSet(storageSet())
+                .wrapDagger()
+
         setup()
+    }
 
-        it("should contains all items from memory storage") {
-            whenever(mockMemoryStorage.get(null))
-                    .thenReturn(testListOfBucketsFromMemory)
-            val testSubscriber = loadBucketList(false)
+    describe("bucket list actions") {
+        context("memory storage is not empty") {
+            beforeEach {
+                whenever(mockMemoryStorage.get(null))
+                        .thenReturn(testListOfBucketsFromMemory)
+            }
 
-            assertBucketListByPredicate(testSubscriber,
-                    Func1 { bucketListAction -> testListOfBucketsFromMemory.containsAll(bucketListAction.result) })
+            it("should fetch bucket list from memory") {
+                val testSubscriber = loadBucketList(false)
+
+                assertBucketListByPredicate(testSubscriber,
+                        Func1 { bucketListAction -> testListOfBucketsFromMemory.containsAll(bucketListAction.result) })
+            }
+
+            it("should changed items positions in memory") {
+                val POSITION_FROM = 0
+                val POSITION_TO = 1
+
+                val testSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
+                bucketInteractor.bucketListActionPipe()
+                        .createObservable(BucketListCommand.move(POSITION_FROM, POSITION_TO, BucketItem.BucketType.LOCATION))
+                        .subscribe(testSubscriber)
+
+                assertActionSuccess(testSubscriber) {
+                    val items = it.result
+                    testBucketItem1 == items[POSITION_TO] && testBucketItem2 == items[POSITION_FROM]
+                }
+            }
         }
 
-        it("should contains all items from database storage") {
-            whenever(mockDb.readBucketList(BucketInteractorBaseTest.MOCK_USER_ID))
-                    .thenReturn(testListOfBucketsFromDisk)
-            val testSubscriber = loadBucketList(false)
+        context("memory storage is empty and database storage is not") {
+            beforeEach {
+                whenever(mockDb.readBucketList(MOCK_USER_ID))
+                        .thenReturn(testListOfBucketsFromDisk)
+            }
 
-            assertBucketListByPredicate(testSubscriber,
-                    Func1 { bucketListAction -> testListOfBucketsFromDisk.containsAll(bucketListAction.result) })
+            it("should fetch from database") {
+                val testSubscriber = loadBucketList(false)
+
+                assertBucketListByPredicate(testSubscriber,
+                        Func1 { bucketListAction -> testListOfBucketsFromDisk.containsAll(bucketListAction.result) })
+            }
+
+            it("should fill memory storage") {
+                assertNotNull(mockMemoryStorage) {
+                    it.get(null) != null
+                }
+            }
         }
 
-        it("should contains all items from network") {
-            val testSubscriber = loadBucketList(false)
+        context("memory storage and database storage are empty") {
+            it("should fetch from network") {
+                val testSubscriber = loadBucketList(false)
 
-            assertBucketListByPredicate(testSubscriber,
-                    Func1 { bucketListAction -> testListOfBucketsFromNetwork.containsAll(bucketListAction.result) })
+                assertBucketListByPredicate(testSubscriber,
+                        Func1 { bucketListAction -> testListOfBucketsFromNetwork.containsAll(bucketListAction.result) })
+            }
+
+            it("should fill memory storage") {
+                assertNotNull(mockMemoryStorage) {
+                    it.get(null) != null
+                }
+            }
+
+            it("should fill database storage") {
+                assertNotNull(mockDb) {
+                    it.readBucketList(MOCK_USER_ID) != null
+                }
+            }
         }
 
-        it("should contains all items ONLY from network") {
-            whenever(mockMemoryStorage.get(null))
-                    .thenReturn(testListOfBucketsFromMemory)
-            val testSubscriber = loadBucketList(true)
+        context("memory storage and database storage are not empty") {
+            it("force load should fetch only from network") {
+                val testSubscriber = loadBucketList(true)
 
-            assertBucketListByPredicate(testSubscriber,
-                    Func1 { bucketListAction -> testListOfBucketsFromNetwork.containsAll(bucketListAction.result) })
-        }
-
-        it("items should changed theirs positions") {
-            val POSITION_FROM = 0
-            val POSITION_TO = 1
-
-            whenever(mockMemoryStorage.get(null))
-                    .thenReturn(testListOfBucketsFromMemory)
-
-            val testSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
-            bucketInteractor.bucketListActionPipe()
-                    .createObservable(BucketListCommand.move(POSITION_FROM, POSITION_TO, BucketItem.BucketType.LOCATION))
-                    .subscribe(testSubscriber)
-
-            assertActionSuccess(testSubscriber) { bucketListAction ->
-                val items = bucketListAction.result
-                testBucketItem1 == items[POSITION_TO] && testBucketItem2 == items[POSITION_FROM]
+                assertBucketListByPredicate(testSubscriber,
+                        Func1 { bucketListAction -> testListOfBucketsFromNetwork.containsAll(bucketListAction.result) })
             }
         }
     }
@@ -79,17 +116,11 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
         val testBucketItem1: BucketItem = mock()
         val testBucketItem2: BucketItem = mock()
 
-        val testListOfBucketsFromMemory: List<BucketItem> = listOf(testBucketItem1, testBucketItem2)
-        val testListOfBucketsFromDisk: List<BucketItem> = listOf(testBucketItem1)
-        val testListOfBucketsFromNetwork: List<BucketItem> = listOf(testBucketItem1, testBucketItem2, mock())
+        val testListOfBucketsFromMemory: List<BucketItem> = mutableListOf(testBucketItem1, testBucketItem2)
+        val testListOfBucketsFromDisk: List<BucketItem> = mutableListOf(testBucketItem1)
+        val testListOfBucketsFromNetwork: List<BucketItem> = mutableListOf(testBucketItem1, testBucketItem2, mock())
 
         init {
-            httpStubWrapper = StubServiceWrapper(mockHttpService())
-            daggerCommandActionService = CommandActionService()
-                    .wrapCache()
-                    .bindStorageSet(storageSet())
-                    .wrapDagger()
-
             whenever(testBucketItem1.uid).thenReturn("1")
             whenever(testBucketItem2.uid).thenReturn("2")
 
@@ -99,8 +130,6 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
 
         fun loadBucketList(force: Boolean): TestSubscriber<ActionState<BucketListCommand>> {
             val testSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
-            val spyHttpCallback = Mockito.spy(StubServiceWrapper.Callback::class.java)
-            httpStubWrapper.callback = spyHttpCallback
 
             bucketInteractor.bucketListActionPipe()
                     .createObservable(BucketListCommand.fetch(force))
@@ -117,13 +146,6 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
                     { request -> request.url.contains("/bucket_list_items") && HttpAction.Method.GET.name == request.method }
                     .bind(MockHttpActionService.Response(200).body(JsonObject()))
                     { request -> request.url.contains("/position") }.build()
-        }
-
-        fun storageSet(): Set<ActionStorage<*>> {
-            val storageSet = HashSet<ActionStorage<*>>()
-            storageSet += BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder)
-
-            return storageSet
         }
     }
 }

@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.social.bucket
 
-import android.support.annotation.CallSuper
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
@@ -16,31 +14,32 @@ import com.worldventures.dreamtrips.core.test.MockDaggerActionService
 import com.worldventures.dreamtrips.core.test.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
+import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import com.worldventures.dreamtrips.modules.common.model.User
 import io.techery.janet.Janet
 import org.jetbrains.spek.api.DescribeBody
+import java.util.*
 
 abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
-    companion object {
+    companion object BaseCompanion {
         val MOCK_USER_ID = 1
 
         val mockSessionHolder: SessionHolder<UserSession> = mock()
 
-        val mockMemoryStorage: MemoryStorage<List<BucketItem>> = spy()
+        lateinit var mockMemoryStorage: MemoryStorage<List<BucketItem>>
 
-        val mockDb: SnappyRepository = spy()
+        lateinit var mockDb: SnappyRepository
 
         lateinit var janet: Janet
 
         lateinit var bucketInteractor: BucketInteractor
 
-        lateinit var userSession: UserSession
+        val userSession: UserSession = mock()
 
         lateinit var httpStubWrapper: StubServiceWrapper
 
         lateinit var daggerCommandActionService: MockDaggerActionService
 
-        @CallSuper
         fun setup() {
             janet = Janet.Builder()
                     .addService(daggerCommandActionService)
@@ -54,8 +53,7 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
 
             bucketInteractor = BucketInteractor(janet)
 
-            userSession = mock()
-            val mockUser: User = mock()
+            val mockUser = mock<User>()
 
             whenever(mockUser.id).thenReturn(MOCK_USER_ID)
             whenever(userSession.user).thenReturn(mockUser)
@@ -68,6 +66,13 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
             }
 
             return this
+        }
+
+        fun storageSet(): Set<ActionStorage<*>> {
+            val storageSet = HashSet<ActionStorage<*>>()
+            storageSet += BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder)
+
+            return storageSet
         }
     }
 }

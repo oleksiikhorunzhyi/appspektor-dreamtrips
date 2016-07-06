@@ -79,7 +79,9 @@ class BucketListInteractorTest : BucketInteractorBaseTest() {
 
         `when`(mockMemoryStorage!!.get(null)).thenReturn(testListOfBucketsFromMemory)
 
-        bucketInteractor!!.bucketListActionPipe().createObservable(BucketListCommand.move(POSITION_FROM, POSITION_TO, BucketItem.BucketType.LOCATION)).subscribe(testSubscriber)
+        bucketInteractor!!.bucketListActionPipe()
+                .createObservable(BucketListCommand.move(POSITION_FROM, POSITION_TO, BucketItem.BucketType.LOCATION))
+                .subscribe(testSubscriber)
 
         assertActionSuccess(testSubscriber) { bucketListAction ->
             val items = bucketListAction.result

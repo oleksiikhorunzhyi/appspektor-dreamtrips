@@ -57,10 +57,7 @@ import java.util.concurrent.TimeUnit
 class BucketItemInteractorTest : BucketInteractorBaseTest() {
 
     @Rule
-    var folder = TemporaryFolder()
-
-    @Mock
-    internal var uploaderyManager: UploaderyManager? = null
+    val folder = TemporaryFolder()
 
     @Mock
     internal var uploadControllerStorage: UploadBucketPhotoInMemoryStorage? = null
@@ -258,7 +255,9 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
                 .createObservable(DeleteItemPhotoCommand(testBucketItem, testBucketPhoto))
                 .subscribe(testSubscriber)
 
-        assertActionSuccess(testSubscriber) { deleteItemPhotoAction -> !deleteItemPhotoAction.result.photos.contains(testBucketPhoto) }
+        assertActionSuccess(testSubscriber) {
+            !it.result.photos.contains(testBucketPhoto)
+        }
         assertActionSuccess(testListSubscriber) { bucketListAction -> !Queryable.from(bucketListAction.result).any { element -> element.photos.contains(testBucketPhoto) } }
     }
 
@@ -361,7 +360,7 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
             e.printStackTrace()
         }
 
-        return testPhotoFile?.path;
+        return testPhotoFile?.path
     }
 
     private fun mockPhotoEntityHolderWithBehavior(state: EntityStateHolder.State): EntityStateHolder<BucketPhoto> {

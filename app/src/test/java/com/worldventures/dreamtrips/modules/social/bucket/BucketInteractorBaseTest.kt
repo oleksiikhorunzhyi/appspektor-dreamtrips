@@ -18,6 +18,8 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import org.junit.Before
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -59,7 +61,10 @@ abstract class BucketInteractorBaseTest : BaseTest() {
             cacheResultWrapper.bindStorage(storage.actionClass, storage)
         }
 
-        janet = Janet.Builder().addService(cacheResultWrapper).addService(BaseTest.cachedService(httpStubWrapper)).build()
+        janet = Janet.Builder()
+                .addService(cacheResultWrapper)
+                .addService(BaseTest.cachedService(httpStubWrapper))
+                .build()
 
         daggerActionService.registerProvider(Janet::class.java) { janet }
         daggerActionService.registerProvider(SnappyRepository::class.java) { mockDb }

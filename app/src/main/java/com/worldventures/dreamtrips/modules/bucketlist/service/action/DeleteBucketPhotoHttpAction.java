@@ -27,8 +27,4 @@ public class DeleteBucketPhotoHttpAction extends AuthorizedHttpAction {
     public JsonObject getResponse() {
         return this.response;
     }
-
-    public String getBuckItemPhotoId() {
-        return photoId;
-    }
 }

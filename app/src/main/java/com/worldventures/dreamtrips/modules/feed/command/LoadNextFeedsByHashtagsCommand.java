@@ -16,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class GetFeedsByHashtagsCommand extends Command<DataMetaData> implements InjectableAction, UiErrorAction{
+public class LoadNextFeedsByHashtagsCommand extends Command<DataMetaData> implements InjectableAction, UiErrorAction{
     @Inject
     Janet janet;
 
@@ -24,7 +24,7 @@ public class GetFeedsByHashtagsCommand extends Command<DataMetaData> implements 
     private int perPage;
     private Date before;
 
-    public GetFeedsByHashtagsCommand(String query, int perPage, Date before) {
+    public LoadNextFeedsByHashtagsCommand(String query, int perPage, Date before) {
         this.query = query;
         this.perPage = perPage;
         this.before = before;

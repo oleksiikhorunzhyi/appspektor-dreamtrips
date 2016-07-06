@@ -1,30 +1,25 @@
 package com.worldventures.dreamtrips.modules.feed.presenter.interactor;
 
-import com.worldventures.dreamtrips.modules.feed.command.GetFeedsByHashtagsCommand;
+import com.worldventures.dreamtrips.modules.feed.command.LoadNextFeedsByHashtagsCommand;
+import com.worldventures.dreamtrips.modules.feed.command.RefreshFeedsByHashtagsCommand;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 
 public class HashtagInteractor {
-    private final ActionPipe<GetFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
-    private final ActionPipe<GetFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
-//    private final ActionPipe<GetHashtagsByQueryCommand> getHashtagsByQueryPipe;
+    private final ActionPipe<RefreshFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
+    private final ActionPipe<LoadNextFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
 
     public HashtagInteractor(Janet janet) {
-        refreshFeedsByHashtagsPipe = janet.createPipe(GetFeedsByHashtagsCommand.class);
-        loadNextFeedsByHashtagsPipe = janet.createPipe(GetFeedsByHashtagsCommand.class);
-//        getHashtagsByQueryPipe = janet.createPipe(GetHashtagsByQueryCommand.class);
+        refreshFeedsByHashtagsPipe = janet.createPipe(RefreshFeedsByHashtagsCommand.class);
+        loadNextFeedsByHashtagsPipe = janet.createPipe(LoadNextFeedsByHashtagsCommand.class);
     }
 
-    public ActionPipe<GetFeedsByHashtagsCommand> getRefreshFeedsByHashtagsPipe() {
+    public ActionPipe<RefreshFeedsByHashtagsCommand> getRefreshFeedsByHashtagsPipe() {
         return refreshFeedsByHashtagsPipe;
     }
 
-    public ActionPipe<GetFeedsByHashtagsCommand> getLoadNextFeedsByHashtagsPipe() {
+    public ActionPipe<LoadNextFeedsByHashtagsCommand> getLoadNextFeedsByHashtagsPipe() {
         return loadNextFeedsByHashtagsPipe;
     }
-    
-//    public ActionPipe<GetFeedsByHashtagsCommand> getHashtagsByQueryPipe() {
-//        return getHashtagsByQueryPipe;
-//    }
 }

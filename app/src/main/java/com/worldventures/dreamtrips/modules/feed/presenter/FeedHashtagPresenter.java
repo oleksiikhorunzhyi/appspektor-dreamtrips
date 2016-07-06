@@ -4,20 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
-import com.worldventures.dreamtrips.modules.feed.command.GetFeedsByHashtagsCommand;
+import com.worldventures.dreamtrips.modules.feed.command.LoadNextFeedsByHashtagsCommand;
+import com.worldventures.dreamtrips.modules.feed.command.RefreshFeedsByHashtagsCommand;
 import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.interactor.HashtagInteractor;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +27,6 @@ import timber.log.Timber;
 
 public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends JobPresenter<T> {
 
-    private static final int MIN_QUERY_LENGTH = 3;
     private final static int FEEDS_PER_PAGE = 10;
 
     @State
@@ -38,8 +35,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     @Inject
     HashtagInteractor hashtagInteractor;
 
-    private ActionPipe<GetFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
-    private ActionPipe<GetFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
+    private ActionPipe<RefreshFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
+    private ActionPipe<LoadNextFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
 
     @Override
     public void takeView(T view) {
@@ -69,7 +66,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         String query = view.getQuery();
         if (!TextUtils.isEmpty(query)) {
             view.startLoading();
-            refreshFeedsByHashtagsPipe.send(new GetFeedsByHashtagsCommand(query, FEEDS_PER_PAGE, null));
+            refreshFeedsByHashtagsPipe.send(new RefreshFeedsByHashtagsCommand(query, FEEDS_PER_PAGE));
         }
     }
 
@@ -78,7 +75,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
             String query = view.getQuery();
             if (!TextUtils.isEmpty(query)) {
                 view.startLoading();
-                loadNextFeedsByHashtagsPipe.send(new GetFeedsByHashtagsCommand(query, FEEDS_PER_PAGE, getLastDate()));
+                loadNextFeedsByHashtagsPipe.send(new LoadNextFeedsByHashtagsCommand(query, FEEDS_PER_PAGE, feedItems.get(feedItems.size() - 1).getCreatedAt()));
             }
         }
     }
@@ -86,7 +83,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     private void subscribeRefreshFeeds() {
         view.bind(refreshFeedsByHashtagsPipe.observe()
                 .compose(new ActionStateToActionTransformer<>())
-                .map(GetFeedsByHashtagsCommand::getResult)
+                .map(RefreshFeedsByHashtagsCommand::getResult)
                 .compose(new IoToMainComposer<>()))
                 .subscribe(this::refreshFeedSucceed,
                         throwable -> {
@@ -118,7 +115,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     private void subscribeLoadNextFeeds() {
         view.bind(loadNextFeedsByHashtagsPipe.observe()
                 .compose(new ActionStateToActionTransformer<>())
-                .map(GetFeedsByHashtagsCommand::getResult)
+                .map(LoadNextFeedsByHashtagsCommand::getResult)
                 .compose(new IoToMainComposer<>()))
                 .subscribe(dataMetaData ->
                                 addFeedItems(dataMetaData.getParentFeedItems()),
@@ -141,23 +138,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
     private void loadMoreItemsError() {
         addFeedItems(new ArrayList<>());
-    }
-
-    @Nullable
-    private Date getLastDate() {
-        if (feedItems.isEmpty()) return null;
-        FeedItem<FeedEntity> feedItem = feedItems.get(feedItems.size() - 1);
-        FeedItem<FeedEntity> lastFeedItem = Queryable.from(feedItem).lastOrDefault(new Predicate<FeedItem<FeedEntity>>() {
-            Date last;
-
-            @Override
-            public boolean apply(FeedItem<FeedEntity> element) {
-                if (last == null || element == null) return false;
-                return last.before(element.getCreatedAt());
-            }
-        });
-
-        return lastFeedItem != null ? lastFeedItem.getCreatedAt() : null;
     }
 
     public interface View extends RxView {

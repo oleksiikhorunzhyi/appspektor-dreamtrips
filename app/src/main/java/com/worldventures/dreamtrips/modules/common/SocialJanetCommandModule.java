@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesComm
 import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageConfigCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.UpdateAuthInfoCommand;
+import com.worldventures.dreamtrips.modules.feed.command.GetFeedsByHashtagsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 
@@ -34,6 +35,7 @@ import dagger.Module;
         AppSettingsCommand.class,
         UpdateAuthInfoCommand.class,
         PodcastCommand.class,
+        GetFeedsByHashtagsCommand.class,
         HashtagSuggestionCommand.class},
 
         complete = false, library = true)

@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -20,6 +19,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
+import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -49,7 +49,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @Inject
     FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
-    private BaseArrayListAdapter suggestionAdapter;
+//    private BaseArrayListAdapter suggestionAdapter;
 
     private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
     private Bundle savedInstanceState;
@@ -69,7 +69,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
         statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadFeeds());
+        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
         fragmentWithFeedDelegate.init(adapter);
     }
 
@@ -116,7 +116,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             @Override
             public boolean onQueryTextSubmit(String query) {
                 FeedHashtagFragment.this.query = query;
-                getPresenter().loadFeeds();
+                getPresenter().onRefresh();
                 return true;
             }
 
@@ -127,40 +127,28 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             }
         });
 
-        if (args.getHashtag() != null) {
+        if (args != null && args.getHashtag() != null) {
             new WeakHandler().postDelayed(() -> SoftInputUtil.hideSoftInputMethod(getActivity()), 50);
-            getPresenter().loadFeeds();
+            getPresenter().onRefresh();
         }
     }
 
     @Override
     public void onRefresh() {
-        getPresenter().reloadFeeds();
+        getPresenter().onRefresh();
     }
 
     @Override
-    public void addFeedItems(List items) {
-        fragmentWithFeedDelegate.addItems(items);
-        fragmentWithFeedDelegate.notifyDataSetChanged();
-    }
-
-    @Override
-    public void clearFeedItems() {
+    public void refreshFeedItems(List feedItems) {
         fragmentWithFeedDelegate.clearItems();
+        fragmentWithFeedDelegate.addItems(feedItems);
+        if (!statePaginatedRecyclerViewManager.isNoMoreElements()) fragmentWithFeedDelegate.addItem(new LoadMoreModel());
         fragmentWithFeedDelegate.notifyDataSetChanged();
     }
 
     @Override
-    public void addSuggestionItems(List items) {
-        int itemsCount = suggestionAdapter.getCount() - 1;
-        suggestionAdapter.addItems(items);
-        suggestionAdapter.notifyItemRangeInserted(itemsCount, items.size());
-    }
-
-    @Override
-    public void clearSuggestionItems() {
-        suggestionAdapter.clear();
-        suggestionAdapter.notifyDataSetChanged();
+    public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
+        statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
     }
 
     @Override

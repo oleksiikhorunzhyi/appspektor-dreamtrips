@@ -1,11 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.api;
 
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
@@ -28,10 +26,10 @@ public class GetFeedsByHashtagHttpAction extends AuthorizedHttpAction{
     }
 
     @Response
-    List<ParentFeedItem> responseItems;
+    DataMetaData responseItems;
 
-    public List<ParentFeedItem> getResponseItems() {
-        if (responseItems == null) responseItems = new ArrayList<>();
+    public DataMetaData getResponseItems() {
+        if (responseItems == null) responseItems = new DataMetaData();
         return responseItems;
     }
 }

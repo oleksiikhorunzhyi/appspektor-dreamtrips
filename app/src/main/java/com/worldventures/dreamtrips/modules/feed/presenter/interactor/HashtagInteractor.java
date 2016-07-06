@@ -6,16 +6,22 @@ import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
 
 public class HashtagInteractor {
-    private final ActionPipe<GetFeedsByHashtagsCommand> getFeedsByHashtagsPipe;
+    private final ActionPipe<GetFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
+    private final ActionPipe<GetFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
 //    private final ActionPipe<GetHashtagsByQueryCommand> getHashtagsByQueryPipe;
 
     public HashtagInteractor(Janet janet) {
-        getFeedsByHashtagsPipe = janet.createPipe(GetFeedsByHashtagsCommand.class);
+        refreshFeedsByHashtagsPipe = janet.createPipe(GetFeedsByHashtagsCommand.class);
+        loadNextFeedsByHashtagsPipe = janet.createPipe(GetFeedsByHashtagsCommand.class);
 //        getHashtagsByQueryPipe = janet.createPipe(GetHashtagsByQueryCommand.class);
     }
 
-    public ActionPipe<GetFeedsByHashtagsCommand> getFeedsByHashtagsPipe() {
-        return getFeedsByHashtagsPipe;
+    public ActionPipe<GetFeedsByHashtagsCommand> getRefreshFeedsByHashtagsPipe() {
+        return refreshFeedsByHashtagsPipe;
+    }
+
+    public ActionPipe<GetFeedsByHashtagsCommand> getLoadNextFeedsByHashtagsPipe() {
+        return loadNextFeedsByHashtagsPipe;
     }
     
 //    public ActionPipe<GetFeedsByHashtagsCommand> getHashtagsByQueryPipe() {

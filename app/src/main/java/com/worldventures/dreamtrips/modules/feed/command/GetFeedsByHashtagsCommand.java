@@ -4,10 +4,9 @@ import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedsByHashtagHttpAction;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class GetFeedsByHashtagsCommand extends Command<List<ParentFeedItem>> implements InjectableAction, UiErrorAction{
+public class GetFeedsByHashtagsCommand extends Command<DataMetaData> implements InjectableAction, UiErrorAction{
     @Inject
     Janet janet;
 
@@ -32,7 +31,7 @@ public class GetFeedsByHashtagsCommand extends Command<List<ParentFeedItem>> imp
     }
 
     @Override
-    protected void run(CommandCallback<List<ParentFeedItem>> callback) throws Throwable {
+    protected void run(CommandCallback<DataMetaData> callback) throws Throwable {
         janet.createPipe(GetFeedsByHashtagHttpAction.class, Schedulers.io())
                 .createObservableResult(new GetFeedsByHashtagHttpAction(query, perPage, before))
                 .map(GetFeedsByHashtagHttpAction :: getResponseItems)

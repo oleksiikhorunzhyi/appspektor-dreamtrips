@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -7,9 +8,9 @@ import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.modules.common.presenter.HumaneErrorTextFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.feed.command.GetFeedsByHashtagsCommand;
+import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -32,71 +33,114 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     private final static int FEEDS_PER_PAGE = 10;
 
     @State
-    protected ArrayList<FeedItem> feedItems = new ArrayList<>();
-
-    private boolean loading;
-    private boolean noMoreItems;
+    protected ArrayList<FeedItem> feedItems;
 
     @Inject
     HashtagInteractor hashtagInteractor;
 
-    private ActionPipe<GetFeedsByHashtagsCommand> getFeedsByHashtagsPipe;
+    private ActionPipe<GetFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
+    private ActionPipe<GetFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
 
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        getFeedsByHashtagsPipe = hashtagInteractor.getFeedsByHashtagsPipe();
-        subscribeGetFeeds();
-    }
-
-    public void scrolled(int totalItemCount, int lastVisible) {
-        if (!loading && !noMoreItems && lastVisible == totalItemCount - 1) {
-            loading = true;
-            loadMoreFeeds();
+        if (feedItems.size() != 0) {
+            view.refreshFeedItems(feedItems);
         }
+        refreshFeedsByHashtagsPipe = hashtagInteractor.getRefreshFeedsByHashtagsPipe();
+        loadNextFeedsByHashtagsPipe = hashtagInteractor.getLoadNextFeedsByHashtagsPipe();
+        subscribeRefreshFeeds();
+        subscribeLoadNextFeeds();
     }
 
-    public void loadFeeds() {
-        if (!TextUtils.isEmpty(view.getQuery()) && view.getQuery().length() >= MIN_QUERY_LENGTH) {
-            loading = true;
+    @Override
+    public void restoreInstanceState(Bundle savedState) {
+        super.restoreInstanceState(savedState);
+        if (savedState == null) feedItems = new ArrayList<>();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onRefresh();
+    }
+
+    public void onRefresh() {
+        String query = view.getQuery();
+        if (!TextUtils.isEmpty(query)) {
             view.startLoading();
-            getFeedsByHashtagsPipe.send(new GetFeedsByHashtagsCommand(view.getQuery(), FEEDS_PER_PAGE, getLastDate()));
+            refreshFeedsByHashtagsPipe.send(new GetFeedsByHashtagsCommand(query, FEEDS_PER_PAGE, null));
         }
     }
 
-    private void loadMoreFeeds() {
-        if (feedItems.size() > 0) loadFeeds();
+    public void loadNext() {
+        if (feedItems.size() > 0) {
+            String query = view.getQuery();
+            if (!TextUtils.isEmpty(query)) {
+                view.startLoading();
+                loadNextFeedsByHashtagsPipe.send(new GetFeedsByHashtagsCommand(query, FEEDS_PER_PAGE, getLastDate()));
+            }
+        }
     }
 
-    public void reloadFeeds() {
-        view.clearFeedItems();
-        feedItems.clear();
-        loadFeeds();
-    }
-
-    private void subscribeGetFeeds() {
-        view.bind(getFeedsByHashtagsPipe.observe()
+    private void subscribeRefreshFeeds() {
+        view.bind(refreshFeedsByHashtagsPipe.observe()
                 .compose(new ActionStateToActionTransformer<>())
                 .map(GetFeedsByHashtagsCommand::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(this::onFeedsLoaded,
+                .subscribe(this::refreshFeedSucceed,
                         throwable -> {
-                            view.finishLoading();
-                            view.informUser(new HumaneErrorTextFactory().create(throwable));
+                            refreshFeedError();
                             Timber.e(throwable, "");
                         });
     }
 
-    private void onFeedsLoaded(List<ParentFeedItem> items) {
-        feedItems.addAll(Queryable.from(items)
+    private void refreshFeedSucceed(DataMetaData dataMetaData) {
+        ArrayList<ParentFeedItem> freshItems = dataMetaData.getParentFeedItems();
+        boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
+        view.updateLoadingStatus(false, noMoreFeeds);
+        //
+        view.finishLoading();
+        feedItems.clear();
+        feedItems.addAll(Queryable.from(freshItems)
                 .filter(ParentFeedItem::isSingle)
                 .map(element -> element.getItems().get(0))
                 .toList());
+        //
+        view.refreshFeedItems(feedItems);
+    }
 
-        view.addFeedItems(feedItems);
+    private void refreshFeedError() {
         view.finishLoading();
-        noMoreItems = items.size() < FEEDS_PER_PAGE;
-        loading = false;
+        view.refreshFeedItems(feedItems);
+    }
+
+    private void subscribeLoadNextFeeds() {
+        view.bind(loadNextFeedsByHashtagsPipe.observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(GetFeedsByHashtagsCommand::getResult)
+                .compose(new IoToMainComposer<>()))
+                .subscribe(dataMetaData ->
+                                addFeedItems(dataMetaData.getParentFeedItems()),
+                        throwable -> {
+                            loadMoreItemsError();
+                            Timber.e(throwable, "");
+                        });
+    }
+
+    private void addFeedItems(List<ParentFeedItem> olderItems) {
+        boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
+        view.updateLoadingStatus(false, noMoreFeeds);
+        //
+        feedItems.addAll(Queryable.from(olderItems)
+                .filter(ParentFeedItem::isSingle)
+                .map(element -> element.getItems().get(0))
+                .toList());
+        view.refreshFeedItems(feedItems);
+    }
+
+    private void loadMoreItemsError() {
+        addFeedItems(new ArrayList<>());
     }
 
     @Nullable
@@ -108,7 +152,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
             @Override
             public boolean apply(FeedItem<FeedEntity> element) {
-                if (last == null) element.getCreatedAt();
+                if (last == null || element == null) return false;
                 return last.before(element.getCreatedAt());
             }
         });
@@ -125,12 +169,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
         void finishLoading();
 
-        void addFeedItems(List items);
+        void refreshFeedItems(List<FeedItem> events);
 
-        void clearFeedItems();
-
-        void addSuggestionItems(List items);
-
-        void clearSuggestionItems();
+        void updateLoadingStatus(boolean loading, boolean noMoreElements);
     }
 }

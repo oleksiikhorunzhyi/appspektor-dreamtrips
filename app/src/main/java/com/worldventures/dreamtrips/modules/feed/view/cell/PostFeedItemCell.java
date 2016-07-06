@@ -30,6 +30,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,9 +159,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
                 .toList();
     }
 
-    private void openHashtagFeeds(String hashtag) {
+    private void openHashtagFeeds(@NotNull String hashtag) {
         router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
-                .data(new FeedHashtagBundle(hashtag))
+                .data(new FeedHashtagBundle(hashtag.substring(1)))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
                 .build());
     }

@@ -170,5 +170,7 @@
     <color name="chat_error_message_color">#EC6A6A</color>
     <color name="retry_send_message_dialog_button_text_color">#2b9bf3</color>
 
+    <color name="hashtag_suggestion_count_color">#88343434</color>
+
     <!--end messenger-->
 </resources>

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class HashtagSuggestion implements Parcelable{
 
     private String name;
+    private int usageCount;
 
     public String getName() {
         return name;
@@ -13,6 +14,10 @@ public class HashtagSuggestion implements Parcelable{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getUsageCount() {
+        return usageCount;
     }
 
     @Override
@@ -23,6 +28,7 @@ public class HashtagSuggestion implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
+        dest.writeInt(usageCount);
     }
 
     public HashtagSuggestion() {
@@ -30,6 +36,7 @@ public class HashtagSuggestion implements Parcelable{
 
     protected HashtagSuggestion(Parcel in) {
         this.name = in.readString();
+        this.usageCount = in.readInt();
     }
 
     public static final Creator<HashtagSuggestion> CREATOR = new Creator<HashtagSuggestion>() {

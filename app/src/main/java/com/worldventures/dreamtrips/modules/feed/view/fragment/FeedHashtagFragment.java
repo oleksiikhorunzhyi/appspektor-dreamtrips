@@ -143,11 +143,29 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (query != null || searchOpened) searchItem.expandActionView();
+
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
 
         searchItem.expandActionView();
         searchView.setQuery(query, false);
+        searchView.setOnCloseListener(() -> false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                FeedHashtagFragment.this.query = query;
+                releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+                getPresenter().onRefresh();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                query = newText;
+                return false;
+            }
+        });
+
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -183,9 +201,16 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         });
 
         if (args != null && args.getHashtag() != null) {
-            new WeakHandler().postDelayed(() -> SoftInputUtil.hideSoftInputMethod(getActivity()), 50);
+            releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
             getPresenter().onRefresh();
         }
+    }
+
+    private void releaseSearchFocus(View search){
+        new WeakHandler().postDelayed(() -> {
+            search.clearFocus();
+            getView().requestFocus();
+        }, 50);
     }
 
     @Override

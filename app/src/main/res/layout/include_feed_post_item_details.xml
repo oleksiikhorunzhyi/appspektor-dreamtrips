@@ -4,9 +4,8 @@
               android:layout_height="wrap_content"
               android:orientation="vertical">
 
-    <TextView
+    <com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView
         android:id="@+id/post"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"

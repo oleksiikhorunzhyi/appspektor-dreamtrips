@@ -27,7 +27,7 @@ import rx.subjects.PublishSubject;
 
 public class MessagesPaginationDelegate {
 
-    private static final int MAX_MESSAGES_PER_PAGE = 50;
+    public static final int MAX_MESSAGES_PER_PAGE = 50;
 
     private String conversationId;
 
@@ -143,18 +143,13 @@ public class MessagesPaginationDelegate {
     }
 
     @Value.Immutable()
-    public static abstract class PaginationStatus {
-        public abstract Status getStatus();
+    public interface PaginationStatus {
 
-        public abstract Integer getPage();
+        Status getStatus();
 
-        @Nullable
-        public abstract Integer getLoadedElementsCount();
+        Integer getPage();
 
-        @Value.Default
-        public int getRequiredCount() {
-            return MAX_MESSAGES_PER_PAGE;
-        }
+        @Nullable Integer getLoadedElementsCount();
     }
 
     public enum Status {

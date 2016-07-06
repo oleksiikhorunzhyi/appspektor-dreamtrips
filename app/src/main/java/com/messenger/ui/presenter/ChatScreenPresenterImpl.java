@@ -269,8 +269,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private Void changeRestoreHistoryAvailability(PaginationStatus paginationStatus, DataConversation conversation) {
         //noinspection ConstantConditions
-        if (paginationStatus.getLoadedElementsCount() < paginationStatus.getRequiredCount()
-                && conversation.getClearTime() > 0) {
+        if (paginationStatus.getLoadedElementsCount() < MessagesPaginationDelegate.MAX_MESSAGES_PER_PAGE
+                && ConversationHelper.isCleared(conversation)) {
             getView().enableReloadChatButton(conversation.getClearTime());
         } else {
             getView().disableReloadChatButton();
@@ -582,10 +582,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .createObservable(new RevertClearingChatServerCommand(conversationId))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<RevertClearingChatServerCommand>()
-                        .onSuccess(revertChatClearingCommand -> {
-                            messagesPaginationDelegate.forceLoadNextPage();
-                            Timber.d("RevertClearingChatServerCommand Success");
-                        })
+                        .onSuccess(revertChatClearingCommand -> messagesPaginationDelegate.forceLoadNextPage())
                         .onFail((revertChatClearingCommand, throwable) ->
                                 Timber.d("RevertClearingChatServerCommand failed -> %s", throwable))
                 );

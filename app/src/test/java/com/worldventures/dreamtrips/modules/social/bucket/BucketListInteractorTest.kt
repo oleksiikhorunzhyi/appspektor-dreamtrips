@@ -91,10 +91,13 @@ class BucketListInteractorTest : BucketInteractorBaseTest() {
 
     override fun mockHttpService(): MockHttpActionService {
         return MockHttpActionService.Builder()
-                .bind(MockHttpActionService.Response(200).body(testListOfBucketsFromNetwork))
-                { request -> request.url.contains("/bucket_list_items") && HttpAction.Method.GET.name == request.method }
-                .bind(MockHttpActionService.Response(200).body(JsonObject()))
-                { request -> request.url.contains("/position") }.build()
+                .bind(MockHttpActionService.Response(200).body(testListOfBucketsFromNetwork)) {
+                    it.url.contains("/bucket_list_items") && HttpAction.Method.GET.name == it.method
+                }
+                .bind(MockHttpActionService.Response(200).body(JsonObject())) {
+                    it.url.contains("/position")
+                }
+                .build()
     }
 
     private fun checkLoadBucketList(predicate: Func1<BucketListCommand, Boolean>, force: Boolean) {

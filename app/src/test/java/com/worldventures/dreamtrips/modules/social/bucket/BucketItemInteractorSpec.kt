@@ -260,7 +260,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                             .createObservable(DeleteItemPhotoCommand(testBucketItem, testBucketPhoto))
                             .subscribe(testSubscriber)
                     assertActionSuccess(testSubscriber) {
-                        !it.result.getPhotos().contains(testBucketPhoto)
+                        !it.result.photos.contains(testBucketPhoto)
                     }
                 }
 

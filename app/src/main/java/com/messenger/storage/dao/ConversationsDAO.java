@@ -23,6 +23,7 @@ import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -169,6 +170,7 @@ public class ConversationsDAO extends BaseDAO {
                 "ON m." + DataMessage$Table._ID + "=(" +
                 "SELECT " + DataMessage$Table._ID + " FROM " + DataMessage.TABLE_NAME + " mm " +
                 "WHERE mm." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+                "AND mm." + DataMessage$Table.TYPE + "='" + MessageType.MESSAGE + "' " +
                 "ORDER BY mm." + DataMessage$Table.DATE + " DESC LIMIT 1) " +
 
                 "LEFT JOIN " + DataUser.TABLE_NAME + " u " +

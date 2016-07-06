@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.messenger.delegate.MessageBodyParser;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessagePageIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.util.ParseUtils;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -40,9 +42,9 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                     elementName = parser.getName();
                     switch (elementName) {
                         case "from":
-                        case "to":
+                        case "to": {
                             long timestamp = ParserUtils.getLongAttribute(parser, "secs");
-                            String jid = parser.getAttributeValue("", "jid");
+                            String fromId = JidCreatorHelper.obtainId(parser.getAttributeValue("", "jid"));
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
                             String deleted = parser.getAttributeValue("", "deleted");
@@ -52,8 +54,30 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                                     .deleted(deleted)
                                     .status((unread == null || !unread) ? MessageStatus.READ : MessageStatus.SENT)
                                     .date(timestamp)
-                                    .fromId(JidCreatorHelper.obtainId(jid));
+                                    .fromId(fromId)
+                                    .type(MessageType.MESSAGE);
                             break;
+                        }
+                        case "service": {
+                            long timestamp = ParserUtils.getLongAttribute(parser, "timestamp");
+                            String messageId = parser.getAttributeValue("", "id");
+                            String fromId = JidCreatorHelper.obtainId(parser.getAttributeValue("", "from"));
+                            String type = parser.getAttributeValue("", "type");
+
+                            messageBuilder = new Message.Builder()
+                                    .id(messageId)
+                                    .status(MessageStatus.READ)
+                                    .date(timestamp)
+                                    .type(ParseUtils.parseMessageType(type))
+                                    .fromId(fromId);
+
+                            String toJid = parser.getAttributeValue("", "to");
+                            if (!TextUtils.isEmpty(toJid)) {
+                                messageBuilder.toId(JidCreatorHelper.obtainId(toJid));
+                            }
+
+                            break;
+                        }
                         case "body":
                             //noinspection all //messageBuilder cannot be null
                             messageBuilder.messageBody(messageBodyParser.
@@ -66,9 +90,11 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                     switch (elementName) {
                         case "to":
                         case "from":
+                        case "service":
                             if (messageBuilder == null) continue;
                             Message message = messageBuilder.build();
-                            if (TextUtils.isEmpty(message.getId()) || message.getMessageBody() == null) continue;
+                            if (TextUtils.isEmpty(message.getId())) continue;
+                            if (MessageType.MESSAGE.equals(message.getType()) && message.getMessageBody() == null) continue;
                             messagePageIQ.add(message);
                             break;
                         case "chat":

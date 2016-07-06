@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.entities.DataMessage;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.notification.model.GroupNotificationData;
 import com.messenger.notification.model.NotificationData;
 import com.messenger.notification.model.SingleChatNotificationData;
@@ -19,6 +20,7 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import javax.inject.Inject;
 
+import rx.Notification;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -73,8 +75,11 @@ public class UnhandledMessageWatcher {
 
     private void bindToMessageObservable() {
         notificationSubscription = chatMessagesEventDelegate.getReceivedSavedMessageStream()
-                .filter(msgNotification -> msgNotification.isOnNext() && !isOpenedConversation(msgNotification.getValue()))
-                .flatMap(messageNotification -> notificationDataFactory.createNotificationData(messageNotification.getValue()))
+                .filter(Notification::isOnNext)
+                .map(Notification::getValue)
+                .filter(message -> !isOpenedConversation(message)
+                        && MessageType.MESSAGE.equals(message.getType()))
+                .flatMap(message -> notificationDataFactory.createNotificationData(message))
                 .compose(new IoToMainComposer<>())
                 .takeUntil(unsubscribeSubject)
                 .subscribe(this::showNotification,

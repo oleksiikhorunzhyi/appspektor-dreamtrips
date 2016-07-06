@@ -10,6 +10,7 @@ import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.extensions.DeleteMessageExtension;
+import com.messenger.messengerservers.xmpp.extensions.SystemMessageExtension;
 import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilter;
 import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilterType;
 import com.messenger.messengerservers.xmpp.providers.ClearIQProvider;
@@ -47,6 +48,7 @@ import timber.log.Timber;
 
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_AVATAR;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
+import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_SYSTEM_MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.MESSAGE;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJECT;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
@@ -75,10 +77,10 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                 ChangeAvatarExtension.NAMESPACE, ChangeAvatarExtension.PROVIDER);
         ProviderManager.addExtensionProvider(DeleteMessageExtension.ELEMENT,
                 DeleteMessageExtension.NAMESPACE, new DeleteMessageExtension.Provider());
-
+        ProviderManager.addExtensionProvider(SystemMessageExtension.ELEMENT,
+                SystemMessageExtension.NAMESPACE, SystemMessageExtension.PROVIDER);
         ProviderManager.addIQProvider(ClearIQProvider.ELEMENT_QUERY,
                 ClearIQProvider.NAME_SPACE, new ClearIQProvider());
-
     }
 
     private void prepareManagers(XMPPConnection connection) {
@@ -191,6 +193,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
                         .getExtension(ChangeAvatarExtension.NAMESPACE);
                 notifyOnAvatarStateChangedListener(JidCreatorHelper.obtainId(messageXMPP.getFrom()),
                         changeAvatarExtension.getAvatarUrl());
+                break;
+            case EXTENTION_SYSTEM_MESSAGE:
+                SystemMessageExtension systemMessageExtension =
+                        messageXMPP.getExtension(SystemMessageExtension.ELEMENT, SystemMessageExtension.NAMESPACE);
+                com.messenger.messengerservers.model.Message systemMessage =
+                        messageConverter.convertToSystemMessage(messageXMPP, systemMessageExtension);
+                notifyGlobalMessage(systemMessage, EVENT_INCOMING);
                 break;
             case MESSAGE:
                 com.messenger.messengerservers.model.Message message = messageConverter.convert(messageXMPP);

@@ -9,6 +9,7 @@ import com.messenger.delegate.MessageBodyParser;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.Message;
@@ -131,6 +132,8 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
                 .conversationId(thread)
                 .status(unread ? MessageStatus.SENT  : MessageStatus.READ)
                 .messageBody(messageBodyParser.parseMessageBody(parser.nextText()))
+                // server only sends usual messages as last message
+                .type(MessageType.MESSAGE)
                 .build();
     }
 

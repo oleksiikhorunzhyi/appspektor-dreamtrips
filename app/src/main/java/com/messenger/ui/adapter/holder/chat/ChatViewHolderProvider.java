@@ -6,13 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.apptentive.android.sdk.module.messagecenter.view.holder.MessageHolder;
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataUser;
+import com.messenger.storage.dao.MessageDAO;
 import com.techery.spares.adapter.AdapterHelper;
 import com.techery.spares.annotations.Layout;
+
+import static com.messenger.messengerservers.constant.MessageType.MESSAGE;
 
 import java.util.Set;
 
@@ -32,18 +33,23 @@ public class ChatViewHolderProvider {
     public int provideViewType(Cursor cursor, int position) {
         cursor.moveToPosition(position);
 
+        String messageType = cursor.getString(cursor.getColumnIndex(DataMessage$Table.TYPE));
         boolean own = isOwnMessage(cursor);
-        String attachmentType = cursor.getString(cursor.getColumnIndex(DataAttachment$Table.TYPE));
-
-        return Queryable.from(chatViewHolderInfoSet).first(info -> (info.isOwn() == own)
-                    && TextUtils.equals(attachmentType, info.getType())).getViewType();
+        if (MESSAGE.equals(messageType)) {
+            String attachmentType = cursor.getString(cursor.getColumnIndex(MessageDAO.ATTACHMENT_TYPE));
+            return Queryable.from(chatViewHolderInfoSet).first(info -> (info.isOwn() == own)
+                    && TextUtils.equals(attachmentType, info.getAttachmentType())).getViewType();
+        } else {
+            return Queryable.from(chatViewHolderInfoSet).first(ChatViewHolderInfo::isSystemMessage).getViewType();
+        }
     }
 
-    public MessageViewHolder provideViewHolder(ViewGroup parent, int viewType) {
+    public MessageViewHolder provideViewHolder(Cursor cursor, ViewGroup parent, int viewType) {
         ChatViewHolderInfo chatViewHolderInfo = Queryable.from(chatViewHolderInfoSet)
                     .first(info -> info.getViewType() == viewType);
         MessageViewHolder messageHolder = buildCell(chatViewHolderInfo.getViewHolderClass(), parent);
-        messageHolder.setOwnMessage(chatViewHolderInfo.isOwn());
+        messageHolder.setOwnMessage(isOwnMessage(cursor));
+        messageHolder.setCurrentUserId(currentUser.getId());
         return messageHolder;
     }
 

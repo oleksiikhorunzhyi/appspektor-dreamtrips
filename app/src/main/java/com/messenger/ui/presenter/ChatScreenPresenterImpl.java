@@ -7,17 +7,19 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
+import com.messenger.delegate.chat.ChatExtensionInteractor;
 import com.messenger.delegate.chat.ChatTypingDelegate;
 import com.messenger.delegate.chat.MessagesPaginationDelegate;
+import com.messenger.delegate.chat.MessagesPaginationDelegate.PaginationStatus;
 import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
+import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
 import com.messenger.delegate.chat.typing.ChatStateDelegate;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
@@ -53,7 +55,6 @@ import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -61,8 +62,10 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import timber.log.Timber;
@@ -91,6 +94,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
     @Inject PickLocationDelegate pickLocationDelegate;
     @Inject LoadConversationDelegate loadConversationDelegate;
+    @Inject ChatExtensionInteractor chatExtensionInteractor;
 
     protected String conversationId;
 
@@ -210,7 +214,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         ChatScreen screen = getView();
         //noinspection all
         screen.setTitle(conversation, participants);
-        screen.enableReloadChatButton(new Date());
         boolean conversationIsPresent = ConversationHelper.isPresent(conversation);
         screen.enableInput(conversationIsPresent);
         if (!conversationIsPresent) {
@@ -239,9 +242,40 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void bindMessagePaginationDelegate() {
-        messagesPaginationDelegate.bind(connectionStatusStream, conversationId)
-                .compose(bindViewIoToMainComposer())
+        // this method should work only with PaginationDelegate.
+        // for this, we have problem: `messagesPaginationDelegate.bind(connectionStatusStream, conversationId)`
+        // I think, we need to have pagination instance specific for current conversation like a field
+        // TODO: 7/6/16 messagesPaginationDelegate is not injectable instance
+        // TODO: 7/6/16 we create messagesPaginationDelegate from factory method
+        ConnectableObservable<PaginationStatus> paginationObservable = messagesPaginationDelegate
+                .bind(connectionStatusStream, conversationId)
+                .compose(bindViewIoToMainComposer()).publish();
+
+        paginationObservable
                 .subscribe(this::handlePaginationStatus);
+
+        Observable.combineLatest(paginationObservable
+                        .filter(paginationStatus ->
+                                paginationStatus.getStatus() == MessagesPaginationDelegate.Status.SUCCESS),
+                conversationDAO.getConversation(conversationId)
+                        .compose(new NonNullFilter<>())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                this::changeRestoreHistoryAvailability)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(aVoid -> {}, e -> Timber.e(e, ""));
+
+        paginationObservable.connect();
+    }
+
+    private Void changeRestoreHistoryAvailability(PaginationStatus paginationStatus, DataConversation conversation) {
+        //noinspection ConstantConditions
+        if (paginationStatus.getLoadedElementsCount() < paginationStatus.getRequiredCount()
+                && conversation.getClearTime() > 0) {
+            getView().enableReloadChatButton(conversation.getClearTime());
+        } else {
+            getView().disableReloadChatButton();
+        }
+        return null;
     }
 
     @Override
@@ -249,7 +283,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         messagesPaginationDelegate.loadNextPage();
     }
 
-    private void handlePaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus) {
+    private void handlePaginationStatus(PaginationStatus paginationStatus) {
         switch (paginationStatus.getStatus()) {
             case START:
                 DataConversation conversation = loadConversationDelegate
@@ -265,7 +299,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         }
     }
 
-    private void handleStartPaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus,
+    private void handleStartPaginationStatus(PaginationStatus paginationStatus,
                                              DataConversation conversation) {
         if (enableUnreadMessagesUi(conversation) && paginationStatus.getPage() == 1) {
             getView().setShowMarkUnreadMessage(true);
@@ -544,7 +578,17 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onReloadHistoryRequired() {
-        Toast.makeText(getContext(), "МИР! ТРУД! МАЙ!", Toast.LENGTH_SHORT).show();
+        chatExtensionInteractor.getRevertClearingChatServerCommandActionPipe()
+                .createObservable(new RevertClearingChatServerCommand(conversationId))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<RevertClearingChatServerCommand>()
+                        .onSuccess(revertChatClearingCommand -> {
+                            messagesPaginationDelegate.forceLoadNextPage();
+                            Timber.d("RevertClearingChatServerCommand Success");
+                        })
+                        .onFail((revertChatClearingCommand, throwable) ->
+                                Timber.d("RevertClearingChatServerCommand failed -> %s", throwable))
+                );
     }
 
     ///////////////////////////////////////////////////////////////////////////

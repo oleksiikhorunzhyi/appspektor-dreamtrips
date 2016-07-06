@@ -58,7 +58,7 @@ public interface ChatScreen extends MessengerScreen {
 
     void enableInput(boolean enabled);
 
-    void enableReloadChatButton(Date clearChatDate);
+    void enableReloadChatButton(long clearDate);
 
     void disableReloadChatButton();
 }

@@ -53,6 +53,11 @@ public class MessagesPaginationDelegate {
         loadNextPage();
     }
 
+    public void forceLoadNextPage() {
+        hasMoreElements = true;
+        loadNextPage();
+    }
+
     public void loadNextPage() {
         if (!hasMoreElements || loading.get()) return;
 
@@ -138,10 +143,18 @@ public class MessagesPaginationDelegate {
     }
 
     @Value.Immutable()
-    public interface PaginationStatus {
-        Status getStatus();
-        Integer getPage();
-        @Nullable Integer getLoadedElementsCount();
+    public static abstract class PaginationStatus {
+        public abstract Status getStatus();
+
+        public abstract Integer getPage();
+
+        @Nullable
+        public abstract Integer getLoadedElementsCount();
+
+        @Value.Default
+        public int getRequiredCount() {
+            return MAX_MESSAGES_PER_PAGE;
+        }
     }
 
     public enum Status {

@@ -46,7 +46,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -321,8 +320,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void enableReloadChatButton(Date clearChatDate) {
-        String timestamp = chatTimestampFormatter.getMessageTimestamp(clearChatDate.getTime());
+    public void enableReloadChatButton(long clearDate) {
+        String timestamp = chatTimestampFormatter.getMessageTimestamp(clearDate);
         ((TextView)reloadHistoryView.findViewById(R.id.timestamp)).setText(timestamp);
         adapter.addHeaderView(reloadHistoryView);
     }

@@ -57,7 +57,7 @@ public class ObtainMessageListIQ extends IQ {
         xml.rightAngleBracket();
         xml.append("<set xmlns='http://jabber.org/protocol/rsm'>");
         xml.append("<max>").append(Integer.toString(max)).append("</max>");
-        if (page != 1) {
+        if (page != 1 && since != 0) {
             xml.append("<before>").append(Long.toString(since)).append("</before>");
         }
         xml.append("</set>");

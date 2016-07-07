@@ -64,8 +64,7 @@ public class ChatViewHolderProvider {
     }
 
     private boolean isOwnMessage(Cursor cursor) {
-        return cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID))
-                .equals(currentUser.getId());
+        return TextUtils.equals(cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID)),currentUser.getId());
     }
 
 }

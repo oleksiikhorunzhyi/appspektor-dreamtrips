@@ -11,6 +11,7 @@ import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.MessageHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
@@ -107,7 +108,9 @@ public class ChatMessagesEventDelegate {
 
     private void saveReceivedMessage(Message message) {
         saveMessage(message, MessageStatus.SENT);
-        conversationsDAO.incrementUnreadField(message.getConversationId());
+        if (MessageHelper.isUserMessage(message)) {
+            conversationsDAO.incrementUnreadField(message.getConversationId());
+        }
         messageDAO.getMessage(message.getId()).take(1).subscribe(dataMessage -> {
             receivedSavedMessageStream.onNext(Notification.createOnNext(dataMessage));
         }, e -> {

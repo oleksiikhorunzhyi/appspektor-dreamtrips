@@ -1,5 +1,8 @@
 package com.messenger.ui.helper;
 
+import com.messenger.entities.DataMessage;
+import com.messenger.messengerservers.model.Message;
+
 import static com.messenger.messengerservers.constant.MessageType.MESSAGE;
 
 public class MessageHelper {
@@ -7,8 +10,28 @@ public class MessageHelper {
     private MessageHelper() {
     }
 
+    public static boolean isSystemMessage(Message message) {
+        return !isUserMessage(message);
+    }
+
+    public static boolean isUserMessage(Message message) {
+        return isUserMessage(message.getType());
+    }
+
+    public static boolean isSystemMessage(DataMessage message) {
+        return !isUserMessage(message);
+    }
+
+    public static boolean isUserMessage(DataMessage message) {
+        return isUserMessage(message.getType());
+    }
+
     public static boolean isSystemMessage(String messageType) {
-        return !MESSAGE.equals(messageType);
+        return !isUserMessage(messageType);
+    }
+
+    public static boolean isUserMessage(String messageType) {
+        return MESSAGE.equals(messageType);
     }
 
     /**

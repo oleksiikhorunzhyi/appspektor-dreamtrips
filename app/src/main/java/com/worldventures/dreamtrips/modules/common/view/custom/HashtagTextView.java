@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class HashtagTextView extends TextView {
         super(context, attrs, defStyleAttr);
         hashtagTextColor = context.getResources().getColor(android.R.color.holo_blue_light);
         selectedHashtagTextColor = context.getResources().getColor(android.R.color.white);
-        selectedHashtagBackgroundColor = context.getResources().getColor(android.R.color.holo_blue_light);
+        selectedHashtagBackgroundColor = context.getResources().getColor(R.color.highlight_hashtag_bg);
     }
 
     public void setHashtagTextColor(int hashtagTextColor) {

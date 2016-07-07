@@ -65,6 +65,8 @@
     <color name="open">#6ebffc</color>
     <color name="closed">#fe5353</color>
 
+    <color name="highlight_hashtag_bg">#53B5FE</color>
+
     <!-- <DTL Toolbar colors> -->
     <!-- these shall have 'dtlt_' prefix -->
     <color name="dtlt_input_text_color">#222</color>

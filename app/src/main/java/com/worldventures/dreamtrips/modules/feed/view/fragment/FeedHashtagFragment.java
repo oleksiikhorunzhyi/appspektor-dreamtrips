@@ -256,7 +256,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     private void releaseSearchFocus(@Nullable View search){
         new WeakHandler().postDelayed(() -> {
             if (search != null) search.clearFocus();
-            getView().requestFocus();
+            if (getView() != null) getView().requestFocus(); //check for multiple fast device rotation
         }, 50);
     }
 

@@ -163,7 +163,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     private void openHashtagFeeds(@NotNull String hashtag) {
         router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
-                .data(new FeedHashtagBundle(hashtag.substring(1)))
+                .data(new FeedHashtagBundle(hashtag))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
                 .build());
     }

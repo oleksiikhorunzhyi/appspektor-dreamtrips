@@ -100,7 +100,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         if (feedItems.size() > 0) {
             String query = view.getQuery();
             if (!TextUtils.isEmpty(query)) {
-                view.startLoading();
                 loadNextFeedsByHashtagsPipe.send(new LoadNextFeedsByHashtagsCommand(query, FEEDS_PER_PAGE, feedItems.get(feedItems.size() - 1).getCreatedAt()));
             }
         }
@@ -119,7 +118,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     private void refreshFeedSucceed(DataMetaData dataMetaData) {
-        dataMetaData.shareMetaDataWithChilds();
+        dataMetaData.shareMetaDataWithChildren();
         ArrayList<ParentFeedItem> freshItems = dataMetaData.getParentFeedItems();
         boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
         view.updateLoadingStatus(false, noMoreFeeds);
@@ -145,7 +144,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                 .map(LoadNextFeedsByHashtagsCommand::getResult)
                 .compose(new IoToMainComposer<>()))
                 .subscribe(dataMetaData -> {
-                            dataMetaData.shareMetaDataWithChilds();
+                            dataMetaData.shareMetaDataWithChildren();
                             addFeedItems(dataMetaData.getParentFeedItems());
                         },
                         throwable -> {

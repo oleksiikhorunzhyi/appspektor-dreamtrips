@@ -50,7 +50,7 @@ public class ChatTimestampInflater {
         }
 
         boolean manualTimestamp = manualTimestampPosition == positionInAdapter;
-        boolean automaticTimestamp = timestampProvider.shouldShowAutomaticTimestamp(cursor) || holder instanceof SystemMessageViewHolder;
+        boolean automaticTimestamp = timestampProvider.shouldShowAutomaticTimestamp(cursor);
 
         holder.getTimestampClickableView().setOnClickListener(view -> {
             if ((manualTimestamp || !automaticTimestamp)) {

@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.schedulers.Schedulers;
 
 
 @CommandAction
@@ -29,7 +30,7 @@ public class PodcastCommand extends Command<List<Podcast>> implements Injectable
 
     @Override
     protected void run(Command.CommandCallback<List<Podcast>> callback) throws Throwable {
-        janet.createPipe(GetPodcastsHttpAction.class)
+        janet.createPipe(GetPodcastsHttpAction.class, Schedulers.io())
                 .createObservableResult(new GetPodcastsHttpAction(page, perPage))
                 .map(GetPodcastsHttpAction::getResponseItems)
                 .subscribe(callback::onSuccess, callback::onFail);

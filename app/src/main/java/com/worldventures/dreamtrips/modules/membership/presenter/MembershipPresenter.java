@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
@@ -58,29 +57,12 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
         return featureManager.available(Feature.MEMBERSHIP);
     }
 
-    public void trackState(int position) {
-        FragmentItem item = items.get(position);
-        switch (item.route) {
-            case PRESENTATION_VIDEOS:
-                TrackingHelper.memberVideos(getAccountUserId());
-                break;
-            case ENROLL_MEMBER:
-                TrackingHelper.enrollMember(getAccountUserId());
-                break;
-            case ENROLL_MERCHANT:
-                TrackingHelper.enrollMerchant(getAccountUserId());
-                break;
-            case INVITE:
-                TrackingHelper.inviteShare(getAccountUserId());
-                break;
-        }
-    }
-
     public void onEvent(SearchFocusChangedEvent event) {
         view.toggleTabStripVisibility(!event.hasFocus());
     }
 
     public interface View extends Presenter.View {
+
         void toggleTabStripVisibility(boolean isVisible);
 
         void setScreens(List<FragmentItem> items);

@@ -11,8 +11,11 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.FileDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.HumaneErrorTextFactory;
-import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
@@ -30,12 +33,12 @@ import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
-public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Presenter<T> {
+public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPresenter<T> {
 
     @Inject
     protected SnappyRepository db;
@@ -68,6 +71,9 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
         super.takeView(view);
         fileCachingDelegate = new PublicMediaCachingDelegate(db, context, injector, fileDownloadSpiceManager, Environment.DIRECTORY_PODCASTS);
         fileCachingDelegate.setView(this.view);
+        podcastsActionPipe = podcastInteractor.pipe();
+        subscribeGetPodcasts();
+        reloadPodcasts();
     }
 
     @Override
@@ -76,8 +82,6 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
         if (!fileDownloadSpiceManager.isStarted()) {
             fileDownloadSpiceManager.start(context);
         }
-        podcastsActionPipe = podcastInteractor.pipe();
-        reloadPodcasts();
     }
 
     @Override
@@ -117,20 +121,23 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
     private void loadPodcasts(int page) {
         loading = true;
         view.startLoading();
-        subscribeGetPodcasts(page);
+        podcastsActionPipe.send(new PodcastCommand(page, PODCAST_PRE_PAGE));
     }
 
-    private void subscribeGetPodcasts(int page) {
-        podcastsActionPipe.createObservableResult(new PodcastCommand(page, PODCAST_PRE_PAGE))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .flatMap(getPodcastsAction -> Observable.from(getPodcastsAction.getResult()))
-                .doOnNext(attachCache())
-                .doOnNext(this::attachPodcastDownloadListener)
-                .toList()
-                .subscribe(
-                        this::onPodcastsLoaded,
-                        throwable -> view.informUser(new HumaneErrorTextFactory().create(throwable)));
+    private void subscribeGetPodcasts() {
+        view.bind(podcastsActionPipe.observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(PodcastCommand::getResult)
+                .flatMap(podcasts -> Observable.from(podcasts)
+                        .doOnNext(podcast -> attachCache())
+                        .doOnNext(PodcastsPresenter.this::attachPodcastDownloadListener)
+                        .toList())
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::onPodcastsLoaded,
+                        throwable -> {
+                            view.informUser(new HumaneErrorTextFactory().create(throwable));
+                            Timber.e(throwable, "");
+                        });
     }
 
     @NonNull
@@ -201,7 +208,11 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends Present
         }
     }
 
-    public interface View extends Presenter.View, FileCachingDelegate.View {
+    public void track() {
+        TrackingHelper.podcasts(getAccountUserId());
+    }
+
+    public interface View extends RxView, FileCachingDelegate.View {
         void startLoading();
 
         void finishLoading();

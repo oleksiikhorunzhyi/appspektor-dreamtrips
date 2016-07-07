@@ -11,7 +11,8 @@ import rx.schedulers.Schedulers;
 public class UploaderyManager {
     private final ActionPipe<UploaderyImageCommand> uploadImagePipe;
 
-    @Inject UploaderyManager(Janet janet) {
+    @Inject
+    public UploaderyManager(Janet janet) {
         this.uploadImagePipe = janet.createPipe(UploaderyImageCommand.class, Schedulers.io());
     }
 

@@ -17,10 +17,14 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.internal.Preconditions;
 import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.view.ViewLayoutChangeEvent;
+import com.techery.spares.module.Injector;
+import com.techery.spares.session.SessionHolder;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.GraphicUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
@@ -36,22 +40,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class MerchantOffersInflater extends MerchantDataInflater {
 
-    @InjectView(R.id.merchant_details_merchant_wrapper) ViewGroup merchantWrapper;
-    @InjectView(R.id.merchant_details_description) TextView description;
-    @InjectView(R.id.description_header) ViewGroup descriptionHeader;
-    @InjectView(R.id.scrollView) NestedScrollView scrollViewRoot;
-    @InjectView(R.id.legal_text) ShowMoreTextView legalTextView;
-    @InjectView(R.id.merchant_details_cover) SimpleDraweeView cover;
-    @InjectView(R.id.merchant_details_earn_wrapper) ViewGroup earnWrapper;
-    @InjectView(R.id.perk_divider) View perkDivider;
+    @InjectView(R.id.merchant_details_merchant_wrapper)
+    ViewGroup merchantWrapper;
+    @InjectView(R.id.merchant_details_description)
+    TextView description;
+    @InjectView(R.id.description_header)
+    ViewGroup descriptionHeader;
+    @InjectView(R.id.scrollView)
+    NestedScrollView scrollViewRoot;
+    @InjectView(R.id.legal_text)
+    ShowMoreTextView legalTextView;
+    @InjectView(R.id.merchant_details_cover)
+    SimpleDraweeView cover;
+    @InjectView(R.id.merchant_details_earn_wrapper)
+    ViewGroup earnWrapper;
+    @InjectView(R.id.perk_divider)
+    View perkDivider;
+
+    @Inject
+    protected SessionHolder<UserSession> sessionHolder;
+    @Inject
+    LocaleHelper localeHelper;
 
     private List<OfferClickListener> offerClickListeners = new ArrayList<>();
     private Map<Integer, WeakReference<ExpandableOfferView>> cashedViewMap = new HashMap<>();
+
+    public MerchantOffersInflater(Injector injector) {
+        injector.inject(this);
+    }
 
     public void registerOfferClickListener(OfferClickListener listener) {
         this.offerClickListeners.add(listener);
@@ -169,7 +192,8 @@ public class MerchantOffersInflater extends MerchantDataInflater {
         AppCompatTextView expirationBarCaption = ButterKnife.<AppCompatTextView>findById(perkView, R.id.expirationBarCaption);
         if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
             ViewUtils.setTextOrHideView(expirationBarCaption, DtlMerchantHelper.
-                    getOfferExpiringCaption(perkView.getContext(), offerData));
+                    getOfferExpiringCaption(perkView.getContext(), offerData,
+                            localeHelper.getAccountLocale(sessionHolder.get().get().getUser())));
         }
     }
 
@@ -180,10 +204,11 @@ public class MerchantOffersInflater extends MerchantDataInflater {
     }
 
     private void bindDisclaimer(View perkView, DtlOffer offer) {
-        if (TextUtils.isEmpty(offer.getDisclaimer())){
+        if (TextUtils.isEmpty(offer.getDisclaimer())) {
             ButterKnife.findById(perkView, R.id.perk_disclaimer_header).setVisibility(View.GONE);
+        } else {
+            ButterKnife.<TextView>findById(perkView, R.id.perk_disclaimer).setText(offer.getDisclaimer());
         }
-        else ButterKnife.<TextView>findById(perkView, R.id.perk_disclaimer).setText(offer.getDisclaimer());
     }
 
     private void bindImage(SimpleDraweeView image, DtlOffer perk) {
@@ -207,5 +232,4 @@ public class MerchantOffersInflater extends MerchantDataInflater {
         String concatDays = DateTimeUtils.concatOperationDays(resources, operDays);
         operationDays.setText(concatDays);
     }
-
 }

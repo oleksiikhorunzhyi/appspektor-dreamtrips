@@ -75,6 +75,9 @@
     <dimen name="locale_flag_size_width">38dp</dimen>
     <dimen name="locale_flag_size_height">22dp</dimen>
 
+    <!-- dimen for video items -->
+    <dimen name="podcast_play_icon_size">24dp</dimen>
+
     /////Map info sizes
     <dimen name="map_trip_info_size">275dp</dimen>
     <dimen name="map_trip_image_size">150dp</dimen>
@@ -84,6 +87,8 @@
     <dimen name="map_trip_detail_spacing">220dp</dimen>
     <dimen name="map_trip_detail_cell_height">100dp</dimen>
     <dimen name="map_trip_detail_cover_size">100dp</dimen>
+    <dimen name="map_trip_padding_horizontal">8dp</dimen>
+    <dimen name="map_trip_padding_vertical">6dp</dimen>
 
     <dimen name="pin_progress_inner_size">28dp</dimen>
 
@@ -150,7 +155,7 @@
     <dimen name="dtlfb_width">128dp</dimen>
     <dimen name="dtlfb_height">48dp</dimen>
     <dimen name="dtlfb_caption_text_size">14sp</dimen>
-    <dimen name="dtlfb_icon_padding">12dp</dimen>
+    <dimen name="dtlfb_icon_padding">10dp</dimen>
 
     <!-- dimen for dtl points calculation dialog -->
     <dimen name="dtlCalculationCalculateButtonTextSize">14sp</dimen>

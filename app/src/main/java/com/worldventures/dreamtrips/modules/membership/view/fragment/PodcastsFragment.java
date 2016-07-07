@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.membership.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,28 +9,29 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
+import com.worldventures.dreamtrips.modules.membership.model.Podcast;
 import com.worldventures.dreamtrips.modules.membership.presenter.PodcastsPresenter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.PodcastCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.delegate.PodcastCellDelegate;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
-import com.worldventures.dreamtrips.modules.video.view.BaseMediaFragment;
 
 import java.util.List;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_podcasts)
-public class PodcastsFragment extends BaseMediaFragment<PodcastsPresenter> implements PodcastsPresenter.View, SwipeRefreshLayout.OnRefreshListener, PodcastCellDelegate {
+public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implements PodcastsPresenter.View, SwipeRefreshLayout.OnRefreshListener, PodcastCellDelegate {
 
     @InjectView(R.id.list_items)
     EmptyRecyclerView recyclerView;
@@ -86,6 +88,12 @@ public class PodcastsFragment extends BaseMediaFragment<PodcastsPresenter> imple
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) getPresenter().track();
+    }
+
+    @Override
     public void onDestroyView() {
         recyclerView.setAdapter(null);
         stateDelegate.onDestroyView();
@@ -133,7 +141,7 @@ public class PodcastsFragment extends BaseMediaFragment<PodcastsPresenter> imple
                 R.string.delete_cached_podcast_text,
                 R.string.delete_photo_positiove,
                 R.string.delete_photo_negative,
-                () -> getPresenter().onDeleteAction(cacheEntity));
+                (dialog, which) -> getPresenter().onDeleteAction(cacheEntity));
     }
 
     @Override
@@ -142,7 +150,7 @@ public class PodcastsFragment extends BaseMediaFragment<PodcastsPresenter> imple
                 R.string.cancel_cached_podcast_text,
                 R.string.cancel_photo_positiove,
                 R.string.cancel_photo_negative,
-                () -> getPresenter().onCancelAction(cacheEntity));
+                (dialog, which) -> getPresenter().onCancelAction(cacheEntity));
     }
 
     @Override
@@ -167,5 +175,18 @@ public class PodcastsFragment extends BaseMediaFragment<PodcastsPresenter> imple
     @Override
     public void play(Podcast podcast) {
         getPresenter().play(podcast);
+    }
+
+    private void showDialog(@StringRes int title, @StringRes int content,
+                            @StringRes int positive, @StringRes int negative,
+                            MaterialDialog.SingleButtonCallback callback) {
+        new MaterialDialog.Builder(getActivity())
+                .title(title)
+                .content(content)
+                .positiveText(positive)
+                .negativeText(negative)
+                .onPositive(callback)
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .show();
     }
 }

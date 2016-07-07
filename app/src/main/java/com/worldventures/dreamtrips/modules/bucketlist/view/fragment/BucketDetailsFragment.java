@@ -29,12 +29,10 @@ import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.DiningItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivity;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
-import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BaseStatePagerAdapter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -102,15 +100,11 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     @ForActivity
     Provider<Injector> injector;
 
-    protected ProgressDialogFragment progressDialog;
-
     @Override
     public void afterCreateView(View view) {
         super.afterCreateView(view);
 
         setForeignIntentAction();
-
-        progressDialog = ProgressDialogFragment.create();
     }
 
     @Override
@@ -309,20 +303,5 @@ public class BucketDetailsFragment<T extends BucketItemDetailsPresenter> extends
     public void onEvent(ImageClickedEvent event) {
         if (ViewUtils.isPartVisibleOnScreen(this))
             getPresenter().openFullScreen(viewPagerBucketGallery.getCurrentItem());
-    }
-
-    @Override
-    public BucketPhotoCreationItem getBucketPhotoUploadTask(String filePath) {
-        return null;
-    }
-
-    @Override
-    public void showProgressDialog() {
-        progressDialog.show(getFragmentManager());
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        progressDialog.dismiss();
     }
 }

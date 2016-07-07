@@ -5,6 +5,7 @@ import com.techery.spares.adapter.expandable.BaseExpandableDelegateAdapter;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlPointsEstimationPresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanQrCodePresenter;
 import com.worldventures.dreamtrips.modules.dtl.presenter.DtlScanReceiptPresenter;
@@ -77,6 +78,7 @@ import dagger.Provides;
                 DtlFilterAttributeHeaderCell.class,
                 DtlMerchantExpandableCell.class,
                 DtlLocationSearchCell.class,
+                MerchantOffersInflater.class,
                 DtlPerkCell.class,
                 DtlPointsCell.class,
                 DtlLocationChangeCell.class,

@@ -19,6 +19,11 @@ public class ThreeSixtyVideosPresenter extends PresentationVideosPresenter<Three
     }
 
     @Override
+    protected boolean isNeedToSendAnalytics() {
+        return false;
+    }
+
+    @Override
     protected void addCategories(List<Category> categories) {
         currentItems = new ArrayList<>();
 

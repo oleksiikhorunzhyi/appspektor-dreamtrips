@@ -103,7 +103,7 @@
     <string name="chat_settings_row_assign_new_admin"> Lantik pentadbir baharu </string>
     <string name="chat_settings_row_leave_chat">Meninggalkan Sembang</string>
     <string name="chat_settings_row_delete_chat">Hapus Sembang</string>
-    <string name="chat_settings_group_chat_info_text_format">Perbualan ini dicipta oleh %1$s pada %2$s</string>
+    <string name="chat_settings_group_chat_info_text_format">Kumpulan ini dicipta oleh %s</string>
     <string name="chat_settings_menu_settings">Tetapan</string>
     <string name="chat_settings_menu_edit_chat_name"> Edit nama perbualan </string>
     <string name="chat_settings_menu_edit_change_chat_image">Tukar imej sembang</string>

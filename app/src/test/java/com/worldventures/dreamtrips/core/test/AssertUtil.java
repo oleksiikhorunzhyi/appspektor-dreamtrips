@@ -36,6 +36,7 @@ public final class AssertUtil {
     }
 
     public static <T> void assertActionCanceled(TestSubscriber<ActionState<T>> subscriber) {
+        subscriber.unsubscribe();
         subscriber.assertNoErrors();
         subscriber.assertUnsubscribed();
         AssertUtil.assertStatusCount(subscriber, ActionState.Status.START, 1);

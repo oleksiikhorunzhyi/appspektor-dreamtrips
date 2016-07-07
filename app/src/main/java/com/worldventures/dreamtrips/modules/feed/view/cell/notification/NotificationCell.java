@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
@@ -63,9 +62,6 @@ public class NotificationCell extends AbstractCell<FeedItem> {
     @Inject
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> profileRouteCreator;
-
-    @Inject
-    BucketItemManager bucketItemManager;
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;

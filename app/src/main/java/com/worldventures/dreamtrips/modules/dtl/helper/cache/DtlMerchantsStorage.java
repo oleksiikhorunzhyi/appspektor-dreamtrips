@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.cache;
 
+import android.support.annotation.Nullable;
+
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -17,12 +20,12 @@ public class DtlMerchantsStorage implements ActionStorage<List<DtlMerchant>> {
     }
 
     @Override
-    public void save(List<DtlMerchant> data) {
+    public void save(@Nullable CacheBundle bundle, List<DtlMerchant> data) {
         db.saveDtlMerhants(data);
     }
 
     @Override
-    public List<DtlMerchant> get() {
+    public List<DtlMerchant> get(@Nullable CacheBundle bundle) {
         return db.getDtlMerchants();
     }
 

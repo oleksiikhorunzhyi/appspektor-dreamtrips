@@ -35,7 +35,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp">
+        android:paddingTop="@dimen/map_trip_padding_vertical"
+        android:paddingBottom="@dimen/map_trip_padding_vertical"
+        android:paddingLeft="@dimen/map_trip_padding_horizontal"
+        android:paddingRight="@dimen/map_trip_padding_horizontal">
 
         <TextView
             android:id="@+id/trip_title"
@@ -43,11 +46,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textColor="@color/black"
             android:textSize="@dimen/font_normal"
             android:textStyle="bold"
-            tools:text="NYC TV AND MOVIE TOUR"/>
+            tools:text="NYC TV AND MOVIE TOUR AND EWE CALIFORNIA. MOJNO EHAT TRALALA"/>
 
         <TextView
             android:id="@+id/trip_location"
@@ -55,13 +58,13 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/trip_title"
             android:layout_marginTop="@dimen/spacing_tiny"
-            android:drawableLeft="@drawable/ic_location_grey"
-            android:drawablePadding="@dimen/spacing_small"
+            android:drawableLeft="@drawable/location_small_icon"
+            android:drawablePadding="@dimen/spacing_tiny"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/connecting_overlay_text_color"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/font_small"
             tools:text="New York, NY, United States"/>
 
         <TextView
@@ -69,9 +72,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/trip_price"
+            android:layout_marginRight="@dimen/spacing_tiny"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/blue"
             android:textSize="@dimen/font_medium"
-            tools:text="Aug 26-29, 2016"/>
+            tools:text="Aug 26, 2016-Aug 29, 2016"/>
 
         <TextView
             android:id="@+id/trip_price"

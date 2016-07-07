@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import javax.inject.Inject;
@@ -38,6 +39,8 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     protected EventBus eventBus;
     @Inject
     protected SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    protected AnalyticsInteractor analyticsInteractor;
     @Inject
     protected FeatureManager featureManager;
     @Inject
@@ -163,6 +166,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         return i != null && i.isConnected() && i.isAvailable();
     }
 
+    @Deprecated
     @Override
     public void handleError(SpiceException error) {
         if (apiErrorPresenter.hasView()) {
@@ -172,6 +176,15 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
                 view.informUser(error.getMessage());
             }
         } else {
+            view.informUser(R.string.smth_went_wrong);
+        }
+    }
+
+    protected void handleError(Throwable throwable) {
+        if (apiErrorPresenter.hasView()) {
+            apiErrorPresenter.handleError(throwable);
+        } else {
+            Timber.d("ApiErrorPresenter has detached view");
             view.informUser(R.string.smth_went_wrong);
         }
     }

@@ -103,7 +103,7 @@
     <string name="chat_settings_row_assign_new_admin">指派新的管理員</string>
     <string name="chat_settings_row_leave_chat">離開聊天</string>
     <string name="chat_settings_row_delete_chat">刪除聊天</string>
-    <string name="chat_settings_group_chat_info_text_format">該聊天由%1$s在%2$s創建</string>
+    <string name="chat_settings_group_chat_info_text_format">該小組由%s@創建</string>
     <string name="chat_settings_menu_settings">設置</string>
     <string name="chat_settings_menu_edit_chat_name">編輯聊天名</string>
     <string name="chat_settings_menu_edit_change_chat_image">更改聊天圖像</string>

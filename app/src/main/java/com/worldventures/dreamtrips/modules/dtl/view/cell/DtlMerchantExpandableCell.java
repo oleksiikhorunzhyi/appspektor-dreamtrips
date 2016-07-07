@@ -11,11 +11,17 @@ import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantsListingExpandEvent;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -26,6 +32,8 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -35,18 +43,37 @@ import io.techery.properratingbar.ProperRatingBar;
 public class DtlMerchantExpandableCell
         extends AbstractDelegateCell<DtlMerchant, DtlMerchantCellDelegate> {
 
-    @InjectView(R.id.merchantCoverImage) ImageryDraweeView merchantCoverImage;
-    @InjectView(R.id.merchantPricing) ProperRatingBar pricing;
-    @InjectView(R.id.merchantName) TextView merchantName;
-    @InjectView(R.id.merchantCategories) TextView merchantCategories;
-    @InjectView(R.id.merchantOpenClosedStatus) TextView merchantOperationalStatus;
-    @InjectView(R.id.view_points) TextView points;
-    @InjectView(R.id.view_perks) TextView perks;
-    @InjectView(R.id.merchantDistance) TextView merchantDistance;
-    @InjectView(R.id.offers_container) View offersContainer;
-    @InjectView(R.id.perk_toggle_view) ImageView perkToggleImage;
-    @InjectView(R.id.perk_toggle_label) TextView perkToggleText;
-    @InjectView(R.id.expandedContainer) ViewGroup expandedContainer;
+    @InjectView(R.id.merchantCoverImage)
+    ImageryDraweeView merchantCoverImage;
+    @InjectView(R.id.merchantPricing)
+    ProperRatingBar pricing;
+    @InjectView(R.id.merchantName)
+    TextView merchantName;
+    @InjectView(R.id.merchantCategories)
+    TextView merchantCategories;
+    @InjectView(R.id.merchantOpenClosedStatus)
+    TextView merchantOperationalStatus;
+    @InjectView(R.id.view_points)
+    TextView points;
+    @InjectView(R.id.view_perks)
+    TextView perks;
+    @InjectView(R.id.merchantDistance)
+    TextView merchantDistance;
+    @InjectView(R.id.offers_container)
+    View offersContainer;
+    @InjectView(R.id.perk_toggle_view)
+    ImageView perkToggleImage;
+    @InjectView(R.id.perk_toggle_label)
+    TextView perkToggleText;
+    @InjectView(R.id.expandedContainer)
+    ViewGroup expandedContainer;
+
+    @Inject
+    AnalyticsInteractor analyticsInteractor;
+    @Inject
+    protected SessionHolder<UserSession> sessionHolder;
+    @Inject
+    LocaleHelper localeHelper;
 
     private final LayoutInflater inflater;
 
@@ -156,6 +183,11 @@ public class DtlMerchantExpandableCell
     @OnClick(R.id.offers_container)
     void togglExpandClicked() {
         getModelObject().toggleExpanded();
+        if (getModelObject().isExpanded()) {
+            analyticsInteractor.dtlAnalyticsCommandPipe()
+                    .send(DtlAnalyticsCommand.create(
+                            new MerchantsListingExpandEvent(getModelObject())));
+        }
         cellDelegate.onExpandedToggle(getAdapterPosition());
     }
 
@@ -189,7 +221,8 @@ public class DtlMerchantExpandableCell
         //
         if (DtlMerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
             ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
-                    getOfferExpiringCaption(itemView.getContext(), offer));
+                    getOfferExpiringCaption(itemView.getContext(), offer,
+                            localeHelper.getAccountLocale(sessionHolder.get().get().getUser())));
         } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
         //
         title.setText(offer.getTitle()); // description

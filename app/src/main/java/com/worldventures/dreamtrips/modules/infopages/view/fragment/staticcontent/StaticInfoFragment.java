@@ -139,7 +139,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             }
 
             private void loadErrorText(WebView webView, int errorCode) {
-                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_LOADING_ERROR);
                 String errorText;
                 switch (errorCode) {
                     case ERROR_HOST_LOOKUP:
@@ -187,7 +186,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_LOADED);
                 Timber.d("Page finished");
                 isLoading = false;
                 if (!(isDetached() || isRemoving() || refreshLayout == null)) {
@@ -528,8 +526,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
 
         @Override
-        protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionMembershipEnrollMemberScreen(actionAnalyticEvent);
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+            super.setUserVisibleHint(isVisibleToUser);
+            if (isVisibleToUser) getPresenter().track(Route.ENROLL_MEMBER);
         }
     }
 
@@ -548,8 +547,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
 
         @Override
-        protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionMembershipEnrollMerchantScreen(actionAnalyticEvent);
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+            super.setUserVisibleHint(isVisibleToUser);
+            if (isVisibleToUser) getPresenter().track(Route.ENROLL_MERCHANT);
         }
     }
 

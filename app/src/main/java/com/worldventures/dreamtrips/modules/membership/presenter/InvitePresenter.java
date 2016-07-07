@@ -337,6 +337,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         view.showNextStepButtonVisibility(false);
     }
 
+    public void track() {
+        TrackingHelper.inviteShare(getAccountUserId());
+    }
+
     public interface View extends Presenter.View {
         void startLoading();
 

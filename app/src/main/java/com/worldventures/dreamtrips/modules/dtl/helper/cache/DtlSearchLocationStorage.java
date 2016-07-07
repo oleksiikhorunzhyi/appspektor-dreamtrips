@@ -14,7 +14,7 @@ import java.util.List;
 public class DtlSearchLocationStorage extends MemoryStorage<Pair<String, List<DtlExternalLocation>>> implements ActionStorage<Pair<String, List<DtlExternalLocation>>> {
 
     public DtlSearchLocationStorage() {
-        save(new Pair<>("", new ArrayList<>()));
+        save(null, new Pair<>("", new ArrayList<>()));
     }
 
     @Override

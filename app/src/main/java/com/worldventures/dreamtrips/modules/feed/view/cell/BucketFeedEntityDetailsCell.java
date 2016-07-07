@@ -4,20 +4,14 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 
-import javax.inject.Inject;
-
 @Layout(R.layout.adapter_item_entity_details)
 public class BucketFeedEntityDetailsCell extends FeedEntityDetailsCell<BucketFeedItem> {
-
-    @Inject
-    BucketItemManager bucketItemManager;
-
     public BucketFeedEntityDetailsCell(View view) {
         super(view);
     }
@@ -36,9 +30,8 @@ public class BucketFeedEntityDetailsCell extends FeedEntityDetailsCell<BucketFee
     @Override
     protected void onEdit() {
         super.onEdit();
-        BucketItem.BucketType bucketType = bucketItemManager.getType(getModelObject().getItem().getType());
-        bucketItemManager.saveSingleBucketItem(getModelObject().getItem());
-        //
-        getEventBus().post(new EditBucketEvent(getModelObject().getItem().getUid(), bucketType));
+
+        BucketItem bucketItem = getModelObject().getItem();
+        getEventBus().post(new EditBucketEvent(bucketItem, BucketUtility.typeFromItem(bucketItem)));
     }
 }

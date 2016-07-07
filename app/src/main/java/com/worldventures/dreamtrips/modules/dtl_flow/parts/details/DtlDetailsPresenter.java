@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenter;
 
 public interface DtlDetailsPresenter extends DtlPresenter<DtlDetailsScreen, DtlMerchantDetailsState> {
 
-    void trackScreen();
     void trackPointEstimator();
     void trackSharing(@ShareType String type);
     void routeToMerchantRequested(@Nullable final Intent intent);

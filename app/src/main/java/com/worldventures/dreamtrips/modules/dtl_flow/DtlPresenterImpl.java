@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
 import com.techery.spares.module.qualifier.Global;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 
 import javax.inject.Inject;
@@ -21,6 +22,8 @@ public abstract class DtlPresenterImpl<V extends DtlScreen, S extends Parcelable
     @Inject
     @Global
     protected EventBus eventBus;
+    @Inject
+    protected AnalyticsInteractor analyticsInteractor;
 
     protected ApiErrorPresenter apiErrorPresenter;
 

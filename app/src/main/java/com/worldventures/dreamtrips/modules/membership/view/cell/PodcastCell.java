@@ -66,7 +66,9 @@ public class PodcastCell extends AbstractDelegateCell<Podcast, PodcastCellDelega
             duration.setVisibility(View.INVISIBLE);
         } else {
             duration.setVisibility(View.VISIBLE);
-            duration.setText(DateUtils.formatElapsedTime(podcast.getDuration()));
+            duration.setText(String.format("%s %s",
+                    DateUtils.formatElapsedTime(podcast.getDuration()),
+                    context.getString(R.string.min)));
         }
 
         if (TextUtils.isEmpty(podcast.getDescription())){

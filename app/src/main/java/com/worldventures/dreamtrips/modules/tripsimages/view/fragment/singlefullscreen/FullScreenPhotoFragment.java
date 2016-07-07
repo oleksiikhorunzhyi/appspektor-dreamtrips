@@ -15,11 +15,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
@@ -36,7 +36,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresenter<T, ? extends FullScreenPresenter.View>, T extends IFullScreenObject>
-        extends BaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements FullScreenPresenter.View {
+        extends RxBaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements FullScreenPresenter.View {
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;

@@ -138,6 +138,12 @@ public class InviteFragment
         buttonContinue.setVisibility(View.GONE);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) getPresenter().track();
+    }
+
     private void setUpView() {
         if (isTabletLandscape()) {
             containerTemplates.setVisibility(View.VISIBLE);

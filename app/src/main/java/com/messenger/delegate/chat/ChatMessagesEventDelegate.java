@@ -8,21 +8,19 @@ import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.techery.janet.Janet;
 import rx.Notification;
 import rx.Observable;
 import rx.observables.ConnectableObservable;
@@ -61,7 +59,13 @@ public class ChatMessagesEventDelegate {
     }
 
     public void onPreSendMessage(Message message) {
-        saveMessage(message, MessageStatus.SENDING);
+        conversationsDAO.getConversation(message.getConversationId()).take(1)
+                // to be on par with iOS app do not set status
+                // SENDING to messages being resent to from abandoned conversations
+                // so that "Not Delivered" would not disappear
+                .map(conversation -> ConversationHelper.isAbandoned(conversation)
+                        ? MessageStatus.ERROR : MessageStatus.SENDING)
+                .subscribe(status -> saveMessage(message, status));
     }
 
     public void onSendMessage(Message message) {

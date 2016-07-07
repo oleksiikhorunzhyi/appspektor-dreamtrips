@@ -3,6 +3,7 @@ package com.messenger.messengerservers.xmpp;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.event.ImmutableClearChatEvent;
 import com.messenger.messengerservers.event.ImmutableRevertClearingEvent;
@@ -105,7 +106,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     private RosterListener rosterListener = new RosterListener() {
         @Override
         public void entriesAdded(Collection<String> addresses) {
-            notifyFriendsAdded(Queryable.from(addresses).map(JidCreatorHelper::obtainId).toList());
+            facade.getConnectionObservable()
+                    .take(1)
+                    .filter(status -> status.equals(ConnectionStatus.CONNECTED))
+                    .flatMap(xmppConnection -> Observable.from(addresses))
+                    .map(JidCreatorHelper::obtainId)
+                    .toList()
+                    .subscribe(users -> notifyFriendsAdded(users));
         }
 
         @Override

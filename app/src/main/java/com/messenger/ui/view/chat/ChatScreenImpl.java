@@ -42,6 +42,7 @@ import com.messenger.ui.util.chat.anim.TimestampItemAnimator;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
@@ -428,6 +429,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         // use invisible so that disabled input overlay can have the same size as input holder
         inputHolder.setVisibility(enabled ? VISIBLE : INVISIBLE);
         inputDisabledView.setVisibility(enabled ? GONE : VISIBLE);
+        if (!enabled) {
+            SoftInputUtil.hideSoftInputMethod(this);
+        }
     }
 
     @Override

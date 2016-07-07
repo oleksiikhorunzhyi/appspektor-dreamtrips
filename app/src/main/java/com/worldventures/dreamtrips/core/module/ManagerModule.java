@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
@@ -61,7 +61,6 @@ import io.techery.janet.Janet;
                 FileCachingDelegate.class,
                 VideoDownloadSpiceService.class,
                 PhotoUploadingManagerS3.class,
-                BucketItemManager.class,
                 SocialUploaderyManager.class,
                 //
                 DownloadFileListener.class,
@@ -109,12 +108,6 @@ public class ManagerModule {
     @Provides
     public FileDownloadSpiceManager provideVideoDownloadSpiceManager(@ForApplication Injector injector) {
         return new FileDownloadSpiceManager(VideoDownloadSpiceService.class);
-    }
-
-    @Singleton
-    @Provides
-    public BucketItemManager provideBucketItemManager(@ForApplication Injector injector) {
-        return new BucketItemManager(injector);
     }
 
     @Singleton
@@ -217,6 +210,12 @@ public class ManagerModule {
     @Singleton
     TripMapInteractor provideTripMapManager(Janet janet) {
         return new TripMapInteractor(janet);
+    }
+
+    @Provides
+    @Singleton
+    BucketInteractor provideBucketService(Janet janet) {
+        return new BucketInteractor(janet);
     }
 
     @Provides

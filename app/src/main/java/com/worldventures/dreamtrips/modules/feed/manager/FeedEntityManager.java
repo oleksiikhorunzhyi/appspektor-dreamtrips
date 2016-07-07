@@ -86,9 +86,11 @@ public class FeedEntityManager {
 
     public void updateComment(FeedEntity feedEntity, Comment comment) {
         requestingPresenter.doRequest(new EditCommentCommand(comment), result -> {
-            feedEntity.getComments().set(feedEntity.getComments().indexOf(result), result);
-
-            eventBus.post(new CommentEvent(comment, CommentEvent.Type.EDITED));
+            int location = feedEntity.getComments().indexOf(result);
+            if (location != -1) {
+                feedEntity.getComments().set(location, result);
+                eventBus.post(new CommentEvent(comment, CommentEvent.Type.EDITED));
+            }
         }, spiceException -> handelCommentError(spiceException, CommentEvent.Type.EDITED));
     }
 

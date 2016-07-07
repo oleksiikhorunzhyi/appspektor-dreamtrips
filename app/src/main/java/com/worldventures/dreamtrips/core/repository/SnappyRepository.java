@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.snappydb.DB;
 import com.snappydb.SnappydbException;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -18,7 +17,6 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -29,16 +27,15 @@ import java.util.Collection;
 import java.util.List;
 
 public interface SnappyRepository {
+
     String CIRCLES = "circles";
     String REGIONS = "regions_new";
     String CATEGORIES = "categories";
     String ACTIVITIES = "activities_new";
     String BUCKET_LIST = "bucket_items";
-    String TRIP_KEY = "trip_rezopia_v2";
     String SETTINGS_KEY = "settings";
     String POST = "post";
     String UPLOAD_TASK_KEY = "amazon_upload_task";
-    String BUCKET_PHOTO_CREATION_ITEM = "BUCKET_PHOTO_CREATION_ITEM";
     String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
     String INVITE_MEMBER = "INVITE_MEMBER ";
     String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
@@ -64,7 +61,6 @@ public interface SnappyRepository {
     String FEEDBACK_TYPES = "FEEDBACK_TYPES";
     String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
-
     void clearAll();
 
     Boolean isEmpty(String key);
@@ -77,11 +73,9 @@ public interface SnappyRepository {
 
     void clearAllForKeys(String... keys);
 
-    void saveBucketList(List<BucketItem> items, String type);
+    void saveBucketList(List<BucketItem> items, int userId);
 
-    void saveBucketList(List<BucketItem> items, String type, int userId);
-
-    List<BucketItem> readBucketList(String type, int userId);
+    List<BucketItem> readBucketList(int userId);
 
     int getRecentlyAddedBucketItems(String type);
 
@@ -90,18 +84,6 @@ public interface SnappyRepository {
     void saveOpenBucketTabType(String type);
 
     String getOpenBucketTabType();
-
-    void saveTrip(TripModel trip);
-
-    void saveTrips(List<TripModel> list);
-
-    List<TripModel> getTrips();
-
-    void clearTrips(DB snappyDb) throws SnappydbException;
-
-    void saveDownloadMediaEntity(CachedEntity e);
-
-    CachedEntity getDownloadMediaEntity(String id);
 
     void saveSettings(List<Setting> settingsList, boolean withClear);
 
@@ -120,16 +102,6 @@ public interface SnappyRepository {
     void removeUploadTask(UploadTask uploadTask);
 
     void removeAllUploadTasks();
-
-    void saveBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask);
-
-    BucketPhotoCreationItem getBucketPhotoCreationItem(String filePath);
-
-    void removeBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask);
-
-    void removeAllBucketItemPhotoCreations();
-
-    List<BucketPhotoCreationItem> getAllBucketPhotoCreationItem();
 
     List<UploadTask> getAllUploadTask();
 
@@ -217,4 +189,8 @@ public interface SnappyRepository {
     void saveDtlTransaction(String id, DtlTransaction dtlTransaction);
 
     void deleteDtlTransaction(String id);
+
+    void saveDownloadMediaEntity(CachedEntity e);
+
+    CachedEntity getDownloadMediaEntity(String id);
 }

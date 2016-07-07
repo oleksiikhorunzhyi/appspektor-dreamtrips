@@ -8,7 +8,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 public class BucketBundle implements Parcelable {
 
     protected BucketItem.BucketType type;
-    protected String bucketItemUid;
+    protected BucketItem bucketItem;
     protected int ownerId;
     //
     protected boolean lock;
@@ -27,12 +27,12 @@ public class BucketBundle implements Parcelable {
         return type;
     }
 
-    public String getBucketItemUid() {
-        return bucketItemUid;
+    public void setBucketItem(BucketItem bucketItem) {
+        this.bucketItem = bucketItem;
     }
 
-    public void setBucketItemUid(String bucketItemUid) {
-        this.bucketItemUid = bucketItemUid;
+    public BucketItem getBucketItem() {
+        return bucketItem;
     }
 
     public int getOwnerId() {
@@ -68,7 +68,7 @@ public class BucketBundle implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.type == null ? -1 : this.type.ordinal());
-        dest.writeString(this.bucketItemUid);
+        dest.writeSerializable(bucketItem);
         dest.writeInt(this.ownerId);
         dest.writeByte(lock ? (byte) 1 : (byte) 0);
         dest.writeByte(slave ? (byte) 1 : (byte) 0);
@@ -80,7 +80,7 @@ public class BucketBundle implements Parcelable {
     protected BucketBundle(Parcel in) {
         int tmpType = in.readInt();
         this.type = tmpType == -1 ? null : BucketItem.BucketType.values()[tmpType];
-        this.bucketItemUid = in.readString();
+        this.bucketItem = (BucketItem) in.readSerializable();
         this.ownerId = in.readInt();
         this.lock = in.readByte() != 0;
         this.slave = in.readByte() != 0;

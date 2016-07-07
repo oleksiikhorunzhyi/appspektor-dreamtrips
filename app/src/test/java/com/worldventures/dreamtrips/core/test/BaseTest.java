@@ -44,10 +44,29 @@ public abstract class BaseTest {
                     else
                         return false;
                 });
+        PowerMockito.when(TextUtils.equals(anyString(), anyString()))
+                .thenAnswer(invocation -> {
+                    Object[] args = invocation.getArguments();
+                    CharSequence a = (CharSequence) args[0];
+                    CharSequence b = (CharSequence) args[1];
+
+                    if (a == b) return true;
+                    int length;
+                    if (a != null && b != null && (length = a.length()) == b.length()) {
+                        if (a instanceof String && b instanceof String) {
+                            return a.equals(b);
+                        } else {
+                            for (int i = 0; i < length; i++) {
+                                if (a.charAt(i) != b.charAt(i)) return false;
+                            }
+                            return true;
+                        }
+                    }
+                    return false;
+                });
     }
 
-    protected static ActionService cachedService(ActionService service) {
+    protected static CacheResultWrapper cachedService(ActionService service) {
         return new CacheResultWrapper(service);
     }
-
 }

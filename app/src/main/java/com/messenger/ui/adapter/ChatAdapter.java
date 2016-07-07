@@ -37,7 +37,7 @@ public class ChatAdapter extends HeaderableCursorRecyclerViewAdapter<MessageView
     @Override
     protected void onBindElementViewHolderCursor(MessageViewHolder holder, Cursor cursor) {
         int position = cursor.getPosition();
-        holder.setSelected(chatTimestampInflater.bindTimeStampIfNeeded(holder, cursor, position));
+        holder.setSelected(chatTimestampInflater.bindTimeStampIfNeeded(holder, cursor, position, getHeaderViewCount()));
         holder.setNeedMarkUnreadMessage(needMarkUnreadMessages);
         holder.bindCursor(cursor);
     }

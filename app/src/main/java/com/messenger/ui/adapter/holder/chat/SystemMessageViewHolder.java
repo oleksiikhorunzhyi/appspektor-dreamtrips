@@ -73,7 +73,11 @@ public class SystemMessageViewHolder extends MessageViewHolder {
         Resources resources = itemView.getResources();
 
         if (TextUtils.equals(conversationType, ConversationType.TRIP)){
-            return Html.fromHtml(resources.getString(R.string.system_message_is_added, obtainUserTextWithCapitalLetter()));
+            if(isItMe(dataUserRecipient)) {
+                return Html.fromHtml(resources.getString(R.string.system_message_you_are_added));
+            } else {
+                return Html.fromHtml(resources.getString(R.string.system_message_is_added, dataUserRecipient.getDisplayedName()));
+            }
         } else {
             return Html.fromHtml(resources.getString(R.string.system_message_added, obtainAdminText(), obtainUserTextWithoutCapitalLetter()));
         }
@@ -83,7 +87,11 @@ public class SystemMessageViewHolder extends MessageViewHolder {
         Resources resources = itemView.getResources();
 
         if (TextUtils.equals(conversationType, ConversationType.TRIP)){
-            return Html.fromHtml(resources.getString(R.string.system_message_is_removed, obtainUserTextWithCapitalLetter()));
+            if(isItMe(dataUserRecipient)) {
+                return Html.fromHtml(resources.getString(R.string.system_message_you_are_removed));
+            } else {
+                return Html.fromHtml(resources.getString(R.string.system_message_is_removed, dataUserRecipient.getDisplayedName()));
+            }
         } else {
             return Html.fromHtml(resources.getString(R.string.system_message_removed, obtainAdminText(), obtainUserTextWithoutCapitalLetter()));
         }
@@ -93,11 +101,6 @@ public class SystemMessageViewHolder extends MessageViewHolder {
         Resources resources = itemView.getResources();
         return Html.fromHtml(isItMe(dataUserSender)? resources.getString(R.string.system_message_you_left_the_chat) :
             resources.getString(R.string.system_message_left, dataUserSender.getDisplayedName()));
-    }
-
-    private String obtainUserTextWithCapitalLetter() {
-        return isItMe(dataUserRecipient) ? itemView.getResources().getString(R.string.system_message_you) :
-                dataUserRecipient.getDisplayedName();
     }
 
     private String obtainUserTextWithoutCapitalLetter() {

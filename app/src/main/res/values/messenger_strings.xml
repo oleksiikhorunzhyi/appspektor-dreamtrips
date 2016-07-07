@@ -85,8 +85,10 @@
     <string name="system_message_admin" formatted="false">%s(Admin)</string>
     <string name="system_message_added" formatted="false">%s &lt;b>added&lt;/b> %s</string>
     <string name="system_message_is_added" formatted="false">%s &lt;b>is added&lt;/b></string>
+    <string name="system_message_you_are_added" formatted="false">You &lt;b>are added&lt;/b></string>
     <string name="system_message_removed" formatted="false">%s &lt;b>removed&lt;/b> %s from the chat</string>
     <string name="system_message_is_removed" formatted="false">%s &lt;b>is removed&lt;/b></string>
+    <string name="system_message_you_are_removed" formatted="false">You &lt;b>are removed&lt;/b></string>
     <string name="system_message_you_left_the_chat" formatted="false">You &lt;b>left&lt;/b> the chat</string>
     <string name="system_message_left" formatted="false">%s &lt;b>left&lt;b></string>
 

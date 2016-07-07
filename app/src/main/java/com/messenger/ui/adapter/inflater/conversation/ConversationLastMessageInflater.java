@@ -66,6 +66,8 @@ public class ConversationLastMessageInflater extends ViewInflater {
             } else if (ConversationHelper.isGroup(dataConversation) && !TextUtils.isEmpty(messageAuthor)) {
                 messageText = TextUtils.getTrimmedLength(messageAuthor) > 0 ? messageAuthor + ": " + messageText : messageText;
             }
+        } else if (ConversationHelper.isCleared(dataConversation)) {
+            return context.getString(R.string.chat_reload_chat_history_info_text);
         }
         return messageText;
     }

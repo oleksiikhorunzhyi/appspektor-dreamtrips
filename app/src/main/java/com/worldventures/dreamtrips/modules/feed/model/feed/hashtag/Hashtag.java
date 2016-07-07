@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.model;
+package com.worldventures.dreamtrips.modules.feed.model.feed.hashtag;
 
 import android.os.Parcel;
 import android.os.Parcelable;

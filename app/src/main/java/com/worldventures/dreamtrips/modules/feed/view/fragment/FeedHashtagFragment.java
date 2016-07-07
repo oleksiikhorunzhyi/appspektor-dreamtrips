@@ -130,6 +130,12 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        releaseSearchFocus(searchView);
+    }
+
+    @Override
     protected FeedHashtagPresenter createPresenter(Bundle savedInstanceState) {
         return new FeedHashtagPresenter();
     }
@@ -144,10 +150,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (query != null || searchOpened) searchItem.expandActionView();
 
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-
-        searchItem.expandActionView();
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQuery(query, false);
         searchView.setOnCloseListener(() -> false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -206,9 +209,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         }
     }
 
-    private void releaseSearchFocus(View search){
+    private void releaseSearchFocus(@Nullable View search){
         new WeakHandler().postDelayed(() -> {
-            search.clearFocus();
+            if (search != null) search.clearFocus();
             getView().requestFocus();
         }, 50);
     }

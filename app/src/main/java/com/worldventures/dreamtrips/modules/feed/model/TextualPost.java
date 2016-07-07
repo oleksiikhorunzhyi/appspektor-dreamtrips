@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.jetbrains.annotations.NotNull;

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
@@ -84,7 +85,9 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
             post.setVisibility(View.VISIBLE);
             post.setText(String.format("%s", textualPost.getDescription()));
             post.setHashtagClickListener(this::openHashtagFeeds);
-            post.highlightHashtags(textualPost.getHashtags());
+            ArrayList<Hashtag> hightlightedHashtags = new ArrayList<>();
+            if (getModelObject().getMetaData() != null && getModelObject().getMetaData().getHashtags() != null) hightlightedHashtags = getModelObject().getMetaData().getHashtags();
+            post.highlightHashtags(textualPost.getHashtags(), hightlightedHashtags);
         } else {
             post.setVisibility(View.GONE);
         }

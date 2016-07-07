@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 
 import java.util.ArrayList;
 

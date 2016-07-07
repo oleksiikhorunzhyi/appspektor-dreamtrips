@@ -14,7 +14,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.worldventures.dreamtrips.modules.feed.model.Hashtag;
+import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 
 import java.util.ArrayList;
 import java.util.List;

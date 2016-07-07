@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
+import com.innahema.collections.query.functions.Action1;
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 
 import java.util.ArrayList;
@@ -45,6 +47,11 @@ public class DataMetaData implements Parcelable {
         return metaData;
     }
 
+    public final void shareMetaDataWithChilds(){
+        Queryable.from(parentFeedItems)
+                .forEachR(arg -> Queryable.from(arg.getItems())
+                        .forEachR((Action1<FeedItem<FeedEntity>>) arg1 -> arg1.setMetaData(metaData)));
+    }
 
     @Override
     public int describeContents() {

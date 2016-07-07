@@ -119,6 +119,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     private void refreshFeedSucceed(DataMetaData dataMetaData) {
+        dataMetaData.shareMetaDataWithChilds();
         ArrayList<ParentFeedItem> freshItems = dataMetaData.getParentFeedItems();
         boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
         view.updateLoadingStatus(false, noMoreFeeds);
@@ -143,8 +144,10 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                 .compose(new ActionStateToActionTransformer<>())
                 .map(LoadNextFeedsByHashtagsCommand::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(dataMetaData ->
-                                addFeedItems(dataMetaData.getParentFeedItems()),
+                .subscribe(dataMetaData -> {
+                            dataMetaData.shareMetaDataWithChilds();
+                            addFeedItems(dataMetaData.getParentFeedItems());
+                        },
                         throwable -> {
                             loadMoreItemsError();
                             Timber.e(throwable, "");

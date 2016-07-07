@@ -106,6 +106,7 @@ public class MessageDAO extends BaseDAO {
                         "ON m." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
 
                         "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
+                        "AND m." + DataMessage$Table.DATE + ">=c." + DataConversation$Table.CLEARTIME + " " +
                         "AND m." + DataMessage$Table.SYNCTIME + " >=? " +
                         "ORDER BY m." + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)}).build();

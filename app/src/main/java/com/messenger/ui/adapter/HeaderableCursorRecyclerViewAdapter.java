@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class HeaderableCursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder>{
+public abstract class HeaderableCursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder> {
 
     private static final int HEADER_VIEW_TYPE_BASE = 666;
 
@@ -21,14 +21,19 @@ public abstract class HeaderableCursorRecyclerViewAdapter<VH extends RecyclerVie
     }
 
     public void addHeaderView(View headerView) {
-        if (!headerViews.contains(headerView)) headerViews.add(headerView);
+        if (!headerViews.contains(headerView)) {
+            headerViews.add(headerView);
+            notifyDataSetChanged();
+        }
     }
 
     public void removeHeaderView(View headerView) {
-        headerViews.remove(headerView);
+        if (headerViews.remove(headerView)) {
+            notifyDataSetChanged();
+        }
     }
 
-    public int getHeaderViewCount(){
+    public int getHeaderViewCount() {
         return headerViews.size();
     }
 
@@ -38,7 +43,7 @@ public abstract class HeaderableCursorRecyclerViewAdapter<VH extends RecyclerVie
     @Override
     public final int getItemViewType(int position) {
         int headerCount = getHeaderViewCount();
-        return position < headerCount? HEADER_VIEW_TYPE_BASE + position : getElementViewType(position - headerCount);
+        return position < headerCount ? HEADER_VIEW_TYPE_BASE + position : getElementViewType(position - headerCount);
     }
 
     protected abstract int getElementViewType(int position);
@@ -46,12 +51,13 @@ public abstract class HeaderableCursorRecyclerViewAdapter<VH extends RecyclerVie
     @Override
     public final void onBindViewHolder(RecyclerView.ViewHolder holder, int i) {
         int headerCount = getHeaderViewCount();
-        if (i > headerCount-1) super.onBindViewHolder(holder, i - headerCount);
+        if (i > headerCount - 1) super.onBindViewHolder(holder, i - headerCount);
     }
 
     @Override
     public final void onBindViewHolderCursor(RecyclerView.ViewHolder holder, Cursor cursor) {
-        onBindElementViewHolderCursor((VH)holder, cursor);
+        //noinspection all
+        onBindElementViewHolderCursor((VH) holder, cursor);
     }
 
     protected abstract void onBindElementViewHolderCursor(VH holder, Cursor cursor);
@@ -59,7 +65,7 @@ public abstract class HeaderableCursorRecyclerViewAdapter<VH extends RecyclerVie
     @Override
     public final RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         int headerViewType = viewType - HEADER_VIEW_TYPE_BASE;
-        return headerViewType >= 0 && headerViewType < headerViews.size()?
+        return headerViewType >= 0 && headerViewType < headerViews.size() ?
                 new HeaderViewHolder(headerViews.get(headerViewType)) : onCreateElementViewHolder(parent, viewType);
     }
 

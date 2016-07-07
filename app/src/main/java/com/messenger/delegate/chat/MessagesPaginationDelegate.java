@@ -27,7 +27,7 @@ import rx.subjects.PublishSubject;
 
 public class MessagesPaginationDelegate {
 
-    private static final int MAX_MESSAGES_PER_PAGE = 50;
+    public static final int MAX_MESSAGES_PER_PAGE = 50;
 
     private String conversationId;
 
@@ -49,6 +49,11 @@ public class MessagesPaginationDelegate {
     public void loadFirstPage() {
         page = 0;
         beforeMessageTimestamp = 0;
+        hasMoreElements = true;
+        loadNextPage();
+    }
+
+    public void forceLoadNextPage() {
         hasMoreElements = true;
         loadNextPage();
     }
@@ -139,8 +144,11 @@ public class MessagesPaginationDelegate {
 
     @Value.Immutable()
     public interface PaginationStatus {
+
         Status getStatus();
+
         Integer getPage();
+
         @Nullable Integer getLoadedElementsCount();
     }
 

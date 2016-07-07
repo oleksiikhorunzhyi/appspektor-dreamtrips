@@ -41,10 +41,6 @@ public class TextualPost extends BaseFeedEntity {
         return hashtags;
     }
 
-    public void setHashtags(List<Hashtag> hashtags) {
-        this.hashtags = hashtags;
-    }
-
     @NotNull
     public Location getLocation() {
         return location != null ? location : new Location();

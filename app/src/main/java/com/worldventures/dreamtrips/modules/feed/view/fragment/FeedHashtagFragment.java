@@ -39,7 +39,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import icepick.Icepick;
 import icepick.State;
 
 @MenuResource(R.menu.menu_hashtag_feed)
@@ -53,8 +52,6 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     Injector injector;
     @State
     boolean searchOpened;
-    @State
-    String query;
 
     @InjectView(R.id.suggestions)
     RecyclerView suggestions;
@@ -72,7 +69,6 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Icepick.restoreInstanceState(this, savedInstanceState);
         this.savedInstanceState = savedInstanceState;
         stateDelegate = new RecyclerViewStateDelegate();
         stateDelegate.onCreate(savedInstanceState);
@@ -149,7 +145,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         super.onMenuInflated(menu);
         FeedHashtagBundle args = getArgs();
 
+        String query = getPresenter().getQuery();
         query = query != null ? query : (args != null && !TextUtils.isEmpty(args.getHashtag()) ? args.getHashtag() : null);
+        getPresenter().setQuery(query);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         if (query != null || searchOpened) searchItem.expandActionView();
@@ -161,7 +159,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                FeedHashtagFragment.this.query = query;
+                getPresenter().setQuery(query);
                 releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
                 getPresenter().onRefresh();
                 return true;
@@ -169,9 +167,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                query = newText;
+                getPresenter().setQuery(newText);
                 clearSuggestions();
-                getPresenter().query(getTextFromCursor());
+                getPresenter().searchSuggestions(getTextFromCursor());
                 return true;
             }
         });
@@ -180,14 +178,14 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 searchOpened = true;
-                searchView.setQuery(query, false);
+                searchView.setQuery(getPresenter().getQuery(), false);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 searchOpened = false;
-                query = null;
+                getPresenter().setQuery(null);
                 searchView.setQuery("", false);
                 getActivity().onBackPressed();
                 return true;
@@ -217,11 +215,6 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @Override
     public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
         statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
-    }
-
-    @Override
-    public String getQuery() {
-        return query;
     }
 
     @Override

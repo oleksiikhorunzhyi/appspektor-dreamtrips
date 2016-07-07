@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.service;
 
-import com.worldventures.dreamtrips.modules.feed.command.LoadNextFeedsByHashtagsCommand;
-import com.worldventures.dreamtrips.modules.feed.command.RefreshFeedsByHashtagsCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.PostDescriptionCreatedCommand;
 
@@ -12,17 +11,17 @@ import io.techery.janet.Janet;
 
 public class HashtagInteractor {
 
-    ActionPipe<HashtagSuggestionCommand> suggestionPipe;
-    ActionPipe<PostDescriptionCreatedCommand> descPickedPipe;
-    ActionPipe<RefreshFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
-    ActionPipe<LoadNextFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
+    private final ActionPipe<HashtagSuggestionCommand> suggestionPipe;
+    private final ActionPipe<PostDescriptionCreatedCommand> descPickedPipe;
+    private final ActionPipe<FeedByHashtagCommand.Refresh> refreshFeedsByHashtagsPipe;
+    private final ActionPipe<FeedByHashtagCommand.LoadNext> loadNextFeedsByHashtagsPipe;
 
     @Inject
     public HashtagInteractor(Janet janet) {
-        this.suggestionPipe = janet.createPipe(HashtagSuggestionCommand.class);
-        this.descPickedPipe = janet.createPipe(PostDescriptionCreatedCommand.class);
-        refreshFeedsByHashtagsPipe = janet.createPipe(RefreshFeedsByHashtagsCommand.class);
-        loadNextFeedsByHashtagsPipe = janet.createPipe(LoadNextFeedsByHashtagsCommand.class);
+        suggestionPipe = janet.createPipe(HashtagSuggestionCommand.class);
+        descPickedPipe = janet.createPipe(PostDescriptionCreatedCommand.class);
+        refreshFeedsByHashtagsPipe = janet.createPipe(FeedByHashtagCommand.Refresh.class);
+        loadNextFeedsByHashtagsPipe = janet.createPipe(FeedByHashtagCommand.LoadNext.class);
     }
 
     public ActionPipe<HashtagSuggestionCommand> getSuggestionPipe() {
@@ -32,13 +31,12 @@ public class HashtagInteractor {
     public ActionPipe<PostDescriptionCreatedCommand> getDescPickedPipe() {
         return descPickedPipe;
     }
-
-
-    public ActionPipe<RefreshFeedsByHashtagsCommand> getRefreshFeedsByHashtagsPipe() {
+    
+    public ActionPipe<FeedByHashtagCommand.Refresh> getRefreshFeedsByHashtagsPipe() {
         return refreshFeedsByHashtagsPipe;
     }
 
-    public ActionPipe<LoadNextFeedsByHashtagsCommand> getLoadNextFeedsByHashtagsPipe() {
+    public ActionPipe<FeedByHashtagCommand.LoadNext> getLoadNextFeedsByHashtagsPipe() {
         return loadNextFeedsByHashtagsPipe;
     }
 }

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class MetaData implements Parcelable {
 
-    @SerializedName("hashtags")
     ArrayList<Hashtag> hashtags;
 
     public MetaData() {

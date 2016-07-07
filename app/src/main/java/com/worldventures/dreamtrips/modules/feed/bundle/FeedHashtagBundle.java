@@ -3,7 +3,8 @@ package com.worldventures.dreamtrips.modules.feed.bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class FeedHashtagBundle implements Parcelable{
+public class FeedHashtagBundle implements Parcelable {
+
     String hashtag;
 
     public FeedHashtagBundle(String hashtag) {

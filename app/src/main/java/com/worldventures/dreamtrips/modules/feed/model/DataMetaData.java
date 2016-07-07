@@ -47,12 +47,6 @@ public class DataMetaData implements Parcelable {
         return metaData;
     }
 
-    public final void shareMetaDataWithChildren(){
-        Queryable.from(parentFeedItems)
-                .forEachR(parentFeedItem -> Queryable.from(parentFeedItem.getItems())
-                        .forEachR((Action1<FeedItem<FeedEntity>>) feedItem -> feedItem.setMetaData(metaData)));
-    }
-
     @Override
     public int describeContents() {
         return 0;

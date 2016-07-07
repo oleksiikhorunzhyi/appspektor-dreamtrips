@@ -22,14 +22,9 @@ import java.util.List;
 
 public class HashtagTextView extends TextView {
 
-    private @ColorInt
-    int hashtagTextColor;
-    private
-    @ColorInt
-    int selectedHashtagTextColor;
-    private
-    @ColorInt
-    int selectedHashtagBackgroundColor;
+    private @ColorInt int hashtagTextColor;
+    private @ColorInt int selectedHashtagTextColor;
+    private @ColorInt int selectedHashtagBackgroundColor;
 
     private HashtagClickListener hashtagClickListener;
 
@@ -48,11 +43,11 @@ public class HashtagTextView extends TextView {
         selectedHashtagBackgroundColor = context.getResources().getColor(R.color.highlight_hashtag_bg);
     }
 
-    public void setHashtagTextColor(int hashtagTextColor) {
+    public void setHashtagTextColor(@ColorInt int hashtagTextColor) {
         this.hashtagTextColor = hashtagTextColor;
     }
 
-    public void setSelectedTextColor(int hashtagTextColor, int selectedHashtagTextColor, int selectedHashtagBackgroundColor) {
+    public void setSelectedTextColor(@ColorInt int hashtagTextColor, @ColorInt int selectedHashtagTextColor, @ColorInt int selectedHashtagBackgroundColor) {
         this.hashtagTextColor = hashtagTextColor;
         this.selectedHashtagTextColor = selectedHashtagTextColor;
         this.selectedHashtagBackgroundColor = selectedHashtagBackgroundColor;
@@ -77,14 +72,14 @@ public class HashtagTextView extends TextView {
         for (final Hashtag hashtagHolder : clickableHashtags) {
             final String hashtag = String.format("#%s", hashtagHolder.getHashtag());
 
-            int index1 = text.indexOf(hashtag);
-            int index2;
+            int start = text.indexOf(hashtag);
+            int end;
 
-            while (index1 != -1) {
-                index2 = index1 + hashtag.length();
+            while (start != -1) {
+                end = start + hashtag.length();
 
                 if (selectedHashtags.contains(hashtagHolder))
-                    spannableText.setSpan(new RoundedBackgroundSpan(selectedHashtagTextColor, selectedHashtagBackgroundColor), index1, index2, 0);
+                    spannableText.setSpan(new RoundedBackgroundSpan(selectedHashtagTextColor, selectedHashtagBackgroundColor), start, end, 0);
 
                 spannableText.setSpan(new HashtagClickableSpan(hashtagTextColor) {
                     @Override
@@ -92,8 +87,8 @@ public class HashtagTextView extends TextView {
                         if (hashtagClickListener != null)
                             hashtagClickListener.onHashtagClicked(hashtag);
                     }
-                }, index1, index2, 0);
-                index1 = text.indexOf(hashtag, index2);
+                }, start, end, 0);
+                start = text.indexOf(hashtag, end);
             }
         }
         return spannableText;
@@ -152,8 +147,8 @@ public class HashtagTextView extends TextView {
         }
     }
 
-
     public interface HashtagClickListener {
+
         void onHashtagClicked(String hashtag);
     }
 }

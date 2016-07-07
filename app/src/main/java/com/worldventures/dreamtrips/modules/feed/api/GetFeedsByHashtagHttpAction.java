@@ -17,14 +17,14 @@ public class GetFeedsByHashtagHttpAction extends AuthorizedHttpAction {
     @Query("before")
     String before;
 
+    @Response
+    DataMetaData responseItems;
+
     public GetFeedsByHashtagHttpAction(String query, int perPage, String before) {
         this.query = query;
         this.perPage = perPage;
         this.before = before;
     }
-
-    @Response
-    DataMetaData responseItems;
 
     public DataMetaData getResponseItems() {
         if (responseItems == null) responseItems = new DataMetaData();

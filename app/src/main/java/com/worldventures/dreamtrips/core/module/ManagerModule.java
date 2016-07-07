@@ -37,7 +37,6 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInterac
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
@@ -77,7 +76,6 @@ import io.techery.janet.Janet;
                 AuthorizedDataManager.class,
                 AppSettingsInteractor.class,
                 LocalesInteractor.class,
-                HashtagInteractor.class,
                 StaticPagesInteractor.class,
                 QueryTripsFilterDataInteractor.class,
         },

@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.command;
 import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedsByHashtagHttpAction;
 import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
 
@@ -33,7 +34,7 @@ public class LoadNextFeedsByHashtagsCommand extends Command<DataMetaData> implem
     @Override
     protected void run(CommandCallback<DataMetaData> callback) throws Throwable {
         janet.createPipe(GetFeedsByHashtagHttpAction.class, Schedulers.io())
-                .createObservableResult(new GetFeedsByHashtagHttpAction(query, perPage, before))
+                .createObservableResult(new GetFeedsByHashtagHttpAction(query, perPage, DateTimeUtils.convertDateToUTCString(before)))
                 .map(GetFeedsByHashtagHttpAction :: getResponseItems)
                 .subscribe(callback:: onSuccess, callback::onFail);
     }

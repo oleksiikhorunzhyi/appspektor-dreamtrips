@@ -44,7 +44,6 @@
                 android:layout_marginTop="16dp"
                 android:alpha="0.54"
                 android:gravity="center"
-
                 android:text="@string/no_feed_by_hashtag"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
@@ -54,5 +53,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/suggestions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone"/>
 </RelativeLayout>

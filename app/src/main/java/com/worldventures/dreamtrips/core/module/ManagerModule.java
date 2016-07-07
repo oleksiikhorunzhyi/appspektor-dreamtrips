@@ -233,10 +233,4 @@ public class ManagerModule {
                                                        MessengerConnector messengerConnector) {
         return new AuthorizedDataManager(userSessionSessionHolder, authInteractor, messengerConnector);
     }
-
-    @Provides
-    @Singleton
-    HashtagInteractor provideHashtagInteractor(Janet janet) {
-        return new HashtagInteractor(janet);
-    }
 }

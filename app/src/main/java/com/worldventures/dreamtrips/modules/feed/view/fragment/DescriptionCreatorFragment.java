@@ -20,17 +20,19 @@ import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditTe
 import com.worldventures.dreamtrips.modules.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
+import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.InjectView;
+import icepick.State;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -49,6 +51,10 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
     KeyCallbackEditText description;
     @InjectView(R.id.suggestions)
     RecyclerView suggestions;
+    @Inject
+    HashtagInteractor interactor;
+    @State
+    ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +70,6 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
     public void onDestroyView() {
         super.onDestroyView();
         stateDelegate.onDestroyView();
-        ButterKnife.reset(this);
     }
 
     public DescriptionCreatorPresenter createPresenter(Bundle savedInstanceState) {
@@ -127,6 +132,7 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     public void onSuggestionsReceived(@NonNull List<HashtagSuggestion> suggestionList) {
         adapter.clear();
         adapter.addItems(suggestionList);

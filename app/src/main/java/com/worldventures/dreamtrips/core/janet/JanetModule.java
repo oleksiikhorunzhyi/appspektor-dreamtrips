@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
-import com.worldventures.dreamtrips.modules.feed.presenter.interactor.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.membership.presenter.interactor.PodcastInteractor;
 
 import java.net.CookieManager;
@@ -106,9 +105,4 @@ public class JanetModule {
         return new PodcastInteractor(janet);
     }
 
-    @Singleton
-    @Provides
-    HashtagInteractor provideHashtagInteractor(Janet janet) {
-        return new HashtagInteractor(janet);
-    }
 }

@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -13,7 +14,9 @@ import com.worldventures.dreamtrips.modules.feed.command.RefreshFeedsByHashtagsC
 import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.modules.feed.presenter.interactor.HashtagInteractor;
+import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
+import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +26,21 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.ActionPipe;
 import io.techery.janet.helper.ActionStateToActionTransformer;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends JobPresenter<T> {
 
     private final static int FEEDS_PER_PAGE = 10;
+    private final int MIN_QUERY_LENGTH = 3;
 
     @State
     protected ArrayList<FeedItem> feedItems;
+    @State
+    protected ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
 
     @Inject
-    HashtagInteractor hashtagInteractor;
+    protected HashtagInteractor interactor;
 
     private ActionPipe<RefreshFeedsByHashtagsCommand> refreshFeedsByHashtagsPipe;
     private ActionPipe<LoadNextFeedsByHashtagsCommand> loadNextFeedsByHashtagsPipe;
@@ -44,10 +51,29 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
         }
-        refreshFeedsByHashtagsPipe = hashtagInteractor.getRefreshFeedsByHashtagsPipe();
-        loadNextFeedsByHashtagsPipe = hashtagInteractor.getLoadNextFeedsByHashtagsPipe();
+        refreshFeedsByHashtagsPipe = interactor.getRefreshFeedsByHashtagsPipe();
+        loadNextFeedsByHashtagsPipe = interactor.getLoadNextFeedsByHashtagsPipe();
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
+
+        view.bind(interactor.getSuggestionPipe()
+                .observeSuccess()
+                .observeOn(AndroidSchedulers.mainThread()))
+                .subscribe(command -> {
+                    view.onSuggestionsReceived(command.getResult());
+                }, throwable -> {
+                    Timber.e(throwable, "");
+                });
+
+        view.onSuggestionsReceived(hashtagSuggestions);
+    }
+
+    public void query(String world) {
+        if (world.length() >= MIN_QUERY_LENGTH) {
+            interactor.getSuggestionPipe().send(new HashtagSuggestionCommand(world));
+        } else {
+            view.clearSuggestions();
+        }
     }
 
     @Override
@@ -152,5 +178,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         void refreshFeedItems(List<FeedItem> events);
 
         void updateLoadingStatus(boolean loading, boolean noMoreElements);
+
+        void onSuggestionsReceived(@NonNull List<HashtagSuggestion> suggestionList);
+
+        void clearSuggestions();
     }
 }

@@ -7,7 +7,7 @@ class HashtagSuggestionUtilUnitTest : BaseTest() {
 
     @Test
     fun generateTextTest() {
-        assertEquals("welcome#hello ", HashtagSuggestionUtil.generateText("welcome", "#hello", "welcome".length))
+        assertEquals("#hello ", HashtagSuggestionUtil.generateText("hel", "#hello", "hel".length))
 
         assertEquals("#welcome ", HashtagSuggestionUtil.generateText("#wel", "welcome", "#wel".length))
 
@@ -22,6 +22,12 @@ class HashtagSuggestionUtilUnitTest : BaseTest() {
         assertEquals("#TAG #tag #tag", HashtagSuggestionUtil.generateText("#tag #tag #tag", "TAG", "#tag".length))
         assertEquals("#tag #TAG #tag", HashtagSuggestionUtil.generateText("#tag #tag #tag", "TAG", "#tag #tag".length))
         assertEquals("#tag #tag #TAG ", HashtagSuggestionUtil.generateText("#tag #tag #tag", "TAG", "#tag #tag #tag".length))
+
+        assertEquals("#hello #helt ", HashtagSuggestionUtil.generateText("#hello hel", "helt", "#hello hel".length))
+        assertEquals("hello #helt ", HashtagSuggestionUtil.generateText("hello hel", "helt", "hello hel".length))
+        assertEquals("#helt ", HashtagSuggestionUtil.generateText("hel", "helt", "hel".length))
+        assertEquals("hel #helt hel", HashtagSuggestionUtil.generateText("hel hel hel", "helt", "hel hel".length))
+        assertEquals("hel #helt hel", HashtagSuggestionUtil.generateText("hel hel hel", "#helt", "hel hel".length))
     }
 
 
@@ -29,8 +35,7 @@ class HashtagSuggestionUtilUnitTest : BaseTest() {
     fun calcStartPosBeforeReplaceTest() {
         assertEquals(0, HashtagSuggestionUtil.calcStartPosBeforeReplace("#welcome", "#welcome".length))
         assertEquals(3, HashtagSuggestionUtil.calcStartPosBeforeReplace("he #welcome", "he #welcome".length))
-        assertEquals(7, HashtagSuggestionUtil.calcStartPosBeforeReplace("welcome", "welcome".length))
+        assertEquals(0, HashtagSuggestionUtil.calcStartPosBeforeReplace("welcome", "welcome".length))
         assertEquals(8, HashtagSuggestionUtil.calcStartPosBeforeReplace("welcome #welcome", "welcome #wel".length))
-
     }
 }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +22,6 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
-import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
@@ -66,6 +66,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
     private Bundle savedInstanceState;
+    private SearchView searchView;
     private EditText searchText;
 
     @Override
@@ -102,6 +103,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         suggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         suggestions.addItemDecoration(dividerItemDecoration());
 
+        //make root focusable for shifting focus ToolBar.SearchView -> rootView
+        rootView.setFocusable(true);
+        rootView.setFocusableInTouchMode(true);
     }
 
     private void onSuggestionClicked(String suggestion) {
@@ -125,7 +129,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        stateDelegate.saveStateIfNeeded(savedInstanceState);
+        stateDelegate.saveStateIfNeeded(outState);
         super.onSaveInstanceState(outState);
     }
 
@@ -151,6 +155,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         if (query != null || searchOpened) searchItem.expandActionView();
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchView.setQuery(query, false);
         searchView.setOnCloseListener(() -> false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -159,13 +164,15 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
                 FeedHashtagFragment.this.query = query;
                 releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
                 getPresenter().onRefresh();
-                return false;
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 query = newText;
-                return false;
+                clearSuggestions();
+                getPresenter().query(getTextFromCursor());
+                return true;
             }
         });
 
@@ -182,23 +189,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
                 searchOpened = false;
                 query = null;
                 searchView.setQuery("", false);
-                return true;
-            }
-        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                FeedHashtagFragment.this.query = query;
-                getPresenter().onRefresh();
-
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                query = newText;
-                clearSuggestions();
-                getPresenter().query(getTextFromCursor());
+                getActivity().onBackPressed();
                 return true;
             }
         });
@@ -207,13 +198,6 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
             getPresenter().onRefresh();
         }
-    }
-
-    private void releaseSearchFocus(@Nullable View search){
-        new WeakHandler().postDelayed(() -> {
-            if (search != null) search.clearFocus();
-            getView().requestFocus();
-        }, 50);
     }
 
     @Override
@@ -267,6 +251,13 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     public void clearSuggestions() {
         suggestionAdapter.clear();
         suggestions.setVisibility(View.GONE);
+    }
+
+    private void releaseSearchFocus(@Nullable View search){
+        new WeakHandler().postDelayed(() -> {
+            if (search != null) search.clearFocus();
+            getView().requestFocus();
+        }, 50);
     }
 
     private DividerItemDecoration dividerItemDecoration() {

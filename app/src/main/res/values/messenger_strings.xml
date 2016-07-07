@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="error_no_connection">You are not connected</string>
     <string name="messenger">Messenger</string>
     <string name="chat">Chat</string>
 

@@ -142,7 +142,7 @@ android {
         // possible "build"-dimension flavors:
         dev {
             dimension "build"
-            minSdkVersion 21
+            minSdkVersion 23
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }

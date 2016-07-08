@@ -192,17 +192,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         return circles;
     }
 
-    public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.loadFlags(event.getFlaggableView());
-    }
-
-    public void onEvent(ItemFlaggedEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
-                    event.getFlagReasonId(), event.getNameOfReason()), view);
-    }
-
     private Circle createDefaultFilterCircle() {
         return Circle.all(context.getString(R.string.all));
     }
@@ -393,6 +382,17 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
 
+    }
+
+    public void onEvent(LoadFlagEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.loadFlags(event.getFlaggableView());
+    }
+
+    public void onEvent(ItemFlaggedEvent event) {
+        if (view.isVisibleOnScreen())
+            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
+                    event.getFlagReasonId(), event.getNameOfReason()), view);
     }
 
     protected void loadMoreItemsError(SpiceException spiceException) {

@@ -24,7 +24,9 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
+import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
@@ -246,6 +248,11 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         suggestions.setVisibility(View.GONE);
     }
 
+    @Override
+    public void showEdit(BucketBundle bucketBundle) {
+        fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
+    }
+
     private void releaseSearchFocus(@Nullable View search){
         new WeakHandler().postDelayed(() -> {
             if (search != null) search.clearFocus();
@@ -263,5 +270,14 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         String text = searchText.getText().toString();
         if (text.lastIndexOf(" ") == text.length() - 1) return "";
         else return text.replaceAll("^.*?(\\w+)\\W*$", "$1");
+    }
+
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
+    }
+
+    public void onEvent(CommentIconClickedEvent event) {
+        fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
     }
 }

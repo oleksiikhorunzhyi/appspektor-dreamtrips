@@ -53,7 +53,6 @@ public abstract class BaseGroupChatSettingsScreenPresenterImpl
 
         GroupChatSettingsScreen view = getView();
         view.setOwner(owner);
-        view.setClearButtonVisible(conversationPresent);
         view.setLeaveButtonVisible(conversationPresent && !ConversationHelper.isOwner(conversation, currentUser));
     }
 

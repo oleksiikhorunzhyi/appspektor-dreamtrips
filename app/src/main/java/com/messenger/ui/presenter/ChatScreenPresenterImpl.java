@@ -20,6 +20,7 @@ import com.messenger.delegate.chat.MessagesPaginationDelegate.PaginationStatus;
 import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
 import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
+import com.messenger.delegate.chat.event.ChatEventInteractor;
 import com.messenger.delegate.chat.typing.ChatStateDelegate;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
@@ -96,6 +97,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject PickLocationDelegate pickLocationDelegate;
     @Inject LoadConversationDelegate loadConversationDelegate;
     @Inject ChatExtensionInteractor chatExtensionInteractor;
+    @Inject ChatEventInteractor chatEventInteractor;
 
     protected String conversationId;
 
@@ -125,6 +127,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         bindMessagePaginationDelegate();
         bindUnreadMessagesDelegate();
         connectToPhotoPicker();
+        connectToRevertClearingChatPipe();
 
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
     }
@@ -590,7 +593,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void revertSucceed() {
-        messagesPaginationDelegate.forceLoadNextPage();
         getView().dismissProgressDialog();
     }
 
@@ -602,6 +604,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
             getView().showErrorMessage(R.string.error_something_went_wrong);
         }
     }
+
+    private void connectToRevertClearingChatPipe() {
+        chatEventInteractor.getEventRevertClearingChatPipe()
+                .observeSuccess()
+                .compose(bindViewIoToMainComposer())
+                .filter(command -> TextUtils.equals(command.getConversationId(), conversationId))
+                .subscribe(command -> messagesPaginationDelegate.forceLoadNextPage());
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // State
     ///////////////////////////////////////////////////////////////////////////

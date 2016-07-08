@@ -24,4 +24,8 @@ public class RevertClearingChatCommand extends Command<Void> implements Injectab
         conversationsDAO.setClearDate(revertClearingEvent.getConversationId(), 0);
         callback.onSuccess(null);
     }
+
+    public String getConversationId() {
+        return revertClearingEvent.getConversationId();
+    }
 }

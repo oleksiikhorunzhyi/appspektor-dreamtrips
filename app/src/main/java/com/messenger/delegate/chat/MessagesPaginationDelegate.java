@@ -138,6 +138,10 @@ public class MessagesPaginationDelegate {
         return paginationStateObservable;
     }
 
+    public void setPage(int page) {
+        this.page = page;
+    }
+
     private void handleConnectionState(SyncStatus state) {
         if (state == SyncStatus.CONNECTED && page == 0) loadNextPage();
     }

@@ -275,6 +275,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         //noinspection ConstantConditions
         if (paginationStatus.getLoadedElementsCount() < MessagesPaginationDelegate.MAX_MESSAGES_PER_PAGE
                 && ConversationHelper.isCleared(conversation)) {
+            messagesPaginationDelegate.setPage(0);
             getView().enableReloadChatButton(conversation.getClearTime());
         } else {
             getView().disableReloadChatButton();

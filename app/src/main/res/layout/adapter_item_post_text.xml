@@ -14,6 +14,7 @@
         android:paddingLeft="@dimen/spacing_medium"
         android:paddingRight="@dimen/spacing_medium"
         android:paddingTop="@dimen/spacing_normal"
+        android:textColor="@color/black"
         android:textSize="@dimen/font_normal"/>
 
 </LinearLayout>

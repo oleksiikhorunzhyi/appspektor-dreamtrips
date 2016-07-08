@@ -1,5 +1,6 @@
 package com.messenger.ui.view.settings;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -56,6 +57,7 @@ public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, 
     @InjectView(R.id.chat_settings_toolbar)
     Toolbar toolbar;
 
+    private ProgressDialog progressDialog;
     protected ToolbarPresenter toolbarPresenter;
 
     protected ChatSettingsRow notificationsSettingsRow;
@@ -155,5 +157,17 @@ public abstract class BaseChatSettingsScreen<Screen extends ChatSettingsScreen, 
     @Override
     public void invalidateToolbarMenu() {
         inflateToolbarMenu(toolbar);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.show(getContext(), null, getResources().getString(R.string.loading));
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 }

@@ -26,4 +26,8 @@ public interface ChatSettingsScreen extends MessengerScreen {
     void showErrorDialog(@StringRes int msg);
 
     void invalidateToolbarMenu();
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
 }

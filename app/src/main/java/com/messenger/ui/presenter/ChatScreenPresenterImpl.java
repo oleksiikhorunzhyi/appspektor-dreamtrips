@@ -25,6 +25,7 @@ import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -582,12 +583,25 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .createObservable(new RevertClearingChatServerCommand(conversationId))
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<RevertClearingChatServerCommand>()
-                        .onSuccess(revertChatClearingCommand -> messagesPaginationDelegate.forceLoadNextPage())
-                        .onFail((revertChatClearingCommand, throwable) ->
-                                Timber.d("RevertClearingChatServerCommand failed -> %s", throwable))
+                        .onStart(command -> getView().showProgressDialog())
+                        .onSuccess(revertChatClearingCommand -> revertSucceed())
+                        .onFail((revertChatClearingCommand, throwable) -> revertFailed(throwable.getCause()))
                 );
     }
 
+    private void revertSucceed() {
+        messagesPaginationDelegate.forceLoadNextPage();
+        getView().dismissProgressDialog();
+    }
+
+    private void revertFailed(Throwable throwable) {
+        getView().dismissProgressDialog();
+        if (throwable instanceof ConnectionException) {
+            getView().showErrorMessage(R.string.error_no_connection);
+        } else {
+            getView().showErrorMessage(R.string.error_something_went_wrong);
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////
     // State
     ///////////////////////////////////////////////////////////////////////////

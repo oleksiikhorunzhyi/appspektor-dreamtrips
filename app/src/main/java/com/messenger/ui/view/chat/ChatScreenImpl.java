@@ -1,10 +1,12 @@
 package com.messenger.ui.view.chat;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -101,6 +103,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private Handler handler = new Handler();
     private final Runnable openPikerTask = this::openPicker;
 
+    private ProgressDialog progressDialog;
     private FlaggingView flaggingView;
     private View reloadHistoryView;
 
@@ -330,6 +333,21 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     public void disableReloadChatButton() {
         adapter.removeHeaderView(reloadHistoryView);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.show(getContext(), null, null);
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null) progressDialog.dismiss();
+    }
+
+    @Override
+    public void showErrorMessage(@StringRes int error_no_connection) {
+        Snackbar.make(this, error_no_connection, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

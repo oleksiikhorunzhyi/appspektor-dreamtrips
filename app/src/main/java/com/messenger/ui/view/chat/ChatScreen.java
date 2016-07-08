@@ -1,6 +1,7 @@
 package com.messenger.ui.view.chat;
 
 import android.database.Cursor;
+import android.support.annotation.StringRes;
 import android.view.Menu;
 
 import com.messenger.entities.DataConversation;
@@ -61,4 +62,10 @@ public interface ChatScreen extends MessengerScreen {
     void enableReloadChatButton(long clearDate);
 
     void disableReloadChatButton();
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
+
+    void showErrorMessage(@StringRes int error_no_connection);
 }

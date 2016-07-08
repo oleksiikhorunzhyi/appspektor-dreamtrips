@@ -8,6 +8,7 @@ import com.messenger.delegate.chat.ChatExtensionInteractor;
 import com.messenger.delegate.chat.command.ClearChatServerCommand;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.presenter.MessengerPresenterImpl;
@@ -24,7 +25,6 @@ import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import timber.log.Timber;
 
 public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettingsScreen>
         extends MessengerPresenterImpl<C, ChatSettingsViewState> implements ChatSettingsScreenPresenter<C> {
@@ -36,8 +36,7 @@ public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettings
     @Inject DataUser currentUser;
     @Inject MessengerServerFacade facade;
     @Inject ConversationsDAO conversationsDAO;
-    @Inject
-    ChatExtensionInteractor chatExtensionInteractor;
+    @Inject ChatExtensionInteractor chatExtensionInteractor;
 
     public BaseChatSettingsScreenPresenterImpl(Context context, Injector injector, String conversationId) {
         super(context, injector);
@@ -117,9 +116,24 @@ public abstract class BaseChatSettingsScreenPresenterImpl<C extends ChatSettings
     public void onClearChatHistory() {
         chatExtensionInteractor.getClearChatServerCommandActionPipe()
                 .createObservable(new ClearChatServerCommand(conversationId))
+                .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<ClearChatServerCommand>()
-                .onSuccess(clearChatCommand -> Timber.d("SUCCESS %s", clearChatCommand))
-                .onFail((clearChatCommand, throwable) -> Timber.d(throwable, "FAILED %s", clearChatCommand)));
+                        .onStart(clearChatServerCommand -> getView().showProgressDialog())
+                        .onSuccess(clearChatCommand -> revertSucceed())
+                        .onFail((clearChatCommand, throwable) -> clearFailed(throwable.getCause())));
+    }
+
+    private void revertSucceed() {
+        getView().dismissProgressDialog();
+    }
+
+    private void clearFailed(Throwable throwable) {
+        getView().dismissProgressDialog();
+        if (throwable instanceof ConnectionException) {
+            getView().showErrorDialog(R.string.error_no_connection);
+        } else {
+            getView().showErrorDialog(R.string.error_something_went_wrong);
+        }
     }
 
     @Override

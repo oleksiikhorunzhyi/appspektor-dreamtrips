@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.storage.dao.MessageDAO;
+import com.messenger.ui.adapter.inflater.MessageCommonInflater;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 
@@ -28,6 +29,7 @@ public class SystemMessageViewHolder extends MessageViewHolder {
     TextView systemMessageTextView;
 
     protected DataUser dataUserRecipient;
+    private MessageCommonInflater userMessageCommonInflater = new MessageCommonInflater(itemView);
 
     public SystemMessageViewHolder(View itemView) {
         super(itemView);
@@ -37,6 +39,7 @@ public class SystemMessageViewHolder extends MessageViewHolder {
         super.bindCursor(cursor);
         dataUserRecipient = convertRecipient(cursor);
         showSystemMessage();
+        userMessageCommonInflater.onCellBind(previousMessageIsTheSameType);
     }
 
     private DataUser convertRecipient(Cursor cursor) {

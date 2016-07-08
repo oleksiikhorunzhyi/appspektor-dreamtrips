@@ -61,7 +61,9 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                         case "service": {
                             long timestamp = ParserUtils.getLongAttribute(parser, "timestamp");
                             String messageId = parser.getAttributeValue("", "id");
-                            String fromId = JidCreatorHelper.obtainId(parser.getAttributeValue("", "from"));
+                            String fromIdAttr = parser.getAttributeValue("", "from");
+                            String fromId = TextUtils.isEmpty(fromIdAttr) ? null : JidCreatorHelper.obtainId(fromIdAttr);
+
                             String type = parser.getAttributeValue("", "type");
 
                             messageBuilder = new Message.Builder()

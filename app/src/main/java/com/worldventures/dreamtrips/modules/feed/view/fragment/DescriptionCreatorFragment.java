@@ -50,8 +50,6 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
     KeyCallbackEditText description;
     @InjectView(R.id.suggestions)
     RecyclerView suggestions;
-    @State
-    ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

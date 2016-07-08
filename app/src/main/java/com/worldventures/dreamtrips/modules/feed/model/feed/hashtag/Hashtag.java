@@ -5,32 +5,31 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class Hashtag implements Parcelable, Serializable {
-    @SerializedName("name")
-    String hashtag;
+
+    String name;
 
     public Hashtag() {
     }
 
-    public Hashtag(String hashtag) {
-        this.hashtag = hashtag;
+    public Hashtag(String name) {
+        this.name = name;
     }
 
     protected Hashtag(Parcel in) {
-        hashtag = in.readString();
+        name = in.readString();
     }
 
-    public String getHashtag() {
-        return hashtag;
+    public String getName() {
+        return name;
     }
 
-    public void setHashtag(String hashtag) {
-        this.hashtag = hashtag;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public static final Creator<Hashtag> CREATOR = new Creator<Hashtag>() {
@@ -52,7 +51,7 @@ public class Hashtag implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(hashtag);
+        dest.writeString(name);
     }
 
     @Override
@@ -62,18 +61,18 @@ public class Hashtag implements Parcelable, Serializable {
 
         Hashtag hashtag1 = (Hashtag) o;
 
-        return hashtag != null ? hashtag.equals(hashtag1.hashtag) : hashtag1.hashtag == null;
+        return name != null ? name.equals(hashtag1.name) : hashtag1.name == null;
     }
 
     @Override
     public int hashCode() {
-        return hashtag != null ? hashtag.hashCode() : 0;
+        return name != null ? name.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "Hashtag{" +
-                "hashtag='" + hashtag + '\'' +
+                "name='" + name + '\'' +
                 '}';
     }
 }

@@ -70,7 +70,7 @@ public class HashtagTextView extends TextView {
     private SpannableStringBuilder process(String text, List<Hashtag> clickableHashtags, List<Hashtag> selectedHashtags) {
         final SpannableStringBuilder spannableText = new SpannableStringBuilder(text);
         for (final Hashtag hashtagHolder : clickableHashtags) {
-            final String hashtag = String.format("#%s", hashtagHolder.getHashtag());
+            final String hashtag = String.format("#%s", hashtagHolder.getName());
 
             int start = text.indexOf(hashtag);
             int end;

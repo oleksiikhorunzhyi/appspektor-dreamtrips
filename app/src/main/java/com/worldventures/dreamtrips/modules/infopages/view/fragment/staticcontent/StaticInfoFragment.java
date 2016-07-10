@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -153,7 +154,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
             @Override
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                handler.proceed();
+                showSslErrorDialog(handler);
             }
 
             @Override
@@ -350,6 +351,19 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 }
             }
         }
+    }
+
+    private void showSslErrorDialog(SslErrorHandler handler) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.notification_error_ssl_cert_invalid);
+        builder.setPositiveButton(R.string.invitation_continue, (dialog, which) -> {
+            handler.proceed();
+        });
+        builder.setNegativeButton(R.string.action_cancel, (dialog, which) -> {
+            handler.cancel();
+        });
+        final AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     protected void sendAnalyticEvent(String actionAnalyticEvent) {

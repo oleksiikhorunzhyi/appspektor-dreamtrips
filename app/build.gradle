@@ -303,8 +303,8 @@ android {
             versionNameSuffix "-debug"
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.release
             // proguard
             def proConfigs = file('proguard-rules').listFiles().collect { it }

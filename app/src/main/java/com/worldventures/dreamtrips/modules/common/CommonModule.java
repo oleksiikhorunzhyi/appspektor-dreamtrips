@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
@@ -87,6 +88,7 @@ import dagger.Provides;
                 ComponentPresenter.class,
                 CopyFileCommand.class,
                 ProgressDialogFragment.class,
+                MessageDialogFragment.class,
                 PhotoPickerLayout.class,
 
                 DialogFragmentNavigator.NavigationDialogFragment.class,

@@ -135,7 +135,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
     @Override
     public void openPost() {
-        fragmentWithFeedDelegate.openPost(getChildFragmentManager());
+        fragmentWithFeedDelegate.openPost(getActivity().getSupportFragmentManager());
     }
 
     @Override

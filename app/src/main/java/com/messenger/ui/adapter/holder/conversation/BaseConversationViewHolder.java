@@ -71,9 +71,9 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
         unreadMessagesCountTextView.setText(hasNewMessage ? String.valueOf(unreadMessageCount) : null);
     }
 
-    public void bindLastMessage(DataMessage message, String messageAuthor,
+    public void bindLastMessage(DataMessage message, DataUser messageAuthor, DataUser messageRecipient,
                                 String attachmentType, DataTranslation translation) {
-        lastMessageInflater.setLastMessage(conversation, message, messageAuthor, currentUser,
+        lastMessageInflater.setLastMessage(conversation, message, messageAuthor, messageRecipient, currentUser,
                 attachmentType, translation);
         updateLastMessageDateTextView();
     }

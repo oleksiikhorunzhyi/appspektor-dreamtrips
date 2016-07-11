@@ -60,7 +60,11 @@ public final class ConversationHelper {
     }
 
     public static boolean isTripChat(DataConversation conversation) {
-        return TextUtils.equals(conversation.getType(), ConversationType.TRIP);
+        return isTripChat(conversation.getType());
+    }
+
+    public static boolean isTripChat(String conversationType) {
+        return ConversationType.TRIP.equals(conversationType);
     }
 
     public static boolean isOwner(DataConversation conversation, DataUser user) {

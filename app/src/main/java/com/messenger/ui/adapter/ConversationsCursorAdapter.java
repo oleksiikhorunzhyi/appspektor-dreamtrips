@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataConversation$Table;
 import com.messenger.entities.DataMessage;
+import com.messenger.entities.DataMessage$Table;
 import com.messenger.entities.DataTranslation;
+import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -21,6 +23,8 @@ import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
 import com.messenger.ui.helper.ConversationHelper;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.worldventures.dreamtrips.R;
+
+import java.util.Date;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
 import static com.messenger.messengerservers.constant.ConversationType.GROUP;
@@ -64,19 +68,44 @@ public class ConversationsCursorAdapter
             }
             conversationParticipantsCount = cursor.getInt(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_USER_COUNT_COLUMN));
         }
-        DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
+        DataMessage message = convertToMessage(cursor);
         DataTranslation translation = SqlUtils.convertToModel(true, DataTranslation.class, cursor);
-        String messageAuthor = cursor.getString(cursor.getColumnIndex(ConversationsDAO.LAST_MESSAGE_AUTHOR_COLUMN));
+        DataUser sender = convertToMessageSender(cursor);
+        DataUser recipient = convertToMessageRecipient(cursor);
         String attachmentType = cursor.getString(cursor.getColumnIndex(ConversationsDAO.ATTACHMENT_TYPE_COLUMN));
 
         holder.bindConversation(conversation, conversationParticipants, conversationParticipantsCount);
-        holder.bindLastMessage(message, messageAuthor, attachmentType, translation);
+        holder.bindLastMessage(message, sender, recipient, attachmentType, translation);
         holder.applySelection(selectedConversationId);
         if (holder instanceof OneToOneConversationViewHolder) {
             bindParticipantData((OneToOneConversationViewHolder) holder, cursor);
         }
         holder.setConversationClickListener(conversationClickListener);
         holder.setSwipeButtonsListener(swipeButtonsListener);
+    }
+
+    private DataMessage convertToMessage(Cursor cursor) {
+        DataMessage message = new DataMessage();
+        message.setText(cursor.getString(cursor.getColumnIndex(DataMessage$Table.TEXT)));
+        message.setFromId(cursor.getString(cursor.getColumnIndex(DataMessage$Table.FROMID)));
+        message.setToId(cursor.getString(cursor.getColumnIndex(DataMessage$Table.TOID)));
+        message.setDate(new Date(cursor.getInt(cursor.getColumnIndex(DataMessage$Table.DATE))));
+        message.setType(cursor.getString(cursor.getColumnIndex(ConversationsDAO.MESSAGE_TYPE_COLUMN)));
+        return message;
+    }
+
+    private DataUser convertToMessageSender(Cursor cursor) {
+        DataUser user = new DataUser(cursor.getString(cursor.getColumnIndex(ConversationsDAO.SENDER_ID_COLUMN)));
+        user.setFirstName(cursor.getString(cursor.getColumnIndex(DataUser$Table.FIRSTNAME)));
+        user.setLastName(cursor.getString(cursor.getColumnIndex(DataUser$Table.LASTNAME)));
+        return user;
+    }
+
+    private DataUser convertToMessageRecipient(Cursor cursor) {
+        DataUser user = new DataUser(cursor.getString(cursor.getColumnIndex(ConversationsDAO.RECIPIENT_ID_COLUMN)));
+        user.setFirstName(cursor.getString(cursor.getColumnIndex(ConversationsDAO.RECIPIENT_FIRST_NAME_COLUMN)));
+        user.setLastName(cursor.getString(cursor.getColumnIndex(ConversationsDAO.RECIPIENT_LAST_NAME_COLUMN)));
+        return user;
     }
 
     private void bindParticipantData(OneToOneConversationViewHolder holder, Cursor cursor) {

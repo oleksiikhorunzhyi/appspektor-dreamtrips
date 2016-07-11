@@ -268,8 +268,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     private String getTextFromCursor() {
         String text = searchText.getText().toString();
-        if (text.lastIndexOf(" ") == text.length() - 1) return "";
-        else return text.replaceAll("^.*?(\\w+)\\W*$", "$1");
+        int cursorPosition = searchText.getSelectionStart();
+        int startPosition = HashtagSuggestionUtil.calcStartPosBeforeReplace(text, cursorPosition);
+        return text.substring(startPosition, cursorPosition);
     }
 
     @Override

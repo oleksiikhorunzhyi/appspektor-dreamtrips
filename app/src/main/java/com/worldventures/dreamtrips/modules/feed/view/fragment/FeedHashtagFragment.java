@@ -22,6 +22,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -31,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
+import com.worldventures.dreamtrips.modules.feed.view.custom.SideMarginsItemDecorator;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
@@ -41,7 +43,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import icepick.State;
 
 @MenuResource(R.menu.menu_hashtag_feed)
 @Layout(R.layout.fragment_hashtag_feed)
@@ -52,8 +53,6 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @Inject
     @ForActivity
     Injector injector;
-    @State
-    boolean searchOpened;
 
     @InjectView(R.id.suggestions)
     RecyclerView suggestions;
@@ -85,6 +84,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
         statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(false));
         fragmentWithFeedDelegate.init(feedAdapter);
 
         suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), injector);
@@ -121,6 +121,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     }
 
     public void onDestroyView() {
+        SoftInputUtil.hideSoftInputMethod(searchView);
         super.onDestroyView();
         stateDelegate.onDestroyView();
     }
@@ -134,7 +135,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @Override
     public void onResume() {
         super.onResume();
-        releaseSearchFocus(searchView);
+        if (getArgs() != null) releaseSearchFocus(searchView);
     }
 
     @Override
@@ -152,7 +153,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         getPresenter().setQuery(query);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        if (query != null || searchOpened) searchItem.expandActionView();
+        searchItem.expandActionView();
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
@@ -179,14 +180,12 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                searchOpened = true;
                 searchView.setQuery(getPresenter().getQuery(), false);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchOpened = false;
                 getPresenter().setQuery(null);
                 searchView.setQuery("", false);
                 getActivity().onBackPressed();
@@ -195,8 +194,8 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         });
 
         if (args != null && args.getHashtag() != null) {
-            releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
             getPresenter().onRefresh();
+            releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
         }
     }
 

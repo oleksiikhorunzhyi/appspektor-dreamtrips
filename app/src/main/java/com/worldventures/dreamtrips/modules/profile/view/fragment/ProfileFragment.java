@@ -85,7 +85,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
         statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
         statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
-        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator());
+        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(true));
         statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);

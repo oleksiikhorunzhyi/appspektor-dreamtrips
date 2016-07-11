@@ -208,4 +208,11 @@ public class FragmentWithFeedDelegate {
                 .data(new FeedAdditionalInfoBundle(account))
                 .build());
     }
+
+    public void openHashtagSearch() {
+        router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
+                .data(null)
+                .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
+                .build());
+    }
 }

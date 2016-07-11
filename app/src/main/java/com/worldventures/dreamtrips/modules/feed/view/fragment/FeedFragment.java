@@ -164,6 +164,10 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
                     actionFilter();
                 }
                 return true;
+            case R.id.action_search:
+                fragmentWithFeedDelegate.openHashtagSearch();
+                return true;
+
         }
         return super.onOptionsItemSelected(item);
     }

@@ -24,28 +24,31 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
     HashtagInteractor interactor;
     @State
     ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
+    @State
+    String query = "";
 
     public void takeView(DescriptionCreatorPresenter.View view) {
         super.takeView(view);
         view.bind(interactor.getSuggestionPipe()
                 .observeSuccess()
                 .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(hashtagSuggestionCommand -> {
-                    view.onSuggestionsReceived(hashtagSuggestionCommand.getResult());
+                .subscribe(command -> {
+                    view.onSuggestionsReceived(command.getFullQueryText(), command.getResult());
                 }, throwable -> {
                     Timber.e(throwable, "");
                 });
 
-        view.onSuggestionsReceived(hashtagSuggestions);
+        view.onSuggestionsReceived(query, hashtagSuggestions);
     }
 
-    public void query(String desc, int cursorPosition) {
-        int lastDashIndex = desc.substring(0, cursorPosition).lastIndexOf("#");
-        int lastSpaceIndex = desc.substring(0, cursorPosition).lastIndexOf(" ");
+    public void query(String fullQueryText, int cursorPosition) {
+        this.query = fullQueryText;
+        String subStr = fullQueryText.substring(0, cursorPosition);
+        int lastDashIndex = subStr.lastIndexOf("#");
+        int lastSpaceIndex = Math.max(subStr.lastIndexOf(" "), subStr.lastIndexOf("\n"));
+        view.clearSuggestions();
         if (lastDashIndex >= 0 && cursorPosition > lastDashIndex + MIN_QUERY_LENGTH && lastDashIndex > lastSpaceIndex) {
-            interactor.getSuggestionPipe().send(new HashtagSuggestionCommand(desc.substring(lastDashIndex + 1, cursorPosition)));
-        } else {
-            view.clearSuggestions();
+            interactor.getSuggestionPipe().send(new HashtagSuggestionCommand(fullQueryText, fullQueryText.substring(lastDashIndex + 1, cursorPosition)));
         }
     }
 
@@ -54,7 +57,7 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
     }
 
     public interface View extends RxView {
-        void onSuggestionsReceived(List<HashtagSuggestion> suggestionList);
+        void onSuggestionsReceived(String fullQueryText, List<HashtagSuggestion> suggestionList);
 
         void clearSuggestions();
     }

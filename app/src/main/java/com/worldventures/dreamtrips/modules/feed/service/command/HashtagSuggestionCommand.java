@@ -18,9 +18,11 @@ public class HashtagSuggestionCommand extends Command<List<HashtagSuggestion>> i
 
     @Inject
     Janet janet;
+    private String fullQueryText;
     private String query;
 
-    public HashtagSuggestionCommand(String query) {
+    public HashtagSuggestionCommand(String fullText, String query) {
+        this.fullQueryText = fullText;
         this.query = query;
     }
 
@@ -29,5 +31,9 @@ public class HashtagSuggestionCommand extends Command<List<HashtagSuggestion>> i
                 .createObservableResult(new HashtagSuggestionHttpAction(query))
                 .map(HashtagSuggestionHttpAction::hashtagSuggestions)
                 .subscribe(callback::onSuccess, callback::onFail);
+    }
+
+    public String getFullQueryText() {
+        return fullQueryText;
     }
 }

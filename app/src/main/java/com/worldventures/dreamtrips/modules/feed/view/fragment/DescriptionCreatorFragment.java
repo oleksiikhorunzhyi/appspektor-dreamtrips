@@ -24,14 +24,12 @@ import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell
 import com.worldventures.dreamtrips.modules.feed.view.util.HashtagSuggestionUtil;
 import com.worldventures.dreamtrips.modules.membership.view.util.DividerItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import icepick.State;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -95,8 +93,8 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
                 .throttleLast(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
-                    String desc = event.editable().toString();
-                    getPresenter().query(desc, description.getSelectionStart());
+                    String fullQueryText = event.editable().toString();
+                    getPresenter().query(fullQueryText, description.getSelectionStart());
                 }, throwable -> {
                     Timber.e(throwable, "");
                 });
@@ -128,9 +126,14 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
     }
 
     @Override
-    public void onSuggestionsReceived(@NonNull List<HashtagSuggestion> suggestionList) {
+    public void onSuggestionsReceived(String fullQueryText, @NonNull List<HashtagSuggestion> suggestionList) {
         adapter.clear();
-        adapter.addItems(suggestionList);
+        if ((description == null || fullQueryText.equals(description.getText().toString())) && !suggestionList.isEmpty()) {
+            suggestions.setVisibility(View.VISIBLE);
+            adapter.addItems(suggestionList);
+        } else {
+            suggestions.setVisibility(View.GONE);
+        }
     }
 
     public void clearSuggestions() {

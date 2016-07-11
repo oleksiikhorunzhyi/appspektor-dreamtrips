@@ -88,12 +88,12 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                 .observeSuccess()
                 .observeOn(AndroidSchedulers.mainThread()))
                 .subscribe(command -> {
-                    view.onSuggestionsReceived(command.getResult());
+                    view.onSuggestionsReceived(command.getFullQueryText(), command.getResult());
                 }, throwable -> {
                     Timber.e(throwable, "");
                 });
 
-        view.onSuggestionsReceived(hashtagSuggestions);
+        view.onSuggestionsReceived(query, hashtagSuggestions);
     }
 
     @Override
@@ -111,9 +111,9 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         this.query = query;
     }
 
-    public void searchSuggestions(String world) {
+    public void searchSuggestions(String fullText, String world) {
         if (world.length() >= MIN_QUERY_LENGTH) {
-            interactor.getSuggestionPipe().send(new HashtagSuggestionCommand(world));
+            interactor.getSuggestionPipe().send(new HashtagSuggestionCommand(fullText, world));
         } else {
             view.clearSuggestions();
         }
@@ -326,7 +326,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
         void updateLoadingStatus(boolean loading, boolean noMoreElements);
 
-        void onSuggestionsReceived(@NonNull List<HashtagSuggestion> suggestionList);
+        void onSuggestionsReceived(String fullQueryText, @NonNull List<HashtagSuggestion> suggestionList);
 
         void clearSuggestions();
 

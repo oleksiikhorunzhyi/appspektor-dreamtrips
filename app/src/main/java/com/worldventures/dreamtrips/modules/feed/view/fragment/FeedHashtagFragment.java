@@ -169,10 +169,10 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                getPresenter().setQuery(newText);
+            public boolean onQueryTextChange(String fullQueryText) {
+                getPresenter().setQuery(fullQueryText);
                 clearSuggestions();
-                getPresenter().searchSuggestions(getTextFromCursor());
+                getPresenter().searchSuggestions(fullQueryText, getTextFromCursor());
                 return true;
             }
         });
@@ -231,11 +231,11 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     }
 
     @Override
-    public void onSuggestionsReceived(@NonNull List<HashtagSuggestion> suggestionList) {
+    public void onSuggestionsReceived(String fullQueryText, @NonNull List<HashtagSuggestion> suggestionList) {
         suggestionAdapter.clear();
-        suggestionAdapter.addItems(suggestionList);
-        if (!suggestionList.isEmpty()) {
+        if ((searchText == null || fullQueryText.equals(searchText.getText().toString())) && !suggestionList.isEmpty()) {
             suggestions.setVisibility(View.VISIBLE);
+            suggestionAdapter.addItems(suggestionList);
         } else {
             suggestions.setVisibility(View.GONE);
         }
@@ -252,10 +252,11 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
     }
 
-    private void releaseSearchFocus(@Nullable View search){
+    private void releaseSearchFocus(@Nullable View search) {
         new WeakHandler().postDelayed(() -> {
             if (search != null) search.clearFocus();
-            if (getView() != null) getView().requestFocus(); //check for multiple fast device rotation
+            if (getView() != null)
+                getView().requestFocus(); //check for multiple fast device rotation
         }, 50);
     }
 

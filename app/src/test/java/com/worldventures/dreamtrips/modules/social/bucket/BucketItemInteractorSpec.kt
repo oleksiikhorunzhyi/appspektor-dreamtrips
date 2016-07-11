@@ -1,15 +1,11 @@
 package com.worldventures.dreamtrips.modules.social.bucket
 
-import android.content.Context
-import android.test.mock.MockContext
 import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper
+import com.worldventures.dreamtrips.core.test.AssertUtil.assertStatusCount
 import com.worldventures.dreamtrips.core.utils.FileUtils
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.*
@@ -26,16 +22,15 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityState
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityStateHolder.create
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
+import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.AppConfig
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
 import io.techery.janet.ActionState
-import io.techery.janet.CommandActionService
 import io.techery.janet.http.annotations.HttpAction.Method
 import io.techery.janet.http.test.MockHttpActionService
 import org.assertj.core.util.Lists
-import org.junit.Before
 import org.junit.rules.TemporaryFolder
 import org.powermock.api.mockito.PowerMockito.mockStatic
 import org.powermock.core.classloader.annotations.PrepareForTest
@@ -44,32 +39,18 @@ import rx.observers.TestSubscriber
 @PrepareForTest(UploadingFileManager::class, FileUtils::class, EntityStateHolder::class)
 class BucketItemInteractorSpec : BucketInteractorBaseSpec({
     describe("bucket actions on item") {
-        testBucketItem = mock()
-        testBucketPhoto = mock()
-
-        httpStubWrapper = StubServiceWrapper(mockHttpService())
-        httpStubWrapper.callback = spy()
-
-        daggerCommandActionService = CommandActionService()
-                .wrapCache()
-                .bindStorageSet(storageSet())
-                .wrapDagger()
-
-        daggerCommandActionService.registerProvider(UploaderyManager::class.java) { UploaderyManager(janet) }
-        daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
-
-        setup()
+        setup(setOfStorage) { mockHttpService() }
 
         beforeEach {
-            whenever(mockMemoryStorage.get(null))
-                    .thenReturn(Lists.newArrayList<BucketItem>(testBucketItem, mock<BucketItem>()))
+            whenever(mockMemoryStorage.get(any()))
+                    .thenReturn(mutableListOf(testBucketItem, mock<BucketItem>()))
         }
 
         context("item creation") {
             on("create bucket item") {
                 val title = "Test"
                 val type = BucketType.LOCATION.name
-                var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
                 beforeEach {
                     whenever(testBucketItem.name).thenReturn(title)
@@ -77,7 +58,10 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should create item") {
-                    testListSubscriber = subscribeBucketListChanges()
+                    bucketInteractor.bucketListActionPipe()
+                            .observe()
+                            .subscribe(testListSubscriber)
+
                     assertActionSuccess(subscribeAddBucketItem(ImmutableBucketPostBody.builder()
                             .type(type)
                             .name(title)
@@ -89,14 +73,14 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should add created item into result list") {
-                    assertBucketWasAddedInList(testListSubscriber!!)
+                    assertBucketWasAddedInList(testListSubscriber)
                 }
             }
 
             on("create bucket item from popular") {
                 val type = BucketType.LOCATION.getName()
                 val popularId = "testPopularId"
-                var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
                 beforeEach {
                     whenever(testBucketItem.type).thenReturn(type)
@@ -104,7 +88,10 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should create item from popular") {
-                    testListSubscriber = subscribeBucketListChanges()
+                    bucketInteractor.bucketListActionPipe()
+                            .observe()
+                            .subscribe(testListSubscriber)
+
                     assertActionSuccess(subscribeAddBucketItem(ImmutableBucketPostBody.builder()
                             .type(type)
                             .id(popularId)
@@ -116,7 +103,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should add created item into result list") {
-                    assertBucketWasAddedInList(testListSubscriber!!)
+                    assertBucketWasAddedInList(testListSubscriber)
                 }
             }
 
@@ -126,16 +113,18 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
 
                 val mockedTripModel = mock<TripModel>()
 
-                var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
                 beforeEach {
                     whenever(testBucketItem.name).thenReturn(testName)
-
                     whenever(mockedTripModel.name).thenReturn(testName)
                 }
 
                 it("should create item from trip") {
-                    testListSubscriber = subscribeBucketListChanges()
+                    bucketInteractor.bucketListActionPipe()
+                            .observe()
+                            .subscribe(testListSubscriber)
+
                     assertActionSuccess(subscribeAddBucketItem(ImmutableBucketBodyImpl.builder()
                             .type("trip")
                             .id(tripId)
@@ -145,14 +134,15 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should add created item into result list") {
-                    assertBucketWasAddedInList(testListSubscriber!!)
+                    assertBucketWasAddedInList(testListSubscriber)
                 }
             }
         }
 
         context("item modification") {
             on("item update") {
-                var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+                val testSubscriber = TestSubscriber<ActionState<UpdateItemHttpAction>>()
+                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
                 beforeEach {
                     whenever(testBucketItem.uid).thenReturn(TEST_BUCKET_ITEM_UID)
@@ -160,8 +150,9 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should update item") {
-                    val testSubscriber = TestSubscriber<ActionState<UpdateItemHttpAction>>()
-                    testListSubscriber = subscribeBucketListChanges()
+                    bucketInteractor.bucketListActionPipe()
+                            .observe()
+                            .subscribe(testListSubscriber)
 
                     bucketInteractor.updatePipe()
                             .createObservable(UpdateItemHttpAction(ImmutableBucketBodyImpl.builder()
@@ -178,18 +169,20 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should modify updated item into result list") {
-                    assertActionSuccess(testListSubscriber!!) {
+                    assertActionSuccess(testListSubscriber) {
                         it.result.any({ TEST_BUCKET_ITEM_UID == it.uid && COMPLETED == it.status })
                     }
                 }
             }
 
             on("item mark as done") {
-                var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+                val testSubscriber = TestSubscriber<ActionState<MarkItemAsDoneHttpAction>>()
+                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
                 it("should mark item as done") {
-                    val testSubscriber = TestSubscriber<ActionState<MarkItemAsDoneHttpAction>>()
-                    testListSubscriber = subscribeBucketListChanges()
+                    bucketInteractor.bucketListActionPipe()
+                            .observe()
+                            .subscribe(testListSubscriber)
 
                     bucketInteractor.marksAsDonePipe()
                             .createObservable(MarkItemAsDoneHttpAction(TEST_BUCKET_ITEM_UID, COMPLETED))
@@ -200,7 +193,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 }
 
                 it("should modify updated item into result list") {
-                    assertActionSuccess(testListSubscriber!!) {
+                    assertActionSuccess(testListSubscriber) {
                         it.result.any { TEST_BUCKET_ITEM_UID == it.uid && COMPLETED == it.status }
                     }
                 }
@@ -210,7 +203,9 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                 val folder = TemporaryFolder()
                 val path = folder.createFileAndGetPath("TestPhoto.jpeg")
 
-                var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+                val testSubscriber = TestSubscriber<ActionState<AddBucketItemPhotoCommand>>()
+                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
+                val testUploadSubscriber = TestSubscriber<ActionState<UploadPhotoControllerCommand>>()
 
                 beforeEach {
                     mockStatic(UploadingFileManager::class.java)
@@ -224,10 +219,14 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
 
                 it("should create item's photo") {
                     whenever(testBucketItem.photos)
-                            .thenReturn(Lists.newArrayList<BucketPhoto>(testBucketPhoto))
+                            .thenReturn(mutableListOf(testBucketPhoto))
 
-                    val testSubscriber = TestSubscriber<ActionState<AddBucketItemPhotoCommand>>()
-                    testListSubscriber = subscribeBucketListChanges()
+                    bucketInteractor.bucketListActionPipe()
+                            .observe()
+                            .subscribe(testListSubscriber)
+                    bucketInteractor.uploadControllerCommandPipe()
+                            .observe()
+                            .subscribe(testUploadSubscriber)
 
                     bucketInteractor.addBucketItemPhotoPipe()
                             .createObservable(AddBucketItemPhotoCommand(testBucketItem, path))
@@ -239,28 +238,34 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                     }
                 }
 
+                it("should emmit states of uploading") {
+                    assertStatusCount(testUploadSubscriber, ActionState.Status.SUCCESS, 2)
+                }
+
                 it("should contains in the result list") {
                     assertActionSuccess(testListSubscriber) {
-                        it.result.any { it.photos.contains(testBucketPhoto) }
+                        it.result.flatMap { it.photos }.any { it == testBucketPhoto }
                     }
                 }
             }
 
             on("item delete photo") {
-                var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+                val testSubscriber = TestSubscriber<ActionState<DeleteItemPhotoCommand>>()
+                val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
                 it("should delete item photo") {
                     whenever(testBucketItem.photos)
                             .thenReturn(Lists.newArrayList<BucketPhoto>(testBucketPhoto))
 
-                    val testSubscriber = TestSubscriber<ActionState<DeleteItemPhotoCommand>>()
-                    testListSubscriber = subscribeBucketListChanges()
+                    bucketInteractor.bucketListActionPipe()
+                            .observe()
+                            .subscribe(testListSubscriber)
 
                     bucketInteractor.deleteItemPhotoPipe()
                             .createObservable(DeleteItemPhotoCommand(testBucketItem, testBucketPhoto))
                             .subscribe(testSubscriber)
                     assertActionSuccess(testSubscriber) {
-                        !it.result.photos.contains(testBucketPhoto)
+                        it.result.photos.none { it == testBucketPhoto }
                     }
                 }
 
@@ -273,11 +278,13 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
         }
 
         on("item delete") {
-            var testListSubscriber: TestSubscriber<ActionState<BucketListCommand>>? = null
+            val testSubscriber = TestSubscriber<ActionState<DeleteItemHttpAction>>()
+            val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
 
             it("should delete item") {
-                val testSubscriber = TestSubscriber<ActionState<DeleteItemHttpAction>>()
-                testListSubscriber = subscribeBucketListChanges()
+                bucketInteractor.bucketListActionPipe()
+                        .observe()
+                        .subscribe(testListSubscriber)
 
                 bucketInteractor.deleteItemPipe()
                         .createObservable(DeleteItemHttpAction(TEST_BUCKET_ITEM_UID))
@@ -295,18 +302,18 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
         }
 
         context("uploading photo state change process") {
-            val photoStateHolderFailed = createPhotoEntityHolderWithBehavior(State.FAIL)
+            val photoStateHolderProgress = createPhotoEntityHolderWithBehavior(State.PROGRESS)
             val photoStateHolderDone = createPhotoEntityHolderWithBehavior(State.DONE)
+            val photoStateHolderFailed = createPhotoEntityHolderWithBehavior(State.FAIL)
 
             whenever(uploadControllerStorage.get(any()))
                     .thenReturn(mutableListOf(photoStateHolderFailed, photoStateHolderDone))
 
             it("should add photo in progress state to storage") {
-                val photoStateHolderInProgress = createPhotoEntityHolderWithBehavior(State.PROGRESS)
-                val testSubscriber = subscribeCreateUploadController(photoStateHolderInProgress)
+                val testSubscriber = subscribeCreateUploadController(photoStateHolderProgress)
 
                 assertActionSuccess(testSubscriber) {
-                    checkUploadControllerResult(it, photoStateHolderInProgress, true)
+                    checkUploadControllerResult(it, photoStateHolderProgress, true)
                 }
             }
 
@@ -329,7 +336,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
 
         it("should find item that contains input bucket photo") {
             whenever(testBucketItem.photos)
-                    .thenReturn(Lists.newArrayList<BucketPhoto>(testBucketPhoto))
+                    .thenReturn(listOf(testBucketPhoto))
 
             val testSubscriber = TestSubscriber<ActionState<FindBucketItemByPhotoCommand>>()
 
@@ -345,24 +352,20 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
         }
     }
 }) {
-    @Before
-    fun setUp() {
-        mockStatic(UploadingFileManager::class.java)
-        mockStatic(FileUtils::class.java)
-    }
-
     companion object {
         private val TEST_BUCKET_ITEM_UID = "test"
 
         private val TEST_BACKEND_PATH = "http://test-server"
 
+        val testBucketItem: BucketItem = mock()
+        val testBucketPhoto: BucketPhoto = mock()
+        val testPhotoUploadResponse: PhotoUploadResponse = mock()
+
         val uploadControllerStorage: UploadBucketPhotoInMemoryStorage = mock()
 
-        lateinit var testBucketItem: BucketItem
-
-        lateinit var testBucketPhoto: BucketPhoto
-
-        val testPhotoUploadResponse: PhotoUploadResponse = mock()
+        val setOfStorage: () -> Set<ActionStorage<*>> = {
+            setOf(BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder), uploadControllerStorage)
+        }
 
         val assertBucketWasAddedInList: (TestSubscriber<ActionState<BucketListCommand>>) -> Unit = {
             assertActionSuccess(it, { it.result.contains(testBucketItem) })
@@ -378,10 +381,6 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
         }
 
         init {
-            mockMemoryStorage = spy()
-            mockDb = spy()
-
-            //session
             val mockConfig: AppConfig.URLS.Config = mock()
             val mockAppConfig: AppConfig = mock()
             val mockUrls: AppConfig.URLS = mock()
@@ -403,15 +402,6 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                     .createObservable(CreateBucketItemHttpAction(body))
                     .subscribe(testSubscriber)
             return testSubscriber
-        }
-
-        fun subscribeBucketListChanges(): TestSubscriber<ActionState<BucketListCommand>> {
-            val testListSubscriber = TestSubscriber<ActionState<BucketListCommand>>()
-
-            bucketInteractor.bucketListActionPipe()
-                    .observe()
-                    .subscribe(testListSubscriber)
-            return testListSubscriber
         }
 
         fun mockHttpService(): MockHttpActionService {
@@ -436,10 +426,6 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
                         it.url.contains("/upload")
                     }
                     .build()
-        }
-
-        fun storageSet(): Set<ActionStorage<*>> {
-            return BaseCompanion.storageSet() + uploadControllerStorage as ActionStorage<*>
         }
 
         fun TemporaryFolder.createFileAndGetPath(fileName: String): String {

@@ -2,47 +2,33 @@ package com.worldventures.dreamtrips.modules.social.bucket
 
 import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand
+import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import io.techery.janet.ActionState
-import io.techery.janet.CommandActionService
 import io.techery.janet.http.annotations.HttpAction
 import io.techery.janet.http.test.MockHttpActionService
-import rx.functions.Func1
 import rx.observers.TestSubscriber
 import kotlin.test.assertNotNull
 
 class BucketListInteractorSpec : BucketInteractorBaseSpec({
-    beforeEach {
-        mockMemoryStorage = spy()
-        mockDb = spy()
-
-        httpStubWrapper = mockHttpService().wrapStub()
-        httpStubWrapper.callback = spy()
-
-        daggerCommandActionService = CommandActionService()
-                .wrapCache()
-                .bindStorageSet(storageSet())
-                .wrapDagger()
-
-        setup()
-    }
-
     describe("bucket list actions") {
-        context("memory storage is not empty") {
-            beforeEach {
-                whenever(mockMemoryStorage.get(null))
-                        .thenReturn(testListOfBucketsFromMemory)
-            }
+        setup({ setOf(BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder)) }) { mockHttpService() }
 
+        context("memory storage is not empty") {
             it("should fetch bucket list from memory") {
+                whenever(mockMemoryStorage.get(any()))
+                        .thenReturn(testListOfBucketsFromMemory)
+                whenever(mockDb.readBucketList(any()))
+                        .thenReturn(emptyList())
+
                 val testSubscriber = loadBucketList(false)
 
-                assertBucketListByPredicate(testSubscriber,
-                        Func1 { bucketListAction -> testListOfBucketsFromMemory.containsAll(bucketListAction.result) })
+                assertBucketListByPredicate(testSubscriber) {
+                    testListOfBucketsFromMemory.containsAll(it.result)
+                }
             }
 
             it("should changed items positions in memory") {
@@ -62,16 +48,17 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
         }
 
         context("memory storage is empty and database storage is not") {
-            beforeEach {
-                whenever(mockDb.readBucketList(MOCK_USER_ID))
-                        .thenReturn(testListOfBucketsFromDisk)
-            }
-
             it("should fetch from database") {
+                whenever(mockMemoryStorage.get(any()))
+                        .thenReturn(emptyList())
+                whenever(mockDb.readBucketList(any()))
+                        .thenReturn(testListOfBucketsFromDisk)
+
                 val testSubscriber = loadBucketList(false)
 
-                assertBucketListByPredicate(testSubscriber,
-                        Func1 { bucketListAction -> testListOfBucketsFromDisk.containsAll(bucketListAction.result) })
+                assertBucketListByPredicate(testSubscriber) {
+                    testListOfBucketsFromDisk.containsAll(it.result)
+                }
             }
 
             it("should fill memory storage") {
@@ -83,22 +70,24 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
 
         context("memory storage and database storage are empty") {
             it("should fetch from network") {
+                whenever(mockMemoryStorage.get(any()))
+                        .thenReturn(emptyList())
+                whenever(mockDb.readBucketList(any()))
+                        .thenReturn(emptyList())
+
                 val testSubscriber = loadBucketList(false)
 
-                assertBucketListByPredicate(testSubscriber,
-                        Func1 { bucketListAction -> testListOfBucketsFromNetwork.containsAll(bucketListAction.result) })
+                assertBucketListByPredicate(testSubscriber) {
+                    testListOfBucketsFromNetwork.containsAll(it.result)
+                }
             }
 
             it("should fill memory storage") {
-                assertNotNull(mockMemoryStorage) {
-                    it.get(null) != null
-                }
+                assertNotNull(mockMemoryStorage.get(any()), "Memory storage is empty")
             }
 
             it("should fill database storage") {
-                assertNotNull(mockDb) {
-                    it.readBucketList(MOCK_USER_ID) != null
-                }
+                assertNotNull(mockDb.readBucketList(any()), "Database storage is empty")
             }
         }
 
@@ -106,8 +95,9 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
             it("force load should fetch only from network") {
                 val testSubscriber = loadBucketList(true)
 
-                assertBucketListByPredicate(testSubscriber,
-                        Func1 { bucketListAction -> testListOfBucketsFromNetwork.containsAll(bucketListAction.result) })
+                assertBucketListByPredicate(testSubscriber) {
+                    testListOfBucketsFromNetwork.containsAll(it.result)
+                }
             }
         }
     }
@@ -138,7 +128,8 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
         }
 
         fun assertBucketListByPredicate(testSubscriber: TestSubscriber<ActionState<BucketListCommand>>,
-                                        predicate: Func1<BucketListCommand, Boolean>): Unit = assertActionSuccess(testSubscriber, predicate)
+                                        predicate: (command: BucketListCommand) -> Boolean): Unit =
+                assertActionSuccess(testSubscriber, { predicate(it) })
 
         fun mockHttpService(): MockHttpActionService {
             return MockHttpActionService.Builder()

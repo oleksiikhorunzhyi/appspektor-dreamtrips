@@ -39,7 +39,7 @@ open class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
 
         fun StubServiceWrapper.spyCallback(): StubServiceWrapper.Callback {
             callback = spy()
-            return callback;
+            return callback
         }
 
         //hard code because mockito_kotlin doesn't work with String correctly

@@ -15,12 +15,16 @@ public class AssertUtil {
     }
 
     public static <T> void assertAction(TestSubscriber<ActionState<T>> subscriber, Func1<T, Boolean> assertPredicate, ActionState.Status status) {
+        assertActionStatusCount(subscriber, status, 1);
+        assertPredicate.call(subscriber.getOnNextEvents().get(0).action);
+    }
+
+    public static <T> void assertActionStatusCount(TestSubscriber<ActionState<T>> subscriber, ActionState.Status status, int count) {
         subscriber.unsubscribe();
         subscriber.assertNoErrors();
         subscriber.assertUnsubscribed();
-        assertStatusCount(subscriber, ActionState.Status.START, 1);
-        assertStatusCount(subscriber, status, 1);
-        assertPredicate.call(subscriber.getOnNextEvents().get(0).action);
+        assertStatusCount(subscriber, ActionState.Status.START, count);
+        assertStatusCount(subscriber, status, count);
     }
 
     public static <T> void assertStatusCount(TestSubscriber<ActionState<T>> subscriber, ActionState.Status status, int count) {

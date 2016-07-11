@@ -30,7 +30,7 @@ public class SystemMessageViewHolder extends MessageViewHolder {
 
     public void bindCursor(Cursor cursor) {
         super.bindCursor(cursor);
-        systemMessageTextProvider = new SystemMessageTextProvider(itemView.getContext(), currentUserId);
+        systemMessageTextProvider = new SystemMessageTextProvider(context, currentUserId);
         dataUserRecipient = convertRecipient(cursor);
 
         Spanned systemMessageText = systemMessageTextProvider.getSystemMessageText(conversationType,

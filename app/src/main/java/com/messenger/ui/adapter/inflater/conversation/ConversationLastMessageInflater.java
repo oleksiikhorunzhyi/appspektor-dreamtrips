@@ -78,9 +78,7 @@ public class ConversationLastMessageInflater extends ViewInflater {
             } else if (MessageHelper.isSystemMessage(message)) {
                 messageText = systemMessageTextProvider.getSystemMessageText(dataConversation.getType(), message, messageAuthor, recipient).toString();
             }
-            return messageText;
-        }
-        if (ConversationHelper.isCleared(dataConversation)) {
+        } else if (ConversationHelper.isCleared(dataConversation)) {
             return context.getString(R.string.chat_reload_chat_history_info_text);
         }
         return messageText;

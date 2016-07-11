@@ -1,6 +1,6 @@
 package com.messenger.ui.adapter.holder.conversation;
 
-import android.content.Context;
+import android.database.Cursor;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +11,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ConversationsCursorAdapter;
+import com.messenger.ui.adapter.converter.ConversationListDataConverter;
 import com.messenger.ui.adapter.holder.BaseViewHolder;
 import com.messenger.ui.adapter.inflater.conversation.ConversationLastMessageDateInflater;
 import com.messenger.ui.adapter.inflater.conversation.ConversationLastMessageInflater;
@@ -27,9 +28,15 @@ import butterknife.InjectView;
 public abstract class BaseConversationViewHolder extends BaseViewHolder
      implements View.OnClickListener {
 
-    protected final Context context;
     @Inject
     SessionHolder<UserSession> sessionHolder;
+    protected DataUser currentUser;
+    protected DataConversation conversation;
+    protected DataMessage message;
+    protected String attachmentType;
+    protected DataTranslation translation;
+    protected DataUser sender;
+    protected DataUser recipient;
 
     @InjectView(R.id.conversation_item_view)
     ViewGroup contentLayout;
@@ -42,24 +49,33 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
 
     private ConversationLastMessageInflater lastMessageInflater = new ConversationLastMessageInflater();
     private ConversationLastMessageDateInflater lastMessageDateInflater = new ConversationLastMessageDateInflater();
-    private ConversationSwipeLayoutInflater conversationSwipeLayoutInflater = new ConversationSwipeLayoutInflater() ;
-
-    private DataUser currentUser;
-    private DataConversation conversation;
+    private ConversationSwipeLayoutInflater conversationSwipeLayoutInflater = new ConversationSwipeLayoutInflater();
+    private ConversationListDataConverter converter = new ConversationListDataConverter();
 
     public BaseConversationViewHolder(View itemView) {
         super(itemView);
         context = itemView.getContext();
         itemView.setOnClickListener(this);
-        ((Injector) itemView.getContext().getApplicationContext()).inject(this);
+        ((Injector) context.getApplicationContext()).inject(this);
         currentUser = new DataUser(sessionHolder.get().get().getUsername());
         lastMessageInflater.setView(itemView);
         lastMessageDateInflater.setView(itemView);
         conversationSwipeLayoutInflater.setView(itemView, this);
     }
 
-    public void bindConversation(DataConversation conversation, String participantsList, int participantsCount) {
-        this.conversation = conversation;
+    public void bindCursor(Cursor cursor) {
+        ConversationListDataConverter.Result result = converter.convert(cursor);
+        conversation = result.getConversation();
+        message = result.getMessage();
+        translation = result.getTranslation();
+        sender = result.getSender();
+        recipient = result.getRecipient();
+        attachmentType = result.getAttachmentType();
+        bindConversation();
+        bindLastMessage();
+    }
+
+    private void bindConversation() {
         updateUnreadCountTextView();
         conversationSwipeLayoutInflater.bind(conversation, currentUser);
     }
@@ -71,9 +87,8 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
         unreadMessagesCountTextView.setText(hasNewMessage ? String.valueOf(unreadMessageCount) : null);
     }
 
-    public void bindLastMessage(DataMessage message, DataUser messageAuthor, DataUser messageRecipient,
-                                String attachmentType, DataTranslation translation) {
-        lastMessageInflater.setLastMessage(conversation, message, messageAuthor, messageRecipient, currentUser,
+    private void bindLastMessage() {
+        lastMessageInflater.setLastMessage(conversation, message, sender, recipient, currentUser,
                 attachmentType, translation);
         updateLastMessageDateTextView();
     }

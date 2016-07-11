@@ -44,10 +44,12 @@ public class ConversationsDAO extends BaseDAO {
     public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
     public static final String GROUP_CONVERSATION_NAME_COLUMN = "groupName";
     public static final String GROUP_CONVERSATION_USER_COUNT_COLUMN = "groupUserCount";
+    public static final String SENDER_ID_COLUMN = "senderId";
+    public static final String SENDER_FIRST_NAME_COLUMN = "senderFirstName";
+    public static final String SENDER_LAST_NAME_COLUMN = "senderLastName";
     public static final String RECIPIENT_ID_COLUMN = "recipientId";
     public static final String RECIPIENT_FIRST_NAME_COLUMN = "recipientFirstName";
     public static final String RECIPIENT_LAST_NAME_COLUMN = "recipientLastName";
-    public static final String SENDER_ID_COLUMN = "senderId";
 
     private SessionHolder<UserSession> appSessionHolder;
 
@@ -155,8 +157,8 @@ public class ConversationsDAO extends BaseDAO {
                 "m." + DataMessage$Table.TYPE + " as " + MESSAGE_TYPE_COLUMN + ", " +
 
                 "u." + DataUser$Table._ID + " as " + SENDER_ID_COLUMN + ", " +
-                "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
-                "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
+                "u." + DataUser$Table.FIRSTNAME + " as " + SENDER_FIRST_NAME_COLUMN + ", " +
+                "u." + DataUser$Table.LASTNAME + " as " + SENDER_LAST_NAME_COLUMN + ", " +
                 "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                 "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", " +
 

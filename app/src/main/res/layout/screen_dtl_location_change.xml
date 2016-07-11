@@ -38,6 +38,30 @@
         android:text="@string/dtl_autodetect_location"
         />
 
+    <TextView
+        android:id="@+id/emptyMerchantsCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:text="@string/dtl_location_no_merchants_caption"
+        android:textColor="@color/dtl_cities_text_color"
+        android:textSize="@dimen/font_normal"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/selectFromNearbyCitiesCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_medium"
+        android:text="@string/dtl_location_select_from_nearby_caption"
+        android:textColor="@color/dtl_cities_text_color"
+        android:textSize="@dimen/font_normal"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

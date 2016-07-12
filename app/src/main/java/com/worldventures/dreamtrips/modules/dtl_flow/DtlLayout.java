@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
 import com.worldventures.dreamtrips.core.flow.path.PathView;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 
 import javax.inject.Inject;
 
@@ -38,6 +39,7 @@ public abstract class DtlLayout<V extends DtlScreen, P extends DtlPresenter<V, ?
 
     public DtlLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        MonitoringHelper.startInteractionName(this);
     }
 
     @Override

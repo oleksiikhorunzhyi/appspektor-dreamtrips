@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantDetailsViewEve
 import com.worldventures.dreamtrips.modules.dtl.analytics.MerchantMapDestinationEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.PointsEstimatorViewEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
+import com.worldventures.dreamtrips.modules.dtl.analytics.SuggestMerchantEvent;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
@@ -202,7 +203,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                 .lat(location.getLatitude())
                 .lng(location.getLongitude())
                 .build();
-        transactionInteractor.transactionActionPipe().send(DtlTransactionAction.save(merchant, dtlTransaction));
+        transactionInteractor.transactionActionPipe()
+                .send(DtlTransactionAction.save(merchant, dtlTransaction));
         //
         getView().setTransaction(dtlTransaction);
         //
@@ -217,6 +219,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
     @Override
     public void onMerchantClick() {
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new SuggestMerchantEvent(merchant)));
         getView().openSuggestMerchant(new MerchantIdBundle(merchant.getId()));
     }
 

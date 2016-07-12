@@ -66,4 +66,8 @@ public class ClearChatCommand extends Command<Void> implements InjectableAction 
             imagePipeline.evictFromCache(Uri.parse(url));
         }
     }
+
+    public String getConversationId() {
+        return clearChatEvent.getConversationId();
+    }
 }

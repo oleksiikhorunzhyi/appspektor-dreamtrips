@@ -18,8 +18,15 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MessagePageProvider extends IQProvider<MessagePageIQ> {
+
+    private static final String ELEMENT_CHAT = "chat";
+    private static final String ELEMENT_TO = "to";
+    private static final String ELEMENT_FROM = "from";
+    private static final String ELEMENT_BODY = "body";
+    private static final String ELEMENT_SERVICE = "service";
 
     private MessageBodyParser messageBodyParser;
 
@@ -29,20 +36,24 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
 
     @Override
     public MessagePageIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
-        MessagePageIQ messagePageIQ = new MessagePageIQ();
-
-        String elementName;
+        ArrayList<Message> loadedMessages = new ArrayList<>();
+        int loadedMessageCount = 0;
+        String thread = null;
         Message.Builder messageBuilder = null;
 
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
+            int eventType = parser.getEventType();
+            String elementName = parser.getName();
             switch (eventType) {
                 case XmlPullParser.START_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "from":
-                        case "to": {
+                        case ELEMENT_CHAT:
+                            thread = parser.getAttributeValue("", "thread");
+                            break;
+                        case ELEMENT_FROM:
+                        case ELEMENT_TO: {
+                            loadedMessageCount++;
                             long timestamp = ParserUtils.getLongAttribute(parser, "secs");
                             String fromId = JidCreatorHelper.obtainId(parser.getAttributeValue("", "jid"));
                             String messageId = parser.getAttributeValue("", "client_msg_id");
@@ -51,6 +62,7 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
 
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
+                                    .conversationId(thread)
                                     .deleted(deleted)
                                     .status((unread == null || !unread) ? MessageStatus.READ : MessageStatus.SENT)
                                     .date(timestamp)
@@ -58,7 +70,8 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                                     .type(MessageType.MESSAGE);
                             break;
                         }
-                        case "service": {
+                        case ELEMENT_SERVICE: {
+                            loadedMessageCount++;
                             long timestamp = ParserUtils.getLongAttribute(parser, "timestamp");
                             String messageId = parser.getAttributeValue("", "id");
                             String fromIdAttr = parser.getAttributeValue("", "from");
@@ -68,6 +81,7 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
 
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
+                                    .conversationId(thread)
                                     .status(MessageStatus.READ)
                                     .date(timestamp)
                                     .type(ParseUtils.parseMessageType(type))
@@ -80,7 +94,7 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
 
                             break;
                         }
-                        case "body":
+                        case ELEMENT_BODY:
                             //noinspection all //messageBuilder cannot be null
                             messageBuilder.messageBody(messageBodyParser.
                                     parseMessageBody(parser.nextText()));
@@ -88,24 +102,24 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                     }
                     break;
                 case XmlPullParser.END_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "to":
-                        case "from":
-                        case "service":
-                            if (messageBuilder == null) continue;
+                        case ELEMENT_TO:
+                        case ELEMENT_FROM:
+                        case ELEMENT_SERVICE:
+                            if (messageBuilder == null) break;
                             Message message = messageBuilder.build();
-                            if (TextUtils.isEmpty(message.getId())) continue;
-                            if (MessageType.MESSAGE.equals(message.getType()) && message.getMessageBody() == null) continue;
-                            messagePageIQ.add(message);
+                            if (TextUtils.isEmpty(message.getId())) break;
+                            if (MessageType.MESSAGE.equals(message.getType()) && message.getMessageBody() == null) break;
+                            loadedMessages.add(message);
                             break;
-                        case "chat":
+                        case ELEMENT_CHAT:
                             done = true;
-                            break;
+                            continue;
                     }
                     break;
             }
+            parser.next();
         }
-        return messagePageIQ;
+        return new MessagePageIQ(loadedMessages, loadedMessageCount);
     }
 }

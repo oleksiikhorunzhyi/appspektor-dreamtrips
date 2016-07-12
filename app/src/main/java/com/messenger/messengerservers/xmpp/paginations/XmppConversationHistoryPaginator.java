@@ -1,16 +1,16 @@
 package com.messenger.messengerservers.xmpp.paginations;
 
-import com.google.gson.Gson;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.paginations.ImmutablePaginationResult;
 import com.messenger.messengerservers.paginations.PagePagination;
+import com.messenger.messengerservers.paginations.PaginationResult;
 import com.messenger.messengerservers.xmpp.XmppServerFacade;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessagePageIQ;
 import com.messenger.messengerservers.xmpp.stanzas.outgoing.ObtainMessageListIQ;
-import com.messenger.messengerservers.xmpp.providers.MessagePageProvider;
 
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.provider.ProviderManager;
 
 import java.util.List;
 
@@ -19,16 +19,14 @@ import timber.log.Timber;
 
 public class XmppConversationHistoryPaginator extends PagePagination<Message> {
     private final Observable<XMPPConnection> connectionObservable;
-    private final Gson gson;
 
     public XmppConversationHistoryPaginator(XmppServerFacade facade, int pageSize) {
         super(pageSize);
-        this.gson = facade.getGson();
         this.connectionObservable = facade.getConnectionObservable();
     }
 
     @Override
-    public Observable<List<Message>> loadPage(String conversationId, int page, long sinceSecs) {
+    public Observable<PaginationResult<Message>> loadPage(String conversationId, int page, long sinceSecs) {
         ObtainMessageListIQ packet = new ObtainMessageListIQ();
         packet.setMax(getPageSize());
         packet.setConversationId(conversationId);
@@ -36,20 +34,17 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
         packet.setSinceSec(sinceSecs);
         Timber.i("Send XMPP Packet: %s", packet.toString());
 
-        ProviderManager.addIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE, new MessagePageProvider(gson));
         connectionObservable
                 .take(1)
-                .doOnNext(connection -> connectionPrepared(connection, packet, conversationId))
-                .subscribe(connection -> {
-                }, this::notifyError);
+                .subscribe(connection -> connectionPrepared(connection, packet), this::notifyError);
 
-        return paginationObservable;
+        return paginationPublishSubject.asObservable();
     }
 
-    public void connectionPrepared(XMPPConnection connection, Stanza packet, String conversationId) {
+    public void connectionPrepared(XMPPConnection connection, IQ packet) {
         try {
             connection.sendStanzaWithResponseCallback(packet,
-                    this::stanzaFilter, stanza -> stanzaCallback(stanza, conversationId), this::notifyError);
+                    this::stanzaFilter, this::stanzaCallback, this::notifyError);
         } catch (Throwable e) {
             notifyError(e);
         }
@@ -60,25 +55,20 @@ public class XmppConversationHistoryPaginator extends PagePagination<Message> {
                 || (stanza.getStanzaId() != null && stanza.getStanzaId().startsWith("page"));
     }
 
-    private void stanzaCallback(Stanza stanza, String conversationId) {
-        if (!(stanza instanceof MessagePageIQ)) {
-            notifyError(new IllegalArgumentException());
-        } else {
-            notifyLoaded(((MessagePageIQ) stanza).getMessages(), conversationId);
-        }
-        ProviderManager.removeIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE);
+    private void stanzaCallback(Stanza stanza) {
+        MessagePageIQ messagePageIQ = (MessagePageIQ) stanza;
+        notifyLoaded(messagePageIQ.getMessages(), messagePageIQ.getLoadedCount());
     }
 
-    private void notifyLoaded(List<Message> messages, String conversationId) {
-        for (Message message : messages) {
-            message.setConversationId(conversationId);
-        }
-
-        paginationObservable.onNext(messages);
+    private void notifyLoaded(List<Message> messages, int loadedCount) {
+        paginationPublishSubject.onNext(ImmutablePaginationResult.<Message>builder()
+                .result(messages)
+                .loadedCount(loadedCount)
+                .build()
+        );
     }
 
     private void notifyError(Throwable throwable) {
-        paginationObservable.onError(throwable);
-        ProviderManager.removeIQProvider(MessagePageIQ.ELEMENT_CHAT, MessagePageIQ.NAMESPACE);
+        paginationPublishSubject.onError(throwable);
     }
 }

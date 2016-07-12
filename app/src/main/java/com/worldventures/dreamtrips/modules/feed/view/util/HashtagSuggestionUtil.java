@@ -4,8 +4,8 @@ public class HashtagSuggestionUtil {
 
     public static String generateText(String descriptionText, String suggestion, int cursorPos) {
         int startReplace = calcStartPosBeforeReplace(descriptionText, cursorPos);
+        int endIndex = calEndPosBeforeReplace(descriptionText, cursorPos) + 1;
         String toReplace = replaceableText(suggestion);
-        int endIndex = (cursorPos < descriptionText.length() && descriptionText.charAt(cursorPos) == ' ') ? cursorPos + 1 : cursorPos;
         return new StringBuffer(descriptionText).replace(startReplace, endIndex, toReplace).toString();
     }
 
@@ -19,6 +19,16 @@ public class HashtagSuggestionUtil {
             if (hashPosition != -1) return hashPosition;
             else if (spacePosition != -1) return spacePosition + 1;
             else return 0;
+        }
+    }
+
+    public static int calEndPosBeforeReplace(String descriptionText, int cursorPos) {
+        String replaceableText = descriptionText.substring(cursorPos);
+        int spacePosition = replaceableText.indexOf(" ");
+        if (spacePosition != -1) {
+            return cursorPos + spacePosition;
+        } else {
+            return descriptionText.length() - 1;
         }
     }
 

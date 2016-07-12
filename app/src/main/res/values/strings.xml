@@ -634,4 +634,6 @@
 
     <string name="min">min</string>
 
+    <string name="error_webview_secure_connection">We\'re sorry but DreamTrips app can not establish secure connection.\nWe\'ve been notified about this issue and we\'ll take a look at it shortly.\n\nPlease contact customer support for faster resolution.</string>
+
 </resources>

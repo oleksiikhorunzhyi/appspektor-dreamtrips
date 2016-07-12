@@ -19,7 +19,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class DtlMerchantsAction extends Command<List<DtlMerchant>> implements CachedAction<List<DtlMerchant>>, InjectableAction {
+public class DtlMerchantsAction extends Command<List<DtlMerchant>>
+        implements CachedAction<List<DtlMerchant>>, InjectableAction {
 
     @Inject
     Janet janet;
@@ -27,6 +28,8 @@ public class DtlMerchantsAction extends Command<List<DtlMerchant>> implements Ca
     private List<DtlMerchant> cache = new ArrayList<>();
 
     private final Location location;
+
+    private final long startTime = System.currentTimeMillis();
 
     private DtlMerchantsAction(Location location) {
         this.location = location;
@@ -46,6 +49,10 @@ public class DtlMerchantsAction extends Command<List<DtlMerchant>> implements Ca
 
     public boolean isFromApi() {
         return location != null;
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 
     public static DtlMerchantsAction load(Location location) {
@@ -73,5 +80,4 @@ public class DtlMerchantsAction extends Command<List<DtlMerchant>> implements Ca
                 .saveToCache(isFromApi())
                 .build();
     }
-
 }

@@ -39,7 +39,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private int mOrientation;
     private Context context;
-    int leftMarginRes;
+    @DimenRes
+    private int leftMarginRes;
+    private boolean showDividerAfterLastCell = true;
 
     public DividerItemDecoration(Context context, int orientation) {
         this.context = context;
@@ -73,7 +75,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         final int left = parent.getPaddingLeft() + leftMargin;
         final int right = parent.getWidth() - parent.getPaddingRight();
 
-        final int childCount = parent.getChildCount() - 1;
+        int childCount = parent.getChildCount();
+        if (!showDividerAfterLastCell) {
+            childCount--;
+        }
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
@@ -89,7 +94,10 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         final int top = parent.getPaddingTop();
         final int bottom = parent.getHeight() - parent.getPaddingBottom();
 
-        final int childCount = parent.getChildCount() - 1;
+        int childCount = parent.getChildCount();
+        if (!showDividerAfterLastCell) {
+            childCount--;
+        }
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
@@ -112,5 +120,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     public void setLeftMarginRes(@DimenRes int left) {
         this.leftMarginRes = left;
+    }
+
+    public void setShowDividerAfterLastCell(boolean showDividerAfterLastCell) {
+        this.showDividerAfterLastCell = showDividerAfterLastCell;
     }
 }

@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -17,6 +17,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.custom.KeyCallbackEditText;
+import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
@@ -47,7 +48,9 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
     @InjectView(R.id.description)
     KeyCallbackEditText description;
     @InjectView(R.id.suggestions)
-    RecyclerView suggestions;
+    ProgressEmptyRecyclerView suggestions;
+    @InjectView(R.id.suggestionProgress)
+    View suggestionsProgressView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +61,12 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
     public void onSaveInstanceState(Bundle savedInstanceState) {
         stateDelegate.saveStateIfNeeded(savedInstanceState);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        getPresenter().onViewStateRestored();
     }
 
     public void onDestroyView() {
@@ -85,7 +94,7 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
         suggestions.setAdapter(adapter);
         suggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         suggestions.addItemDecoration(dividerItemDecoration());
-
+        suggestions.setProgressView(suggestionsProgressView);
         description.setText(getArgs().getText());
         description.setSelection(getArgs().getText().length());
 
@@ -100,7 +109,6 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
                 });
         stateDelegate.restoreStateIfNeeded();
     }
-
 
     private void onSuggestionClicked(String suggestion) {
         String descriptionText = description.getText().toString();
@@ -140,8 +148,19 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
         adapter.clear();
     }
 
+    @Override
+    public void showSuggestionProgress() {
+        if (suggestions != null) suggestions.showProgress();
+    }
+
+    @Override
+    public void hideSuggestionProgress() {
+        if (suggestions != null) suggestions.hideProgress();
+    }
+
     private DividerItemDecoration dividerItemDecoration() {
         DividerItemDecoration decor = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST);
+        decor.setShowDividerAfterLastCell(false);
         decor.setLeftMarginRes(R.dimen.spacing_normal);
         return decor;
     }

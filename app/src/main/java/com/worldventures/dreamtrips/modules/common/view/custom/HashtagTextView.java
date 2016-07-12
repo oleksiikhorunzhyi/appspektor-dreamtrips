@@ -5,20 +5,23 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.ColorInt;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ReplacementSpan;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HashtagTextView extends TextView {
 
@@ -57,41 +60,67 @@ public class HashtagTextView extends TextView {
         this.hashtagClickListener = hashtagClickListener;
     }
 
-    public void highlightHashtags(List<Hashtag> clickableHashtags) {
+    public void highlightHashtags(List<String> clickableHashtags) {
         setMovementMethod(LinkMovementMethod.getInstance());
         setText(process(getText().toString(), clickableHashtags, new ArrayList<>()), BufferType.SPANNABLE);
     }
 
-    public void highlightHashtags(List<Hashtag> clickableHashtags, List<Hashtag> selectedHashtags) {
+    public void highlightHashtags(List<String> clickableHashtags, List<String> selectedHashtags) {
         setMovementMethod(LinkMovementMethod.getInstance());
         setText(process(getText().toString(), clickableHashtags, selectedHashtags), BufferType.SPANNABLE);
     }
 
-    private SpannableStringBuilder process(String text, List<Hashtag> clickableHashtags, List<Hashtag> selectedHashtags) {
-        final SpannableStringBuilder spannableText = new SpannableStringBuilder(text);
-        for (final Hashtag hashtagHolder : clickableHashtags) {
-            final String hashtag = String.format("#%s", hashtagHolder.getName());
 
-            int start = text.indexOf(hashtag);
-            int end;
+    private SpannableStringBuilder process(final String text, final List<String> clickableHashtags, final List<String> selectedHashtags) {
+        final SpannableStringBuilder spannable = new SpannableStringBuilder(text);
 
-            while (start != -1) {
-                end = start + hashtag.length();
+        for (final String hashtag : clickableHashtags) {
 
-                if (selectedHashtags.contains(hashtagHolder))
-                    spannableText.setSpan(new RoundedBackgroundSpan(selectedHashtagTextColor, selectedHashtagBackgroundColor), start, end, 0);
+            final String formattedHashtag = String.format("#%s", hashtag.toLowerCase());
+            List<Pair<Integer, Integer>> pairs = findIndexesForKeyword(text.toLowerCase(), formattedHashtag);
 
-                spannableText.setSpan(new HashtagClickableSpan(hashtagTextColor) {
-                    @Override
-                    public void onClick(View widget) {
-                        if (hashtagClickListener != null)
-                            hashtagClickListener.onHashtagClicked(hashtag);
-                    }
-                }, start, end, 0);
-                start = text.indexOf(hashtag, end);
+            for (Pair<Integer, Integer> pair : pairs){
+                if (selectedHashtags.contains(hashtag)) highlight(spannable, pair.first, pair.second);
+                attachClick(spannable, pair.first, pair.second, formattedHashtag);
             }
         }
-        return spannableText;
+
+        return spannable;
+    }
+
+    private void highlight(Spannable spannable, int start, int end) {
+        spannable.setSpan(new RoundedBackgroundSpan(selectedHashtagTextColor, selectedHashtagBackgroundColor), start, end, 0);
+    }
+
+    private void attachClick(Spannable spannable, int start, int end, final String callbackString) {
+        spannable.setSpan(new HashtagClickableSpan(hashtagTextColor) {
+            @Override
+            public void onClick(View widget) {
+                if (hashtagClickListener != null)
+                    hashtagClickListener.onHashtagClicked(callbackString);
+            }
+        }, start, end, 0);
+    }
+
+    /**
+     *
+     * @param text
+     * @param keyword
+     * @return List <(keywordIndexStart, keywordIndexEnd)>
+     */
+    public List<Pair<Integer, Integer>> findIndexesForKeyword(String text, String keyword) {
+        String regex = String.format("%s\\b", keyword.toLowerCase());
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text.toLowerCase());
+
+        List<Pair<Integer, Integer>> indexWrapper = new ArrayList<>();
+
+        while(matcher.find()){
+            int end = matcher.end();
+            int start = matcher.start();
+            indexWrapper.add(new Pair<>(start, end));
+        }
+        return indexWrapper;
     }
 
     private static class HashtagClickableSpan extends ClickableSpan {

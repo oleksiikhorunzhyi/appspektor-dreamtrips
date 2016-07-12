@@ -85,9 +85,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
             post.setVisibility(View.VISIBLE);
             post.setText(String.format("%s", textualPost.getDescription()));
             post.setHashtagClickListener(this::openHashtagFeeds);
-            ArrayList<Hashtag> hightlightedHashtags = new ArrayList<>();
-            if (getModelObject().getMetaData() != null && getModelObject().getMetaData().getHashtags() != null) hightlightedHashtags = getModelObject().getMetaData().getHashtags();
-            post.highlightHashtags(textualPost.getHashtags(), hightlightedHashtags);
+
+            List<String> clickableHashtags = Queryable.from(textualPost.getHashtags()).map(Hashtag::getName).toList();
+            List<String> hightlightedHashtags = getModelObject().getMetaData() != null && getModelObject().getMetaData().getHashtags() != null?
+                    Queryable.from(getModelObject().getMetaData().getHashtags()).map(Hashtag::getName).toList() : new ArrayList<>();
+            post.highlightHashtags(clickableHashtags, hightlightedHashtags);
         } else {
             post.setVisibility(View.GONE);
         }

@@ -271,6 +271,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     protected void loadMoreItemsError(SpiceException spiceException) {
+        view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }
 
@@ -304,6 +305,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     private void refreshFeedError(SpiceException exception) {
         super.handleError(exception);
+        view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
     }

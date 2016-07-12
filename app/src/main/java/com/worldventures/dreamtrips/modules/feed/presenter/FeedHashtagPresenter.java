@@ -162,6 +162,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     private void refreshFeedError() {
+        view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
     }
@@ -189,6 +190,12 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                 .map(element -> element.getItems().get(0))
                 .toList());
         view.refreshFeedItems(feedItems);
+    }
+
+
+    private void loadMoreItemsError() {
+        view.updateLoadingStatus(false, false);
+        addFeedItems(new ArrayList<>());
     }
 
     public void onEvent(DownloadPhotoEvent event) {
@@ -310,10 +317,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         });
 
         view.refreshFeedItems(feedItems);
-    }
-
-    private void loadMoreItemsError() {
-        addFeedItems(new ArrayList<>());
     }
 
     public interface View extends RxView, UidItemDelegate.View {

@@ -83,7 +83,13 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
         statePaginatedRecyclerViewManager.init(feedAdapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+        statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+                fragmentWithFeedDelegate.addItem(new LoadMoreModel());
+                fragmentWithFeedDelegate.notifyDataSetChanged();
+            }
+            getPresenter().loadNext();
+        });
         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(false));
         fragmentWithFeedDelegate.init(feedAdapter);
 
@@ -208,8 +214,6 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     public void refreshFeedItems(List feedItems) {
         fragmentWithFeedDelegate.clearItems();
         fragmentWithFeedDelegate.addItems(feedItems);
-        if (!statePaginatedRecyclerViewManager.isNoMoreElements())
-            fragmentWithFeedDelegate.addItem(new LoadMoreModel());
         fragmentWithFeedDelegate.notifyDataSetChanged();
     }
 

@@ -84,7 +84,13 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
         statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
         statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+        statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+                fragmentWithFeedDelegate.addItem(new LoadMoreModel());
+                fragmentWithFeedDelegate.notifyDataSetChanged();
+            }
+            getPresenter().loadNext();
+        });
         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(true));
         statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
@@ -147,7 +153,6 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
     public void refreshFeedItems(List<FeedItem> events) {
         fragmentWithFeedDelegate.clearItems();
         fragmentWithFeedDelegate.addItems(events);
-        if (!statePaginatedRecyclerViewManager.isNoMoreElements()) fragmentWithFeedDelegate.addItem(new LoadMoreModel());
         fragmentWithFeedDelegate.notifyDataSetChanged();
     }
 

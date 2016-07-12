@@ -396,6 +396,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     protected void loadMoreItemsError(SpiceException spiceException) {
+        view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }
 
@@ -425,6 +426,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private void refreshFeedError(SpiceException exception) {
         super.handleError(exception);
+        view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
     }

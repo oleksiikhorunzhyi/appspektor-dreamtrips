@@ -105,6 +105,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
     }
 
     private void loadMoreItemsError(SpiceException spiceException) {
+        view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }
 
@@ -128,6 +129,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
 
     private void refreshFeedError(SpiceException exception) {
         super.handleError(exception);
+        view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshNotifications(notifications);
     }

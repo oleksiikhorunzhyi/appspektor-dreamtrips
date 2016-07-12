@@ -117,7 +117,13 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
         statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
         statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+        statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+                fragmentWithFeedDelegate.addItem(new LoadMoreModel());
+                fragmentWithFeedDelegate.notifyDataSetChanged();
+            }
+            getPresenter().loadNext();
+        });
         if (isTabletLandscape()) {
             fragmentWithFeedDelegate.openFeedAdditionalInfo(getChildFragmentManager(),
                     getPresenter().getAccount());
@@ -281,13 +287,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
             listWithSuggestion.addAll(feedItems);
             fragmentWithFeedDelegate.clearItems();
             fragmentWithFeedDelegate.addItems(listWithSuggestion);
-            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) fragmentWithFeedDelegate.addItem(new LoadMoreModel());
             fragmentWithFeedDelegate.notifyDataSetChanged();
             return;
         }
         fragmentWithFeedDelegate.clearItems();
         fragmentWithFeedDelegate.addItems(feedItems);
-        if (!statePaginatedRecyclerViewManager.isNoMoreElements()) fragmentWithFeedDelegate.addItem(new LoadMoreModel());
         fragmentWithFeedDelegate.notifyDataSetChanged();
     }
 

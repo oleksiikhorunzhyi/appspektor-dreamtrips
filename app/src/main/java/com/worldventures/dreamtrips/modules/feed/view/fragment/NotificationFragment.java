@@ -74,7 +74,13 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter>
         statePaginatedRecyclerViewManager = new StatePaginatedRecyclerViewManager(rootView);
         statePaginatedRecyclerViewManager.init(adapter, savedInstanceState);
         statePaginatedRecyclerViewManager.setOnRefreshListener(this);
-        statePaginatedRecyclerViewManager.setPaginationListener(() -> getPresenter().loadNext());
+        statePaginatedRecyclerViewManager.setPaginationListener(() -> {
+            if (!statePaginatedRecyclerViewManager.isNoMoreElements()) {
+                adapter.addItem(new LoadMoreModel());
+                adapter.notifyDataSetChanged();
+            }
+            getPresenter().loadNext();
+        });
         statePaginatedRecyclerViewManager.stateRecyclerView.setEmptyView(emptyView);
         //
         NotificationHeaderAdapter headerAdapter = new NotificationHeaderAdapter(adapter.getItems(), R.layout.adapter_item_notification_divider, item -> () -> {
@@ -130,7 +136,6 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter>
     @Override
     public void refreshNotifications(List<FeedItem> notifications) {
         adapter.clearAndUpdateItems(notifications);
-        if (!statePaginatedRecyclerViewManager.isNoMoreElements()) adapter.addItem(new LoadMoreModel());
     }
 
     @Override

@@ -89,10 +89,9 @@ public class MessagesPaginationDelegate {
         List<Message> messages = paginationResult.getResult();
         beforeMessageTimestamp = getLastMessageDate(messages);
         hasMoreElements = paginationResult.getLoadedCount() >= MAX_MESSAGES_PER_PAGE;
-        if (!isLastLoadedMessageRead(messages)) {
+        loading.set(false);
+        if (!isLastLoadedMessageRead(messages) && hasMoreElements) {
             loadNextPage();
-        } else {
-            loading.set(false);
         }
 
         paginationStateObservable.onNext(ImmutablePaginationStatus.builder()

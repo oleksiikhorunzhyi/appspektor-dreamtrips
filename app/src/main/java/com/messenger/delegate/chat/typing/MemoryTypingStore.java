@@ -23,8 +23,6 @@ public class MemoryTypingStore implements TypingStore {
         return Observable.concat(Observable.just(null),
                 typingUserPublishSubject.filter(typingModel ->
                         conversationId.equals(typingModel.getConversationId())))
-                .doOnNext(typingModel -> Timber.d("TEST_TYPING %s", typingModel))
-                .doOnUnsubscribe(() -> Timber.d("TEST_TYPING UNSUBSCRIBE"))
                 .map(typingModel -> obtainTypingUsers(conversationId));
     }
 

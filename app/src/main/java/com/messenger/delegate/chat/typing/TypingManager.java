@@ -52,7 +52,7 @@ public class TypingManager {
     }
 
     private List<DataUser> obtainDataUser(List<String> userIds) {
-        return usersDAO.getExitingUserByIds(userIds).toBlocking().first();
+        return usersDAO.getUsersByIds(userIds).toBlocking().firstOrDefault(Collections.emptyList());
     }
 
     @Value.Immutable

@@ -44,6 +44,7 @@ public class MediaHeaderCell extends AbstractDelegateCell<MediaHeader, VideoHead
 
         if (getModelObject().getVideoLocale() != null) {
             flag.setImageURI(Uri.parse(getModelObject().getVideoLocale().getImage()));
+            flag.setContentDescription(getModelObject().getVideoLocale().getCountry());
             languageCaption.setText(getModelObject().getVideoLanguage().getTitle());
         } else {
             flag.setImageURI(null);

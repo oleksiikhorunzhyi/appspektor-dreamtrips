@@ -80,6 +80,10 @@ public class EmptyRecyclerView extends RecyclerView {
         setVisibility(VISIBLE);
     }
 
+    public boolean isEmptyViewVisible() {
+        return emptyView != null && emptyView.getVisibility() == VISIBLE;
+    }
+
     @Override
     public void setAdapter(Adapter adapter) {
         final Adapter oldAdapter = getAdapter();

@@ -98,7 +98,12 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
         // https://code.google.com/p/android/issues/detail?id=77712
         weakHandler.postDelayed(() -> {
             if (refreshLayout != null)
-                refreshLayout.setRefreshing(true, adapter.getCount() == 0);
+                // show info text only if empty view isn't showing
+                if (recyclerView.isEmptyViewVisible()) {
+                    refreshLayout.setRefreshing(true);
+                } else {
+                    refreshLayout.setRefreshing(true, adapter.getCount() == 0);
+                }
         }, 100);
     }
 

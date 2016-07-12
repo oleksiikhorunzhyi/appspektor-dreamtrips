@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -26,6 +25,7 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
+import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
@@ -50,12 +50,10 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     @InjectView(R.id.empty_view)
     ViewGroup emptyView;
-    @Inject
-    @ForActivity
-    Injector injector;
-
+    @InjectView(R.id.suggestionProgress)
+    View suggestionProgressBar;
     @InjectView(R.id.suggestions)
-    RecyclerView suggestions;
+    ProgressEmptyRecyclerView suggestions;
     @Inject
     FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
@@ -93,7 +91,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(false));
         fragmentWithFeedDelegate.init(feedAdapter);
 
-        suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), injector);
+        suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);
         suggestionAdapter.registerCell(HashtagSuggestion.class, HashtagSuggestionCell.class);
         suggestionAdapter.registerDelegate(HashtagSuggestion.class, new HashtagSuggestionCell.Delegate() {
             public void onCellClicked(HashtagSuggestion model) {
@@ -106,7 +104,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         suggestions.setAdapter(suggestionAdapter);
         suggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         suggestions.addItemDecoration(dividerItemDecoration());
-
+        suggestions.setProgressView(suggestionProgressBar);
         //make root focusable for shifting focus ToolBar.SearchView -> rootView
         rootView.setFocusable(true);
         rootView.setFocusableInTouchMode(true);
@@ -171,6 +169,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
                 getPresenter().setQuery(query);
                 releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
                 getPresenter().onRefresh();
+                clearSuggestions();
                 return true;
             }
 
@@ -256,6 +255,16 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
     }
 
+    @Override
+    public void showSuggestionProgress() {
+        if (suggestions != null) suggestions.showProgress();
+    }
+
+    @Override
+    public void hideSuggestionProgress() {
+        if (suggestions != null) suggestions.hideProgress();
+    }
+
     private void releaseSearchFocus(@Nullable View search) {
         new WeakHandler().postDelayed(() -> {
             if (search != null) search.clearFocus();
@@ -266,7 +275,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     private DividerItemDecoration dividerItemDecoration() {
         DividerItemDecoration decor = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST);
-        decor.setLeftMarginRes(R.dimen.spacing_normal);
+        decor.setShowDividerAfterLastCell(true);
         return decor;
     }
 

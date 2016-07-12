@@ -33,22 +33,28 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
                 .observeSuccess()
                 .observeOn(AndroidSchedulers.mainThread()))
                 .subscribe(command -> {
-                    view.onSuggestionsReceived(command.getFullQueryText(), command.getResult());
+                    hashtagSuggestions.clear();
+                    hashtagSuggestions.addAll(command.getResult());
+                    view.onSuggestionsReceived(command.getFullQueryText(), hashtagSuggestions);
+                    view.hideSuggestionProgress();
                 }, throwable -> {
                     Timber.e(throwable, "");
+                    view.hideSuggestionProgress();
                 });
-
-        view.onSuggestionsReceived(query, hashtagSuggestions);
     }
 
     public void query(String fullQueryText, int cursorPosition) {
-        this.query = fullQueryText;
+        if (fullQueryText.equals(query)) return;//for restore state after rotation
+        query = fullQueryText;
         String subStr = fullQueryText.substring(0, cursorPosition);
         int lastDashIndex = subStr.lastIndexOf("#");
         int lastSpaceIndex = Math.max(subStr.lastIndexOf(" "), subStr.lastIndexOf("\n"));
         view.clearSuggestions();
         if (lastDashIndex >= 0 && cursorPosition > lastDashIndex + MIN_QUERY_LENGTH && lastDashIndex > lastSpaceIndex) {
             interactor.getSuggestionPipe().send(new HashtagSuggestionCommand(fullQueryText, fullQueryText.substring(lastDashIndex + 1, cursorPosition)));
+            view.showSuggestionProgress();
+        } else {
+            view.hideSuggestionProgress();
         }
     }
 
@@ -56,9 +62,18 @@ public class DescriptionCreatorPresenter extends Presenter<DescriptionCreatorPre
         interactor.getDescPickedPipe().send(new PostDescriptionCreatedCommand(desc));
     }
 
+    public void onViewStateRestored() {
+        view.onSuggestionsReceived(query, hashtagSuggestions);
+    }
+
     public interface View extends RxView {
         void onSuggestionsReceived(String fullQueryText, List<HashtagSuggestion> suggestionList);
 
         void clearSuggestions();
+
+        void showSuggestionProgress();
+
+        void hideSuggestionProgress();
     }
+
 }

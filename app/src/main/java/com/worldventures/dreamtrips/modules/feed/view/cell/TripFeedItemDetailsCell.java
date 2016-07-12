@@ -6,9 +6,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TripFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.trips.view.util.TripFeedViewInjector;
@@ -38,13 +35,6 @@ public class TripFeedItemDetailsCell extends FeedItemDetailsCell<TripFeedItem> {
     protected void syncUIStateWithModel() {
         super.syncUIStateWithModel();
         tripFeedViewInjector.initTripData(getModelObject().getItem(), appSessionHolder.get().get().getUser());
-    }
-
-    @Override
-    public void openItemDetails() {
-        super.openItemDetails();
-        getEventBus().post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW,
-                getModelObject().getItem().getUid(), FeedEntityHolder.Type.TRIP));
     }
 
     @Override

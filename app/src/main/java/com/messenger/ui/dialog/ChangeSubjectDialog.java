@@ -2,20 +2,24 @@ package com.messenger.ui.dialog;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 
 import rx.functions.Action0;
 import rx.functions.Action1;
 
 public class ChangeSubjectDialog {
-    
+
     private final AlertDialog dialog;
     private EditText etSubject;
-    
+
     private Action1<String> positiveListener;
     private Action0 cancelListener;
 
@@ -32,9 +36,11 @@ public class ChangeSubjectDialog {
                 })
                 .setTitle(R.string.change_subject)
                 .create();
+
+        dialog.setOnShowListener(dialog -> setInputTextBehave());
     }
-    
-    private View obtainDialogUi (Context context, String currentSubject) {
+
+    private View obtainDialogUi(Context context, String currentSubject) {
         final View dialogView = View.inflate(context, R.layout.dialog_messenger_input, null);
         etSubject = (EditText) dialogView.findViewById(R.id.et_input);
         etSubject.setText(currentSubject);
@@ -42,8 +48,16 @@ public class ChangeSubjectDialog {
         if (currentSubject != null) {
             etSubject.setSelection(currentSubject.length());
         }
-        
+
         return dialogView;
+    }
+
+    private void setInputTextBehave() {
+        RxTextView.textChangeEvents(etSubject)
+                .map(textChangeEvent -> !TextUtils.isEmpty(textChangeEvent.text().toString().trim()))
+                .distinctUntilChanged()
+                .compose(RxLifecycle.bindView(etSubject))
+                .subscribe(dialog.getButton(DialogInterface.BUTTON_POSITIVE)::setEnabled);
     }
 
     public ChangeSubjectDialog setPositiveListener(Action1<String> positiveListener) {
@@ -56,7 +70,7 @@ public class ChangeSubjectDialog {
         return this;
     }
 
-    public void show(){
+    public void show() {
         dialog.show();
     }
 }

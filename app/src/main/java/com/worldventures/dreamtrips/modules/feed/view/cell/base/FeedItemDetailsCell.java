@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -71,6 +72,8 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
                 .data(bundle)
                 .build());
+        //
+        sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
     }
 
     @Optional

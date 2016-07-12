@@ -39,8 +39,6 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
     @Inject
     EventBus eventBus;
 
-    @Inject
-    protected DtlApi dtlApi;
 
     @Override
     protected NetworkStateChecker getNetworkStateChecker() {
@@ -63,7 +61,6 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
         super.onCreate();
         addRetrofitInterface(DreamTripsApi.class);
         addRetrofitInterface(SharedServicesApi.class);
-        addRetrofitInterface(DtlApi.class);
         uploaderyApi = uploaderyApiLazy.get(); //be careful. should be in UI thread.
         eventBus.register(this);
     }
@@ -95,8 +92,6 @@ public class DreamSpiceService extends RetrofitGsonSpiceService {
             t = (T) dreamTripsApi;
         } else if (serviceClass == SharedServicesApi.class) {
             t = (T) sharedServicesApi.get();
-        } else if (serviceClass == DtlApi.class) {
-            t = (T) dtlApi;
         } else if (serviceClass == UploaderyApi.class) {
             t = (T) uploaderyApi;
         }

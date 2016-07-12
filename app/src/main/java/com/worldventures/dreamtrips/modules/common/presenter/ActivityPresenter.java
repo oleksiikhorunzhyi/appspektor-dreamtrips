@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
 import javax.inject.Inject;
 
@@ -22,6 +23,9 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     protected LocaleSwitcher localeSwitcher;
     @Inject
     protected LocaleHelper localeHelper;
+    @Inject
+    protected LogoutDelegate logoutDelegate;
+
     @State
     boolean isTermsShown;
 
@@ -42,6 +46,11 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
         super.onResume();
         //Some third-party libraries can change the locale.
         setupUserLocale();
+        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
+    }
+
+    public void logout() {
+        logoutDelegate.logout();
     }
 
     @Override

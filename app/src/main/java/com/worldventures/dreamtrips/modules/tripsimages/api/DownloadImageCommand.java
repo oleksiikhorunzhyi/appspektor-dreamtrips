@@ -85,7 +85,7 @@ public class DownloadImageCommand extends Command<String> {
                 url = null;
             }
         } catch (Exception e) {
-            Timber.e("Failed to insert image", e);
+            Timber.e(e, "Failed to insert image");
             if (url != null) {
                 cr.delete(url, null, null);
                 url = null;

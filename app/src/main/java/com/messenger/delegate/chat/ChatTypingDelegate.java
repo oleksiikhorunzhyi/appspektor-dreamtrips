@@ -3,15 +3,21 @@ package com.messenger.delegate.chat;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import com.messenger.delegate.conversation.LoadConversationDelegate;
+import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.listeners.OnChatStateChangedListener;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.UsersDAO;
+import com.messenger.ui.helper.ConversationHelper;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 public class ChatTypingDelegate {

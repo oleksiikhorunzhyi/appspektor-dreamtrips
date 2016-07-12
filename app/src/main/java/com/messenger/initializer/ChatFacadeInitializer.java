@@ -11,19 +11,15 @@ import com.techery.spares.module.Injector;
 import javax.inject.Inject;
 
 public class ChatFacadeInitializer implements AppInitializer {
-
-    @Inject
-    MessengerServerFacade messengerServerFacade;
-    //
-    @Inject
-    ChatFacadeManager chatFacadeManager;
+    @Inject MessengerServerFacade messengerServerFacade;
+    @Inject ChatFacadeManager chatFacadeManager;
 
     @Override
     public void initialize(Injector injector) {
         injector.inject(this);
-        //
+
         GlobalEventEmitter emitter = messengerServerFacade.getGlobalEventEmitter();
-        //
+
         emitter.addGlobalMessageListener(new GlobalMessageListener() {
             @Override
             public void onReceiveMessage(Message message) {
@@ -46,19 +42,13 @@ public class ChatFacadeInitializer implements AppInitializer {
             }
         });
 
-        emitter.addOnMessagesDeletedListener(chatFacadeManager::onMessagesDeleted);
-
-        emitter.addOnSubjectChangesListener(chatFacadeManager::onSubjectChanged);
-
-        emitter.addOnAvatarChangeListener(chatFacadeManager::onAvatarChanged);
-
-        emitter.addInvitationListener((conversationId) -> {
-            chatFacadeManager.onChatInvited(conversationId);
-        });
-
         chatFacadeManager.processJoinedEvents(emitter.createChatJoinedObservable());
-
+        emitter.addOnMessagesDeletedListener(chatFacadeManager::onMessagesDeleted);
+        emitter.addOnSubjectChangesListener(chatFacadeManager::onSubjectChanged);
+        emitter.addOnAvatarChangeListener(chatFacadeManager::onAvatarChanged);
+        emitter.addInvitationListener(chatFacadeManager::onChatInvited);
         emitter.addOnChatLeftListener(chatFacadeManager::onChatLeft);
+        emitter.addOnKickListener(chatFacadeManager::onKicked);
     }
 
 }

@@ -9,4 +9,8 @@ public class AuthorizedHttpAction extends BaseHttpAction{
     public void setAuthorizationHeader(String authorizationHeader) {
         this.authorizationHeader = authorizationHeader;
     }
+
+    public String getAuthorizationHeader() {
+        return authorizationHeader;
+    }
 }

@@ -2,13 +2,11 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -46,9 +44,6 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
         super.takeView(view);
         view.setFeedItem(feedItem);
         loadFullEventInfo();
-        //
-        eventBus.post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW,
-                feedItem.getItem().getUid(), feedItem.getType()));
     }
 
     @Override

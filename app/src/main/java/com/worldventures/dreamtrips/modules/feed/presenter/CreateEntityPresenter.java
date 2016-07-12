@@ -9,7 +9,9 @@ import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
+import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -137,7 +139,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
                             .width(item.getWidth())
                             .height(item.getHeight())
                             .date(Calendar.getInstance().getTime())
-                            .coordinates(location != null ? new CreatePhotoEntity.Coordinates(location.getLat(), location.getLng()) : null)
+                            .coordinates(location != null ? new Coordinates(location.getLat(), location.getLng()) : null)
                             .locationName(location != null ? location.getName() : null)
                             .photoTags(item.getCachedAddedPhotoTags())
                             .build()));
@@ -159,7 +161,10 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
 
     @Override
     protected void processPostSuccess(FeedEntity feedEntity) {
+        if (cachedCreationItems.size() > 0) TrackingHelper.actionPhotosUploaded(cachedCreationItems.size());
+        //
         super.processPostSuccess(feedEntity);
+        //
         eventBus.post(new FeedItemAddedEvent(FeedItem.create(feedEntity, getAccount())));
     }
 
@@ -177,7 +182,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     }
 
     public void attachImages(MediaAttachment mediaAttachment) {
-        if (mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0) {
+        if (view == null || mediaAttachment.chosenImages == null || mediaAttachment.chosenImages.size() == 0) {
             return;
         }
         //
@@ -238,6 +243,7 @@ public abstract class CreateEntityPresenter<V extends CreateEntityPresenter.View
     }
 
     private void updatePickerState() {
+        if (view == null) return;
         if (isAllAttachmentsCompleted() && getRemainingPhotosCount() > 0) {
             view.enableImagePicker();
         } else {

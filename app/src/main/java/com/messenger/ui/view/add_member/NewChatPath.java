@@ -1,9 +1,9 @@
 package com.messenger.ui.view.add_member;
 
 
-import com.messenger.flow.path.MasterDetailPath;
-import com.messenger.flow.path.StyledPath;
-import com.messenger.flow.util.Layout;
+import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
+import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.worldventures.dreamtrips.R;
 

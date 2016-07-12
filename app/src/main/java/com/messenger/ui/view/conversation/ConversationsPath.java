@@ -1,8 +1,9 @@
 package com.messenger.ui.view.conversation;
 
-import com.messenger.flow.path.MasterDetailPath;
-import com.messenger.flow.path.StyledPath;
-import com.messenger.flow.util.Layout;
+import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
+import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
+import com.worldventures.dreamtrips.core.flow.util.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.PathAttrs;
 

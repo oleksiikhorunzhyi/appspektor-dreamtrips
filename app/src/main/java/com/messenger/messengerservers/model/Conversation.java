@@ -1,168 +1,36 @@
 package com.messenger.messengerservers.model;
 
+import android.support.annotation.Nullable;
+
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 
+import org.immutables.value.Value;
+
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Conversation {
-    private final String id;
-    private final String subject;
-    private final String avatar;
-    private final String type;
-    private final int unreadMessageCount;
-    private final String status;
-    private final List<Participant> participants = new CopyOnWriteArrayList<>();
-    private final Message lastMessage;
-    public final long lastActiveDate;
-    private String ownerId;
-    private boolean abandoned;
+@Value.Immutable
+public interface Conversation {
 
-    private Conversation(Builder builder) {
-        id = builder.id;
-        subject = builder.subject;
-        avatar = builder.avatar;
-        type = builder.type;
-        unreadMessageCount = builder.unreadMessageCount;
-        status = builder.status;
-        if (builder.participants != null) participants.addAll(builder.participants);
-        lastMessage = builder.lastMessage;
-        lastActiveDate = builder.lastActiveDate;
-    }
+    String getId();
 
+    @Nullable String getSubject();
 
-    public String getId() {
-        return id;
-    }
+    @Nullable String getAvatar();
 
-    public String getSubject() {
-        return subject;
-    }
+    @ConversationType.Type String getType();
 
-    public String getAvatar() {
-        return avatar;
-    }
+    int getUnreadMessageCount();
 
-    @ConversationType.Type
-    public String getType() {
-        return type;
-    }
+    long getLeftTime();
 
-    public int getUnreadMessageCount() {
-        return unreadMessageCount;
-    }
+    @ConversationStatus.Status String getStatus();
 
-    @ConversationStatus.Status
-    public String getStatus() {
-        return status;
-    }
+    @Nullable List<Participant> getParticipants();
 
-    public List<Participant> getParticipants() {
-        return participants;
-    }
+    @Nullable Message getLastMessage();
 
-    public Message getLastMessage() {
-        return lastMessage;
-    }
+    long getLastActiveDate();
 
-    public long getLastActiveDate() {
-        return lastActiveDate;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public boolean isAbandoned() {
-        return abandoned;
-    }
-
-    public void setAbandoned(boolean abandoned) {
-        this.abandoned = abandoned;
-    }
-
-    public static final class Builder {
-        private String id;
-        private String subject;
-        private String avatar;
-        private String type;
-        private int unreadMessageCount;
-        private String status;
-        private List<Participant> participants;
-        private Message lastMessage;
-        private long lastActiveDate;
-
-        public Builder() {
-        }
-
-        public Builder id(String val) {
-            id = val;
-            return this;
-        }
-
-        public Builder subject(String val) {
-            subject = val;
-            return this;
-        }
-
-        public Builder avatar(String val) {
-            avatar = val;
-            return this;
-        }
-
-        public Builder type(String val) {
-            type = val;
-            return this;
-        }
-
-        public Builder unreadMessageCount(int val) {
-            unreadMessageCount = val;
-            return this;
-        }
-
-        public Builder status(String val) {
-            status = val;
-            return this;
-        }
-
-        public Builder participants(List<Participant> val) {
-            participants = val;
-            return this;
-        }
-
-        public Builder lastMessage(Message val) {
-            lastMessage = val;
-            return this;
-        }
-
-        public Builder lastActiveDate(long val) {
-            lastActiveDate = val;
-            return this;
-        }
-
-        public Conversation build() {
-            return new Conversation(this);
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Conversation that = (Conversation) o;
-
-        return id.equals(that.id);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
+    @Nullable String getOwnerId();
 }

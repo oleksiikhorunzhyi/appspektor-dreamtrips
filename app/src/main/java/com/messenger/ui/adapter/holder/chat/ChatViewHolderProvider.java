@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.apptentive.android.sdk.module.messagecenter.view.holder.MessageHolder;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage$Table;
@@ -41,7 +42,9 @@ public class ChatViewHolderProvider {
     public MessageViewHolder provideViewHolder(ViewGroup parent, int viewType) {
         ChatViewHolderInfo chatViewHolderInfo = Queryable.from(chatViewHolderInfoSet)
                     .first(info -> info.getViewType() == viewType);
-        return buildCell(chatViewHolderInfo.getViewHolderClass(), parent);
+        MessageViewHolder messageHolder = buildCell(chatViewHolderInfo.getViewHolderClass(), parent);
+        messageHolder.setOwnMessage(chatViewHolderInfo.isOwn());
+        return messageHolder;
     }
 
     private MessageViewHolder buildCell(Class<? extends MessageViewHolder> holderClass, ViewGroup parent) {

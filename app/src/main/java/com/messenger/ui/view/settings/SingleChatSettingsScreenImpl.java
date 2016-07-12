@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
@@ -25,15 +26,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
         super(context, attrs);
     }
 
-    @Override
-    protected void initUi() {
-        super.initUi();
-
-        // TODO: 1/2/16
-        leaveChatButton.setVisibility(GONE);
-
-    }
-
     @OnClick(R.id.chat_settings_single_chat_avatar_view)
     public void onAvatarClick() {
         getPresenter().onConversationAvatarClick();
@@ -43,6 +35,11 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
     public void setConversation(@NonNull DataConversation conversation) {
         super.setConversation(conversation);
         toolbarPresenter.setTitle(R.string.chat_settings_single_chat);
+    }
+
+    @Override
+    public void setOwner(DataUser owner) {
+        // nothing to do here
     }
 
     @Override
@@ -56,11 +53,6 @@ public class SingleChatSettingsScreenImpl extends ChatSettingsScreenImpl<ChatSet
         chatDescriptionTextView.setText(addressee.isOnline()
                 ? R.string.chat_settings_single_chat_online
                 : R.string.chat_settings_single_chat_offline);
-    }
-
-    @Override
-    protected int getLeaveChatButtonStringRes() {
-        return R.string.chat_settings_row_delete_chat;
     }
 
     @NonNull

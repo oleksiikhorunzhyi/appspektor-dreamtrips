@@ -4,8 +4,9 @@
     <string name="dtl_locations_try_search">Vi kunde inte hitta en stad nära dig.\nTesta vår stadssökningsfunktion</string>
     <string name="dtl_merchant_tab_offers">Erbjudanden</string>
     <string name="dtl_merchant_tab_dining">Middagar</string>
-    <string name="dtl_near_me_caption">Nära mig</string>
-    <string name="dtl_nearby_caption">I närheten</string>
+    <string name="dtl_near_me_caption">nära mig</string>
+    <string name="dtl_nearby_caption_format">i närheten av %1$s</string>
+    <string name="dtl_nearby_caption_empty">i närheten</string>
     <string name="dtl_autodetect_location">Automatisk identifiering av min plats</string>
     <string name="dtl_no_merchants_caption">Det finns inga säljare här</string>
     <string name="dtl_load_merchants_here_button_caption">Sök säljare på nytt</string>
@@ -19,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Kan inte vara mindre än 0!</string>
     <string name="dtl_price">Pris ($)</string>
     <string name="dtl_distance">Avstånd, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;Notera:&lt;/b&gt; beloppet bör vara den totala summan från räkningen, tips och skatt ska inte inkluderas</string>
     <string name="dtl_receipt_scan">Registrera kvitto</string>
     <string name="dtl_receipt_rescan">Ta en ny bild</string>
     <string name="dtl_receipt_verify">Verifiera belopp</string>
@@ -45,6 +45,7 @@
     <string name="dtl_amount_invalid">Summan är inte giltig</string>
     <string name="dtl_invalid">Ogiltig inmatning</string>
     <string name="dtl_verify_amount">Verifiera belopp</string>
+    <string name="dtl_verify_amount_note">Observera att summan ska vara totalbeloppet på fakturan minus specificerad skatt och dricks.</string>
     <string name="dtl_total_amount">Totalt belopp:</string>
     <string name="dtl_verify_earn_hint">Du kan tjäna </string>
     <string name="dtl_check_in">Checka in &amp; tjäna </string>
@@ -71,9 +72,24 @@
     <string name="point_estimator">Poängberäkning</string>
     <string name="km">km</string>
     <string name="mi">mi</string>
+    <string name="points">Poäng</string>
+    <string name="perks">Extraförmåner</string>
+    <string name="everyday">Varje dag</string>
+    <string name="perks_terms">Användarvillkor</string>
+    <string name="perks_formatted" formatted="false">%1$d Förmåner</string>
     <string name="dtl_coming_soon_offers">Erbjudanden kommer snart</string>
     <string name="dtl_show_offers_only">Visa endast erbjudanden</string>
+    <string name="dtl_earn_points">Tjäna DreamTrips points</string>
     <string name="dtl_details_share_title_without_points">Jag upptäckte %1$s med hjälp av DreamTrips-appen</string>
     <string name="details_collapsed_text_caption">Visa mer</string>
     <string name="details_expanded_text_caption">Visa mindre</string>
+    <string name="offer_expiration_format">Till och med %1$s</string>
+    <string name="training_no_video">Videor kommer snart</string>
+    <string name="help">Hjälp</string>
+    <string name="merchants_list_empty_text">Platser kommer snart</string>
+
+    <!-- DtlToolbar strings -->
+    <string name="dtlt_search_hint">Mat och dryck</string>
+    <!-- DtlFilterButton strings -->
+    <string name="dtlfb_caption">Filter</string>
 </resources>

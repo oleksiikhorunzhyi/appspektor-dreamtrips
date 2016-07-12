@@ -21,19 +21,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ShareFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.DtGalleryFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlFiltersFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlImageFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlLocationsSearchFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMapInfoFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantDetailsFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsHostFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsListFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlMerchantsTabsFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanQrCodeFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlScanReceiptFragment;
-import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlStartFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlTransactionSucceedFragment;
 import com.worldventures.dreamtrips.modules.dtl.view.fragment.DtlVerifyAmountFragment;
 import com.worldventures.dreamtrips.modules.facebook.view.fragment.FacebookAlbumFragment;
@@ -57,6 +46,7 @@ import com.worldventures.dreamtrips.modules.friends.view.fragment.FriendsMainFra
 import com.worldventures.dreamtrips.modules.friends.view.fragment.MutualFriendsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.RequestsFragment;
 import com.worldventures.dreamtrips.modules.friends.view.fragment.UsersLikedItemFragment;
+import com.worldventures.dreamtrips.modules.infopages.view.fragment.HelpFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.SendFeedbackFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.TermsTabFragment;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
@@ -64,6 +54,7 @@ import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconten
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.PodcastsFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 import com.worldventures.dreamtrips.modules.profile.view.fragment.AccountFragment;
@@ -76,10 +67,10 @@ import com.worldventures.dreamtrips.modules.settings.view.fragment.GeneralSettin
 import com.worldventures.dreamtrips.modules.settings.view.fragment.NotificationsSettingsFragment;
 import com.worldventures.dreamtrips.modules.settings.view.fragment.SettingsGroupFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.AccountImagesListFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.EditPhotoTagsFragment;
@@ -93,6 +84,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefull
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.SocialImageFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.TripPhotoFullscreenFragment;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singlefullscreen.YSBHPhotoFullscreenFragment;
+import com.worldventures.dreamtrips.modules.video.view.HelpVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragment;
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
@@ -102,7 +94,7 @@ public enum Route {
     DETAILED_TRIP(TripDetailsFragment.class),
     PICK_FB_ALBUM(FacebookAlbumFragment.class),
     PICK_FB_PHOTO(FacebookPhotoFragment.class),
-    MAP_INFO(TripMapInfoFragment.class),
+    MAP_INFO(TripMapListFragment.class),
     BOOK_IT(StaticInfoFragment.BookItFragment.class, R.string.book_it),
     SUCCESS_STORES_DETAILS(SuccessStoryDetailsFragment.class),
     BUNDLE_URL_WEB(StaticInfoFragment.BundleUrlFragment.class),
@@ -133,6 +125,7 @@ public enum Route {
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
     INVITE(InviteFragment.class),
     EDIT_INVITE_TEMPLATE(EditTemplateFragment.class, R.string.title_edit_template),
+    PODCASTS(PodcastsFragment.class, R.string.podcasts),
 
     BUCKET_TABS(BucketTabsFragment.class, R.string.bucket_list),
     FOREIGN_BUCKET_TABS(ForeignBucketTabsFragment.class, R.string.bucket_list),
@@ -140,6 +133,8 @@ public enum Route {
     FOREIGN_PROFILE(UserFragment.class),
     REP_TOOLS(RepToolsFragment.class),
     FAQ(StaticInfoFragment.FAQFragment.class),
+    HELP(HelpFragment.class),
+    HELP_VIDEOS(HelpVideosFragment.class),
     TERMS(TermsTabFragment.class),
     TERMS_OF_SERVICE(StaticInfoFragment.TermsOfServiceFragment.class),
     PRIVACY_POLICY(StaticInfoFragment.PrivacyPolicyFragment.class),
@@ -169,23 +164,14 @@ public enum Route {
     FEED_LIST_ADDITIONAL_INFO(FeedListAdditionalInfoFragment.class, R.string.empty),
     FEED_ITEM_ADDITIONAL_INFO(FeedItemAdditionalInfoFragment.class, R.string.empty),
 
-    DTL_START(DtlStartFragment.class),
-    DTL_LOCATIONS(DtlLocationsFragment.class, R.string.dtl_locations_title),
-    DTL_LOCATIONS_SEARCH(DtlLocationsSearchFragment.class, R.string.dtl_locations_title),
+    // <dtl_legasy_routes>
+    // TODO :: 4/24/16 re-write the rest of DTL to Flow-powered views
     DTL_TRANSACTION_SUCCEED(DtlTransactionSucceedFragment.class, R.string.dtl_success_title),
-    DTL_MERCHANTS_HOLDER(DtlMerchantsHostFragment.class),
-    DTL_MERCHANTS_TABS(DtlMerchantsTabsFragment.class),
-    DTL_MERCHANTS_LIST(DtlMerchantsListFragment.class),
-    DTL_IMAGE(DtlImageFragment.class),
     DTL_POINTS_ESTIMATION(DtlPointsEstimationFragment.class),
-    DTL_FILTERS(DtlFiltersFragment.class),
-    DTL_MAP(DtlMapFragment.class),
-    DTL_MAP_INFO(DtlMapInfoFragment.class),
-    DTL_MERCHANT_DETAILS(DtlMerchantDetailsFragment.class),
-
     DTL_SCAN_RECEIPT(DtlScanReceiptFragment.class, R.string.dtl_enter_amount),
     DTL_SCAN_QR(DtlScanQrCodeFragment.class, R.string.dtl_barcode_title),
     DTL_VERIFY(DtlVerifyAmountFragment.class, R.string.dtl_verify_amount),
+    // </dtl_legasy_routes>
 
     GALLERY(DtGalleryFragment.class),
 

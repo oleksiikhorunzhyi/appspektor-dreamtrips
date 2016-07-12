@@ -162,7 +162,7 @@
     <string name="completed">Done</string>
     <string name="action_share">Share</string>
     <string name="recent_header">Recent Added 360 Experience</string>
-    <string name="recent_videos">Recently Added</string>
+    <string name="recently_added">Recently Added</string>
     <string name="featured_header">Featured 360 Experience</string>
     <string name="title_activity_success_story_details">SuccessStoryDetailsActivity</string>
     <string name="hello_world">Hello world!</string>
@@ -619,5 +619,21 @@
     <string name="flag_sent_success_msg">Content has been flagged</string>
 
     <string name="location_name_length_message">The location name may not be greater than 255 characters.</string>
+
+    <string name="featured_trip">Featured Trip</string>
+    <string name="sold_out_trip">Sold Out</string>
+
+    <string name="podcasts">Podcasts</string>
+    <string name="delete_cached_podcast_title">Podcast</string>
+    <string name="delete_cached_podcast_text">Are you sure you want delete podcast from local cache?</string>
+    <string name="cancel_cached_podcast_title">Podcast</string>
+    <string name="cancel_cached_podcast_text">Are you sure you want to cancel file download?</string>
+    <string name="audio_app_not_found_exception">Application to play audio not found</string>
+    <string name="complete_action_with">Complete action with</string>
+    <string name="error_fail_to_load_podcast">Failed to load podcast</string>
+
+    <string name="min">min</string>
+
+    <string name="error_webview_secure_connection">We\'re sorry but DreamTrips app can not establish secure connection.\nWe\'ve been notified about this issue and we\'ll take a look at it shortly.\n\nPlease contact customer support for faster resolution.</string>
 
 </resources>

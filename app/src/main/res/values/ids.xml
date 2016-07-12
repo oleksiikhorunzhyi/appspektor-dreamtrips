@@ -4,4 +4,7 @@
     //
     <item name="details_container" type="id"/>
     <item name="master_container" type="id"/>
+    <item name="master_toolbar_container" type="id"/>
+    //
+    <item name="dtlfb_rootView" type="id" />
 </resources>

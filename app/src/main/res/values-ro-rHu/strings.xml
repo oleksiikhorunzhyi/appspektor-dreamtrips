@@ -162,7 +162,7 @@
     <string name="completed">Terminat</string>
     <string name="action_share">Partajați</string>
     <string name="recent_header">Experiențe 360 adăugate recent</string>
-    <string name="recent_videos">Adăugate recent</string>
+    <string name="recently_added">Adăugate recent</string>
     <string name="featured_header">Cele mai frumoase experiențe 360 </string>
     <string name="title_activity_success_story_details">PovesteDeSuccesDetaliiActivitate</string>
     <string name="hello_world">Salutare, lume!</string>
@@ -619,5 +619,17 @@
     <string name="flag_sent_success_msg">Conținutul a fost marcat</string>
 
     <string name="location_name_length_message">Denumirea locației nu poate conține mai mult de 255 de caractere.</string>
+
+    <string name="featured_trip">Călătoria momentului</string>
+    <string name="sold_out_trip">Epuizat</string>
+
+    <string name="podcasts">podcast-urilor </string>
+    <string name="delete_cached_podcast_title">podcast-urilor </string>
+    <string name="delete_cached_podcast_text">Sigur doriți să ștergeți podcast din cache-ul local?</string>
+    <string name="cancel_cached_podcast_title">podcast-urilor </string>
+    <string name="cancel_cached_podcast_text">Sigur doriți să anulați descărcarea fișierului?</string>
+    <string name="audio_app_not_found_exception">Aplicație pentru a reda audio nu a fost găsit</string>
+    <string name="complete_action_with">acțiune complet cu</string>
+    <string name="error_fail_to_load_podcast"> Nu s-a reușit încărcarea podcast-urilor </string>
 
 </resources>

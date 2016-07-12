@@ -1,9 +1,12 @@
 package com.worldventures.dreamtrips.core.navigation;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.webkit.MimeTypeMap;
 
 import com.techery.spares.ui.routing.ActivityBoundRouter;
 import com.worldventures.dreamtrips.R;
@@ -12,6 +15,8 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
+
+import java.io.File;
 
 public class ActivityRouter extends ActivityBoundRouter {
 
@@ -56,5 +61,32 @@ public class ActivityRouter extends ActivityBoundRouter {
 
     public void startService(Class clazz) {
         super.startService(clazz);
+    }
+
+    /**
+     * {@link ActivityNotFoundException} would be thrown
+     * if there was no Activity found to run the given Intent
+     *
+     * @param url audio file url
+     */
+    public void openDeviceAudioPlayerForUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        intent.setDataAndType(Uri.parse(url), mimeType);
+        startActivity(Intent.createChooser(intent, getContext().getString(R.string.complete_action_with)));
+    }
+
+    /**
+     * {@link ActivityNotFoundException} would be thrown
+     * if there was no Activity found to run the given Intent
+     *
+     * @param path audio file url
+     */
+    public void openDeviceAudioPlayerForFile(String path) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        File file = new File(path);
+        intent.setDataAndType(Uri.fromFile(file), "audio/*");
+        startActivity(Intent.createChooser(intent, getContext().getString(R.string.complete_action_with)));
     }
 }

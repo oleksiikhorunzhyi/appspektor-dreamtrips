@@ -10,6 +10,10 @@ public class OperationDay {
     public OperationDay() {
     }
 
+    public boolean isHaveOperationHours() {
+        return operationHours != null && !operationHours.isEmpty();
+    }
+
     public DayOfWeek getDayOfWeek() {
         return dayOfWeek;
     }

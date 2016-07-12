@@ -1,12 +1,10 @@
 package com.messenger.ui.view.chat;
 
-import android.Manifest;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresPermission;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,13 +21,14 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
+import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.ChatCellDelegate;
 import com.messenger.ui.adapter.holder.chat.MessageViewHolder;
+import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
 import com.messenger.ui.helper.ConversationUIHelper;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingView;
@@ -37,11 +36,12 @@ import com.messenger.ui.module.flagging.FlaggingViewImpl;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.chat.anim.TimestampItemAnimator;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
 import com.messenger.util.ScrollStatePersister;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 
@@ -54,6 +54,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPresenter, ChatPath>
@@ -63,12 +64,13 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Inject
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    @Inject
+    ChatTimestampInflater chatTimestampInflater;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
     @InjectView(R.id.chat_loading_view)
     View loadingView;
-
     @InjectView(R.id.chat_toolbar)
     Toolbar toolbar;
     @InjectView(R.id.chat_toolbar_title)
@@ -79,13 +81,14 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     RecyclerView recyclerView;
     @InjectView(R.id.chat_users_typing_view)
     ChatUsersTypingView chatUsersTypingView;
-
     @InjectView(R.id.chat_message_edit_text)
     EditText messageEditText;
     @InjectView(R.id.chat_message_send_button)
     View sendMessageButton;
     @InjectView(R.id.input_holder)
     ViewGroup inputHolder;
+    @InjectView(R.id.input_disabled_text_view)
+    View inputDisabledView;
 
     private ChatAdapter adapter;
     private LinearLayoutManager linearLayoutManager;
@@ -95,6 +98,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private final Runnable openPikerTask = this::openPicker;
 
     private FlaggingView flaggingView;
+
+    private PublishSubject<String> attachmentClickStream = PublishSubject.create();
+    private PublishSubject<DataMessage> lastVisibleItemStream = PublishSubject.create();
 
     public ChatScreenImpl(Context context) {
         super(context);
@@ -139,7 +145,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 int totalItem = linearLayoutManager.getItemCount();
-                getPresenter().onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem);
+                onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem);
 
                 if (dy > 0) return;
 
@@ -148,7 +154,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                 }
             }
         });
-        recyclerView.setItemAnimator(null);
+
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
 
         initPhotoPicker();
@@ -157,13 +163,19 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             if (hasFocus) photoPickerLayoutDelegate.hidePicker();
         });
         photoPickerLayoutDelegate.disableEditTextUntilPickerIsShown(messageEditText);
+
+        // Mosby's presenter is created in super.onAttachedToWindow()
+        // and restore instace state is called before onAttachedToWindow() also.
+        // Make sure to have the view prepared before this.
+        flaggingView = new FlaggingViewImpl(this, injector);
     }
 
     @Override
     protected void onAttachedToWindow() {
-        flaggingView = new FlaggingViewImpl(this);
         super.onAttachedToWindow();
-        recyclerView.setAdapter(adapter = createAdapter());
+        injector.inject(chatTimestampInflater);
+        recyclerView.setAdapter(adapter = createAdapter(chatTimestampInflater));
+        recyclerView.setItemAnimator(new TimestampItemAnimator(chatTimestampInflater));
         inflateToolbarMenu(toolbar);
     }
 
@@ -178,8 +190,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         super.onDetachedFromWindow();
     }
 
-    protected ChatAdapter createAdapter() {
-        ChatAdapter adapter = new ChatAdapter(null);
+    protected ChatAdapter createAdapter(ChatTimestampInflater chatTimestampInflater) {
+        ChatAdapter adapter = new ChatAdapter(null, chatTimestampInflater);
         injector.inject(adapter);
         adapter.setCellDelegate(chatCellDelegate);
         adapter.setNeedMarkUnreadMessages(true);
@@ -187,6 +199,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     private ChatCellDelegate chatCellDelegate = new ChatCellDelegate() {
+
+        @Override
+        public void onTimestampViewClicked(int position) {
+            getPresenter().onTimestampViewClicked(position);
+        }
+
         @Override
         public void onAvatarClicked(DataUser dataUser) {
             getPresenter().openUserProfile(dataUser);
@@ -194,7 +212,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
         @Override
         public void onImageClicked(String attachmentId) {
-            getPresenter().onImageClicked(attachmentId);
+            attachmentClickStream.onNext(attachmentId);
         }
 
         @Override
@@ -204,7 +222,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
         @Override
         public void onRetryClicked(DataMessage dataMessage) {
-            presenter.retrySendMessage(dataMessage);
+            presenter.retryClicked(dataMessage);
         }
 
         @Override
@@ -243,10 +261,32 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     @Override
     public void showAttachmentMenu(AttachmentMenuItem[] items) {
         new AlertDialog.Builder(getContext())
-                .setItems(Queryable.from(items).map(item -> item.getTitle()).toArray(),
+                .setItems(Queryable.from(items).map(AttachmentMenuItem::getTitle).toArray(),
                         (dialog, which) -> getPresenter().onAttachmentMenuItemChosen(items[which]))
                 .show();
     }
+
+    @Override
+    public void showRetrySendMessageDialog (DataMessage dataMessage) {
+        new AlertDialog.Builder(getContext(), R.style.RetrySendMessageDialogStyle)
+                .setMessage(R.string.chat_retry_send_message_dialog_resend_message)
+                .setNegativeButton(R.string.chat_retry_send_message_dialog_cancel, null)
+                .setPositiveButton(R.string.chat_retry_send_message_dialog_resend,
+                        (dialog, which) -> presenter.retrySendMessage(dataMessage))
+                .show();
+    }
+
+    @Override
+    public Observable<DataMessage> getLastVisibleItemStream() {
+        return lastVisibleItemStream;
+    }
+
+    private void onLastVisibleMessageChanged(Cursor cursor, int position) {
+        DataMessage message = cursor.isClosed() || !cursor.moveToPosition(position) ? null :
+                MessageDAO.fromCursor(cursor, false);
+        if (message != null) lastVisibleItemStream.onNext(message);
+    }
+
 
     @Override
     public void showLoading() {
@@ -292,9 +332,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void showMessages(Cursor cursor, DataConversation conversation) {
-        adapter.setConversation(conversation);
-
+    public void showMessages(Cursor cursor) {
         int firstVisibleViewTop = 0;
         int cursorCountDiff = 0;
         View firstItemView = null;
@@ -323,7 +361,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
             linearLayoutManager.scrollToPositionWithOffset(position, offset);
         } else if (cursor.getCount() == 1) {
-            getPresenter().onLastVisibleMessageChanged(cursor, 0);
+            onLastVisibleMessageChanged(cursor, 0);
         }
     }
 
@@ -348,16 +386,36 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
                     getPresenter().onStartNewChatForMessageOwner(message);
                     break;
                 case R.id.action_flag:
-                    getPresenter().onFlagMessageAttempt(message);
+                    getPresenter().onFlagMessage(message);
                     break;
             }
         }))
                 .show();
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Message input
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
-    public Observable<TextViewTextChangeEvent> getEditMessageObservable() {
-        return RxTextView.textChangeEvents(messageEditText);
+    public Observable<String> getEditMessageObservable() {
+        return RxTextView.textChangeEvents(messageEditText)
+                .map(event -> event.text().toString());
+    }
+
+    @Override
+    public void enableInput(boolean enabled) {
+        // use invisible so that disabled input overlay can have the same size as input holder
+        inputHolder.setVisibility(enabled ? VISIBLE : INVISIBLE);
+        inputDisabledView.setVisibility(enabled ? GONE : VISIBLE);
+        if (!enabled) {
+            SoftInputUtil.hideSoftInputMethod(this);
+        }
+    }
+
+    @Override
+    public Observable<String> getAttachmentClickStream() {
+        return attachmentClickStream;
     }
 
     @Override
@@ -367,7 +425,24 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
     @Override
     public Parcelable onSaveInstanceState() {
-        return scrollStatePersister.saveScrollState(super.onSaveInstanceState(), linearLayoutManager);
+        Parcelable parcelable = scrollStatePersister.saveScrollState(super.onSaveInstanceState(), linearLayoutManager);
+        flaggingView.onSaveInstanceState(parcelable);
+        return parcelable;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
+        flaggingView.onRestoreInstanceState(state);
+    }
+
+    ////////////////////////////////////////
+    /////// Timestamp
+    ////////////////////////////////////////
+
+    @Override
+    public void refreshChatTimestampView(int position) {
+        adapter.refreshTimestampView(position);
     }
 
     ////////////////////////////////////////
@@ -385,6 +460,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
         @Override
         public void onOpened() {
+            messageEditText.clearFocus();
             MarginLayoutParams params = (MarginLayoutParams) inputHolder.getLayoutParams();
             params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.picker_panel_height);
             inputHolder.setLayoutParams(params);
@@ -405,35 +481,12 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     ///////////////////////////////////////////////////////////////////////////
 
     private void initPhotoPicker() {
-        photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) -> this.onImagesPicked(chosenImages));
         photoPickerLayoutDelegate.setPhotoPickerListener(photoPickerListener);
     }
 
     private void openPicker() {
         //noinspection all
         photoPickerLayoutDelegate.showPicker(true, getResources().getInteger(R.integer.messenger_pick_image_limit));
-    }
-
-    @Override
-    @RequiresPermission(allOf = {Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void showPhotoPicker() {
-        if (photoPickerLayoutDelegate.isPanelVisible()) photoPickerLayoutDelegate.hidePicker();
-        else {
-            messageEditText.clearFocus();
-            // put delay to prevent wrong resizing of photo picker panel
-            handler.postDelayed(openPikerTask, 400);
-        }
-    }
-
-    @Override
-    public void hidePhotoPicker() {
-        photoPickerLayoutDelegate.hidePicker();
-    }
-
-    private void onImagesPicked(List<BasePhotoPickerModel> images) {
-        photoPickerLayoutDelegate.hidePicker();
-        //
-        getPresenter().onImagesPicked(images);
     }
 
     @Override

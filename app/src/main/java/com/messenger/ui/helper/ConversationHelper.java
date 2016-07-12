@@ -5,8 +5,12 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
+import com.messenger.messengerservers.model.Conversation;
+import com.messenger.messengerservers.model.MessengerUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ConversationHelper {
@@ -30,6 +34,19 @@ public final class ConversationHelper {
         }
     }
 
+    public static List<MessengerUser> getUsersFromConversations(List<Conversation> conversations) {
+        List<MessengerUser> messengerUsers = new ArrayList<>();
+        Queryable.from(conversations)
+                .map(ConversationHelper::getUsersFromConversation)
+                .forEachR(messengerUsers::addAll);
+        return Queryable.from(messengerUsers).distinct().toList();
+    }
+
+    public static List<MessengerUser> getUsersFromConversation(Conversation conversation) {
+        return Queryable.from(conversation.getParticipants())
+                .map(participant -> new MessengerUser(participant.getUserId())).toList();
+    }
+
     private static String obtainDefaultGroupChatSubject(List<DataUser> members) {
         return Queryable.from(members).map(DataUser::getFirstName).joinStrings(", ");
     }
@@ -50,4 +67,11 @@ public final class ConversationHelper {
         return conversation.getOwnerId() != null && conversation.getOwnerId().equals(user.getId());
     }
 
+    public static boolean isAbandoned(DataConversation conversation) {
+        return !isPresent(conversation);
+    }
+
+    public static boolean isPresent(DataConversation conversation) {
+        return ConversationStatus.PRESENT.equals(conversation.getStatus());
+    }
 }

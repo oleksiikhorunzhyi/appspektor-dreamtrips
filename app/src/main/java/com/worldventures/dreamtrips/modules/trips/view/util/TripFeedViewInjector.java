@@ -63,7 +63,7 @@ public class TripFeedViewInjector extends TripViewInjector {
     void onLike() {
         syncUIStateWithModel();
         eventBus.post(new LikeTripPressedEvent(tripModel));
-        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_LIKE, tripModel.getTripId()));
+        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_LIKE, tripModel.getTripId(), tripModel.getName()));
     }
 
     @OnClick(R.id.imageViewAddToBucket)
@@ -71,7 +71,7 @@ public class TripFeedViewInjector extends TripViewInjector {
         tripModel.setInBucketList(true);
         syncUIStateWithModel();
         eventBus.post(new AddToBucketEvent(tripModel));
-        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST, tripModel.getTripId()));
+        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_ADD_TO_BUCKET_LIST, tripModel.getTripId(), tripModel.getName()));
     }
 
     @OnClick(R.id.itemLayout)
@@ -81,7 +81,7 @@ public class TripFeedViewInjector extends TripViewInjector {
                 .data(new FeedDetailsBundle(FeedItem.create(tripModel, null)))
                 .build());
 
-        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, tripModel.getTripId()));
+        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW, tripModel.getTripId(), tripModel.getName()));
     }
 
     @OnClick(R.id.layoutInfo)

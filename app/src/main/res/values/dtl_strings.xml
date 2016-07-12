@@ -4,8 +4,9 @@
     <string name="dtl_locations_try_search">We could not locate a City close to you.\nTry our city search</string>
     <string name="dtl_merchant_tab_offers">Offers</string>
     <string name="dtl_merchant_tab_dining">Dining</string>
-    <string name="dtl_near_me_caption">Near me</string>
-    <string name="dtl_nearby_caption">Nearby</string>
+    <string name="dtl_near_me_caption">near me</string>
+    <string name="dtl_nearby_caption_format">nearby %s</string>
+    <string name="dtl_nearby_caption_empty">nearby</string>
     <string name="dtl_autodetect_location">Auto-detect my location</string>
     <string name="dtl_no_merchants_caption">There are no merchants here</string>
     <string name="dtl_load_merchants_here_button_caption">Redo merchant search</string>
@@ -19,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Cannot be less than 0!</string>
     <string name="dtl_price">Price($)</string>
     <string name="dtl_distance">Distance, %s</string>
-    <string name="dtl_receipt_note">&lt;b>Note:&lt;/b> the amount should be the total on bill, not including tips and tax</string>
     <string name="dtl_receipt_scan">Capture Receipt</string>
     <string name="dtl_receipt_rescan">Recapture</string>
     <string name="dtl_receipt_verify">Verify Amount</string>
@@ -45,6 +45,7 @@
     <string name="dtl_amount_invalid">Amount is invalid</string>
     <string name="dtl_invalid">Invalid input</string>
     <string name="dtl_verify_amount">Verify Amount</string>
+    <string name="dtl_verify_amount_note">Note: The amount should be the total on the bill excluding itemized tax and tip.</string>
     <string name="dtl_total_amount">Total amount:</string>
     <string name="dtl_verify_earn_hint">You could earn </string>
     <string name="dtl_check_in">Check in &amp; earn</string>
@@ -71,10 +72,26 @@
     <string name="point_estimator">Point estimator</string>
     <string name="km">km</string>
     <string name="mi">mi</string>
+    <string name="points">Points</string>
+    <string name="perks">Perks</string>
+    <string name="everyday">Everyday</string>
+    <string name="perks_terms">Terms &amp; Condition</string>
+    <string name="perks_formatted" formatted='false'>%d Perks</string>
     <string name="dtl_coming_soon_offers">Offers coming soon</string>
     <string name="dtl_show_offers_only">Show offers only</string>
+    <string name="dtl_earn_points">Earn DreamTrips points</string>
     <string name="dtl_details_share_title_without_points">I discovered %s using the DreamTrips app</string>
     <string name="distance_caption_format" formatted="false" translatable="false">%1$.1f %2$s</string>
     <string name="details_collapsed_text_caption">Show More</string>
     <string name="details_expanded_text_caption">Show Less</string>
+    <string name="offer_expiration_format">Until %s</string>
+    <string name="training_no_video">Videos coming soon</string>
+    <string name="dtl_withflow">DTL Flow</string> <!-- todo DELETE once migration to flow done -->
+    <string name="help">Help</string>
+    <string name="merchants_list_empty_text">Places coming soon</string>
+
+    <!-- DtlToolbar strings -->
+    <string name="dtlt_search_hint">Food &amp; Drinks</string>
+    <!-- DtlFilterButton strings -->
+    <string name="dtlfb_caption">Filters</string>
 </resources>

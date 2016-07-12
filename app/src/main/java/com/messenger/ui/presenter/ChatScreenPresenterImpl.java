@@ -1,7 +1,6 @@
 package com.messenger.ui.presenter;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.location.Location;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -11,46 +10,35 @@ import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
-import com.messenger.delegate.AttachmentManager;
-import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.MessageTranslationDelegate;
-import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.delegate.chat.ChatDelegate;
-import com.messenger.delegate.chat.ChatDelegate.PaginationStatus;
 import com.messenger.delegate.chat.ChatTypingDelegate;
-import com.messenger.entities.DataAttachment;
+import com.messenger.delegate.chat.MessagesPaginationDelegate;
+import com.messenger.delegate.chat.UnreadMessagesDelegate;
+import com.messenger.delegate.chat.attachment.ChatMessageManager;
+import com.messenger.delegate.chat.typing.ChatStateDelegate;
+import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.chat.ChatState;
-import com.messenger.messengerservers.constant.ConversationStatus;
-import com.messenger.messengerservers.constant.TranslationStatus;
-import com.messenger.messengerservers.model.Message;
 import com.messenger.notification.MessengerNotificationFactory;
-import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.messenger.storage.dao.LocationDAO;
 import com.messenger.storage.dao.MessageDAO;
-import com.messenger.storage.dao.PhotoDAO;
-import com.messenger.storage.dao.TranslationsDAO;
-import com.messenger.storage.dao.UsersDAO;
-import com.messenger.storage.helper.AttachmentHelper;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.adapter.inflater.LiteMapInflater;
+import com.messenger.ui.helper.ChatUserInteractionHelper;
 import com.messenger.ui.helper.ConversationHelper;
-import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.model.AttachmentMenuItem;
 import com.messenger.ui.module.flagging.FlaggingPresenter;
-import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
 import com.messenger.ui.util.AttachmentMenuProvider;
 import com.messenger.ui.util.ChatContextualMenuProvider;
+import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
+import com.messenger.ui.util.menu.ChatToolbarMenuProvider;
 import com.messenger.ui.view.add_member.ExistingChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.chat.ChatScreen;
-import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.settings.GroupSettingsPath;
 import com.messenger.ui.view.settings.SingleSettingsPath;
 import com.messenger.ui.view.settings.TripSettingsPath;
@@ -58,28 +46,12 @@ import com.messenger.ui.viewstate.ChatLayoutViewState;
 import com.messenger.util.ExternalMapLauncher;
 import com.messenger.util.OpenedConversationTracker;
 import com.messenger.util.PickLocationDelegate;
-import com.messenger.util.Utils;
 import com.techery.spares.module.Injector;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.core.navigation.router.Router;
-import com.worldventures.dreamtrips.core.permission.PermissionConstants;
-import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
-import com.worldventures.dreamtrips.core.permission.PermissionGrantedComposer;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.BasePhotoPickerModel;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
-import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
-import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
-import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -91,79 +63,63 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
-import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, ChatLayoutViewState>
         implements ChatScreenPresenter {
-    //
-    private static final int MARK_AS_READ_DELAY = 2000;
-    private static final int START_TYPING_DELAY = 1000;
-    private static final int STOP_TYPING_DELAY = 2000;
 
-    @Inject MessageBodyCreator messageBodyCreator;
-    @Inject DataUser user;
-    @Inject SessionHolder<UserSession> sessionHolder;
+    private static final int MARK_AS_READ_DELAY = 2000;
+
+    @Inject UnreadMessagesDelegate unreadMessagesDelegate;
+    @Inject MessagesPaginationDelegate messagesPaginationDelegate;
+    @Inject ChatMessageManager chatMessageManager;
+    @Inject ChatToolbarMenuProvider chatToolbarMenuProvider;
+    @Inject ChatContextualMenuProvider contextualMenuProvider;
+    @Inject ChatUserInteractionHelper chatUserInteractionHelper;
+    @Inject ChatTypingDelegate chatTypingDelegate;
+    @Inject ConversationAnalyticsDelegate conversationAnalyticsDelegate;
+    @Inject ChatStateDelegate chatStateDelegate;
+    @Inject ConversationsDAO conversationDAO;
+    @Inject MessageDAO messageDAO;
     @Inject NotificationDelegate notificationDelegate;
     @Inject OpenedConversationTracker openedConversationTracker;
-    @Inject AttachmentManager attachmentManager;
-    @Inject LegacyPhotoPickerDelegate legacyPhotoPickerDelegate;
-    @Inject AttachmentMenuProvider attachmentMenuProvider;
     @Inject StartChatDelegate startChatDelegate;
     @Inject MessageTranslationDelegate messageTranslationDelegate;
+    @Inject AttachmentMenuProvider attachmentMenuProvider;
+    @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
     @Inject PickLocationDelegate pickLocationDelegate;
-    @Inject ChatDelegate chatDelegate;
-    @Inject ChatContextualMenuProvider contextualMenuProvider;
-    @Inject Router router;
-    @Inject ProfileCrosser profileCrosser;
-    @Inject ChatTypingDelegate chatTypingDelegate;
-    @Inject ConversationsDAO conversationDAO;
-    @Inject UsersDAO usersDAO;
-    @Inject MessageDAO messageDAO;
-    @Inject AttachmentDAO attachmentDAO;
-    @Inject PhotoDAO photoDAO;
-    @Inject LocationDAO locationDAO;
-    @Inject TranslationsDAO translationsDAO;
-    @Inject AttachmentHelper attachmentHelper;
-    @Inject PermissionDispatcher permissionDispatcher;
-    @Inject ConversationAnalyticsDelegate conversationAnalyticsDelegate;
-    private FlaggingPresenter flaggingPresenter;
+    @Inject LoadConversationDelegate loadConversationDelegate;
 
     protected String conversationId;
 
     private long openScreenTime;
 
-    private boolean typing;
-    private boolean imageAttachmentClicked = false;
-
     private Subscription messageStreamSubscription;
-    private Observable<Pair<DataConversation, List<DataUser>>> conversationObservable;
-    private PublishSubject<DataMessage> lastVisibleItemStream = PublishSubject.create();
-
-    private Injector injector;
+    private FlaggingPresenter flaggingPresenter;
 
     public ChatScreenPresenterImpl(Context context, Injector injector, String conversationId) {
-        super(context);
+        super(context, injector);
         this.conversationId = conversationId;
-        this.injector = injector;
         openScreenTime = System.currentTimeMillis();
-
-        injector.inject(this);
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        this.flaggingPresenter = new FlaggingPresenterImpl(getView().getFlaggingView(), injector);
-        //
+        flaggingPresenter = getView().getFlaggingView().getPresenter();
+
+        notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
         connectConnectivityStatusStream();
         connectConversationStream();
+        connectToChatEvents();
         connectChatTypingStream();
         connectToLastVisibleItemStream();
         connectToShareLocationsStream();
-        loadInitialData();
-        bindChatDelegate();
+        bindMessagePaginationDelegate();
+        bindUnreadMessagesDelegate();
         connectToPhotoPicker();
+
+        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
     }
 
     @Override
@@ -172,15 +128,13 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         boolean visible = visibility == View.VISIBLE;
         openedConversationTracker.conversationVisibilityChanged(conversationId, visible);
         if (visible) {
-            connectTypingStartAction();
-            connectTypingStopAction();
+            connectChatStateDelegate();
             connectShowSendMessageAction();
         }
     }
 
     @Override
     public void onDetachedFromWindow() {
-        chatDelegate.closeChat();
         disconnectFromPhotoPicker();
         super.onDetachedFromWindow();
     }
@@ -189,10 +143,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ////// Streams
     //////////////////////////////////////////////////
 
-    private void bindChatDelegate() {
-        chatDelegate.bind(connectionStatusStream, conversationObservable)
+    private void connectToChatEvents() {
+        getView().getAttachmentClickStream()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(this::handlePaginationStatus);
+                .subscribe(attachmentId -> chatUserInteractionHelper.openPhotoInFullScreen(attachmentId, conversationId, openScreenTime));
     }
 
     private void connectConnectivityStatusStream() {
@@ -206,7 +160,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                     messageStreamSubscription = connectMessagesStream(syncTime);
 
                     if (connectionStatus == SyncStatus.CONNECTED) {
-                        chatDelegate.loadFirstPage();
+                        messagesPaginationDelegate.loadFirstPage();
                     } else {
                         // TODO Feb 29, 2016 Implement it in more Rx way
                         getView().removeAllTypingUsers();
@@ -217,26 +171,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectConversationStream() {
         ConnectableObservable<Pair<DataConversation, List<DataUser>>> source = conversationDAO.getConversationWithParticipants(conversationId)
                 .filter(conversationWithParticipant -> conversationWithParticipant != null)
-                .filter(conversationWithParticipant -> {
-                    if (TextUtils.equals(conversationWithParticipant.first.getStatus(), ConversationStatus.PRESENT)) {
-                        return true;
-                    } else {
-                        //if we were kicked from conversation
-                        Flow.get(getContext()).set(ConversationsPath.MASTER_PATH);
-                        return false;
-                    }
-                })
                 .compose(bindViewIoToMainComposer())
                 .publish();
 
-        conversationObservable = source
-                .replay(1)
-                .autoConnect();
-
         source.compose(new NonNullFilter<>())
                 .take(1)
-                .subscribe(conversationUsersPair -> trackOpenedConversation(conversationUsersPair.first, conversationUsersPair.second),
-                throwable -> Timber.e(throwable, ""));
+                .subscribe(conversationUsersPair -> conversationAnalyticsDelegate
+                                .trackOpenedConversation(conversationUsersPair.first,
+                                        conversationUsersPair.second),
+                        throwable -> Timber.e(throwable, ""));
 
         source.doOnSubscribe(() -> getView().showLoading());
 
@@ -245,7 +188,101 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         conversationLoaded(conversationWithParticipants.first,
                                 conversationWithParticipants.second));
 
+        observeConversationStatusChange(source.map(pair -> pair.first));
+
         source.connect();
+    }
+
+    private void observeConversationStatusChange(Observable<DataConversation> source) {
+        source.map(ConversationHelper::isPresent)
+                .distinctUntilChanged()
+                .scan((previous, current) -> !previous && current)
+                .skip(1)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(changedToPresent -> {
+                    if (changedToPresent) messagesPaginationDelegate.loadFirstPage();
+                });
+    }
+
+    private void conversationLoaded(DataConversation conversation, List<DataUser> participants) {
+        ChatScreen screen = getView();
+        //noinspection all
+        screen.setTitle(conversation, participants);
+        boolean conversationIsPresent = ConversationHelper.isPresent(conversation);
+        screen.enableInput(conversationIsPresent);
+        if (!conversationIsPresent) {
+            hidePhotoPicker();
+            screen.removeAllTypingUsers();
+        }
+        enableUnreadMessagesUi(conversation);
+    }
+
+    private boolean enableUnreadMessagesUi(DataConversation conversation) {
+        boolean isActive = conversation != null && ConversationHelper.isPresent(conversation);
+        getView().setShowMarkUnreadMessage(isActive);
+        return isActive;
+    }
+
+    private Subscription connectMessagesStream(long syncTime) {
+        return messageDAO
+                .getMessagesBySyncTime(conversationId, syncTime)
+                .filter(cursor -> cursor.getCount() > 0)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(cursor -> getView().showMessages(cursor),
+                        e -> Timber.w("Unable to get messages"));
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Message Pagination
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void bindMessagePaginationDelegate() {
+        messagesPaginationDelegate.bind(connectionStatusStream, conversationId)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(this::handlePaginationStatus);
+    }
+
+    @Override
+    public void onNextPageReached() {
+        messagesPaginationDelegate.loadNextPage();
+    }
+
+    private void handlePaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus) {
+        switch (paginationStatus.getStatus()) {
+            case START:
+                DataConversation conversation = loadConversationDelegate
+                        .loadConversationFromDb(conversationId).toBlocking().first();
+                handleStartPaginationStatus(paginationStatus, conversation);
+                break;
+            case SUCCESS:
+                if (paginationStatus.getPage() == 1 && paginationStatus.getLoadedElementsCount() == 0) {
+                    getView().setShowMarkUnreadMessage(false);
+                }
+            default:
+                getView().showContent();
+        }
+    }
+
+    private void handleStartPaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus,
+                                             DataConversation conversation) {
+        if (enableUnreadMessagesUi(conversation) && paginationStatus.getPage() == 1) {
+            getView().setShowMarkUnreadMessage(true);
+        }
+        getView().showLoading();
+        getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
+    }
+    ///////////////////////////////////////////////////////////////////////////
+    ////// Chat typing state logic
+    //////////////////////////////////////////////////////////////////////////
+
+    private void connectChatStateDelegate() {
+        chatStateDelegate.init(conversationId);
+        chatStateDelegate.connectTypingStartAction(getView().getEditMessageObservable())
+                .compose(bindVisibility())
+                .subscribe();
+        chatStateDelegate.connectTypingStopAction(getView().getEditMessageObservable())
+                .compose(bindVisibility())
+                .subscribe();
     }
 
     private void connectChatTypingStream() {
@@ -264,115 +301,26 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 }, e -> Timber.w("Unable to connect chat stream"));
     }
 
-    private void conversationLoaded(DataConversation conversation, List<DataUser> participants) {
-        //noinspection all
-        getView().setTitle(conversation, participants);
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Unread and Mark as read
+    ///////////////////////////////////////////////////////////////////////////
 
-    private void loadInitialData() {
-        conversationObservable
-                .take(1)
-                .map(conversationWithParticipants -> conversationWithParticipants.first)
-                .compose(new IoToMainComposer<>())
-                .subscribe(conversation -> {
-                    notificationDelegate.cancel(MessengerNotificationFactory.MESSENGER_TAG);
-                    getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
-                }, e -> Timber.w("Unable to load initial Data"));
-    }
-
-    private Subscription connectMessagesStream(long syncTime) {
-        Observable<Cursor> messagesObservable = messageDAO
-                .getMessagesBySyncTime(conversationId, syncTime)
-                .filter(cursor -> cursor.getCount() > 0);
-
-        return Observable.combineLatest(messagesObservable, conversationObservable,
-                (cursor, dataConversationListPair) -> new Pair<>(cursor, dataConversationListPair.first))
-                .compose(bindViewIoToMainComposer())
-                .subscribe(cursorAndConversation -> {
-                    Cursor cursor = cursorAndConversation.first;
-                    getView().showMessages(cursor, cursorAndConversation.second);
-                }, e -> Timber.w("Unable to get messages"));
+    private void bindUnreadMessagesDelegate() {
+        unreadMessagesDelegate.bind(conversationId);
     }
 
     private void connectToLastVisibleItemStream() {
-        lastVisibleItemStream.throttleLast(MARK_AS_READ_DELAY, TimeUnit.MILLISECONDS)
+        getView().getLastVisibleItemStream().throttleLast(MARK_AS_READ_DELAY, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
+                .filter(lastMessage -> isConnectionPresent())
                 .compose(bindViewIoToMainComposer())
                 .subscribe(this::tryMarkAsReadMessage,
                         e -> Timber.w("Unable to submitOneChatAction"));
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Message Pagination
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void handlePaginationStatus(PaginationStatus paginationStatus) {
-        ChatScreen view = getView();
-        switch (paginationStatus.status) {
-            case START:
-                if (paginationStatus.page == 1) view.setShowMarkUnreadMessage(true);
-                view.showLoading();
-                getViewState().setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-                break;
-            case SUCCESS:
-                if (paginationStatus.page == 1 && paginationStatus.loadedElementsCount == 0) {
-                    view.setShowMarkUnreadMessage(false);
-                }
-            default:
-                view.showContent();
-        }
-    }
-
-    @Override
-    public void onLastVisibleMessageChanged(Cursor cursor, int position) {
-        DataMessage message = cursor.isClosed() || !cursor.moveToPosition(position) ? null :
-                messageDAO.fromCursor(cursor, false);
-        if (message != null) lastVisibleItemStream.onNext(message);
-    }
-
-    @Override
-    public void onNextPageReached() {
-        chatDelegate.loadNextPage();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    ////// Typing logic
-    //////////////////////////////////////////////////////////////////////////
-
-    private void connectTypingStartAction() {
-        getView().getEditMessageObservable()
-                .compose(bindVisibility())
-                .skip(1)
-                .filter(textViewTextChangeEvent -> textViewTextChangeEvent.count() > 0
-                        && currentConnectivityStatus == SyncStatus.CONNECTED)
-                .throttleFirst(START_TYPING_DELAY, TimeUnit.MILLISECONDS)
-                .filter(textViewTextChangeEvent -> !typing)
-                .subscribe(chat -> {
-                    typing = true;
-                    chatDelegate.setComposing();
-                }, e -> Timber.w("Unable to connect to Typing start"));
-    }
-
-    private void connectTypingStopAction() {
-        getView().getEditMessageObservable()
-                .compose(bindVisibility())
-                .skip(1)
-                .debounce(STOP_TYPING_DELAY, TimeUnit.MILLISECONDS)
-                .subscribe(chat -> {
-                    typing = false;
-                    chatDelegate.setPaused();
-                }, e -> Timber.w("Unable to connect to Typing stop"));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Unread and Mark as read
-    ///////////////////////////////////////////////////////////////////////////
-
     private void tryMarkAsReadMessage(DataMessage lastMessage) {
-        if (!isConnectionPresent()) return;
-
         getView().setShowMarkUnreadMessage(false);
-        chatDelegate.tryMarkAsReadMessage(lastMessage);
+        unreadMessagesDelegate.tryMarkAsReadMessage(lastMessage);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -382,8 +330,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private void connectShowSendMessageAction() {
         getView().getEditMessageObservable()
                 .compose(bindVisibility())
-                .subscribe(event -> {
-                    getView().enableSendMessageButton(TextUtils.getTrimmedLength(event.text()) > 0);
+                .subscribe(text -> {
+                    getView().enableSendMessageButton(TextUtils.getTrimmedLength(text) > 0);
                 });
     }
 
@@ -392,53 +340,35 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         String finalMessage = message.trim();
 
         if (TextUtils.isEmpty(finalMessage)) return false;
-
-        chatDelegate.sendMessage(new Message.Builder()
-                .messageBody(messageBodyCreator.provideForText(finalMessage))
-                .fromId(user.getId())
-                .conversationId(conversationId)
-                .build());
-        return true;
+        else {
+            chatMessageManager.sendMessage(conversationId, message);
+            return true;
+        }
     }
 
     @Override
-    public void retrySendMessage(DataMessage message) {
-        String messageId = message.getId();
-
-        attachmentDAO.getAttachmentByMessageId(messageId).take(1)
-                .compose(bindView())
-                .subscribe(attachment -> {
-                    if (attachment != null) retrySendAttachment(message, attachment);
-                    else retrySendTextMessage(message);
-                });
-    }
-
-    private void retrySendTextMessage(DataMessage dataMessage) {
-        Message message = dataMessage.toChatMessage();
-        message.setMessageBody(messageBodyCreator.provideForText(dataMessage.getText()));
-        chatDelegate.sendMessage(message);
-    }
-
-    private void retrySendAttachment(DataMessage message, DataAttachment dataAttachment) {
-        obtainConversationObservable()
-                .subscribe(conversation -> attachmentManager.retrySendAttachment(conversation, message, dataAttachment));
+    public void retryClicked(DataMessage dataMessage) {
+        getView().showRetrySendMessageDialog(dataMessage);
     }
 
     @Override
-    public void onCopyMessageTextToClipboard(DataMessage message) {
-        translationsDAO.getTranslation(message.getId()).first()
-                .map(translation -> {
-                    if (translation != null && translation.getTranslateStatus() == TranslationStatus.TRANSLATED) {
-                        return translation.getTranslation();
-                    } else {
-                        return message.getText();
-                    }
-                }).subscribe(text -> Utils.copyToClipboard(context, text));
+    public void retrySendMessage(DataMessage dataMessage) {
+        chatMessageManager.retrySendMessage(conversationId, dataMessage);
+    }
+
+    @Override
+    public void onCopyMessageTextToClipboard(DataMessage dataMessage) {
+        chatUserInteractionHelper.copyToClipboard(context, dataMessage.getId());
+    }
+
+    @Override
+    public void onFlagMessage(DataMessage dataMessage) {
+        flaggingPresenter.flagMessage(dataMessage.getConversationId(), dataMessage.getId());
     }
 
     @Override
     public void onTranslateMessage(DataMessage message) {
-        messageTranslationDelegate.translateMessage(message, sessionHolder);
+        messageTranslationDelegate.translateMessage(message);
     }
 
     @Override
@@ -448,27 +378,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public void onStartNewChatForMessageOwner(DataMessage message) {
-        usersDAO.getUserById(message.getFromId())
-                .first()
-                .compose(new IoToMainComposer<>())
-                .subscribe(user -> {
-                    Action1<DataConversation> action1 = conversation -> {
-                        History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
-                        history.pop();
-                        history.push(new ChatPath(conversation.getId()));
-                        Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
-                    };
-                    startChatDelegate.startSingleChat(user, action1);
-                });
+        Action1<DataConversation> crossingAction = conversation -> {
+            History.Builder history = Flow.get(getContext()).getHistory().buildUpon();
+            history.pop();
+            history.push(new ChatPath(conversation.getId()));
+            Flow.get(getContext()).setHistory(history.build(), Flow.Direction.FORWARD);
+        };
+        startChatDelegate.startSingleChat(message.getFromId(), crossingAction);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // User
-    ///////////////////////////////////////////////////////////////////////////
-
     @Override
-    public void openUserProfile(DataUser user) {
-        profileCrosser.crossToProfile(user);
+    public void openUserProfile(DataUser dataUser) {
+        chatUserInteractionHelper.openUserProfile(dataUser);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -477,35 +398,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     @Override
     public int getToolbarMenuRes() {
-        return R.menu.chat;
+        return R.menu.menu_chat;
     }
 
     @Override
     public void onToolbarMenuPrepared(Menu menu) {
-        conversationObservable
-                .lastOrDefault(null)
-                .compose(bindVisibilityIoToMainComposer())
-                .subscribe(conversation -> {
-                    if (conversation == null) {
-                        menu.findItem(R.id.action_add).setVisible(false);
-                        menu.findItem(R.id.action_settings).setVisible(false);
-                    }
-                }, e -> Timber.w("Unable to get last conversation"));
-
-        conversationObservable
-                .take(1)
-                .compose(bindVisibilityIoToMainComposer())
-                .map(conversationWithParticipants -> conversationWithParticipants.first)
-                .subscribe(conversation -> {
-                    if (ConversationHelper.isGroup(conversation)) {
-                        // hide button for adding user for not owners of group chats
-                        boolean owner = user.getId().equals(conversation.getOwnerId());
-                        menu.findItem(R.id.action_add).setVisible(owner);
-                    } else {
-                        menu.findItem(R.id.action_add).setVisible(true);
-                    }
-                    menu.findItem(R.id.action_settings).setVisible(true);
-                }, e -> Timber.w("Unable to get conversation"));
+        chatToolbarMenuProvider.provideChatMenu(conversationId, menu)
+                .compose(bindView())
+                .subscribe(modifiedMenu -> {
+                }, e -> Timber.w("Unable to modify menu"));
     }
 
     @Override
@@ -516,8 +417,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 Flow.get(getContext()).set(new ExistingChatPath(conversationId));
                 return true;
             case R.id.action_settings:
-                conversationObservable
-                        .map(dataConversationStringPair -> dataConversationStringPair.first)
+                conversationDAO.getConversation(conversationId)
                         .take(1)
                         .compose(bindViewIoToMainComposer())
                         .subscribe(conversation -> {
@@ -541,8 +441,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onShowContextualMenu(DataMessage message) {
         contextualMenuProvider
-                .provideMenu(message, conversationObservable.map(dataConversationStringPair -> dataConversationStringPair.first),
-                        attachmentDAO.getAttachmentByMessageId(message.getId()))
+                .provideMenu(message, conversationId)
                 .filter(menu -> menu.size() > 0)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(menu -> getView().showContextualAction(menu, message));
@@ -562,7 +461,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         switch (attachmentMenuItem.getType()) {
             case AttachmentMenuItem.LOCATION:
                 //noinspection ConstantConditions
-                getView().hidePhotoPicker();
+                hidePhotoPicker();
                 pickLocationDelegate.pickLocation();
                 break;
             case AttachmentMenuItem.IMAGE:
@@ -571,13 +470,21 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         }
     }
 
+    private void hidePhotoPicker() {
+        messengerMediaPickerDelegate.hidePhotoPicker();
+    }
+
     private void showPhotoPicker() {
-        //noinspection ConstantConditions
-        permissionDispatcher
-                .requestPermission(PermissionConstants.STORE_PERMISSIONS, false)
-                .compose(new PermissionGrantedComposer())
-                .compose(bindView())
-                .subscribe(aVoid -> getView().showPhotoPicker());
+        messengerMediaPickerDelegate.showMultiPhotoPicker();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Timestamp
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onTimestampViewClicked(int position) {
+        getView().refreshChatTimestampView(position);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -590,16 +497,15 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .compose(bindView())
                 .subscribe(notification -> {
                     if (notification.isOnNext()) {
-                        onLocationPicked(notification.getValue());
+                        sendLocation(notification.getValue());
                     } else if (notification.isOnError()) {
                         getView().showPickLocationError();
                     }
                 });
     }
 
-    private void onLocationPicked(Location location) {
-        obtainConversationObservable()
-                .subscribe(conversation -> attachmentManager.sendLocation(conversation, location));
+    private void sendLocation(Location location) {
+        chatMessageManager.sendLocation(conversationId, location);
     }
 
     @Override
@@ -610,75 +516,24 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                 .launch();
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Photo picking
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void onImageClicked(String attachmentImageId) {
-        if (imageAttachmentClicked) return;
-        else imageAttachmentClicked = true;
-
-        attachmentHelper.obtainPhotoAttachment(attachmentImageId, user)
-                .compose(bindViewIoToMainComposer())
-                .subscribe(photoAttachment -> {
-                    ArrayList<IFullScreenObject> items = new ArrayList<>();
-                    items.add(photoAttachment);
-                    router.moveTo(Route.FULLSCREEN_PHOTO_LIST,
-                            NavigationConfigBuilder.forActivity()
-                                    .data(new FullScreenImagesBundle.Builder()
-                                            .position(0)
-                                            .type(TripImagesType.FIXED)
-                                            .route(Route.MESSAGE_IMAGE_FULLSCREEN)
-                                            .fixedList(items)
-                                            .build())
-                                    .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                                    .build());
-
-                    imageAttachmentClicked = false;
-                });
-    }
-
     private void connectToPhotoPicker() {
-        legacyPhotoPickerDelegate.register();
-        legacyPhotoPickerDelegate
-                .watchChosenImages()
+        messengerMediaPickerDelegate.register();
+        messengerMediaPickerDelegate
+                .getImagePathsStream()
                 .compose(bindViewIoToMainComposer())
                 .subscribe(photos -> {
-                    getView().hidePhotoPicker();
-                    uploadPhotoAttachments(Queryable.from(photos)
-                            .map(ChosenImage::getFilePathOriginal)
+                    hidePhotoPicker();
+                    sendImages(Queryable.from(photos)
                             .toList());
                 }, e -> Timber.e(e, "Error while image picking"));
     }
 
-    @Override
-    public void onImagesPicked(List<BasePhotoPickerModel> photos) {
-        if (photos == null || photos.isEmpty()) return;
-        //
-        uploadPhotoAttachments(Queryable.from(photos)
-                .map(BasePhotoPickerModel::getOriginalPath)
-                .toList());
-    }
-
-    private void uploadPhotoAttachments(List<String> filePaths) {
-        conversationObservable.take(1)
-                .subscribe(pair -> attachmentManager.sendImages(pair.first, filePaths),
-                        throwable -> Timber.d(throwable, ""));
+    private void sendImages(List<String> filePaths) {
+        chatMessageManager.sendImages(conversationId, filePaths);
     }
 
     private void disconnectFromPhotoPicker() {
-        legacyPhotoPickerDelegate.unregister();
-    }
-
-
-   ///////////////////////////////////////////////////////////////////////////
-    // Flagging
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void onFlagMessageAttempt(DataMessage message) {
-        flaggingPresenter.flagMessage(conversationId, message.getId());
+        messengerMediaPickerDelegate.unregister();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -688,17 +543,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Override
     public void onNewViewState() {
         state = new ChatLayoutViewState();
-
-        if (conversationObservable == null) {
-            state.setLoadingState(ChatLayoutViewState.LoadingState.LOADING);
-            return;
-        }
-
-        conversationObservable
-                .lastOrDefault(null)
-                .compose(bindVisibilityIoToMainComposer())
-                .subscribe(conversation -> state.setLoadingState(conversation == null ?
-                        ChatLayoutViewState.LoadingState.LOADING : ChatLayoutViewState.LoadingState.CONTENT));
     }
 
     @Override
@@ -720,17 +564,4 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Helpers
-    ///////////////////////////////////////////////////////////////////////////
-
-    private Observable<DataConversation> obtainConversationObservable() {
-        return conversationObservable
-                .take(1)
-                .map(dataConversationListPair -> dataConversationListPair.first);
-    }
-
-    private void trackOpenedConversation(DataConversation openedConversation, List<DataUser> participants) {
-        conversationAnalyticsDelegate.trackOpenedConversation(openedConversation, participants);
-    }
 }

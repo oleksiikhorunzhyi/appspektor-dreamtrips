@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import com.worldventures.dreamtrips.modules.common.model.Coordinates;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 
 import java.util.ArrayList;
@@ -120,14 +121,4 @@ public class CreatePhotoEntity {
         }
     }
 
-    public static class Coordinates {
-
-        private double lat;
-        private double lng;
-
-        public Coordinates(double lat, double lng) {
-            this.lat = lat;
-            this.lng = lng;
-        }
-    }
 }

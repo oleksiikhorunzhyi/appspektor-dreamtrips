@@ -6,9 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
@@ -26,15 +25,12 @@ import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderRegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.HeaderThemeCell;
-import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRecentlyAddedCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -44,28 +40,30 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
 
     @InjectView(R.id.recyclerViewFilters)
     protected EmptyRecyclerView recyclerView;
-    protected BaseArrayListAdapter<Object> arrayListAdapter;
+    protected BaseDelegateAdapter<Object> arrayListAdapter;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        this.recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(layoutManager);
 
-        this.arrayListAdapter = new BaseArrayListAdapter<>(getActivity(), this);
-        this.arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
-        this.arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
-        this.arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
-        this.arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
-        this.arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
-        this.arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
-        this.arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
-        this.arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
-        this.arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
+        arrayListAdapter = new BaseDelegateAdapter<>(getActivity(), this);
+        arrayListAdapter.registerCell(RegionModel.class, RegionCell.class);
+        arrayListAdapter.registerCell(FilterModel.class, FilterRangeBarsCell.class);
+        arrayListAdapter.registerCell(ActivityModel.class, ThemeCell.class);
+        arrayListAdapter.registerCell(RegionHeaderModel.class, HeaderRegionCell.class);
+        arrayListAdapter.registerCell(ThemeHeaderModel.class, HeaderThemeCell.class);
+        arrayListAdapter.registerCell(DateFilterItem.class, DateCell.class);
+        arrayListAdapter.registerCell(FilterSoldOutModel.class, SoldOutCell.class);
+        arrayListAdapter.registerCell(FilterFavoriteModel.class, FavoritesCell.class);
+        arrayListAdapter.registerCell(FilterRecentlyAddedModel.class, FilterRecentlyAddedCell.class);
 
-        this.recyclerView.setHasFixedSize(false);
-        this.recyclerView.setAdapter(this.arrayListAdapter);
+        new FiltersCallbackHandler().init(arrayListAdapter, getPresenter());
+
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setAdapter(arrayListAdapter);
     }
 
     @Override

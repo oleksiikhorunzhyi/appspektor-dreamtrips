@@ -8,10 +8,17 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.*;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.widget.TextView;
+
+import com.innahema.collections.query.queriables.Queryable;
+import com.jakewharton.rxbinding.internal.Preconditions;
+
+import timber.log.Timber;
 
 public class ViewUtils {
 
@@ -45,6 +52,22 @@ public class ViewUtils {
         } else {
             viewTreeObserver.removeOnGlobalLayoutListener(listener);
         }
+    }
+
+    public static void runTaskAfterMeasure(View view, Runnable task) {
+        if (view.getHeight() > 0 && view.getWidth() > 0) {
+            task.run();
+            return;
+        }
+
+        view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                view.getViewTreeObserver().removeOnPreDrawListener(this);
+                task.run();
+                return true;
+            }
+        });
     }
 
     public static int getRootViewHeight(Activity activity) {
@@ -128,5 +151,21 @@ public class ViewUtils {
             return false;
         }
         return true;
+    }
+
+    public static void setTextOrHideView(TextView textView, CharSequence text) {
+        if (!android.text.TextUtils.isEmpty(text)) {
+            setViewVisibility(textView, View.VISIBLE);
+            textView.setText(text);
+        } else setViewVisibility(textView, View.GONE);
+    }
+
+    public static void setViewVisibility(View view, int visibility) {
+        Preconditions.checkNotNull(view, "view is null");
+        if (view.getVisibility() != visibility) view.setVisibility(visibility);
+    }
+
+    public static void setViewVisibility(int visibility, View... views) {
+        Queryable.from(views).forEachR(view -> setViewVisibility(view, visibility));
     }
 }

@@ -36,10 +36,12 @@ import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayL
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.dialog.BaseDialogFragmentWithPresenter;
+import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ProgressDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.dialog.TermsConditionsDialog;
 import com.worldventures.dreamtrips.modules.common.view.fragment.MediaPickerFragment;
-import com.worldventures.dreamtrips.modules.dtl.DtlModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
@@ -49,7 +51,7 @@ import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
-import com.worldventures.dreamtrips.modules.video.api.DownloadVideoListener;
+import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 
 import java.util.ArrayList;
@@ -78,13 +80,15 @@ import dagger.Provides;
                 Player360Activity.class,
                 FilterableArrayListAdapter.class,
                 DraggableArrayListAdapter.class,
-                DownloadVideoListener.class,
+                DownloadFileListener.class,
                 PresentationVideosPresenter.class,
                 MessengerActivity.class,
+                DtlActivity.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,
                 ProgressDialogFragment.class,
+                MessageDialogFragment.class,
                 PhotoPickerLayout.class,
 
                 DialogFragmentNavigator.NavigationDialogFragment.class,
@@ -124,8 +128,8 @@ public class CommonModule {
         featureManager.with(Feature.TRIPS, () -> activeComponents.add(TripsModule.TRIPS));
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
-        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlModule.DTL));
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
+        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlActivityModule.DTL));
         featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
@@ -138,7 +142,7 @@ public class CommonModule {
 
         activeComponents.add(SettingsModule.SETTINGS);
 
-        activeComponents.add(InfoModule.FAQ);
+        activeComponents.add(InfoModule.HELP);
         activeComponents.add(InfoModule.TERMS);
 
         activeComponents.add(TripsModule.MAP_TRIPS);

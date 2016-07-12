@@ -50,7 +50,7 @@
         android:gravity="center"
         android:lines="2"
         android:padding="@dimen/spacing_small"
-        android:background="@color/dtl_cities_background"
+        android:background="@color/light_grey_background"
         android:singleLine="false"
         android:layout_marginTop="@dimen/spacing_small"
         android:visibility="gone"

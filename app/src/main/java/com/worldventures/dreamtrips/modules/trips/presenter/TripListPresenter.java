@@ -2,12 +2,10 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import android.app.Activity;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
@@ -17,17 +15,22 @@ import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripsQuery;
 import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
+import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
-
-import java.util.Calendar;
-import java.util.List;
+import com.worldventures.dreamtrips.modules.trips.model.TripQueryData;
+import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
+import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import javax.inject.Inject;
 
-public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View> {
+import icepick.State;
 
+public class TripListPresenter extends Presenter<TripListPresenter.View> {
+
+    public static final int PER_PAGE = 20;
     @Inject
     Activity activity;
     @Inject
@@ -36,10 +39,18 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     BucketItemManager bucketItemManager;
     @Inject
     FeedEntityManager entityManager;
-    private boolean loadFromApi;
+    @Inject
+    TripFilterDataProvider tripFilterDataProvider;
+    @State
+    String query;
+
     private boolean loadWithStatus;
 
     private SweetDialogHelper sweetDialogHelper;
+
+    private boolean loading;
+    private int page = 1;
+    private boolean noMoreItems = false;
 
     public TripListPresenter() {
         sweetDialogHelper = new SweetDialogHelper();
@@ -60,39 +71,61 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         super.onResume();
         bucketItemManager.setDreamSpiceManager(dreamSpiceManager);
         loadWithStatus = true;
-        loadFromApi = false;
-        reload();
-    }
-
-    public void loadFromApi() {
-        loadFromApi = true;
-        loadWithStatus = true;
         reload();
     }
 
     public void reload() {
-        if (loadWithStatus || cacheEmpty()) {
+        if(view == null) return;
+        //
+        page = 1;
+        noMoreItems = false;
+        if (loadWithStatus) {
             view.startLoading();
         }
         //
-        boolean makeApiCall = loadFromApi || cacheEmpty() || resetCacheOnStart();
-        doRequest(new GetTripsQuery(db, prefs, makeApiCall), items -> {
-            cachedTrips.clear();
-            cachedTrips.addAll(items);
+        doRequest(createGetTripsQuery(), items -> {
+            loading = false;
             //
-            view.finishLoading();
-            //
-            loadFromApi = false;
-            if (shouldUpdate()) {
-                loadWithStatus = false;
-                loadFromApi = true;
-                reload();
+            if (view != null) {
+                view.finishLoading();
+                //
+                view.getAdapter().clear();
+                view.getAdapter().addItems(items);
+                view.getAdapter().notifyDataSetChanged();
             }
-            //
-            view.getAdapter().clear();
-            view.getAdapter().addItems(performFiltering(items));
-            view.getAdapter().notifyDataSetChanged();
         });
+    }
+
+    public void loadMore() {
+        page++;
+        doRequest(createGetTripsQuery(), items -> {
+            loading = false;
+            view.getAdapter().addItems(items);
+            view.getAdapter().notifyDataSetChanged();
+            noMoreItems = items.isEmpty();
+        });
+    }
+
+    protected GetTripsQuery createGetTripsQuery() {
+        TripsFilterData tripsFilterData = tripFilterDataProvider.get();
+        TripQueryData b = new TripQueryData();
+        b.setPage(page);
+        b.setPerPage(PER_PAGE);
+        b.setQuery(query);
+        if (tripsFilterData != null) {
+            b.setDurationMin(tripsFilterData.getMinNights());
+            b.setDurationMax(tripsFilterData.getMaxNights());
+            b.setPriceMin(tripsFilterData.getMinPrice());
+            b.setPriceMax(tripsFilterData.getMaxPrice());
+            b.setStartDate(tripsFilterData.getStartDateFormatted());
+            b.setEndDate(tripsFilterData.getEndDateFormatted());
+            b.setRegions(tripsFilterData.getAcceptedRegionsIds());
+            b.setActivities(tripsFilterData.getAcceptedActivitiesIds());
+            b.setSoldOut(tripsFilterData.isShowSoldOut());
+            b.setRecent(tripsFilterData.isShowRecentlyAdded());
+            b.setLiked(tripsFilterData.isShowFavorites());
+        }
+        return new GetTripsQuery(b);
     }
 
     @Override
@@ -101,37 +134,12 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
         super.handleError(error);
     }
 
-    private Boolean cacheEmpty() {
-        return db.isEmpty(SnappyRepository.TRIP_KEY);
-    }
-
-    private boolean shouldUpdate() {
-        long current = Calendar.getInstance().getTimeInMillis();
-        return current - prefs.getLong(Prefs.LAST_SYNC) > DreamTripsRequest.DELTA_TRIP;
-    }
-
-    /** one-time fix to deal with deploy issue */
-    private static final long RESET_POINT = 1443501000;
-
-    private boolean resetCacheOnStart() {
-        return prefs.getLong(Prefs.LAST_SYNC) / 1000 < RESET_POINT;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Filter
     ///////////////////////////////////////////////////////////////////////////
 
     public void onEvent(FilterBusEvent event) {
-        if (!cachedTrips.isEmpty()) {
-            setFilters(event);
-            view.setFilteredItems(performFiltering(cachedTrips));
-        }
-    }
-
-    @Override
-    public void resetFilters() {
-        super.resetFilters();
-        view.clearSearch();
+        reload();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -147,15 +155,7 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     }
 
     public void onEvent(EntityLikedEvent event) {
-        TripModel trip = Queryable.from(cachedTrips).firstOrDefault(element -> element.getUid().equals(event.getFeedEntity().getUid()));
-        if (trip != null) {
-            trip.syncLikeState(event.getFeedEntity());
-            onSuccess(trip);
-            view.dataSetChanged();
-            if (view.isVisibleOnScreen()) {
-                sweetDialogHelper.notifyTripLiked(activity, trip);
-            }
-        }
+        view.itemLiked(event.getFeedEntity());
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,6 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     public void onAddToBucket(TripModel trip) {
         if (trip.isInBucketList()) {
             bucketItemManager.addBucketItemFromTrip(trip.getTripId(), bucketItem -> {
-                onSuccess(trip);
                 sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
             }, spiceException -> {
                 trip.setInBucketList(!trip.isInBucketList());
@@ -182,16 +181,35 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
     }
 
     public void onEvent(TripItemAnalyticEvent event) {
-        TrackingHelper.actionItemDreamtrips(event.getActionAttribute(), event.getTripId());
-    }
-
-    private void onSuccess(TripModel trip) {
-        db.saveTrip(trip);
+        if (event.getActionAttribute().equals(TrackingHelper.ATTRIBUTE_VIEW)) {
+            TrackingHelper.viewTripDetails(event.getTripId(), event.getTripName(),
+                    view.isSearchOpened() ? query : "", new TripsFilterDataAnalyticsWrapper(tripFilterDataProvider.get()));
+        } else {
+            TrackingHelper.actionItemDreamtrips(event.getActionAttribute(), event.getTripId(), event.getTripName());
+        }
     }
 
     private void onFailure() {
         view.dataSetChanged();
         view.showErrorMessage();
+    }
+
+    public void search(String s) {
+        query = s;
+        reload();
+    }
+
+    public void scrolled(int totalItemCount, int lastVisible) {
+        if (featureManager.available(Feature.SOCIAL)) {
+            if (!loading && !noMoreItems && lastVisible == totalItemCount - 1) {
+                loading = true;
+                loadMore();
+            }
+        }
+    }
+
+    public String getQuery() {
+        return query;
     }
 
     public interface View extends Presenter.View {
@@ -204,11 +222,11 @@ public class TripListPresenter extends BaseTripsPresenter<TripListPresenter.View
 
         void finishLoading();
 
-        void clearSearch();
-
-        void setFilteredItems(List<TripModel> items);
-
         IRoboSpiceAdapter<TripModel> getAdapter();
+
+        void itemLiked(FeedEntity feedEntity);
+
+        boolean isSearchOpened();
     }
 
 }

@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
@@ -114,7 +115,10 @@ public final class SuggestedPhotoCellPresenterHelper {
     }
 
     public void sync() {
-        view.setUser(appSessionHolder.get().get().getUser());
+        Optional<UserSession> userSessionOptional = appSessionHolder.get();
+        if (userSessionOptional.isPresent()) {
+            view.setUser(userSessionOptional.get().getUser());
+        }
         setSuggestionTitle();
     }
 

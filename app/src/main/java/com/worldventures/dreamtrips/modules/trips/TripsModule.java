@@ -5,11 +5,12 @@ import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.OtaFragment;
 import com.worldventures.dreamtrips.modules.trips.presenter.FiltersPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripListPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.TripMapInfoPresenter;
-import com.worldventures.dreamtrips.modules.trips.presenter.TripMapPresenter;
+import com.worldventures.dreamtrips.modules.trips.presenter.TripMapListPresenter;
 import com.worldventures.dreamtrips.modules.trips.view.cell.TripCell;
+import com.worldventures.dreamtrips.modules.trips.view.cell.TripMapCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.DateCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FavoritesCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.FilterRangeBarsCell;
@@ -20,10 +21,10 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.FiltersFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripDetailsFragment;
 import com.worldventures.dreamtrips.modules.trips.view.fragment.TripListFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapFragment;
-import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapInfoFragment;
+import com.worldventures.dreamtrips.modules.trips.view.fragment.TripMapListFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,12 +35,8 @@ import dagger.Provides;
                 FiltersPresenter.class,
                 TripDetailsFragment.class,
                 TripDetailsPresenter.class,
-                TripMapInfoPresenter.class,
-                TripMapPresenter.class,
                 FiltersFragment.class,
-                TripMapInfoFragment.class,
                 TripListFragment.class,
-                TripMapFragment.class,
 
                 FilterRangeBarsCell.class,
                 ThemeCell.class,
@@ -50,7 +47,15 @@ import dagger.Provides;
                 TripCell.class,
                 FavoritesCell.class,
                 HeaderRegionCell.class,
-                FilterRecentlyAddedCell.class
+                FilterRecentlyAddedCell.class,
+
+                TripMapFragment.class,
+                TripMapPresenter.class,
+
+                TripMapListFragment.class,
+                TripMapListPresenter.class,
+
+                TripMapCell.class,
         },
         complete = false,
         library = true

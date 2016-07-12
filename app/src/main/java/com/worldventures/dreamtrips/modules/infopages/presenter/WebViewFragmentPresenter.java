@@ -27,6 +27,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     LocaleHelper localeHelper;
 
     private final String url;
+    private boolean inErrorState;
 
     public WebViewFragmentPresenter(String url) {
         this.url = url;
@@ -36,6 +37,12 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     public void takeView(T view) {
         super.takeView(view);
         load();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (inErrorState) load();
     }
 
     protected void load() {
@@ -55,7 +62,11 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     public void onReload() {
-        view.reload(getLocalizedUrl());
+        reload();
+    }
+
+    public void setInErrorState(boolean inErrorState) {
+        this.inErrorState = inErrorState;
     }
 
     public void track(Route route) {
@@ -76,6 +87,12 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
             case OTA:
                 TrackingHelper.ota(getAccountUserId());
                 break;
+            case ENROLL_MEMBER:
+                TrackingHelper.enrollMember(getAccountUserId());
+                break;
+            case ENROLL_MERCHANT:
+                TrackingHelper.enrollMerchant(getAccountUserId());
+                break;
         }
     }
 
@@ -92,6 +109,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         void load(String localizedUrl);
 
         void reload(String localizedUrl);
+
+        void setRefreshing(boolean refreshing);
+
+        void showError(int code);
     }
 
 }

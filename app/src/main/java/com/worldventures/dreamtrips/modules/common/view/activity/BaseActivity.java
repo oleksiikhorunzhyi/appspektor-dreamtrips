@@ -18,12 +18,13 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
-import com.worldventures.dreamtrips.modules.dtl.DtlModule;
+import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.facebook.FacebookModule;
 import com.worldventures.dreamtrips.modules.feed.FeedModule;
 import com.worldventures.dreamtrips.modules.friends.FriendsModule;
@@ -41,49 +42,61 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public abstract class BaseActivity extends InjectingActivity {
 
     @Inject
     protected ActivityResultDelegate activityResultDelegate;
-
     @Inject
     BackStackDelegate backStackDelegate;
-
+    @Inject
+    AnalyticsInteractor analyticsInteractor;
     @Inject
     protected PermissionDispatcher permissionDispatcher;
-
     @Inject
     protected Router router;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         MonitoringHelper.setInteractionName(this);
-        TrackingHelper.onCreate(this);
         super.onCreate(savedInstanceState);
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONCREATE),
+                        Schedulers.immediate());
     }
 
     @Override
     protected void onStart() {
-        TrackingHelper.onStart(this);
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTART),
+                        Schedulers.immediate());
         super.onStart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        TrackingHelper.onStop(this);
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONSTOP),
+                        Schedulers.immediate());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        TrackingHelper.onResume(this);
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONRESUME),
+                        Schedulers.immediate());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        TrackingHelper.onPause(this);
+        analyticsInteractor.analyticsActionPipe()
+                .send(new LifecycleEvent(this, LifecycleEvent.ACTION_ONPAUSE),
+                        Schedulers.immediate());
     }
 
     @Override
@@ -138,9 +151,9 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new MembershipModule());
         modules.add(new FriendsModule());
         modules.add(new FeedModule());
-        modules.add(new DtlModule());
         modules.add(new SettingsModule());
         modules.add(new MessengerActivityModule());
+        modules.add(new DtlActivityModule());
         modules.add(new LocationPickerModule());
         return modules;
     }
@@ -159,7 +172,8 @@ public abstract class BaseActivity extends InjectingActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionDispatcher.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -174,6 +188,4 @@ public abstract class BaseActivity extends InjectingActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
-

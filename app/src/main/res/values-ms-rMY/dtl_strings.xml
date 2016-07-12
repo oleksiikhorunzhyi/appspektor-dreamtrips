@@ -4,8 +4,9 @@
     <string name="dtl_locations_try_search">Kami tidak dapat mengesan Bandar terdekat kepada anda.\nCuba carian bandar kami</string>
     <string name="dtl_merchant_tab_offers">Tawaran</string>
     <string name="dtl_merchant_tab_dining">Jamuan Selera</string>
-    <string name="dtl_near_me_caption">Berhampiran saya</string>
-    <string name="dtl_nearby_caption">Berhampiran</string>
+    <string name="dtl_near_me_caption">berhampiran saya</string>
+    <string name="dtl_nearby_caption_format">berhampiran %1$s</string>
+    <string name="dtl_nearby_caption_empty">berhampiran</string>
     <string name="dtl_autodetect_location">Auto-kesan lokasi saya</string>
     <string name="dtl_no_merchants_caption">Tiada pedagang di sini</string>
     <string name="dtl_load_merchants_here_button_caption">Buat semula carian pedagang</string>
@@ -19,7 +20,6 @@
     <string name="dtl_points_estimation_negative_input_error">Tidak boleh kurang daripada 0!</string>
     <string name="dtl_price">Harga ($)</string>
     <string name="dtl_distance">Jarak, %1$s</string>
-    <string name="dtl_receipt_note">&lt;b&gt;Pemberitahuan:&lt;/b&gt; jumlahnya sepatutnya jumlah yang tertera pada bil, tidak termasuk tips dan cukai</string>
     <string name="dtl_receipt_scan">Mengambil Gambar Resit</string>
     <string name="dtl_receipt_rescan">Ambil gambar semula</string>
     <string name="dtl_receipt_verify">Sahkan amaun</string>
@@ -45,6 +45,7 @@
     <string name="dtl_amount_invalid">Jumlah tidak sah </string>
     <string name="dtl_invalid">Input tidak sah </string>
     <string name="dtl_verify_amount">Sahkan amaun</string>
+    <string name="dtl_verify_amount_note">Peringatan: Amaun seharusnya jumlah pada bil tidak termasuk pembutiran cukai dan tip.</string>
     <string name="dtl_total_amount">Jumlah Amaun:</string>
     <string name="dtl_verify_earn_hint">Anda boleh memperoleh </string>
     <string name="dtl_check_in">Daftar masuk &amp; belajar </string>
@@ -54,8 +55,8 @@
     <string name="suggest_merchant_title">Alat Setempat DT</string>
     <string name="dtl_details_share_title">Saya akan memperoleh mata Dreamtrips dalam %1$s</string>
     <string name="dtl_details_share_title_earned" formatted="false">Saya telah mendapat %1$s mata DreamTrips dalam %2$s</string>
-    <string name="dtl_wait_for_receipt">Tunggu… Resit muat naik</string>
-    <string name="dtl_wait_for_earn">Tunggu… Memperoleh mata</string>
+    <string name="dtl_wait_for_receipt">Tunggu... Resit muat naik</string>
+    <string name="dtl_wait_for_earn">Tunggu... Memperoleh mata</string>
     <string name="dtl_wait_for_offers">Mencari tawaran yang berhampiran.</string>
     <string name="dtl_wait_for_dinings">Mencari pedagang yang berhampiran.</string>
     <string name="dtl_estimator_explanation">Mata dikira berdasarkan amaun minimum dibelanjakan di saudagar dan hari minggu tersebut</string>
@@ -71,9 +72,24 @@
     <string name="point_estimator">Penganggar Mata</string>
     <string name="km">km</string>
     <string name="mi">batu</string>
+    <string name="points">Mata</string>
+    <string name="perks">Faedah istimewa</string>
+    <string name="everyday">Setiap hari</string>
+    <string name="perks_terms">Terma &amp; Syarat</string>
+    <string name="perks_formatted" formatted="false">%1$d Faedah</string>
     <string name="dtl_coming_soon_offers">Tawaran akan datang tidak lama lagi</string>
     <string name="dtl_show_offers_only">Tunjukkan tawaran sahaja</string>
+    <string name="dtl_earn_points">Peroleh mata DreamTrips</string>
     <string name="dtl_details_share_title_without_points">Saya menemui %1$s menggunakan aplikasi DreamTrips</string>
     <string name="details_collapsed_text_caption">Tunjukkan Selanjutnya </string>
     <string name="details_expanded_text_caption">Tunjukkan Kurang</string>
+    <string name="offer_expiration_format">Sehingga %1$s</string>
+    <string name="training_no_video">Video yang akan datang tidak lama lagi</string>
+    <string name="help">Bantuan</string>
+    <string name="merchants_list_empty_text">Tempat yang akan datang tidak lama lagi</string>
+
+    <!-- DtlToolbar strings -->
+    <string name="dtlt_search_hint">Makanan &amp; Minuman</string>
+    <!-- DtlFilterButton strings -->
+    <string name="dtlfb_caption">Tapis</string>
 </resources>

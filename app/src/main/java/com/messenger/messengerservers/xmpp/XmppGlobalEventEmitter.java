@@ -3,16 +3,20 @@ package com.messenger.messengerservers.xmpp;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.GlobalEventEmitter;
-import com.messenger.messengerservers.model.Participant;
+import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.messengerservers.xmpp.extensions.ChangeAvatarExtension;
 import com.messenger.messengerservers.xmpp.extensions.ChatStateExtension;
 import com.messenger.messengerservers.xmpp.extensions.DeleteMessageExtension;
+import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilter;
+import com.messenger.messengerservers.xmpp.filter.incoming.IncomingMessageFilterType;
+import com.messenger.messengerservers.xmpp.stanzas.PresenceStatus;
+import com.messenger.messengerservers.xmpp.stanzas.incoming.LeftRoomPresence;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessageDeletedPresence;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.ThreadCreatorHelper;
 import com.messenger.messengerservers.xmpp.util.XmppMessageConverter;
-import com.messenger.messengerservers.xmpp.util.XmppPacketDetector;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
@@ -29,7 +33,13 @@ import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import rx.Observable;
+import timber.log.Timber;
 
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_AVATAR;
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.EXTENTION_STATUS;
@@ -38,23 +48,29 @@ import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.SUBJEC
 import static com.messenger.messengerservers.xmpp.util.XmppPacketDetector.stanzaType;
 
 public class XmppGlobalEventEmitter extends GlobalEventEmitter {
-    private final XmppServerFacade facade;
-    private final XmppMessageConverter messageConverter;
+    private final Map<IncomingMessageFilterType, List<IncomingMessageFilter>> filters;
+    private XmppServerFacade facade;
+    private XmppMessageConverter messageConverter;
 
+    public XmppGlobalEventEmitter(Map<IncomingMessageFilterType, List<IncomingMessageFilter>> filters) {
+        this.filters = filters;
+    }
 
-    public XmppGlobalEventEmitter(XmppServerFacade facade) {
-        this.facade = facade;
+    public void setFacade(XmppServerFacade facade) {
         this.messageConverter = new XmppMessageConverter(facade.getGson());
+        this.facade = facade;
         facade.getConnectionObservable()
                 .subscribe(this::prepareManagers);
     }
 
     private void prepareManagers(XMPPConnection connection) {
-        connection.addAsyncStanzaListener(this::interceptIncomingMessage,
+        connection.addAsyncStanzaListener(this::filterAndInterceptIncomingMessage,
                 StanzaTypeFilter.MESSAGE);
-        connection.addAsyncStanzaListener(this::interceptIncomingPresence,
+        connection.addAsyncStanzaListener(this::filterAndInterceptIncomingPresence,
                 StanzaTypeFilter.PRESENCE);
-        connection.addAsyncStanzaListener(this::interceptIncomingMessageDeletedPresence,
+        connection.addAsyncStanzaListener(this::filterAndInterceptLeftPresence,
+                LeftRoomPresence.LEAVE_PRESENCE_FILTER);
+        connection.addAsyncStanzaListener(this::filterAndInterceptIncomingMessageDeletedPresence,
                 MessageDeletedPresence.DELETED_PRESENCE_FILTER);
 
         ProviderManager.addExtensionProvider(ChatStateExtension.ELEMENT,
@@ -72,7 +88,13 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     private RosterListener rosterListener = new RosterListener() {
         @Override
         public void entriesAdded(Collection<String> addresses) {
-            notifyFriendsAdded(Queryable.from(addresses).map(JidCreatorHelper::obtainId).toList());
+            facade.getConnectionObservable()
+                    .take(1)
+                    .filter(status -> status.equals(ConnectionStatus.CONNECTED))
+                    .flatMap(xmppConnection -> Observable.from(addresses))
+                    .map(JidCreatorHelper::obtainId)
+                    .toList()
+                    .subscribe(users -> notifyFriendsAdded(users));
         }
 
         @Override
@@ -112,12 +134,33 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         notifyGlobalMessage(message, EVENT_OUTGOING_ERROR);
     }
 
-    private void interceptIncomingMessage(Stanza packet) {
-        if (!facade.isActive()) return;
+    private Observable<Stanza> filterIncomingStanzaWithType(IncomingMessageFilterType type, Stanza packet) {
+        List<IncomingMessageFilter> packetFilters = new ArrayList<>();
+        if (filters.get(IncomingMessageFilterType.ALL) != null) {
+            packetFilters.addAll(filters.get(IncomingMessageFilterType.ALL));
+        }
+        if (filters.get(type) != null) packetFilters.addAll(filters.get(type));
 
+        if (packetFilters.isEmpty()) return Observable.just(packet);
+        return Observable.from(packetFilters)
+                .flatMap(filter -> filter.skipPacket(packet))
+                // provide default accumulated value value of false for reduce()
+                .reduce(false, (accumulatedValue, accumulatingValue) -> accumulatedValue || accumulatingValue)
+                // invert as filter returns true if we should skip the message
+                .filter(shouldSkipMessage -> !shouldSkipMessage)
+                .map(val -> packet);
+    }
+
+    private void filterAndInterceptIncomingMessage(Stanza packet) {
+        if (!facade.isActive()) return;
+        filterIncomingStanzaWithType(IncomingMessageFilterType.MESSAGE, packet)
+                .subscribe(this::interceptIncomingMessage,
+                        e -> Timber.e(e, "Filters -- Error during filtering message"));
+    }
+
+    private void interceptIncomingMessage(Stanza packet) {
         Message messageXMPP = (Message) packet;
         int packetType = stanzaType(packet);
-        if (isMessageIgnored(messageXMPP, packetType)) return;
         switch (packetType) {
             case EXTENTION_STATUS:
                 ChatStateExtension extension = (ChatStateExtension) messageXMPP.getExtension(ChatStateExtension.NAMESPACE);
@@ -153,13 +196,24 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         }
     }
 
+    private void filterAndInterceptIncomingMessageDeletedPresence(Stanza stanza) {
+        filterIncomingStanzaWithType(IncomingMessageFilterType.DELETE_PRESENCE, stanza)
+                .subscribe(this::interceptIncomingMessageDeletedPresence,
+                        e -> Timber.e(e, "Filters -- Error during filtering deleted presence"));
+    }
+
     private void interceptIncomingMessageDeletedPresence(Stanza stanza) {
         MessageDeletedPresence messageDeletedPresence = (MessageDeletedPresence) stanza;
-        DeleteMessageExtension extension = (DeleteMessageExtension )messageDeletedPresence
+        DeleteMessageExtension extension = (DeleteMessageExtension) messageDeletedPresence
                 .getExtension(DeleteMessageExtension.NAMESPACE);
         notifyMessagesDeleted(extension.getDeletedMessageList());
     }
 
+    private void filterAndInterceptIncomingPresence(Stanza stanza) {
+        filterIncomingStanzaWithType(IncomingMessageFilterType.PRESENCE, stanza)
+                .subscribe(this::interceptIncomingPresence,
+                        e -> Timber.e(e, "Filters -- Error during filtering presence"));
+    }
 
     private void interceptIncomingPresence(Stanza stanza) {
         Presence presence = (Presence) stanza;
@@ -173,7 +227,7 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
         }
     }
 
-    private void processIncomingPresence(String userId, boolean online ) {
+    private void processIncomingPresence(String userId, boolean online) {
         // if our offline presence from another device and the current device is online we should resend online presence
         if (TextUtils.equals(facade.getUsername(), userId) && !online && facade.isConnected()) {
             facade.sendInitialPresence();
@@ -183,35 +237,60 @@ public class XmppGlobalEventEmitter extends GlobalEventEmitter {
     }
 
     private boolean processGroupChatParticipantsActions(Presence presence, String fromJid) {
-        MUCUser extension = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
-        if (extension == null || !JidCreatorHelper.isGroupJid(fromJid))
+        MUCUser mucUser = (MUCUser) presence.getExtension(MUCUser.NAMESPACE);
+        if (mucUser == null || !JidCreatorHelper.isGroupJid(fromJid))
             return false;
         //
         String conversationId = JidCreatorHelper.obtainId(fromJid);
-        String jid = extension.getItem().getJid();
-        String userId = jid == null ?
-                JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
-        //
-        MUCItem item = extension.getItem();
+        MUCItem item = mucUser.getItem();
         MUCAffiliation affiliation = item.getAffiliation();
-        //
-        if (affiliation == MUCAffiliation.none) {
-            boolean leave = presence.getType() == Type.unsubscribed;
-            notifyOnChatLeftListener(conversationId, userId, leave);
-        } else {
+
+        if (isKickPresence(presence.getType(), affiliation)) {
+            notifyOnKickListener(conversationId, JidCreatorHelper.obtainUserIdFromGroupJid(fromJid));
+            return true;
+        } else if (isInvitePresence(presence)) {
+            String jid = mucUser.getItem().getJid();
+            String userId = jid == null ?
+                    JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(jid);
+
             boolean isOnline = presence.getType() == Type.available;
-            notifyOnChatJoinedListener(new Participant(userId, String.valueOf(affiliation), conversationId), isOnline);
+
+            notifyOnChatJoinedListener(ImmutableParticipant.builder()
+                    .userId(userId)
+                    .conversationId(conversationId)
+                    .affiliation(String.valueOf(affiliation))
+                    .build(), isOnline);
+            return true;
         }
-        return true;
+        return false;
     }
 
-    private boolean isMessageIgnored(Message message, int packetType) {
-        if (packetType == XmppPacketDetector.EXTENTION_AVATAR) {
-            return false;
-        }
-        boolean ownMessage = message.getType() == Message.Type.groupchat
-                && JidCreatorHelper.obtainId(message.getTo()).equals(JidCreatorHelper.obtainUserIdFromGroupJid(message.getFrom()));
-        boolean delayed = message.getExtension("urn:xmpp:delay") != null;
-        return ownMessage || delayed;
+    private boolean isInvitePresence(Presence presence) {
+        return TextUtils.equals(presence.getStatus(), PresenceStatus.INVITED);
+    }
+
+    private boolean isKickPresence(Type type, MUCAffiliation affiliation) {
+        return type == Type.unavailable && affiliation == MUCAffiliation.none;
+    }
+
+    private void filterAndInterceptLeftPresence(Stanza stanza) {
+        filterIncomingStanzaWithType(IncomingMessageFilterType.LEAVE_PRESENCE, stanza)
+                .subscribe(this::interceptLeftPresence,
+                        e -> Timber.e(e, "Filters -- Error during filtering left presence"));
+    }
+
+    private void interceptLeftPresence(Stanza stanza) {
+        String fromJid = stanza.getFrom();
+
+        MUCUser extension = (MUCUser) stanza.getExtension(MUCUser.NAMESPACE);
+        String conversationId = JidCreatorHelper.obtainId(fromJid);
+
+        MUCItem item = extension.getItem();
+        String userJid = item.getJid();
+
+        String userId = userJid == null ?
+                JidCreatorHelper.obtainUserIdFromGroupJid(fromJid) : JidCreatorHelper.obtainId(userJid);
+
+        notifyOnChatLeftListener(conversationId, userId);
     }
 }

@@ -20,6 +20,7 @@ import com.messenger.entities.DataTranslation;
 import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
+import com.messenger.messengerservers.constant.Affiliation;
 import com.messenger.messengerservers.constant.ConversationStatus;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.util.RxContentResolver;
@@ -92,6 +93,7 @@ public class ConversationsDAO extends BaseDAO {
 
                 "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "= c." + DataConversation$Table._ID + " " +
+                "AND p."+ DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'" +
 
                 "JOIN " + DataUser$Table.TABLE_NAME + " u " +
                 "ON p." + DataParticipant$Table.USERID + "=u." + DataUser$Table._ID + " " +
@@ -174,6 +176,7 @@ public class ConversationsDAO extends BaseDAO {
 
                 "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+                "AND p." + DataParticipant$Table.AFFILIATION + "<>'" + Affiliation.NONE + "'" +
 
                 "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                 "ON a." + DataAttachment$Table.MESSAGEID + "=m." + DataMessage$Table._ID + " " +
@@ -188,26 +191,24 @@ public class ConversationsDAO extends BaseDAO {
                 "ON uu." + DataUser$Table._ID + "=(" +
                 "SELECT pp." + DataParticipant$Table.USERID + " FROM " + DataParticipant.TABLE_NAME + " pp " +
                 "WHERE pp." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
-                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) " +
-
-                "WHERE c." + DataConversation$Table.STATUS + "='" + ConversationStatus.PRESENT + "' "
+                "AND pp." + DataParticipant$Table.USERID + "<>? LIMIT 1) "
         );
-
+        StringBuilder whereBuilder = new StringBuilder();
 
         boolean onlyGroup = type != null && ConversationType.GROUP.equals(type);
         if (onlyGroup) {
-            query.append("AND c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
+            whereBuilder.append("WHERE c." + DataConversation$Table.TYPE + "<>'" + ConversationType.CHAT + "' ");
         }
 
         if (!TextUtils.isEmpty(searchQuery)) {
-            String wherePattern = "AND (" +
-                    "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
+            whereBuilder.append(whereBuilder.length() == 0 ? "WHERE (" : "AND (");
+            String wherePattern = "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
                     "OR c." + DataConversation$Table.SUBJECT + " IS '' AND uu." + DataUser$Table.FIRSTNAME + " || ' ' || uu." + DataUser$Table.LASTNAME  + " LIKE '%" + searchQuery + "%')";
-            query.append(wherePattern);
-
+            whereBuilder.append(wherePattern);
         }
 
-        query.append("GROUP BY c." + DataConversation$Table._ID + " " +
+        query.append(whereBuilder)
+                .append("GROUP BY c." + DataConversation$Table._ID + " " +
                 "HAVING c." + DataConversation$Table.TYPE + "='" + ConversationType.CHAT + "' " +
                 "OR COUNT(p." + DataParticipant$Table.ID + ") > 1 " +
                 "ORDER BY c." + DataConversation$Table.LASTACTIVEDATE + " DESC"
@@ -231,6 +232,14 @@ public class ConversationsDAO extends BaseDAO {
     public void incrementUnreadField(String conversationId) {
         new Update<>(DataConversation.class)
                 .set(DataConversation$Table.UNREADMESSAGECOUNT + " = " + DataConversation$Table.UNREADMESSAGECOUNT + " +1 ")
+                .where(Condition.column(DataConversation$Table._ID).is(conversationId))
+                .queryClose();
+        getContentResolver().notifyChange(DataConversation.CONTENT_URI, null);
+    }
+
+    public void markAsLeft(String conversationId) {
+        new Update<>(DataConversation.class)
+                .set(DataConversation$Table.STATUS + " = '" + ConversationStatus.LEFT + "'")
                 .where(Condition.column(DataConversation$Table._ID).is(conversationId))
                 .queryClose();
         getContentResolver().notifyChange(DataConversation.CONTENT_URI, null);

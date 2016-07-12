@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/map_trip_detail_cell_height"
+              android:background="@color/white"
+              android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="@dimen/map_trip_detail_cover_size"
+        android:layout_height="@dimen/map_trip_detail_cover_size">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/trip_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+            fresco:placeholderImageScaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/trip_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:padding="6dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_small"
+            tools:background="@color/blue"
+            tools:text="Featured trip"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/map_trip_padding_vertical"
+        android:paddingBottom="@dimen/map_trip_padding_vertical"
+        android:paddingLeft="@dimen/map_trip_padding_horizontal"
+        android:paddingRight="@dimen/map_trip_padding_horizontal">
+
+        <TextView
+            android:id="@+id/trip_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_normal"
+            android:textStyle="bold"
+            tools:text="NYC TV AND MOVIE TOUR AND EWE CALIFORNIA. MOJNO EHAT TRALALA"/>
+
+        <TextView
+            android:id="@+id/trip_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trip_title"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:drawableLeft="@drawable/location_small_icon"
+            android:drawablePadding="@dimen/spacing_tiny"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/connecting_overlay_text_color"
+            android:textSize="@dimen/font_small"
+            tools:text="New York, NY, United States"/>
+
+        <TextView
+            android:id="@+id/trip_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/trip_price"
+            android:layout_marginRight="@dimen/spacing_tiny"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/blue"
+            android:textSize="@dimen/font_medium"
+            tools:text="Aug 26, 2016-Aug 29, 2016"/>
+
+        <TextView
+            android:id="@+id/trip_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/tripPlaceColor"
+            android:textSize="@dimen/font_normal"
+            tools:text="$569"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

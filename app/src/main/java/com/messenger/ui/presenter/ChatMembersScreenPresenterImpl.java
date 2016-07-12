@@ -9,7 +9,7 @@ import android.util.Pair;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.CreateConversationHelper;
+import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;
 import com.messenger.entities.DataUser;
@@ -62,15 +62,11 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     @Nullable
     private String currentSearchFilter;
 
-    private final ProfileCrosser profileCrosser;
     private final ContactsHeaderCreator contactsHeaderCreator;
 
     public ChatMembersScreenPresenterImpl(Context context, Injector injector) {
-        super(context);
+        super(context, injector);
 
-        injector.inject(this);
-
-        profileCrosser = new ProfileCrosser(context, routeCreator);
         contactsHeaderCreator = new ContactsHeaderCreator(context);
     }
 
@@ -143,11 +139,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         state.setSearchFilter(currentSearchFilter);
         state.setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
         super.onSaveInstanceState(bundle);
-    }
-
-    @Override
-    public void openUserProfile(DataUser user) {
-        profileCrosser.crossToProfile(user);
     }
 
     @Override

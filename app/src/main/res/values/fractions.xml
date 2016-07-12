@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <fraction name="chat_list_text_outgoing_message_left_margin">36%</fraction>
+    <!--assumption that margin for incoming msg takes 6% place-->
+    <fraction name="chat_list_text_incoming_message_right_margin">30%</fraction>
+</resources>

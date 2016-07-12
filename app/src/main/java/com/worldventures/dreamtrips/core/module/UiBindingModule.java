@@ -8,7 +8,9 @@ import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.adapter.LoaderRecycleAdapter;
 import com.techery.spares.module.qualifier.ForApplication;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.App;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.util.ActivityWatcher;
 
 import javax.inject.Singleton;
@@ -33,8 +35,8 @@ public class UiBindingModule {
 
     @Singleton
     @Provides
-    ActivityWatcher provideActivityWatcher(@ForApplication Context context) {
-        return new ActivityWatcher(context);
+    ActivityWatcher provideActivityWatcher(@ForApplication Context context, SessionHolder<UserSession> sessionHolder) {
+        return new ActivityWatcher(context, sessionHolder);
     }
 
 }

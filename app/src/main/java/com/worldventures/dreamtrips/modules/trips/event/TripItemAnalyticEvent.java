@@ -6,9 +6,12 @@ public class TripItemAnalyticEvent {
 
     String actionAttribute;
 
-    public TripItemAnalyticEvent(String actionAttribute, String tripId) {
+    String tripName;
+
+    public TripItemAnalyticEvent(String actionAttribute, String tripId, String tripName) {
         this.tripId = tripId;
         this.actionAttribute = actionAttribute;
+        this.tripName = tripName;
     }
 
     public String getTripId() {
@@ -17,5 +20,9 @@ public class TripItemAnalyticEvent {
 
     public String getActionAttribute() {
         return actionAttribute;
+    }
+
+    public String getTripName() {
+        return tripName;
     }
 }

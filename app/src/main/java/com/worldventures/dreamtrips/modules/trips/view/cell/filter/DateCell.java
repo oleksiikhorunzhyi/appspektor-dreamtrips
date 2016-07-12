@@ -6,7 +6,8 @@ import android.widget.TextView;
 
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
@@ -19,7 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_dates)
-public class DateCell extends AbstractCell<DateFilterItem> implements DatePickerDialog.OnDateSetListener {
+public class DateCell extends AbstractDelegateCell<DateFilterItem, DateCell.Delegate> implements DatePickerDialog.OnDateSetListener {
     public static final String START = "start";
     public static final String END = "end";
 
@@ -61,16 +62,20 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
             calendar.setTime(getModelObject().getStartDate());
         }
 
-        Calendar startDate = Calendar.getInstance();
-        startDate.setTime(getModelObject().getStartDate());
-        int startYear = startDate.get(Calendar.YEAR);
+        int minYear = Calendar.getInstance().get(Calendar.YEAR);
 
-        DatePickerDialog datePickerDialog =
-                DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH), false);
-        datePickerDialog.setYearRange(startYear, calendar.get(Calendar.YEAR) + 5);
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH), false);
+        datePickerDialog.setYearRange(minYear, getMaxYear(datePickerDialog, minYear));
         datePickerDialog.show(fragmentManager, tag);
+    }
+
+    private int getMaxYear(DatePickerDialog datePickerDialog, int tripStartYear) {
+        int dialogMaxYear = datePickerDialog.getMaxYear();
+        int endYear = tripStartYear + 5;
+        return endYear > dialogMaxYear ? dialogMaxYear : endYear;
     }
 
     @Override
@@ -96,6 +101,7 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
             textViewEnd.setText(DateTimeUtils.convertDateForFilters(getModelObject().getStartDate()));
             getModelObject().setEndDate(getModelObject().getStartDate());
         }
+        cellDelegate.onDatesChanged(getModelObject());
     }
 
     private void processStartDate(Calendar calendar) {
@@ -106,6 +112,7 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
             textViewStart.setText(DateTimeUtils.convertDateForFilters(getModelObject().getEndDate()));
             getModelObject().setStartDate(getModelObject().getEndDate());
         }
+        cellDelegate.onDatesChanged(getModelObject());
     }
 
     private boolean validateEndDate(Calendar selectedEndDate) {
@@ -119,5 +126,9 @@ public class DateCell extends AbstractCell<DateFilterItem> implements DatePicker
     @Override
     public void prepareForReuse() {
         //nothing to do here
+    }
+
+    public interface Delegate extends CellDelegate<DateFilterItem> {
+        void onDatesChanged(DateFilterItem item);
     }
 }

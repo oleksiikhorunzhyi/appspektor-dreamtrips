@@ -28,13 +28,12 @@ public class CacheResultWrapper extends ActionServiceWrapper {
     protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
         if (holder.action() instanceof CachedAction) {
             CachedAction action = (CachedAction) holder.action();
-            CacheOptions options = action.getOptions();
-            if (options.restoreFromCache()) {
+            if (action.getCacheOptions().restoreFromCache()) {
                 Class actionClass = holder.action().getClass();
                 Object data = getStorage(actionClass).get();
                 if (data != null) {
                     action.onRestore(holder, data);
-                    return !options.sendAfterRestore();
+                    return !action.getCacheOptions().sendAfterRestore();
                 }
             }
         }
@@ -58,10 +57,10 @@ public class CacheResultWrapper extends ActionServiceWrapper {
     protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
         if (holder.action() instanceof CachedAction) {
             CachedAction action = (CachedAction) holder.action();
-            CacheOptions options = action.getOptions();
+            CacheOptions options = action.getCacheOptions();
             if (options.saveToCache()) {
                 getStorage(holder.action().getClass())
-                        .save(action.getData());
+                        .save(action.getCacheData());
             }
         }
     }

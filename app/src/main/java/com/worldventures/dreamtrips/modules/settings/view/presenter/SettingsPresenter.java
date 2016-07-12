@@ -5,6 +5,8 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction;
 import com.worldventures.dreamtrips.modules.settings.api.UpdateSettingsCommand;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsGroup;
@@ -17,6 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import rx.Observable;
 
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
@@ -27,6 +30,9 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
     @Inject
     SnappyRepository db;
+
+    @Inject
+    DtlFilterMerchantInteractor dtlFilterMerchantInteractor;
 
     private SettingsGroup group;
 
@@ -82,6 +88,13 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
                     aVoid -> {
                         db.saveSettings(changes, false);
                         immutableSettingsList = cloneList(this.settingsList);
+                        //update state of DtlFilterMerchantStore
+                        Observable.from(changes)
+                                .filter((element) -> element.getName().equals(SettingsFactory.DISTANCE_UNITS))
+                                .take(1)
+                                .subscribe(setting ->
+                                        dtlFilterMerchantInteractor.filterDataPipe().send(DtlFilterDataAction.init())
+                                );
                         //
                         view.hideLoading();
                         if (withClose)

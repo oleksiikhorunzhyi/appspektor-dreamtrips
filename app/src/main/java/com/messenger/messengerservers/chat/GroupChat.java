@@ -8,11 +8,11 @@ public interface GroupChat extends Chat {
 
     void invite(List<String> userIds);
 
-    Observable<List<String>> kick(List<String> userIds);
+    Observable<GroupChat> kick(String userId);
 
     void join(String userId);
 
-    void leave();
+    Observable<GroupChat> leave();
 
     Observable<GroupChat> setSubject(String subject);
 

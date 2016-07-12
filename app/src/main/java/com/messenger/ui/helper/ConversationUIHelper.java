@@ -1,10 +1,10 @@
 package com.messenger.ui.helper;
 
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -12,6 +12,7 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.utils.ViewUtils;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public final class ConversationUIHelper {
             textView.setText(initialTitle);
         } else {
             Runnable textSetter = () -> textView.setText(obtainFittingTitle(textView, initialTitle, members.size()));
-            runTaskAfterMeasure(textView, textSetter);
+            ViewUtils.runTaskAfterMeasure(textView, textSetter);
         }
     }
 
@@ -42,15 +43,24 @@ public final class ConversationUIHelper {
         if (isEmptyMembers(members)) return;
 
         CharSequence subtitle;
+        Resources res =  target.getResources();
         switch (conversation.getType()) {
             case ConversationType.CHAT:
-                int substringRes = members.get(0).isOnline() ? R.string.chat_subtitle_format_single_chat_online : R.string.chat_subtitle_format_single_chat_offline;
-                subtitle = target.getResources().getText(substringRes);
+                int substringRes = members.get(0).isOnline() ?
+                        R.string.chat_subtitle_format_single_chat_online
+                        : R.string.chat_subtitle_format_single_chat_offline;
+                subtitle = res.getText(substringRes);
                 break;
             case ConversationType.GROUP:
             default:
-                int online = Queryable.from(members).count(DataUser::isOnline);
-                subtitle = target.getResources().getString(R.string.chat_subtitle_format_group_chat_format, members.size(), online);
+                if (ConversationHelper.isAbandoned(conversation)) {
+                    subtitle = res.getString(R.string.chat_subtitle_format_group_chat_format_closed,
+                            members.size());
+                } else {
+                    int onlineMembersCount = Queryable.from(members).count(DataUser::isOnline);
+                    subtitle = res.getString(R.string.chat_subtitle_format_group_chat_format,
+                            members.size(), onlineMembersCount);
+                }
                 break;
         }
         target.setText(subtitle);
@@ -66,22 +76,7 @@ public final class ConversationUIHelper {
             textView.setText(ellipsizedText + counterLabel);
         };
 
-        runTaskAfterMeasure(textView, runnable);
-    }
-
-    private static void runTaskAfterMeasure(TextView textView, Runnable runTask) {
-        if (textView.getMeasuredWidth() == 0) {
-            textView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    textView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    runTask.run();
-                    return true;
-                }
-            });
-        } else {
-            runTask.run();
-        }
+        ViewUtils.runTaskAfterMeasure(textView, runnable);
     }
 
     private static int getTextWidthWithMargins(String text, float textSize) {

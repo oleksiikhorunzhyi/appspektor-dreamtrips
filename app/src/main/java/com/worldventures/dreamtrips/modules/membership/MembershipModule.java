@@ -9,14 +9,17 @@ import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.presenter.EditTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.InvitePresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.MembershipPresenter;
+import com.worldventures.dreamtrips.modules.membership.presenter.PodcastsPresenter;
 import com.worldventures.dreamtrips.modules.membership.presenter.SelectTemplatePresenter;
 import com.worldventures.dreamtrips.modules.membership.view.cell.InviteTemplateCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.MemberCell;
+import com.worldventures.dreamtrips.modules.membership.view.cell.PodcastCell;
 import com.worldventures.dreamtrips.modules.membership.view.cell.TemplatePhotoCell;
 import com.worldventures.dreamtrips.modules.membership.view.dialog.FilterLanguageDialogFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.EditTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.InviteFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.MembershipFragment;
+import com.worldventures.dreamtrips.modules.membership.view.fragment.PodcastsFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.PreviewTemplateFragment;
 import com.worldventures.dreamtrips.modules.membership.view.fragment.SelectTemplateFragment;
 
@@ -31,6 +34,9 @@ import dagger.Provides;
                 EnrollMerchantFragment.class,
                 InviteFragment.class,
                 InvitePresenter.class,
+                PodcastsFragment.class,
+                PodcastsPresenter.class,
+                PodcastCell.class,
                 MemberCell.class,
                 PhoneContactRequest.class,
                 SelectTemplateFragment.class,

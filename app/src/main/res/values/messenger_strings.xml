@@ -54,9 +54,11 @@
     <string name="chat_subtitle_format_single_chat_online">Online</string>
     <string name="chat_subtitle_format_single_chat_offline">Offline</string>
     <string name="chat_subtitle_format_group_chat_format">%1$d members, %2$d online</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d members</string>
     <string name="chat_subtitle_format_group_chat_offline">No users online</string>
     <string name="chat_message_edittext_hint">Your message</string>
     <string name="chat_message_send_button_text">Send</string>
+    <string name="chat_message_sending_disabled">You can’t send messages because you are no longer a participant</string>
     <string name="chat_error_loading">Could not load chat history</string>
     <string name="chat_unread_messages_textview_format">You have %d unread messages</string>
     <string name="chat_more_typing_users_hint_format">and %d more</string>
@@ -71,6 +73,11 @@
     <string name="chat_share_dialog_image">Share image</string>
     <string name="chat_share_dialog_cancel">Cancel</string>
     <string name="chat_could_not_share_location">Could not share location</string>
+    <string name="chat_error_marker_not_delivered">Not Delivered</string>
+    <string name="chat_retry_send_message_dialog_resend_message">Resend message?</string>
+    <string name="chat_retry_send_message_dialog_resend">Resend</string>
+    <string name="chat_retry_send_message_dialog_cancel">Cancel</string>
+
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Loading…</string>
     <string name="chat_flag_dialog_reason_title">Flag</string>
@@ -92,7 +99,6 @@
     <string name="chat_settings_error_loading">Could not load chat settings</string>
     <string name="chat_settings_single_chat_online">Online</string>
     <string name="chat_settings_single_chat_offline">Offline</string>
-    <string name="chat_settings_group_chat_description">%1$d members, %2$d online</string>
     <string name="chat_settings_row_notifications">Notifications</string>
     <string name="chat_settings_row_shared_content">Shared Content</string>
     <string name="chat_settings_row_members_format">Members (%d)</string>
@@ -100,7 +106,7 @@
     <string name="chat_settings_row_clear_history">Clear history</string>
     <string name="chat_settings_row_leave_chat">Leave chat</string>
     <string name="chat_settings_row_delete_chat">Delete chat</string>
-    <string name="chat_settings_group_chat_info_text_format">This chat was created by %1$s on %2$s</string>
+    <string name="chat_settings_group_chat_info_text_format">This group was created by %s</string>
     <string name="chat_settings_menu_settings">Settings</string>
     <string name="chat_settings_menu_edit_chat_name">Edit chat name</string>
     <string name="chat_settings_menu_edit_change_chat_image">Change chat image</string>
@@ -109,7 +115,6 @@
     <string name="chat_settings_leave_group_chat_format">Are you sure you want to quit from %1$s chat</string>
     <string name="chat_settings_error_change_subject">You cannot change subject without network connection</string>
     <string name="chat_settings_error_changing_avatar_subject">You cannot change conversation avatar without network connection</string>
-    <string name="chat_settings_error_empty_subject">Please enter name of conversation</string>
     <!---->
     <!--Add new members -->
     <!---->

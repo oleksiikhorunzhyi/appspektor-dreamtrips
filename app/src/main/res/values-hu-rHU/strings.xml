@@ -162,7 +162,7 @@
     <string name="completed">Kész</string>
     <string name="action_share">Megosztás</string>
     <string name="recent_header">Legutóbb hozzáadott 360 élmény</string>
-    <string name="recent_videos">Legutóbb hozzáadott</string>
+    <string name="recently_added">Legutóbb hozzáadott</string>
     <string name="featured_header">Kiemelt 360 élmény</string>
     <string name="title_activity_success_story_details">Sikertörténet részletes adatai</string>
     <string name="hello_world">Helló, világ!</string>
@@ -619,5 +619,17 @@
     <string name="flag_sent_success_msg">A tartalom meg lett jelölve</string>
 
     <string name="location_name_length_message">A helyszín neve ne legyen hosszabb 255 karakternél.</string>
+
+    <string name="featured_trip">KIEMELT ÚT</string>
+    <string name="sold_out_trip">Elfogyott</string>
+
+    <string name="podcasts">Podcastok</string>
+    <string name="delete_cached_podcast_title">Podcast</string>
+    <string name="delete_cached_podcast_text">Biztos, hogy törli a podcastot a helyi gyorsítótárból?</string>
+    <string name="cancel_cached_podcast_title">Podcast</string>
+    <string name="cancel_cached_podcast_text">Biztos, hogy megszakítja a fájl letöltését?</string>
+    <string name="audio_app_not_found_exception">Nem talált hangot lejátszó alkalmazást</string>
+    <string name="complete_action_with">Akció befejezés</string>
+    <string name="error_fail_to_load_podcast">Podcast betöltés sikertelen</string>
 
 </resources>

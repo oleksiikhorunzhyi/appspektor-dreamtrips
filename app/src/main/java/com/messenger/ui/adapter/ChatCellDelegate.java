@@ -15,4 +15,6 @@ public interface ChatCellDelegate {
     void onRetryClicked(DataMessage dataMessage);
 
     void onMapClicked(LatLng latLng);
+
+    void onTimestampViewClicked(int position);
 }

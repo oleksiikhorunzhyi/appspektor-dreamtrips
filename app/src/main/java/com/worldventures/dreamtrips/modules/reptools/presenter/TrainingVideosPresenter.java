@@ -3,14 +3,15 @@ package com.worldventures.dreamtrips.modules.reptools.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
-import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.reptools.api.GetVideoLocales;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.video.api.MemberVideosRequest;
 import com.worldventures.dreamtrips.modules.video.model.Category;
 import com.worldventures.dreamtrips.modules.video.model.Video;
+import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +19,10 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-public class TrainingVideosPresenter extends PresentationVideosPresenter<TrainingVideosPresenter.View> {
+public class TrainingVideosPresenter<T extends TrainingVideosPresenter.View> extends PresentationVideosPresenter<T> {
 
-    VideoLocale videoLocale = null;
-    VideoLanguage videoLanguage = null;
+    protected VideoLocale videoLocale = null;
+    protected VideoLanguage videoLanguage = null;
 
     @Inject
     SnappyRepository db;
@@ -30,8 +31,18 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
     public void onResume() {
         videoLocale = db.getLastSelectedVideoLocale();
         videoLanguage = db.getLastSelectedVideoLanguage();
-
+        //
         super.onResume();
+        trackAnalyticsOnPostResume();
+    }
+
+    protected void trackAnalyticsOnPostResume() {
+        TrackingHelper.viewRepToolsTrainingVideoScreen();
+    }
+
+    @Override
+    protected boolean isNeedToSendAnalytics() {
+        return false;
     }
 
     @Override
@@ -92,7 +103,7 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     private void setHeaderLocale() {
         if (currentItems != null && currentItems.size() > 0) {
-            VideoHeader firstHeader = (VideoHeader) currentItems.get(0);
+            MediaHeader firstHeader = (MediaHeader) currentItems.get(0);
             firstHeader.setVideoLocale(videoLocale);
             firstHeader.setVideoLanguage(videoLanguage);
             view.localeLoaded();
@@ -101,8 +112,13 @@ public class TrainingVideosPresenter extends PresentationVideosPresenter<Trainin
 
     @Override
     protected void addCategoryHeader(String category, List<Video> videos, int index) {
-        currentItems.add(new VideoHeader(category, index == 0));
+        currentItems.add(new MediaHeader(category, index == 0));
         currentItems.addAll(videos);
+    }
+
+    @Override
+    public void sendAnalytic(String action, String name) {
+        TrackingHelper.actionRepToolsTrainingVideo(action, name);
     }
 
     @Override

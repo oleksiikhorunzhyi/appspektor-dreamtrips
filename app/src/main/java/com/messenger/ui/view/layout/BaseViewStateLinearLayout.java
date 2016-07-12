@@ -24,7 +24,8 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
         super(context, attrs);
     }
 
-    @Override protected void onAttachedToWindow() {
+    @Override
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         onPostAttachToWindowView();
         // TODO extract to delegate for reuse in other views
@@ -40,7 +41,8 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
     protected void onPostAttachToWindowView() {
     }
 
-    @Override protected void onDetachedFromWindow() {
+    @Override
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         presenter.onDetachedFromWindow();
     }
@@ -51,7 +53,8 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
         presenter.onVisibilityChanged(visibility);
     }
 
-    @Override protected Parcelable onSaveInstanceState() {
+    @Override
+    protected Parcelable onSaveInstanceState() {
         // TODO extract to delegate for reuse in other views
         Bundle bundle = new Bundle();
         Parcelable parcelableSuper = super.onSaveInstanceState();
@@ -62,7 +65,8 @@ public abstract class BaseViewStateLinearLayout<V extends MvpView, P extends Vie
         return bundle;
     }
 
-    @Override protected void onRestoreInstanceState(Parcelable state) {
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
         // TODO extract to delegate for reuse in other views
         if (state instanceof Bundle) {
             lastInstanceState = (Bundle) state;

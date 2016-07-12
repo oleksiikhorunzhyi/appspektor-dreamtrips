@@ -62,6 +62,10 @@ public class ActivityModel extends BaseEntity {
         this.checked = checked;
     }
 
+    public boolean isParent() {
+        return parentId == 0;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);

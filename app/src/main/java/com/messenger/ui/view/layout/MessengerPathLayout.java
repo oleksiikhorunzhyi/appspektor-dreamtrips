@@ -3,17 +3,18 @@ package com.messenger.ui.view.layout;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.messenger.flow.path.PathView;
-import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.presenter.MessengerPresenter;
+import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.flow.layout.InjectorHolder;
+import com.worldventures.dreamtrips.core.flow.path.PathView;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 
-import flow.path.Path;
-
 public abstract class MessengerPathLayout<V extends MessengerScreen, P extends MessengerPresenter<V, ?>, T extends StyledPath>
-        extends MessengerInjectingLayout<V, P> implements PathView<T> {
+        extends MessengerLinearLayout<V, P> implements PathView<T>, InjectorHolder {
 
-    private Path path;
+    protected Injector injector;
+    private T path;
 
     public MessengerPathLayout(Context context) {
         super(context);
@@ -25,17 +26,22 @@ public abstract class MessengerPathLayout<V extends MessengerScreen, P extends M
     }
 
     @Override
-    public void setPath(Path path) {
+    public void setInjector(Injector injector) {
+        this.injector = injector;
+    }
+
+    @Override
+    public T getPath() {
+        return (T) path;
+    }
+
+    @Override
+    public void setPath(T path) {
         this.path = path;
         onPrepared();
     }
 
     /** Safe method to init UI with path provided */
     protected void onPrepared() {
-    }
-
-    @Override
-    public T getPath() {
-        return (T) path;
     }
 }

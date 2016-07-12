@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -71,7 +70,8 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
     private TextWatcherAdapter textWatcherAdapter = new TextWatcherAdapter() {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            getPresenter().onAmountChanged(s.toString());
+            if (s.length() != 0)
+                getPresenter().onAmountChanged(Double.valueOf(s.toString()));
         }
     };
 
@@ -88,7 +88,6 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
         dtlEnrollWizard = new DtlEnrollWizard(router, routeCreator);
         //
         amountInput.addValidator(new AmountValidator(getString(R.string.dtl_amount_invalid)));
-        scanReceiptNode.setText(Html.fromHtml(getString(R.string.dtl_receipt_note)));
         progressDialog = ProgressDialogFragment.create();
     }
 

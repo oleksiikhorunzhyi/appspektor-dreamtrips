@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -7,7 +8,7 @@
 
     <include layout="@layout/list_item_chat_date_entry"/>
 
-    <RelativeLayout
+    <android.support.percent.PercentRelativeLayout
         android:id="@+id/chat_message_container"
         style="@style/ChatMessageContainerStyle"
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,6 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            app:layout_marginStartPercent="@fraction/chat_list_text_outgoing_message_left_margin"
+            app:layout_marginLeftPercent="@fraction/chat_list_text_outgoing_message_left_margin"
             tools:background="@drawable/blue_bubble_comics"
             >
 
@@ -38,35 +41,12 @@
 
         </com.messenger.ui.widget.ChatItemFrameLayout>
 
-
-        <ViewSwitcher
-            android:id="@+id/view_switcher"
+        <include
+            layout="@layout/widget_retry_send_message_marker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/message_container"
             android:layout_alignRight="@+id/message_container"
-            android:layout_below="@+id/message_container"
-            android:paddingEnd="@dimen/spacing_small"
-            android:paddingRight="@dimen/spacing_small"
-            android:paddingTop="@dimen/spacing_tiny"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <ImageView
-                android:id="@+id/retry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_error_red_400_18dp"
-                tools:ignore="ContentDescription"/>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"/>
-        </ViewSwitcher>
-
-    </RelativeLayout>
+            android:layout_below="@+id/message_container"/>
+    </android.support.percent.PercentRelativeLayout>
 </LinearLayout>

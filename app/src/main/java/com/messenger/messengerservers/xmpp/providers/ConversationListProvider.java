@@ -14,9 +14,7 @@ public class ConversationListProvider extends BaseConversationProvider<Conversat
 
     @Override
     protected ConversationListIQ constructIQ(List<Conversation> data) {
-        ConversationListIQ conversationListIQ = new ConversationListIQ();
-        conversationListIQ.addConversations(data);
-        return conversationListIQ;
+        return new ConversationListIQ(data);
     }
 
     @Override

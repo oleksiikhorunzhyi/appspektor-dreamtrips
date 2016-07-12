@@ -5,21 +5,13 @@ import android.os.Bundle;
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllRegionsPressedEvent;
-import com.worldventures.dreamtrips.core.utils.events.CheckBoxAllThemePressedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
-import com.worldventures.dreamtrips.core.utils.events.RangeBarDurationEvent;
-import com.worldventures.dreamtrips.core.utils.events.RangeBarPriceEvent;
-import com.worldventures.dreamtrips.core.utils.events.RegionSetChangedEvent;
 import com.worldventures.dreamtrips.core.utils.events.RequestFilterDataEvent;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
-import com.worldventures.dreamtrips.core.utils.events.ThemeSetChangedEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleRegionVisibilityEvent;
 import com.worldventures.dreamtrips.core.utils.events.ToggleThemeVisibilityEvent;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.trips.event.FilterShowFavoritesEvent;
-import com.worldventures.dreamtrips.modules.trips.event.FilterShowRecentlyAddedEvent;
-import com.worldventures.dreamtrips.modules.trips.event.FilterShowSoldOutEvent;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.DateFilterItem;
 import com.worldventures.dreamtrips.modules.trips.model.FilterFavoriteModel;
@@ -29,6 +21,8 @@ import com.worldventures.dreamtrips.modules.trips.model.FilterSoldOutModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionHeaderModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.ThemeHeaderModel;
+import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalyticsWrapper;
+import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +30,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
-
 
 public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
 
@@ -46,27 +39,11 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     @State
     ArrayList<RegionModel> regions = new ArrayList<>();
     @State
-    ArrayList<ActivityModel> activities = new ArrayList<>();
-    @State
     ArrayList<ActivityModel> parentActivities = new ArrayList<>();
 
     /**
      * variables for filtering
      */
-    @State
-    double maxPrice = Double.MAX_VALUE;
-    @State
-    double minPrice = 0.0d;
-    @State
-    int maxNights = Integer.MAX_VALUE;
-    @State
-    int minNights = 0;
-    @State
-    boolean showSoldOut = false;
-    @State
-    boolean showFavorites = false;
-    @State
-    boolean showRecentlyAdded = false;
     @State
     FilterModel filterModel;
     @State
@@ -81,6 +58,8 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     FilterFavoriteModel favoriteModel;
     @State
     DateFilterItem dateFilterItem;
+    @State
+    TripsFilterData tripFilterData;
 
     @Override
     public void restoreInstanceState(Bundle savedState) {
@@ -101,16 +80,18 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         fillData();
+        if (tripFilterData == null) {
+            tripFilterData = TripsFilterData.createDefault(db);
+        }
     }
 
     public void loadFilters() {
-        activities.addAll(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class));
         parentActivities.addAll(getParentActivities());
         regions.addAll(db.readList(SnappyRepository.REGIONS, RegionModel.class));
     }
 
     public void fillData() {
-        if (regions != null && activities != null) {
+        if (regions != null && parentActivities != null) {
             List<Object> data = new ArrayList<>();
             data.clear();
             data.add(dateFilterItem);
@@ -152,19 +133,9 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
     }
 
     public void acceptFilters() {
-        FilterBusEvent filterBusEvent = new FilterBusEvent();
-        filterBusEvent.setMaxNights(maxNights);
-        filterBusEvent.setMinPrice(minPrice);
-        filterBusEvent.setMaxPrice(maxPrice);
-        filterBusEvent.setMinNights(minNights);
-        filterBusEvent.setAcceptedRegions(getAcceptedRegions());
-        filterBusEvent.setAcceptedActivities(getAcceptedThemes());
-        filterBusEvent.setShowSoldOut(showSoldOut);
-        filterBusEvent.setShowFavorites(showFavorites);
-        filterBusEvent.setDateFilterItem(dateFilterItem);
-        filterBusEvent.setShowRecentlyAdded(showRecentlyAdded);
         eventBus.removeStickyEvent(FilterBusEvent.class);
-        eventBus.postSticky(filterBusEvent);
+        eventBus.postSticky(new FilterBusEvent(tripFilterData));
+        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
     }
 
     public void resetFilters() {
@@ -178,69 +149,31 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         setRegionsChecked(true);
         setThemesChecked(true);
         view.dataSetChanged();
-
-        FilterBusEvent filterBusEvent = new FilterBusEvent();
-        filterBusEvent.setReset(true);
-
+        //
+        tripFilterData = TripsFilterData.createDefault(db);
+        FilterBusEvent filterBusEvent = new FilterBusEvent(tripFilterData);
         eventBus.removeAllStickyEvents();
         eventBus.postSticky(filterBusEvent);
+        TrackingHelper.actionFilterTrips(new TripsFilterDataAnalyticsWrapper(tripFilterData));
     }
 
     private List<ActivityModel> getParentActivities() {
-        return Queryable.from(activities).filter(input -> input.getParentId() == 0).toList();
-    }
-
-    private ArrayList<Integer> getAcceptedRegions() {
-        if (regionHeaderModel.isChecked()) {
-            return null;
-        }
-
-        ArrayList<Integer> regionsList = null;
-
-        if (regions != null) {
-            regionsList = new ArrayList<>();
-            for (RegionModel region : regions) {
-                if (region.isChecked()) {
-                    regionsList.add(region.getId());
-                }
-            }
-        }
-
-        return regionsList;
-    }
-
-    private ArrayList<ActivityModel> getAcceptedThemes() {
-        if (themeHeaderModel.isChecked()) {
-            return null;
-        }
-
-        ArrayList<ActivityModel> themesList = null;
-        if (parentActivities != null) {
-            themesList = new ArrayList<>();
-            for (ActivityModel activity : parentActivities) {
-                if (activity.isChecked()) {
-                    themesList.addAll(Queryable.from(activities).filter((input) -> input.getParentId()
-                            == activity.getId()).toList());
-                    themesList.add(activity);
-                }
-            }
-        }
-
-        return themesList;
+        return Queryable.from(db.readList(SnappyRepository.ACTIVITIES, ActivityModel.class))
+                .filter(ActivityModel::isParent).toList();
     }
 
     public void onEvent(RequestFilterDataEvent event) {
         acceptFilters();
     }
 
-    public void onEvent(RangeBarDurationEvent event) {
-        this.minNights = event.getMinNights();
-        this.maxNights = event.getMaxNights();
+    public void onRangeBarDurationEvent(int minNights, int maxNights) {
+        tripFilterData.setMinNights(minNights);
+        tripFilterData.setMaxNights(maxNights);
     }
 
-    public void onEvent(RangeBarPriceEvent event) {
-        this.minPrice = event.getMinPrice();
-        this.maxPrice = event.getMaxPrice();
+    public void onRangeBarPriceEvent(double minPrice, double maxPrice) {
+        tripFilterData.setMinPrice(minPrice);
+        tripFilterData.setMaxPrice(maxPrice);
     }
 
     public void onEvent(ToggleThemeVisibilityEvent event) {
@@ -253,25 +186,27 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         fillData();
     }
 
-    public void onEvent(FilterShowSoldOutEvent soldOutEvent) {
-        showSoldOut = soldOutEvent.isSoldOut();
+    public void onFilterShowSoldOutEvent(boolean isSoldOut) {
+        tripFilterData.setShowSoldOut(isSoldOut);
     }
 
-    public void onEvent(FilterShowFavoritesEvent soldOutEvent) {
-        showFavorites = soldOutEvent.isShowFavorites();
+    public void onFilterShowFavoritesEvent(boolean isSoldOut) {
+        tripFilterData.setShowFavorites(isSoldOut);
     }
 
-    public void onEvent(FilterShowRecentlyAddedEvent addedEvent) {
-        showRecentlyAdded = addedEvent.isShowRecentlyAdded();
+    public void onFilterShowRecentlyAddedEvent(boolean enabled) {
+        tripFilterData.setShowRecentlyAdded(enabled);
     }
 
-    public void onEvent(CheckBoxAllRegionsPressedEvent event) {
-        setRegionsChecked(event.isChecked());
+    public void onCheckBoxAllRegionsPressedEvent(boolean isChecked) {
+        setRegionsChecked(isChecked);
+        tripFilterData.setAllRegions(regions);
         view.dataSetChanged();
     }
 
-    public void onEvent(CheckBoxAllThemePressedEvent event) {
-        setThemesChecked(event.isChecked());
+    public void onCheckBoxAllThemePressedEvent(boolean isChecked) {
+        setThemesChecked(isChecked);
+        tripFilterData.setAllParentActivities(parentActivities);
         view.dataSetChanged();
     }
 
@@ -279,7 +214,7 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
         resetFilters();
     }
 
-    public void onEvent(ThemeSetChangedEvent event) {
+    public void onThemeSetChangedEvent() {
         boolean allIsChecked = true;
         for (ActivityModel activity : parentActivities) {
             if (!activity.isChecked()) {
@@ -288,10 +223,11 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             }
         }
         themeHeaderModel.setChecked(allIsChecked);
+        tripFilterData.setAllParentActivities(parentActivities);
         view.dataSetChanged();
     }
 
-    public void onEvent(RegionSetChangedEvent event) {
+    public void onRegionSetChangedEvent() {
         boolean allIsChecked = true;
         for (RegionModel region : regions) {
             if (!region.isChecked()) {
@@ -300,14 +236,19 @@ public class FiltersPresenter extends Presenter<FiltersPresenter.View> {
             }
         }
         regionHeaderModel.setChecked(allIsChecked);
+        tripFilterData.setAllRegions(regions);
         view.dataSetChanged();
     }
 
+    public void onDatesChanged(DateFilterItem item) {
+        tripFilterData.setStartDate(item.getStartDate());
+        tripFilterData.setEndDate(item.getEndDate());
+    }
 
     public interface View extends Presenter.View {
+
         void dataSetChanged();
 
         BaseArrayListAdapter getAdapter();
     }
-
 }

@@ -20,14 +20,14 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_tab_info)
 @MenuResource(R.menu.menu_mock)
 public class TermsTabFragment extends BaseFragment<Presenter> implements Presenter.View {
-    private static final int TERMS_OFFSCREEN_PAGES = 2;
+    protected static final int TERMS_OFFSCREEN_PAGES = 2;
 
     @InjectView(R.id.tabs)
     protected BadgedTabLayout tabs;
     @InjectView(R.id.pager)
     protected CustomViewPager pager;
 
-    private BasePagerAdapter adapter;
+    protected BasePagerAdapter adapter;
 
     @Override
     protected Presenter createPresenter(Bundle savedInstanceState) {

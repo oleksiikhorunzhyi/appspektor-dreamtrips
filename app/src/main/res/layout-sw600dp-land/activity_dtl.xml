@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot
+        android:id="@+id/root_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl
+            android:id="@+id/drawer_layout"
+            android:layout_width="@dimen/navigation_drawer_static_width"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_navigation_drawer"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <com.worldventures.dreamtrips.core.flow.container.MasterToolbarPathContainerView
+                android:id="@id/master_toolbar_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+
+                <com.worldventures.dreamtrips.core.flow.container.MasterPathContainerView
+                    android:id="@id/master_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    />
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/list_item_divider_color"
+                    />
+
+                <com.worldventures.dreamtrips.core.flow.container.DetailContainerView
+                    android:id="@id/details_container"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </com.worldventures.dreamtrips.core.flow.container.TabletMasterDetailRoot>
+
+    <com.worldventures.dreamtrips.modules.dtl_flow.parts.filter.DtlFilterViewImpl
+        android:id="@+id/drawer_filter_layout"
+        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        />
+</android.support.v4.widget.DrawerLayout>

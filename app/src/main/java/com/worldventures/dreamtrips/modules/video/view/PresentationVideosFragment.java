@@ -12,11 +12,10 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
+import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.cell.VideoCell;
-import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderLightCell;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
@@ -27,7 +26,7 @@ import java.util.List;
 import butterknife.InjectView;
 
 @Layout(R.layout.fragment_presentation_videos)
-public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseVideoFragment<T>
+public class PresentationVideosFragment<T extends PresentationVideosPresenter> extends BaseMediaFragment<T>
         implements PresentationVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
 
     @InjectView(R.id.lv_items)
@@ -38,7 +37,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
     protected ViewGroup emptyView;
     protected BaseDelegateAdapter<Object> adapter;
 
-    RecyclerViewStateDelegate stateDelegate;
+    private RecyclerViewStateDelegate stateDelegate;
     private WeakHandler weakHandler;
 
     @Override
@@ -60,17 +59,17 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
         setupLayoutManager();
-        this.recyclerView.setEmptyView(emptyView);
+        recyclerView.setEmptyView(emptyView);
 
-        this.adapter = new BaseDelegateAdapter<>(getActivity(), this);
-        this.adapter.registerCell(Video.class, VideoCell.class);
-        this.adapter.registerDelegate(Video.class, this);
-        this.adapter.registerCell(VideoHeader.class, VideoHeaderLightCell.class);
+        adapter = new BaseDelegateAdapter<>(getActivity(), this);
+        adapter.registerCell(Video.class, VideoCell.class);
+        adapter.registerDelegate(Video.class, this);
+        adapter.registerCell(MediaHeader.class, MediaHeaderLightCell.class);
 
-        this.recyclerView.setAdapter(this.adapter);
+        recyclerView.setAdapter(adapter);
 
-        this.refreshLayout.setOnRefreshListener(this);
-        this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
     }
 
     @Override
@@ -78,6 +77,12 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         this.recyclerView.setAdapter(null);
         stateDelegate.onDestroyView();
         super.onDestroyView();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) getPresenter().track();
     }
 
     @Override
@@ -98,7 +103,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return adapter.getItem(position) instanceof VideoHeader ? spanCount : 1;
+                return adapter.getItem(position) instanceof MediaHeader ? spanCount : 1;
             }
         });
         this.recyclerView.setLayoutManager(layoutManager);
@@ -106,12 +111,20 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
 
     @Override
     public void onDeleteAction(CachedEntity cacheEntity) {
-        showDeleteDialog(() -> getPresenter().onDeleteAction(cacheEntity));
+        showDialog(R.string.delete_cached_video_title,
+                R.string.delete_cached_video_text,
+                R.string.delete_photo_positiove,
+                R.string.delete_photo_negative,
+                () -> getPresenter().onDeleteAction(cacheEntity));
     }
 
     @Override
     public void onCancelCaching(CachedEntity cacheEntity) {
-        showCancelDialog(() -> getPresenter().onCancelAction(cacheEntity));
+        showDialog(R.string.cancel_cached_video_title,
+                R.string.cancel_cached_video_text,
+                R.string.cancel_photo_positiove,
+                R.string.cancel_photo_negative,
+                () -> getPresenter().onCancelAction(cacheEntity));
     }
 
     @Override
@@ -141,7 +154,7 @@ public class PresentationVideosFragment<T extends PresentationVideosPresenter> e
 
     @Override
     public void sendAnalytic(String action, String name) {
-        TrackingHelper.actionMembershipVideo(action, name);
+        getPresenter().sendAnalytic(action, name);
     }
 
     @Override

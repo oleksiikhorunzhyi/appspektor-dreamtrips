@@ -40,6 +40,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @InjectView(R.id.post)
     TextView post;
+    @InjectView(R.id.card_view_wrapper)
+    View cardViewWrapper;
     @Optional
     @InjectView(R.id.collage)
     CollageView collageView;
@@ -56,7 +58,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     public PostFeedItemCell(View view) {
         super(view);
-        itemView.post(() -> width = itemView.getWidth());
+        itemView.post(() -> width = cardViewWrapper.getWidth());
     }
 
     @Override

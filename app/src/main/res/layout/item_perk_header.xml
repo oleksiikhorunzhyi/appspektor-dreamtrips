@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/perks_view"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+    >
+
+    <FrameLayout
+        android:id="@+id/perk_logo_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_tiny"
+        android:layout_centerVertical="true"
+        >
+
+        <com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView
+            android:id="@+id/perk_logo"
+            android:layout_width="@dimen/dtlOfferCoverImageWidth"
+            android:layout_height="@dimen/dtlOfferCoverImageHeight"
+            fresco:actualImageScaleType="centerInside"
+            fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+            tools:src="@drawable/ic_trip_image_placeholder"
+            />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/expirationBarCaption"
+                android:layout_width="@dimen/dtlOfferExpirationWidth"
+                android:layout_height="@dimen/dtlOfferExpirationHeight"
+                android:layout_marginTop="@dimen/dtlOfferExpirationTopMargin"
+                android:background="@color/dtlOfferItemExpirationBackground"
+                android:layout_gravity="start|top"
+                android:visibility="gone"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/dtlOfferExpirationTextSize"
+                tools:text="Until Apr 7"
+                tools:visibility="visible"
+                />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/perk_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dtlOfferCoverImageWidth"
+        android:orientation="vertical"
+        android:padding="6dp"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:src="@drawable/perks_icon"
+                android:id="@+id/perkTitleImage"/>
+
+            <TextView
+                android:id="@+id/perks_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/DreamMerchantTextAppearance"
+                android:layout_toRightOf="@+id/perkTitleImage"
+                android:maxLines="2"
+                android:textSize="15sp"
+                android:paddingTop="2dp"
+                android:paddingBottom="4dp"
+                tools:text="Complimentary Margarita"/>
+
+        <TextView
+            android:id="@+id/perks_operation_days"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/DreamMerchantHeaderTextAppearance"
+            android:textSize="12sp"
+            android:textColor="@color/dtl_tab_indicator"
+            android:layout_toRightOf="@+id/perkTitleImage"
+            android:layout_below="@id/perks_title"
+            tools:text="Everyday"
+            />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/perk_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/perk_logo_root"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/spacing_small"
+        android:src="@drawable/ic_arrow_down_grey"
+        />
+</RelativeLayout>

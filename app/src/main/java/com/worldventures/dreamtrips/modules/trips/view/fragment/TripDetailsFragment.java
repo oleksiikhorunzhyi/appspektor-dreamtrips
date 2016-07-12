@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
-import com.worldventures.dreamtrips.modules.trips.event.TripItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripDetailsPresenter;
@@ -66,7 +65,7 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     @OnClick(R.id.textViewBookIt)
     public void bookIt() {
         TripModel tripModel = getArgs().tripModel();
-        eventBus.post(new TripItemAnalyticEvent(TrackingHelper.ATTRIBUTE_BOOK_IT, tripModel.getTripId()));
+        TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, tripModel.getTripId(), tripModel.getName());
         getPresenter().actionBookIt();
     }
 

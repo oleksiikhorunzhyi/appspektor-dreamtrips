@@ -10,12 +10,7 @@
                   xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:paddingBottom="@dimen/conversation_list_item_vertical_padding"
-                  android:paddingLeft="@dimen/conversation_list_item_horizontal_padding"
-                  android:paddingRight="@dimen/conversation_list_item_horizontal_padding"
-                  android:paddingTop="@dimen/conversation_list_item_vertical_padding"
-        >
+                  style="@style/ConversationListItemContentLayout">
 
         <com.messenger.ui.widget.GroupAvatarsView
             android:id="@+id/conversation_group_avatars_view"
@@ -23,7 +18,7 @@
             android:layout_centerVertical="true"/>
 
         <include
-            layout="@layout/list_item_conversation_common"
+            layout="@layout/list_item_conversation_last_message"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

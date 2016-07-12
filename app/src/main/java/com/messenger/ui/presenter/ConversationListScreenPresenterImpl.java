@@ -5,17 +5,13 @@ import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import com.messenger.delegate.chat.ChatLeavingDelegate;
 import com.messenger.entities.DataConversation;
-import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.ConversationType;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.synchmechanism.SyncStatus;
-import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.add_member.NewChatPath;
 import com.messenger.ui.view.chat.ChatPath;
 import com.messenger.ui.view.conversation.ConversationListScreen;
@@ -49,27 +45,17 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     private static final int SELECTED_CONVERSATION_DELAY = 400;
 
-    @Inject
-    DataUser user;
-    @Inject
-    ConversationsDAO conversationsDAO;
-    @Inject
-    NotificationDelegate notificationDelegate;
-    @Inject
-    OpenedConversationTracker openedConversationTracker;
+    @Inject ConversationsDAO conversationsDAO;
+    @Inject NotificationDelegate notificationDelegate;
+    @Inject OpenedConversationTracker openedConversationTracker;
 
-    private final ChatLeavingDelegate chatLeavingDelegate;
-    //
     private PublishSubject<String> filterStream;
     private BehaviorSubject<String> typeStream;
     private PublishSubject<DataConversation> selectedConversationStream;
     private Subscription conversationSubscription;
 
     public ConversationListScreenPresenterImpl(Context context, Injector injector) {
-        super(context);
-
-        chatLeavingDelegate = new ChatLeavingDelegate(injector, null);
-        injector.inject(this);
+        super(context, injector);
     }
 
     @Override
@@ -80,21 +66,6 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
         applyViewState();
         connectData();
         trackConversations();
-    }
-
-    @Override
-    public void onVisibilityChanged(int visibility) {
-        super.onVisibilityChanged(visibility);
-        if (visibility == View.VISIBLE) {
-            chatLeavingDelegate.register();
-        } else {
-            chatLeavingDelegate.unregister();
-        }
-    }
-
-    @Override
-    public DataUser getUser() {
-        return user;
     }
 
     private void connectData() {
@@ -244,11 +215,7 @@ public class ConversationListScreenPresenterImpl extends MessengerPresenterImpl<
 
     @Override
     public void onDeletionConfirmed(DataConversation conversation) {
-        if (ConversationHelper.isGroup(conversation)) {
-            chatLeavingDelegate.leave(conversation);
-        } else {
-            Toast.makeText(getContext(), "Delete not yet implemented", Toast.LENGTH_SHORT).show();
-        }
+        //not implemented
     }
 
     @Override

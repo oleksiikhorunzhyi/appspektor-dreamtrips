@@ -199,6 +199,10 @@ public class TripModel extends BaseFeedEntity implements Filterable {
                 dimensionPixelSize, dimensionPixelSize);
     }
 
+    public String getThumb(int width, int height) {
+        return getImageUrl("THUMB") + String.format(PATTERN, width, height);
+    }
+
     public List<ActivityModel> getActivities() {
         return activities;
     }

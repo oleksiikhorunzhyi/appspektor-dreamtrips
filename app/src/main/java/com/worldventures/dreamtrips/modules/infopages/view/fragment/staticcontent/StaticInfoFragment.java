@@ -11,8 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -20,22 +23,26 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -49,20 +56,17 @@ import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragmentWithArgs<T, UrlBundle>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    public static final String PRIVACY_TITLE = "Privacy Policy";
-    public static final String COOKIE_TITLE = "Cookie Policy";
-    public static final String FAQ_TITLE = "FAQ";
-    public static final String TERMS_TITLE = "Terms of Use";
-
     @Inject
     protected StaticPageProvider provider;
 
     @InjectView(R.id.web_view)
-    protected WebView webView;
+    protected VideoEnabledWebView webView;
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.progressBarWeb)
-    protected ProgressBar progressBarWeb;
+    @InjectView(R.id.nonVideoLayout)
+    View nonVideoLayout;
+    @InjectView(R.id.videoLayout)
+    ViewGroup videoLayout;
 
     protected Bundle savedState;
     protected boolean isLoading;
@@ -73,6 +77,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     protected int mRequestCodeFilePicker = REQUEST_CODE_FILE_PICKER;
     protected WeakReference<Fragment> fragment;
     protected WeakReference<Activity> activity;
+
+    private MessageDialogFragment errorFragment;
+    static final int SECURE_CONNECTION_ERROR = 21;
+
     /**
      * File upload callback for platform versions prior to Android 5.0
      */
@@ -123,41 +131,32 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         webView.getSettings().setDefaultTextEncodingName("utf-8");
         webView.setWebViewClient(new WebViewClient() {
 
-            @TargetApi(Build.VERSION_CODES.M)
             @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                loadErrorText(view, error.getErrorCode());
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
+                Timber.d("Page started");
+                isLoading = true;
+                weakHandler.post(() -> {
+                    if (refreshLayout != null) refreshLayout.setRefreshing(true);
+                });
+                cleanError();
             }
 
             @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                super.onReceivedError(view, errorCode, description, failingUrl);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) loadErrorText(view, errorCode);
-            }
-
-            private void loadErrorText(WebView webView, int errorCode) {
-                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_LOADING_ERROR);
-                String errorText;
-                switch (errorCode) {
-                    case ERROR_HOST_LOOKUP:
-                        errorText = webView.getContext().getString(R.string.error_webview_no_internet);
-                        break;
-                    default:
-                        errorText = webView.getContext().getString(R.string.error_webview_default);
-                        break;
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Timber.d("Page finished");
+                isLoading = false;
+                if (!(isDetached() || isRemoving() || refreshLayout == null)) {
+                    weakHandler.post(() -> {
+                        if (refreshLayout != null) refreshLayout.setRefreshing(false);
+                    });
                 }
-                webView.loadData(errorText, "text/html; charset=utf-8", null);
-            }
-
-            @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                handler.proceed();
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
                 if (url.startsWith("mailto:")) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
                     startActivity(Intent.createChooser(emailIntent, getString(R.string.email_app_choose_dialog_title)));
@@ -172,32 +171,29 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 return false;
             }
 
+            @TargetApi(Build.VERSION_CODES.M)
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
-                Timber.d("Page started");
-                isLoading = true;
-                weakHandler.post(() -> {
-                    if (refreshLayout != null) refreshLayout.setRefreshing(true);
-                });
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                showError(error.getErrorCode());
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                sendAnalyticEvent(TrackingHelper.ATTRIBUTE_LOADED);
-                Timber.d("Page finished");
-                isLoading = false;
-                if (!(isDetached() || isRemoving() || refreshLayout == null)) {
-                    weakHandler.post(() -> {
-                        if (refreshLayout != null) refreshLayout.setRefreshing(false);
-                    });
-                }
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) showError(errorCode);
             }
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.cancel();
+                CrashlyticsTracker.trackError(new IllegalStateException("Can't load web page due to ssl error:\n" + error));
+                showError(SECURE_CONNECTION_ERROR);
+            }
+
         });
-        webView.setWebChromeClient(new WebChromeClient() {
 
+        VideoEnabledWebChromeClient webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, null, webView) {
             // file upload callback (Android 2.2 (API level 8) -- Android 2.3 (API level 10)) (hidden method)
             @SuppressWarnings("unused")
             public void openFileChooser(ValueCallback<Uri> uploadMsg) {
@@ -277,7 +273,37 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
                 return getString(R.string.choose_gallery);
             }
 
+        };
+        webChromeClient.setOnToggledFullscreen(fullscreen -> {
+            // Your code to handle the full-screen change, for example showing and hiding the title bar. Example:
+            AppCompatActivity compatActivity = (AppCompatActivity) StaticInfoFragment.this.activity.get();
+            if (fullscreen) {
+                if (compatActivity != null && compatActivity.getSupportActionBar() != null) {
+                    compatActivity.getSupportActionBar().hide();
+                }
+                WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
+                attrs.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                attrs.flags |= WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                getActivity().getWindow().setAttributes(attrs);
+                if (Build.VERSION.SDK_INT >= 14) {
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+                }
+            } else {
+                if (compatActivity != null && compatActivity.getSupportActionBar() != null) {
+                    compatActivity.getSupportActionBar().show();
+                }
+                WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
+                attrs.flags &= ~WindowManager.LayoutParams.FLAG_FULLSCREEN;
+                attrs.flags &= ~WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
+                getActivity().getWindow().setAttributes(attrs);
+                if (Build.VERSION.SDK_INT >= 14) {
+                    getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                }
+            }
+
         });
+        webView.setWebChromeClient(webChromeClient);
+
         webView.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
@@ -335,6 +361,51 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public void reload(String url) {
         webView.loadUrl("about:blank");
         webView.loadUrl(url);
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        weakHandler.post(() -> {
+            if (refreshLayout == null
+                    || (refreshLayout.isRefreshing() && refreshing)
+                    || (!refreshLayout.isRefreshing() && !refreshing)) return;
+            //
+            refreshLayout.setRefreshing(refreshing);
+        });
+    }
+
+    @Override
+    public void showError(int errorCode) {
+        if (getPresenter() != null) getPresenter().setInErrorState(true);
+        if (isDetached() || isRemoving()) return;
+        //
+        int errorText;
+        switch (errorCode) {
+            case WebViewClient.ERROR_HOST_LOOKUP:
+            case WebViewClient.ERROR_AUTHENTICATION:
+                errorText = R.string.error_webview_no_internet;
+                break;
+            case SECURE_CONNECTION_ERROR:
+                errorText = R.string.error_webview_secure_connection;
+                break;
+            default:
+                errorText = R.string.error_webview_default;
+                break;
+        }
+        errorFragment = MessageDialogFragment.create(errorText);
+        getChildFragmentManager()
+                .beginTransaction().replace(R.id.web_view, errorFragment)
+                .commitAllowingStateLoss();
+    }
+
+    private void cleanError() {
+        if (getPresenter() != null) {
+            getPresenter().setInErrorState(false);
+        }
+        if (errorFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(errorFragment).commitAllowingStateLoss();
+            errorFragment = null;
+        }
     }
 
     abstract protected String getURL();
@@ -407,7 +478,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class TermsOfServiceFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(TERMS_TITLE);
+            return provider.getTermsOfServiceUrl();
         }
 
         @Override
@@ -427,7 +498,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public static class CookiePolicyFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(COOKIE_TITLE);
+            return provider.getCookiePolicyUrl();
         }
 
         @Override
@@ -448,7 +519,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(FAQ_TITLE);
+            return provider.getFaqUrl();
         }
 
         @Override
@@ -463,12 +534,11 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
     }
 
-
     @Layout(R.layout.fragment_webview)
     public static class PrivacyPolicyFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getStaticInfoUrl(PRIVACY_TITLE);
+            return provider.getPrivacyPolicyUrl();
         }
 
         @Override
@@ -498,8 +568,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
 
         @Override
-        protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionMembershipEnrollMemberScreen(actionAnalyticEvent);
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+            super.setUserVisibleHint(isVisibleToUser);
+            if (isVisibleToUser) getPresenter().track(Route.ENROLL_MEMBER);
         }
     }
 
@@ -518,8 +589,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
         }
 
         @Override
-        protected void sendAnalyticEvent(String actionAnalyticEvent) {
-            TrackingHelper.actionMembershipEnrollMerchantScreen(actionAnalyticEvent);
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+            super.setUserVisibleHint(isVisibleToUser);
+            if (isVisibleToUser) getPresenter().track(Route.ENROLL_MERCHANT);
         }
     }
 
@@ -547,6 +619,25 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
     @Layout(R.layout.fragment_webview)
     public static class BookItFragment extends BundleUrlFragment {
+
+        private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
+        private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
+                + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "." + BuildConfig.versionPatch;
+
+        @Override
+        public void load(String url) {
+            if (!isLoading && savedState == null) {
+                Map<String, String> additionalHeaders = new HashMap<>();
+                additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
+                webView.loadUrl(url, additionalHeaders);
+            }
+        }
+
+        @Override
+        public void reload(String url) {
+            webView.loadUrl("about:blank");
+            load(url);
+        }
     }
 
     @Layout(R.layout.fragment_webview)

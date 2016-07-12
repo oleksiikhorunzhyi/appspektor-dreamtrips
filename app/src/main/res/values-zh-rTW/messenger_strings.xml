@@ -52,9 +52,11 @@
     <string name="chat_subtitle_format_single_chat_online">線上</string>
     <string name="chat_subtitle_format_single_chat_offline">當前離線</string>
     <string name="chat_subtitle_format_group_chat_format">%1$d成員，%2$d線上</string>
+    <string name="chat_subtitle_format_group_chat_format_closed">%1$d位會員</string>
     <string name="chat_subtitle_format_group_chat_offline">沒有用戶在線</string>
     <string name="chat_message_edittext_hint">您的信息</string>
     <string name="chat_message_send_button_text">發送</string>
+    <string name="chat_message_sending_disabled">您無法發送消息，因為您已經不是參與者</string>
     <string name="chat_error_loading">無法加載聊天記錄</string>
     <string name="chat_unread_messages_textview_format">您有%1$d未讀郵件</string>
     <string name="chat_more_typing_users_hint_format">和另外%1$d</string>
@@ -69,6 +71,11 @@
     <string name="chat_share_dialog_image">分享圖像</string>
     <string name="chat_share_dialog_cancel">取消</string>
     <string name="chat_could_not_share_location">無法分享位置</string>
+    <string name="chat_error_marker_not_delivered">未發送</string>
+    <string name="chat_retry_send_message_dialog_resend_message">重新發送信息？</string>
+    <string name="chat_retry_send_message_dialog_resend">重新傳送</string>
+    <string name="chat_retry_send_message_dialog_cancel">取消</string>
+
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">載入中...</string>
     <string name="chat_flag_dialog_reason_title">檢舉</string>
@@ -90,7 +97,6 @@
     <string name="chat_settings_error_loading">無法加載聊天設置</string>
     <string name="chat_settings_single_chat_online">線上</string>
     <string name="chat_settings_single_chat_offline">當前離線</string>
-    <string name="chat_settings_group_chat_description">%1$d成員，%2$d線上</string>
     <string name="chat_settings_row_notifications">通知</string>
     <string name="chat_settings_row_shared_content">共享內容</string>
     <string name="chat_settings_row_members_format">會員（ %1$d ）</string>
@@ -98,7 +104,7 @@
     <string name="chat_settings_row_clear_history">清除歷史記錄</string>
     <string name="chat_settings_row_leave_chat">離開聊天</string>
     <string name="chat_settings_row_delete_chat">刪除聊天</string>
-    <string name="chat_settings_group_chat_info_text_format">該聊天由%1$s在%2$s創建</string>
+    <string name="chat_settings_group_chat_info_text_format">該小組由%s@創建</string>
     <string name="chat_settings_menu_settings">設置</string>
     <string name="chat_settings_menu_edit_chat_name">編輯聊天名</string>
     <string name="chat_settings_menu_edit_change_chat_image">更改聊天圖像</string>
@@ -107,7 +113,6 @@
     <string name="chat_settings_leave_group_chat_format">您確定您想退出%1$s聊天嗎？</string>
     <string name="chat_settings_error_change_subject">沒有網絡連接，您不能更改主題</string>
     <string name="chat_settings_error_changing_avatar_subject">沒有網絡連接，您不能更改聊天化身</string>
-    <string name="chat_settings_error_empty_subject">請輸入談話名稱</string>
     <!---->
     <!--Add new members -->
     <!---->

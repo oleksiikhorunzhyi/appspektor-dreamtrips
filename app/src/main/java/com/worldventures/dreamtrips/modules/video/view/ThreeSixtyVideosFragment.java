@@ -13,10 +13,10 @@ import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.membership.model.VideoHeader;
+import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
+import com.worldventures.dreamtrips.modules.video.cell.MediaHeaderCell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360Cell;
 import com.worldventures.dreamtrips.modules.video.cell.Video360SmallCell;
-import com.worldventures.dreamtrips.modules.video.cell.VideoHeaderCell;
 import com.worldventures.dreamtrips.modules.video.cell.delegate.VideoCellDelegate;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.modules.video.model.Video;
@@ -28,7 +28,7 @@ import butterknife.InjectView;
 import butterknife.Optional;
 
 @Layout(R.layout.fragment_360_videos)
-public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideosPresenter>
+public class ThreeSixtyVideosFragment extends BaseMediaFragment<ThreeSixtyVideosPresenter>
         implements ThreeSixtyVideosPresenter.View, SwipeRefreshLayout.OnRefreshListener, VideoCellDelegate {
 
     @Optional
@@ -63,7 +63,7 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
             adapterAll = new BaseDelegateAdapter<>(getActivity(), this);
             adapterAll.registerCell(Video.class, Video360Cell.class);
             adapterAll.registerDelegate(Video.class, this);
-            adapterAll.registerCell(VideoHeader.class, VideoHeaderCell.class);
+            adapterAll.registerCell(MediaHeader.class, MediaHeaderCell.class);
 
             recyclerViewAll.setAdapter(adapterAll);
         }
@@ -123,7 +123,7 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
                     .toList();
             if (adapterRecent != null) adapterRecent.setItems(recentObjects);
         } else {
-            adapterAll.setItems(videos);
+            if (adapterAll != null) adapterAll.setItems(videos);
         }
     }
 
@@ -142,12 +142,20 @@ public class ThreeSixtyVideosFragment extends BaseVideoFragment<ThreeSixtyVideos
 
     @Override
     public void onDeleteAction(CachedEntity cacheEntity) {
-        showDeleteDialog(() -> getPresenter().onDeleteAction(cacheEntity));
+        showDialog(R.string.delete_cached_video_title,
+                R.string.delete_cached_video_text,
+                R.string.delete_photo_positiove,
+                R.string.delete_photo_negative,
+                () -> getPresenter().onDeleteAction(cacheEntity));
     }
 
     @Override
     public void onCancelCaching(CachedEntity cacheEntity) {
-        showCancelDialog(() -> getPresenter().onCancelAction(cacheEntity));
+        showDialog(R.string.cancel_cached_video_title,
+                R.string.cancel_cached_video_text,
+                R.string.cancel_photo_positiove,
+                R.string.cancel_photo_negative,
+                () -> getPresenter().onCancelAction(cacheEntity));
     }
 
     private void setUpRecyclerViews() {

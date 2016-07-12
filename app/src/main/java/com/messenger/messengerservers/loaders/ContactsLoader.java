@@ -8,5 +8,5 @@ import rx.Observable;
 
 public interface ContactsLoader {
 
-    Observable<List<MessengerUser>> getContactsObservable();
+    Observable<List<MessengerUser>> load();
 }

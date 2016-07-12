@@ -18,8 +18,8 @@ public class SetAvatarUploadCommand extends ChangeAvatarCommand {
 
     private final String imagePath;
 
-    public SetAvatarUploadCommand(DataConversation conversation, String imagePath) {
-        super(conversation);
+    public SetAvatarUploadCommand(String conversationId, String imagePath) {
+        super(conversationId);
         this.imagePath = imagePath;
     }
 

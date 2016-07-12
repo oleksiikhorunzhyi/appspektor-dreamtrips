@@ -48,6 +48,11 @@
         <item name="android:scrollbars">vertical</item>
     </style>
 
+    <style name="DtlRecyclerViewStyle" parent="myRecyclerViewStyle">
+        <item name="android:fadingEdgeLength">0dp</item>
+        <item name="android:overScrollMode">never</item>
+    </style>
+
     <style name="BottomSheetDialog">
         <item name="android:windowEnterAnimation">@anim/slide_up_dialog</item>
         <item name="android:windowExitAnimation">@anim/slide_out_down</item>
@@ -76,6 +81,23 @@
         <item name="android:textStyle">normal</item>
     </style>
 
+    <style name="DreamMerchantTextAppearance">
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans_serif</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="DreamMerchantHeaderTextAppearance" parent="DreamMerchantTextAppearance">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">@dimen/font_normal</item>
+    </style>
+
+    <style name="DreamMerchantSubHeaderTextAppearance" parent="DreamMerchantTextAppearance">
+        <item name="android:textColor">@color/chat_grey_color</item>
+        <item name="android:textSize">@dimen/font_medium</item>
+    </style>
+
     <style name="DtlTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@color/dtl_tab_indicator</item>
         <item name="tabMode">fixed</item>
@@ -94,6 +116,20 @@
 
     <style name="Theme.DreamTripsTheme.Progress.White" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/white</item>
+    </style>
+
+    <style name="DtlOfferImageView">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
+        <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
+        <item name="android:padding">@dimen/spacing_tiny</item>
+    </style>
+
+    <style name="DtlOfferDetailsImageView">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_width">@dimen/dtlOfferCoverImageWidth</item>
+        <item name="android:layout_height">@dimen/dtlOfferCoverImageHeight</item>
+        <item name="android:layout_margin">@dimen/spacing_tiny</item>
     </style>
 
     <style name="UserStatusTextAppearance" parent="TextAppearance.AppCompat.Subhead">
@@ -121,18 +157,6 @@
         <item name="requestFocusOnValidationFail">true</item>
     </style>
 
-    <style name="SuggestMerchantBigCaption">
-        <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
-        <item name="android:textColor">@color/suggest_merchant_input_text</item>
-    </style>
-
-    <style name="SuggestMerchantFakeSpinner" parent="Widget.AppCompat.Spinner.Underlined">
-        <item name="android:textSize">@dimen/suggest_merchant_input_text_size</item>
-        <item name="android:textColor">@color/suggest_merchant_input_text</item>
-        <item name="android:gravity">center</item>
-        <item name="android:singleLine">true</item>
-    </style>
-
     <style name="SpinnerToolbarTitle">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/toolbar_spinner_styled_title_text_size</item>
@@ -140,8 +164,34 @@
         <item name="android:drawablePadding">@dimen/toolbar_spinner_styled_icon_margin</item>
     </style>
 
-    <style name="DtlButtonTheme" parent="Base.Widget.AppCompat.Button">
-        <item name="colorButtonNormal">@color/selector_verify_button_color</item>
+    <style name="DtlButtonGreenTheme" parent="Theme.DreamTripsTheme.TripButton">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+
+    <style name="DtlButtonWhiteTheme" parent="WhiteButtonTheme">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+    </style>
+
+    <style name="DtlToolbarInput">
+        <item name="android:inputType">textCapWords</item>
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:selectAllOnFocus">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">@dimen/dtlt_input_text_size</item>
+        <item name="android:textColor">@color/dtlt_input_text_color</item>
+        <item name="android:layout_marginTop">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:paddingLeft">@dimen/dtlt_input_side_padding</item>
+        <item name="android:paddingTop">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:paddingRight">@dimen/dtlt_input_side_padding</item>
+        <item name="android:paddingBottom">@dimen/dtlt_input_vertical_margin</item>
+        <item name="android:background">@drawable/bg_edittext_white</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:elevation">@dimen/dtlt_input_elevation</item>
+        <item name="android:outlineProvider">background</item>
+        <item name="android:drawablePadding">@dimen/dtlt_input_drawable_padding</item>
     </style>
 
     <style name="WhiteButtonTheme" parent="Base.Widget.AppCompat.Button">
@@ -235,6 +285,22 @@
         <item name="android:ellipsize">end</item>
     </style>
 
+    <style name="ConversationListItemContentLayout">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingBottom">@dimen/conversation_list_item_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/conversation_list_item_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/conversation_list_item_horizontal_padding</item>
+        <item name="android:paddingTop">@dimen/conversation_list_item_vertical_padding</item>
+    </style>
+
+    <style name="GroupChatBigAvatarViewClosed" parent="GroupChatBigAvatarView">
+        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
+    </style>
+
+    <style name="ConversationListNameTextViewClosed" parent="ConversationListNameTextView">
+        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
+    </style>
+
     <style name="ConversationListNameTextView">
         <item name="android:layout_marginLeft">
             @dimen/conversation_list_item_conversation_name_textview_left_margin
@@ -247,6 +313,10 @@
         <item name="android:textColor">@color/conversation_list_name</item>
         <item name="android:textSize">@dimen/conversation_list_item_conversation_name_text_size
         </item>
+    </style>
+
+    <style name="ConversationListLastMessageTextViewClosed" parent="ConversationListLastMessageTextView">
+        <item name="android:alpha">@dimen/conversation_list_item_closed_conversation_alpha</item>
     </style>
 
     <style name="ConversationListLastMessageTextView">
@@ -262,11 +332,25 @@
         <item name="android:textSize">@dimen/list_item_description_text_size</item>
     </style>
 
+    <style name="ConversationListItemLastMessageDateAndCountLayout">
+        <item name="android:layout_marginRight">
+            @dimen/conversation_list_item_conversation_last_message_date_textview_right_margin
+        </item>
+    </style>
+
+    <style name="ConversationListLastMessageDateTextViewClosed" parent="ConversationListLastMessageDateTextView">
+        <item name="android:textColor">@color/conversation_list_closed_conversation</item>
+    </style>
+
     <style name="ConversationListLastMessageDateTextView">
         <item name="android:textColor">@color/conversation_list_last_message_date</item>
         <item name="android:textSize">
             @dimen/new_chat_conversation_list_last_message_textview_textsize
         </item>
+    </style>
+
+    <style name="ConversationListUnreadMessagesCountTextViewClosed" parent="ConversationListUnreadMessagesCountTextView">
+        <item name="android:visibility">gone</item>
     </style>
 
     <style name="ConversationListUnreadMessagesCountTextView">
@@ -398,5 +482,8 @@
         <item name="android:src">@drawable/close</item>
     </style>
 
+    <style name="RetrySendMessageDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/retry_send_message_dialog_button_text_color</item>
+    </style>
     <!--end in app notifications-->
 </resources>

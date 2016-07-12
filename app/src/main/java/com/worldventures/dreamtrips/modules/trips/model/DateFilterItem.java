@@ -3,10 +3,11 @@ package com.worldventures.dreamtrips.modules.trips.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DateFilterItem implements Parcelable {
+public class DateFilterItem implements Parcelable, Serializable {
 
     private Date startDate;
     private Date endDate;

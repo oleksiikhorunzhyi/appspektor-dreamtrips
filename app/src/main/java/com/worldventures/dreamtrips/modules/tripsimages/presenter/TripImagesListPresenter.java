@@ -160,6 +160,7 @@ public abstract class TripImagesListPresenter<VT extends TripImagesListPresenter
     @Override
     public void handleError(SpiceException error) {
         view.finishLoading();
+        loading = false;
         super.handleError(error);
     }
 

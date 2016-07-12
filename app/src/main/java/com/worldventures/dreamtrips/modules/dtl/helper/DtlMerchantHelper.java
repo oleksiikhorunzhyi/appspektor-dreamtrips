@@ -1,84 +1,109 @@
 package com.worldventures.dreamtrips.modules.dtl.helper;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.res.ResourcesCompat;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.IntentUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationHours;
 import com.worldventures.dreamtrips.util.ImageTextItem;
+import com.worldventures.dreamtrips.util.ImageTextItemFactory;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
 import org.joda.time.DurationFieldType;
 import org.joda.time.LocalTime;
+import org.joda.time.chrono.ISOChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class DtlMerchantHelper {
 
-    private Context context;
-
     public static final DateTimeFormatter OPERATION_TIME_FORMATTER = DateTimeFormat.forPattern("hh:mm a");
 
-    public DtlMerchantHelper(Context context) {
-        this.context = context;
+    private DtlMerchantHelper() {
+        throw new UnsupportedOperationException("No instance");
     }
 
-    public String getCategories(DtlMerchant merchant) {
+    public static String getCategories(DtlMerchant merchant) {
         List<DtlMerchantAttribute> categories = merchant.getCategories();
         return categories == null ? null : TextUtils.join(", ", categories);
     }
 
-    public List<ImageTextItem> getContactsData(DtlMerchant merchant) {
+    public static List<ImageTextItem> getContactsData(Context context, DtlMerchant merchant) {
         ArrayList<ImageTextItem> items = new ArrayList<>();
-        addContactIfNotEmpty(items, String.format("%s, %s, %s, %s", merchant.getAddress1(), merchant.getCity(),
-                        merchant.getState(), merchant.getZip()),
-                R.drawable.address_icon,
-                IntentUtils.newMapIntent(merchant.getCoordinates().getLat(), merchant.getCoordinates().getLng()),
-                ImageTextItem.Type.ADDRESS);
-        addContactIfNotEmpty(items, merchant.getPhone(), R.drawable.phone_icon,
-                IntentUtils.newDialerIntent(merchant.getPhone()),
-                ImageTextItem.Type.PHONE_NUMBER);
-        addContactIfNotEmpty(items, merchant.getWebsite(), R.drawable.website_icon,
-                IntentUtils.browserIntent(merchant.getWebsite()),
-                ImageTextItem.Type.WEBSITE_URL);
+        Queryable.from(ImageTextItem.Type.values()).forEachR(type -> {
+            ImageTextItem contact = ImageTextItemFactory.create(context, merchant, type);
+            if (contact != null) items.add(contact);
+        });
         return items;
     }
 
-    private void addContactIfNotEmpty(List<ImageTextItem> items, String contact, @DrawableRes int icon,
-                                      Intent intent, ImageTextItem.Type type) {
-        if (TextUtils.isEmpty(contact)) return;
-        items.add(new ImageTextItem(contact, ResourcesCompat.getDrawable(context.getResources(), icon, null), intent, type));
+    public static boolean contactCanBeResolved(ImageTextItem contact, Activity activity) {
+        return contact.intent != null && contact.intent.resolveActivityInfo(activity.getPackageManager(), 0) != null;
     }
 
-    public Spannable getOperationalTime(DtlMerchant DtlMerchant) {
+    public static Spannable getOperationalTime(Context context, DtlMerchant merchant) {
+        return getOperationalTime(context, merchant, true);
+    }
+
+    public static boolean isOfferExpiringSoon(DtlOffer offerData) {
+        if (offerData.getEndDate() == null) return false;
+        DateTime currentDate = DateTime.now();
+        DateTime expirationDate = new DateTime(offerData.getEndDate().getTime());
+        return Days.daysBetween(currentDate, expirationDate).isLessThan(Days.SEVEN);
+    }
+
+    public static Spannable getOfferExpiringCaption(Context context, DtlOffer offerData,
+                                                    Locale locale) {
+        return getOfferExpiringCaption(context.getResources(), offerData, locale);
+    }
+
+    public static Spannable getOfferExpiringCaption(Resources resources, DtlOffer offerData,
+                                                    Locale locale) {
+        String format = resources.getString(R.string.offer_expiration_format);
+        DateTime expiringDate = new DateTime(offerData.getEndDate().getTime(),
+                ISOChronology.getInstance(DateTimeZone.UTC));
+        String caption = expiringDate.toString(DateTimeFormat.forPattern("MMM d"));
+        String captionFormatted = String.format(locale, format, caption);
+        Spannable spanned = new SpannableString(captionFormatted);
+        spanned.setSpan(new StyleSpan(Typeface.BOLD),
+                captionFormatted.length() - caption.length(), captionFormatted.length(),
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return spanned;
+    }
+
+    public static Spannable getOperationalTime(Context context, DtlMerchant dtlMerchant, boolean includeTime) {
         StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 
         DayOfWeek current = DayOfWeek.from(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
 
-        OperationDay operationDay = Queryable.from(DtlMerchant.getOperationDays())
+        OperationDay operationDay = Queryable.from(dtlMerchant.getOperationDays())
                 .firstOrDefault(element -> element.getDayOfWeek() == current);
 
         if (operationDay != null && operationDay.getOperationHours() != null) {
             for (OperationHours hours : operationDay.getOperationHours()) {
-                DateTimeZone timeZone = DateTimeZone.forOffsetHours(DtlMerchant.getOffsetHours());
+                DateTimeZone timeZone = DateTimeZone.forOffsetHours(dtlMerchant.getOffsetHours());
                 LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
                 LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
                 //
@@ -97,15 +122,17 @@ public class DtlMerchantHelper {
                             && currentDate.isBefore(dateTimeEnd);
                 }
 
-                stringBuilder.append(String.format("%s - %s",
-                        localTimeStart.toString(OPERATION_TIME_FORMATTER),
-                        localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
-                stringBuilder.append(", ");
+                if (includeTime) {
+                    stringBuilder.append(String.format("%s - %s",
+                            localTimeStart.toString(OPERATION_TIME_FORMATTER),
+                            localTimeEnd.toString(OPERATION_TIME_FORMATTER)));
+                    stringBuilder.append(", ");
+                }
             }
         }
 
         int length = stringBuilder.length();
-        stringBuilder.append(provideOpenClosedStatus(openNow));
+        stringBuilder.append(provideOpenClosedStatus(context, openNow));
 
         final ForegroundColorSpan fcs = new ForegroundColorSpan(context.getResources()
                 .getColor(openNow ? R.color.open : R.color.closed));
@@ -115,7 +142,7 @@ public class DtlMerchantHelper {
         return spannable;
     }
 
-    private String provideOpenClosedStatus(boolean openNow) {
+    private static String provideOpenClosedStatus(Context context, boolean openNow) {
         return openNow ?
                 context.getString(R.string.dtl_open_now) :
                 context.getString(R.string.dtl_closed);

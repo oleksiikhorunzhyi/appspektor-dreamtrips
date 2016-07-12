@@ -2,21 +2,14 @@ package com.messenger.di;
 
 import android.content.Context;
 
-import com.messenger.delegate.CreateConversationHelper;
+import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.delegate.MessageBodyCreator;
-import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.delegate.UserProcessor;
-import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
-import com.messenger.notification.UnhandledMessageWatcher;
-import com.messenger.storage.dao.AttachmentDAO;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
-import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
-import com.messenger.ui.inappnotifications.AppNotification;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.util.ChatFacadeManager;
 import com.messenger.util.OpenedConversationTracker;
@@ -41,11 +34,6 @@ import io.techery.janet.Janet;
 )
 public class MessengerDelegateModule {
     @Provides
-    UserProcessor provideUserProcessor(Janet janet, UsersDAO usersDAO, SessionHolder<UserSession> sessionHolder) {
-        return new UserProcessor(usersDAO, janet, sessionHolder);
-    }
-
-    @Provides
     ChatFacadeManager provideChatFacadeManager(@ForApplication Injector injector) {
         return new ChatFacadeManager(injector);
     }
@@ -53,12 +41,6 @@ public class MessengerDelegateModule {
     @Provides
     UserSectionHelper provideUserSectionHelper(@ForApplication Context context, SessionHolder<UserSession> appSessionHolder) {
         return new UserSectionHelper(context, appSessionHolder);
-    }
-
-    @Singleton
-    @Provides
-    MessageTranslationDelegate provideMessageTranslationDelegate(Janet janet, TranslationsDAO translationsDAO, LocaleHelper localeHelper) {
-        return new MessageTranslationDelegate(janet, translationsDAO, localeHelper);
     }
 
     @Provides
@@ -77,18 +59,6 @@ public class MessengerDelegateModule {
     @Provides
     OpenedConversationTracker providedOpenedConversationTracker() {
         return new OpenedConversationTracker();
-    }
-
-    @Provides
-    UnhandledMessageWatcher provideUnhandledMessageWatcher(
-            AppNotification appNotification,
-            ChatMessagesEventDelegate chatMessagesEventDelegate,
-            ConversationsDAO conversationsDAO,
-            UsersDAO usersDAO,
-            ParticipantsDAO participantsDAO,
-            AttachmentDAO attachmentDAO,
-            OpenedConversationTracker openedConversationTracker) {
-        return new UnhandledMessageWatcher(appNotification, chatMessagesEventDelegate, openedConversationTracker, conversationsDAO, participantsDAO, usersDAO, attachmentDAO);
     }
 
     @Provides

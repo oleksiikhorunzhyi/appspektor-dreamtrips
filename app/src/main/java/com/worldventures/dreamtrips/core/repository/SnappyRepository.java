@@ -1,15 +1,9 @@
 package com.worldventures.dreamtrips.core.repository;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
-import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
-import com.techery.spares.storage.complex_objects.Optional;
-import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
@@ -17,14 +11,11 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
-import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -34,639 +25,196 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import timber.log.Timber;
-
-public class SnappyRepository {
-
-    public static final String CIRCLES = "circles";
-    public static final String REGIONS = "regions_new";
-    public static final String CATEGORIES = "categories";
-    public static final String ACTIVITIES = "activities_new";
-    public static final String BUCKET_LIST = "bucket_items";
-    public static final String TRIP_KEY = "trip_rezopia_v2";
-    public static final String SETTINGS_KEY = "settings";
-    public static final String POST = "post";
-    public static final String UPLOAD_TASK_KEY = "amazon_upload_task";
-    public static final String BUCKET_PHOTO_CREATION_ITEM = "BUCKET_PHOTO_CREATION_ITEM";
-    public static final String VIDEO_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY";
-    public static final String INVITE_MEMBER = "INVITE_MEMBER ";
-    public static final String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
-    public static final String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
-    public static final String IMAGE = "IMAGE";
-    public static final String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
-    public static final String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
-    public static final String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
-    public static final String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
-    public static final String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
-    public static final String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
-    public static final String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
-    public static final String FILTER_CIRCLE = "FILTER_CIRCLE";
-    public static final String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
-    public static final String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
-
-    public static final String DTL_MERCHANTS = "DTL_MERCHANTS";
-    public static final String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
-    public static final String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
-    public static final String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
-    public static final String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
-    public static final String DTL_AMENITIES = "DTL_AMENITIES";
-    public static final String FEEDBACK_TYPES = "FEEDBACK_TYPES";
-    public static final String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
-
-    private Context context;
-    private ExecutorService executorService;
-
-    public SnappyRepository(Context context) {
-        ValidationUtils.checkNotNull(context);
-        this.context = context;
-        this.executorService = Executors.newSingleThreadExecutor();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Proxy helpers
-    ///////////////////////////////////////////////////////////////////////////
-
-    private void act(SnappyAction action) {
-        executorService.execute(() -> {
-            DB snappyDb = null;
-            try {
-                snappyDb = DBFactory.open(context);
-                action.call(snappyDb);
-            } catch (SnappydbException e) {
-                if (isNotFound(e)) Timber.v("Nothing found");
-                else Timber.w(e, "DB fails to act", e);
-            } finally {
-                try {
-                    if (snappyDb != null && snappyDb.isOpen()) snappyDb.close();
-                } catch (SnappydbException e) {
-                    Timber.w(e, "DB fails to close");
-                }
-            }
-        });
-    }
-
-    private <T> Optional<T> actWithResult(SnappyResult<T> action) {
-        Future<T> future = executorService.submit(() -> {
-            DB snappyDb = null;
-            try {
-                snappyDb = DBFactory.open(context);
-                T result = action.call(snappyDb);
-                Timber.v("DB action result: %s", result);
-                return result;
-            } catch (SnappydbException e) {
-                if (isNotFound(e)) Timber.v("Nothing found");
-                else Timber.w(e, "DB fails to act with result", e);
-                return null;
-            } finally {
-                if (snappyDb != null)
-                    try {
-                        snappyDb.close();
-                    } catch (SnappydbException e) {
-                        Timber.w(e, "DB fails to close");
-                    }
-            }
-        });
-        try {
-            return Optional.fromNullable(future.get());
-        } catch (InterruptedException | ExecutionException e) {
-            Timber.w(e, "DB fails to act with result");
-            return Optional.absent();
-        }
-    }
-
-    private boolean isNotFound(SnappydbException e) {
-        return e.getMessage().contains("NotFound");
-    }
-
-    public void clearAll() {
-        act((db) -> db.destroy());
-    }
-
-    public Boolean isEmpty(String key) {
-        return actWithResult((db) -> {
-            String[] keys = db.findKeys(key);
-            return keys == null || keys.length == 0;
-        }).or(false);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Public
-    ///////////////////////////////////////////////////////////////////////////
-
-    public <T> void putList(String key, Collection<T> list) {
-        act(db -> db.put(key, list.toArray()));
-    }
-
-    public <T> List<T> readList(String key, Class<T> clazz) {
-        return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
-                .or(new ArrayList<>());
-    }
-
-    /**
-     * Method is intended to delete all records for given key.
-     *
-     * @param key key to be deleted.
-     */
-    public void clearAllForKey(String key) {
-        clearAllForKeys(key);
-    }
-
-    /**
-     * Method is intended to delete all records for given keys.
-     *
-     * @param keys keys array to be deleted.
-     */
-    public void clearAllForKeys(String... keys) {
-        Queryable.from(keys).forEachR(key -> {
-            act(db -> {
-                String[] placesKeys = db.findKeys(key);
-                for (String placeKey : placesKeys) {
-                    db.del(placeKey);
-                }
-            });
-        });
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // BucketItems
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveBucketList(List<BucketItem> items, String type) {
-        saveBucketList(items, type, 0);
-    }
-
-    public void saveBucketList(List<BucketItem> items, String type, int userId) {
-        String key = getBucketKey(type, userId);
-        putList(key, items);
-    }
-
-    @NonNull
-    private String getBucketKey(String type, int userId) {
-        if (userId == 0) {
-            throw new IllegalStateException("userId can't be 0");
-        }
-        String key = (BUCKET_LIST) + ":" + type;
-        key += "_" + userId;
-        return key.toLowerCase();
-    }
-
-    public List<BucketItem> readBucketList(String type, int userId) {
-        List<BucketItem> list = readList(getBucketKey(type, userId), BucketItem.class);
-        Collections.sort(list, (lhs, rhs) -> {
-            if (lhs.isDone() == rhs.isDone()) return 0;
-            else if (lhs.isDone() && !rhs.isDone()) return 1;
-            else return -1;
-        });
-        return list;
-    }
-
-    public int getRecentlyAddedBucketItems(String type) {
-        return actWithResult(db -> db.getInt(RECENT_BUCKET_COUNT + ":" + type))
-                .or(0);
-    }
-
-    public void saveRecentlyAddedBucketItems(String type, final int count) {
-        act(db -> db.putInt(RECENT_BUCKET_COUNT + ":" + type, count));
-    }
-
-    public void saveOpenBucketTabType(String type) {
-        act(db -> db.put(OPEN_BUCKET_TAB_TYPE, type));
-    }
-
-    public String getOpenBucketTabType() {
-        return actWithResult(db -> db.get(OPEN_BUCKET_TAB_TYPE)).orNull();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Trips
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveTrip(TripModel trip) {
-        act(db -> db.put(TRIP_KEY + trip.getTripId(), trip));
-    }
-
-    public void saveTrips(List<TripModel> list) {
-        act(db -> {
-            clearTrips(db);
-            for (TripModel trip : list) {
-                db.put(TRIP_KEY + trip.getTripId(), trip);
-            }
-        });
-    }
-
-    public List<TripModel> getTrips() {
-        return actWithResult(db -> {
-            List<TripModel> trips = new ArrayList<>();
-            String[] keys = db.findKeys(TRIP_KEY);
-            for (String key : keys) {
-                trips.add(db.get(key, TripModel.class));
-            }
-            Collections.sort(trips, (lhs, rhs) -> {
-                if (lhs.getStartDateMillis() < rhs.getStartDateMillis()) return -1;
-                else if (lhs.getStartDateMillis() == rhs.getStartDateMillis()) return 0;
-                else return 1;
-            });
-            return trips;
-        }).or(Collections.emptyList());
-    }
-
-    public void clearTrips(DB snappyDb) throws SnappydbException {
-        String[] tripKeys = snappyDb.findKeys(TRIP_KEY);
-        for (String key : tripKeys) {
-            snappyDb.del(key);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Video
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveDownloadVideoEntity(CachedEntity e) {
-        act(db -> db.put(VIDEO_UPLOAD_ENTITY + e.getUuid(), e));
-    }
-
-    public CachedEntity getDownloadVideoEntity(String id) {
-        return actWithResult(db -> db.get(VIDEO_UPLOAD_ENTITY + id, CachedEntity.class))
-                .orNull();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Settings
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveSettings(List<Setting> settingsList, boolean withClear) {
-        act(db -> {
-            if (withClear) clearSettings(db);
-            //
-            for (Setting settings : settingsList) {
-                db.put(SETTINGS_KEY + settings.getType().name() + settings.getName(), settings);
-            }
-        });
-    }
-
-    public List<Setting> getSettings() {
-        return actWithResult(db -> {
-            List<Setting> settingsList = new ArrayList<>();
-            String[] keys = db.findKeys(SETTINGS_KEY);
-            for (String key : keys) {
-                if (key.contains(Setting.Type.FLAG.name())) {
-                    settingsList.add(db.get(key, FlagSetting.class));
-                } else if (key.contains(Setting.Type.SELECT.name())) {
-                    settingsList.add(db.get(key, SelectSetting.class));
-                }
-            }
-            return settingsList;
-        }).or(Collections.emptyList());
-    }
-
-    public void clearSettings(DB snappyDb) throws SnappydbException {
-        String[] settingsKeys = snappyDb.findKeys(SETTINGS_KEY);
-        for (String key : settingsKeys) {
-            snappyDb.del(key);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Settings
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveLastSuggestedPhotosSyncTime(long time) {
-        act(db -> db.putLong(SUGGESTED_PHOTOS_SYNC_TIME, time));
-    }
-
-    public long getLastSuggestedPhotosSyncTime() {
-        return actWithResult(db -> db.getLong(SUGGESTED_PHOTOS_SYNC_TIME)).or(0L);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Image Tasks
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Use it from PhotoUploadManager
-     */
-    public void saveUploadTask(UploadTask uploadTask) {
-        act(db -> db.put(UPLOAD_TASK_KEY + uploadTask.getFilePath(), uploadTask));
-    }
-
-    public UploadTask getUploadTask(String filePath) {
-        return actWithResult(db -> db.get(UPLOAD_TASK_KEY + filePath, UploadTask.class)).orNull();
-    }
-
-    public void removeUploadTask(UploadTask uploadTask) {
-        act(db -> db.del(UPLOAD_TASK_KEY + uploadTask.getFilePath()));
-    }
-
-    public void removeAllUploadTasks() {
-        act(db -> Queryable.from(db.findKeys(UPLOAD_TASK_KEY)).forEachR(key -> {
-            try {
-                db.del(key);
-            } catch (SnappydbException e) {
-                Timber.e(e, "Error while deleting");
-            }
-        }));
-    }
-
-    /**
-     * Use it from Buclet photos
-     */
-    public void saveBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
-        act(db -> db.put(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath(), uploadTask));
-    }
-
-    public BucketPhotoCreationItem getBucketPhotoCreationItem(String filePath) {
-        return actWithResult(db -> db.get(BUCKET_PHOTO_CREATION_ITEM + filePath, BucketPhotoCreationItem.class)).orNull();
-    }
-
-    public void removeBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
-        act(db -> db.del(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath()));
-    }
-
-    public void removeAllBucketItemPhotoCreations() {
-        act(db -> Queryable.from(db.findKeys(BUCKET_PHOTO_CREATION_ITEM)).forEachR(key -> {
-            try {
-                db.del(key);
-            } catch (SnappydbException e) {
-                Timber.e(e, "Error while deleting");
-            }
-        }));
-    }
-
-    public List<BucketPhotoCreationItem> getAllBucketPhotoCreationItem() {
-        return actWithResult(db -> {
-            List<BucketPhotoCreationItem> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(BUCKET_PHOTO_CREATION_ITEM);
-            for (String key : keys) {
-                tasks.add(db.get(key, BucketPhotoCreationItem.class));
-            }
-            return tasks;
-        }).or(Collections.emptyList());
-    }
-
-    public List<UploadTask> getAllUploadTask() {
-        return actWithResult(db -> {
-            List<UploadTask> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(UPLOAD_TASK_KEY);
-            for (String key : keys) {
-                tasks.add(db.get(key, UploadTask.class));
-            }
-            return tasks;
-        }).or(Collections.emptyList());
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Photo List Tasks
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items) {
-        putList(IMAGE + ":" + type + ":" + userId, items);
-    }
-
-    public List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId) {
-        return readList(IMAGE + ":" + type + ":" + userId, IFullScreenObject.class);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Invites
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void addInviteMember(Member member) {
-        act(db -> db.put(INVITE_MEMBER + member.getId(), member));
-    }
-
-    public List<Member> getInviteMembers() {
-        return actWithResult(db -> {
-            List<Member> members = new ArrayList<>();
-            String[] keys = db.findKeys(INVITE_MEMBER);
-            for (String key : keys) {
-                members.add(db.get(key, Member.class));
-            }
-            return members;
-        }).or(Collections.emptyList());
-    }
-
-    public void saveLastSelectedVideoLocale(VideoLocale videoLocale) {
-        act(db -> db.put(LAST_SELECTED_VIDEO_LOCALE, videoLocale));
-    }
-
-    public VideoLocale getLastSelectedVideoLocale() {
-        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LOCALE, VideoLocale.class))
-                .orNull();
-    }
-
-    public void saveLastSelectedVideoLanguage(VideoLanguage videoLocale) {
-        act(db -> db.put(LAST_SELECTED_VIDEO_LANGUAGE, videoLocale));
-    }
-
-    public VideoLanguage getLastSelectedVideoLanguage() {
-        return actWithResult(db -> db.get(LAST_SELECTED_VIDEO_LANGUAGE, VideoLanguage.class))
-                .orNull();
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Notifications counters
-    ///////////////////////////////////////////////////////////////////////////
-
-    /**
-     * All notifications
-     */
-    public void saveBadgeNotificationsCount(int notificationsCount) {
-        act(db -> db.putInt(BADGE_NOTIFICATIONS_COUNT, notificationsCount));
-    }
-
-    /**
-     * All notifications
-     */
-    public int getBadgeNotificationsCount() {
-        return actWithResult(db -> db.getInt(BADGE_NOTIFICATIONS_COUNT)).or(0);
-    }
-
-    public void saveCountFromHeader(String headerKey, int count) {
-        act(db -> db.putInt(headerKey, count));
-    }
-
-    public int getExclusiveNotificationsCount() {
-        return actWithResult(db -> db.getInt(EXCLUSIVE_NOTIFICATIONS_COUNT)).or(0);
-    }
-
-    public int getFriendsRequestsCount() {
-        return actWithResult(db -> db.getInt(FRIEND_REQUEST_COUNT)).or(0);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Circles
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveCircles(List<Circle> circles) {
-        putList(CIRCLES, circles);
-    }
-
-    public List<Circle> getCircles() {
-        return readList(CIRCLES, Circle.class);
-    }
-
-    public void saveFilterCircle(Circle circle) {
-        act(db -> db.put(FILTER_CIRCLE, circle));
-    }
-
-    public Circle getFilterCircle() {
-        return actWithResult(db -> db.get(FILTER_CIRCLE, Circle.class)).orNull();
-    }
-
-    public Circle getFeedFriendPickedCircle() {
-        return actWithResult(db -> db.get(FILTER_FEED_FRIEND_FILTER_CIRCLE, Circle.class)).orNull();
-    }
-
-    public void saveFeedFriendPickedCircle(Circle circle) {
-        act(db -> db.put(FILTER_FEED_FRIEND_FILTER_CIRCLE, circle));
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    //
-    ///////////////////////////////////////////////////////////////////////////
-
-    public String getGcmRegToken() {
-        return actWithResult(db -> db.get(GCM_REG_TOKEN)).orNull();
-    }
-
-    public void setGcmRegToken(String token) {
-        act(db -> db.put(GCM_REG_TOKEN, token));
-    }
-
-    public void saveSocialViewPagerState(SocialViewPagerState state) {
-        act(db -> db.put(SOCIAL_VIEW_PAGER_STATE, state));
-    }
-
-    public SocialViewPagerState getSocialViewPagerState() {
-        return actWithResult(db -> db.get(SOCIAL_VIEW_PAGER_STATE, SocialViewPagerState.class)).orNull();
-    }
-
-    public List<FeedbackType> getFeedbackTypes() {
-        return readList(FEEDBACK_TYPES, FeedbackType.class);
-    }
-
-    public void setFeedbackTypes(ArrayList<FeedbackType> types) {
-        clearAllForKey(FEEDBACK_TYPES);
-        putList(FEEDBACK_TYPES, types);
-    }
-
-
-    ///////////////////////////////////////////////////////////////////////////
-    // GCM
-    ///////////////////////////////////////////////////////////////////////////
-
-    private interface SnappyAction {
-        void call(DB db) throws SnappydbException;
-    }
-
-    private interface SnappyResult<T> {
-        T call(DB db) throws SnappydbException;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // DTL
-    ///////////////////////////////////////////////////////////////////////////
-
-    public void saveDtlLocation(DtlLocation dtlLocation) {
-        // list below is a hack to allow manipulating DtlLocation class since it is an interface
-        List<DtlLocation> location = new ArrayList<>();
-        location.add(dtlLocation);
-        putList(DTL_SELECTED_LOCATION, location);
-    }
-
-    public void cleanDtlLocation() {
-        clearAllForKey(DTL_SELECTED_LOCATION);
-    }
+
+public interface SnappyRepository {
+    String CIRCLES = "circles";
+    String REGIONS = "regions_new";
+    String CATEGORIES = "categories";
+    String ACTIVITIES = "activities_new";
+    String BUCKET_LIST = "bucket_items";
+    String TRIP_KEY = "trip_rezopia_v2";
+    String SETTINGS_KEY = "settings";
+    String POST = "post";
+    String UPLOAD_TASK_KEY = "amazon_upload_task";
+    String BUCKET_PHOTO_CREATION_ITEM = "BUCKET_PHOTO_CREATION_ITEM";
+    String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
+    String INVITE_MEMBER = "INVITE_MEMBER ";
+    String LAST_SELECTED_VIDEO_LOCALE = "LAST_SELECTED_VIDEO_LOCALE";
+    String LAST_SELECTED_VIDEO_LANGUAGE = "LAST_SELECTED_VIDEO_LANGUAGE ";
+    String IMAGE = "IMAGE";
+    String RECENT_BUCKET_COUNT = "recent_bucket_items_count";
+    String OPEN_BUCKET_TAB_TYPE = "open_bucket_tab_type";
+    String BADGE_NOTIFICATIONS_COUNT = "badge_notifications_count";
+    String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
+    String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
+    String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+    String GCM_REG_ID_PERSISTED = "GCM_REG_ID_PERSISTED ";
+    String FILTER_CIRCLE = "FILTER_CIRCLE";
+    String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
+    String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
+
+    String DTL_MERCHANTS = "DTL_MERCHANTS";
+    String DTL_SELECTED_LOCATION = "DTL_SELECTED_LOCATION";
+    String DTL_TRANSACTION_PREFIX = "DTL_TRANSACTION_";
+    String DTL_LAST_MAP_POSITION = "DTL_LAST_MAP_POSITION";
+    String DTL_SHOW_OFFERS_ONLY_TOGGLE = "DTL_SHOW_OFFERS_ONLY_TOGGLE";
+    String DTL_AMENITIES = "DTL_AMENITIES";
+    String FEEDBACK_TYPES = "FEEDBACK_TYPES";
+    String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
+
+
+    void clearAll();
+
+    Boolean isEmpty(String key);
+
+    <T> void putList(String key, Collection<T> list);
+
+    <T> List<T> readList(String key, Class<T> clazz);
+
+    void clearAllForKey(String key);
+
+    void clearAllForKeys(String... keys);
+
+    void saveBucketList(List<BucketItem> items, String type);
+
+    void saveBucketList(List<BucketItem> items, String type, int userId);
+
+    List<BucketItem> readBucketList(String type, int userId);
+
+    int getRecentlyAddedBucketItems(String type);
+
+    void saveRecentlyAddedBucketItems(String type, int count);
+
+    void saveOpenBucketTabType(String type);
+
+    String getOpenBucketTabType();
+
+    void saveTrip(TripModel trip);
+
+    void saveTrips(List<TripModel> list);
+
+    List<TripModel> getTrips();
+
+    void clearTrips(DB snappyDb) throws SnappydbException;
+
+    void saveDownloadMediaEntity(CachedEntity e);
+
+    CachedEntity getDownloadMediaEntity(String id);
+
+    void saveSettings(List<Setting> settingsList, boolean withClear);
+
+    List<Setting> getSettings();
+
+    void clearSettings(DB snappyDb) throws SnappydbException;
+
+    void saveLastSuggestedPhotosSyncTime(long time);
+
+    long getLastSuggestedPhotosSyncTime();
+
+    void saveUploadTask(UploadTask uploadTask);
+
+    UploadTask getUploadTask(String filePath);
+
+    void removeUploadTask(UploadTask uploadTask);
+
+    void removeAllUploadTasks();
+
+    void saveBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask);
+
+    BucketPhotoCreationItem getBucketPhotoCreationItem(String filePath);
+
+    void removeBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask);
+
+    void removeAllBucketItemPhotoCreations();
+
+    List<BucketPhotoCreationItem> getAllBucketPhotoCreationItem();
+
+    List<UploadTask> getAllUploadTask();
+
+    void savePhotoEntityList(TripImagesType type, int userId, List<IFullScreenObject> items);
+
+    List<IFullScreenObject> readPhotoEntityList(TripImagesType type, int userId);
+
+    void addInviteMember(Member member);
+
+    List<Member> getInviteMembers();
+
+    void saveLastSelectedVideoLocale(VideoLocale videoLocale);
+
+    VideoLocale getLastSelectedVideoLocale();
+
+    void saveLastSelectedVideoLanguage(VideoLanguage videoLocale);
+
+    VideoLanguage getLastSelectedVideoLanguage();
+
+    void saveBadgeNotificationsCount(int notificationsCount);
+
+    int getBadgeNotificationsCount();
+
+    void saveCountFromHeader(String headerKey, int count);
+
+    int getExclusiveNotificationsCount();
+
+    int getFriendsRequestsCount();
+
+    void saveCircles(List<Circle> circles);
+
+    List<Circle> getCircles();
+
+    void saveFilterCircle(Circle circle);
+
+    Circle getFilterCircle();
+
+    Circle getFeedFriendPickedCircle();
+
+    void saveFeedFriendPickedCircle(Circle circle);
+
+    String getGcmRegToken();
+
+    void setGcmRegToken(String token);
+
+    void saveSocialViewPagerState(SocialViewPagerState state);
+
+    SocialViewPagerState getSocialViewPagerState();
+
+    List<FeedbackType> getFeedbackTypes();
+
+    void setFeedbackTypes(ArrayList<FeedbackType> types);
+
+    void saveDtlLocation(DtlLocation dtlLocation);
+
+    void cleanDtlLocation();
 
     @Nullable
-    public DtlLocation getDtlLocation() {
-        // list below is a hack to allow manipulating DtlLocation class since it is an interface
-        List<DtlLocation> location = readList(DTL_SELECTED_LOCATION, DtlLocation.class);
-        if (location.isEmpty()) return null;
-        else return location.get(0);
-    }
+    DtlLocation getDtlLocation();
 
-    public void saveDtlMerhants(List<DtlMerchant> merchants) {
-        clearAllForKey(DTL_MERCHANTS);
-        putList(DTL_MERCHANTS, merchants);
-    }
+    void saveDtlMerhants(List<DtlMerchant> merchants);
 
-    public List<DtlMerchant> getDtlMerchants() {
-        return readList(DTL_MERCHANTS, DtlMerchant.class);
-    }
+    List<DtlMerchant> getDtlMerchants();
 
-    public void saveAmenities(Collection<DtlMerchantAttribute> amenities) {
-        clearAllForKey(DTL_AMENITIES);
-        putList(DTL_AMENITIES, amenities);
-    }
+    void saveAmenities(Collection<DtlMerchantAttribute> amenities);
 
-    public List<DtlMerchantAttribute> getAmenities() {
-        return readList(DTL_AMENITIES, DtlMerchantAttribute.class);
-    }
+    List<DtlMerchantAttribute> getAmenities();
 
-    public void clearMerchantData() {
-        clearAllForKeys(DTL_MERCHANTS, DTL_AMENITIES, DTL_TRANSACTION_PREFIX);
-    }
+    void clearMerchantData();
 
-    public void saveLastMapCameraPosition(Location location) {
-        act(db -> db.put(DTL_LAST_MAP_POSITION, location));
-    }
+    void saveLastMapCameraPosition(Location location);
 
-    public Location getLastMapCameraPosition() {
-        return actWithResult(db -> db.getObject(DTL_LAST_MAP_POSITION, Location.class)).orNull();
-    }
+    Location getLastMapCameraPosition();
 
-    public void cleanLastMapCameraPosition() {
-        clearAllForKey(DTL_LAST_MAP_POSITION);
-    }
+    void cleanLastMapCameraPosition();
 
-    public void saveLastSelectedOffersOnlyToogle(boolean state) {
-        act(db -> db.putBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE, state));
-    }
+    void saveLastSelectedOffersOnlyToogle(boolean state);
 
-    public Boolean getLastSelectedOffersOnlyToggle() {
-        return actWithResult(db -> db.getBoolean(DTL_SHOW_OFFERS_ONLY_TOGGLE)).or(Boolean.FALSE);
-    }
+    Boolean getLastSelectedOffersOnlyToggle();
 
-    public void cleanLastSelectedOffersOnlyToggle() {
-        clearAllForKey(DTL_SHOW_OFFERS_ONLY_TOGGLE);
-    }
+    void cleanLastSelectedOffersOnlyToggle();
 
-    ///////////////////////////////////////////////////////////////////////////
-    // DTL Transaction
-    ///////////////////////////////////////////////////////////////////////////
+    DtlTransaction getDtlTransaction(String id);
 
-    public DtlTransaction getDtlTransaction(String id) {
-        return actWithResult(db -> db.getObject(DTL_TRANSACTION_PREFIX + id, ImmutableDtlTransaction.class)).orNull();
-    }
+    void saveDtlTransaction(String id, DtlTransaction dtlTransaction);
 
-    public void cleanDtlTransaction(String id, DtlTransaction dtlTransaction) {
-        DtlTransaction transaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withUploadTask(null)
-                .withBillTotal(0d)
-                .withReceiptPhotoUrl(null)
-                .withMerchantToken(null)
-                .withIsVerified(false)
-                .withDtlTransactionResult(null)
-                .withPoints(0d);
-        saveDtlTransaction(id, transaction);
-    }
-
-    public void saveDtlTransaction(String id, DtlTransaction dtlTransaction) {
-        act(db -> db.put(DTL_TRANSACTION_PREFIX + id, dtlTransaction));
-    }
-
-    public void deleteDtlTransaction(String id) {
-        act(db -> db.del(DTL_TRANSACTION_PREFIX + id));
-    }
+    void deleteDtlTransaction(String id);
 }

@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
-import com.worldventures.dreamtrips.modules.feed.event.FeedItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -45,7 +44,7 @@ public class FeedActionPanelViewActionHandler {
             String id = feedItem.getItem().getUid();
             FeedEntityHolder.Type type = feedItem.getType();
             if (type != FeedEntityHolder.Type.UNDEFINED) {
-                eventBus.post(new FeedItemAnalyticEvent(TrackingHelper.ATTRIBUTE_LIKE, id, type));
+                TrackingHelper.sendActionItemFeed(TrackingHelper.ATTRIBUTE_LIKE, id, type);
             }
         });
 

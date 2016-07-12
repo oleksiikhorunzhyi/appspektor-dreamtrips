@@ -1,47 +1,50 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.net.Uri;
-import android.text.TextUtils;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.dtl.analytics.CaptureReceiptEvent;
+import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
+import com.worldventures.dreamtrips.modules.dtl.analytics.VerifyAmountEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlJobManager;
-import com.worldventures.dreamtrips.modules.dtl.store.DtlMerchantManager;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.ActionState;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresenter.View> {
 
     public static final int REQUESTER_ID = -3;
 
     @Inject
-    SnappyRepository db;
+    DtlMerchantInteractor merchantInteractor;
     @Inject
-    DtlMerchantManager dtlMerchantManager;
-    @Inject
-    DtlJobManager jobManager;
+    DtlTransactionInteractor transactionInteractor;
     //
     @State
-    String amount;
+    double amount;
     //
     private final String merchantId;
     private DtlMerchant dtlMerchant;
-    private DtlTransaction dtlTransaction;
 
     public DtlScanReceiptPresenter(String merchantId) {
         this.merchantId = merchantId;
@@ -50,67 +53,100 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     @Override
     public void onInjected() {
         super.onInjected();
-        dtlMerchant = dtlMerchantManager.getMerchantById(merchantId);
+        merchantInteractor.merchantByIdPipe()
+                .createObservable(new DtlMerchantByIdAction(merchantId))
+                .compose(ImmediateComposer.instance())
+                .subscribe(new ActionStateSubscriber<DtlMerchantByIdAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> dtlMerchant = action.getResult()));
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         apiErrorPresenter.setView(view);
-        dtlTransaction = db.getDtlTransaction(merchantId);
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(transaction -> {
+                    if (transaction.getUploadTask() != null) {
+                        view.hideScanButton();
+                        view.attachReceipt(Uri.parse(transaction.getUploadTask().getFilePath()));
+                    }
+                    //
+                    if (transaction.getBillTotal() != 0d) {
+                        view.preSetBillAmount(transaction.getBillTotal());
+                        this.amount = transaction.getBillTotal();
+                    }
+                    checkVerification(transaction);
+                }, apiErrorPresenter::handleError);
         //
-        if (dtlTransaction.getUploadTask() != null) {
-            view.hideScanButton();
-            view.attachReceipt(Uri.parse(dtlTransaction.getUploadTask().getFilePath()));
-        }
-        //
-        if (dtlTransaction.getBillTotal() != 0d) {
-            view.preSetBillAmount(dtlTransaction.getBillTotal());
-            this.amount = String.valueOf(dtlTransaction.getBillTotal());
-        }
-        //
-        checkVerification();
         //
         view.showCurrency(dtlMerchant.getDefaultCurrency());
         //
         bindApiJob();
     }
 
-    public void onAmountChanged(String amount) {
+    public void onAmountChanged(double amount) {
         this.amount = amount;
         checkVerification();
     }
 
     private void checkVerification() {
-        if (!TextUtils.isEmpty(amount) && dtlTransaction.getUploadTask() != null)
+        transactionInteractor.transactionActionPipe().createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(this::checkVerification, apiErrorPresenter::handleError);
+    }
+
+    private void checkVerification(DtlTransaction transaction) {
+        if (amount > 0d && transaction.getUploadTask() != null) {
             view.enableVerification();
-        else view.disableVerification();
+        } else {
+            view.disableVerification();
+        }
     }
 
     private void bindApiJob() {
-        bindJobCached(jobManager.estimatePointsExecutor)
-                .onProgress(view::showProgress)
-                .onSuccess(dataHolder -> attachDtPoints(dataHolder.getPoints()))
-                .onError(apiErrorPresenter::handleError);
+        transactionInteractor.estimatePointsActionPipe().observe()
+                .takeUntil(state -> state.status == ActionState.Status.SUCCESS
+                        || state.status == ActionState.Status.FAIL)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
+                        .onStart(action -> view.showProgress())
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> attachDtPoints(action.getEstimationPointsHolder().getPoints())));
     }
 
     public void verify() {
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withBillTotal(Double.parseDouble(amount));
-        TrackingHelper.dtlVerifyAmountUser(amount);
-        //
-        jobManager.estimatePointsExecutor.createJobWith(merchantId, dtlTransaction.getBillTotal(),
-                dtlMerchant.getDefaultCurrency().getCode()).subscribe();
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new VerifyAmountEvent(dtlMerchant,
+                        dtlMerchant.getDefaultCurrency().getCode(),
+                        amount)));
+        transactionInteractor.transactionActionPipe()
+                .createObservableResult(
+                        DtlTransactionAction.update(dtlMerchant,
+                                transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                                        .withBillTotal(amount))
+                )
+                .map(DtlTransactionAction::getResult)
+                .flatMap(transaction -> transactionInteractor.estimatePointsActionPipe().createObservableResult(
+                        new DtlEstimatePointsAction(dtlMerchant, transaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode()))
+                ).compose(bindViewIoToMainComposer())
+                .subscribe(action -> {
+                }, apiErrorPresenter::handleError);
     }
 
     private void attachDtPoints(Double points) {
-        TrackingHelper.dtlVerifyAmountSuccess();
-        //
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withPoints(points);
-        //
-        db.saveDtlTransaction(merchantId, dtlTransaction);
-        view.openVerify(dtlTransaction);
+        transactionInteractor.transactionActionPipe()
+                .createObservable(
+                        DtlTransactionAction.update(dtlMerchant,
+                                transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                                        .withPoints(points))
+                ).compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onFail(apiErrorPresenter::handleActionError)
+                        .onSuccess(action -> view.openVerify(action.getResult())));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -139,7 +175,8 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
     }
 
     private void attachPhoto(String filePath) {
-        TrackingHelper.dtlCaptureReceipt(filePath);
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new CaptureReceiptEvent(dtlMerchant)));
         view.attachReceipt(Uri.parse(filePath));
         //
         UploadTask uploadTask = new UploadTask();
@@ -147,11 +184,13 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
         TransferObserver transferObserver = photoUploadingManagerS3.upload(uploadTask);
         uploadTask.setAmazonTaskId(String.valueOf(transferObserver.getId()));
         //
-        dtlTransaction = ImmutableDtlTransaction.copyOf(dtlTransaction)
-                .withUploadTask(uploadTask);
-        db.saveDtlTransaction(merchantId, dtlTransaction);
-        //
-        checkVerification();
+        transactionInteractor.transactionActionPipe()
+                .createObservable(DtlTransactionAction.update(dtlMerchant,
+                        transaction -> ImmutableDtlTransaction.copyOf(transaction)
+                                .withUploadTask(uploadTask)))
+                .subscribe(new ActionStateSubscriber<DtlTransactionAction>()
+                        .onSuccess(action -> checkVerification(action.getResult()))
+                        .onFail(apiErrorPresenter::handleActionError));
     }
 
     public interface View extends RxView, ApiErrorView {

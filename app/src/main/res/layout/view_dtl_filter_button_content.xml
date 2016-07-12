@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+    >
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/dtlfb_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dtlfb_caption_text_size"
+        android:text="@string/dtlfb_caption"
+        android:layout_gravity="center"
+        app:textAllCaps="true"
+        android:textAllCaps="true"
+        android:drawableLeft="@drawable/ic_dtl_filter_button_disabled"
+        android:drawablePadding="@dimen/dtlfb_icon_padding"
+        tools:textColor="@color/dtlfb_disabled_caption_color"
+        />
+
+    <View
+        android:id="@+id/dtlfb_separator"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/dtlt_location_separator"
+        android:layout_gravity="end"
+        />
+</FrameLayout>

@@ -7,15 +7,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.jakewharton.rxbinding.widget.TextViewAfterTextChangeEvent;
-import com.messenger.flow.path.StyledPath;
 import com.messenger.ui.adapter.cell.CheckableUserCell;
 import com.messenger.ui.adapter.cell.HeaderCell;
 import com.messenger.ui.anim.WeightSlideAnimator;
@@ -28,7 +25,9 @@ import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.SelectionListenerEditText;
 import com.messenger.util.ScrollStatePersister;
 import com.techery.spares.adapter.BaseDelegateAdapter;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 
 import java.util.List;
 
@@ -94,15 +93,10 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         BaseDelegateAdapter<Object> adapter = new BaseDelegateAdapter<>(getContext(), injector);
         adapter.registerCell(SelectableDataUser.class, CheckableUserCell.class);
         adapter.registerCell(Header.class, HeaderCell.class);
-        adapter.registerDelegate(SelectableDataUser.class, new CheckableUserCell.Delegate() {
+        adapter.registerDelegate(SelectableDataUser.class, new CellDelegate<SelectableDataUser>() {
             @Override
             public void onCellClicked(SelectableDataUser model) {
-                getPresenter().openUserProfile(model.getDataUser());
-            }
-
-            @Override
-            public void onItemSelectChanged(SelectableDataUser item) {
-                getPresenter().onItemSelectChange(item);
+                getPresenter().onItemSelectChange(model);
             }
         });
         return adapter;

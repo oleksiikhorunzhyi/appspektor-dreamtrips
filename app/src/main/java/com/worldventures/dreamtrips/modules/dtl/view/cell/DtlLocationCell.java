@@ -49,6 +49,5 @@ public class DtlLocationCell extends AbstractDelegateCell<DtlExternalLocation, C
 
     @Override
     public void prepareForReuse() {
-        //
     }
 }

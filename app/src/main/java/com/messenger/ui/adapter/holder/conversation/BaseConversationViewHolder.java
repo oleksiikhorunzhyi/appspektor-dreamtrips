@@ -75,6 +75,10 @@ public abstract class BaseConversationViewHolder extends BaseViewHolder
                                 String attachmentType, DataTranslation translation) {
         lastMessageInflater.setLastMessage(conversation, message, messageAuthor, currentUser,
                 attachmentType, translation);
+        updateLastMessageDateTextView();
+    }
+
+    protected void updateLastMessageDateTextView() {
         lastMessageDateInflater.setDate(conversation);
     }
 

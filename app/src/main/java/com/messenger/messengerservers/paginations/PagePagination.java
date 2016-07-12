@@ -7,14 +7,14 @@ import rx.subjects.PublishSubject;
 
 
 public abstract class PagePagination<T> {
-    protected PublishSubject<List<T>> publishSubject = PublishSubject.create();
+    protected PublishSubject<List<T>> paginationObservable = PublishSubject.create();
     protected int pageSize;
 
     public PagePagination(int sizePerPage) {
         this.pageSize = sizePerPage;
     }
 
-    public abstract void loadPage(String conversationId, int page, long offset);
+    public abstract Observable<List<T>> loadPage(String conversationId, int page, long offset);
 
     public int getPageSize() {
         return pageSize;
@@ -22,9 +22,5 @@ public abstract class PagePagination<T> {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
-    }
-
-    public Observable<List<T>> getPageObservable() {
-        return publishSubject.asObservable();
     }
 }

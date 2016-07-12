@@ -42,13 +42,12 @@
 
     <color name="user_status_text_shadow">#AA000000</color>
 
+    <color name="dtlOfferItemExpirationBackground">#53B5FE</color>
     <color name="dtl_tab_text_normal">#B1B2B1</color>
     <color name="dtl_tab_text_selected">#005e92</color>
     <color name="dtl_tab_indicator">#53b5fe</color>
-    <color name="dtl_tab_background_normal">@android:color/white</color>
-    <color name="dtl_tab_background_selected">#EDEDED</color>
 
-    <color name="dtl_cities_background">#eeeeee</color>
+    <color name="light_grey_background">#eeeeee</color>
     <color name="dtl_cities_text_color">#929292</color>
     <color name="dtl_badge_color">#8896a6b6</color>
 
@@ -61,8 +60,28 @@
 
     <color name="perks_text_color">#222222</color>
 
+    <color name="pin_progress_bg_for_white_holder">#A5A5A5</color>
+
     <color name="open">#6ebffc</color>
     <color name="closed">#fe5353</color>
+
+    <!-- <DTL Toolbar colors> -->
+    <!-- these shall have 'dtlt_' prefix -->
+    <color name="dtlt_input_text_color">#222</color>
+    <color name="dtlt_location_change_city_name">#222</color>
+    <color name="dtlt_location_separator">#C2C2C2</color>
+    <color name="dtlt_input_hint_color">#9B9B9B</color>
+    <!-- </DTL Toolbar dimens> -->
+
+    <!-- <DTL FilterButton colors> -->
+    <!-- these shall have 'dtlfb_' prefix -->
+    <color name="dtlfb_enabled_background_color">#53b5fe</color>
+    <color name="dtlfb_disabled_background_color">@android:color/white</color>
+    <color name="dtlfb_enabled_caption_color">@android:color/white</color>
+    <color name="dtlfb_disabled_caption_color">#222</color>
+    <color name="dtlfb_ceparator_color">#979797</color>
+    <!-- </DTL FilterButton dimens> -->
+
     <color name="facebook_color">#3C5A99</color>
     <color name="share_camera_color">#929292</color>
     <color name="share_photo_bg_color">#EEEEEE</color>
@@ -120,7 +139,7 @@
     <color name="conversation_list_last_message_date">@color/conversation_list_message</color>
     <color name="conversation_list_more_button_background">#505050</color>
     <color name="conversation_list_delete_button_background">#FA6D6D</color>
-    <color name="conversation_list_closed_conversation">#FB7687</color>
+    <color name="conversation_list_closed_conversation">#FE5B5C</color>
 
     <!-- Chat settings screen -->
     <color name="chat_settings_chat_name_title_textview">#0F0F0F</color>
@@ -129,7 +148,7 @@
     <color name="chat_settings_divider">#e1e1e1</color>
     <color name="chat_settings_action_white_button_text_color">@color/chat_settings_row_text_view</color>
     <color name="chat_settings_action_red_button_text_color">@color/white</color>
-    <color name="chat_settings_group_info_text_view_color">#3e3d3e</color>
+    <color name="chat_settings_group_info_text_view_color">#803e3d3e</color>
     <color name="chat_settings_background">#FAFAFA</color>
 
     <!-- Chat memvers screen -->
@@ -147,6 +166,9 @@
     <color name="translation_state_translated">#53B5FE</color>
 
     <color name="cropping_selected_button">#41A4FD</color>
+
+    <color name="chat_error_message_color">#EC6A6A</color>
+    <color name="retry_send_message_dialog_button_text_color">#2b9bf3</color>
 
     <!--end messenger-->
 </resources>

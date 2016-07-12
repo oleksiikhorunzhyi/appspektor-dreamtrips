@@ -1,16 +1,19 @@
 package com.messenger.ui.view.chat;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +39,7 @@ import com.messenger.ui.module.flagging.FlaggingViewImpl;
 import com.messenger.ui.presenter.ChatScreenPresenter;
 import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ToolbarPresenter;
+import com.messenger.ui.util.chat.ChatTimestampFormatter;
 import com.messenger.ui.util.chat.anim.TimestampItemAnimator;
 import com.messenger.ui.view.layout.MessengerPathLayout;
 import com.messenger.ui.widget.ChatUsersTypingView;
@@ -66,6 +70,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
     @Inject
     ChatTimestampInflater chatTimestampInflater;
+    @Inject
+    ChatTimestampFormatter chatTimestampFormatter;
 
     @InjectView(R.id.chat_content_view)
     ViewGroup contentView;
@@ -97,7 +103,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     private Handler handler = new Handler();
     private final Runnable openPikerTask = this::openPicker;
 
+    private ProgressDialog progressDialog;
     private FlaggingView flaggingView;
+    private View reloadHistoryView;
 
     private PublishSubject<String> attachmentClickStream = PublishSubject.create();
     private PublishSubject<DataMessage> lastVisibleItemStream = PublishSubject.create();
@@ -142,14 +150,15 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (adapter == null || adapter.getCursor() == null) return;
 
+                int headersCount = adapter.getHeaderViewCount();
                 int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
                 int lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
                 int totalItem = linearLayoutManager.getItemCount();
-                onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem);
+                onLastVisibleMessageChanged(adapter.getCursor(), lastVisibleItem - headersCount);
 
                 if (dy > 0) return;
 
-                if (firstVisibleItem <= THRESHOLD && totalItem > 0) {
+                if (firstVisibleItem <= THRESHOLD + headersCount && totalItem > headersCount) {
                     getPresenter().onNextPageReached();
                 }
             }
@@ -168,6 +177,9 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
         // and restore instace state is called before onAttachedToWindow() also.
         // Make sure to have the view prepared before this.
         flaggingView = new FlaggingViewImpl(this, injector);
+
+        reloadHistoryView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_reload_chat_hystory, recyclerView, false);
+        reloadHistoryView.findViewById(R.id.reload).setOnClickListener(v -> getPresenter().onReloadHistoryRequired());
     }
 
     @Override
@@ -312,23 +324,40 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
+    public void enableReloadChatButton(long clearDate) {
+        String timestamp = chatTimestampFormatter.getMessageTimestamp(clearDate);
+        ((TextView)reloadHistoryView.findViewById(R.id.timestamp)).setText(timestamp);
+        adapter.addHeaderView(reloadHistoryView);
+    }
+
+    @Override
+    public void disableReloadChatButton() {
+        adapter.removeHeaderView(reloadHistoryView);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog = ProgressDialog.show(getContext(), null, null);
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        if (progressDialog != null) progressDialog.dismiss();
+    }
+
+    @Override
+    public void showErrorMessage(@StringRes int error_no_connection) {
+        Snackbar.make(this, error_no_connection, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void setShowMarkUnreadMessage(boolean needShow) {
         if (adapter != null) adapter.setNeedMarkUnreadMessages(needShow);
     }
 
     @Override
-    public void addTypingUser(DataUser user) {
-        chatUsersTypingView.addTypingUser(user);
-    }
-
-    @Override
-    public void removeTypingUser(DataUser user) {
-        chatUsersTypingView.removeTypingUser(user);
-    }
-
-    @Override
-    public void removeAllTypingUsers() {
-        chatUsersTypingView.removeAllTypingUsers();
+    public void changeTypingUsers(List<DataUser> user) {
+        chatUsersTypingView.changeTypingUsers(user);
     }
 
     @Override
@@ -352,7 +381,7 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
 
             // to calculate proper offset measure if first visible view will be different in height
             // (e.g. because of the missing date divider) when new cursor will is assigned
-            MessageViewHolder messageHolder = adapter.onCreateViewHolder(recyclerView,
+            MessageViewHolder messageHolder = adapter.onCreateElementViewHolder(recyclerView,
                     adapter.getItemViewType(position));
             adapter.onBindViewHolderCursor(messageHolder, cursor);
             messageHolder.itemView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);

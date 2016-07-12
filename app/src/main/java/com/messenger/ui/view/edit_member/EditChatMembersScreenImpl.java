@@ -3,6 +3,8 @@ package com.messenger.ui.view.edit_member;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -38,6 +40,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Observable;
+import rx.functions.Action0;
 
 public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembersScreen,
         EditChatMembersScreenPresenter, EditChatPath> implements EditChatMembersScreen {
@@ -208,5 +211,10 @@ public class EditChatMembersScreenImpl extends MessengerPathLayout<EditChatMembe
     public Parcelable onSaveInstanceState() {
         return scrollStatePersister.saveScrollState(super.onSaveInstanceState(),
                 linearLayoutManager);
+    }
+
+    @Override
+    public void showMessage(@StringRes int text) {
+        Snackbar.make(this, text, Snackbar.LENGTH_SHORT).show();
     }
 }

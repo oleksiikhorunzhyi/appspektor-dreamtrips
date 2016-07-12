@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.model.ChatUser;
 import com.messenger.ui.anim.SimpleAnimatorListener;
 import com.worldventures.dreamtrips.R;
@@ -118,20 +119,9 @@ public class ChatUsersTypingView extends RelativeLayout {
         return animator;
     }
 
-    public void addTypingUser(ChatUser typingUser) {
-        if (!typingUsers.contains(typingUser)) {
-            this.typingUsers.add(typingUser);
-            updateUI();
-        }
-    }
-
-    public void removeTypingUser(ChatUser typingUser) {
-        this.typingUsers.remove(typingUser);
-        updateUI();
-    }
-
-    public void removeAllTypingUsers() {
+    public void changeTypingUsers(List<DataUser> users) {
         typingUsers.clear();
+        typingUsers.addAll(users);
         updateUI();
     }
 

@@ -101,7 +101,6 @@
     <string name="chat_settings_row_shared_content">Megosztott tartalom</string>
     <string name="chat_settings_row_members_format">Tagok (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Új admin kijelölése</string>
-    <string name="chat_settings_row_clear_history">Előzmények törlése</string>
     <string name="chat_settings_row_leave_chat">Kilépés a csevegésből</string>
     <string name="chat_settings_row_delete_chat">Csevegés törlése</string>
     <string name="chat_settings_group_chat_info_text_format">Ezt a csoportot %s hozta létre</string>

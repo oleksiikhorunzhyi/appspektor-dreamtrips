@@ -11,6 +11,7 @@ import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.ParticipantsDAO;
+import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.ui.view.conversation.ConversationsPath;
 import com.messenger.ui.view.edit_member.EditChatMembersScreen;
@@ -174,6 +175,10 @@ public class EditChatMembersScreenPresenterImpl extends MessengerPresenterImpl<E
 
     @Override
     public void onDeleteUserFromChatConfirmed(DataUser user) {
+        if (currentConnectivityStatus != SyncStatus.CONNECTED) {
+            getView().showMessage(R.string.no_connection);
+            return;
+        }
         chatGroupCommandsInteractor.getKickChatPipe()
                 .send(new KickChatCommand(conversationId, user.getId()));
     }

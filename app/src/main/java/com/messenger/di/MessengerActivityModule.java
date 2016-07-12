@@ -1,14 +1,13 @@
 package com.messenger.di;
 
-
 import android.app.Activity;
 
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.delegate.chat.ChatGroupCommandsInteractor;
-
 import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.ChatAdapter;
 import com.messenger.ui.adapter.holder.chat.ChatHolderModule;
+import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
 import com.messenger.ui.helper.LegacyPhotoPickerDelegate;
 import com.messenger.ui.module.flagging.FlaggingPresenterImpl;
 import com.messenger.ui.presenter.AddChatMembersScreenPresenterImpl;
@@ -17,12 +16,12 @@ import com.messenger.ui.presenter.ChatScreenPresenterImpl;
 import com.messenger.ui.presenter.ConversationListScreenPresenterImpl;
 import com.messenger.ui.presenter.EditChatMembersScreenPresenterImpl;
 import com.messenger.ui.presenter.MessengerActivityPresenter;
-import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
 import com.messenger.ui.presenter.NewChatScreenPresenterImpl;
-import com.messenger.ui.presenter.SingleChatSettingsScreenPresenterImpl;
+import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenterImpl;
+import com.messenger.ui.presenter.settings.SingleChatSettingsScreenPresenterImpl;
+import com.messenger.ui.presenter.settings.TripChatScreenPresenterImpl;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegateImpl;
-import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
 import com.messenger.ui.view.chat.ChatScreenImpl;
 import com.messenger.ui.view.conversation.ConversationListScreenImpl;
 import com.messenger.ui.view.edit_member.EditChatMembersScreenImpl;
@@ -41,7 +40,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-
 
 @Module(
         includes = {
@@ -65,8 +63,11 @@ import dagger.Provides;
                 ChatMembersScreenPresenterImpl.class,
                 NewChatScreenPresenterImpl.class,
                 AddChatMembersScreenPresenterImpl.class,
+
                 SingleChatSettingsScreenPresenterImpl.class,
-                MultiChatSettingsScreenPresenter.class,
+                GroupChatSettingsScreenPresenterImpl.class,
+                TripChatScreenPresenterImpl.class,
+
                 ConversationListScreenPresenterImpl.class,
                 EditChatMembersScreenPresenterImpl.class,
                 FlaggingPresenterImpl.class,

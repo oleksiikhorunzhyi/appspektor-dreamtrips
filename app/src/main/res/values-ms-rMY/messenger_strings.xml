@@ -101,7 +101,6 @@
     <string name="chat_settings_row_shared_content">Kandungan Berkongsi</string>
     <string name="chat_settings_row_members_format">Ahli (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin"> Lantik pentadbir baharu </string>
-    <string name="chat_settings_row_clear_history">Padam sejarah</string>
     <string name="chat_settings_row_leave_chat">Meninggalkan Sembang</string>
     <string name="chat_settings_row_delete_chat">Hapus Sembang</string>
     <string name="chat_settings_group_chat_info_text_format">Kumpulan ini dicipta oleh %s</string>

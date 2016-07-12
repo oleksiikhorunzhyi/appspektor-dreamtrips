@@ -20,7 +20,7 @@ import com.worldventures.dreamtrips.core.utils.GraphicUtils;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public abstract class ImageMessageViewHolder extends MessageViewHolder {
+public abstract class ImageMessageViewHolder extends UserMessageViewHolder {
 
     @InjectView(R.id.chat_image_post_image_view)
     SimpleDraweeView imagePostView;

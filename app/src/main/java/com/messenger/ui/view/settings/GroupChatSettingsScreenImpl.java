@@ -2,6 +2,8 @@ package com.messenger.ui.view.settings;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -9,31 +11,33 @@ import android.widget.ProgressBar;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataUser;
+import com.messenger.ui.dialog.ChangeSubjectDialog;
+import com.messenger.ui.dialog.LeaveChatDialog;
 import com.messenger.ui.helper.ConversationUIHelper;
-import com.messenger.ui.presenter.ChatSettingsScreenPresenter;
-import com.messenger.ui.presenter.MultiChatSettingsScreenPresenter;
+import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenter;
+import com.messenger.ui.presenter.settings.GroupChatSettingsScreenPresenterImpl;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 import com.messenger.ui.widget.ChatSettingsRow;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import rx.Observable;
+import rx.functions.Action0;
 
-public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends ChatSettingsScreenImpl<GroupChatSettingsScreen, P>
-    implements GroupChatSettingsScreen {
+public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath>
+        extends BaseChatSettingsScreen<GroupChatSettingsScreen, GroupChatSettingsScreenPresenter, P>
+        implements GroupChatSettingsScreen {
 
-    @InjectView(R.id.chat_settings_group_avatars_view_progress_bar)
-    ProgressBar groupAvatarsViewProgressBar;
+    @InjectView(R.id.chat_settings_group_avatars_view_progress_bar) ProgressBar groupAvatarsViewProgressBar;
+
+    @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
 
     private ChatSettingsRow membersSettingsRow;
-
-    @Inject
-    MessengerMediaPickerDelegate messengerMediaPickerDelegate;
 
     public GroupChatSettingsScreenImpl(Context context) {
         super(context);
@@ -99,13 +103,36 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
 
     @NonNull
     @Override
-    public ChatSettingsScreenPresenter<GroupChatSettingsScreen> createPresenter() {
-        return new MultiChatSettingsScreenPresenter(getContext(), injector, getPath().getConversationId());
+    public GroupChatSettingsScreenPresenter createPresenter() {
+        return new GroupChatSettingsScreenPresenterImpl(getContext(), injector, getPath().getConversationId());
     }
 
     @Override
     public Observable<String> getAvatarImagePathsStream() {
         return messengerMediaPickerDelegate.getImagePathsStream();
+    }
+
+
+    @OnClick(R.id.chat_settings_leave_chat_button)
+    void onLeaveChatButtonClicked() {
+        getPresenter().onLeaveButtonClick();
+    }
+
+    public void showLeaveChatDialog(String message) {
+        new LeaveChatDialog(getContext(), message)
+                .setPositiveListener(getPresenter()::onLeaveChatClicked)
+                .show();
+    }
+
+    @Override
+    public void showSubjectDialog(String currentSubject) {
+        new ChangeSubjectDialog(getContext(), currentSubject)
+                .setPositiveListener(this::onSubjectEntered)
+                .show();
+    }
+
+    private void onSubjectEntered(String subject) {
+        getPresenter().applyNewChatSubject(subject);
     }
 
     @Override
@@ -131,5 +158,12 @@ public class GroupChatSettingsScreenImpl<P extends GroupSettingsPath> extends Ch
     @Override
     public void setLeaveButtonVisible(boolean visible) {
         leaveChatButton.setVisibility(visible ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void showMessage(@StringRes int text, Action0 action) {
+        Snackbar.make(this, text, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.retry, v -> action.call())
+                .show();
     }
 }

@@ -1,8 +1,8 @@
 package com.messenger.delegate.chat;
 
-import android.util.Pair;
-
+import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.messengerservers.constant.MessageStatus;
@@ -11,6 +11,7 @@ import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.MessageHelper;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
@@ -35,17 +36,20 @@ public class ChatMessagesEventDelegate {
     private MessageDAO messageDAO;
     private LoadConversationDelegate loadConversationDelegate;
     private DecomposeMessagesHelper decomposeMessagesHelper;
+    private UsersDelegate usersDelegate;
 
     private PublishSubject<Notification<DataMessage>> receivedSavedMessageStream = PublishSubject.create();
 
     @Inject
     public ChatMessagesEventDelegate(ConversationsDAO conversationsDAO, MessageDAO messageDAO,
                                      LoadConversationDelegate loadConversationDelegate,
-                                     DecomposeMessagesHelper decomposeMessagesHelper) {
+                                     DecomposeMessagesHelper decomposeMessagesHelper,
+                                     UsersDelegate usersDelegate) {
         this.conversationsDAO = conversationsDAO;
         this.messageDAO = messageDAO;
         this.loadConversationDelegate = loadConversationDelegate;
         this.decomposeMessagesHelper = decomposeMessagesHelper;
+        this.usersDelegate = usersDelegate;
     }
 
     public void onReceivedMessage(Message message) {
@@ -96,13 +100,17 @@ public class ChatMessagesEventDelegate {
                 .compose(new NonNullFilter<>())
                 .switchIfEmpty(loadConversationDelegate
                         .loadConversationFromNetworkAndRefreshFromDb(message.getConversationId()))
-                .map(conversation -> message)
+                .flatMap(conversation -> usersDelegate.loadMissingUsers(Queryable.from(message.getToId(),
+                        message.getFromId()).notNulls().toList()))
+                .map(loadedMissingUsers -> message)
                 .subscribe(this::saveReceivedMessage);
     }
 
     private void saveReceivedMessage(Message message) {
         saveMessage(message, MessageStatus.SENT);
-        conversationsDAO.incrementUnreadField(message.getConversationId());
+        if (MessageHelper.isUserMessage(message)) {
+            conversationsDAO.incrementUnreadField(message.getConversationId());
+        }
         messageDAO.getMessage(message.getId()).take(1).subscribe(dataMessage -> {
             receivedSavedMessageStream.onNext(Notification.createOnNext(dataMessage));
         }, e -> {

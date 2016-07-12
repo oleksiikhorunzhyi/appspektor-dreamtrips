@@ -356,18 +356,8 @@ public class ChatScreenImpl extends MessengerPathLayout<ChatScreen, ChatScreenPr
     }
 
     @Override
-    public void addTypingUser(DataUser user) {
-        chatUsersTypingView.addTypingUser(user);
-    }
-
-    @Override
-    public void removeTypingUser(DataUser user) {
-        chatUsersTypingView.removeTypingUser(user);
-    }
-
-    @Override
-    public void removeAllTypingUsers() {
-        chatUsersTypingView.removeAllTypingUsers();
+    public void changeTypingUsers(List<DataUser> user) {
+        chatUsersTypingView.changeTypingUsers(user);
     }
 
     @Override

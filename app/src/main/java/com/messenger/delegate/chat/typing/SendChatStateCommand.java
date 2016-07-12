@@ -6,12 +6,12 @@ import com.messenger.messengerservers.chat.ChatState;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class ChatStateCommand extends BaseChatCommand<String> {
+public class SendChatStateCommand extends BaseChatCommand<String> {
 
     @ChatState.State
     private String chatState;
 
-    public ChatStateCommand(String conversationId, @ChatState.State String chatState) {
+    public SendChatStateCommand(String conversationId, @ChatState.State String chatState) {
         super(conversationId);
         this.chatState = chatState;
     }

@@ -1,7 +1,9 @@
 package com.messenger.initializer;
 
+import com.messenger.delegate.chat.typing.TypingManager;
 import com.messenger.messengerservers.GlobalEventEmitter;
 import com.messenger.messengerservers.MessengerServerFacade;
+import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.util.ChatFacadeManager;
@@ -13,6 +15,7 @@ import javax.inject.Inject;
 public class ChatFacadeInitializer implements AppInitializer {
     @Inject MessengerServerFacade messengerServerFacade;
     @Inject ChatFacadeManager chatFacadeManager;
+    @Inject TypingManager typingManager;
 
     @Override
     public void initialize(Injector injector) {
@@ -41,6 +44,7 @@ public class ChatFacadeInitializer implements AppInitializer {
                 chatFacadeManager.onErrorMessage(message);
             }
         });
+        emitter.addOnChatStateChangedListener(this::handleChatState);
 
         chatFacadeManager.processJoinedEvents(emitter.createChatJoinedObservable());
         emitter.addOnMessagesDeletedListener(chatFacadeManager::onMessagesDeleted);
@@ -53,4 +57,14 @@ public class ChatFacadeInitializer implements AppInitializer {
         emitter.addOnRevertClearingEventListener(chatFacadeManager::onRevertClearing);
     }
 
+    public void handleChatState(String conversationId, String userId, @ChatState.State String chatState) {
+        switch (chatState) {
+            case ChatState.COMPOSING:
+                typingManager.userStartTyping(conversationId, userId);
+                break;
+            case ChatState.PAUSE:
+                typingManager.userStopTyping(conversationId, userId);
+                break;
+        }
+    }
 }

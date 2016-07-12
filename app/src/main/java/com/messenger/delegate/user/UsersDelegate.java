@@ -45,11 +45,11 @@ public class UsersDelegate {
                 .flatMap(this::loadAndSaveUsers);
     }
 
-    private List<MessengerUser> obtainNotExistingUsers(List<DataUser> existingUsers, List<String> userIds) {
+    private List<MessengerUser> obtainNotExistingUsers(List<String> existingUserIds, List<String> userIds) {
         return Queryable.from(userIds)
                 .filter(id -> {
-                    for (DataUser existingUser : existingUsers) {
-                        if (TextUtils.equals(existingUser.getId(), id)) return false;
+                    for (String existingUserId : existingUserIds) {
+                        if (TextUtils.equals(existingUserId, id)) return false;
                     }
                     return true;
                 })

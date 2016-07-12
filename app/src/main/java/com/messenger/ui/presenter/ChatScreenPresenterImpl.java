@@ -67,7 +67,6 @@ import flow.History;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.observables.ConnectableObservable;
 import timber.log.Timber;
@@ -127,7 +126,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         bindMessagePaginationDelegate();
         bindUnreadMessagesDelegate();
         connectToPhotoPicker();
-        connectToRevertClearingChatPipe();
+        connectToClearEvents();
 
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
     }
@@ -262,25 +261,22 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
                         .filter(paginationStatus ->
                                 paginationStatus.getStatus() == MessagesPaginationDelegate.Status.SUCCESS),
                 conversationDAO.getConversation(conversationId)
-                        .compose(new NonNullFilter<>())
-                        .observeOn(AndroidSchedulers.mainThread()),
-                this::changeRestoreHistoryAvailability)
+                        .compose(new NonNullFilter<>()), (paginationStatus, conversation) -> conversation)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(aVoid -> {}, e -> Timber.e(e, ""));
+                .subscribe(conversation ->
+                        changeRestoreHistoryAvailability(messagesPaginationDelegate.hasMoreElements(), conversation),
+                        e -> Timber.e(e, ""));
 
         paginationObservable.connect();
     }
 
-    private Void changeRestoreHistoryAvailability(PaginationStatus paginationStatus, DataConversation conversation) {
+    private void changeRestoreHistoryAvailability(boolean hasMoreElements, DataConversation conversation) {
         //noinspection ConstantConditions
-        if (paginationStatus.getLoadedElementsCount() < MessagesPaginationDelegate.MAX_MESSAGES_PER_PAGE
-                && ConversationHelper.isCleared(conversation)) {
-            messagesPaginationDelegate.setPage(0);
+        if (!hasMoreElements && ConversationHelper.isCleared(conversation)) {
             getView().enableReloadChatButton(conversation.getClearTime());
         } else {
             getView().disableReloadChatButton();
         }
-        return null;
     }
 
     @Override
@@ -606,12 +602,18 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         }
     }
 
-    private void connectToRevertClearingChatPipe() {
+    private void connectToClearEvents() {
         chatEventInteractor.getEventRevertClearingChatPipe()
                 .observeSuccess()
                 .compose(bindViewIoToMainComposer())
                 .filter(command -> TextUtils.equals(command.getConversationId(), conversationId))
                 .subscribe(command -> messagesPaginationDelegate.forceLoadNextPage());
+
+        chatEventInteractor.getEventClearChatPipe()
+                .observeSuccess()
+                .compose(bindView())
+                .filter(command -> TextUtils.equals(command.getConversationId(), conversationId))
+                .subscribe(command -> messagesPaginationDelegate.reset());
     }
 
     ///////////////////////////////////////////////////////////////////////////

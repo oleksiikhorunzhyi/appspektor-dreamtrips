@@ -7,7 +7,9 @@ import com.messenger.delegate.command.BaseChatCommand;
 import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.paginations.ImmutablePaginationResult;
 import com.messenger.messengerservers.paginations.PagePagination;
+import com.messenger.messengerservers.paginations.PaginationResult;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.DecomposeMessagesHelper;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
@@ -26,7 +28,7 @@ import rx.Observable;
 import static com.innahema.collections.query.queriables.Queryable.from;
 
 @CommandAction
-public class LoadChatMessagesCommand extends BaseChatCommand<List<Message>>
+public class LoadChatMessagesCommand extends BaseChatCommand<PaginationResult<Message>>
         implements InjectableAction {
 
     @Inject UsersDelegate usersDelegate;
@@ -47,14 +49,14 @@ public class LoadChatMessagesCommand extends BaseChatCommand<List<Message>>
     }
 
     @Override
-    protected void run(CommandCallback<List<Message>> callback) throws Throwable {
+    protected void run(CommandCallback<PaginationResult<Message>> callback) throws Throwable {
         PagePagination<Message> pagination = messengerServerFacade.getPaginationManager()
                 .getConversationHistoryPagination();
         pagination.setPageSize(pageSize);
         pagination.loadPage(conversationId, page, beforeMessageTimestamp)
-                .compose(this::filterAndRemoveDeletedMessages)
+                .map(this::filterAndRemoveDeletedMessages)
                 .flatMap(this::prepareUsers)
-                .doOnNext(this::saveMessages)
+                .doOnNext(paginationResult -> saveMessages(paginationResult.getResult()))
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 
@@ -64,17 +66,21 @@ public class LoadChatMessagesCommand extends BaseChatCommand<List<Message>>
         decomposeMessagesHelper.saveDecomposeMessage(result);
     }
 
-    private Observable<List<Message>> prepareUsers(List<Message> messages) {
+    private Observable<PaginationResult<Message>> prepareUsers(PaginationResult<Message> paginationResult) {
+        List<Message> messages = paginationResult.getResult();
+        if (messages.isEmpty()) return Observable.just(paginationResult);
         List<String> usersIds = from(messages).map(Message::getFromId).notNulls()
                 .union(from(messages).map(Message::getToId).notNulls())
                 .distinct().toList();
-        if (!usersIds.isEmpty()) return usersDelegate.loadMissingUsers(usersIds).map(users -> messages);
-        return Observable.just(messages);
+        if (!usersIds.isEmpty()) return usersDelegate.loadMissingUsers(usersIds).map(users -> paginationResult);
+        return Observable.just(paginationResult);
     }
 
-    private Observable<List<Message>> filterAndRemoveDeletedMessages(Observable<List<Message>> messagesObservable) {
-        return messagesObservable
-                .map(this::separateNonDeletedMessageAndRemoveDeleted);
+    private PaginationResult<Message> filterAndRemoveDeletedMessages(PaginationResult<Message> paginationResult) {
+        return ImmutablePaginationResult.<Message>builder()
+                .from(paginationResult)
+                .result(separateNonDeletedMessageAndRemoveDeleted(paginationResult.getResult()))
+                .build();
     }
 
     private List<Message> separateNonDeletedMessageAndRemoveDeleted(@NonNull List<Message> messages) {

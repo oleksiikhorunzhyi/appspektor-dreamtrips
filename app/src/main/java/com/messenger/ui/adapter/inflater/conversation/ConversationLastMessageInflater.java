@@ -54,7 +54,7 @@ public class ConversationLastMessageInflater extends ViewInflater {
                                      String attachmentType, DataTranslation dataTranslation) {
         String messageText = null;
         if (!TextUtils.isEmpty(message.getText())) {
-            if (MessageVersionHelper.isUnsupported(message.getVersion(), attachmentType))
+            if (MessageVersionHelper.isUnsupported(attachmentType))
                 messageText = Html.fromHtml(context.getString(R.string.chat_update_proposition)).toString();
             else if (dataTranslation.getTranslateStatus() == TranslationStatus.TRANSLATED)
                 messageText = dataTranslation.getTranslation();
@@ -66,6 +66,8 @@ public class ConversationLastMessageInflater extends ViewInflater {
             } else if (ConversationHelper.isGroup(dataConversation) && !TextUtils.isEmpty(messageAuthor)) {
                 messageText = TextUtils.getTrimmedLength(messageAuthor) > 0 ? messageAuthor + ": " + messageText : messageText;
             }
+        } else if (ConversationHelper.isCleared(dataConversation)) {
+            return context.getString(R.string.chat_reload_chat_history_info_text);
         }
         return messageText;
     }

@@ -4,6 +4,7 @@ import android.net.SSLCertificateSocketFactory;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.messenger.messengerservers.ChatExtensions;
 import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.LoaderManager;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -39,7 +40,7 @@ public class XmppServerFacade implements MessengerServerFacade {
 
     private static final long PACKET_REPLAY_TIMEOUT = TimeUnit.SECONDS.toMillis(60L);
     private static final int TIME_PING_INTERVAL = 45; // secs
-    private static final String WV_API_PROTOCOL_VERSION = "3.0";
+    private static final String WV_API_PROTOCOL_VERSION = "4.0";
 
     private XmppServerParams serverParams;
     // TODO: 4/28/16 not rx way
@@ -52,6 +53,7 @@ public class XmppServerFacade implements MessengerServerFacade {
     private final PaginationManager paginationManager;
     private final XmppGlobalEventEmitter globalEventEmitter;
     private final ChatManager chatManager;
+    private final XmppChatExtensions chatExtensions;
 
     // TODO: 4/28/16 remove GSON, use converter interface
     private final Gson gson;
@@ -76,6 +78,7 @@ public class XmppServerFacade implements MessengerServerFacade {
         loaderManager = new XmppLoaderManager(this);
         paginationManager = new XmppPaginationManager(this);
         chatManager = new XmppChatManager(this);
+        chatExtensions = new XmppChatExtensions(this);
     }
 
     private MessengerConnection createConnection() {
@@ -204,6 +207,11 @@ public class XmppServerFacade implements MessengerServerFacade {
     @Override
     public Observable<ConnectionStatus> getStatusObservable() {
         return connectionStatusSubject.asObservable();
+    }
+
+    @Override
+    public ChatExtensions getChatExtensions() {
+        return chatExtensions;
     }
 
     public Gson getGson() {

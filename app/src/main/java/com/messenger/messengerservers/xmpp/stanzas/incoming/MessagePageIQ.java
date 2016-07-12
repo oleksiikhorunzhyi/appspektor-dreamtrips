@@ -4,7 +4,6 @@ import com.messenger.messengerservers.model.Message;
 
 import org.jivesoftware.smack.packet.IQ;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MessagePageIQ extends IQ {
@@ -13,18 +12,20 @@ public class MessagePageIQ extends IQ {
     public static final String ELEMENT_CHAT = "chat";
 
     private List<Message> messages;
+    private int loadedCount;
 
-    public MessagePageIQ() {
+    public MessagePageIQ(List<Message> messages, int loadedCount) {
         super(ELEMENT_CHAT, NAMESPACE);
-        messages = new ArrayList<>();
-    }
-
-    public void add(Message message) {
-        messages.add(message);
+        this.messages = messages;
+        this.loadedCount = loadedCount;
     }
 
     public List<Message> getMessages() {
         return messages;
+    }
+
+    public int getLoadedCount() {
+        return loadedCount;
     }
 
     @Override

@@ -13,16 +13,20 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.analytics.ConversationAnalyticsDelegate;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.delegate.StartChatDelegate;
-import com.messenger.delegate.chat.ChatTypingDelegate;
+import com.messenger.delegate.chat.ChatExtensionInteractor;
 import com.messenger.delegate.chat.MessagesPaginationDelegate;
+import com.messenger.delegate.chat.MessagesPaginationDelegate.PaginationStatus;
 import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
-import com.messenger.delegate.chat.typing.ChatStateDelegate;
+import com.messenger.delegate.chat.typing.SendChatStateDelegate;
+import com.messenger.delegate.chat.typing.TypingManager;
+import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
+import com.messenger.delegate.chat.event.ChatEventInteractor;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataUser;
-import com.messenger.messengerservers.chat.ChatState;
+import com.messenger.messengerservers.ConnectionException;
 import com.messenger.notification.MessengerNotificationFactory;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
@@ -59,6 +63,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -76,9 +81,9 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject ChatToolbarMenuProvider chatToolbarMenuProvider;
     @Inject ChatContextualMenuProvider contextualMenuProvider;
     @Inject ChatUserInteractionHelper chatUserInteractionHelper;
-    @Inject ChatTypingDelegate chatTypingDelegate;
+    @Inject TypingManager typingManager;
     @Inject ConversationAnalyticsDelegate conversationAnalyticsDelegate;
-    @Inject ChatStateDelegate chatStateDelegate;
+    @Inject SendChatStateDelegate sendChatStateDelegate;
     @Inject ConversationsDAO conversationDAO;
     @Inject MessageDAO messageDAO;
     @Inject NotificationDelegate notificationDelegate;
@@ -89,6 +94,8 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     @Inject MessengerMediaPickerDelegate messengerMediaPickerDelegate;
     @Inject PickLocationDelegate pickLocationDelegate;
     @Inject LoadConversationDelegate loadConversationDelegate;
+    @Inject ChatExtensionInteractor chatExtensionInteractor;
+    @Inject ChatEventInteractor chatEventInteractor;
 
     protected String conversationId;
 
@@ -118,6 +125,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         bindMessagePaginationDelegate();
         bindUnreadMessagesDelegate();
         connectToPhotoPicker();
+        connectToClearEvents();
 
         getViewState().setLoadingState(ChatLayoutViewState.LoadingState.CONTENT);
     }
@@ -161,9 +169,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
                     if (connectionStatus == SyncStatus.CONNECTED) {
                         messagesPaginationDelegate.loadFirstPage();
-                    } else {
-                        // TODO Feb 29, 2016 Implement it in more Rx way
-                        getView().removeAllTypingUsers();
                     }
                 }, e -> Timber.w("Unable to connect connectivity status"));
     }
@@ -212,7 +217,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         screen.enableInput(conversationIsPresent);
         if (!conversationIsPresent) {
             hidePhotoPicker();
-            screen.removeAllTypingUsers();
         }
         enableUnreadMessagesUi(conversation);
     }
@@ -226,7 +230,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     private Subscription connectMessagesStream(long syncTime) {
         return messageDAO
                 .getMessagesBySyncTime(conversationId, syncTime)
-                .filter(cursor -> cursor.getCount() > 0)
                 .compose(bindViewIoToMainComposer())
                 .subscribe(cursor -> getView().showMessages(cursor),
                         e -> Timber.w("Unable to get messages"));
@@ -237,9 +240,38 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     ///////////////////////////////////////////////////////////////////////////
 
     private void bindMessagePaginationDelegate() {
-        messagesPaginationDelegate.bind(connectionStatusStream, conversationId)
-                .compose(bindViewIoToMainComposer())
+        // this method should work only with PaginationDelegate.
+        // for this, we have problem: `messagesPaginationDelegate.bind(connectionStatusStream, conversationId)`
+        // I think, we need to have pagination instance specific for current conversation like a field
+        // TODO: 7/6/16 messagesPaginationDelegate is not injectable instance
+        // TODO: 7/6/16 we create messagesPaginationDelegate from factory method
+        ConnectableObservable<PaginationStatus> paginationObservable = messagesPaginationDelegate
+                .bind(connectionStatusStream, conversationId)
+                .compose(bindViewIoToMainComposer()).publish();
+
+        paginationObservable
                 .subscribe(this::handlePaginationStatus);
+
+        Observable.combineLatest(paginationObservable
+                        .filter(paginationStatus ->
+                                paginationStatus.getStatus() == MessagesPaginationDelegate.Status.SUCCESS),
+                conversationDAO.getConversation(conversationId)
+                        .compose(new NonNullFilter<>()), (paginationStatus, conversation) -> conversation)
+                .compose(bindViewIoToMainComposer())
+                .subscribe(conversation ->
+                        changeRestoreHistoryAvailability(messagesPaginationDelegate.hasMoreElements(), conversation),
+                        e -> Timber.e(e, ""));
+
+        paginationObservable.connect();
+    }
+
+    private void changeRestoreHistoryAvailability(boolean hasMoreElements, DataConversation conversation) {
+        //noinspection ConstantConditions
+        if (!hasMoreElements && ConversationHelper.isCleared(conversation)) {
+            getView().enableReloadChatButton(conversation.getClearTime());
+        } else {
+            getView().disableReloadChatButton();
+        }
     }
 
     @Override
@@ -247,7 +279,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         messagesPaginationDelegate.loadNextPage();
     }
 
-    private void handlePaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus) {
+    private void handlePaginationStatus(PaginationStatus paginationStatus) {
         switch (paginationStatus.getStatus()) {
             case START:
                 DataConversation conversation = loadConversationDelegate
@@ -263,7 +295,7 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         }
     }
 
-    private void handleStartPaginationStatus(MessagesPaginationDelegate.PaginationStatus paginationStatus,
+    private void handleStartPaginationStatus(PaginationStatus paginationStatus,
                                              DataConversation conversation) {
         if (enableUnreadMessagesUi(conversation) && paginationStatus.getPage() == 1) {
             getView().setShowMarkUnreadMessage(true);
@@ -276,29 +308,20 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     //////////////////////////////////////////////////////////////////////////
 
     private void connectChatStateDelegate() {
-        chatStateDelegate.init(conversationId);
-        chatStateDelegate.connectTypingStartAction(getView().getEditMessageObservable())
+        sendChatStateDelegate.init(conversationId);
+        sendChatStateDelegate.connectTypingStartAction(getView().getEditMessageObservable())
                 .compose(bindVisibility())
                 .subscribe();
-        chatStateDelegate.connectTypingStopAction(getView().getEditMessageObservable())
+        sendChatStateDelegate.connectTypingStopAction(getView().getEditMessageObservable())
                 .compose(bindVisibility())
                 .subscribe();
     }
 
     private void connectChatTypingStream() {
-        chatTypingDelegate
-                .connectChatTypingStream(conversationId)
+        typingManager
+                .getTypingObservable(conversationId)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(pair -> {
-                    switch (pair.first.state) {
-                        case ChatState.COMPOSING:
-                            getView().addTypingUser(pair.second);
-                            break;
-                        case ChatState.PAUSE:
-                            getView().removeTypingUser(pair.second);
-                            break;
-                    }
-                }, e -> Timber.w("Unable to connect chat stream"));
+                .subscribe(getView()::changeTypingUsers, e -> Timber.e(e, ""));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -534,6 +557,49 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private void disconnectFromPhotoPicker() {
         messengerMediaPickerDelegate.unregister();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Reload Chat History
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onReloadHistoryRequired() {
+        chatExtensionInteractor.getRevertClearingChatServerCommandActionPipe()
+                .createObservable(new RevertClearingChatServerCommand(conversationId))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<RevertClearingChatServerCommand>()
+                        .onStart(command -> getView().showProgressDialog())
+                        .onSuccess(revertChatClearingCommand -> revertSucceed())
+                        .onFail((revertChatClearingCommand, throwable) -> revertFailed(throwable.getCause()))
+                );
+    }
+
+    private void revertSucceed() {
+        getView().dismissProgressDialog();
+    }
+
+    private void revertFailed(Throwable throwable) {
+        getView().dismissProgressDialog();
+        if (throwable instanceof ConnectionException) {
+            getView().showErrorMessage(R.string.error_no_connection);
+        } else {
+            getView().showErrorMessage(R.string.error_something_went_wrong);
+        }
+    }
+
+    private void connectToClearEvents() {
+        chatEventInteractor.getEventRevertClearingChatPipe()
+                .observeSuccess()
+                .compose(bindViewIoToMainComposer())
+                .filter(command -> TextUtils.equals(command.getConversationId(), conversationId))
+                .subscribe(command -> messagesPaginationDelegate.forceLoadNextPage());
+
+        chatEventInteractor.getEventClearChatPipe()
+                .observeSuccess()
+                .compose(bindView())
+                .filter(command -> TextUtils.equals(command.getConversationId(), conversationId))
+                .subscribe(command -> messagesPaginationDelegate.reset());
     }
 
     ///////////////////////////////////////////////////////////////////////////

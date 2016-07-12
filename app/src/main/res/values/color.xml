@@ -126,6 +126,9 @@
     <color name="chat_list_item_read_read_background">@color/white</color>
     <color name="chat_list_item_image_post_blue_loading_background">#DCF0FE</color>
     <color name="chat_list_item_image_post_grey_loading_background">#F8F8F8</color>
+    <color name="chat_list_item_reload_chat_history_info_text_color">#9b9b9b</color>
+    <color name="chat_list_item_reload_chat_history_reload_text_color">#4a90e2</color>
+    <color name="chat_list_item_system_message_text_color">#9B9B9B</color>
 
     <!-- Conversation list screen -->
     <color name="conversation_list_action_bar_spinner_item_normal">@color/white</color>

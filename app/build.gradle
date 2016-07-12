@@ -31,7 +31,7 @@ android {
     def versionMajor = 1
     def versionMinor = 13
     def versionPatch = 0
-    def versionBuild = 0  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 1  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"
@@ -142,7 +142,7 @@ android {
         // possible "build"-dimension flavors:
         dev {
             dimension "build"
-            minSdkVersion 21
+            minSdkVersion 23
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
@@ -303,8 +303,8 @@ android {
             versionNameSuffix "-debug"
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.release
             // proguard
             def proConfigs = file('proguard-rules').listFiles().collect { it }

@@ -132,26 +132,18 @@
 
                     <Button
                         android:id="@+id/chat_settings_clear_history_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/chat_settings_action_button_top_margin"
-                        android:visibility="gone"
+                        style="@style/SettingsButtonStyle"
                         android:background="@drawable/button_chat_settings_white"
-                        android:text="@string/chat_settings_row_clear_history"
-                        android:textColor="@color/chat_settings_action_white_button_text_color"
-                        android:textSize="@dimen/chat_settings_action_buttons_text_size"/>
+                        android:text="@string/chat_settings_row_clear_chat"
+                        android:textColor="@color/chat_settings_action_white_button_text_color"/>
 
                     <Button
                         android:id="@+id/chat_settings_leave_chat_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/chat_settings_action_button_top_margin"
+                        style="@style/SettingsButtonStyle"
                         android:background="@drawable/button_chat_settings_red"
                         android:text="@string/chat_settings_row_leave_chat"
                         android:visibility="gone"
-                        android:textColor="@color/chat_settings_action_red_button_text_color"
-                        android:textSize="@dimen/chat_settings_action_buttons_text_size"/>
+                        android:textColor="@color/chat_settings_action_red_button_text_color"/>
 
                     <TextView
                         android:id="@+id/chat_settings_group_chat_info_textview"

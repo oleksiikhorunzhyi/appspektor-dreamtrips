@@ -1,6 +1,7 @@
 package com.messenger.delegate.user;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.delegate.chat.typing.TypingManager;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.constant.UserType;
 import com.messenger.messengerservers.model.MessengerUser;
@@ -20,11 +21,13 @@ public class UserEventsDelegate {
 
     private final UsersDAO usersDAO;
     private final UsersDelegate usersDelegate;
+    private final TypingManager typingManager;
 
     @Inject
-    public UserEventsDelegate(UsersDAO usersDAO, UsersDelegate usersDelegate) {
+    public UserEventsDelegate(UsersDAO usersDAO, UsersDelegate usersDelegate, TypingManager typingManager) {
         this.usersDAO = usersDAO;
         this.usersDelegate = usersDelegate;
+        this.typingManager = typingManager;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -68,12 +71,14 @@ public class UserEventsDelegate {
     ///////////////////////////////////////////////////////////////////////////
 
     public void presenceChanged(String userId, boolean isOnline) {
+        if (!isOnline) typingManager.userOffline(userId);
         getUser(userId)
                 .compose(new NonNullFilter<>())
-                .subscribe(user -> {
+                .doOnNext(user -> {
                     user.setOnline(isOnline);
                     usersDAO.save(user);
-                });
+                })
+                .subscribe();
     }
 
     ///////////////////////////////////////////////////////////////////////////

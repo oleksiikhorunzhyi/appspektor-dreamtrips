@@ -7,6 +7,7 @@ import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataPhotoAttachment;
 import com.messenger.messengerservers.constant.AttachmentType;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 
 import java.util.Date;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class AttachmentDelegateHelper {
                 .date(new Date(System.currentTimeMillis()))
                 .status(MessageStatus.SENDING)
                 .syncTime(System.currentTimeMillis())
+                .type(MessageType.MESSAGE)
                 .build();
     }
 

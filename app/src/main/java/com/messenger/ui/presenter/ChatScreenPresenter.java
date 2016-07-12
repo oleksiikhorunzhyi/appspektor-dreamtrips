@@ -37,5 +37,7 @@ public interface ChatScreenPresenter extends MessengerPresenter<ChatScreen, Chat
     void onStartNewChatForMessageOwner(DataMessage message);
 
     void onTimestampViewClicked(int position);
+
+    void onReloadHistoryRequired();
 }
 

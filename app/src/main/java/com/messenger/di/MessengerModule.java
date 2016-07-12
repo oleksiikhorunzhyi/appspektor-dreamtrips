@@ -14,7 +14,8 @@ import dagger.Module;
         includes = {
                 MessengerServerModule.class,
                 MessengerStorageModule.class,
-                MessengerDelegateModule.class
+                MessengerDelegateModule.class,
+                MessengerTypingManagerModule.class
         },
         injects = {
                 GroupConversationViewHolder.class,

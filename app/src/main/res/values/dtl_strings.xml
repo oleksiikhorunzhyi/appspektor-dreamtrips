@@ -90,6 +90,7 @@
     <string name="dtl_withflow">DTL Flow</string> <!-- todo DELETE once migration to flow done -->
     <string name="help">Help</string>
     <string name="merchants_list_empty_text">Places coming soon</string>
+    <string name="merchants_list_empty_text_additional">- or -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Food &amp; Drinks</string>

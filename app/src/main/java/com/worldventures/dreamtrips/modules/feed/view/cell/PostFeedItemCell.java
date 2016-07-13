@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
@@ -86,9 +85,19 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
             post.setText(String.format("%s", textualPost.getDescription()));
             post.setHashtagClickListener(this::openHashtagFeeds);
 
-            List<String> clickableHashtags = Queryable.from(textualPost.getHashtags()).map(Hashtag::getName).toList();
-            List<String> hightlightedHashtags = getModelObject().getMetaData() != null && getModelObject().getMetaData().getHashtags() != null?
-                    Queryable.from(getModelObject().getMetaData().getHashtags()).map(Hashtag::getName).toList() : new ArrayList<>();
+            List<String> clickableHashtags = Queryable
+                    .from(textualPost.getHashtags())
+                    .map(element -> element != null ? element.getName() : null)
+                    .toList();
+
+            List<String> hightlightedHashtags = getModelObject().getMetaData() != null && getModelObject().getMetaData().getHashtags() != null ?
+                    Queryable.from(getModelObject()
+                            .getMetaData()
+                            .getHashtags())
+                            .map(element -> element != null ? element.getName() : null)
+                            .toList()
+                    : new ArrayList<>();
+
             post.highlightHashtags(clickableHashtags, hightlightedHashtags);
         } else {
             post.setVisibility(View.GONE);

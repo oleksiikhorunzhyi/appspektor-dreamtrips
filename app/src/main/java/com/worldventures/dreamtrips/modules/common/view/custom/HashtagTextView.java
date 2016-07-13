@@ -75,13 +75,16 @@ public class HashtagTextView extends TextView {
         final SpannableStringBuilder spannable = new SpannableStringBuilder(text);
 
         for (final String hashtag : clickableHashtags) {
+            if (hashtag != null) {
+                final String formattedHashtag = String.format("#%s", hashtag.toLowerCase());
+                List<Pair<Integer, Integer>> pairs = findIndexesForKeyword(text.toLowerCase(), formattedHashtag);
 
-            final String formattedHashtag = String.format("#%s", hashtag.toLowerCase());
-            List<Pair<Integer, Integer>> pairs = findIndexesForKeyword(text.toLowerCase(), formattedHashtag);
-
-            for (Pair<Integer, Integer> pair : pairs){
-                if (selectedHashtags.contains(hashtag)) highlight(spannable, pair.first, pair.second);
-                attachClick(spannable, pair.first, pair.second, formattedHashtag);
+                for (Pair<Integer, Integer> pair : pairs) {
+                    if (selectedHashtags.contains(hashtag)) {
+                        highlight(spannable, pair.first, pair.second);
+                    }
+                    attachClick(spannable, pair.first, pair.second, formattedHashtag);
+                }
             }
         }
 
@@ -103,7 +106,6 @@ public class HashtagTextView extends TextView {
     }
 
     /**
-     *
      * @param text
      * @param keyword
      * @return List <(keywordIndexStart, keywordIndexEnd)>
@@ -115,7 +117,7 @@ public class HashtagTextView extends TextView {
 
         List<Pair<Integer, Integer>> indexWrapper = new ArrayList<>();
 
-        while(matcher.find()){
+        while (matcher.find()) {
             int end = matcher.end();
             int start = matcher.start();
             indexWrapper.add(new Pair<>(start, end));

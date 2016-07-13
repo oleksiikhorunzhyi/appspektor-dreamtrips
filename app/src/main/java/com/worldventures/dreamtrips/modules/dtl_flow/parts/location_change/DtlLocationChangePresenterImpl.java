@@ -82,8 +82,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         super.onAttachedToWindow();
         if (getView().isTabletLandscape()) {
             // this path is not applicable for tablet landscape - it is embedded in DtlToolbar
-            History history = History.single(new DtlMerchantsPath());
-            Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+            navigateAway();
             return;
         }
         apiErrorPresenter.setView(getView());
@@ -213,7 +212,10 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     private void navigateAway() {
         clearCacheBeforeCloseScreen();
         //
-        History history = History.single(new DtlMerchantsPath()); // TODO :: 4/28/16 proper previous screen
+        History history = History.single(DtlMerchantsPath
+                .builder()
+                .fromLocationScreen(true)
+                .build());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 

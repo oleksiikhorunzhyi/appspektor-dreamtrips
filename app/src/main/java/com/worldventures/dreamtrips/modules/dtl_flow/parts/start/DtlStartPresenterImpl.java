@@ -76,7 +76,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                                     .coordinates(new com.worldventures.dreamtrips.modules.trips.model.Location(newLocation))
                                     .build();
                             locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
-                            navigatePath(new DtlMerchantsPath());
+                            navigatePath(DtlMerchantsPath.getDefault());
                         }
                     } else {
                         switch (command.getResult().getLocationSourceType()) {
@@ -92,13 +92,13 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                                         command.getResult().getCoordinates().asAndroidLocation(), DistanceType.MILES))
                                     filterInteractor.filterMerchantsActionPipe().clearReplays();
                                 //
-                                navigatePath(new DtlMerchantsPath());
+                                navigatePath(DtlMerchantsPath.getDefault());
                                 break;
                             case FROM_MAP:
-                                navigatePath(new DtlMerchantsPath());
+                                navigatePath(DtlMerchantsPath.getDefault());
                                 break;
                             case EXTERNAL:
-                                navigatePath(new DtlMerchantsPath());
+                                navigatePath(DtlMerchantsPath.getDefault());
                                 break;
                         }
                     }

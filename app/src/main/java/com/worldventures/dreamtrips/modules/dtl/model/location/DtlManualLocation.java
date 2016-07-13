@@ -31,5 +31,4 @@ public abstract class DtlManualLocation implements DtlLocation {
     public String getAnalyticsName() {
         return "-:-:-";
     }
-
 }

@@ -14,11 +14,13 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.PopupWindow;
 
 import com.google.android.gms.common.api.Status;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxAutoCompleteTextView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -30,6 +32,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocati
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeaderCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlLayout;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbar;
@@ -135,8 +138,13 @@ public class MasterToolbarScreenImpl
         popupWindow.setOnDismissListener(() -> SoftInputUtil.hideSoftInputMethod(this));
         //
         this.progress = ButterKnife.findById(searchContentView, R.id.progress);
-        this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
         this.recyclerView = ButterKnife.<RecyclerView>findById(searchContentView, R.id.locationsList);
+        this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
+
+        RxView.clicks(autoDetectNearMe)
+                .compose(RxLifecycle.bindView(this))
+                .throttleFirst(3L, TimeUnit.SECONDS)
+                .subscribe(aVoid -> onNearMeClicked());
     }
 
     protected void setupPopup() {
@@ -150,17 +158,23 @@ public class MasterToolbarScreenImpl
     }
 
     protected void onPopupVisibilityChange(boolean visible) {
-        if (visible) popupWindow.showAsDropDown(toolbar.getLocationSearchInput());
-        else if (popupWindow.isShowing()) popupWindow.dismiss();
+        if (visible) {
+            adapter.clear();
+            popupWindow.showAsDropDown(toolbar.getLocationSearchInput());
+            getPresenter().onShowToolbar();
+        }
+        else {
+            popupWindow.dismiss();
+        }
     }
 
     private void setupRecyclerView() {
         adapter = new BaseDelegateAdapter<DtlExternalLocation>(getActivity(), injector);
         adapter.registerCell(DtlExternalLocation.class, DtlLocationSearchCell.class);
         adapter.registerCell(DtlLocationSearchHeaderCell.HeaderModel.class, DtlLocationSearchHeaderCell.class);
+        adapter.registerCell(DtlNearbyHeaderCell.NearbyHeaderModel.class, DtlNearbyHeaderCell.class);
         //
         adapter.registerDelegate(DtlExternalLocation.class, location -> onLocationClicked((DtlExternalLocation) location));
-        adapter.registerDelegate(DtlLocationSearchHeaderCell.HeaderModel.class, aVoid -> onNearMeClicked());
         //
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.dtl_location_change_list_divider), false));
@@ -178,25 +192,17 @@ public class MasterToolbarScreenImpl
                 .skip(1);
     }
 
-    @Override
-    public void setItems(List<DtlExternalLocation> items) {
-        hideProgress();
-        //
-        List<Object> locations = new CopyOnWriteArrayList<>(items);
-        if (getPresenter().needShowAutodetectButton()) {
-            locations.add(0, DtlLocationSearchHeaderCell.HeaderModel.INSTANCE);
+    private List<Object> prepareHeader(boolean showNearmyHeader) {
+        List<Object> locations = new CopyOnWriteArrayList<>();
+        if (showNearmyHeader) {
+            locations.add(DtlNearbyHeaderCell.NearbyHeaderModel.INSTANCE);
         }
-        adapter.clearAndUpdateItems(locations);
+        return locations;
     }
 
     @Override
-    public void updateButtonState() {
-        setItems(Collections.emptyList()); // update only header if needed
-    }
-
-    @Override
-    public void showSearchPopup() {
-        onPopupVisibilityChange(true);
+    public void toggleSearchPopupVisibility(boolean show) {
+        onPopupVisibilityChange(show);
     }
 
     @Override
@@ -206,8 +212,9 @@ public class MasterToolbarScreenImpl
 
     @Override
     public void showProgress() {
-        ViewUtils.setViewVisibility(View.VISIBLE, progress);
-        ViewUtils.setViewVisibility(View.GONE, recyclerView);
+        ViewUtils.setViewVisibility(VISIBLE, progress);
+        ViewUtils.setViewVisibility(GONE, recyclerView);
+        ViewUtils.setViewVisibility(GONE, autoDetectNearMe);
     }
 
     @Override
@@ -257,6 +264,16 @@ public class MasterToolbarScreenImpl
         } catch (IntentSender.SendIntentException th) {
             Timber.e(th, "Error opening settings activity.");
         }
+    }
+
+    @Override
+    public void setItems(List<DtlExternalLocation> items, boolean showNearbyHeader) {
+        hideProgress();
+        //
+        List<Object> locations = prepareHeader(showNearbyHeader);
+        locations.addAll(items);
+        adapter.clearAndUpdateItems(locations);
+        autoDetectNearMe.setVisibility(getPresenter().needShowAutodetectButton() ? VISIBLE : GONE);
     }
 
 

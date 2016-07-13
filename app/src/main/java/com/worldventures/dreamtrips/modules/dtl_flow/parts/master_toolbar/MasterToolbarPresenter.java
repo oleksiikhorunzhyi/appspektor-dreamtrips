@@ -18,5 +18,7 @@ public interface MasterToolbarPresenter extends DtlPresenter<MasterToolbarScreen
 
     void onLocationResolutionDenied();
 
+    void onShowToolbar();
+
     boolean needShowAutodetectButton();
 }

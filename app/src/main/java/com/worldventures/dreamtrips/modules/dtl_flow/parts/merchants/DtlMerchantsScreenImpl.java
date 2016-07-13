@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.DtlToolbarHelp
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.ExpandableDtlToolbar;
 import com.worldventures.dreamtrips.modules.dtl_flow.view.toolbar.RxDtlToolbar;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -108,6 +109,11 @@ public class DtlMerchantsScreenImpl
     public void setFilterButtonState(boolean enabled) {
         if (dtlToolbar == null) return;
         dtlToolbar.setFilterEnabled(enabled);
+    }
+
+    @Override
+    public void showEmptyMerchantView(boolean show) {
+        baseDelegateAdapter.setItems(Collections.emptyList());
     }
 
     @Override

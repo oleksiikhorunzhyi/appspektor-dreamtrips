@@ -20,6 +20,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
@@ -41,6 +43,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import rx.Observable;
 
 @MenuResource(R.menu.menu_hashtag_feed)
 @Layout(R.layout.fragment_hashtag_feed)
@@ -137,29 +140,33 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @Override
     public void onResume() {
         super.onResume();
-        if (getArgs() != null) releaseSearchFocus(searchView);
+        releaseSearchFocus(searchView);
+
+        FeedHashtagBundle args = getArgs();
+        if (args != null && args.getHashtag() != null) {
+            getPresenter().onRefresh();
+        }
     }
 
     @Override
     protected FeedHashtagPresenter createPresenter(Bundle savedInstanceState) {
-        return new FeedHashtagPresenter();
+        FeedHashtagBundle args = getArgs();
+        String query = args != null && !TextUtils.isEmpty(args.getHashtag()) ? args.getHashtag() : null;
+        FeedHashtagPresenter presenter = new FeedHashtagPresenter();
+        presenter.setQuery(query);
+        return presenter;
     }
 
     @Override
     protected void onMenuInflated(Menu menu) {
         super.onMenuInflated(menu);
-        FeedHashtagBundle args = getArgs();
-
-        String query = getPresenter().getQuery();
-        query = query != null ? query : (args != null && !TextUtils.isEmpty(args.getHashtag()) ? args.getHashtag() : null);
-        getPresenter().setQuery(query);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchItem.expandActionView();
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchText = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        searchView.setQuery(query, false);
+        searchView.setQuery(getPresenter().getQuery(), false);
         searchView.setOnCloseListener(() -> false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -196,10 +203,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             }
         });
 
-        if (args != null && args.getHashtag() != null) {
-            getPresenter().onRefresh();
-            releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
-        }
+        releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
     }
 
     @Override
@@ -217,6 +221,11 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @Override
     public void updateLoadingStatus(boolean loading, boolean noMoreElements) {
         statePaginatedRecyclerViewManager.updateLoadingStatus(loading, noMoreElements);
+    }
+
+    @Override
+    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
+        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
     }
 
     @Override

@@ -140,7 +140,6 @@ public class MasterToolbarScreenImpl
         this.progress = ButterKnife.findById(searchContentView, R.id.progress);
         this.recyclerView = ButterKnife.<RecyclerView>findById(searchContentView, R.id.locationsList);
         this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
-        this.autoDetectNearMe = ButterKnife.findById(searchContentView, R.id.autoDetectNearMe);
 
         RxView.clicks(autoDetectNearMe)
                 .compose(RxLifecycle.bindView(this))

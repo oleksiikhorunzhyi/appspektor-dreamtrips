@@ -41,8 +41,8 @@ public class HashtagTextView extends TextView {
 
     public HashtagTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        hashtagTextColor = context.getResources().getColor(android.R.color.holo_blue_light);
-        selectedHashtagTextColor = context.getResources().getColor(android.R.color.white);
+        hashtagTextColor = context.getResources().getColor(R.color.hashtag_text_color);
+        selectedHashtagTextColor = context.getResources().getColor(R.color.hashtag_text_color);
         selectedHashtagBackgroundColor = context.getResources().getColor(R.color.highlight_hashtag_bg);
     }
 

@@ -95,7 +95,7 @@ public abstract class BaseConversationProvider<T extends IQ> extends IQProvider<
                 .type(type.toLowerCase())
                 .subject(subject)
                 .avatar(avatar)
-                .lastActiveDate(clearDate != 0 ? clearDate : timestamp)
+                .lastActiveDate(timestamp)
                 .lastMessage(lastMessage)
                 .leftTime(leftTime)
                 .clearDate(clearDate)

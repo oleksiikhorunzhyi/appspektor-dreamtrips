@@ -170,6 +170,7 @@ public class ConversationsDAO extends BaseDAO {
                 "ON m." + DataMessage$Table._ID + "=(" +
                 "SELECT " + DataMessage$Table._ID + " FROM " + DataMessage.TABLE_NAME + " mm " +
                 "WHERE mm." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+                "AND mm." + DataMessage$Table.DATE + ">c." + DataConversation$Table.CLEARTIME + " " +
                 "AND mm." + DataMessage$Table.TYPE + "='" + MessageType.MESSAGE + "' " +
                 "ORDER BY mm." + DataMessage$Table.DATE + " DESC LIMIT 1) " +
 

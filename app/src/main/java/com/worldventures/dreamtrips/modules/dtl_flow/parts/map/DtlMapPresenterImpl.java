@@ -225,7 +225,7 @@ public class DtlMapPresenterImpl extends DtlPresenterImpl<DtlMapScreen, ViewStat
 
     @Override
     public void onListClicked() {
-        History history = History.single(new DtlMerchantsPath());
+        History history = History.single(DtlMerchantsPath.getDefault());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 

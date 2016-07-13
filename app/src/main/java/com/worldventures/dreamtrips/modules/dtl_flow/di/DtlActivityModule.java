@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationChangeCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlLocationSearchHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlMerchantExpandableCell;
+import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlNearbyHeaderCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPerkCell;
 import com.worldventures.dreamtrips.modules.dtl.view.cell.DtlPointsCell;
 import com.worldventures.dreamtrips.modules.dtl.view.dialog.DtlPointsEstimationFragment;
@@ -73,6 +74,7 @@ import dagger.Provides;
                 ActivityPresenter.class,
                 DtlFilterPresenterImpl.class,
                 DtlLocationSearchHeaderCell.class,
+                DtlNearbyHeaderCell.class,
                 DtlLocationCell.class,
                 DtlFilterAttributeCell.class,
                 DtlFilterAttributeHeaderCell.class,

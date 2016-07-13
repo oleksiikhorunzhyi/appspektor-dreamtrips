@@ -23,15 +23,13 @@ public interface MasterToolbarScreen extends DtlScreen {
 
     void locationResolutionRequired(Status status);
 
-    void setItems(List<DtlExternalLocation> locations);
+    void setItems(List<DtlExternalLocation> locations, boolean addLocationHeader);
 
     void showProgress();
 
     void hideProgress();
 
-    void updateButtonState();
-
-    void showSearchPopup();
+    void toggleSearchPopupVisibility(boolean show);
 
     boolean isSearchPopupShowing();
 

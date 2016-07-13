@@ -29,6 +29,7 @@ import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLo
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -207,9 +208,13 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     private void showEmptyView() {
-        if (!getView().isTabletLandscape()) {
+        if (!getView().isTabletLandscape() && !getView().getPath().isfromLocationScreen()) {
             navigateToPath(new DtlLocationChangePath());
-        } else {
+        }
+        else if (!getView().isTabletLandscape()) {
+            getView().setItems(Collections.emptyList());
+        }
+        else {
             getView().showEmptyMerchantView(true);
         }
     }

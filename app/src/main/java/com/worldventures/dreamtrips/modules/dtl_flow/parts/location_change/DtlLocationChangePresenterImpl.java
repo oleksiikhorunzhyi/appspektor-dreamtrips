@@ -276,6 +276,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         dtlNearbyLocations.clear();
         dtlNearbyLocations.addAll(locations);
         getView().switchVisibilityNoMerchants(noMerchants.get());
+        getView().switchVisibilityOrCaption(noMerchants.get() && !locations.isEmpty());
         getView().setItems(locations, !locations.isEmpty());
     }
 

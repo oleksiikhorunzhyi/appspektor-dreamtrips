@@ -57,6 +57,8 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     Button autoDetectNearMe;
     @InjectView(R.id.emptyMerchantsCaption)
     View emptyMerchantsCaption;
+    @InjectView(R.id.emptyMerchantsOrCaption)
+    View emptyMerchantsOrCaption;
     @InjectView(R.id.selectFromNearbyCitiesCaption)
     View selectFromNearbyCitiesCaption;
     @InjectView(R.id.locationsList)
@@ -163,6 +165,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
         progressView.setVisibility(VISIBLE);
         selectFromNearbyCitiesCaption.setVisibility(GONE);
         switchVisibilityNoMerchants(false);
+        switchVisibilityOrCaption(false);
     }
 
     @Override
@@ -173,6 +176,11 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     @Override
     public void switchVisibilityNoMerchants(boolean visible) {
         emptyMerchantsCaption.setVisibility(visible ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void switchVisibilityOrCaption(boolean visible) {
+        emptyMerchantsOrCaption.setVisibility(visible ? VISIBLE : GONE);
     }
 
     @Override
@@ -201,7 +209,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
 
     @Override
     public void onApiCallFailed() {
-        progressView.setVisibility(View.GONE);
+        hideProgress();
     }
 
     @Override

@@ -32,5 +32,7 @@ public interface DtlMerchantsScreen extends DtlScreen {
 
     void showEmptyMerchantView(boolean show);
 
+    DtlMerchantsPath getPath();
+
     Observable<Boolean> getToggleObservable();
 }

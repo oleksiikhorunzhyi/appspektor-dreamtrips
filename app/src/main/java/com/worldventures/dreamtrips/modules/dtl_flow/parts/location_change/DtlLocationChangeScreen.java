@@ -27,6 +27,8 @@ public interface DtlLocationChangeScreen extends DtlScreen {
 
     void switchVisibilityNoMerchants(boolean visible);
 
+    void switchVisibilityOrCaption(boolean visible);
+
     Observable<Void> provideMapClickObservable();
 
     Observable<Boolean> provideMerchantInputFocusLossObservable();

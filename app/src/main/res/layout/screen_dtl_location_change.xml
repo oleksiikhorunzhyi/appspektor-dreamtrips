@@ -51,6 +51,18 @@
         />
 
     <TextView
+        android:id="@+id/emptyMerchantsOrCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_small"
+        android:text="@string/merchants_list_empty_text_additional"
+        android:textColor="@color/dtl_cities_text_color"
+        android:textSize="@dimen/font_normal"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
+    <TextView
         android:id="@+id/selectFromNearbyCitiesCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

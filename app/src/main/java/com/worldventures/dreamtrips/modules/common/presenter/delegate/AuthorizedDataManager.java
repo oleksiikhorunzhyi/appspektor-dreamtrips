@@ -46,7 +46,7 @@ public class AuthorizedDataManager {
     public void unsubscribe() {
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions()
                 && !compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
+            compositeSubscription.clear();
         }
     }
 

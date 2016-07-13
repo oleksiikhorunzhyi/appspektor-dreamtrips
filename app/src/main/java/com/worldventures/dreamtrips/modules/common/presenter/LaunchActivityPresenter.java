@@ -76,7 +76,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     public void dropView() {
         super.dropView();
         networkEvents.unregister();
-        authorizedDataManager.unsubscribe();
+        if (authorizedDataManager != null) authorizedDataManager.unsubscribe();
     }
 
     public void initDtl() {

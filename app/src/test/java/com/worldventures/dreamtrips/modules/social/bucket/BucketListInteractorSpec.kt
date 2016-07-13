@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.social.bucket
 
 import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
@@ -10,8 +11,8 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketLis
 import io.techery.janet.ActionState
 import io.techery.janet.http.annotations.HttpAction
 import io.techery.janet.http.test.MockHttpActionService
+import org.mockito.internal.verification.VerificationModeFactory
 import rx.observers.TestSubscriber
-import kotlin.test.assertNotNull
 
 class BucketListInteractorSpec : BucketInteractorBaseSpec({
     describe("bucket list actions") {
@@ -60,12 +61,6 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
                     testListOfBucketsFromDisk.containsAll(it.result)
                 }
             }
-
-            it("should fill memory storage") {
-                assertNotNull(mockMemoryStorage) {
-                    it.get(null) != null
-                }
-            }
         }
 
         context("memory storage and database storage are empty") {
@@ -81,14 +76,6 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
                     testListOfBucketsFromNetwork.containsAll(it.result)
                 }
             }
-
-            it("should fill memory storage") {
-                assertNotNull(mockMemoryStorage.get(any()), "Memory storage is empty")
-            }
-
-            it("should fill database storage") {
-                assertNotNull(mockDb.readBucketList(any()), "Database storage is empty")
-            }
         }
 
         context("memory storage and database storage are not empty") {
@@ -98,6 +85,16 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
                 assertBucketListByPredicate(testSubscriber) {
                     testListOfBucketsFromNetwork.containsAll(it.result)
                 }
+            }
+        }
+
+        context("verify save to all storage types") {
+            it("should save list of buckets into memory 5 times") {
+                verify(mockMemoryStorage, VerificationModeFactory.times(5)).save(any(), any())
+            }
+
+            it("should save list of buckets into database 5 times") {
+                verify(mockDb, VerificationModeFactory.times(5)).saveBucketList(any(), any())
             }
         }
     }

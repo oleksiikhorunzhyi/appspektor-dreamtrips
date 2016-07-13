@@ -8,19 +8,18 @@ import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.loaders.FlagMessageLoader;
 import com.messenger.storage.MessengerDatabase;
-import com.worldventures.dreamtrips.messenger.util.BaseTest;
-import com.worldventures.dreamtrips.messenger.util.janet.BaseCommandActionServiceWrapper;
+import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
+import com.worldventures.dreamtrips.common.janet.EmptyActionServiceWrapper;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockFlagMessageLoader;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.techery.janet.ActionHolder;
+import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.JanetException;
 import rx.Observable;
@@ -30,9 +29,8 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 
-@RunWith(PowerMockRunner.class)
 @PrepareForTest(MessengerDatabase.class)
-public class FlagMessageDelegateTest extends BaseTest {
+public class FlagMessageDelegateTest extends MessengerBaseTest {
 
     private MessengerServerFacade messengerServerFacade;
     private FlagMessageDelegate flagMessageDelegate;
@@ -86,17 +84,17 @@ public class FlagMessageDelegateTest extends BaseTest {
         flagMessageDelegate
                 .observeOngoingFlagging()
                 .subscribe(state -> {
-                            switch (state.status) {
-                                case SUCCESS:
-                                    fail();
-                                    break;
-                                case FAIL:
-                                    assertTrue(state.exception.getCause() instanceof FlagMessageException);
-                                    FlagMessageException xmmpError = (FlagMessageException) state.exception.getCause();
-                                    assertEquals(xmmpError.getMessageId(), flagMessageDTO.messageId());
-                                    break;
-                            }
-                        });
+                    switch (state.status) {
+                        case SUCCESS:
+                            fail();
+                            break;
+                        case FAIL:
+                            assertTrue(state.exception.getCause() instanceof FlagMessageException);
+                            FlagMessageException xmmpError = (FlagMessageException) state.exception.getCause();
+                            assertEquals(xmmpError.getMessageId(), flagMessageDTO.messageId());
+                            break;
+                    }
+                });
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -125,7 +123,7 @@ public class FlagMessageDelegateTest extends BaseTest {
 
     private Janet mockJanet() {
         return new Janet.Builder()
-                .addService(new BaseCommandActionServiceWrapper() {
+                .addService(new EmptyActionServiceWrapper(new CommandActionService()) {
                     @Override
                     protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
                         ((FlagMessageCommand) holder.action()).setMessengerServerFacade(messengerServerFacade);

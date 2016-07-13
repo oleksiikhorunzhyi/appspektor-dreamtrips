@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.messenger.delegate.conversation;
 
+import android.support.annotation.CallSuper;
+
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
 import com.messenger.delegate.user.UsersDelegate;
@@ -12,8 +14,8 @@ import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.worldventures.dreamtrips.messenger.util.BaseTest;
-import com.worldventures.dreamtrips.messenger.util.MockDaggerActionService;
+import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockConversationLoader;
 
@@ -33,7 +35,7 @@ import static org.mockito.Mockito.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class LoadConversationDelegateTest extends BaseTest {
+public class LoadConversationDelegateTest extends MessengerBaseTest {
 
     private static final Conversation testConversation;
     private static final String testConversationId = "1234123412";
@@ -54,13 +56,18 @@ public class LoadConversationDelegateTest extends BaseTest {
                 .build();
     }
 
-    @Mock ConversationSyncHelper conversationSyncHelper;
-    @Mock MessengerServerFacade messengerServerFacade;
-    @Mock UsersDelegate usersDelegate;
-    @Mock ConversationsDAO conversationsDAO;
+    @Mock
+    ConversationSyncHelper conversationSyncHelper;
+    @Mock
+    MessengerServerFacade messengerServerFacade;
+    @Mock
+    UsersDelegate usersDelegate;
+    @Mock
+    ConversationsDAO conversationsDAO;
 
     private LoadConversationDelegate loadConversationDelegate;
 
+    @CallSuper
     @Before
     public void setup() {
         Mockito.doReturn(new BaseLoaderManager() {

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.test;
+package com.worldventures.dreamtrips.common;
 
 import android.location.Location;
 import android.text.TextUtils;
@@ -38,7 +38,7 @@ public abstract class BaseTest {
     @Before
     public void setupBase() {
         MockitoAnnotations.initMocks(this);
-        mockStatic(TrackingHelper.class);
+        PowerMockito.mock(TrackingHelper.class);
 
         mockStatic(TextUtils.class);//See http://g.co/androidstudio/not-mocked
         PowerMockito.when(TextUtils.isEmpty(anyString()))

@@ -7,7 +7,7 @@ import com.messenger.messengerservers.model.ImmutableDeletedMessage;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.util.DecomposeMessagesHelper;
-import com.worldventures.dreamtrips.messenger.util.BaseTest;
+import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ChatMessagesEventDelegateTest extends BaseTest {
+public class ChatMessagesEventDelegateTest extends MessengerBaseTest {
 
     @Mock
     ConversationsDAO conversationsDAO;

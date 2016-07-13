@@ -1,8 +1,10 @@
-package com.worldventures.dreamtrips.core.test
+package com.worldventures.dreamtrips.common
 
 import android.location.Location
 import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.spy
+import com.worldventures.dreamtrips.common.janet.MockDaggerActionService
+import com.worldventures.dreamtrips.common.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import io.techery.janet.ActionService
 import org.jetbrains.spek.api.DescribeBody

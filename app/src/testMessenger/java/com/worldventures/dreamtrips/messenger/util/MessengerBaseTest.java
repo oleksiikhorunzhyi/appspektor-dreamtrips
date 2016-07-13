@@ -1,25 +1,24 @@
-package com.messenger.util;
-
-import android.support.annotation.CallSuper;
+package com.worldventures.dreamtrips.messenger.util;
 
 import com.messenger.storage.MessengerDatabase;
-import com.worldventures.dreamtrips.core.test.BaseTest;
+import com.worldventures.dreamtrips.common.BaseTest;
 
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+@RunWith(PowerMockRunner.class)
 @PrepareForTest(MessengerDatabase.class)
-public abstract class MessengerBaseTest extends BaseTest {
+public class MessengerBaseTest extends BaseTest {
 
-    @CallSuper
     @Before
-    public void setUp(){
+    public void initMocks() {
         PowerMockito.mockStatic(MessengerDatabase.class);
         when(MessengerDatabase.buildUri(any())).thenReturn(null);
     }
-
 }

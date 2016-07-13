@@ -11,16 +11,12 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.messenger.util.BaseTest;
-import com.worldventures.dreamtrips.messenger.util.TestSubscriberAssertUtils;
+import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 
@@ -29,6 +25,7 @@ import io.techery.janet.http.test.MockHttpActionService;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
+import static com.worldventures.dreamtrips.common.AssertUtil.assertSubscriberWithoutErrorAndValues;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -38,15 +35,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 // There are test methods names like translationStatus_typeMessage,
 // where Status - status which we receive from server side success/failed
 // type - status of Translation notTranslated/Translating/Error/Reverted
 
-@RunWith(PowerMockRunner.class)
 @PrepareForTest(MessengerDatabase.class)
-public class MessageTranslationDelegateTest extends BaseTest {
+public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
     User testUser;
     TranslationsDAO translationsDAO;
@@ -63,7 +58,6 @@ public class MessageTranslationDelegateTest extends BaseTest {
         userSessionHolder = obtainMockUserSession(testUser);
         localeHelper = obtainMockLocaleHelper();
 
-        mockMessengerDataBase();
         testMessage = new DataMessage.Builder().id("21").text("Привет мир").build();
     }
 
@@ -90,7 +84,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
         verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
         verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
 
-        TestSubscriberAssertUtils.isNoErrorAndUnsubscribed(testSubscriber);
+        assertSubscriberWithoutErrorAndValues(testSubscriber);
     }
 
     @Test
@@ -113,7 +107,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
         verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
         verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
 
-        TestSubscriberAssertUtils.isNoErrorAndUnsubscribed(testSubscriber);
+        assertSubscriberWithoutErrorAndValues(testSubscriber);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +131,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
         verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
         verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
 
-        TestSubscriberAssertUtils.isNoErrorAndUnsubscribed(testSubscriber);
+        assertSubscriberWithoutErrorAndValues(testSubscriber);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +163,7 @@ public class MessageTranslationDelegateTest extends BaseTest {
         verify(translationsDAO, times(1)).getTranslation(testMessage.getId());
         verify(localeHelper, times(1)).getAccountLocaleFormatted(testUser);
 
-        TestSubscriberAssertUtils.isNoErrorAndUnsubscribed(testSubscriber);
+        assertSubscriberWithoutErrorAndValues(testSubscriber);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -180,11 +174,6 @@ public class MessageTranslationDelegateTest extends BaseTest {
         MessageTranslationDelegate delegate = new MessageTranslationDelegate(janet, translationsDAO,
                 localeHelper, userSessionHolder);
         delegate.translateMessage(testMessage);
-    }
-
-    private void mockMessengerDataBase() {
-        PowerMockito.mockStatic(MessengerDatabase.class);
-        when(MessengerDatabase.buildUri(any())).thenReturn(null);
     }
 
     private void mockJanetWithResponse(MockHttpActionService.Response response) {

@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.messenger.delegate.sync;
 
+import android.support.annotation.CallSuper;
+
 import com.messenger.delegate.conversation.command.SyncConversationsCommand;
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
 import com.messenger.delegate.roster.LoadContactsCommand;
@@ -17,20 +19,17 @@ import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.synchmechanism.MessengerSyncDelegate;
-import com.worldventures.dreamtrips.messenger.util.BaseTest;
-import com.worldventures.dreamtrips.messenger.util.MockDaggerActionService;
+import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockContactLoader;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockConversationsLoader;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,16 +40,14 @@ import io.techery.janet.Janet;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
-import static com.messenger.util.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-@RunWith(PowerMockRunner.class)
 @PrepareForTest(MessengerDatabase.class)
-public class MessengerSyncDelegateTest extends BaseTest {
+public class MessengerSyncDelegateTest extends MessengerBaseTest {
 
     private static final List<Conversation> testConversations;
     private static final String testConversationId = "1234123412";
@@ -71,19 +68,20 @@ public class MessengerSyncDelegateTest extends BaseTest {
                 .build());
     }
 
-    static {
-        PowerMockito.mockStatic(MessengerDatabase.class);
-        when(MessengerDatabase.buildUri(any())).thenReturn(null);
-    }
-
-    @Mock List<MessengerUser> testUsers;
-    @Mock ConversationSyncHelper conversationSyncHelper;
-    @Mock MessengerServerFacade messengerServerFacade;
-    @Mock UsersDelegate usersDelegate;
-    @Mock UsersDAO usersDAO;
+    @Mock
+    List<MessengerUser> testUsers;
+    @Mock
+    ConversationSyncHelper conversationSyncHelper;
+    @Mock
+    MessengerServerFacade messengerServerFacade;
+    @Mock
+    UsersDelegate usersDelegate;
+    @Mock
+    UsersDAO usersDAO;
 
     private MessengerSyncDelegate messengerSyncDelegate;
 
+    @CallSuper
     @Before
     public void setup() {
         Mockito.doReturn(new BaseLoaderManager() {

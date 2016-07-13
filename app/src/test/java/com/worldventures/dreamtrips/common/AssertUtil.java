@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.core.test;
+package com.worldventures.dreamtrips.common;
 
 import org.junit.Assert;
 
@@ -29,7 +29,7 @@ public final class AssertUtil {
         subscriber.assertUnsubscribed();
     }
 
-    public static <T> void assertSubscriberWithoutValues(TestSubscriber<T> subscriber) {
+    public static <T> void assertSubscriberWithoutErrorAndValues(TestSubscriber<T> subscriber) {
         subscriber.assertNoErrors();
         subscriber.assertNoValues();
         subscriber.assertUnsubscribed();
@@ -39,8 +39,8 @@ public final class AssertUtil {
         subscriber.unsubscribe();
         subscriber.assertNoErrors();
         subscriber.assertUnsubscribed();
-        AssertUtil.assertStatusCount(subscriber, ActionState.Status.START, 1);
-        AssertUtil.assertStatusCount(subscriber, ActionState.Status.FAIL, 1);
+        assertStatusCount(subscriber, ActionState.Status.START, 1);
+        assertStatusCount(subscriber, ActionState.Status.FAIL, 1);
         Assert.assertThat(subscriber.getOnNextEvents().get(1).exception, instanceOf(CancelException.class));
     }
 

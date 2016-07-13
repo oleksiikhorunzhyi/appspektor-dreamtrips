@@ -4,13 +4,11 @@ import com.messenger.delegate.chat.CreateChatHelper;
 import com.messenger.messengerservers.chat.Chat;
 import com.messenger.messengerservers.chat.ChatState;
 import com.messenger.messengerservers.model.Message;
-import com.messenger.storage.MessengerDatabase;
-import com.worldventures.dreamtrips.messenger.util.BaseTest;
-import com.worldventures.dreamtrips.messenger.util.MockDaggerActionService;
+import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 
 import org.junit.Before;
 import org.mockito.Mock;
-import org.powermock.api.mockito.PowerMockito;
 
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
@@ -18,9 +16,8 @@ import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
-public class BaseChatActionDelegateTest extends BaseTest {
+public class BaseChatActionDelegateTest extends MessengerBaseTest {
 
     @Mock
     CreateChatHelper createChatHelper;
@@ -29,8 +26,6 @@ public class BaseChatActionDelegateTest extends BaseTest {
 
     @Before
     public void setup() {
-        mockMessengerDataBase();
-
         chat = new Chat() {
             @Override
             public Observable<Message> send(Message message) {
@@ -55,11 +50,6 @@ public class BaseChatActionDelegateTest extends BaseTest {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //////// Mock Objects
     //////////////////////////////////////////////////////////////////////////////////////////////
-
-    private void mockMessengerDataBase() {
-        PowerMockito.mockStatic(MessengerDatabase.class);
-        when(MessengerDatabase.buildUri(any())).thenReturn(null);
-    }
 
     protected Janet mockJanet() {
         return new Janet.Builder()

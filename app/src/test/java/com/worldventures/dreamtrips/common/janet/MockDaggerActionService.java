@@ -1,12 +1,9 @@
-package com.worldventures.dreamtrips.messenger.util;
+package com.worldventures.dreamtrips.common.janet;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -38,16 +35,16 @@ public class MockDaggerActionService extends ActionServiceWrapper {
         A action = holder.action();
         if (!(action instanceof InjectableAction)) return false;
         try {
-            inject((InjectableAction) action);
+            InjectableAction injectableAction = (InjectableAction) action;
+            inject(injectableAction, injectableAction.getClass());
         } catch (Throwable throwable) {
             Timber.e(throwable, "Can't inject action %s", action);
         }
         return false;
     }
 
-    private void inject(InjectableAction action) throws IllegalAccessException {
-        List<Field> fields = new ArrayList<>();
-        getFields(fields, action.getClass());
+    private void inject(InjectableAction action, Class<?> actionClass) throws IllegalAccessException {
+        Field[] fields = actionClass.getDeclaredFields();
         for (Field field : fields) {
             if (field.getAnnotation(Inject.class) != null) {
                 ObjectProvider provider = injectionMap.get(field.getType());
@@ -57,12 +54,9 @@ public class MockDaggerActionService extends ActionServiceWrapper {
                 }
             }
         }
-    }
 
-    private void getFields(List<Field> fields, Class c) {
-        fields.addAll(Arrays.asList(c.getDeclaredFields()));
-        for (c = c.getSuperclass(); c != null; c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        if (actionClass.getSuperclass() != null) {
+            inject(action, actionClass.getSuperclass());
         }
     }
 

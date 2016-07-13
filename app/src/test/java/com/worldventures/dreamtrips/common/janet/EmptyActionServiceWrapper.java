@@ -1,14 +1,14 @@
-package com.messenger.util.janet;
+package com.worldventures.dreamtrips.common.janet;
 
 import io.techery.janet.ActionHolder;
+import io.techery.janet.ActionService;
 import io.techery.janet.ActionServiceWrapper;
-import io.techery.janet.CommandActionService;
 import io.techery.janet.JanetException;
 
-public class BaseCommandActionServiceWrapper extends ActionServiceWrapper {
+public class EmptyActionServiceWrapper extends ActionServiceWrapper {
 
-    public BaseCommandActionServiceWrapper() {
-        super(new CommandActionService());
+    public EmptyActionServiceWrapper(ActionService actionService) {
+        super(actionService);
     }
 
     @Override

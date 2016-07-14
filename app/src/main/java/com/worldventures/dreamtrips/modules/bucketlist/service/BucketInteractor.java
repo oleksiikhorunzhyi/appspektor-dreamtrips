@@ -33,7 +33,7 @@ public final class BucketInteractor {
 
     private final ActionPipe<BucketListCommand> bucketListActionPipe;
     private final ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe;
-    private final WriteActionPipe<UploadPhotoControllerCommand> uploadPhotoControllerCommandPipe;
+    private final ActionPipe<UploadPhotoControllerCommand> uploadPhotoControllerCommandPipe;
     private final WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe;
 
     public BucketInteractor(Janet janet) {
@@ -94,7 +94,7 @@ public final class BucketInteractor {
         return findBucketItemByPhotoActionPipe;
     }
 
-    public WriteActionPipe<UploadPhotoControllerCommand> uploadControllerCommandPipe() {
+    public ActionPipe<UploadPhotoControllerCommand> uploadControllerCommandPipe() {
         return uploadPhotoControllerCommandPipe;
     }
 

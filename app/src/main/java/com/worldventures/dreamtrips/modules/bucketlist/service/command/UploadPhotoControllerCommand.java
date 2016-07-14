@@ -92,8 +92,7 @@ public class UploadPhotoControllerCommand extends Command<List<EntityStateHolder
                     addOrSetProgress(list);
                     break;
                 case FAIL:
-                    list.remove(photoEntityStateHolder);
-                    list.add(photoEntityStateHolder);
+                    list.set(list.indexOf(photoEntityStateHolder), photoEntityStateHolder);
                     break;
                 case DONE:
                     list.remove(photoEntityStateHolder);

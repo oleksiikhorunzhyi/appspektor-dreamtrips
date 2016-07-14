@@ -90,10 +90,10 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
         }
 
         Observable.concat(Observable.just(cachedItems)
+                        .flatMap(bucketItems -> operationFunc.call(bucketInteractor, bucketItems))
                         .filter(bucketItems -> !bucketItems.isEmpty()),
                 networkObservable)
-                .first()
-                .flatMap(bucketItems -> operationFunc.call(bucketInteractor, bucketItems))
+                .take(1)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 

@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.test.BaseTest;
 import com.worldventures.dreamtrips.core.test.MockDaggerActionService;
-import com.worldventures.dreamtrips.core.test.MockHttpActionService;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -24,6 +23,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import io.techery.janet.ActionState;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.http.test.MockHttpActionService;
 import rx.functions.Func1;
 import rx.observers.TestSubscriber;
 

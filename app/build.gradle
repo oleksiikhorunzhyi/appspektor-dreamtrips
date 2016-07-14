@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
-apply plugin: 'kotlin-android'
 //
 apply from: 'helper-methods.gradle'
 

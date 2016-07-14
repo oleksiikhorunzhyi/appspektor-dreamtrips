@@ -4,7 +4,6 @@ import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.core.test.BaseSpec
-import com.worldventures.dreamtrips.core.test.MockHttpActionService
 import com.worldventures.dreamtrips.core.test.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute
@@ -15,6 +14,7 @@ import io.techery.janet.ActionHolder
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
+import io.techery.janet.http.test.MockHttpActionService
 import org.jetbrains.spek.api.DescribeBody
 import rx.observers.TestSubscriber
 

@@ -1,5 +1,7 @@
 package com.messenger.delegate.conversation;
 
+import android.support.annotation.CallSuper;
+
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
 import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.MessengerServerFacade;
@@ -60,6 +62,7 @@ public class LoadConversationDelegateTest extends BaseTest {
 
     private LoadConversationDelegate loadConversationDelegate;
 
+    @CallSuper
     @Before
     public void setup() {
         Mockito.doReturn(new BaseLoaderManager() {

@@ -4,9 +4,11 @@ import android.location.Location;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -21,7 +23,7 @@ import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TextUtils.class, Location.class})
+@PrepareForTest({TextUtils.class, Location.class, TrackingHelper.class})
 public abstract class BaseTest {
 
     static {
@@ -35,6 +37,9 @@ public abstract class BaseTest {
 
     @Before
     public void setupBase() {
+        MockitoAnnotations.initMocks(this);
+        mockStatic(TrackingHelper.class);
+
         mockStatic(TextUtils.class);//See http://g.co/androidstudio/not-mocked
         PowerMockito.when(TextUtils.isEmpty(anyString()))
                 .thenAnswer(invocation -> {

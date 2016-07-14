@@ -1,5 +1,7 @@
 package com.messenger.delegate.sync;
 
+import android.support.annotation.CallSuper;
+
 import com.messenger.delegate.conversation.command.SyncConversationsCommand;
 import com.messenger.delegate.conversation.helper.ConversationSyncHelper;
 import com.messenger.delegate.roster.LoadContactsCommand;
@@ -84,6 +86,7 @@ public class MessengerSyncDelegateTest extends BaseTest {
 
     private MessengerSyncDelegate messengerSyncDelegate;
 
+    @CallSuper
     @Before
     public void setup() {
         Mockito.doReturn(new BaseLoaderManager() {

@@ -1,0 +1,93 @@
+package com.worldventures.dreamtrips.messenger.util;
+
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import io.techery.janet.ActionHolder;
+import io.techery.janet.ActionService;
+import io.techery.janet.ActionServiceWrapper;
+import io.techery.janet.JanetException;
+import timber.log.Timber;
+
+public class MockDaggerActionService extends ActionServiceWrapper {
+
+    private final Map<Class, ObjectProvider> injectionMap = new HashMap<>();
+
+    public MockDaggerActionService(ActionService actionService) {
+        super(actionService);
+    }
+
+    public <T> MockDaggerActionService registerProvider(Class<T> objClass, ObjectProvider<T> provider) {
+        if (injectionMap.containsKey(objClass)) {
+            throw new IllegalArgumentException("Class " + objClass + " is already registered");
+        }
+        injectionMap.put(objClass, provider);
+        return this;
+    }
+
+    @Override
+    protected <A> boolean onInterceptSend(ActionHolder<A> holder) throws JanetException {
+        A action = holder.action();
+        if (!(action instanceof InjectableAction)) return false;
+        try {
+            inject((InjectableAction) action);
+        } catch (Throwable throwable) {
+            Timber.e(throwable, "Can't inject action %s", action);
+        }
+        return false;
+    }
+
+    private void inject(InjectableAction action) throws IllegalAccessException {
+        List<Field> fields = new ArrayList<>();
+        getFields(fields, action.getClass());
+        for (Field field : fields) {
+            if (field.getAnnotation(Inject.class) != null) {
+                ObjectProvider provider = injectionMap.get(field.getType());
+                if (provider != null) {
+                    field.setAccessible(true);
+                    field.set(action, provider.provide());
+                }
+            }
+        }
+    }
+
+    private void getFields(List<Field> fields, Class c) {
+        fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        for (c = c.getSuperclass(); c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+    }
+
+    public interface ObjectProvider<T> {
+        T provide();
+    }
+
+    @Override
+    protected <A> void onInterceptCancel(ActionHolder<A> holder) {
+    }
+
+    @Override
+    protected <A> void onInterceptStart(ActionHolder<A> holder) {
+    }
+
+    @Override
+    protected <A> void onInterceptProgress(ActionHolder<A> holder, int progress) {
+    }
+
+    @Override
+    protected <A> void onInterceptSuccess(ActionHolder<A> holder) {
+    }
+
+    @Override
+    protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
+        return false;
+    }
+}

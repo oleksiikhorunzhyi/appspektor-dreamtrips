@@ -95,8 +95,9 @@ public class DescriptionCreatorFragment extends RxBaseFragmentWithArgs<Descripti
         suggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         suggestions.addItemDecoration(dividerItemDecoration());
         suggestions.setProgressView(suggestionsProgressView);
-        description.setText(getArgs().getText());
-        description.setSelection(getArgs().getText().length());
+        String text = getArgs() != null && getArgs().getText() != null ? getArgs().getText() : "";
+        description.setText(text);
+        description.setSelection(text.length());
 
         RxTextView.afterTextChangeEvents(description)
                 .throttleLast(1, TimeUnit.SECONDS)

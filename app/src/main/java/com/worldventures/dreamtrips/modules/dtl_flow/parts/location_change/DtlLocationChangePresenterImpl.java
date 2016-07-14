@@ -40,6 +40,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import flow.path.Path;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
@@ -82,7 +83,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         super.onAttachedToWindow();
         if (getView().isTabletLandscape()) {
             // this path is not applicable for tablet landscape - it is embedded in DtlToolbar
-            navigateAway();
+            navigateToPath(DtlMerchantsPath.getDefault());
             return;
         }
         apiErrorPresenter.setView(getView());
@@ -109,11 +110,11 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     private void connectToolbarCollapses() {
         getView().provideDtlToolbarCollapsesObservable()
                 .compose(bindView())
-                .subscribe(aVoid -> navigateAway());
+                .subscribe(aVoid -> navigateToPath(DtlMerchantsPath.getDefault()));
         // below: treat merchant search input focus gain as location search exit (collapsing)
         getView().provideMerchantInputFocusLossObservable()
                 .compose(bindView())
-                .subscribe(aVoid -> navigateAway());
+                .subscribe(aVoid -> navigateToPath(DtlMerchantsPath.getDefault()));
     }
 
     private void connectToolbarLocationSearch(Observable<DtlLocation> dtlLocationObservable) {
@@ -164,7 +165,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                         .build();
                 locationInteractor.locationPipe().send(DtlLocationCommand.change(dtlLocation));
                 filterInteractor.filterMerchantsActionPipe().clearReplays();
-                navigateAway();
+                navigateToPath(DtlMerchantsPath.withAllowedRedirection());
                 break;
             case SEARCH:
                 break;
@@ -209,13 +210,10 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
-    private void navigateAway() {
+    private void navigateToPath(Path path) {
         clearCacheBeforeCloseScreen();
         //
-        History history = History.single(DtlMerchantsPath
-                .builder()
-                .fromLocationScreen(true)
-                .build());
+        History history = History.single(path);
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
@@ -300,7 +298,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
                 .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates().asAndroidLocation()));
-        navigateAway();
+        navigateToPath(DtlMerchantsPath.getDefault());
     }
 
     /**

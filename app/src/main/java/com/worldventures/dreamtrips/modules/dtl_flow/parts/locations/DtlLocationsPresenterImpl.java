@@ -175,7 +175,7 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     }
 
     private void navigateToMerchants() {
-        History history = History.single(DtlMerchantsPath.getDefault());
+        History history = History.single(DtlMerchantsPath.withAllowedRedirection());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 

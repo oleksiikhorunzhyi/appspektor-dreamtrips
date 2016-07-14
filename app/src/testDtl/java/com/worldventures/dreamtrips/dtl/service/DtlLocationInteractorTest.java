@@ -3,10 +3,9 @@ package com.worldventures.dreamtrips.dtl.service;
 
 import android.location.Location;
 
-import com.worldventures.dreamtrips.core.test.BaseTest;
-import com.worldventures.dreamtrips.core.test.MockDaggerActionService;
-import com.worldventures.dreamtrips.core.test.MockHttpActionService;
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper;
+import com.worldventures.dreamtrips.common.BaseTest;
+import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.common.janet.StubServiceWrapper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
@@ -25,9 +24,10 @@ import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionState;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.http.test.MockHttpActionService;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;

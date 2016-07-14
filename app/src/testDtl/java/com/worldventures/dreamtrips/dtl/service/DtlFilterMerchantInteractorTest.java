@@ -30,7 +30,7 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
 import static com.worldventures.dreamtrips.modules.settings.util.SettingsFactory.DISTANCE_UNITS;
 import static com.worldventures.dreamtrips.modules.settings.util.SettingsFactory.KILOMETERS;
 import static org.mockito.Matchers.any;

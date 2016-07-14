@@ -1,16 +1,17 @@
-package com.worldventures.dreamtrips.modules.dtl.service
+package com.worldventures.dreamtrips.dtl.service
 
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.common.BaseSpec
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.test.BaseSpec
-import com.worldventures.dreamtrips.core.test.MockHttpActionService
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult
+import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction
+import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction
@@ -18,6 +19,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAct
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
+import io.techery.janet.http.test.MockHttpActionService
 import org.junit.Before
 import org.mockito.Mockito.any
 import org.mockito.Mockito.eq

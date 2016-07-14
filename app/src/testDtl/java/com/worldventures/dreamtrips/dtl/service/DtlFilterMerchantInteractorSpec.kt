@@ -1,14 +1,18 @@
-package com.worldventures.dreamtrips.modules.dtl.service
+package com.worldventures.dreamtrips.dtl.service
 
 import android.location.Location
 import com.google.android.gms.maps.model.LatLng
-import com.messenger.util.AssertUtil.assertActionSuccess
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.dtl.service.DtlBaseMerchantSpec
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters
+import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterMerchantsAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand

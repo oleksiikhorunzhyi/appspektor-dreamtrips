@@ -1,8 +1,9 @@
-package com.worldventures.dreamtrips.modules.dtl.service
+package com.worldventures.dreamtrips.dtl.service
 
-import com.messenger.util.AssertUtil.assertActionSuccess
 import com.nhaarman.mockito_kotlin.anyCollection
 import com.nhaarman.mockito_kotlin.verify
+import com.worldventures.dreamtrips.common.AssertUtil
+import com.worldventures.dreamtrips.common.AssertUtil.*
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction
@@ -56,7 +57,7 @@ class DtlMerchantInteractorSpec : DtlBaseMerchantSpec({
         it("should get merchant by mocked id") {
             val subscriber = TestSubscriber<ActionState<DtlMerchantByIdAction>>()
             merchantInteractor.merchantByIdPipe()
-                    .createObservable(DtlMerchantByIdAction(DtlBaseMerchantSpec.MERCHANT_ID))
+                    .createObservable(DtlMerchantByIdAction(MERCHANT_ID))
                     .subscribe(subscriber)
             assertActionSuccess(subscriber) { action -> action.result != null }
         }

@@ -1,20 +1,22 @@
-package com.worldventures.dreamtrips.modules.dtl.service
+package com.worldventures.dreamtrips.dtl.service
 
 import com.nhaarman.mockito_kotlin.*
+import com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.common.BaseSpec
+import com.worldventures.dreamtrips.common.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
-import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.test.BaseSpec
-import com.worldventures.dreamtrips.core.test.MockHttpActionService
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType
+import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction
 import com.worldventures.dreamtrips.modules.trips.model.Location
 import io.techery.janet.ActionHolder
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
+import io.techery.janet.http.test.MockHttpActionService
 import org.jetbrains.spek.api.DescribeBody
 import rx.observers.TestSubscriber
 

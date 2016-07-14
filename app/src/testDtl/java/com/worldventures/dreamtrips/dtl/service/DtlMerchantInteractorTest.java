@@ -15,7 +15,7 @@ import org.junit.Test;
 import io.techery.janet.ActionState;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

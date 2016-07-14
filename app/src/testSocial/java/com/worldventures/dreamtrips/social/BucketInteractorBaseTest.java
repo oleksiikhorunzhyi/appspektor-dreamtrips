@@ -4,15 +4,14 @@ import android.support.annotation.CallSuper;
 
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.common.BaseTest;
+import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.common.janet.StubServiceWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.test.BaseTest;
-import com.worldventures.dreamtrips.core.test.MockDaggerActionService;
-import com.worldventures.dreamtrips.core.test.MockHttpActionService;
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
@@ -31,6 +30,7 @@ import java.util.Set;
 
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.http.test.MockHttpActionService;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

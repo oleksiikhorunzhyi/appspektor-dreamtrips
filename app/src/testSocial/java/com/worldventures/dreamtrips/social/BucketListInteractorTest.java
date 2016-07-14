@@ -1,8 +1,7 @@
 package com.worldventures.dreamtrips.social;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.core.test.MockHttpActionService;
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper;
+import com.worldventures.dreamtrips.common.janet.StubServiceWrapper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 
@@ -18,10 +17,11 @@ import java.util.List;
 
 import io.techery.janet.ActionState;
 import io.techery.janet.http.annotations.HttpAction;
+import io.techery.janet.http.test.MockHttpActionService;
 import rx.functions.Func1;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;

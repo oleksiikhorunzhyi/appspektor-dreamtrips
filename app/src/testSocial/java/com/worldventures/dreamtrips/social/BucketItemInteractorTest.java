@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.test.MockHttpActionService;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
@@ -53,12 +52,13 @@ import java.util.concurrent.TimeUnit;
 import io.techery.janet.ActionState;
 import io.techery.janet.WriteActionPipe;
 import io.techery.janet.http.annotations.HttpAction;
+import io.techery.janet.http.test.MockHttpActionService;
 import rx.functions.Func1;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionCanceled;
-import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess;
-import static com.worldventures.dreamtrips.core.test.AssertUtil.assertSubscriberWithoutValues;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertActionCanceled;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.common.AssertUtil.assertSubscriberWithoutErrorAndValues;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
 import static org.mockito.Matchers.any;
@@ -242,7 +242,7 @@ public class BucketItemInteractorTest extends BucketInteractorBaseTest {
         addBucketPhotoPipe.cancel(addBucketItemPhotoCommand);
 
         assertActionCanceled(testSubscriber);
-        assertSubscriberWithoutValues(testListSubscriber);
+        assertSubscriberWithoutErrorAndValues(testListSubscriber);
     }
 
     @Test

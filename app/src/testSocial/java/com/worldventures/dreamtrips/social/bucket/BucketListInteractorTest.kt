@@ -1,8 +1,8 @@
-package com.worldventures.dreamtrips.modules.social.bucket
+package com.worldventures.dreamtrips.social.bucket
 
 import com.google.gson.JsonObject
-import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper
+import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand
 import io.techery.janet.ActionState
@@ -53,7 +53,7 @@ class BucketListInteractorTest : BucketInteractorBaseTest() {
 
     @Test
     fun loadBucketListFromStorage() {
-        `when`(mockDb!!.readBucketList(BucketInteractorBaseTest.MOCK_USER_ID)).thenReturn(testListOfBucketsFromDisk)
+        `when`(mockDb!!.readBucketList(MOCK_USER_ID)).thenReturn(testListOfBucketsFromDisk)
         checkLoadBucketList(Func1 { bucketListAction -> testListOfBucketsFromDisk!!.containsAll(bucketListAction.result) }, false)
     }
 

@@ -1,10 +1,9 @@
-package com.worldventures.dreamtrips.common
+package com.worldventures.dreamtrips
 
 import android.location.Location
-import android.text.TextUtils
 import com.nhaarman.mockito_kotlin.spy
-import com.worldventures.dreamtrips.common.janet.MockDaggerActionService
-import com.worldventures.dreamtrips.common.janet.StubServiceWrapper
+import com.worldventures.dreamtrips.janet.MockDaggerActionService
+import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import io.techery.janet.ActionService
 import org.jetbrains.spek.api.DescribeBody
@@ -22,7 +21,7 @@ import rx.schedulers.Schedulers
 
 @RunWith(PowerMockRunner::class)
 @PowerMockRunnerDelegate(JUnitSpekRunner::class)
-@PrepareForTest(TextUtils::class, Location::class)
+@PrepareForTest(Location::class)
 open class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
     companion object {
         init {

@@ -1,11 +1,11 @@
-package com.worldventures.dreamtrips.modules.social.bucket
+package com.worldventures.dreamtrips.social.bucket
 
 import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.AssertUtil.assertStatusCount
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.core.test.AssertUtil.assertStatusCount
 import com.worldventures.dreamtrips.core.utils.FileUtils
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.*
@@ -433,7 +433,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
             return this.newFile(fileName).path
         }
 
-        fun createPhotoEntityHolderWithBehavior(state: EntityStateHolder.State): EntityStateHolder<BucketPhoto> {
+        fun createPhotoEntityHolderWithBehavior(state: State): EntityStateHolder<BucketPhoto> {
             return create(testBucketPhoto, state)
         }
 

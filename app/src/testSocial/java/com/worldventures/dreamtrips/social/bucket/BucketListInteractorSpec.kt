@@ -1,10 +1,10 @@
-package com.worldventures.dreamtrips.modules.social.bucket
+package com.worldventures.dreamtrips.social.bucket
 
 import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage

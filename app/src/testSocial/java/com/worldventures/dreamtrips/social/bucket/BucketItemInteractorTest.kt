@@ -1,12 +1,12 @@
-package com.worldventures.dreamtrips.modules.social.bucket
+package com.worldventures.dreamtrips.social.bucket
 
 import android.content.Context
 import android.test.mock.MockContext
 import android.text.TextUtils
 import com.google.gson.JsonObject
+import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.test.AssertUtil.*
 import com.worldventures.dreamtrips.core.utils.FileUtils
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.COMPLETED

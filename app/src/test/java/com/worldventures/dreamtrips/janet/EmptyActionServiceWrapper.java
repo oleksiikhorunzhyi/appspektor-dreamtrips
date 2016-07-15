@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.common.janet;
+package com.worldventures.dreamtrips.janet;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionService;

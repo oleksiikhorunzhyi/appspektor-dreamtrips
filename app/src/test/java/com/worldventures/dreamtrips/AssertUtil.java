@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.common;
+package com.worldventures.dreamtrips;
 
 import org.junit.Assert;
 

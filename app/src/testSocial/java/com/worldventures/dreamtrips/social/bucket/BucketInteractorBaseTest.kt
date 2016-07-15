@@ -1,15 +1,15 @@
-package com.worldventures.dreamtrips.modules.social.bucket
+package com.worldventures.dreamtrips.social.bucket
 
 import android.support.annotation.CallSuper
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
+import com.worldventures.dreamtrips.BaseTest
+import com.worldventures.dreamtrips.janet.MockDaggerActionService
+import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.core.test.BaseTest
-import com.worldventures.dreamtrips.core.test.MockDaggerActionService
-import com.worldventures.dreamtrips.core.test.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
@@ -18,8 +18,6 @@ import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import org.junit.Before
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -56,14 +54,14 @@ abstract class BucketInteractorBaseTest : BaseTest() {
     @CallSuper
     @Before
     open fun setup() {
-        val cacheResultWrapper = BaseTest.cachedService(daggerActionService)
+        val cacheResultWrapper = cachedService(daggerActionService)
         for (storage in storageSet()) {
             cacheResultWrapper.bindStorage(storage.actionClass, storage)
         }
 
         janet = Janet.Builder()
                 .addService(cacheResultWrapper)
-                .addService(BaseTest.cachedService(httpStubWrapper))
+                .addService(cachedService(httpStubWrapper))
                 .build()
 
         daggerActionService.registerProvider(Janet::class.java) { janet }

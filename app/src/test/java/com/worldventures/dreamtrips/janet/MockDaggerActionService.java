@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.common.janet;
+package com.worldventures.dreamtrips.janet;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 

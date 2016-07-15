@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.social.bucket
+package com.worldventures.dreamtrips.social.bucket
 
 import android.content.Context
 import android.test.mock.MockContext
@@ -7,13 +7,13 @@ import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
+import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.core.test.BaseSpec
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.common.model.User
@@ -22,7 +22,7 @@ import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import org.jetbrains.spek.api.DescribeBody
 
-abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
+open class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
     companion object BaseCompanion {
         val MOCK_USER_ID = 1
 

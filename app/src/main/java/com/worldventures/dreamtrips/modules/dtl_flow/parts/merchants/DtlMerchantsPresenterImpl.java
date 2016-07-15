@@ -207,7 +207,7 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     }
 
     private void showEmptyView() {
-        if (!getView().isTabletLandscape() && !getView().getPath().isfromLocationScreen()) {
+        if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) {
             navigateToPath(new DtlLocationChangePath());
         } else {
             getView().showEmptyMerchantView(true);

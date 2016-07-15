@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.bucket
+package com.worldventures.dreamtrips.social.bucket.junit
 
 import com.google.gson.JsonObject
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess

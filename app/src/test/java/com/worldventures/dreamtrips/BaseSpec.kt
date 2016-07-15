@@ -2,9 +2,10 @@ package com.worldventures.dreamtrips
 
 import android.location.Location
 import com.nhaarman.mockito_kotlin.spy
+import com.worldventures.dreamtrips.common.RxJavaSchedulerInitializer
+import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import com.worldventures.dreamtrips.janet.MockDaggerActionService
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
-import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper
 import io.techery.janet.ActionService
 import org.jetbrains.spek.api.DescribeBody
 import org.jetbrains.spek.api.Spek
@@ -14,22 +15,14 @@ import org.mockito.Mockito
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
 import org.powermock.modules.junit4.PowerMockRunnerDelegate
-import rx.Scheduler
-import rx.plugins.RxJavaPlugins
-import rx.plugins.RxJavaSchedulersHook
-import rx.schedulers.Schedulers
 
 @RunWith(PowerMockRunner::class)
 @PowerMockRunnerDelegate(JUnitSpekRunner::class)
 @PrepareForTest(Location::class)
-open class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
+abstract class BaseSpec(spekBody: DescribeBody.() -> Unit) : Spek(spekBody) {
     companion object {
         init {
-            RxJavaPlugins.getInstance().registerSchedulersHook(object : RxJavaSchedulersHook() {
-                override fun getIOScheduler(): Scheduler {
-                    return Schedulers.immediate()
-                }
-            })
+            RxJavaSchedulerInitializer.init()
         }
 
         fun ActionService.wrapCache() = CacheResultWrapper(this)

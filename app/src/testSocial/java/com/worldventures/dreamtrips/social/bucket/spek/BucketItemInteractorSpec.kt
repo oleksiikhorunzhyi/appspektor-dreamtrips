@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.bucket
+package com.worldventures.dreamtrips.social.bucket.spek
 
 import com.google.gson.JsonObject
 import com.nhaarman.mockito_kotlin.mock

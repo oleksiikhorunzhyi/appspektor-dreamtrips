@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.bucket
+package com.worldventures.dreamtrips.social.bucket.junit
 
 import android.support.annotation.CallSuper
 import com.techery.spares.session.SessionHolder

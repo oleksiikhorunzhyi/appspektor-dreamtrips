@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.social.bucket
+package com.worldventures.dreamtrips.social.bucket.spek
 
 import android.content.Context
 import android.test.mock.MockContext
@@ -22,7 +22,7 @@ import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
 import org.jetbrains.spek.api.DescribeBody
 
-open class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
+abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : BaseSpec(speckBody) {
     companion object BaseCompanion {
         val MOCK_USER_ID = 1
 

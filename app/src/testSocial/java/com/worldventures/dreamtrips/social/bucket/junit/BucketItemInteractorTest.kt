@@ -1,8 +1,7 @@
-package com.worldventures.dreamtrips.social.bucket
+package com.worldventures.dreamtrips.social.bucket.junit
 
 import android.content.Context
 import android.test.mock.MockContext
-import android.text.TextUtils
 import com.google.gson.JsonObject
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
@@ -27,7 +26,7 @@ import com.worldventures.dreamtrips.modules.common.model.AppConfig
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
 import io.techery.janet.ActionState
-import io.techery.janet.http.annotations.HttpAction
+import io.techery.janet.http.annotations.HttpAction.Method
 import io.techery.janet.http.test.MockHttpActionService
 import org.assertj.core.util.Lists
 import org.junit.Before
@@ -283,7 +282,7 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
                 .subscribe(testSubscriber)
 
         assertActionSuccess(testSubscriber) {
-            TextUtils.equals(it.response.status, COMPLETED)
+            it.response.status == COMPLETED
         }
         assertActionSuccess(testListSubscriber) {
             it.result.any { TEST_BUCKET_ITEM_UID == it.uid && COMPLETED == it.status }
@@ -309,16 +308,17 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
     override fun mockHttpService(): MockHttpActionService {
         return MockHttpActionService.Builder()
                 .bind(MockHttpActionService.Response(200).body(testBucketItem)) {
-                    TextUtils.equals(it.method, HttpAction.Method.POST.name) && it.url.endsWith("/api/bucket_list_items")
+                    Method.POST.name == it.method && it.url.endsWith("/api/bucket_list_items")
                 }
                 .bind(MockHttpActionService.Response(200).body(testBucketItem)) {
-                    TextUtils.equals(it.method, HttpAction.Method.PATCH.name)
+                    it.method == Method.PATCH.name
                 }
                 .bind(MockHttpActionService.Response(200).body(JsonObject())) {
-                    TextUtils.equals(it.method, HttpAction.Method.DELETE.name)
+                    Method.DELETE.name == it.method
                 }
                 .bind(MockHttpActionService.Response(200).body(testBucketItem)) {
-                    it.body.toString().contains("id") && TextUtils.equals(it.method, HttpAction.Method.PATCH.name)
+                    it.body.toString().contains("id")
+                            && Method.PATCH.name == it.method
                 }
                 .bind(MockHttpActionService.Response(200).body(testBucketPhoto)) {
                     it.url.contains("/photos")

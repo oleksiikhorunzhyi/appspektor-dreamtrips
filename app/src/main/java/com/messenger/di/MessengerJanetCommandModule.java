@@ -10,6 +10,7 @@ import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
 import com.messenger.delegate.chat.event.EventCommandModule;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
+import com.messenger.delegate.chat.message.MarkMessageAsReadCommand;
 import com.messenger.delegate.chat.message.RetrySendMessageCommand;
 import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
 import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
@@ -49,6 +50,7 @@ import dagger.Module;
         SendChatAvatarCommand.class,
         SetChatAvatarCommand.class,
         RemoveChatAvatarCommand.class,
+        MarkMessageAsReadCommand.class,
         ClearChatServerCommand.class,
         RevertClearingChatServerCommand.class
 },

@@ -58,6 +58,10 @@ public class MessagesPaginationDelegate {
         loadNextPage();
     }
 
+    public boolean isLoading() {
+        return loading.get();
+    }
+
     public void loadNextPage() {
         if (!hasMoreElements || loading.get()) return;
 

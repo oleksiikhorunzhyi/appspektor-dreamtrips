@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.messenger.delegate.chat.message.ChatMessageInteractor;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
+import com.messenger.delegate.chat.message.MarkMessageAsReadCommand;
 import com.messenger.delegate.chat.message.RetrySendMessageCommand;
 import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataMessage;
@@ -36,6 +37,11 @@ public class ChatMessageManager {
     public void sendMessage(String conversationId, String messageText) {
         chatMessageInteractor.getMessageActionPipe()
                 .send(new ChatSendMessageCommand(conversationId, messageText));
+    }
+
+    public void markMessagesAsRead(DataMessage lastSeenMessage, String conversationId) {
+        chatMessageInteractor.getMarkMessageAsReadPipe()
+                .send(new MarkMessageAsReadCommand(lastSeenMessage, conversationId));
     }
 
     public void sendImages(String conversationId, List<String> filePaths) {

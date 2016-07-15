@@ -1,8 +1,8 @@
-package com.worldventures.dreamtrips.dtl.service
+package com.worldventures.dreamtrips.dtl.service.spek
 
 import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.common.BaseSpec
+import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor

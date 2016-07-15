@@ -1,9 +1,9 @@
-package com.worldventures.dreamtrips.dtl.service;
+package com.worldventures.dreamtrips.dtl.service.junit;
 
-import com.worldventures.dreamtrips.common.BaseTest;
-import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
-import com.worldventures.dreamtrips.common.janet.StubServiceWrapper;
+import com.worldventures.dreamtrips.BaseTest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.janet.StubServiceWrapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
@@ -21,7 +21,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.http.test.MockHttpActionService;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class DtlBaseMerchantServiceTest extends BaseTest {
+abstract class DtlBaseMerchantServiceTest extends BaseTest {
 
     protected static final String MERCHANT_ID = "test";
 

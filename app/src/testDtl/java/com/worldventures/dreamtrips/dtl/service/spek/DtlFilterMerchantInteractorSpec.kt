@@ -1,9 +1,9 @@
-package com.worldventures.dreamtrips.dtl.service
+package com.worldventures.dreamtrips.dtl.service.spek
 
 import android.location.Location
 import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType

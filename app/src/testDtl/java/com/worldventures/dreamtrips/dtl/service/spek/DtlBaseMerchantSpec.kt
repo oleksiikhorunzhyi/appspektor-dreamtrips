@@ -1,9 +1,9 @@
-package com.worldventures.dreamtrips.dtl.service
+package com.worldventures.dreamtrips.dtl.service.spek
 
 import com.nhaarman.mockito_kotlin.*
-import com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess
-import com.worldventures.dreamtrips.common.BaseSpec
-import com.worldventures.dreamtrips.common.janet.StubServiceWrapper
+import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
+import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute
@@ -20,7 +20,7 @@ import io.techery.janet.http.test.MockHttpActionService
 import org.jetbrains.spek.api.DescribeBody
 import rx.observers.TestSubscriber
 
-open class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec(spekBody) {
+abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec(spekBody) {
 
     companion object {
         val MERCHANT_ID = "test"
@@ -86,8 +86,5 @@ open class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec(spe
             assertActionSuccess<DtlMerchantsAction>(subscriber) { action -> action.result.isNotEmpty() && !action.isFromApi }
             verify(spyHttpCallback, never()).onSend(any<ActionHolder<Any>>())
         }
-
     }
-
 }
-

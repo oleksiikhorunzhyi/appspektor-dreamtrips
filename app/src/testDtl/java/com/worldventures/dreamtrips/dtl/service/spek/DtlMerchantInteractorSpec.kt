@@ -1,9 +1,8 @@
-package com.worldventures.dreamtrips.dtl.service
+package com.worldventures.dreamtrips.dtl.service.spek
 
 import com.nhaarman.mockito_kotlin.anyCollection
 import com.nhaarman.mockito_kotlin.verify
-import com.worldventures.dreamtrips.common.AssertUtil
-import com.worldventures.dreamtrips.common.AssertUtil.*
+import com.worldventures.dreamtrips.AssertUtil.*
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlFilterDataAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.dtl.service;
+package com.worldventures.dreamtrips.dtl.service.junit;
 
 import android.location.Location;
 
@@ -15,7 +15,7 @@ import org.junit.Test;
 import io.techery.janet.ActionState;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;

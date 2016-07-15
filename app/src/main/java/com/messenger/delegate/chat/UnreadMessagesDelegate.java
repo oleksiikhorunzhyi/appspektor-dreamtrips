@@ -62,10 +62,7 @@ public class UnreadMessagesDelegate {
 
     private Observable<Integer> changeUnreadCounter(int markCount) {
         return conversationObservable
-                .doOnNext(conversation -> {
-                    conversation.setUnreadMessageCount(0);
-                    conversationsDAO.save(conversation);
-                })
+                .doOnNext(conversation -> conversationsDAO.setUnreadCount(conversation.getId(), markCount))
                 .map(conversation -> markCount);
     }
 

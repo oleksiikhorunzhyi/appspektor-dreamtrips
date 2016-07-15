@@ -2,6 +2,7 @@ package com.messenger.ui.view.add_member;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -188,6 +189,7 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         toolbarPresenter.setTitle(title);
     }
 
+    @NonNull
     @Override
     public String getConversationName() {
         return conversationNameEditText.getText().toString();

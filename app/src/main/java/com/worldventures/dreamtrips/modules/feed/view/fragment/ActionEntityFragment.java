@@ -94,8 +94,6 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         photosList.setLayoutManager(layout);
         photosList.addItemDecoration(new PhotoPostCreationItemDecorator());
         photosList.setAdapter(adapter);
-
-        adapter.addItem(description);
     }
 
     @Override
@@ -161,6 +159,10 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     @Override
     public void setText(String text) {
+        if (!adapter.getItems().contains(description)) {
+            adapter.addItem(description);
+        }
+
         description.setDescription(text);
         adapter.notifyDataSetChanged();
     }

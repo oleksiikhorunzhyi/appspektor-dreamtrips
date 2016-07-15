@@ -11,7 +11,6 @@ import android.util.Pair;
 
 import com.kbeanie.imagechooser.helpers.StreamHelper;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -74,14 +73,13 @@ public class DrawableUtil {
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = getInSampleSize(w, l, scale);
-
             options.inJustDecodeBounds = false;
 
             bitmap = BitmapFactory.decodeFile(fileImage, options);
 
-            File original = new File(fileImage);
-            File file = new File(getImagesCacheDir(), original.getName());
-            stream = new FileOutputStream(file);
+            File originalFile = new File(fileImage);
+            File newFile = new File(getImagesCacheDir(), originalFile.getName());
+            stream = new FileOutputStream(newFile);
             if (rotate != 0) {
                 Matrix matrix = new Matrix();
                 matrix.setRotate(rotate);
@@ -90,8 +88,9 @@ public class DrawableUtil {
             }
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+            ExifUtils.copyExif(originalFile.getAbsolutePath(), newFile.getAbsolutePath());
 
-            return new Pair<>(file.getAbsolutePath(), new Size(bitmap.getWidth(), bitmap.getHeight()));
+            return new Pair<>(newFile.getAbsolutePath(), new Size(bitmap.getWidth(), bitmap.getHeight()));
         } catch (IOException e) {
             return new Pair<>(fileImage, new Size(0, 0));
         } catch (Exception e) {

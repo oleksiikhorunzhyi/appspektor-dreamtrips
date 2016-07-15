@@ -20,6 +20,7 @@ import com.worldventures.dreamtrips.modules.friends.bundle.FriendGlobalSearchBun
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.friends.presenter.FriendListPresenter;
 import com.worldventures.dreamtrips.modules.friends.view.cell.FriendCell;
+import com.worldventures.dreamtrips.modules.profile.view.widgets.SwipeRefreshLayoutWithText;
 
 import java.util.List;
 
@@ -31,12 +32,12 @@ import butterknife.OnClick;
 public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, BaseUsersBundle>
         implements FriendListPresenter.View {
 
-
     @InjectView(R.id.iv_filter)
     ImageView filter;
     @InjectView(R.id.search)
     DelaySearchView search;
-
+    @InjectView(R.id.swipe_container)
+    SwipeRefreshLayoutWithText refreshLayout;
 
     @OnClick(R.id.global)
     void onGlobalSearchClicked() {
@@ -87,6 +88,23 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
                 return false;
             }
         });
+        //
+        refreshLayout.setInfoText(R.string.friends_loading_info_text);
+    }
+
+    @Override
+    public void startLoading() {
+        // timeout was set according to the issue:
+        // https://code.google.com/p/android/issues/detail?id=77712
+        weakHandler.postDelayed(() -> {
+            if (refreshLayout != null)
+                // show info text only if empty view isn't showing
+                if (recyclerView.isEmptyViewVisible()) {
+                    refreshLayout.setRefreshing(true);
+                } else {
+                    refreshLayout.setRefreshing(true, adapter.getCount() == 0);
+                }
+        }, 100);
     }
 
     @OnClick(R.id.iv_filter)
@@ -112,5 +130,4 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
     protected FriendListPresenter createPresenter(Bundle savedInstanceState) {
         return new FriendListPresenter();
     }
-
 }

@@ -11,7 +11,9 @@
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        fresco:actualImageScaleType="fitCenter"/>
+        fresco:actualImageScaleType="fitCenter"
+        fresco:placeholderImage="@drawable/fullscreen_placeholder"
+        fresco:placeholderImageScaleType="fitCenter"/>
 
     <View
         android:layout_width="match_parent"
@@ -48,8 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:padding="5dp"
-                android:src="@drawable/ic_fs_share"
-                />
+                android:src="@drawable/ic_fs_share"/>
 
             <com.worldventures.dreamtrips.modules.common.view.custom.FlagView
                 android:id="@+id/flag"
@@ -57,9 +58,6 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 custom:icon="@drawable/ic_fs_flag"/>
-
         </LinearLayout>
-
     </LinearLayout>
-
 </FrameLayout>

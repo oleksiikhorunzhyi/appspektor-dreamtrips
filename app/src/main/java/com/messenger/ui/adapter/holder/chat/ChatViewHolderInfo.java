@@ -4,19 +4,9 @@ public class ChatViewHolderInfo {
 
     private int viewType;
     private Class<? extends MessageViewHolder> viewHolderClass;
+    private boolean systemMessage;
     private boolean own;
-    private String type;
-
-    public ChatViewHolderInfo(int viewType, Class<? extends MessageViewHolder> viewHolderClass, boolean own) {
-        this.viewType = viewType;
-        this.viewHolderClass = viewHolderClass;
-        this.own = own;
-    }
-
-    public ChatViewHolderInfo(int viewType, Class<? extends MessageViewHolder> viewHolderClass, boolean own, String type) {
-        this(viewType, viewHolderClass, own);
-        this.type = type;
-    }
+    private String attachmentType;
 
     public int getViewType() {
         return viewType;
@@ -30,7 +20,48 @@ public class ChatViewHolderInfo {
         return own;
     }
 
-    public String getType() {
-        return type;
+    public String getAttachmentType() {
+        return attachmentType;
+    }
+
+    public boolean isSystemMessage() {
+        return systemMessage;
+    }
+
+    public static class Builder {
+        ChatViewHolderInfo info;
+
+        public Builder() {
+            info = new ChatViewHolderInfo();
+        }
+
+        public Builder viewType(int viewType) {
+            info.viewType = viewType;
+            return this;
+        }
+
+        public Builder viewHolderClass(Class<? extends MessageViewHolder> viewHolderClass) {
+            info.viewHolderClass = viewHolderClass;
+            return this;
+        }
+
+        public Builder systemMessage(boolean systemMessage) {
+            info.systemMessage = systemMessage;
+            return this;
+        }
+
+        public Builder own(boolean own) {
+            info.own = own;
+            return this;
+        }
+
+        public Builder attachmentType(String attachmentType) {
+            info.attachmentType = attachmentType;
+            return this;
+        }
+
+        public ChatViewHolderInfo build() {
+            return info;
+        }
     }
 }

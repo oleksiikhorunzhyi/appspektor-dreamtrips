@@ -21,7 +21,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 @Layout(R.layout.fragment_fullscreen_bucket_photo)
 public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<BucketFullscreenPresenter, BucketPhoto> implements BucketFullscreenPresenter.View {
 
-
     @InjectView(R.id.iv_image)
     ScaleImageView ivImage;
     @InjectView(R.id.checkBox)
@@ -40,7 +39,6 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
     public void setContent(IFullScreenObject photo) {
         super.setContent(photo);
     }
-
 
     @Override
     public void showCoverProgress() {
@@ -106,5 +104,4 @@ public class BucketPhotoFullscreenFragment extends FullScreenPhotoFragment<Bucke
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
-
 }

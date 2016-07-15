@@ -2,6 +2,7 @@ package com.messenger.delegate;
 
 import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.ImmutableDeletedMessage;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -24,21 +25,18 @@ import static org.mockito.Mockito.verify;
 
 public class ChatMessagesEventDelegateTest extends BaseTest {
 
-    @Mock
-    ConversationsDAO conversationsDAO;
-    @Mock
-    MessageDAO messageDAO;
-    @Mock
-    LoadConversationDelegate loadConversationDelegate;
-    @Mock
-    DecomposeMessagesHelper decomposeMessagesHelper;
+    @Mock ConversationsDAO conversationsDAO;
+    @Mock MessageDAO messageDAO;
+    @Mock LoadConversationDelegate loadConversationDelegate;
+    @Mock DecomposeMessagesHelper decomposeMessagesHelper;
+    @Mock UsersDelegate usersDelegate;
 
     ChatMessagesEventDelegate chatMessagesEventDelegate;
 
     @Before
     public void setup() {
         chatMessagesEventDelegate = new ChatMessagesEventDelegate(conversationsDAO, messageDAO,
-                loadConversationDelegate, decomposeMessagesHelper);
+                loadConversationDelegate, decomposeMessagesHelper, usersDelegate);
     }
 
     @Test

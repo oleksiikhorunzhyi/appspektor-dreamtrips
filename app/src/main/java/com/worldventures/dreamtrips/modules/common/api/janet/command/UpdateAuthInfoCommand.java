@@ -52,9 +52,9 @@ public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAc
         sessionQueries.add(queryAppSettingsInteractor.pipe().createObservableResult(new AppSettingsCommand()));
         sessionQueries.add(circles());
         sessionQueries.add(queryTripsFilterDataInteractor.pipe().createObservableResult(new TripsFilterDataCommand()));
+        sessionQueries.add(globalConfigManager.pipe().createObservableResult(new GlobalConfigCommand()));
         sessionQueries.add(getLocalesManager.pipe().createObservableResult(new LocalesCommand())
-                .flatMap(availableLocales -> globalConfigManager.pipe().createObservableResult(new GlobalConfigCommand())
-                        .flatMap(staticPageConfig -> getStaticPageConfigManager.pipe().createObservableResult(new StaticPageConfigCommand()))));
+                        .flatMap(staticPageConfig -> getStaticPageConfigManager.pipe().createObservableResult(new StaticPageConfigCommand())));
 
         Observable.zip(sessionQueries, args -> (Void) null)
                 .timeout(30, TimeUnit.SECONDS)

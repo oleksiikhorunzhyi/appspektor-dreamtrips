@@ -13,7 +13,7 @@ import timber.log.Timber;
 
 public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<AuthorizedStaticInfoPresenter.View> {
 
-    public static final int LIFE_DURATION = 2; // mins
+    public static final int LIFE_DURATION = 30; // mins
 
     public AuthorizedStaticInfoPresenter(String url) {
         super(url);

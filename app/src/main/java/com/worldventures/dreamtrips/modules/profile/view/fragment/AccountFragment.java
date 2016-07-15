@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
@@ -53,8 +53,8 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
     }
 
     @Override
-    protected BaseArrayListAdapter createAdapter() {
-        return new IgnoreFirstExpandedItemAdapter(feedView.getContext(), this);
+    protected BaseDelegateAdapter createAdapter() {
+        return new IgnoreFirstExpandedItemAdapter(getContext(), this);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
 
     @Override
     public void updateBadgeCount(int count) {
-        View view = feedView.findViewById(R.id.badge);
+        View view = getActivity().findViewById(R.id.badge);
         if (view != null) {
             BadgeView badgeView = (BadgeView) view;
             if (count > 0) {

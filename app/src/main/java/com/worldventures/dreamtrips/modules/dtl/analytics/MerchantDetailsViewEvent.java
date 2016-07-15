@@ -7,7 +7,8 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
-@AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View", trackers = AdobeTracker.TRACKER_KEY)
+@AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View",
+        trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantDetailsViewEvent extends DtlAnalyticsAction {
 
     @Attribute("merchantname")

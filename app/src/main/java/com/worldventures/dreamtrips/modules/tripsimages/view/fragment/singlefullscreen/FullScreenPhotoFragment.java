@@ -5,6 +5,7 @@ import android.os.Build;
 import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.image.ImageInfo;
@@ -59,8 +60,7 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
             public void onGlobalLayout() {
                 if (ivImage != null) {
                     int size = Math.max(ivImage.getWidth(), ivImage.getHeight());
-                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
+                    PipelineDraweeControllerBuilder draweeControllerBuilder = Fresco.newDraweeControllerBuilder()
                             .setImageRequest(ImageRequest.fromUri(image.getUrl(size, size)))
                             .setControllerListener(new BaseControllerListener<ImageInfo>() {
                                 @Override
@@ -68,8 +68,9 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
                                     super.onFinalImageSet(id, imageInfo, animatable);
                                     onImageGlobalLayout();
                                 }
-                            })
-                            .build();
+                            });
+                    if (getPresenter().isConnected()) draweeControllerBuilder.setLowResImageRequest(ImageRequest.fromUri(lowUrl));
+                    DraweeController draweeController = draweeControllerBuilder.build();
                     ivImage.setController(draweeController);
 
                     ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
+import com.newrelic.agent.android.NewRelic;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
@@ -28,8 +29,7 @@ public class DtlMerchantInteractor {
 
     private final WriteActionPipe<DtlFilterDataAction> filterDataActionPipe;
 
-    public DtlMerchantInteractor(Janet janet,
-                                 DtlLocationInteractor locationInteractor) {
+    public DtlMerchantInteractor(Janet janet, DtlLocationInteractor locationInteractor) {
         this.locationInteractor = locationInteractor;
 
         updateAmenitiesPipe = janet.createPipe(DtlUpdateAmenitiesAction.class, Schedulers.io());
@@ -45,6 +45,8 @@ public class DtlMerchantInteractor {
         merchantsPipe.observeSuccess()
                 .filter(DtlMerchantsAction::isFromApi)
                 .subscribe(action -> {
+                    NewRelic.recordMetric("GetMerchants", "Profiler",
+                            (double) System.currentTimeMillis() - action.getStartTime());
                     tryUpdateLocation(action.getResult());
                     updateAmenitiesPipe.send(new DtlUpdateAmenitiesAction(action.getResult()));
                 }, Throwable::printStackTrace);

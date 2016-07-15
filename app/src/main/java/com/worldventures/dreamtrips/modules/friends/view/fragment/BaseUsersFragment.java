@@ -59,7 +59,7 @@ public abstract class BaseUsersFragment<T extends BaseUserListPresenter, B exten
 
     protected LoaderRecycleAdapter<User> adapter;
 
-    private WeakHandler weakHandler;
+    protected WeakHandler weakHandler;
     private LinearLayoutManager layoutManager;
 
     @Override

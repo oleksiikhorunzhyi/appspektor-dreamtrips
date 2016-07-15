@@ -34,6 +34,8 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     protected Date createdAt;
     protected Date readAt;
 
+    private MetaData metaData;
+
     public static FeedItem create(FeedEntity item, User owner) {
         Type type;
         FeedItem feedItem;
@@ -105,6 +107,14 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         return readAt;
     }
 
+    public MetaData getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(MetaData metaData) {
+        this.metaData = metaData;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Equals / Hashcode
     ///////////////////////////////////////////////////////////////////////////
@@ -139,6 +149,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         this.links = (Links) in.readSerializable();
         this.createdAt = (Date) in.readSerializable();
         this.readAt = (Date) in.readSerializable();
+        this.metaData = new MetaData(in);
     }
 
     @Override
@@ -157,6 +168,7 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
         dest.writeSerializable(links);
         dest.writeSerializable(createdAt);
         dest.writeSerializable(readAt);
+        dest.writeParcelable(metaData, flags);
     }
 
 

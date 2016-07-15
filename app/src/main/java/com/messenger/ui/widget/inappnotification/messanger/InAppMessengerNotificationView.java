@@ -70,7 +70,7 @@ public abstract class InAppMessengerNotificationView extends BaseInAppNotificati
     }
 
     protected String getMessageText(DataUser sender, DataMessage dataMessage, @Nullable String attachmentType) {
-        return MessageVersionHelper.isUnsupported(dataMessage.getVersion(), attachmentType) ?
+        return MessageVersionHelper.isUnsupported(attachmentType) ?
                 Html.fromHtml(getResources().getString(R.string.chat_update_proposition)).toString() :
                 dataMessage.getText();
     }

@@ -34,12 +34,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
 import icepick.State;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.Subscription;
@@ -68,6 +70,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     //
     private Subscription locationRequestNoFallback;
     //
+    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
 
     public DtlLocationChangePresenterImpl(Context context, Injector injector) {
         super(context);
@@ -79,8 +82,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         super.onAttachedToWindow();
         if (getView().isTabletLandscape()) {
             // this path is not applicable for tablet landscape - it is embedded in DtlToolbar
-            History history = History.single(new DtlMerchantsPath());
-            Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+            navigateAway();
             return;
         }
         apiErrorPresenter.setView(getView());
@@ -90,6 +92,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
         Observable<DtlLocation> locationObservable = connectDtlLocationUpdate();
         //
         connectNearbyLocations();
+        connectEmptyMerchantsObservable();
         connectLocationsSearch();
         connectLocationDelegateNoFallback();
         connectToolbarMapClicks();
@@ -198,7 +201,7 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     }
 
     private void onSearchFinished(DtlSearchLocationAction action) {
-        getView().setItems(action.getResult());
+        getView().setItems(action.getResult(), false);
     }
 
     private void mapClicked() {
@@ -209,12 +212,16 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     private void navigateAway() {
         clearCacheBeforeCloseScreen();
         //
-        History history = History.single(new DtlMerchantsPath()); // TODO :: 4/28/16 proper previous screen
+        History history = History.single(DtlMerchantsPath
+                .builder()
+                .fromLocationScreen(true)
+                .build());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     private void clearCacheBeforeCloseScreen() {
         locationInteractor.searchLocationPipe().clearReplays();
+        locationInteractor.nearbyLocationPipe().clearReplays();
     }
 
     private void search(String query) {
@@ -268,18 +275,29 @@ public class DtlLocationChangePresenterImpl extends DtlPresenterImpl<DtlLocation
     private void showLoadedLocations(List<DtlExternalLocation> locations) {
         dtlNearbyLocations.clear();
         dtlNearbyLocations.addAll(locations);
-        getView().setItems(locations);
+        getView().switchVisibilityNoMerchants(noMerchants.get());
+        getView().switchVisibilityOrCaption(noMerchants.get() && !locations.isEmpty());
+        getView().setItems(locations, !locations.isEmpty());
+    }
+
+    protected void connectEmptyMerchantsObservable() {
+        merchantInteractor.merchantsActionPipe()
+                .createObservableResult(DtlMerchantsAction.restore())
+                .compose(bindViewIoToMainComposer())
+                .map(DtlMerchantsAction::getResult)
+                .map(List::isEmpty)
+                .subscribe(noMerchants::set);
     }
 
     @Override
     public void locationSelected(DtlExternalLocation dtlExternalLocation) {
         locationInteractor.locationPipe()
                 .createObservableResult(DtlLocationCommand.change(dtlExternalLocation))
-                .map(dtlLocationCommand -> dtlLocationCommand.getResult())
+                .map(Command::getResult)
                 .cast(DtlExternalLocation.class)
-                .subscribe(dtlLocation -> analyticsInteractor.dtlAnalyticsCommandPipe()
-                        .send(DtlAnalyticsCommand.create(
-                                new LocationSearchEvent(dtlLocation))));
+                .map(LocationSearchEvent::new)
+                .map(DtlAnalyticsCommand::create)
+                .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         merchantInteractor.merchantsActionPipe().send(DtlMerchantsAction.load(dtlExternalLocation.getCoordinates().asAndroidLocation()));
         navigateAway();

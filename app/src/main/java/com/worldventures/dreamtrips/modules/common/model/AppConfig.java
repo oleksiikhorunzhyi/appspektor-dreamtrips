@@ -10,10 +10,13 @@ import java.io.UnsupportedEncodingException;
 import timber.log.Timber;
 
 public class AppConfig {
+
     public static final String TRIP_ID = "{tripid}";
     public static final String USER_ID = "{userid}";
     public static final String TOKEN = "{tokenval}";
     public static final String LOCALE = "{locale}";
+    public static final String COUNTRY = "{country}";
+    public static final String LANGUAGE = "{language}";
     public static final String ENROLL_UID = "{BASE64_ENCODED_USERID}";
 
     @SerializedName("URLS")

@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.worldventures.dreamtrips.modules.feed.view.custom.FeedView
-            android:id="@+id/feed"
+        <com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/grey_lighter"/>

@@ -18,7 +18,6 @@ import com.raizlabs.android.dbflow.structure.ModelAdapter;
 import java.util.List;
 
 import rx.Observable;
-import timber.log.Timber;
 
 class BaseDAO {
     private final Context context;
@@ -45,7 +44,7 @@ class BaseDAO {
 
     protected <T extends BaseModel> void bulkInsert(List<T> collection, ModelAdapter<T> adapter, Uri uri) {
         ContentValues values = new ContentValues();
-        SQLiteDatabase db = FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
 
         for (T t : collection) {
             adapter.bindToContentValues(values, t);
@@ -54,5 +53,9 @@ class BaseDAO {
             values.clear();
         }
         contentResolver.notifyChange(uri, null);
+    }
+
+    protected SQLiteDatabase getWritableDatabase() {
+        return FlowManager.getDatabase(MessengerDatabase.NAME).getWritableDatabase();
     }
 }

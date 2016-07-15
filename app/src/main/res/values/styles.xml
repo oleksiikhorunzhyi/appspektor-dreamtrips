@@ -485,5 +485,12 @@
     <style name="RetrySendMessageDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/retry_send_message_dialog_button_text_color</item>
     </style>
+
+    <style name="SettingsButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/chat_settings_action_button_top_margin</item>
+        <item name="android:textSize">@dimen/chat_settings_action_buttons_text_size</item>
+    </style>
     <!--end in app notifications-->
 </resources>

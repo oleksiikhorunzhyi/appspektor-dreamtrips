@@ -3,21 +3,14 @@ package com.messenger.ui.adapter.inflater;
 import android.content.res.Resources;
 import android.view.View;
 
-import com.messenger.ui.widget.ChatItemFrameLayout;
 import com.worldventures.dreamtrips.R;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class MessageCommonInflater {
     private final int messageVerticalPadding;
 
-    private final View itemView;
-
-    @InjectView(R.id.chat_message_container)
-    public View chatMessageContainer;
-    @InjectView(R.id.message_container)
-    public ChatItemFrameLayout messageContainer;
+    protected final View itemView;
 
     public MessageCommonInflater(View itemView) {
         this.itemView = itemView;
@@ -27,25 +20,14 @@ public class MessageCommonInflater {
         messageVerticalPadding = res.getDimensionPixelSize(R.dimen.chat_list_item_row_vertical_padding);
     }
 
-    public void onCellBind(boolean previousMessageFromSameUser,
-                           boolean unread, boolean selected) {
-        updateUnreadStatus(unread);
-        setPaddings(previousMessageFromSameUser);
-        messageContainer.setSelected(selected);
-        messageContainer.setPreviousMessageFromSameUser(previousMessageFromSameUser);
+    public void onCellBind(boolean previousMessageIsTheSameType) {
+        setPaddings(previousMessageIsTheSameType);
     }
 
-    public void updateUnreadStatus(boolean unread) {
-        chatMessageContainer.setBackgroundResource(unread
-                ? R.color.chat_list_item_read_unread_background
-                : R.color.chat_list_item_read_read_background);
-    }
-
-    private void setPaddings(boolean previousMessageFromSameUser) {
+    protected void setPaddings(boolean previousMessageIsTheSameType) {
         itemView.setPadding(itemView.getPaddingLeft(),
-                previousMessageFromSameUser ? 0 : messageVerticalPadding,
+                previousMessageIsTheSameType ? 0 : messageVerticalPadding,
                 itemView.getPaddingRight(),
                 itemView.getPaddingBottom());
     }
-
 }

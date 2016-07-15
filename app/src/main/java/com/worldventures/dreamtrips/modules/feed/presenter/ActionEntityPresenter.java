@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
+import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.ActionState;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View> extends Presenter<V> {
@@ -39,7 +41,8 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     EditPhotoTagsCallback editPhotoTagsCallback;
     @Inject
     PostLocationPickerCallback postLocationPickerCallback;
-
+    @Inject
+    HashtagInteractor hashtagInteractor;
     private Subscription editTagsSubscription;
     private Subscription locationPickerSubscription;
 
@@ -59,6 +62,18 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
         }, error -> {
             Timber.e(error, "");
         });
+
+        hashtagInteractor.getDescPickedPipe().observeSuccess()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(command -> {
+                    cachedText = command.getResult();
+                    if (view != null) {
+                        view.setText(cachedText);
+                        invalidateDynamicViews();
+                    }
+                }, throwable -> {
+                    Timber.e(throwable, "");
+                });
     }
 
     @Override
@@ -89,11 +104,6 @@ public abstract class ActionEntityPresenter<V extends ActionEntityPresenter.View
     }
 
     protected abstract boolean isChanged();
-
-    public void postInputChanged(String input) {
-        cachedText = input;
-        invalidateDynamicViews();
-    }
 
     public void invalidateDynamicViews() {
         if (isChanged()) {

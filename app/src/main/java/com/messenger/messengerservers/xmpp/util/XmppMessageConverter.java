@@ -2,7 +2,9 @@ package com.messenger.messengerservers.xmpp.util;
 
 import com.google.gson.Gson;
 import com.messenger.delegate.MessageBodyParser;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.xmpp.extensions.SystemMessageExtension;
 
 public final class XmppMessageConverter {
 
@@ -34,7 +36,8 @@ public final class XmppMessageConverter {
         Message.Builder builder = new Message.Builder()
                 .messageBody(messageBodyParser.parseMessageBody(message.getBody()))
                 .conversationId(message.getThread())
-                .id(message.getStanzaId());
+                .id(message.getStanzaId())
+                .type(MessageType.MESSAGE);
 
         if (message.getTo() != null) {
             builder.toId(JidCreatorHelper.obtainId(message.getTo()));
@@ -42,8 +45,22 @@ public final class XmppMessageConverter {
         if (message.getFrom() != null) {
             builder.fromId(parseUserId(message));
         }
-
         return builder.build();
+    }
+
+    public Message convertSystemMessage(org.jivesoftware.smack.packet.Message message,
+                                        SystemMessageExtension systemMessageExtension) {
+        Message.Builder builder = new Message.Builder()
+                .conversationId(JidCreatorHelper.obtainId(message.getFrom()))
+                .id(message.getStanzaId());
+        if (systemMessageExtension.getTo() != null) {
+            builder.toId(JidCreatorHelper.obtainId(systemMessageExtension.getTo()));
+        }
+        return builder
+                .fromId(JidCreatorHelper.obtainId(systemMessageExtension.getFrom()))
+                .type(ParseUtils.parseMessageType(systemMessageExtension.getType()))
+                .date(systemMessageExtension.getTimestamp())
+                .build();
     }
 
     private String parseUserId(org.jivesoftware.smack.packet.Message message){

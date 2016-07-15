@@ -101,7 +101,6 @@
     <string name="chat_settings_row_shared_content">Contenido compartido</string>
     <string name="chat_settings_row_members_format">Miembros %1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Asigna un nuevo administrador</string>
-    <string name="chat_settings_row_clear_history">Borrar historial</string>
     <string name="chat_settings_row_leave_chat">Dejar chat</string>
     <string name="chat_settings_row_delete_chat">Borrar chat</string>
     <string name="chat_settings_group_chat_info_text_format">Este grupo fue creado por %s</string>

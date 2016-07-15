@@ -10,7 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterD
 import java.util.List;
 import java.util.Locale;
 
-@AnalyticsEvent(action = "Local:Refine Search", trackers = AdobeTracker.TRACKER_KEY)
+@AnalyticsEvent(action = "local:Refine Search", trackers = AdobeTracker.TRACKER_KEY)
 public class MerchantFilterAppliedEvent extends DtlAnalyticsAction {
 
     @Attribute("dtlprice")

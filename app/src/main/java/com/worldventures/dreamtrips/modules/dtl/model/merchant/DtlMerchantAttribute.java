@@ -38,17 +38,18 @@ public class DtlMerchantAttribute implements Parcelable, Comparable<DtlMerchantA
         return 0;
     }
 
-    public static final Creator<DtlMerchantAttribute> CREATOR = new Creator<DtlMerchantAttribute>() {
-        @Override
-        public DtlMerchantAttribute createFromParcel(Parcel in) {
-            return new DtlMerchantAttribute(in);
-        }
+    public static final Creator<DtlMerchantAttribute> CREATOR =
+            new Creator<DtlMerchantAttribute>() {
+                @Override
+                public DtlMerchantAttribute createFromParcel(Parcel in) {
+                    return new DtlMerchantAttribute(in);
+                }
 
-        @Override
-        public DtlMerchantAttribute[] newArray(int size) {
-            return new DtlMerchantAttribute[size];
-        }
-    };
+                @Override
+                public DtlMerchantAttribute[] newArray(int size) {
+                    return new DtlMerchantAttribute[size];
+                }
+            };
 
     ///////////////////////////////////////////////////////////////////////////
     // java.lang.Object-overridden, sorting

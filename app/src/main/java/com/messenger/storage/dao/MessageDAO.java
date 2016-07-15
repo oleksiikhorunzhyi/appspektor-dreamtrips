@@ -1,8 +1,10 @@
 package com.messenger.storage.dao;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -36,6 +38,11 @@ public class MessageDAO extends BaseDAO {
     public static final String ATTACHMENT_ID = DataAttachment$Table.TABLE_NAME + DataAttachment$Table._ID;
     public static final String TRANSLATION_ID = DataTranslation$Table.TABLE_NAME + DataTranslation$Table._ID;
     public static final String CONVERSATION_TYPE = DataConversation$Table.TABLE_NAME + "_" + DataConversation$Table.TYPE;
+    public static final String USER_ID = DataUser$Table.TABLE_NAME + "_" + DataUser$Table._ID;
+    public static final String USER_FIRST_NAME = DataUser$Table.TABLE_NAME + "_" + DataUser$Table.FIRSTNAME;
+    public static final String USER_LAST_NAME = DataUser$Table.TABLE_NAME + "_" + DataUser$Table.LASTNAME;
+
+    public static final String ATTACHMENT_TYPE = DataAttachment$Table.TABLE_NAME + "_" + DataAttachment$Table.TYPE;
 
     public MessageDAO(RxContentResolver rxContentResolver, Context context) {
         super(context, rxContentResolver);
@@ -55,13 +62,19 @@ public class MessageDAO extends BaseDAO {
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
                 .withSelection("SELECT m.*, " +
+                        // message author
                         "u." + DataUser$Table.FIRSTNAME + " as " + DataUser$Table.FIRSTNAME + ", " +
                         "u." + DataUser$Table.LASTNAME + " as " + DataUser$Table.LASTNAME + ", " +
                         "u." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                         "u." + DataUser$Table.SOCIALID + " as " + DataUser$Table.SOCIALID + ", " +
 
+                        // message recipient
+                        "uu." + DataUser$Table._ID + " as " + USER_ID + ", " +
+                        "uu." + DataUser$Table.FIRSTNAME + " as " + USER_FIRST_NAME + ", " +
+                        "uu." + DataUser$Table.LASTNAME + " as " + USER_LAST_NAME + ", " +
+
                         "a." + DataAttachment$Table._ID + " as " + ATTACHMENT_ID + ", " +
-                        "a." + DataAttachment$Table.TYPE + " as " + DataAttachment$Table.TYPE + ", " +
+                        "a." + DataAttachment$Table.TYPE + " as " + ATTACHMENT_TYPE + ", " +
 
                         "p." + DataPhotoAttachment$Table.URL + " as " + DataPhotoAttachment$Table.URL + ", " +
                         "p." + DataPhotoAttachment$Table.LOCALPATH + " as " + DataPhotoAttachment$Table.LOCALPATH + ", " +
@@ -79,6 +92,8 @@ public class MessageDAO extends BaseDAO {
                         "FROM " + DataMessage.TABLE_NAME + " m " +
                         "LEFT JOIN " + DataUser$Table.TABLE_NAME + " u " +
                         "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
+                        "LEFT JOIN " + DataUser$Table.TABLE_NAME + " uu " +
+                        "ON m." + DataMessage$Table.TOID + "=uu." + DataUser$Table._ID + " " +
                         "LEFT JOIN " + DataAttachment.TABLE_NAME + " a " +
                         "ON m." + DataMessage$Table._ID + "=a." + DataAttachment$Table.MESSAGEID + " " +
                         "LEFT JOIN " + DataPhotoAttachment.TABLE_NAME + " p " +
@@ -91,6 +106,7 @@ public class MessageDAO extends BaseDAO {
                         "ON m." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
 
                         "WHERE m." + DataMessage$Table.CONVERSATIONID + "=? " +
+                        "AND m." + DataMessage$Table.DATE + ">=c." + DataConversation$Table.CLEARTIME + " " +
                         "AND m." + DataMessage$Table.SYNCTIME + " >=? " +
                         "ORDER BY m." + DataMessage$Table.DATE)
                 .withSelectionArgs(new String[]{conversationId, Long.toString(syncTime)}).build();
@@ -118,6 +134,42 @@ public class MessageDAO extends BaseDAO {
                 subscriber.onError(e);
             }
         });
+    }
+
+    public void deleteMessagesByConversation(String conversationId) {
+        // TODO: fucking sqlite does not execute DELETE with JOINed tables
+        // TODO: somewhen we replace this code via FOREIGN KEY
+        String selectAttachments =
+                "SELECT " + DataAttachment$Table._ID + " " +
+                        "FROM " + DataAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+        String queryClearLocation =
+                "DELETE FROM " + DataLocationAttachment.TABLE_NAME + " " +
+                "WHERE " + DataLocationAttachment$Table._ID + " IN (" + selectAttachments + ")";
+        String queryClearPhoto =
+                "DELETE FROM " + DataPhotoAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " IN (" + selectAttachments + ")";
+        String queryClearAttachment =
+                "DELETE FROM " + DataAttachment$Table.TABLE_NAME + " " +
+                        "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
+        String queryClearMessages =
+                "DELETE FROM " + DataMessage$Table.TABLE_NAME + " " +
+                        "WHERE " + DataMessage$Table.CONVERSATIONID + "=?";
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        db.execSQL(queryClearLocation, new String[] {conversationId});
+        db.execSQL(queryClearPhoto, new String[] {conversationId});
+        db.execSQL(queryClearAttachment, new String[] {conversationId});
+        db.execSQL(queryClearMessages, new String[] {conversationId});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.notifyChange(DataMessage.CONTENT_URI, null);
+        contentResolver.notifyChange(DataAttachment.CONTENT_URI, null);
+        contentResolver.notifyChange(DataPhotoAttachment.CONTENT_URI, null);
+        contentResolver.notifyChange(DataLocationAttachment.CONTENT_URI, null);
     }
 
     public void save(List<DataMessage> messages) {

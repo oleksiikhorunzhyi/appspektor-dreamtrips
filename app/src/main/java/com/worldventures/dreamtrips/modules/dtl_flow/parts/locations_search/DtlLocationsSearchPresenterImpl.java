@@ -92,7 +92,7 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
                         .send(DtlAnalyticsCommand.create(
                                 new LocationSearchEvent(dtlLocation))));
         filterInteractor.filterMerchantsActionPipe().clearReplays();
-        History history = History.single(new DtlMerchantsPath());
+        History history = History.single(DtlMerchantsPath.getDefault());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 

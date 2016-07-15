@@ -55,6 +55,12 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     ExpandableDtlToolbar dtlToolbar;
     @InjectView(R.id.autoDetectNearMe)
     Button autoDetectNearMe;
+    @InjectView(R.id.emptyMerchantsCaption)
+    View emptyMerchantsCaption;
+    @InjectView(R.id.emptyMerchantsOrCaption)
+    View emptyMerchantsOrCaption;
+    @InjectView(R.id.selectFromNearbyCitiesCaption)
+    View selectFromNearbyCitiesCaption;
     @InjectView(R.id.locationsList)
     RecyclerView recyclerView;
     @InjectView(R.id.progress)
@@ -150,26 +156,31 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
     }
 
     @Override
-    public void setItems(List<DtlExternalLocation> dtlExternalLocations) {
-        hideProgress();
-        //
-        adapter.clear();
-        adapter.addItems(dtlExternalLocations);
-    }
-
-    @Override
     public void hideNearMeButton() {
-        autoDetectNearMe.setVisibility(View.GONE);
+        autoDetectNearMe.setVisibility(GONE);
     }
 
     @Override
     public void showProgress() {
-        progressView.setVisibility(View.VISIBLE);
+        progressView.setVisibility(VISIBLE);
+        selectFromNearbyCitiesCaption.setVisibility(GONE);
+        switchVisibilityNoMerchants(false);
+        switchVisibilityOrCaption(false);
     }
 
     @Override
     public void hideProgress() {
-        progressView.setVisibility(View.GONE);
+        progressView.setVisibility(GONE);
+    }
+
+    @Override
+    public void switchVisibilityNoMerchants(boolean visible) {
+        emptyMerchantsCaption.setVisibility(visible ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void switchVisibilityOrCaption(boolean visible) {
+        emptyMerchantsOrCaption.setVisibility(visible ? VISIBLE : GONE);
     }
 
     @Override
@@ -198,7 +209,7 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
 
     @Override
     public void onApiCallFailed() {
-        progressView.setVisibility(View.GONE);
+        hideProgress();
     }
 
     @Override
@@ -209,6 +220,14 @@ public class DtlLocationChangeScreenImpl extends DtlLayout<DtlLocationChangeScre
         } catch (IntentSender.SendIntentException th) {
             Timber.e(th, "Error opening settings activity.");
         }
+    }
+
+    @Override
+    public void setItems(List<DtlExternalLocation> locations, boolean showLocationHeader) {
+        hideProgress();
+        //
+        selectFromNearbyCitiesCaption.setVisibility(showLocationHeader ? VISIBLE : GONE);
+        adapter.clearAndUpdateItems(locations);
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -104,6 +104,10 @@ public class ViewUtils {
         }
     }
 
+    public static boolean isPhoneLandscape(Context context) {
+        return !ViewUtils.isTablet(context) && ViewUtils.isLandscapeOrientation(context);
+    }
+
     public static float dpFromPx(final Context context, final float px) {
         return px / context.getResources().getDisplayMetrics().density;
     }

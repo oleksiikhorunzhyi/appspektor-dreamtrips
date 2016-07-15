@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="100dp"
-            android:text="@string/merchants_list_empty_text"
+            android:text="@string/dtl_location_no_merchants_caption"
             android:textSize="@dimen/font_normal"/>
     </FrameLayout>
 

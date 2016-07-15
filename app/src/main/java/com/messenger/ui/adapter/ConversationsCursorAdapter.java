@@ -8,18 +8,12 @@ import android.view.ViewGroup;
 
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataConversation$Table;
-import com.messenger.entities.DataMessage;
-import com.messenger.entities.DataTranslation;
-import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.ConversationStatus;
-import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.ui.adapter.holder.conversation.BaseConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.ClosedGroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.GroupConversationViewHolder;
 import com.messenger.ui.adapter.holder.conversation.OneToOneConversationViewHolder;
 import com.messenger.ui.adapter.swipe.SwipeLayoutContainer;
-import com.messenger.ui.helper.ConversationHelper;
-import com.raizlabs.android.dbflow.sql.SqlUtils;
 import com.worldventures.dreamtrips.R;
 
 import static com.messenger.messengerservers.constant.ConversationType.CHAT;
@@ -54,37 +48,10 @@ public class ConversationsCursorAdapter
 
     @Override
     public void onBindViewHolderCursor(BaseConversationViewHolder holder, Cursor cursor) {
-        DataConversation conversation = SqlUtils.convertToModel(true, DataConversation.class, cursor);
-        String conversationParticipants = null;
-        int conversationParticipantsCount = 0;
-        if (ConversationHelper.isGroup(conversation) || ConversationHelper.isTripChat(conversation)) {
-            String groupChatName = conversation.getSubject();
-            if (TextUtils.isEmpty(groupChatName)) {
-                conversationParticipants = cursor.getString(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_NAME_COLUMN));
-            }
-            conversationParticipantsCount = cursor.getInt(cursor.getColumnIndex(ConversationsDAO.GROUP_CONVERSATION_USER_COUNT_COLUMN));
-        }
-        DataMessage message = SqlUtils.convertToModel(true, DataMessage.class, cursor);
-        DataTranslation translation = SqlUtils.convertToModel(true, DataTranslation.class, cursor);
-        String messageAuthor = cursor.getString(cursor.getColumnIndex(ConversationsDAO.LAST_MESSAGE_AUTHOR_COLUMN));
-        String attachmentType = cursor.getString(cursor.getColumnIndex(ConversationsDAO.ATTACHMENT_TYPE_COLUMN));
-
-        holder.bindConversation(conversation, conversationParticipants, conversationParticipantsCount);
-        holder.bindLastMessage(message, messageAuthor, attachmentType, translation);
+        holder.bindCursor(cursor);
         holder.applySelection(selectedConversationId);
-        if (holder instanceof OneToOneConversationViewHolder) {
-            bindParticipantData((OneToOneConversationViewHolder) holder, cursor);
-        }
         holder.setConversationClickListener(conversationClickListener);
         holder.setSwipeButtonsListener(swipeButtonsListener);
-    }
-
-    private void bindParticipantData(OneToOneConversationViewHolder holder, Cursor cursor) {
-        String avatar = cursor.getString(cursor.getColumnIndex(DataUser$Table.USERAVATARURL));
-        // Database does not have boolean type and store true as 1, false as 0
-        boolean online = cursor.getInt(cursor.getColumnIndex(DataUser$Table.ONLINE)) == 1;
-        String name = cursor.getString(cursor.getColumnIndex(ConversationsDAO.SINGLE_CONVERSATION_NAME_COLUMN));
-        holder.bindUserProperties(name, avatar, online);
     }
 
     public void setSelectedConversationId(String selectedConversationId) {

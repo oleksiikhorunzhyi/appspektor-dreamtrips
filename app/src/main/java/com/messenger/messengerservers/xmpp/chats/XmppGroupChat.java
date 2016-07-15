@@ -1,5 +1,7 @@
 package com.messenger.messengerservers.xmpp.chats;
 
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.messenger.messengerservers.ConnectionException;
@@ -33,7 +35,8 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
     private final ChatPreconditions chatPreconditions;
 
     private final Action1<Throwable> defaultOnErrorAction = throwable -> Timber.e(throwable, "");
-    private final Action1<Object> defaultOnNextAction = o -> {};
+    private final Action1<Object> defaultOnNextAction = o -> {
+    };
 
     public XmppGroupChat(XmppServerFacade facade, String roomId, boolean isOwner) {
         super(facade, roomId);
@@ -144,8 +147,10 @@ public class XmppGroupChat extends XmppChat implements GroupChat {
     }
 
     @Override
-    public Observable<GroupChat> setSubject(String subject) {
+    public Observable<GroupChat> setSubject(@Nullable String subject) {
         chatPreconditions.checkUserIsOwner();
+
+        if (TextUtils.isEmpty(subject)) return Observable.just(XmppGroupChat.this);
 
         return chatActionObservable(chat -> chat.changeSubject(subject))
                 .map(aVoid -> XmppGroupChat.this);

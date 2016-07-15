@@ -75,7 +75,7 @@ public class NewChatScreenPresenterImpl extends ChatMembersScreenPresenterImpl {
                     startChatDelegate.startSingleChat(futureParticipants.get(0), onNextAction, errorAction);
                 } else {
                     startChatDelegate.startNewGroupChat(user.getId(), new ArrayList<>(futureParticipants),
-                            getView().getConversationName(), onNextAction, errorAction);
+                            getView().getConversationName().trim(), onNextAction, errorAction);
                 }
 
                 return true;

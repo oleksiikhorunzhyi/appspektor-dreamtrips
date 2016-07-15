@@ -1,5 +1,7 @@
 package com.messenger.messengerservers.chat;
 
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
 import rx.Observable;
@@ -14,7 +16,7 @@ public interface GroupChat extends Chat {
 
     Observable<GroupChat> leave();
 
-    Observable<GroupChat> setSubject(String subject);
+    Observable<GroupChat> setSubject(@Nullable String subject);
 
     Observable<GroupChat> setAvatar(String avatar);
 }

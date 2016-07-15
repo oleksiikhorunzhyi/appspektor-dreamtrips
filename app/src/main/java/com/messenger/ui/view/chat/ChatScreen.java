@@ -12,7 +12,6 @@ import com.messenger.ui.view.layout.MessengerScreen;
 
 import com.messenger.ui.model.AttachmentMenuItem;
 
-import java.util.Date;
 import java.util.List;
 
 import rx.Observable;

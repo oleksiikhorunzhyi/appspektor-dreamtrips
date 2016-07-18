@@ -219,7 +219,7 @@ public class ConversationsDAO extends BaseDAO {
         if (!TextUtils.isEmpty(searchQuery)) {
             whereBuilder.append(whereBuilder.length() == 0 ? "WHERE (" : "AND (");
             String wherePattern = "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
-                    "OR c." + DataConversation$Table.SUBJECT + " IS '' AND uu." + DataUser$Table.FIRSTNAME + " || ' ' || uu." + DataUser$Table.LASTNAME  + " LIKE '%" + searchQuery + "%')";
+                    "OR " + SINGLE_CONVERSATION_NAME_COLUMN + " LIKE '%" + searchQuery + "%')";
             whereBuilder.append(wherePattern);
         }
 

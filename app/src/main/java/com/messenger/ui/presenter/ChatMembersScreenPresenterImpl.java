@@ -9,9 +9,8 @@ import android.util.Pair;
 import android.view.View;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.delegate.conversation.helper.CreateConversationHelper;
-import com.messenger.delegate.ProfileCrosser;
 import com.messenger.delegate.RxSearchHelper;
+import com.messenger.delegate.conversation.helper.CreateConversationHelper;
 import com.messenger.entities.DataUser;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.storage.dao.UsersDAO;
@@ -19,7 +18,6 @@ import com.messenger.ui.model.SelectableDataUser;
 import com.messenger.ui.util.UserSectionHelper;
 import com.messenger.ui.view.add_member.ChatMembersScreen;
 import com.messenger.ui.viewstate.ChatMembersScreenViewState;
-import com.messenger.util.ContactsHeaderCreator;
 import com.messenger.util.StringUtils;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.R;
@@ -55,25 +53,21 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     @Inject
     UsersDAO usersDAO;
 
+    @Nullable
+    private String lastSearchQuery;
+
     private final RxSearchHelper<DataUser> searchHelper = new RxSearchHelper<>();
     protected final List<DataUser> futureParticipants = new CopyOnWriteArrayList<>();
-    @Nullable
-    private CharSequence lastChosenContacts;
-    @Nullable
-    private String currentSearchFilter;
-
-    private final ContactsHeaderCreator contactsHeaderCreator;
 
     public ChatMembersScreenPresenterImpl(Context context, Injector injector) {
         super(context, injector);
-
-        contactsHeaderCreator = new ContactsHeaderCreator(context);
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         connectToContacts();
+        bindToRemovedUserObservable();
     }
 
     @Override
@@ -89,16 +83,12 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     }
 
     protected void connectToContacts() {
-        Observable<CharSequence> searchQueryObservable = getView().getSearchQueryObservable()
-                .compose(bindView())
-                .doOnNext(this::processSelectedContactsHeaderChange)
-                .filter(this::searchFilterAvailable)
-                .map(this::prepareSearchQuery);
-
         getExistingAndFutureParticipants()
                 .compose(bindView())
                 .flatMap(existingAndFutureParticipantsPair ->
-                        searchHelper.search(createContactListObservable(), searchQueryObservable,
+                        searchHelper.search(createContactListObservable(),
+                                getView().getSearchQueryObservable()
+                                        .doOnNext(query -> lastSearchQuery = query.toString()),
                                 (user, filter) -> StringUtils.containsIgnoreCase(user.getDisplayedName(), filter))
                                 .compose(userSectionHelper.prepareItemInCheckableList(
                                         existingAndFutureParticipantsPair.first,
@@ -115,17 +105,6 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
                 .compose(bindView());
     }
 
-    private CharSequence prepareSearchQuery(CharSequence textInChosenContactsEditTextWithSearchQuery) {
-        String contactsWithQuery = textInChosenContactsEditTextWithSearchQuery.toString();
-        return TextUtils.isEmpty(lastChosenContacts)
-                ? contactsWithQuery
-                : contactsWithQuery.substring(lastChosenContacts.length());
-    }
-
-    private boolean searchFilterAvailable(CharSequence text) {
-        return TextUtils.isEmpty(lastChosenContacts) || lastChosenContacts.length() <= text.length();
-    }
-
     @Override
     public void onNewViewState() {
         state = new ChatMembersScreenViewState();
@@ -136,7 +115,7 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         state.setSelectedContacts(futureParticipants);
-        state.setSearchFilter(currentSearchFilter);
+        state.setSearchFilter(lastSearchQuery);
         state.setLoadingState(ChatMembersScreenViewState.LoadingState.CONTENT);
         super.onSaveInstanceState(bundle);
     }
@@ -149,7 +128,8 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         List<DataUser> selectedUsersFromViewState = viewState.getSelectedContacts();
         futureParticipants.addAll(selectedUsersFromViewState);
         selectedUsersFromViewState.clear();
-        currentSearchFilter = getViewState().getSearchFilter();
+        lastSearchQuery = getViewState().getSearchFilter();
+        getView().setSearchQuery(lastSearchQuery);
         refreshSelectedContactsHeader();
         getChatNameShouldBeVisibleObservable().subscribe(visible ->
                 getView().setConversationNameEditTextVisibility(visible ? View.VISIBLE : View.GONE)
@@ -168,6 +148,17 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         }
     }
 
+    private void bindToRemovedUserObservable() {
+        getView().getRemovedUserObservable()
+                .compose(bindView())
+                .subscribe(this::handleRemovedUser);
+    }
+
+    private void handleRemovedUser(DataUser user) {
+        futureParticipants.remove(user);
+        refreshSelectedContactsHeader();
+    }
+
     @Override
     public void onItemSelectChange(SelectableDataUser item) {
         if (item.isSelected()) {
@@ -175,21 +166,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
         } else {
             futureParticipants.remove(item.getDataUser());
         }
-        currentSearchFilter = null;
+        lastSearchQuery = null;
         refreshSelectedContactsHeader();
         getChatNameShouldBeVisibleObservable().subscribe(this::setConversationNameInputFieldVisible);
-    }
-
-    private void processSelectedContactsHeaderChange(CharSequence contactsWithSearchQuery) {
-        if (searchFilterAvailable(contactsWithSearchQuery)) {
-            CharSequence query = prepareSearchQuery(contactsWithSearchQuery);
-            if (!TextUtils.equals(currentSearchFilter, query)) {
-                currentSearchFilter = query.toString();
-                refreshSelectedContactsHeader();
-            }
-        } else {
-            removeLastUserIfExist();
-        }
     }
 
     private void refreshSelectedContactsHeader() {
@@ -199,22 +178,9 @@ public abstract class ChatMembersScreenPresenterImpl extends MessengerPresenterI
             List<DataUser> existingAndFutureParticipants = Queryable.from(existingParticipants)
                     .filter(participant -> !TextUtils.equals(user.getId(), participant.getId()))
                     .concat(futureParticipants).toList();
-            ContactsHeaderCreator.ContactsHeaderInfo headerInfo = contactsHeaderCreator
-                    .createHeader(existingAndFutureParticipants, currentSearchFilter);
-            lastChosenContacts = headerInfo.getContactsList();
-            getView().setSelectedUsersHeaderText(headerInfo.getSelectedContactsFormattedCount(),
-                    headerInfo.getContactsListWithSearchQuery());
+            getView().setSearchQuery(lastSearchQuery);
+            getView().setChosenUsers(existingAndFutureParticipants);
         }, e -> Timber.e(e, "Could not get participants"));
-    }
-
-    private boolean removeLastUserIfExist() {
-        if (!futureParticipants.isEmpty()) {
-            futureParticipants.remove(futureParticipants.size() - 1);
-            currentSearchFilter = null;
-            refreshSelectedContactsHeader();
-            return true;
-        }
-        return false;
     }
 
     protected void addListItems(List<Object> items) {

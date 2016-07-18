@@ -8,7 +8,6 @@ import com.messenger.storage.dao.ConversationsDAO;
 import javax.inject.Inject;
 
 import io.techery.janet.command.annotations.CommandAction;
-import rx.Observable;
 
 @CommandAction
 public class SendChatAvatarCommand extends BaseChatCommand<DataConversation> {

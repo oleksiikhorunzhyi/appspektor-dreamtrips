@@ -17,7 +17,6 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 

@@ -416,7 +416,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
     @Override
     public void saveCircles(List<Circle> circles) {
-        if (circles != null) circles = new ArrayList<>();
+        if (circles == null) circles = new ArrayList<>();
         putList(CIRCLES, circles);
     }
 

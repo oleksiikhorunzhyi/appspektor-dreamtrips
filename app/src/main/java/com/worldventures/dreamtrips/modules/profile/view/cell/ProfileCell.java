@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -49,6 +48,8 @@ import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -60,6 +61,7 @@ import butterknife.OnClick;
 public class ProfileCell extends AbstractCell<User> implements Expandable {
 
     private DecimalFormat df = new DecimalFormat("#0.00");
+    private SimpleDateFormat dateFormat= new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
     private boolean isExpandEnabled = true;
 
@@ -194,10 +196,8 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
             companyName.setVisibility(View.GONE);
 
         setUserName(user.getFullName());
-        setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(),
-                DateFormat.getMediumDateFormat(context)));
-        setEnrollDate(DateTimeUtils.convertDateToString(user.getEnrollDate(),
-                DateFormat.getMediumDateFormat(context)));
+        setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(), dateFormat));
+        setEnrollDate(DateTimeUtils.convertDateToString(user.getEnrollDate(), dateFormat));
         setUserId(user.getUsername());
         setFrom(user.getLocation());
 

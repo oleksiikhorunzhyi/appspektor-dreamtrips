@@ -11,7 +11,8 @@ import java.lang.reflect.Type;
 public class DayOfWeekDeserializer implements JsonDeserializer<DayOfWeek> {
 
     @Override
-    public DayOfWeek deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public DayOfWeek deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
         return DayOfWeek.from(json.getAsString());
     }
 }

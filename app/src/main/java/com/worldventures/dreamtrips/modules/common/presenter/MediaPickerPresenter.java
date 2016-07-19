@@ -56,6 +56,9 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                     .subscribe(photoGalleryModels -> {
                         mediaPickerManager.attach(new MediaAttachment(photoGalleryModels, event.getRequestType(), requestId));
                         eventBus.post(new PickerDoneEvent(new MediaAttachment(photoGalleryModels, event.getRequestType(), requestId)));
+                        // need to call back, because this event comes from camera and picker
+                        // done method isn't called and picker won't close
+                        if (view != null) view.back();
                     });
         }
     }
@@ -84,5 +87,6 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
 
     public interface View extends Presenter.View {
 
+        void back();
     }
 }

@@ -46,7 +46,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
         photoPickerLayout.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
             @Override
             public void onClosed() {
-                router.back();
+                back();
             }
 
             @Override
@@ -101,5 +101,10 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
 
     private void setupPicker() {
         photoPickerLayout.setup(getChildFragmentManager());
+    }
+
+    @Override
+    public void back() {
+        router.back();
     }
 }

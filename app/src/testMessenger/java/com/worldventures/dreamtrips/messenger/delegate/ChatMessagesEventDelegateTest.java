@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.messenger.delegate;
 
 import com.messenger.delegate.chat.ChatMessagesEventDelegate;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
+import com.messenger.delegate.user.UsersDelegate;
 import com.messenger.messengerservers.model.DeletedMessage;
 import com.messenger.messengerservers.model.ImmutableDeletedMessage;
 import com.messenger.storage.dao.ConversationsDAO;
@@ -18,7 +19,6 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -32,13 +32,16 @@ public class ChatMessagesEventDelegateTest extends MessengerBaseTest {
     LoadConversationDelegate loadConversationDelegate;
     @Mock
     DecomposeMessagesHelper decomposeMessagesHelper;
+    @Mock
+    UsersDelegate usersDelegate;
+
 
     ChatMessagesEventDelegate chatMessagesEventDelegate;
 
     @Before
     public void setup() {
         chatMessagesEventDelegate = new ChatMessagesEventDelegate(conversationsDAO, messageDAO,
-                loadConversationDelegate, decomposeMessagesHelper);
+                loadConversationDelegate, decomposeMessagesHelper, usersDelegate);
     }
 
     @Test
@@ -54,7 +57,8 @@ public class ChatMessagesEventDelegateTest extends MessengerBaseTest {
                     assertEquals(deletedMessages.get(0).messageId(), messageIds.get(0));
                 }, e -> fail());
 
-        verify(messageDAO, times(1)).deleteMessageByIds(any());
+        List<String> messageIds = Collections.singletonList(deletedMessages.get(0).messageId());
+        verify(messageDAO, times(1)).deleteMessageByIds(messageIds);
     }
 
 }

@@ -34,5 +34,5 @@ public interface Conversation {
 
     @Nullable String getOwnerId();
 
-    long getClearDate();
+    @Nullable Long getClearDate();
 }

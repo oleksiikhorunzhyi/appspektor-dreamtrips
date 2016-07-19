@@ -4,9 +4,13 @@ import com.messenger.delegate.MessageBodyCreator;
 import com.messenger.delegate.chat.message.ChatMessageInteractor;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
 import com.messenger.delegate.chat.message.RetrySendMessageCommand;
+import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.messengerservers.constant.ConversationStatus;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.MessengerDatabase;
+import com.messenger.storage.dao.ConversationsDAO;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
@@ -21,6 +25,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.util.Locale;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 import static junit.framework.Assert.assertEquals;
@@ -36,6 +41,8 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
     SessionHolder<UserSession> sessionHolder;
     @Mock
     Optional<UserSession> userSessionOptional;
+    @Mock
+    ConversationsDAO conversationsDAO;
 
     private MessageBodyCreator messageBodyCreator;
     private ChatMessageInteractor chatMessageInteractor;
@@ -57,6 +64,10 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
         doReturn(userSessionOptional).when(sessionHolder).get();
         doReturn(userSession).when(userSessionOptional).get();
 
+        DataConversation conversationFromBd = new DataConversation.Builder().id(testConversationId)
+                .status(ConversationStatus.PRESENT).build();
+        doReturn(Observable.just(conversationFromBd)).when(conversationsDAO).getConversation(testConversationId);
+
         chatMessageInteractor = new ChatMessageInteractor(mockJanet());
     }
 
@@ -70,9 +81,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
         subscriber.assertNoErrors();
         Message message = subscriber.getOnNextEvents().get(0).getResult();
 
-        assertEquals(message.getConversationId(), testConversationId);
-        assertEquals(message.getFromId(), testDataUserId);
-        assertEquals(message.getMessageBody().getText(), testText);
+        checkMessageData(message);
     }
 
     @Test
@@ -82,6 +91,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
                 .conversationId(testConversationId)
                 .messageBody(messageBodyCreator.provideForText(testText))
                 .fromId(testDataUserId)
+                .type(MessageType.MESSAGE)
                 .build());
 
         TestSubscriber<RetrySendMessageCommand> subscriber = new TestSubscriber<>();
@@ -93,18 +103,22 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
 
         Message message = subscriber.getOnNextEvents().get(0).getResult();
 
-        assertEquals(message.getConversationId(), testConversationId);
         assertEquals(message.getId(), testMessageId);
+        checkMessageData(message);
+    }
+
+    private void checkMessageData(Message message){
+        assertEquals(message.getConversationId(), testConversationId);
         assertEquals(message.getFromId(), testDataUserId);
         assertEquals(message.getMessageBody().getText(), testText);
     }
-
 
     @Override
     protected MockDaggerActionService provideMockActionService() {
         MockDaggerActionService actionService = super.provideMockActionService();
         actionService.registerProvider(MessageBodyCreator.class, () -> messageBodyCreator);
         actionService.registerProvider(SessionHolder.class, () -> sessionHolder);
+        actionService.registerProvider(ConversationsDAO.class, () -> conversationsDAO);
         return actionService;
     }
 }

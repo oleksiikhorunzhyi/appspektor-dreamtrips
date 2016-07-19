@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import com.messenger.entities.DataAttachment;
 import com.messenger.entities.DataAttachment$Table;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataMessage$Table;
@@ -79,7 +78,7 @@ public class PhotoDAO extends BaseAttachmentDAO<DataPhotoAttachment> {
                         "WHERE m." + DataMessage$Table.STATUS + "= ? ")
                 .withSelectionArgs(new String[]{Integer.toString(MessageStatus.ERROR)}).build();
 
-        return query(q, DataPhotoAttachment.CONTENT_URI, DataMessage.CONTENT_URI).first()
+        return query(q, DataPhotoAttachment.CONTENT_URI, DataMessage.CONTENT_URI)
                 .compose(DaoTransformers.toEntityList(DataPhotoAttachment.class));
     }
 

@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">Nu există comercianți aici</string>
     <string name="dtl_load_merchants_here_button_caption">Reinițiați căutarea de comercianți</string>
     <string name="dtl_place_list_empty_text">Nu există nicio locație ca cea selectată</string>
-    <string name="dtl_location_no_merchants_caption">Nu există comercianți în apropierea dvs.\n Introduceți un oraș nou sau</string>
+    <string name="dtl_location_no_merchants_caption">Nu sunt comercianți lângă dvs.\n Introduceți un oraș nou.</string>
+    <string name="dtl_location_select_from_nearby_caption">Selectați dintre orașele apropiate:</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculați</string>
     <string name="dtl_points_estimation_input_hint">Introduceți suma</string>
     <string name="dtl_header">Calculator de puncte</string>
@@ -87,6 +88,7 @@
     <string name="training_no_video">Videoclipuri în curând</string>
     <string name="help">Ajutor</string>
     <string name="merchants_list_empty_text">Locuri în curând</string>
+    <string name="merchants_list_empty_text_additional">- sau -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Mâncare și băuturi</string>

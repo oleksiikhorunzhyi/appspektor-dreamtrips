@@ -12,6 +12,7 @@ import com.messenger.delegate.command.avatar.RemoveChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SendChatAvatarCommand;
 import com.messenger.delegate.command.avatar.SetChatAvatarCommand;
 import com.messenger.messengerservers.chat.GroupChat;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.messenger.synchmechanism.SyncStatus;
 import com.messenger.ui.helper.ConversationHelper;
 import com.messenger.ui.view.settings.GroupChatSettingsScreen;
@@ -46,7 +47,7 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getView().getAvatarImagePathsStream().subscribe(cropImageDelegate::cropImage);
+        getView().getAvatarImagePathsStream().subscribe(this::tryCropImage);
 
         cropImageDelegate.getCroppedImagesStream()
                 .compose(bindView())
@@ -68,6 +69,15 @@ public class GroupChatSettingsScreenPresenterImpl extends BaseGroupChatSettingsS
                         .onFail((command, throwable) -> onChangeAvatarFailed(throwable))
                         .onSuccess(command -> onChangeAvatarSuccess())
                 );
+    }
+
+    private void tryCropImage(String filePath) {
+        connectionStatusStream
+                .subscribe(syncStatus -> {
+                    if (syncStatus == SyncStatus.DISCONNECTED || syncStatus == SyncStatus.ERROR) {
+                        getView().showErrorDialog(R.string.chat_settings_error_changing_avatar_subject);
+                    } else cropImageDelegate.cropImage(filePath);
+                });
     }
 
     @Override

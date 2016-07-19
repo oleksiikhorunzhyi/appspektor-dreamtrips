@@ -332,6 +332,10 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         view.refreshFeedItems(feedItems);
     }
 
+    public void cancelLastSuggestionRequest() {
+        interactor.getSuggestionPipe().cancelLatest();
+    }
+
     public interface View extends RxView, UidItemDelegate.View {
 
         <T> rx.Observable<T> bindUntilStop(rx.Observable<T> observable);

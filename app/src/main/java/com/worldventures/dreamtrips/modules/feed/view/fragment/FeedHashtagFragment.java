@@ -175,6 +175,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
                 releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
                 getPresenter().onRefresh();
                 clearSuggestions();
+                getPresenter().cancelLastSuggestionRequest();
                 return true;
             }
 

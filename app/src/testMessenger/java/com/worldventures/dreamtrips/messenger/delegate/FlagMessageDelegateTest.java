@@ -9,7 +9,7 @@ import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.loaders.FlagMessageLoader;
 import com.messenger.storage.MessengerDatabase;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
-import com.worldventures.dreamtrips.common.janet.EmptyActionServiceWrapper;
+import com.worldventures.dreamtrips.janet.EmptyActionServiceWrapper;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockFlagMessageLoader;
 

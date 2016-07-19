@@ -9,7 +9,7 @@ import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.MessengerDatabase;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
-import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.janet.MockDaggerActionService;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;

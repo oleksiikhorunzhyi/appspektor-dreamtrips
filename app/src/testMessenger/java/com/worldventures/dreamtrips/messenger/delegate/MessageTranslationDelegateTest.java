@@ -25,7 +25,7 @@ import io.techery.janet.http.test.MockHttpActionService;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.common.AssertUtil.assertSubscriberWithoutErrorAndValues;
+import static com.worldventures.dreamtrips.AssertUtil.assertSubscriberWithoutErrorAndValues;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;

@@ -14,7 +14,7 @@ import com.messenger.messengerservers.model.Conversation;
 import com.messenger.messengerservers.model.ImmutableConversation;
 import com.messenger.messengerservers.model.ImmutableParticipant;
 import com.messenger.storage.dao.ConversationsDAO;
-import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.janet.MockDaggerActionService;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockConversationLoader;

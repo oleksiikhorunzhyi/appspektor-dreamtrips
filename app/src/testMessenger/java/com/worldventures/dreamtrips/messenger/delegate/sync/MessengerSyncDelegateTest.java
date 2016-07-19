@@ -19,7 +19,7 @@ import com.messenger.messengerservers.model.MessengerUser;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.UsersDAO;
 import com.messenger.synchmechanism.MessengerSyncDelegate;
-import com.worldventures.dreamtrips.common.janet.MockDaggerActionService;
+import com.worldventures.dreamtrips.janet.MockDaggerActionService;
 import com.worldventures.dreamtrips.messenger.util.MessengerBaseTest;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.BaseLoaderManager;
 import com.worldventures.dreamtrips.messenger.util.serverfacade.MockContactLoader;
@@ -40,7 +40,7 @@ import io.techery.janet.Janet;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
-import static com.worldventures.dreamtrips.common.AssertUtil.assertActionSuccess;
+import static com.worldventures.dreamtrips.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;

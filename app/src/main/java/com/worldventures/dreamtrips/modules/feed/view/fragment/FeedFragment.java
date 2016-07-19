@@ -309,7 +309,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     @Override
     public void showEdit(BucketBundle bucketBundle) {
-        fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
+        fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
     }
 
     @Override

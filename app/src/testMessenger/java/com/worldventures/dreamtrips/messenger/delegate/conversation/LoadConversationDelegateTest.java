@@ -53,6 +53,7 @@ public class LoadConversationDelegateTest extends MessengerBaseTest {
                         .conversationId(testConversationId)
                         .build()))
                 .status(ConversationStatus.PRESENT)
+                .clearDate(0)
                 .build();
     }
 

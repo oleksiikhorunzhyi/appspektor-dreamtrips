@@ -65,6 +65,7 @@ public class MessengerSyncDelegateTest extends MessengerBaseTest {
                         .build()))
                 .lastActiveDate(0)
                 .status(ConversationStatus.PRESENT)
+                .clearDate(0)
                 .build());
     }
 

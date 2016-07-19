@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">No hay comerciantes aquí</string>
     <string name="dtl_load_merchants_here_button_caption">Volver a buscar comerciante</string>
     <string name="dtl_place_list_empty_text">No hay lugares del tipo seleccionado</string>
-    <string name="dtl_location_no_merchants_caption">No hay comerciantes cerca de ti\n Por favor, ingresa la nueva ciudad o</string>
+    <string name="dtl_location_no_merchants_caption">No hay comerciantes cerca de ti\n Por favor, ingresa una nueva ciudad.</string>
+    <string name="dtl_location_select_from_nearby_caption">Selecciona una de las ciudades cercanas:</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calcular</string>
     <string name="dtl_points_estimation_input_hint">Ingresar cantidad</string>
     <string name="dtl_header">Estimador de puntos</string>
@@ -87,6 +88,7 @@
     <string name="training_no_video">Videos próximamente</string>
     <string name="help">Ayuda</string>
     <string name="merchants_list_empty_text">Nuevos lugares próximamente</string>
+    <string name="merchants_list_empty_text_additional">- o -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Comida y Bebidas</string>

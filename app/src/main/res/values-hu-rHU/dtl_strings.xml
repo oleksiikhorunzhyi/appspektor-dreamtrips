@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">Nincs kereskedő itt</string>
     <string name="dtl_load_merchants_here_button_caption">Kereskedő keresése újra</string>
     <string name="dtl_place_list_empty_text">Nincs helyszín a kiválasztott típusnak megfelelően</string>
-    <string name="dtl_location_no_merchants_caption">Nincs kereskedő a közeledben.\n Kérjük, írj be új várost vagy</string>
+    <string name="dtl_location_no_merchants_caption">Nincs kereskedő a közeledben.\n Kérjük, írj be új várost.</string>
+    <string name="dtl_location_select_from_nearby_caption">Válassz közeli városok közül:</string>
     <string name="dtl_points_estimation_calculate_button_caption">Számolás</string>
     <string name="dtl_points_estimation_input_hint">Összeg megadása</string>
     <string name="dtl_header">Pontbecslő</string>
@@ -87,6 +88,7 @@
     <string name="training_no_video">Videók jönnek hamarosan</string>
     <string name="help">Segítség</string>
     <string name="merchants_list_empty_text">Hamarosan jönnek a helyek</string>
+    <string name="merchants_list_empty_text_additional">- vagy -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Étel &amp; Ital</string>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">出了些问题</string>
+    <string name="error_no_connection">您尚未连接</string>
     <string name="messenger">信使</string>
     <string name="chat">聊天</string>
 
@@ -75,6 +76,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">重新发送信息？</string>
     <string name="chat_retry_send_message_dialog_resend">重发</string>
     <string name="chat_retry_send_message_dialog_cancel">取消</string>
+    <string name="chat_reload_chat_history_reload">刷新</string>
+    <string name="chat_reload_chat_history_info_text">您的聊天记录已清除。您可以通过点击“重新加载”恢复内容。</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">您</string>
+    <string name="system_message_admin" formatted="false">%1$s（管理员）</string>
+    <string name="system_message_added" formatted="false">%1$s&lt;b&gt;添加了&lt;/b&gt;%2$s</string>
+    <string name="system_message_is_added" formatted="false">%1$s&lt;b&gt;已添加&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">您&lt;b&gt;已被添加&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s&lt;b&gt;将&lt;/b&gt;%2$s从聊天中移除</string>
+    <string name="system_message_is_removed" formatted="false">%1$s&lt;b&gt;已被删除&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">您&lt;b&gt;被删除&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">您&lt;b&gt;离开了&lt;/b&gt;聊天对话</string>
+    <string name="system_message_left" formatted="false">%1$s&lt;b&gt;离开&lt;b&gt;</string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">载入中...</string>
@@ -101,13 +116,17 @@
     <string name="chat_settings_row_shared_content">共享内容</string>
     <string name="chat_settings_row_members_format">会员（ %1$d ）</string>
     <string name="chat_settings_row_assign_new_admin">指派新的管理员</string>
+    <string name="chat_settings_row_clear_chat">清除聊天</string>
     <string name="chat_settings_row_leave_chat">离开聊天</string>
     <string name="chat_settings_row_delete_chat">删除聊天</string>
-    <string name="chat_settings_group_chat_info_text_format">该小组由%s创建</string>
+    <string name="chat_settings_group_chat_info_text_format">该小组由%1$s创建</string>
     <string name="chat_settings_menu_settings">设置</string>
     <string name="chat_settings_menu_edit_chat_name">编辑聊天名</string>
     <string name="chat_settings_menu_edit_change_chat_image">更改聊天图像</string>
     <string name="chat_settings_menu_edit_remove_chat_image">删除聊天图像</string>
+    <string name="chat_settings_clear_chat_confirmation_text">聊天会从您所有的设备中清除。您可以稍后重新加载。您想继续吗？</string>
+    <string name="chat_settings_clear_chat_ok">好</string>
+    <string name="chat_settings_clear_chat_cancel">取消</string>
     <string name="chat_settings_leave_group_chat">您确定要退出这个聊天吗</string>
     <string name="chat_settings_leave_group_chat_format">您确定要从%1$s聊天退出吗</string>
     <string name="chat_settings_error_change_subject">没有网络连接，您不能更改主题</string>

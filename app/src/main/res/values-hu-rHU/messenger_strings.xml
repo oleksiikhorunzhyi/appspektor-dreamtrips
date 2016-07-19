@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">Valamilyen hiba történt</string>
+    <string name="error_no_connection">Nincs kapcsolat</string>
     <string name="messenger">Messenger</string>
     <string name="chat">Beszélgetés</string>
 
@@ -75,6 +76,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">Üzenet újraküldés?</string>
     <string name="chat_retry_send_message_dialog_resend">ÚJRAKÜLDÉS</string>
     <string name="chat_retry_send_message_dialog_cancel">Mégse</string>
+    <string name="chat_reload_chat_history_reload">Újratöltés</string>
+    <string name="chat_reload_chat_history_info_text">A beszélgetés történet törölve lett. Vissza tudod szerezni a \'Visszatöltés\' gomb érintésével</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">Ön</string>
+    <string name="system_message_admin" formatted="false">%1$s(Admin)</string>
+    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;hozzáadva&lt;/b&gt; %2$s</string>
+    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;hozzá lett adva&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">Te &lt;b&gt;hozzá lettél adva&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;eltávolítva&lt;/b&gt; %2$s a beszélgetésből</string>
+    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;törölve&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">Te &lt;b&gt;törölve vagy&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">Te &lt;b&gt;maradtál&lt;/b&gt; a beszélgetésben</string>
+    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;kilépett&lt;b&gt;</string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Betöltés…</string>
@@ -101,13 +116,17 @@
     <string name="chat_settings_row_shared_content">Megosztott tartalom</string>
     <string name="chat_settings_row_members_format">Tagok (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Új admin kijelölése</string>
+    <string name="chat_settings_row_clear_chat">beszélgetés törlése</string>
     <string name="chat_settings_row_leave_chat">Kilépés a csevegésből</string>
     <string name="chat_settings_row_delete_chat">Csevegés törlése</string>
-    <string name="chat_settings_group_chat_info_text_format">Ezt a csoportot %s hozta létre</string>
+    <string name="chat_settings_group_chat_info_text_format">Ezt a csoportot %1$s hozta létre</string>
     <string name="chat_settings_menu_settings">Beállítások</string>
     <string name="chat_settings_menu_edit_chat_name">Csevegési név szerkesztése</string>
     <string name="chat_settings_menu_edit_change_chat_image">Beszélgetés kép módosítása</string>
     <string name="chat_settings_menu_edit_remove_chat_image">Beszélgetés kép törlése</string>
+    <string name="chat_settings_clear_chat_confirmation_text">A beszélgetést eltávolítjuk minden eszközödről. Visszatöltheted később. Folytassuk?</string>
+    <string name="chat_settings_clear_chat_ok">OK</string>
+    <string name="chat_settings_clear_chat_cancel">Mégse</string>
     <string name="chat_settings_leave_group_chat">Biztosan ki akarsz lépni ebből a beszélgetésből</string>
     <string name="chat_settings_leave_group_chat_format">Biztosan ki akarsz lépni ebből a %1$s beszélgetésből</string>
     <string name="chat_settings_error_change_subject">Hálózati kapcsolat nélkül nem változtathatod meg a tárgyat</string>

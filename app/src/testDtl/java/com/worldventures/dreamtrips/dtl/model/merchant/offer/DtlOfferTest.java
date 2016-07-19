@@ -62,10 +62,10 @@ public class DtlOfferTest {
     }
 
     @Test
-    public void testPointThanPerk() {
+    public void testPointLessThanPerk() {
         int result = DtlOffer.END_DATE_COMPARATOR.compare(pointOffer, firstOffer);
 
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isEqualTo(-1);
     }
 
     @Before

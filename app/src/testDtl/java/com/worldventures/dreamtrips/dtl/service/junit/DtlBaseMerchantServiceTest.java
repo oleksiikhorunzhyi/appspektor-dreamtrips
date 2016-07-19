@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.dtl.service.junit;
 
 import com.worldventures.dreamtrips.BaseTest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
 import com.worldventures.dreamtrips.janet.StubServiceWrapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -77,6 +78,7 @@ abstract class DtlBaseMerchantServiceTest extends BaseTest {
         daggerActionService.registerProvider(Janet.class, () -> janet);
         daggerActionService.registerProvider(DtlMerchantInteractor.class, () -> merchantInteractor);
         daggerActionService.registerProvider(SnappyRepository.class, () -> db);
+        daggerActionService.registerProvider(AnalyticsInteractor.class, () -> new AnalyticsInteractor(janet));
     }
 
     protected void checkDtlMerchantsAction() {
@@ -98,5 +100,4 @@ abstract class DtlBaseMerchantServiceTest extends BaseTest {
         assertActionSuccess(subscriber, action -> !action.getResult().isEmpty() && !action.isFromApi());
         verify(spyHttpCallback, never()).onSend(any(ActionHolder.class));
     }
-
 }

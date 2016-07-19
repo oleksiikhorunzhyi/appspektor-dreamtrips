@@ -3,8 +3,9 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
+import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
+import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType
@@ -38,8 +39,11 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
         fun initVars() {
             val commandDaggerService = CommandActionService().wrapDagger()
             httpStubWrapper = MockHttpActionService.Builder()
-                    .bind(MockHttpActionService.Response(200).body(merchantList))
-                    { request -> request.url.contains("/merchants") }
+                    .bind(MockHttpActionService
+                            .Response(200)
+                            .body(merchantList)) {
+                        it.url.contains("/merchants")
+                    }
                     .build()
                     .wrapStub()
 
@@ -56,6 +60,7 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
             commandDaggerService.registerProvider(Janet::class.java) { janet }
             commandDaggerService.registerProvider(DtlMerchantInteractor::class.java) { merchantInteractor }
             commandDaggerService.registerProvider(SnappyRepository::class.java) { db }
+            commandDaggerService.registerProvider(AnalyticsInteractor::class.java) { AnalyticsInteractor(janet) }
 
             //mock merchant properties
             whenever(merchant.id).thenReturn(MERCHANT_ID)
@@ -73,7 +78,7 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
             merchantInteractor.merchantsActionPipe()
                     .createObservable(DtlMerchantsAction.load(mock()))
                     .subscribe(subscriber)
-            assertActionSuccess(subscriber) { action -> action.result.isNotEmpty() && action.isFromApi }
+            assertActionSuccess(subscriber) { it.result.isNotEmpty() && it.isFromApi }
             verify(spyHttpCallback).onSend(any<ActionHolder<Any>>())
         }
 

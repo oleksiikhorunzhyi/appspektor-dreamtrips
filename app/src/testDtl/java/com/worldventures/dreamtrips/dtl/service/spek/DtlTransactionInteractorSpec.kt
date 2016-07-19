@@ -20,12 +20,11 @@ import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
-import org.junit.Before
 import org.mockito.Mockito.eq
-import org.powermock.api.mockito.PowerMockito
+import org.powermock.api.mockito.PowerMockito.mockStatic
 import org.powermock.core.classloader.annotations.PrepareForTest
+import rx.functions.Func1
 import rx.observers.TestSubscriber
-import java.lang.Double
 
 @PrepareForTest(DateTimeUtils::class)
 class DtlTransactionInteractorSpec : BaseSpec({
@@ -52,13 +51,15 @@ class DtlTransactionInteractorSpec : BaseSpec({
                 .wrapDagger()
         val janet = Janet.Builder().addService(commandService)
                 .addService(MockHttpActionService.Builder()
-                        .bind(MockHttpActionService.Response(200).body(pointsHolder))
-                        { request -> request.url.contains("/estimations") }
-                        .bind(MockHttpActionService.Response(200).body(transactionResult))
-                        { request -> request.url.contains("/transactions") }
-                        .bind(MockHttpActionService.Response(200))
-                        { request -> request.url.contains("/ratings") }
-                        .build().wrapCache())
+                        .bind(MockHttpActionService
+                                .Response(200)
+                                .body(pointsHolder)) { it.url.contains("/estimations") }
+                        .bind(MockHttpActionService
+                                .Response(200)
+                                .body(transactionResult)) { it.url.contains("/transactions") }
+                        .bind(MockHttpActionService.Response(200)) { it.url.contains("/ratings") }
+                        .build()
+                        .wrapCache())
                 .build()
 
         db = spy()
@@ -81,32 +82,32 @@ class DtlTransactionInteractorSpec : BaseSpec({
         }
         it("should update transaction with custom func") {
             val merchantToken = "test"
-            checkTransactionAction(DtlTransactionAction.update(merchant)
-            { transaction ->
+            checkTransactionAction(DtlTransactionAction.update(merchant) {
                 ImmutableDtlTransaction
-                        .copyOf(transaction)
+                        .copyOf(it)
                         .withMerchantToken(merchantToken)
-            })
-            { action -> action.result.merchantToken == merchantToken }
+            }) { it.result.merchantToken == merchantToken }
+
             verify(db).getDtlTransaction(anyString())
             verify(db).saveDtlTransaction(anyString(), any())
         }
         it("should save new transaction") {
             val transaction = ImmutableDtlTransaction.copyOf(transaction)
                     .withMerchantToken("test")
-            checkTransactionAction(DtlTransactionAction.save(merchant, transaction))
-            { action -> action.result == transaction }
+            checkTransactionAction(DtlTransactionAction.save(merchant, transaction)) { it.result == transaction }
+
             verify(db).getDtlTransaction(anyString())
             verify(db).saveDtlTransaction(anyString(), eq(transaction))
         }
         it("should clean last transaction") {
-            checkTransactionAction(DtlTransactionAction.clean(merchant))
-            { action -> action.result.merchantToken == null }
+            checkTransactionAction(DtlTransactionAction.clean(merchant)) { it.result.merchantToken == null }
+
             verify(db).getDtlTransaction(anyString())
             verify(db).saveDtlTransaction(anyString(), any())
         }
         it("should delete last transaction") {
-            checkTransactionAction(DtlTransactionAction.delete(merchant)) { action -> action.result == null }
+            checkTransactionAction(DtlTransactionAction.delete(merchant)) { it.result == null }
+
             verify(db).getDtlTransaction(anyString())
             verify(db, never()).saveDtlTransaction(anyString(), any())
             verify(db).deleteDtlTransaction(anyString())
@@ -114,12 +115,17 @@ class DtlTransactionInteractorSpec : BaseSpec({
     }
 
     describe("DtlEstimatePointsAction") {
+        beforeEach {
+            mockStatic(DateTimeUtils::class.java)
+            whenever(DateTimeUtils.currentUtcString()).thenReturn("")
+        }
+
         it("should send DtlEstimatePointsAction") {
             val subscriber = TestSubscriber<ActionState<DtlEstimatePointsAction>>()
             transactionInteractor.estimatePointsActionPipe()
-                    .createObservable(DtlEstimatePointsAction(merchant, java.lang.Double.MAX_VALUE, ""))
+                    .createObservable(DtlEstimatePointsAction(merchant, Double.MAX_VALUE, ""))
                     .subscribe(subscriber)
-            assertActionSuccess(subscriber) { action -> action.estimationPointsHolder != null }
+            assertActionSuccess(subscriber) { it.estimationPointsHolder != null }
         }
     }
 
@@ -129,7 +135,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
             transactionInteractor.rateActionPipe()
                     .createObservable(DtlRateAction(merchant, 5, transaction))
                     .subscribe(subscriber)
-            assertActionSuccess<DtlRateAction>(subscriber) { action -> action.getErrorResponse() == null }
+            assertActionSuccess<DtlRateAction>(subscriber) { it.getErrorResponse() == null }
         }
     }
 
@@ -139,20 +145,11 @@ class DtlTransactionInteractorSpec : BaseSpec({
             transactionInteractor.earnPointsActionPipe()
                     .createObservable(DtlEarnPointsAction(merchant, transaction))
                     .subscribe(subscriber)
-            assertActionSuccess(subscriber) { action -> action.result != null }
+            assertActionSuccess(subscriber) { it.result != null }
         }
 
     }
-
-
 }) {
-
-    @Before
-    fun mockStatic() { //PowerMock works before running tests only
-        PowerMockito.mockStatic(DateTimeUtils::class.java)
-        whenever(DateTimeUtils.currentUtcString()).thenReturn("")
-    }
-
     companion object {
         //vars to ease use these in a constructor
         lateinit var transactionInteractor: DtlTransactionInteractor
@@ -166,7 +163,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
         fun checkTransactionAction(transactionAction: DtlTransactionAction, assertPredicate: (DtlTransactionAction) -> Boolean) {
             val subscriber = TestSubscriber<ActionState<DtlTransactionAction>>()
             transactionInteractor.transactionActionPipe().createObservable(transactionAction).subscribe(subscriber)
-            assertActionSuccess(subscriber, assertPredicate)
+            assertActionSuccess(subscriber, Func1 { assertPredicate(transactionAction) })
         }
     }
 }

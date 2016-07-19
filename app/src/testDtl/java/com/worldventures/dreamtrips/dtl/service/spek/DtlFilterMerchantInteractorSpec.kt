@@ -22,6 +22,7 @@ import io.techery.janet.ActionState
 import org.junit.Before
 import org.powermock.api.mockito.PowerMockito
 import org.powermock.core.classloader.annotations.PrepareForTest
+import rx.functions.Func1
 import rx.lang.kotlin.toSingletonObservable
 import rx.observers.TestSubscriber
 
@@ -46,21 +47,25 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
     }
 
     it("should init filter") {
-        checkFilterAction(DtlFilterDataAction.init()) { action ->
-            action.result.isDefault
-                    && action.result.distanceType == DistanceType.provideFromSetting(testDistanceSetting)
+        checkFilterAction(DtlFilterDataAction.init()) {
+            val result = it.result;
+            result.isDefault
+                    && result.distanceType == DistanceType.provideFromSetting(testDistanceSetting)
         }
     }
 
     it("should reset filter") {
-        checkFilterAction(DtlFilterDataAction.reset())
-        { action -> action.result != null }
+        checkFilterAction(DtlFilterDataAction.reset()) {
+            it.result != null
+        }
     }
 
     it("should update amenities in the filter") {
         val amenity = DtlMerchantAttribute("test")
-        checkFilterAction(DtlFilterDataAction.amenitiesUpdate(listOf(amenity)))
-        { action -> action.result.hasAmenities() && action.result.amenities.contains(amenity) }
+        checkFilterAction(DtlFilterDataAction.amenitiesUpdate(listOf(amenity))) {
+            val result = it.result
+            result.hasAmenities() && result.amenities.contains(amenity)
+        }
     }
 
     it("should apply filter params") {
@@ -70,19 +75,25 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
                 .maxPrice(3)
                 .maxDistance(maxDistance)
                 .build()
-        checkFilterAction(DtlFilterDataAction.applyParams(parameters))
-        { action -> !action.result.isDefault && action.result.maxDistance == maxDistance }
+
+        filterMerchantInteractor.filterDataPipe().send(DtlFilterDataAction.init())
+        checkFilterAction(DtlFilterDataAction.applyParams(parameters)) {
+            val result = it.result
+            !result.isDefault && result.maxDistance == maxDistance
+        }
     }
 
     it("should apply search") {
         val query = "test"
-        checkFilterAction(DtlFilterDataAction.applySearch(query))
-        { action -> action.result.searchQuery == query }
+        checkFilterAction(DtlFilterDataAction.applySearch(query)) {
+            it.result.searchQuery == query
+        }
     }
 
     it("should apply offers only") {
-        checkFilterAction(DtlFilterDataAction.applyOffersOnly(true))
-        { action -> action.result.isOffersOnly }
+        checkFilterAction(DtlFilterDataAction.applyOffersOnly(true)) {
+            it.result.isOffersOnly
+        }
         verify(db, times(1)).saveLastSelectedOffersOnlyToogle(eq(true))
     }
 
@@ -99,7 +110,9 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
                                 .build()))
         checkMerchantActionLoad()
         subscriber.unsubscribe()
-        assertActionSuccess(subscriber) { action -> !action.result.isEmpty() }
+        assertActionSuccess(subscriber) {
+            !it.result.isEmpty()
+        }
     }
 
 }) {
@@ -124,7 +137,7 @@ class DtlFilterMerchantInteractorSpec : DtlBaseMerchantSpec({
             filterMerchantInteractor.filterDataPipe()
                     .createObservable(filterDataAction)
                     .subscribe(subscriber)
-            assertActionSuccess(subscriber, assertPredicate)
+            assertActionSuccess(subscriber, Func1 { assertPredicate(filterDataAction) })
         }
     }
 }

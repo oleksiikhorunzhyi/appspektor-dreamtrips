@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterData;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.DtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.filter.ImmutableDtlFilterParameters;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
@@ -36,6 +37,7 @@ import static com.worldventures.dreamtrips.modules.settings.util.SettingsFactory
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -99,6 +101,8 @@ public class DtlFilterMerchantInteractorTest extends DtlBaseMerchantServiceTest 
                 .maxPrice(3)
                 .maxDistance(maxDistance)
                 .build();
+
+        filterMerchantInteractor.filterDataPipe().send(DtlFilterDataAction.init());
         checkFilterAction(DtlFilterDataAction.applyParams(parameters),
                 action -> !action.getResult().isDefault() && action.getResult().getMaxDistance() == maxDistance);
     }

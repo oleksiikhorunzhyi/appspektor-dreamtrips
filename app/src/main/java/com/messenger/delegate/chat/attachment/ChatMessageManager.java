@@ -7,13 +7,25 @@ import com.messenger.delegate.chat.message.ChatSendMessageCommand;
 import com.messenger.delegate.chat.message.MarkMessageAsReadCommand;
 import com.messenger.delegate.chat.message.RetrySendMessageCommand;
 import com.messenger.entities.DataAttachment;
+import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
+import com.messenger.messengerservers.ConnectionStatus;
 import com.messenger.messengerservers.constant.AttachmentType;
+import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.AttachmentDAO;
+import com.messenger.storage.dao.ConversationsDAO;
+import com.messenger.storage.dao.MessageDAO;
+import com.messenger.synchmechanism.MessengerConnector;
+import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.util.ChatDateUtils;
+
+import org.apache.commons.lang3.tuple.ImmutableTriple;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 public class ChatMessageManager {
 
@@ -21,17 +33,23 @@ public class ChatMessageManager {
     private final LocationAttachmentDelegate locationAttachmentDelegate;
     private final ChatMessageInteractor chatMessageInteractor;
 
+    private final MessengerConnector messengerConnector;
     private final AttachmentDAO attachmentDAO;
+    private final MessageDAO messageDAO;
+    private final ConversationsDAO conversationsDAO;
 
     @Inject
-    public ChatMessageManager(ChatMessageInteractor chatMessageInteractor,
+    public ChatMessageManager(MessengerConnector messengerConnector, ChatMessageInteractor chatMessageInteractor,
                               PhotoAttachmentDelegate photoAttachmentDelegate,
                               LocationAttachmentDelegate locationAttachmentDelegate,
-                              AttachmentDAO attachmentDAO) {
+                              ConversationsDAO conversationsDAO, MessageDAO messageDAO, AttachmentDAO attachmentDAO) {
+        this.messengerConnector = messengerConnector;
         this.chatMessageInteractor = chatMessageInteractor;
         this.photoAttachmentDelegate = photoAttachmentDelegate;
         this.locationAttachmentDelegate = locationAttachmentDelegate;
+        this.conversationsDAO = conversationsDAO;
         this.attachmentDAO = attachmentDAO;
+        this.messageDAO = messageDAO;
     }
 
     public void sendMessage(String conversationId, String messageText) {
@@ -53,14 +71,24 @@ public class ChatMessageManager {
     }
 
     public void retrySendMessage(String conversationId, DataMessage failedMessage) {
-        attachmentDAO.getAttachmentByMessageId(failedMessage.getId())
-                .take(1)
-                .subscribe(dataAttachment -> {
-                    if (dataAttachment != null) {
-                        retrySendAttachment(conversationId, failedMessage, dataAttachment);
-                    } else chatMessageInteractor.getResendMessagePipe()
-                            .send(new RetrySendMessageCommand(failedMessage));
-                });
+        Observable.combineLatest(
+                attachmentDAO.getAttachmentByMessageId(failedMessage.getId()).take(1),
+                conversationsDAO.getConversation(conversationId).take(1),
+                messengerConnector.getAuthToServerStatus().take(1), ImmutableTriple::new)
+                .subscribe(dataTriple -> retrySendMessage(dataTriple.middle, failedMessage, dataTriple.left, dataTriple.right));
+    }
+
+    public void retrySendMessage(DataConversation dataConversation, DataMessage failedMessage, DataAttachment dataAttachment, ConnectionStatus authStatus) {
+        // todo move this logic to janet command
+        if (authStatus != ConnectionStatus.CONNECTED || ConversationHelper.isAbandoned(dataConversation)) {
+            messageDAO.updateStatus(failedMessage.getId(), MessageStatus.ERROR, ChatDateUtils.getErrorMessageDate());
+            return;
+        }
+
+        if (dataAttachment != null) {
+            retrySendAttachment(dataConversation.getId(), failedMessage, dataAttachment);
+        } else chatMessageInteractor.getResendMessagePipe()
+                .send(new RetrySendMessageCommand(failedMessage));
     }
 
     public void retrySendAttachment(String conversationId, DataMessage dataMessage, DataAttachment attachment) {

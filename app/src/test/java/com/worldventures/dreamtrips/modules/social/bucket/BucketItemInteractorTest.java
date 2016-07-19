@@ -247,7 +247,7 @@ public class BucketItemInteractorTest extends BucketInteractorBaseTest {
 
     @Test
     public void startUploadingPhotoControllerTest() {
-        when(uploadControllerStorage.get(null))
+        when(uploadControllerStorage.get(cacheBundle()))
                 .thenReturn(Lists.newArrayList());
 
         EntityStateHolder<BucketPhoto> testPhotoEntityStateHolder = mockPhotoEntityHolderWithBehavior(EntityStateHolder.State.PROGRESS);

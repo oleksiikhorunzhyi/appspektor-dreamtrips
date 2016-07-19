@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
@@ -28,8 +30,13 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import rx.functions.Func2;
 
+import static com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage.USER_ID_EXTRA;
+
 @CommandAction
 public class BucketListCommand extends Command<List<BucketItem>> implements InjectableAction, CachedAction<List<BucketItem>> {
+
+    public static final int USER_ID_WAS_NOT_PROVIDED = -1;
+
     @Inject
     BucketInteractor bucketInteractor;
 
@@ -42,9 +49,14 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
     private boolean force;
     private boolean isFromCache;
+    private int userId = USER_ID_WAS_NOT_PROVIDED;
 
     public static BucketListCommand fetch(boolean force) {
-        return new BucketListCommand(force);
+        return fetch(-1, force);
+    }
+
+    public static BucketListCommand fetch(int userId, boolean force) {
+        return new BucketListCommand(userId, force);
     }
 
     public static BucketListCommand createItem(BucketItem item) {
@@ -72,8 +84,9 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
     }
 
-    public BucketListCommand(boolean force) {
+    public BucketListCommand(int userId, boolean force) {
         this(StubOperationFunc.INSTANCE);
+        this.userId = userId;
         this.force = force;
     }
 
@@ -84,8 +97,7 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
                 .map(LoadBucketListFullHttpAction::getResponse);
 
         if (force) {
-            networkObservable
-                    .subscribe(callback::onSuccess, callback::onFail);
+            networkObservable.subscribe(callback::onSuccess, callback::onFail);
             return;
         }
 
@@ -110,7 +122,11 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
 
     @Override
     public CacheOptions getCacheOptions() {
+        CacheBundle bundle = new CacheBundleImpl();
+        bundle.put(USER_ID_EXTRA, userId());
+
         return ImmutableCacheOptions.builder()
+                .params(bundle)
                 .build();
     }
 
@@ -262,6 +278,6 @@ public class BucketListCommand extends Command<List<BucketItem>> implements Inje
     /// Common
     ////////////////////////
     private int userId() {
-        return sessionHolder.get().get().getUser().getId();
+        return userId == -1 ? sessionHolder.get().get().getUser().getId() : userId;
     }
 }

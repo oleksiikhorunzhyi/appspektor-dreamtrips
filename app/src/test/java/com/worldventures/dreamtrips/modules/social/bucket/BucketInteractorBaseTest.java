@@ -1,15 +1,15 @@
 package com.worldventures.dreamtrips.modules.social.bucket;
 
 import android.support.annotation.CallSuper;
-import android.test.mock.MockContext;
+import android.support.annotation.NonNull;
 
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.core.repository.SnappyRepositoryImpl;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.test.BaseTest;
 import com.worldventures.dreamtrips.core.test.MockDaggerActionService;
@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.test.StubServiceWrapper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
+import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
 import org.junit.Before;
@@ -44,7 +45,7 @@ public abstract class BucketInteractorBaseTest extends BaseTest {
     @Mock
     SessionHolder<UserSession> mockSessionHolder;
     @Spy
-    MemoryStorage<List<BucketItem>> mockMemoryStorage;
+    BucketMemoryStorage mockMemoryStorage;
 
     @Mock
     SnappyRepository mockDb;
@@ -100,8 +101,15 @@ public abstract class BucketInteractorBaseTest extends BaseTest {
 
     protected Set<ActionStorage> storageSet() {
         Set<ActionStorage> storageSet = new HashSet<>();
-        storageSet.add(new BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder));
+        storageSet.add(new BucketListDiskStorage(mockMemoryStorage, mockDb));
 
         return storageSet;
+    }
+
+    @NonNull
+    protected CacheBundleImpl cacheBundle() {
+        CacheBundleImpl bundle = new CacheBundleImpl();
+        bundle.put(BucketListDiskStorage.USER_ID_EXTRA, userSession.getUser().getId());
+        return bundle;
     }
 }

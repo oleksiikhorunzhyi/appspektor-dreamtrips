@@ -48,9 +48,9 @@ public class MemoryTypingStore implements TypingStore {
 
     @Override
     public void deleteAll() {
-        List<TypingModel> typingModelsCopy = new ArrayList<>(typingModels.size());
+        List<TypingModel> typingModelsCopy;
         synchronized (this) {
-            Collections.copy(typingModelsCopy, typingModels);
+            typingModelsCopy = new ArrayList<>(typingModels);
             typingModels.clear();
         }
         remove(typingModelsCopy);

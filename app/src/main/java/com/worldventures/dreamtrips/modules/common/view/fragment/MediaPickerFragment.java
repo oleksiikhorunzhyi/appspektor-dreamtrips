@@ -46,7 +46,6 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
         photoPickerLayout.setPhotoPickerListener(new PhotoPickerLayout.PhotoPickerListener() {
             @Override
             public void onClosed() {
-                back();
             }
 
             @Override
@@ -88,7 +87,15 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
             getChildFragmentManager().popBackStack();
             return true;
         }
-        //
+        return back();
+    }
+
+    private void setupPicker() {
+        photoPickerLayout.setup(getChildFragmentManager());
+    }
+
+    @Override
+    public boolean back() {
         int containerId = (getView() != null && getView().getParent() != null)
                 ? ((View) getView().getParent()).getId()
                 : DEFAULT_CONTAINER_ID;
@@ -97,14 +104,5 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
                 .fragmentManager(getFragmentManager())
                 .build());
         return true;
-    }
-
-    private void setupPicker() {
-        photoPickerLayout.setup(getChildFragmentManager());
-    }
-
-    @Override
-    public void back() {
-        router.back();
     }
 }

@@ -22,6 +22,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.RxThreadFactory;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
@@ -36,8 +37,19 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
     @Inject
     DrawableUtil drawableUtil;
 
+    private CompositeSubscription compositeSubscription;
+
     public MediaPickerPresenter(int requestId) {
         this.requestId = requestId;
+        compositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        if (compositeSubscription.hasSubscriptions() && !compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
+        }
     }
 
     public void onEvent(ImagePickedEvent event) {
@@ -45,7 +57,7 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
             eventBus.cancelEventDelivery(event);
             eventBus.removeStickyEvent(event);
 
-            Observable.from(event.getImages())
+            compositeSubscription.add(Observable.from(event.getImages())
                     .map(image -> {
                         Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, image.getFilePathOriginal());
                         return new PhotoGalleryModel(pair.first, pair.second);
@@ -59,14 +71,14 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                         // need to call back, because this event comes from camera and picker
                         // done method isn't called and picker won't close
                         if (view != null) view.back();
-                    });
+                    }));
         }
     }
 
     public void attachImages(List<BasePhotoPickerModel> pickedImages, int type) {
         eventBus.post(new PickerDoneEvent());
         //
-        Observable.from(pickedImages)
+        compositeSubscription.add(Observable.from(pickedImages)
                 .map(element -> {
                     Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());
                     return new PhotoGalleryModel(pair.first, pair.second);
@@ -80,13 +92,14 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mediaAttachment -> {
                     mediaPickerManager.attach(mediaAttachment);
+                    view.back();
                 }, error -> {
                     Timber.e(error, "");
-                });
+                }));
     }
 
     public interface View extends Presenter.View {
 
-        void back();
+        boolean back();
     }
 }

@@ -24,6 +24,7 @@ import com.messenger.entities.DataTranslation$Table;
 import com.messenger.entities.DataUser;
 import com.messenger.entities.DataUser$Table;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.util.ChatDateUtils;
 import com.messenger.util.RxContentResolver;
 import com.raizlabs.android.dbflow.sql.SqlUtils;
@@ -58,6 +59,26 @@ public class MessageDAO extends BaseDAO {
         return query(q, DataMessage.CONTENT_URI)
                 .compose(DaoTransformers.toEntity(DataMessage.class));
     }
+
+    public Observable<DataMessage> getLastOtherUserMessage(String conversationId, String ownerId, long lastMessageDate) {
+        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT * FROM " + DataMessage$Table.TABLE_NAME + " " +
+                        "WHERE " + DataMessage$Table.FROMID + "<>? " +
+                        "AND " + DataMessage$Table.TYPE + "=? " +
+                        "AND " + DataMessage$Table.CONVERSATIONID + "=? " +
+                        "AND " + DataMessage$Table.STATUS + "=? " +
+                        "AND " + DataMessage$Table.DATE + "<=? " +
+                        "ORDER BY " + DataMessage$Table.DATE + " DESC " +
+                        "LIMIT 1")
+                .withSelectionArgs(new String[]{ownerId, MessageType.MESSAGE, conversationId,
+                        String.valueOf(MessageStatus.SENT),
+                        String.valueOf(lastMessageDate)})
+                .build();
+
+        return query(q, DataMessage.CONTENT_URI)
+                .compose(DaoTransformers.toEntity(DataMessage.class));
+    }
+
 
     public Observable<Cursor> getMessagesBySyncTime(String conversationId, long syncTime) {
         RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
@@ -126,9 +147,10 @@ public class MessageDAO extends BaseDAO {
             cv.put(DataMessage$Table.STATUS, MessageStatus.READ);
             try {
                 subscriber.onNext(getContentResolver().update(DataMessage.CONTENT_URI, cv, clause,
-                                new String[]{conversationId, String.valueOf(visibleTime),
-                                        userId, String.valueOf(MessageStatus.SENT)})
+                        new String[]{conversationId, String.valueOf(visibleTime),
+                                userId, String.valueOf(MessageStatus.SENT)})
                 );
+                getContentResolver().notifyChange(DataMessage.CONTENT_URI, null);
                 subscriber.onCompleted();
             } catch (Exception e) {
                 subscriber.onError(e);
@@ -145,7 +167,7 @@ public class MessageDAO extends BaseDAO {
                         "WHERE " + DataAttachment$Table.CONVERSATIONID + "=?";
         String queryClearLocation =
                 "DELETE FROM " + DataLocationAttachment.TABLE_NAME + " " +
-                "WHERE " + DataLocationAttachment$Table._ID + " IN (" + selectAttachments + ")";
+                        "WHERE " + DataLocationAttachment$Table._ID + " IN (" + selectAttachments + ")";
         String queryClearPhoto =
                 "DELETE FROM " + DataPhotoAttachment$Table.TABLE_NAME + " " +
                         "WHERE " + DataPhotoAttachment$Table.PHOTOATTACHMENTID + " IN (" + selectAttachments + ")";
@@ -158,10 +180,10 @@ public class MessageDAO extends BaseDAO {
 
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
-        db.execSQL(queryClearLocation, new String[] {conversationId});
-        db.execSQL(queryClearPhoto, new String[] {conversationId});
-        db.execSQL(queryClearAttachment, new String[] {conversationId});
-        db.execSQL(queryClearMessages, new String[] {conversationId});
+        db.execSQL(queryClearLocation, new String[]{conversationId});
+        db.execSQL(queryClearPhoto, new String[]{conversationId});
+        db.execSQL(queryClearAttachment, new String[]{conversationId});
+        db.execSQL(queryClearMessages, new String[]{conversationId});
         db.setTransactionSuccessful();
         db.endTransaction();
 
@@ -188,7 +210,7 @@ public class MessageDAO extends BaseDAO {
     public void deleteMessageByIds(List<String> messageIds) {
         getContentResolver().delete(DataMessage.CONTENT_URI,
                 DataMessage$Table._ID + " IN (?)",
-                new String[] {TextUtils.join(",", messageIds)}
+                new String[]{TextUtils.join(",", messageIds)}
         );
     }
 
@@ -210,7 +232,7 @@ public class MessageDAO extends BaseDAO {
         cv.put(DataMessage$Table.SYNCTIME, ChatDateUtils.getErrorMessageDate());
         return getContentResolver().update(DataMessage.CONTENT_URI, cv,
                 DataMessage$Table.STATUS + "=?",
-                new String[] {String.valueOf(MessageStatus.SENDING)}
+                new String[]{String.valueOf(MessageStatus.SENDING)}
         );
     }
 }

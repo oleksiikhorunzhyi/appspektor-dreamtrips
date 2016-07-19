@@ -22,11 +22,6 @@ public class CreateTripImageFragment extends CreateEntityFragment<CreateTripImag
     }
 
     @Override
-    public void setText(String text) {
-        // don't need to attach post description field
-    }
-
-    @Override
     protected Route getRoute() {
         return Route.PHOTO_CREATE;
     }

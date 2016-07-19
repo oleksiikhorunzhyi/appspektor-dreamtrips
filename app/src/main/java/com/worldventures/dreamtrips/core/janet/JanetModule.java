@@ -47,13 +47,13 @@ public class JanetModule {
                        @ForApplication Context context) {
         Janet.Builder builder = new Janet.Builder();
         for (ActionService service : services) {
-            service = new DaggerActionServiceWrapper(service, context);
             service = new TimberServiceWrapper(service);
             service = new CacheResultWrapper(service) {{
                 for (ActionStorage storage : cacheStorageSet) {
                     bindStorage(storage.getActionClass(), storage);
                 }
             }};
+            service = new DaggerActionServiceWrapper(service, context);
             builder.addService(service);
         }
         return builder.build();

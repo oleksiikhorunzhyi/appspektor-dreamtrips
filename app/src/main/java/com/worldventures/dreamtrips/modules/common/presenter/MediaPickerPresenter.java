@@ -92,10 +92,9 @@ public class MediaPickerPresenter extends Presenter<MediaPickerPresenter.View> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mediaAttachment -> {
                     mediaPickerManager.attach(mediaAttachment);
-                    view.back();
                 }, error -> {
                     Timber.e(error, "");
-                }));
+                }, () -> view.back()));
     }
 
     public interface View extends Presenter.View {

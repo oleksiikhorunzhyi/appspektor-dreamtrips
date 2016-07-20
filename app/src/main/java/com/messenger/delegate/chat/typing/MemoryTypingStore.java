@@ -5,13 +5,11 @@ import android.support.annotation.NonNull;
 import com.messenger.delegate.chat.typing.TypingManager.TypingModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class MemoryTypingStore implements TypingStore {
     private PublishSubject<TypingModel> typingUserPublishSubject = PublishSubject.create();

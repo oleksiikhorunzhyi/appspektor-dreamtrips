@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.bucket.spek
 
 import com.google.gson.JsonObject
+import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
@@ -42,8 +43,8 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
         setup(setOfStorage) { mockHttpService() }
 
         beforeEach {
-            whenever(mockMemoryStorage.get(any()))
-                    .thenReturn(mutableListOf(testBucketItem, mock<BucketItem>()))
+            doReturn(mutableListOf(testBucketItem, mock<BucketItem>()))
+                    .whenever(mockMemoryStorage).get(any())
         }
 
         context("item creation") {
@@ -364,7 +365,7 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
         val uploadControllerStorage: UploadBucketPhotoInMemoryStorage = mock()
 
         val setOfStorage: () -> Set<ActionStorage<*>> = {
-            setOf(BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder), uploadControllerStorage)
+            setOf(BucketListDiskStorage(mockMemoryStorage, mockDb), uploadControllerStorage)
         }
 
         val assertBucketWasAddedInList: (TestSubscriber<ActionState<BucketListCommand>>) -> Unit = {

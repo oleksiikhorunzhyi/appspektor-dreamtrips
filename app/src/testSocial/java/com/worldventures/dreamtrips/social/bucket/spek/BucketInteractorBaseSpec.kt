@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
+import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.User
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -26,7 +27,7 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
     companion object BaseCompanion {
         val MOCK_USER_ID = 1
 
-        val mockMemoryStorage: MemoryStorage<List<BucketItem>> = spy()
+        val mockMemoryStorage: BucketMemoryStorage = spy()
         val mockDb: SnappyRepository = spy()
 
         val mockSessionHolder: SessionHolder<UserSession> = mock()

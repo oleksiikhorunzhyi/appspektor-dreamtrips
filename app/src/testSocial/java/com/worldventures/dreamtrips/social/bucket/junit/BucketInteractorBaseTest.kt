@@ -4,15 +4,14 @@ import android.support.annotation.CallSuper
 import com.techery.spares.session.SessionHolder
 import com.techery.spares.storage.complex_objects.Optional
 import com.worldventures.dreamtrips.BaseTest
-import com.worldventures.dreamtrips.janet.MockDaggerActionService
-import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.session.UserSession
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
+import com.worldventures.dreamtrips.janet.MockDaggerActionService
+import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
+import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.User
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
@@ -34,7 +33,7 @@ abstract class BucketInteractorBaseTest : BaseTest() {
     var mockSessionHolder: SessionHolder<UserSession>? = null
 
     @Spy
-    var mockMemoryStorage: MemoryStorage<List<BucketItem>>? = null
+    var mockMemoryStorage: BucketMemoryStorage? = null
 
     @Mock
     var mockDb: SnappyRepository? = null
@@ -49,25 +48,25 @@ abstract class BucketInteractorBaseTest : BaseTest() {
 
     var userSession: UserSession? = null
 
-    val daggerActionService: MockDaggerActionService = MockDaggerActionService(CommandActionService())
+    lateinit var daggerActionService: MockDaggerActionService
 
     @CallSuper
     @Before
     open fun setup() {
-        val cacheResultWrapper = cachedService(daggerActionService)
+        val cacheResultWrapper = cachedService(CommandActionService())
         for (storage in storageSet()) {
             cacheResultWrapper.bindStorage(storage.actionClass, storage)
         }
-
-        janet = Janet.Builder()
-                .addService(cacheResultWrapper)
-                .addService(cachedService(httpStubWrapper))
-                .build()
-
+        daggerActionService = MockDaggerActionService(cacheResultWrapper)
         daggerActionService.registerProvider(Janet::class.java) { janet }
         daggerActionService.registerProvider(SnappyRepository::class.java) { mockDb }
         daggerActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
         daggerActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
+
+        janet = Janet.Builder()
+                .addService(daggerActionService)
+                .addService(cachedService(httpStubWrapper))
+                .build()
 
         bucketInteractor = BucketInteractor(janet)
 
@@ -87,7 +86,7 @@ abstract class BucketInteractorBaseTest : BaseTest() {
 
     protected open fun storageSet(): Set<ActionStorage<*>> {
         val storageSet = HashSet<ActionStorage<*>>()
-        storageSet.add(BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder))
+        storageSet.add(BucketListDiskStorage(mockMemoryStorage, mockDb))
 
         return storageSet
     }

@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.social.bucket.junit
 import android.content.Context
 import android.test.mock.MockContext
 import com.google.gson.JsonObject
+import com.nhaarman.mockito_kotlin.doReturn
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyManager
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage
@@ -100,8 +102,8 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
         daggerActionService.registerProvider(UploaderyManager::class.java) { UploaderyManager(janet) }
         daggerActionService.registerProvider(Context::class.java, { MockContext() })
 
-        `when`(mockMemoryStorage!!.get(null))
-                .thenReturn(Lists.newArrayList<BucketItem>(testBucketItem, mock(BucketItem::class.java)))
+        doReturn(Lists.newArrayList<BucketItem>(testBucketItem, mock(BucketItem::class.java)))
+                .whenever(mockMemoryStorage)!!.get(any())
 
         //session
         val mockConfig = mock(AppConfig.URLS.Config::class.java)

@@ -1,5 +1,9 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
+import android.support.annotation.StringRes;
+
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.SearchUsersQuery;
@@ -38,11 +42,41 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
     public void setQuery(String query) {
         this.query = query;
         if (query.length() < 3) {
-            if (users.size() > 0)
+            if (users.size() > 0) {
                 onUsersLoaded(new ArrayList<>());
+                if (view != null) view.updateEmptyCaption(R.string.start_searching);
+            }
             return;
         }
         reload();
+    }
+
+    @Override
+    public void reload() {
+        super.reload();
+        updateEmptyView(true);
+    }
+
+    @Override
+    protected void onUsersAdded(ArrayList<User> freshUsers) {
+        super.onUsersAdded(freshUsers);
+        updateEmptyView(false);
+    }
+
+    @Override
+    protected void onUsersLoaded(ArrayList<User> freshUsers) {
+        super.onUsersLoaded(freshUsers);
+        updateEmptyView(false);
+    }
+
+    @Override
+    public void handleError(SpiceException error) {
+        super.handleError(error);
+        updateEmptyView(false);
+    }
+
+    private void updateEmptyView(boolean isLoading) {
+        if (view != null) view.updateEmptyView(users.size(), isLoading);
     }
 
     public void addUserRequest(User user) {
@@ -65,5 +99,9 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
     }
 
     public interface View extends BaseUserListPresenter.View {
+
+        void updateEmptyView(int friendsSize, boolean isLoading);
+
+        void updateEmptyCaption(@StringRes int resource);
     }
 }

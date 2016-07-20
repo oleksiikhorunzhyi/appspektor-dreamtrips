@@ -8,14 +8,12 @@ import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
-import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.test.BaseTest;
 import com.worldventures.dreamtrips.core.test.MockDaggerActionService;
 import com.worldventures.dreamtrips.core.test.MockHttpActionService;
 import com.worldventures.dreamtrips.core.test.StubServiceWrapper;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
@@ -29,14 +27,12 @@ import org.mockito.Spy;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public abstract class BucketInteractorBaseTest extends BaseTest {
@@ -65,14 +61,13 @@ public abstract class BucketInteractorBaseTest extends BaseTest {
     public void setup() throws URISyntaxException, IOException {
         MockitoAnnotations.initMocks(this);
 
-        CacheResultWrapper cacheResultWrapper = cachedService(
-                daggerActionService = new MockDaggerActionService(new CommandActionService()));
+        CacheResultWrapper cacheResultWrapper = cachedService(new CommandActionService());
         for (ActionStorage storage : storageSet()) {
             cacheResultWrapper.bindStorage(storage.getActionClass(), storage);
         }
 
         janet = new Janet.Builder()
-                .addService(cacheResultWrapper)
+                .addService(daggerActionService = new MockDaggerActionService(cacheResultWrapper))
                 .addService(cachedService(
                         httpStubWrapper = new StubServiceWrapper(mockHttpService()))
                 )

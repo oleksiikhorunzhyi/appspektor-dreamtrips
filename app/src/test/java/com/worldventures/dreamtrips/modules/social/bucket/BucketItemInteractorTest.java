@@ -65,6 +65,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -121,8 +122,9 @@ public class BucketItemInteractorTest extends BucketInteractorBaseTest {
 
         daggerActionService().registerProvider(UploaderyManager.class, () -> new UploaderyManager(janet));
         daggerActionService().registerProvider(Context.class, MockContext::new);
-        when(mockMemoryStorage.get(null))
-                .thenReturn(Lists.newArrayList(testBucketItem, mock(BucketItem.class)));
+
+        doReturn(Lists.newArrayList(testBucketItem, mock(BucketItem.class)))
+                .when(mockMemoryStorage).get(any());
 
         //session
         AppConfig.URLS.Config mockConfig = mock(AppConfig.URLS.Config.class);

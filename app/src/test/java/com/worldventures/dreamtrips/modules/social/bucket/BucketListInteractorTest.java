@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.social.bucket;
 
 import com.google.gson.JsonObject;
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.test.MockHttpActionService;
 import com.worldventures.dreamtrips.core.test.StubServiceWrapper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -24,6 +25,7 @@ import rx.observers.TestSubscriber;
 import static com.worldventures.dreamtrips.core.test.AssertUtil.assertActionSuccess;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -59,10 +61,10 @@ public class BucketListInteractorTest extends BucketInteractorBaseTest {
 
     @Test
     public void loadBucketListFromMemoryTest() {
-        when(mockMemoryStorage.get(null))
-                .thenReturn(testListOfBucketsFromMemory);
+        doReturn(testListOfBucketsFromMemory).when(mockMemoryStorage).get(any());
+
         checkLoadBucketList(bucketListAction -> testListOfBucketsFromMemory.containsAll(bucketListAction.getResult()), false);
-        verify(mockMemoryStorage).get(any());
+        verify(mockMemoryStorage).get(any(CacheBundle.class));
     }
 
     @Test
@@ -80,8 +82,8 @@ public class BucketListInteractorTest extends BucketInteractorBaseTest {
 
     @Test
     public void forceLoadBucketListTest() {
-        when(mockMemoryStorage.get(null))
-                .thenReturn(testListOfBucketsFromMemory);
+        doReturn(testListOfBucketsFromMemory).when(mockMemoryStorage).get(any());
+
         checkLoadBucketList(bucketListAction -> testListOfBucketsFromNetwork.containsAll(bucketListAction.getResult()), true);
         verify(mockMemoryStorage).get(any());
     }
@@ -95,8 +97,7 @@ public class BucketListInteractorTest extends BucketInteractorBaseTest {
         StubServiceWrapper.Callback spyHttpCallback = spy(StubServiceWrapper.Callback.class);
         httpStubWrapper.setCallback(spyHttpCallback);
 
-        when(mockMemoryStorage.get(null))
-                .thenReturn(testListOfBucketsFromMemory);
+        doReturn(testListOfBucketsFromMemory).when(mockMemoryStorage).get(any());
 
         bucketInteractor.bucketListActionPipe()
                 .createObservable(BucketListCommand.move(POSITION_FROM, POSITION_TO, BucketItem.BucketType.LOCATION))
@@ -107,7 +108,7 @@ public class BucketListInteractorTest extends BucketInteractorBaseTest {
             return testBucketItem1.equals(items.get(POSITION_TO))
                     && testBucketItem2.equals(items.get(POSITION_FROM));
         });
-        verify(mockMemoryStorage).get(any());
+        verify(mockMemoryStorage).get(any(CacheBundle.class));
     }
 
     @Override

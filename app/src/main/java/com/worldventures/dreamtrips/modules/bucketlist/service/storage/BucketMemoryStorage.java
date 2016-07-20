@@ -9,10 +9,10 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BucketMemoryStorage extends MemoryStorage<List<BucketItem>> {
-
-    private Map<Integer, List<BucketItem>> cache = new HashMap<>();
+    private Map<Integer, List<BucketItem>> cache = new ConcurrentHashMap<>();
 
     @Override
     public void save(@Nullable CacheBundle bundle, List<BucketItem> data) {

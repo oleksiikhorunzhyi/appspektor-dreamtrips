@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
-import android.app.Activity;
-
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetPopularLocation;
@@ -10,6 +8,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.CreateBucketItemHttpAction;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
@@ -25,19 +24,13 @@ import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.N
 
 public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.View> {
     @Inject
-    Activity activity;
-
-    @Inject
     BucketInteractor bucketInteractor;
 
     private BucketItem.BucketType type;
 
-    private SweetDialogHelper sweetDialogHelper;
-
     public BucketPopularPresenter(BucketItem.BucketType type) {
         super();
         this.type = type;
-        sweetDialogHelper = new SweetDialogHelper();
     }
 
     @Override
@@ -82,7 +75,10 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
                 .map(CreateBucketItemHttpAction::getResponse)
                 .observeOn(AndroidSchedulers.mainThread()))
                 .subscribe(bucketItem -> {
-                    sweetDialogHelper.notifyItemAddedToBucket(activity, bucketItem);
+                    bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
+                            .send(RecentlyAddedBucketsFromPopularCommand.add(bucketItem));
+
+                    view.notifyItemWasAddedToBucketList(bucketItem);
                     view.getAdapter().remove(popularBucketItem);
                 }, throwable -> {
                     handleError(throwable);
@@ -115,5 +111,7 @@ public class BucketPopularPresenter extends Presenter<BucketPopularPresenter.Vie
         void startLoading();
 
         void finishLoading();
+
+        void notifyItemWasAddedToBucketList(BucketItem bucketItem);
     }
 }

@@ -467,13 +467,13 @@
     <string name="no_mutual_friends">Nu aveți niciun prieten comun</string>
 
     <string name="photo_limitation_message">Alegeți până la %1$d fotografii</string>
-    <string name="pending">În așteptare...</string>
+    <string name="pending">În așteptare…</string>
 
     <string name="back">Înapoi</string>
     <string name="logout_component">Deconectare</string>
     <string name="start_typing_name">Începeți să introduceți numele</string>
 
-    <string name="multiple_dates">Date multiple, %1$s...</string>
+    <string name="multiple_dates">Date multiple, %1$s…</string>
 
     <string name="tag_photo">v-a etichetat pe</string>
 
@@ -631,5 +631,19 @@
     <string name="audio_app_not_found_exception">Aplicație pentru a reda audio nu a fost găsit</string>
     <string name="complete_action_with">acțiune complet cu</string>
     <string name="error_fail_to_load_podcast"> Nu s-a reușit încărcarea podcast-urilor </string>
+
+    <string name="min">min</string>
+    <string name="post_hint_with_hashtag">Spuneți ceva, adăugați #hashtag-uri</string>
+    <string name="add_text">Adăugare text</string>
+    <string name="action_search_by_hashtag">Căutare după hashtag</string>
+    <string name="error_fail_to_load_feeds_by_hashtag">Nu s-au încărcat postări după hashtag</string>
+    <string name="no_feed_by_hashtag">Nu s-a găsit niciun hashtag</string>
+
+    <string name="friends_loading_info_text">Încarcă prietenii dvs.</string>
+
+    <string name="hashtag_one_post">%1$d postare</string>
+    <string name="hashtag_multiple_posts">%1$d postări</string>
+
+    <string name="error_webview_secure_connection">Ne pare rău, aplicația DreamTrips nu poate stabili o conexiune securizată.\nAm primit o notificare legată de această problemă și o vom analiza în scurt timp.\n\nContactați asistența pentru clienți pentru o soluționare mai rapidă.</string>
 
 </resources>

@@ -632,4 +632,18 @@
     <string name="complete_action_with">Slutför åtgärden med</string>
     <string name="error_fail_to_load_podcast">Podcasten kunde inte läsas in</string>
 
+    <string name="min">min</string>
+    <string name="post_hint_with_hashtag">Säg någonting, lägg till en #hashtag</string>
+    <string name="add_text">Skriv text</string>
+    <string name="action_search_by_hashtag">Sök via hashtagar</string>
+    <string name="error_fail_to_load_feeds_by_hashtag">Flödet kunde inte läsas in med hjälp av hashtagar</string>
+    <string name="no_feed_by_hashtag">Inga hashtagar kunde hittas</string>
+
+    <string name="friends_loading_info_text">Läser in dina vänner</string>
+
+    <string name="hashtag_one_post">%1$d uppdatering</string>
+    <string name="hashtag_multiple_posts">%1$d uppdateringar</string>
+
+    <string name="error_webview_secure_connection">DreamTrips-appen verkar inte kunna etablera en säker anslutning.\nVi har underrättats om problemet och tar en titt på det inom kort.\n\nKontakta kundtjänst för en snabbare lösning.</string>
+
 </resources>

@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 
 public class HashtagTextView extends TextView {
 
+    private static final int MAX_HASHTAG_LENGTH = 250;
+
     private @ColorInt int hashtagTextColor;
     private @ColorInt int selectedHashtagTextColor;
     private @ColorInt int selectedHashtagBackgroundColor;
@@ -111,7 +113,9 @@ public class HashtagTextView extends TextView {
      * @return List <(keywordIndexStart, keywordIndexEnd)>
      */
     public List<Pair<Integer, Integer>> findIndexesForKeyword(String text, String keyword) {
-        String regex = String.format("%s\\b", keyword.toLowerCase());
+        keyword = keyword.trim().toLowerCase();
+        String regularExpression = keyword.length() >= MAX_HASHTAG_LENGTH ? "%s" : "%s\\b";
+        String regex = String.format(regularExpression, keyword);
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text.toLowerCase());
 

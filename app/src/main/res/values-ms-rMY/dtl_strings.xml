@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">Tiada pedagang di sini</string>
     <string name="dtl_load_merchants_here_button_caption">Buat semula carian pedagang</string>
     <string name="dtl_place_list_empty_text">Tiada tempat untuk jenis yang dipilih</string>
-    <string name="dtl_location_no_merchants_caption">Tiada pedagang berhampiran anda.\n Sila masukkan bandar baharu atau</string>
+    <string name="dtl_location_no_merchants_caption">Tiada pedagang berhampiran anda.\n Sila masukkan bandar baharu.</string>
+    <string name="dtl_location_select_from_nearby_caption">Pilih daripada bandar berdekatan:</string>
     <string name="dtl_points_estimation_calculate_button_caption">Kira</string>
     <string name="dtl_points_estimation_input_hint">Masukkan amaun</string>
     <string name="dtl_header">Penganggar Mata</string>
@@ -87,6 +88,7 @@
     <string name="training_no_video">Video yang akan datang tidak lama lagi</string>
     <string name="help">Bantuan</string>
     <string name="merchants_list_empty_text">Tempat yang akan datang tidak lama lagi</string>
+    <string name="merchants_list_empty_text_additional">- atau -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Makanan &amp; Minuman</string>

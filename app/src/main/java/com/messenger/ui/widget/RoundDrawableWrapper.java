@@ -66,11 +66,7 @@ public class RoundDrawableWrapper extends ShapeDrawable {
     @Override
     public void setBounds(int left, int top, int right, int bottom) {
         super.setBounds(left, top, right, bottom);
-        int height = baseDrawable.getIntrinsicHeight();
-        int width = baseDrawable.getIntrinsicWidth();
-        int boundTop = (bottom - top - height) / 2;
-        int boundLeft = (right - left - width) / 2;
-        baseDrawable.setBounds(boundLeft, boundTop, boundLeft + width, boundTop + height);
+        baseDrawable.setBounds(getBounds());
     }
 
     public void setColor(int color) {

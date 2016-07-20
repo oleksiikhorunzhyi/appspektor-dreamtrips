@@ -26,10 +26,6 @@ public class DtlOfferDeserializer implements JsonDeserializer<DtlOffer> {
         modelByType.put(DtlOffer.Type.POINTS.value(), new TypeToken<DtlOfferPoints>() {}.getType());
     }
 
-    public DtlOfferDeserializer(final Gson gson) {
-        this.gson = gson;
-    }
-
     public DtlOfferDeserializer() {
         this.gson = new GsonBuilder()
                 .serializeNulls()
@@ -41,12 +37,13 @@ public class DtlOfferDeserializer implements JsonDeserializer<DtlOffer> {
     }
 
     @Override
-    public DtlOffer deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
+    public DtlOffer deserialize(JsonElement json, java.lang.reflect.Type typeOfT,
+                                JsonDeserializationContext context) throws JsonParseException {
 
         String type = json.getAsJsonObject().get("type").getAsString();
         JsonElement offerJson = json.getAsJsonObject().get("offer");
 
-        return modelByType.containsKey(type) && !offerJson.isJsonNull() ? gson.fromJson(offerJson, modelByType.get(type)) : null;
+        return modelByType.containsKey(type) && !offerJson.isJsonNull() ?
+                gson.fromJson(offerJson, modelByType.get(type)) : null;
     }
 }

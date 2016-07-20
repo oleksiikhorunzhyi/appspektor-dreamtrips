@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">Algo fue mal</string>
+    <string name="error_no_connection">No estás conectado</string>
     <string name="messenger">Mensajero</string>
     <string name="chat">Chat</string>
 
@@ -75,6 +76,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">¿Volver a enviar el mensaje ? </string>
     <string name="chat_retry_send_message_dialog_resend">REENVIAR</string>
     <string name="chat_retry_send_message_dialog_cancel">Cancelar</string>
+    <string name="chat_reload_chat_history_reload">Volver a cargar</string>
+    <string name="chat_reload_chat_history_info_text">Tu historial de chat ha borrado. Puede recuperarlo pulsando \"cargar\"</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">TI</string>
+    <string name="system_message_admin" formatted="false">%1$s(Administración)</string>
+    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;agregado&lt;/b&gt; %2$s</string>
+    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;es agregado&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">Has  &lt;b&gt;sido agregado&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;Eliminó&lt;/b&gt; %2$s del chat</string>
+    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;es eliminado&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">Eres  &lt;b&gt;eliminado&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">Dejaste  &lt;b&gt;&lt;/b&gt; el chat</string>
+    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;salió&lt;b&gt;</string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Cargando...</string>
@@ -101,13 +116,17 @@
     <string name="chat_settings_row_shared_content">Contenido compartido</string>
     <string name="chat_settings_row_members_format">Miembros %1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Asigna un nuevo administrador</string>
+    <string name="chat_settings_row_clear_chat">Borrar chat</string>
     <string name="chat_settings_row_leave_chat">Dejar chat</string>
     <string name="chat_settings_row_delete_chat">Borrar chat</string>
-    <string name="chat_settings_group_chat_info_text_format">Este grupo fue creado por %s</string>
+    <string name="chat_settings_group_chat_info_text_format">Este grupo fue creado por %1$s</string>
     <string name="chat_settings_menu_settings">Configuraciones</string>
     <string name="chat_settings_menu_edit_chat_name">Editar nombre de chat</string>
     <string name="chat_settings_menu_edit_change_chat_image">Cambiar imagen de chat</string>
     <string name="chat_settings_menu_edit_remove_chat_image">Eliminar imagen de chat</string>
+    <string name="chat_settings_clear_chat_confirmation_text">El chat será borrado de todos tus dispositivos. Lo puedes volver a cargar después. ¿Quieres continuar?</string>
+    <string name="chat_settings_clear_chat_ok">Aceptar</string>
+    <string name="chat_settings_clear_chat_cancel">Cancelar</string>
     <string name="chat_settings_leave_group_chat">¿Estás seguro que deseas salir de este chat?</string>
     <string name="chat_settings_leave_group_chat_format">¿Estás seguro que deseas salir de %1$s chat?</string>
     <string name="chat_settings_error_change_subject">No se puede cambiar el tema sin conexión de red</string>

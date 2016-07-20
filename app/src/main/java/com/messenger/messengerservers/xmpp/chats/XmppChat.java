@@ -41,6 +41,7 @@ public abstract class XmppChat implements Chat {
     @Override
     public Observable<String> sendReadStatus(String messageId) {
         return facade.getConnectionObservable()
+                .take(1)
                 .compose(new StatusMessageTransformer(createStatusMessage(messageId)));
     }
 

@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">Det finns inga säljare här</string>
     <string name="dtl_load_merchants_here_button_caption">Sök säljare på nytt</string>
     <string name="dtl_place_list_empty_text">Det finns inga platser av den valda typen</string>
-    <string name="dtl_location_no_merchants_caption">Det finns inga säljare nära dig.\n Ange en ny stad eller</string>
+    <string name="dtl_location_no_merchants_caption">Det finns inga säljare nära dig.\n Ange en ny stad.</string>
+    <string name="dtl_location_select_from_nearby_caption">Välj från närbelägna städer:</string>
     <string name="dtl_points_estimation_calculate_button_caption">Beräkna</string>
     <string name="dtl_points_estimation_input_hint">Ange summa</string>
     <string name="dtl_header">Poängberäkning</string>
@@ -87,6 +88,7 @@
     <string name="training_no_video">Videor kommer snart</string>
     <string name="help">Hjälp</string>
     <string name="merchants_list_empty_text">Platser kommer snart</string>
+    <string name="merchants_list_empty_text_additional">- eller -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Mat och dryck</string>

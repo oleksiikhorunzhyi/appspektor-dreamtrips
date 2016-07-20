@@ -112,7 +112,7 @@
         <item>推特</item>
         <item>保存到相册</item>
     </string-array>
-    <string name="buffering">缓冲...</string>
+    <string name="buffering">缓冲…</string>
     <string name="profile_select_avatar_header">选择化身</string>
     <string name="profile_select_cover_header">选择封面</string>
     <string name="error_internal_server">内部服务器错误</string>
@@ -318,7 +318,7 @@
     <string name="feed_photo">照片</string>
     <string name="feed_bucket">人生愿望清单项目</string>
     <string name="coming_soon">即将推出</string>
-    <string name="loading">载入中...</string>
+    <string name="loading">载入中…</string>
     <string name="filter_video_title_language">选择语言</string>
     <string name="filter_video_title_country">选择国家</string>
     <string name="comments_title">评论</string>
@@ -332,7 +332,7 @@
     <string name="comment_delete_confirm">是的，删除它！</string>
     <string name="post_visibility_public">公开的</string>
     <string name="post_hint">您要做什么？</string>
-    <string name="photo_hint">说说照片...</string>
+    <string name="photo_hint">说说照片…</string>
     <string name="post">帖子</string>
 
     /////////Date time relative strings
@@ -467,13 +467,13 @@
     <string name="no_mutual_friends">您没有任何共同的朋友</string>
 
     <string name="photo_limitation_message">请选择最多%1$d张照片</string>
-    <string name="pending">待处理...</string>
+    <string name="pending">待处理…</string>
 
     <string name="back">回去</string>
     <string name="logout_component">退出</string>
     <string name="start_typing_name">开始键入名称</string>
 
-    <string name="multiple_dates">多个日期， %1$s ...</string>
+    <string name="multiple_dates">多个日期， %1$s …</string>
 
     <string name="tag_photo">对您进行了标记</string>
 
@@ -631,5 +631,19 @@
     <string name="audio_app_not_found_exception">未找到应用播放音频</string>
     <string name="complete_action_with">完成操作</string>
     <string name="error_fail_to_load_podcast">无法加载播客</string>
+
+    <string name="min">分钟</string>
+    <string name="post_hint_with_hashtag">说些什么，添加#标签</string>
+    <string name="add_text">添加文字</string>
+    <string name="action_search_by_hashtag">通过标签搜索</string>
+    <string name="error_fail_to_load_feeds_by_hashtag">无法通过标签加载内容</string>
+    <string name="no_feed_by_hashtag">没有找到标签</string>
+
+    <string name="friends_loading_info_text">正在加载您的好友</string>
+
+    <string name="hashtag_one_post">%1$d篇帖子</string>
+    <string name="hashtag_multiple_posts">%1$d篇帖子</string>
+
+    <string name="error_webview_secure_connection">很抱歉，DreamTrips app无法建立安全连接。\n我们被告知这个问题，我们会在短期内查看。\n\n为更快地解决问题，请联系客服。</string>
 
 </resources>

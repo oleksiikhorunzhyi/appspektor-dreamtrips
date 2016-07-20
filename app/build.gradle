@@ -31,7 +31,7 @@ android {
     def versionMajor = 1
     def versionMinor = 13
     def versionPatch = 0
-    def versionBuild = 5  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 6  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"
@@ -67,8 +67,8 @@ android {
             'NEWRELIC_API_KEY' : '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
     ]
     def CONFIG_MAP_PREPROD = [
-            'DreamTripsApi'     : '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net"',
-            'S3Api'             : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
+            'DreamTripsApi'     : '"http://dtappstage.worldventures.biz/"',
+            'S3Api'             : '"http://dtapp.s3.amazonaws.com/config"',
             'MESSENGER_API_URL' : '"dtmsgapp-qa.worldventures.biz"',
     ]
     def CONFIG_MAP_DTL = [

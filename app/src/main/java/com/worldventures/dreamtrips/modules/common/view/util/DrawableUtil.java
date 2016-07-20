@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -70,7 +72,6 @@ public class DrawableUtil {
                     rotate = 90;
                     break;
             }
-
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = getInSampleSize(w, l, scale);
             options.inJustDecodeBounds = false;
@@ -88,7 +89,11 @@ public class DrawableUtil {
             }
 
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-            ExifUtils.copyExif(originalFile.getAbsolutePath(), newFile.getAbsolutePath());
+
+            List<Pair<String, String>> customParams = new ArrayList<>();
+            customParams.add(new Pair<>(ExifInterface.TAG_ORIENTATION, String.valueOf(ExifInterface.ORIENTATION_NORMAL)));
+
+            ExifUtils.copyExif(originalFile.getAbsolutePath(), newFile.getAbsolutePath(), customParams);
 
             return new Pair<>(newFile.getAbsolutePath(), new Size(bitmap.getWidth(), bitmap.getHeight()));
         } catch (IOException e) {

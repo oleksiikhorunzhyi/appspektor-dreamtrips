@@ -38,9 +38,9 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         setTabs();
         loadCategories();
 
-        view.bind(bucketInteractor.bucketListActionPipe().createObservableResult(BucketListCommand.fetch(false))
+        view.bind(bucketInteractor.bucketListActionPipe().createObservableResult(BucketListCommand.fetch(getUser().getId(),false))
                 .concatMap(bucketListAction -> bucketListAction.isFromCache() ?
-                        bucketInteractor.bucketListActionPipe().createObservable(BucketListCommand.fetch(true))
+                        bucketInteractor.bucketListActionPipe().createObservable(BucketListCommand.fetch(getUser().getId(), true))
                         : Observable.just(bucketListAction))
                 .observeOn(AndroidSchedulers.mainThread()))
                 .subscribe(bucketListAction -> {

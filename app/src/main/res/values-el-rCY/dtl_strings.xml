@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">Δεν υπάρχουν εμπορικά καταστήματα εδώ</string>
     <string name="dtl_load_merchants_here_button_caption">Νέα αναζήτηση εμπορικών καταστημάτων</string>
     <string name="dtl_place_list_empty_text">Δεν υπάρχουν μέρη του επιλεγμένου τύπου</string>
-    <string name="dtl_location_no_merchants_caption">Δεν υπάρχουν εμπορικά καταστήματα κοντά σας.\n Παρακαλούμε εισάγετε νέα πόλη ή</string>
+    <string name="dtl_location_no_merchants_caption">Δεν υπάρχουν καταστήματα κοντά σας.\n Παρακαλούμε επιλέξτε μια νέα πόλη.</string>
+    <string name="dtl_location_select_from_nearby_caption">Επιλέξτε από κοντινές πόλεις:</string>
     <string name="dtl_points_estimation_calculate_button_caption">Υπολογισμός</string>
     <string name="dtl_points_estimation_input_hint">Εισαγωγή ποσού</string>
     <string name="dtl_header">Εκτίμηση πόντων</string>
@@ -87,6 +88,7 @@
     <string name="training_no_video">Προσεχή βίντεο</string>
     <string name="help">Βοήθεια</string>
     <string name="merchants_list_empty_text">Προσεχή σημεία</string>
+    <string name="merchants_list_empty_text_additional">- ή -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Φαγητό &amp; Ποτά</string>

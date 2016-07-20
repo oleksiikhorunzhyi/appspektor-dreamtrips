@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">Något gick fel</string>
+    <string name="error_no_connection">Du är inte ansluten</string>
     <string name="messenger">Snabbmeddelanden</string>
     <string name="chat">Chatta</string>
 
@@ -75,6 +76,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">Skicka meddelande igen?</string>
     <string name="chat_retry_send_message_dialog_resend">SKICKA IGEN</string>
     <string name="chat_retry_send_message_dialog_cancel">Avbryt</string>
+    <string name="chat_reload_chat_history_reload">Läs in igen</string>
+    <string name="chat_reload_chat_history_info_text">Din chatthistorik har rensats. Du kan få tillbaka den genom att trycka på \"Uppdatera\".</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">DU</string>
+    <string name="system_message_admin" formatted="false">%1$s(Administratör)</string>
+    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;lade till&lt;/b&gt; %2$s</string>
+    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;har lagts till&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">Du &lt;b&gt;har lagts till&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;tog bort&lt;/b&gt; %2$s från chatten</string>
+    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;tas bort&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">Du &lt;b&gt;tas bort&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">Du &lt;b&gt;lämnade&lt;/b&gt; chatten</string>
+    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;har lämnat chatten&lt;b&gt;</string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Läser in …</string>
@@ -101,13 +116,17 @@
     <string name="chat_settings_row_shared_content">Delat innehåll</string>
     <string name="chat_settings_row_members_format">Medlemmar (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Lägg till en ny admin</string>
+    <string name="chat_settings_row_clear_chat">Rensa chatt</string>
     <string name="chat_settings_row_leave_chat">Lämna chatt</string>
     <string name="chat_settings_row_delete_chat">Ta bort chatt</string>
-    <string name="chat_settings_group_chat_info_text_format">Den här gruppen skapades av %s</string>
+    <string name="chat_settings_group_chat_info_text_format">Den här gruppen skapades av %1$s</string>
     <string name="chat_settings_menu_settings">Inställningar</string>
     <string name="chat_settings_menu_edit_chat_name">Redigera chattnamn</string>
     <string name="chat_settings_menu_edit_change_chat_image">Ändra chattbild</string>
     <string name="chat_settings_menu_edit_remove_chat_image">Ta bort chattbild</string>
+    <string name="chat_settings_clear_chat_confirmation_text">Chatten kommer att rensas från alla dina enheter. Du kan läsa in den igen senare. Vill du fortsätta?</string>
+    <string name="chat_settings_clear_chat_ok">OK</string>
+    <string name="chat_settings_clear_chat_cancel">Avbryt</string>
     <string name="chat_settings_leave_group_chat">Är du säker på att du vill avbryta chatten</string>
     <string name="chat_settings_leave_group_chat_format">Är du säker på att du vill avbryta chatten %1$s</string>
     <string name="chat_settings_error_change_subject">Du kan inte ändra chattnamn utan nätverksanslutning</string>

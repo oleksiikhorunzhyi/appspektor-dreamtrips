@@ -1,10 +1,15 @@
 package com.worldventures.dreamtrips.modules.common.view.util;
 
 import android.media.ExifInterface;
+import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -13,7 +18,12 @@ public class ExifUtils {
     private ExifUtils() {
     }
 
-    public static boolean copyExif(String oldPath, String newPath) throws IOException {
+    public static boolean copyExif(String oldPath, String newPath) {
+        return copyExif(oldPath, newPath, new ArrayList<>());
+    }
+
+    public static boolean copyExif(String oldPath, String newPath, @NotNull List<Pair<String, String>> customParams) {
+
         String[] attributes = new String[]
                 {
                         ExifInterface.TAG_APERTURE,
@@ -50,6 +60,9 @@ public class ExifUtils {
                 String value = oldExif.getAttribute(attribute);
                 if (value != null) newExif.setAttribute(attribute, value);
             });
+
+            Queryable.from(customParams).forEachR(arg -> newExif.setAttribute(arg.first, arg.second));
+
             newExif.saveAttributes();
             return true;
         } catch (IOException e) {

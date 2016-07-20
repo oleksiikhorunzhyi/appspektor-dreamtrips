@@ -16,12 +16,11 @@ import com.messenger.delegate.StartChatDelegate;
 import com.messenger.delegate.chat.ChatExtensionInteractor;
 import com.messenger.delegate.chat.MessagesPaginationDelegate;
 import com.messenger.delegate.chat.MessagesPaginationDelegate.PaginationStatus;
-import com.messenger.delegate.chat.UnreadMessagesDelegate;
 import com.messenger.delegate.chat.attachment.ChatMessageManager;
-import com.messenger.delegate.chat.typing.SendChatStateDelegate;
-import com.messenger.delegate.chat.typing.TypingManager;
 import com.messenger.delegate.chat.command.RevertClearingChatServerCommand;
 import com.messenger.delegate.chat.event.ChatEventInteractor;
+import com.messenger.delegate.chat.typing.SendChatStateDelegate;
+import com.messenger.delegate.chat.typing.TypingManager;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.entities.DataConversation;
 import com.messenger.entities.DataMessage;
@@ -75,7 +74,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
 
     private static final int MARK_AS_READ_DELAY = 2000;
 
-    @Inject UnreadMessagesDelegate unreadMessagesDelegate;
     @Inject MessagesPaginationDelegate messagesPaginationDelegate;
     @Inject ChatMessageManager chatMessageManager;
     @Inject ChatToolbarMenuProvider chatToolbarMenuProvider;
@@ -123,7 +121,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
         connectToLastVisibleItemStream();
         connectToShareLocationsStream();
         bindMessagePaginationDelegate();
-        bindUnreadMessagesDelegate();
         connectToPhotoPicker();
         connectToClearEvents();
 
@@ -328,10 +325,6 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     // Unread and Mark as read
     ///////////////////////////////////////////////////////////////////////////
 
-    private void bindUnreadMessagesDelegate() {
-        unreadMessagesDelegate.bind(conversationId);
-    }
-
     private void connectToLastVisibleItemStream() {
         getView().getLastVisibleItemStream().throttleLast(MARK_AS_READ_DELAY, TimeUnit.MILLISECONDS)
                 .onBackpressureLatest()
@@ -342,8 +335,10 @@ public class ChatScreenPresenterImpl extends MessengerPresenterImpl<ChatScreen, 
     }
 
     private void tryMarkAsReadMessage(DataMessage lastMessage) {
-        getView().setShowMarkUnreadMessage(false);
-        unreadMessagesDelegate.tryMarkAsReadMessage(lastMessage);
+        if (!messagesPaginationDelegate.isLoading()) {
+            getView().setShowMarkUnreadMessage(false);
+            chatMessageManager.markMessagesAsRead(lastMessage, conversationId);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

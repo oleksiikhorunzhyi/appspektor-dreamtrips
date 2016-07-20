@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">Sesuatu yang tidak kena</string>
+    <string name="error_no_connection">Anda terputus sambungan</string>
     <string name="messenger">Aplikasi Pesanan</string>
     <string name="chat">Sembang</string>
 
@@ -75,6 +76,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">Hantar semula mesej?</string>
     <string name="chat_retry_send_message_dialog_resend">HANTAR SEMULA</string>
     <string name="chat_retry_send_message_dialog_cancel">Batal</string>
+    <string name="chat_reload_chat_history_reload">Muat semula</string>
+    <string name="chat_reload_chat_history_info_text">Sejarah sembang anda dipadamkan. Anda boleh mendapatkannya balik dengan mengetik “Muat Semula”</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">Anda</string>
+    <string name="system_message_admin" formatted="false">%1$s(Pentadbir)</string>
+    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;ditambah&lt;/b&gt; %2$s</string>
+    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;ditambah&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">Anda &lt;b&gt;ditambah&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;dikeluarkan&lt;/b&gt; %2$s daripada sembang</string>
+    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;dikeluarkan&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">Anda &lt;b&gt;telah dikeluarkan&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">Anda &lt;b&gt;telah meninggalkan&lt;/b&gt; sembang</string>
+    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;yang tinggal&lt;b&gt;</string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Sedang memuat…</string>
@@ -101,13 +116,17 @@
     <string name="chat_settings_row_shared_content">Kandungan Berkongsi</string>
     <string name="chat_settings_row_members_format">Ahli (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin"> Lantik pentadbir baharu </string>
+    <string name="chat_settings_row_clear_chat">Padam sembang</string>
     <string name="chat_settings_row_leave_chat">Meninggalkan Sembang</string>
     <string name="chat_settings_row_delete_chat">Hapus Sembang</string>
-    <string name="chat_settings_group_chat_info_text_format">Kumpulan ini dicipta oleh %s</string>
+    <string name="chat_settings_group_chat_info_text_format">Kumpulan ini dicipta oleh %1$s</string>
     <string name="chat_settings_menu_settings">Tetapan</string>
     <string name="chat_settings_menu_edit_chat_name"> Edit nama perbualan </string>
     <string name="chat_settings_menu_edit_change_chat_image">Tukar imej sembang</string>
     <string name="chat_settings_menu_edit_remove_chat_image">Keluarkan imej sembang</string>
+    <string name="chat_settings_clear_chat_confirmation_text">Sembang akan dipadamkan daripada semua peranti anda. Anda boleh muat semula kemudian. Adakah anda mahu meneruskan?</string>
+    <string name="chat_settings_clear_chat_ok">OK</string>
+    <string name="chat_settings_clear_chat_cancel">Batal</string>
     <string name="chat_settings_leave_group_chat">Adakah anda pasti anda mahu berhenti dari sembang ini</string>
     <string name="chat_settings_leave_group_chat_format">Adakah anda pasti anda mahu berhenti dari sembang %1$s </string>
     <string name="chat_settings_error_change_subject">Anda tidak boleh menukar subjek tanpa sambungan rangkaian</string>

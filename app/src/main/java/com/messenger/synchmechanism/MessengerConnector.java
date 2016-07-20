@@ -88,6 +88,10 @@ public class MessengerConnector {
         return connectionStream.asObservable();
     }
 
+    public Observable<ConnectionStatus> getAuthToServerStatus() {
+        return messengerServerFacade.getStatusObservable();
+    }
+
     public void connect() {
         if (messengerServerFacade.isConnected() || !SessionHolderHelper.hasEntity(appSessionHolder))
             return;

@@ -175,6 +175,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
                 releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
                 getPresenter().onRefresh();
                 clearSuggestions();
+                getPresenter().cancelLastSuggestionRequest();
                 return true;
             }
 
@@ -259,7 +260,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     @Override
     public void showEdit(BucketBundle bucketBundle) {
-        fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
+        fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
     }
 
     @Override

@@ -40,8 +40,8 @@ public class SetChatAvatarCommand extends BaseChatCommand<DataConversation> impl
                 )
                 .flatMap(avatar ->
                         janet.createPipe(SendChatAvatarCommand.class)
-                            .createObservableResult(new SendChatAvatarCommand(conversationId, avatar))
-                            .map(Command::getResult)
+                                .createObservableResult(new SendChatAvatarCommand(conversationId, avatar))
+                                .map(Command::getResult)
                 )
                 .subscribe(callback::onSuccess, callback::onFail);
     }

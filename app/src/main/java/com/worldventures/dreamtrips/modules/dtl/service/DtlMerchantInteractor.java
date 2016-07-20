@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.newrelic.agent.android.NewRelic;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
@@ -78,7 +80,15 @@ public class DtlMerchantInteractor {
                 })
                 .map(DtlLocationCommand::getResult)
                 .subscribe(location -> {
-                    DtlMerchant nearestMerchant = dtlMerchants.get(0);
+                    DtlMerchant nearestMerchant = Queryable.from(dtlMerchants)
+                            .map(merchant -> {
+                                merchant.setDistance(DtlLocationHelper.calculateDistance(
+                                        location.getCoordinates().asLatLng(),
+                                        merchant.getCoordinates().asLatLng()));
+                                return merchant;
+                            })
+                            .sort(DtlMerchant.DISTANCE_COMPARATOR::compare)
+                            .first();
                     DtlLocation updatedLocation = ImmutableDtlManualLocation
                             .copyOf((DtlManualLocation) location)
                             .withLongName(location.getLocationSourceType() == LocationSourceType.FROM_MAP

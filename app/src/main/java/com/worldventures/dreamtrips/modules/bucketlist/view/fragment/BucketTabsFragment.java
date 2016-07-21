@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
@@ -21,7 +20,6 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapt
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.InjectView;
 import icepick.State;
@@ -130,15 +128,8 @@ public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends B
     }
 
     @Override
-    public void setRecentBucketItemsCount(Map<BucketItem.BucketType, Integer> items) {
-        for (BucketType type : items.keySet()) {
-            tabStrip.setBadgeCount(type.ordinal(), items.get(type));
-        }
-    }
-
-    @Override
-    public void resetRecentlyAddedBucketItem(BucketType type) {
-        tabStrip.setBadgeCount(type.ordinal(), 0);
+    public void setRecentBucketItemCountByType(BucketType type, int count) {
+        tabStrip.setBadgeCount(type.ordinal(), count);
     }
 
     @Override

@@ -23,11 +23,11 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularTabsPresenter;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.BucketPopularCell;
 import com.worldventures.dreamtrips.modules.bucketlist.view.cell.delegate.BucketPopularCellDelegate;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import butterknife.InjectView;
 
@@ -45,8 +45,10 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
     @InjectView(R.id.swipe_container)
     protected SwipeRefreshLayout refreshLayout;
 
+    private SweetDialogHelper sweetDialogHelper;
+
     private FilterableArrayListAdapter<PopularBucketItem> adapter;
-    RecyclerViewStateDelegate stateDelegate;
+    private RecyclerViewStateDelegate stateDelegate;
 
     private WeakHandler weakHandler;
 
@@ -84,6 +86,8 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
 
         this.refreshLayout.setOnRefreshListener(this);
         this.refreshLayout.setColorSchemeResources(R.color.theme_main_darker);
+
+        sweetDialogHelper = new SweetDialogHelper();
     }
 
     @Override
@@ -147,6 +151,11 @@ public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPrese
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
         });
         stateDelegate.restoreStateIfNeeded();
+    }
+
+    @Override
+    public void notifyItemWasAddedToBucketList(BucketItem bucketItem) {
+        sweetDialogHelper.notifyItemAddedToBucket(getActivity(), bucketItem);
     }
 
     @Override

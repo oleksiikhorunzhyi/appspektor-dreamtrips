@@ -112,6 +112,7 @@ android {
         buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
         buildConfigField 'String', 'API_VERSION', '"2"'
         buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+        buildConfigField 'boolean', 'ANALYTICS_LOG_ENABLED', 'false'
         resValue "string", "facebook_app_id", "761062457321921"
         //
         buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'

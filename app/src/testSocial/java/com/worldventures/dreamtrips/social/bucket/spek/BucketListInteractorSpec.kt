@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.bucket.spek
 
 import com.google.gson.JsonObject
+import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -16,12 +17,12 @@ import rx.observers.TestSubscriber
 
 class BucketListInteractorSpec : BucketInteractorBaseSpec({
     describe("bucket list actions") {
-        setup({ setOf(BucketListDiskStorage(mockMemoryStorage, mockDb, mockSessionHolder)) }) { mockHttpService() }
+        setup({ setOf(BucketListDiskStorage(mockMemoryStorage, mockDb)) }) { mockHttpService() }
 
         context("memory storage is not empty") {
             it("should fetch bucket list from memory") {
-                whenever(mockMemoryStorage.get(any()))
-                        .thenReturn(testListOfBucketsFromMemory)
+                doReturn(testListOfBucketsFromMemory)
+                        .whenever(mockMemoryStorage).get(any())
                 whenever(mockDb.readBucketList(any()))
                         .thenReturn(emptyList())
 
@@ -50,8 +51,8 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
 
         context("memory storage is empty and database storage is not") {
             it("should fetch from database") {
-                whenever(mockMemoryStorage.get(any()))
-                        .thenReturn(emptyList())
+                doReturn(emptyList<BucketItem>())
+                        .whenever(mockMemoryStorage).get(any())
                 whenever(mockDb.readBucketList(any()))
                         .thenReturn(testListOfBucketsFromDisk)
 
@@ -65,8 +66,8 @@ class BucketListInteractorSpec : BucketInteractorBaseSpec({
 
         context("memory storage and database storage are empty") {
             it("should fetch from network") {
-                whenever(mockMemoryStorage.get(any()))
-                        .thenReturn(emptyList())
+                doReturn(emptyList<BucketItem>())
+                        .whenever(mockMemoryStorage).get(any())
                 whenever(mockDb.readBucketList(any()))
                         .thenReturn(emptyList())
 

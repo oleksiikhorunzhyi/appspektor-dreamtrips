@@ -1,9 +1,11 @@
 package com.worldventures.dreamtrips.core.janet;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
@@ -19,6 +21,7 @@ import java.util.Map;
 import io.techery.janet.ActionHolder;
 import io.techery.janet.ActionService;
 import io.techery.janet.JanetException;
+import timber.log.Timber;
 
 public class AnalyticsService extends ActionService {
 
@@ -44,8 +47,11 @@ public class AnalyticsService extends ActionService {
                 if (category != null && category.equals(LifecycleEvent.LIFECYCLE_CATEGORY)) {
                     handleLifecycleEvent(type, (LifecycleEvent) holder.action());
                 } else {
+                    String action = getAction(holder);
+                    Map<String, Object> data = getData(holder);
+                    tryLogEvent(type, category, action, data);
                     trackers.get(type).trackEvent(TextUtils.isEmpty(category) ? null : category,
-                            getAction(holder), getData(holder));
+                            action, data);
                 }
             }
         } catch (Throwable e) {
@@ -131,6 +137,29 @@ public class AnalyticsService extends ActionService {
             result.addAll(getAttributeFields(actionClass.getSuperclass(), actionHolder));
         }
         return result;
+    }
+
+    private void tryLogEvent(@NonNull String type, String category, String action, Map<String, Object> data) {
+        if (!BuildConfig.ANALYTICS_LOG_ENABLED) return;
+        //
+        StringBuilder stringBuilder = new StringBuilder("Analytic event sending attempted:\n");
+        //
+        stringBuilder.append("\t\tType: ").append(type).append("\n");
+        if (!TextUtils.isEmpty(category)) {
+            stringBuilder.append("\t\tCategory: ").append(category).append("\n");
+        }
+        stringBuilder.append("\t\tAction: ").append(action).append("\n");
+        //
+        if (!data.isEmpty()) {
+            stringBuilder.append("Data:\n");
+            for (Map.Entry<String, Object> dataEntry : data.entrySet()) {
+                if (dataEntry.getValue() != null) {
+                    stringBuilder.append("\t\t").append(dataEntry.getKey()).append(": ")
+                            .append(dataEntry.getValue()).append("\n");
+                }
+            }
+        }
+        Timber.v(stringBuilder.toString());
     }
 
     @Override

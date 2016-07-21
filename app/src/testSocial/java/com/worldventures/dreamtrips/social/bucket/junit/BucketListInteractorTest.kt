@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.social.bucket.junit
 
 import com.google.gson.JsonObject
+import com.nhaarman.mockito_kotlin.whenever
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem
@@ -47,7 +48,7 @@ class BucketListInteractorTest : BucketInteractorBaseTest() {
 
     @Test
     fun loadBucketListFromMemoryTest() {
-        `when`(mockMemoryStorage!!.get(null)).thenReturn(testListOfBucketsFromMemory)
+        doReturn(testListOfBucketsFromMemory).whenever(mockMemoryStorage)!!.get(any())
         checkLoadBucketList(Func1 { bucketListAction -> testListOfBucketsFromMemory!!.containsAll(bucketListAction.result) }, false)
     }
 
@@ -64,7 +65,7 @@ class BucketListInteractorTest : BucketInteractorBaseTest() {
 
     @Test
     fun forceLoadBucketListTest() {
-        `when`(mockMemoryStorage!!.get(null)).thenReturn(testListOfBucketsFromMemory)
+        doReturn(testListOfBucketsFromMemory).whenever(mockMemoryStorage)!!.get(any())
         checkLoadBucketList(Func1 { bucketListAction -> testListOfBucketsFromNetwork!!.containsAll(bucketListAction.result) }, true)
     }
 
@@ -77,7 +78,7 @@ class BucketListInteractorTest : BucketInteractorBaseTest() {
         val spyHttpCallback = spy(StubServiceWrapper.Callback::class.java)
         httpStubWrapper!!.callback = spyHttpCallback
 
-        `when`(mockMemoryStorage!!.get(null)).thenReturn(testListOfBucketsFromMemory)
+        doReturn(testListOfBucketsFromMemory).whenever(mockMemoryStorage)!!.get(any())
 
         bucketInteractor!!.bucketListActionPipe()
                 .createObservable(BucketListCommand.move(POSITION_FROM, POSITION_TO, BucketItem.BucketType.LOCATION))

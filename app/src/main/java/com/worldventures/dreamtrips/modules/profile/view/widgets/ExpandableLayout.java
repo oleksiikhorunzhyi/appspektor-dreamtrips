@@ -7,9 +7,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+
+import com.worldventures.dreamtrips.core.utils.AnimationUtils;
 
 public class ExpandableLayout extends RelativeLayout {
 
@@ -18,7 +19,6 @@ public class ExpandableLayout extends RelativeLayout {
     //
     private Integer duration;
     private Boolean isAnimationRunning = false;
-    private Boolean isOpened = false;
 
     public ExpandableLayout(Context context) {
         super(context);
@@ -72,57 +72,30 @@ public class ExpandableLayout extends RelativeLayout {
         typedArray.recycle();
     }
 
-    protected void expand(final View v) {
-        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
-        v.getLayoutParams().height = 0;
-        v.setVisibility(VISIBLE);
-
-        Animation animation = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime == 1)
-                    isOpened = true;
-                v.getLayoutParams().height = (interpolatedTime == 1) ? LayoutParams.WRAP_CONTENT : (int) (targetHeight * interpolatedTime);
-                v.requestLayout();
-            }
-
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-        animation.setDuration(duration);
-        v.startAnimation(animation);
+    protected void expand(final View view) {
+        measureView(view);
+        //
+        final Animation animation = AnimationUtils.provideExpandAnimation(view, duration);
+        view.startAnimation(animation);
     }
 
-    protected void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
-        Animation animation = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if (interpolatedTime == 1) {
-                    v.setVisibility(View.GONE);
-                    isOpened = false;
-                } else {
-                    v.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
-                    v.requestLayout();
-                }
-            }
+    protected void collapse(final View view) {
+        final Animation animation = AnimationUtils.provideCollapseAnimation(view, duration);
+        view.startAnimation(animation);
+    }
 
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-
-        animation.setDuration(duration);
-        v.startAnimation(animation);
+    private void measureView(View view) {
+        final LayoutParams params = (LayoutParams) view.getLayoutParams();
+        int width = this.getWidth() - params.leftMargin - params.rightMargin;
+        //
+        int measureWidth = MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST);
+        int measureHeight = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
+        //
+        view.measure(measureWidth, measureHeight);
     }
 
     public Boolean isOpened() {
-        return isOpened;
+        return contentLayout.getVisibility() == VISIBLE;
     }
 
     public Integer getDuration() {
@@ -159,11 +132,9 @@ public class ExpandableLayout extends RelativeLayout {
 
     public void hideWithoutAnimation() {
         contentLayout.setVisibility(View.GONE);
-        isOpened = false;
     }
 
     public void showWithoutAnimation() {
         contentLayout.setVisibility(VISIBLE);
-        isOpened = true;
     }
 }

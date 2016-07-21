@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
+import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionRatingEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionSuccessEvent;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
@@ -82,6 +83,8 @@ public class DtlTransactionSucceedPresenter
                 .compose(bindViewIoToMainComposer())
                 .subscribe(action -> {
                 }, apiErrorPresenter::handleError);
+        analyticsInteractor.dtlAnalyticsCommandPipe()
+                .send(DtlAnalyticsCommand.create(new TransactionRatingEvent(dtlMerchant, stars)));
     }
 
     @Override

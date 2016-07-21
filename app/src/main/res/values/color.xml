@@ -68,6 +68,8 @@
     <color name="hashtag_text_color">#005E92</color>
     <color name="highlight_hashtag_bg">#4C53B5FE</color>
 
+    <color name="dt_filter_apply_reset">#025E93</color>
+
     <!-- <DTL Toolbar colors> -->
     <!-- these shall have 'dtlt_' prefix -->
     <color name="dtlt_input_text_color">#222</color>

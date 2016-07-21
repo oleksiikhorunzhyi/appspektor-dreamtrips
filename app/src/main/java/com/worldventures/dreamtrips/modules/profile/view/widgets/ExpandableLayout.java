@@ -85,13 +85,10 @@ public class ExpandableLayout extends RelativeLayout {
     }
 
     private void measureView(View view) {
-        final LayoutParams params = (LayoutParams) view.getLayoutParams();
-        int width = this.getWidth() - params.leftMargin - params.rightMargin;
+        int measureSpecWidth = MeasureSpec.makeMeasureSpec(this.getWidth(), MeasureSpec.AT_MOST);
+        int measureSpecHeight = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         //
-        int measureWidth = MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST);
-        int measureHeight = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-        //
-        view.measure(measureWidth, measureHeight);
+        view.measure(measureSpecWidth, measureSpecHeight);
     }
 
     public Boolean isOpened() {

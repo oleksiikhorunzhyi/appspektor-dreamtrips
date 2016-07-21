@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
+import android.location.Location;
+
 import com.worldventures.dreamtrips.core.utils.tracksystem.AdobeTracker;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
@@ -30,7 +32,11 @@ public class TransactionSuccessEvent extends MerchantAnalyticsAction {
     @Attribute("arepointsavail")
     final String pointsAvailable;
 
-    public TransactionSuccessEvent(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
+    @Attribute("coordinates")
+    final String coordinates;
+
+    public TransactionSuccessEvent(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction,
+                                   Location location) {
         super(dtlMerchant);
         perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
@@ -38,5 +44,7 @@ public class TransactionSuccessEvent extends MerchantAnalyticsAction {
         earnedAmount = String.format(Locale.US, "%.0f",
                 dtlTransaction.getDtlTransactionResult().getEarnedPoints());
         spentAmount = String.format(Locale.US, "%.2f", dtlTransaction.getBillTotal());
+        coordinates =
+                String.format(Locale.US, "%f,%f", location.getLatitude(), location.getLongitude());
     }
 }

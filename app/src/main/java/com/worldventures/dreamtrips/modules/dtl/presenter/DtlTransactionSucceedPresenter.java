@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import android.location.Location;
+
 import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -11,6 +13,7 @@ import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
 import com.worldventures.dreamtrips.modules.dtl.analytics.ShareEventProvider;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionRatingEvent;
 import com.worldventures.dreamtrips.modules.dtl.analytics.TransactionSuccessEvent;
+import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransactionResult;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -30,6 +33,8 @@ public class DtlTransactionSucceedPresenter
     DtlMerchantInteractor merchantInteractor;
     @Inject
     DtlTransactionInteractor transactionInteractor;
+    @Inject
+    LocationDelegate locationDelegate;
     //
     @State
     int stars;
@@ -97,9 +102,17 @@ public class DtlTransactionSucceedPresenter
                 .compose(bindViewIoToMainComposer())
                 .subscribe(transaction -> {
                             view.setCongratulations(transaction.getDtlTransactionResult());
-                            analyticsInteractor.dtlAnalyticsCommandPipe()
-                                    .send(DtlAnalyticsCommand.create(
-                                            new TransactionSuccessEvent(dtlMerchant, transaction)));
+                            locationDelegate.requestLocationUpdate()
+                                    .compose(bindViewIoToMainComposer())
+                                    .onErrorReturn(throwable -> {
+                                        return new Location("");
+                                    })
+                                    .subscribe(location -> {
+                                        analyticsInteractor.dtlAnalyticsCommandPipe()
+                                                .send(DtlAnalyticsCommand.create(
+                                                        new TransactionSuccessEvent(dtlMerchant,
+                                                                transaction, location)));
+                                    }, e -> {});
                         },
                         apiErrorPresenter::handleError);
         bindApiPipe();

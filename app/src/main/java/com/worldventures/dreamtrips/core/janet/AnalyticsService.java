@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
@@ -48,7 +49,7 @@ public class AnalyticsService extends ActionService {
                 } else {
                     String action = getAction(holder);
                     Map<String, Object> data = getData(holder);
-                    logEvent(type, category, action, data);
+                    tryLogEvent(type, category, action, data);
                     trackers.get(type).trackEvent(TextUtils.isEmpty(category) ? null : category,
                             action, data);
                 }
@@ -138,7 +139,9 @@ public class AnalyticsService extends ActionService {
         return result;
     }
 
-    private void logEvent(@NonNull String type, String category, String action, Map<String, Object> data) {
+    private void tryLogEvent(@NonNull String type, String category, String action, Map<String, Object> data) {
+        if (!BuildConfig.ANALYTICS_LOG_ENABLED) return;
+        //
         StringBuilder stringBuilder = new StringBuilder("Analytic event sending attempted:\n");
         //
         stringBuilder.append("\t\tType: ").append(type).append("\n");

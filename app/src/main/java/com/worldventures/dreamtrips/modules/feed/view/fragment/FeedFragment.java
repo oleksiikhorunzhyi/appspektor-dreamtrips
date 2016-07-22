@@ -21,6 +21,8 @@ import android.widget.TextView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
+import com.trello.rxlifecycle.FragmentEvent;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -332,6 +334,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     @Override
     public void onRefresh() {
         getPresenter().refreshFeed();
+    }
+
+    @Override
+    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
+        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
     }
 
     public void onEvent(CommentIconClickedEvent event) {

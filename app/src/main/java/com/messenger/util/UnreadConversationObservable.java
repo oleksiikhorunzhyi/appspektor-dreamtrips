@@ -20,8 +20,11 @@ public class UnreadConversationObservable {
                 .autoConnect();
     }
 
+    public Observable<Integer> getObservable() {
+        return observable;
+    }
+
     public Subscription subscribe(Action1<Integer> action) {
         return observable.subscribe(action, throwable -> Timber.w("Can't get unread conv count"));
     }
-
 }

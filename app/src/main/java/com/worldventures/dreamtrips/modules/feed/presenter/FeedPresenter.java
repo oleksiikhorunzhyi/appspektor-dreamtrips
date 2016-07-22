@@ -7,11 +7,9 @@ import android.util.Pair;
 import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -66,7 +64,6 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -83,7 +80,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject
     DrawableUtil drawableUtil;
     @Inject
-    UnreadConversationObservable observable;
+    UnreadConversationObservable unreadConversationObservable;
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
@@ -93,8 +90,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject
     protected FeedInteractor feedInteractor;
 
-    Subscription unreadConversationSubscription;
-    //
     Circle filterCircle;
 
     private UidItemDelegate uidItemDelegate;
@@ -108,6 +103,12 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public FeedPresenter() {
         uidItemDelegate = new UidItemDelegate(this);
+    }
+
+    @Override
+    public void onInjected() {
+        super.onInjected();
+        entityManager.setRequestingPresenter(this);
     }
 
     @Override
@@ -137,13 +138,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void onStart() {
         super.onStart();
-        unreadConversationSubscription = observable.subscribe(count -> {
-            unreadConversationCount = count;
-            view.setUnreadConversationCount(count);
-        });
-
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
+        subscribeUnreadConversation();
     }
 
     //region refresh feeds (temp refactoring region)
@@ -229,12 +226,12 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
     //endregion
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (unreadConversationSubscription != null && !unreadConversationSubscription.isUnsubscribed()) {
-            unreadConversationSubscription.unsubscribe();
-        }
+    private void subscribeUnreadConversation() {
+        view.bindUntilStop(unreadConversationObservable.getObservable())
+                .subscribe(count -> {
+                    unreadConversationCount = count;
+                    view.setUnreadConversationCount(count);
+                }, throwable -> Timber.w("Can't get unread conversation count"));
     }
 
     public boolean isHasNewPhotos(List<PhotoGalleryModel> photos) {
@@ -328,12 +325,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public long lastSyncTimestamp() {
         return presenterHelper.lastSyncTime();
-    }
-
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        entityManager.setRequestingPresenter(this);
     }
 
     public void onEvent(DownloadPhotoEvent event) {
@@ -458,6 +449,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public interface View extends RxView, UidItemDelegate.View {
+
+        <T> rx.Observable<T> bindUntilStop(rx.Observable<T> observable);
 
         void setRequestsCount(int count);
 

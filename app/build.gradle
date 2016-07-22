@@ -42,8 +42,9 @@ android {
     String DTL_CODE = "dtl"
     String MESSENGER_CODE = "messenger"
     String SOCIAL_CODE = "social"
+    String SMART_CARD_CODE = "smart-card"
     String STABLE_CODE = "stable"
-    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE]
+    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE, SMART_CARD_CODE]
     //
     String STAGE_CODE = "stage"
     String PREPROD_CODE = "preprod"
@@ -168,6 +169,7 @@ android {
         }
         social { dimension "stream" }
         stable { dimension "stream" }
+        smartCard { dimension "stream" }
 
         // possible "config"-dimension flavors:
         stage { dimension "config" }

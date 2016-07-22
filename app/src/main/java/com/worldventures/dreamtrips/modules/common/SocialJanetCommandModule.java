@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageC
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.UpdateAuthInfoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedQueryCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 
@@ -35,6 +36,8 @@ import dagger.Module;
         AppSettingsCommand.class,
         UpdateAuthInfoCommand.class,
         PodcastCommand.class,
+        GetAccountFeedQueryCommand.Refresh.class,
+        GetAccountFeedQueryCommand.LoadNext.class,
         FeedByHashtagCommand.Refresh.class,
         FeedByHashtagCommand.LoadNext.class,
         HashtagSuggestionCommand.class},

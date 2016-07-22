@@ -95,6 +95,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     public void onResume() {
         super.onResume();
         TrackingHelper.viewActivityFeedScreen();
+        getPresenter().refreshFeed();
     }
 
     @Override
@@ -330,7 +331,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     @Override
     public void onRefresh() {
-        getPresenter().onRefresh();
+        getPresenter().refreshFeed();
     }
 
     public void onEvent(CommentIconClickedEvent event) {
@@ -407,6 +408,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     private void registerCellDelegates() {
         fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
-        fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
+        fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().refreshFeed());
     }
 }

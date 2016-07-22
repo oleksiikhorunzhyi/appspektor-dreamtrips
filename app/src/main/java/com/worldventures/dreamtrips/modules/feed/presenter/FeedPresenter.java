@@ -30,7 +30,6 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedQuery;
 import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
@@ -48,6 +47,8 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedQueryCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
@@ -55,9 +56,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDel
 import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -65,6 +64,7 @@ import javax.inject.Provider;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -87,8 +87,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject
     @ForActivity
     Provider<Injector> injectorProvider;
+
     @Inject
-    BucketInteractor bucketInteractor;
+    protected BucketInteractor bucketInteractor;
+    @Inject
+    protected FeedInteractor feedInteractor;
 
     Subscription unreadConversationSubscription;
     //
@@ -138,17 +141,25 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             unreadConversationCount = count;
             view.setUnreadConversationCount(count);
         });
+
+        subscribeRefreshFeeds();
+        subscribeLoadNextFeeds();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (unreadConversationSubscription != null && !unreadConversationSubscription.isUnsubscribed()) {
-            unreadConversationSubscription.unsubscribe();
-        }
+    //region refresh feeds (temp refactoring region)
+    private void subscribeRefreshFeeds() {
+        view.bind(feedInteractor.getRefreshAccountFeedQueryPipe().observe())
+                .compose(new ActionStateToActionTransformer<>())
+                .map(GetAccountFeedQueryCommand.Refresh::getResult)
+                .compose(new IoToMainComposer<>())
+                .subscribe(parentFeedItems -> refreshFeedSucceed(parentFeedItems),
+                        throwable -> {
+                            refreshFeedError();
+                            Timber.e(throwable, "");
+                        });
     }
 
-    protected void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
+    private void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
         boolean noMoreFeeds = freshItems == null || freshItems.size() == 0;
         view.updateLoadingStatus(false, noMoreFeeds);
         //
@@ -168,6 +179,64 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         }, error -> view.refreshFeedItems(feedItems));
     }
 
+    private void refreshFeedError() {
+        view.updateLoadingStatus(false, false);
+        view.finishLoading();
+        view.refreshFeedItems(feedItems);
+    }
+
+    public void refreshFeed() {
+        view.startLoading();
+        feedInteractor.getRefreshAccountFeedQueryPipe().send(new GetAccountFeedQueryCommand.Refresh(filterCircle.getId()));
+    }
+    //endregion
+
+    //region load next feeds (temp refactoring region)
+    private void subscribeLoadNextFeeds() {
+        view.bind(feedInteractor.getLoadNextAccountFeedQueryPipe().observe())
+                .compose(new ActionStateToActionTransformer<>())
+                .map(GetAccountFeedQueryCommand.LoadNext::getResult)
+                .compose(new IoToMainComposer<>())
+                .subscribe(parentFeedItems -> addFeedItems(parentFeedItems),
+                        throwable -> {
+                            loadMoreItemsError();
+                            Timber.e(throwable, "");
+                        });
+    }
+
+    private void addFeedItems(List<ParentFeedItem> olderItems) {
+        boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
+        view.updateLoadingStatus(false, noMoreFeeds);
+        //
+        feedItems.addAll(Queryable.from(olderItems)
+                .filter(ParentFeedItem::isSingle)
+                .map(element -> element.getItems().get(0))
+                .toList());
+        view.refreshFeedItems(feedItems);
+    }
+
+    private void loadMoreItemsError() {
+        view.updateLoadingStatus(false, false);
+        addFeedItems(new ArrayList<>());
+    }
+
+    public void loadNext() {
+        if (feedItems.size() > 0) {
+            feedInteractor.getLoadNextAccountFeedQueryPipe().send(new GetAccountFeedQueryCommand.LoadNext(
+                    filterCircle.getId(),
+                    feedItems.get(feedItems.size() - 1).getCreatedAt()));
+        }
+    }
+    //endregion
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (unreadConversationSubscription != null && !unreadConversationSubscription.isUnsubscribed()) {
+            unreadConversationSubscription.unsubscribe();
+        }
+    }
+
     public boolean isHasNewPhotos(List<PhotoGalleryModel> photos) {
         return photos != null && !photos.isEmpty() && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
     }
@@ -175,14 +244,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void removeSuggestedPhotos() {
         presenterHelper.reset();
         view.refreshFeedItems(feedItems);
-    }
-
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetAccountFeedQuery(filterCircle.getId());
-    }
-
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-        return new GetAccountFeedQuery(date, filterCircle.getId());
     }
 
     public List<Circle> getFilterCircles() {
@@ -203,7 +264,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void applyFilter(Circle selectedCircle) {
         filterCircle = selectedCircle;
         db.saveFilterCircle(selectedCircle);
-        onRefresh();
+        refreshFeed();
     }
 
     public void onUnreadConversationsClick() {
@@ -273,16 +334,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void onInjected() {
         super.onInjected();
         entityManager.setRequestingPresenter(this);
-    }
-
-    public void onRefresh() {
-        refreshFeed();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        refreshFeed();
     }
 
     public void onEvent(DownloadPhotoEvent event) {
@@ -395,18 +446,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                     event.getFlagReasonId(), event.getNameOfReason()), view);
     }
 
-    protected void loadMoreItemsError(SpiceException spiceException) {
-        view.updateLoadingStatus(false, false);
-        addFeedItems(new ArrayList<>());
-    }
-
-    public void loadNext() {
-        if (feedItems.size() > 0) {
-            doRequest(getNextPageFeedRequest(feedItems.get(feedItems.size() - 1).getCreatedAt()),
-                    this::addFeedItems, this::loadMoreItemsError);
-        }
-    }
-
     private void itemLiked(FeedEntity feedEntity) {
         Queryable.from(feedItems).forEachR(feedItem -> {
             FeedEntity item = feedItem.getItem();
@@ -415,30 +454,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
             }
         });
 
-        view.refreshFeedItems(feedItems);
-    }
-
-    protected void refreshFeed() {
-        view.startLoading();
-        doRequest(getRefreshFeedRequest(Calendar.getInstance().getTime()),
-                this::refreshFeedSucceed, this::refreshFeedError);
-    }
-
-    private void refreshFeedError(SpiceException exception) {
-        super.handleError(exception);
-        view.updateLoadingStatus(false, false);
-        view.finishLoading();
-        view.refreshFeedItems(feedItems);
-    }
-
-    protected void addFeedItems(List<ParentFeedItem> olderItems) {
-        boolean noMoreFeeds = olderItems == null || olderItems.size() == 0;
-        view.updateLoadingStatus(false, noMoreFeeds);
-        //
-        feedItems.addAll(Queryable.from(olderItems)
-                .filter(ParentFeedItem::isSingle)
-                .map(element -> element.getItems().get(0))
-                .toList());
         view.refreshFeedItems(feedItems);
     }
 

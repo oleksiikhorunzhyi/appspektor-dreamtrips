@@ -53,21 +53,15 @@ import timber.log.Timber;
 public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends JobPresenter<T> {
 
     private final static int FEEDS_PER_PAGE = 10;
-    private final int MIN_QUERY_LENGTH = 3;
+    private final static int MIN_QUERY_LENGTH = 3;
 
-    @State
-    String query;
-    @State
-    protected ArrayList<FeedItem> feedItems = new ArrayList<>();
-    @State
-    protected ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
+    @State String query;
+    @State ArrayList<FeedItem> feedItems = new ArrayList<>();
+    @State ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
 
-    @Inject
-    protected HashtagInteractor interactor;
-    @Inject
-    protected FeedEntityManager entityManager;
-    @Inject
-    BucketInteractor bucketInteractor;
+    @Inject HashtagInteractor interactor;
+    @Inject FeedEntityManager entityManager;
+    @Inject BucketInteractor bucketInteractor;
 
     private UidItemDelegate uidItemDelegate;
 
@@ -337,8 +331,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     public interface View extends RxView, UidItemDelegate.View {
-
-        <T> rx.Observable<T> bindUntilStop(rx.Observable<T> observable);
 
         void startLoading();
 

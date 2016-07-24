@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -28,7 +29,6 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.PhotoGalleryRequest;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
@@ -46,6 +46,8 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoCommand;
+import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedQueryCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
@@ -55,6 +57,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.vision.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -71,35 +74,23 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private static final int SUGGESTION_ITEM_CHUNK = 15;
 
-    @Inject
-    protected FeedEntityManager entityManager;
-    @Inject
-    SnappyRepository db;
-    @Inject
-    MediaPickerManager mediaPickerManager;
-    @Inject
-    DrawableUtil drawableUtil;
-    @Inject
-    UnreadConversationObservable unreadConversationObservable;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject FeedEntityManager entityManager;
+    @Inject SnappyRepository db;
+    @Inject MediaPickerManager mediaPickerManager;
+    @Inject DrawableUtil drawableUtil;
+    @Inject UnreadConversationObservable unreadConversationObservable;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    @Inject
-    protected BucketInteractor bucketInteractor;
-    @Inject
-    protected FeedInteractor feedInteractor;
+    @Inject BucketInteractor bucketInteractor;
+    @Inject FeedInteractor feedInteractor;
+    @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
 
-    Circle filterCircle;
-
+    private Circle filterCircle;
     private UidItemDelegate uidItemDelegate;
+    private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
 
-    @State
-    protected ArrayList<FeedItem> feedItems;
-    @State
-    int unreadConversationCount;
-
-    private SuggestedPhotoCellPresenterHelper presenterHelper;
+    @State ArrayList<FeedItem> feedItems;
+    @State int unreadConversationCount;
 
     public FeedPresenter() {
         uidItemDelegate = new UidItemDelegate(this);
@@ -114,8 +105,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void saveInstanceState(Bundle outState) {
         super.saveInstanceState(outState);
-        if (presenterHelper != null) {
-            presenterHelper.saveInstanceState(outState);
+        if (suggestedPhotoHelper != null) {
+            suggestedPhotoHelper.saveInstanceState(outState);
         }
     }
 
@@ -130,30 +121,107 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        subscribeRefreshFeeds();
+        subscribeLoadNextFeeds();
+        subscribePhotoGalleryCheck();
+        subscribeUnreadConversation();
+
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        subscribeRefreshFeeds();
-        subscribeLoadNextFeeds();
-        subscribeUnreadConversation();
+    private void subscribeUnreadConversation() {
+        view.bindUntilDropView(unreadConversationObservable.getObservable())
+                .subscribe(count -> {
+                    unreadConversationCount = count;
+                    view.setUnreadConversationCount(count);
+                }, throwable -> Timber.w("Can't get unread conversation count"));
     }
 
-    //region refresh feeds (temp refactoring region)
+    /////////////
+    // Suggestion view management
+    ////////////
+
+    private void subscribePhotoGalleryCheck() {
+        view.bindUntilDropView(suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(SuggestedPhotoCommand::getResult))
+                .compose(new IoToMainComposer<>())
+                .subscribe(photos -> {
+                    if (hasNewPhotos(photos)) {
+                        view.refreshFeedItems(feedItems, Queryable.from(photos).take(SUGGESTION_ITEM_CHUNK).toList());
+                    } else {
+                        view.refreshFeedItems(feedItems);
+                    }
+                }, throwable -> view.refreshFeedItems(feedItems));
+    }
+
+    public boolean hasNewPhotos(List<PhotoGalleryModel> photos) {
+        return photos != null && !photos.isEmpty() && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
+    }
+
+    public void removeSuggestedPhotos() {
+        suggestedPhotoHelper.reset();
+        view.refreshFeedItems(feedItems);
+    }
+
+    public void takeSuggestionView(SuggestedPhotoCellPresenterHelper.View view, SuggestedPhotoCellPresenterHelper.OutViewBinder binder,
+                                   Bundle bundle, Observable<Void> notificationObservable) {
+        suggestedPhotoHelper = new SuggestedPhotoCellPresenterHelper();
+        injectorProvider.get().inject(suggestedPhotoHelper);
+
+        suggestedPhotoHelper.takeView(view, binder, bundle);
+        suggestedPhotoHelper.subscribeNewPhotoNotifications(notificationObservable);
+    }
+
+    public void preloadSuggestionChunk(@NonNull PhotoGalleryModel model) {
+        suggestedPhotoHelper.preloadSuggestionPhotos(model);
+    }
+
+    public void syncSuggestionViewState() {
+        suggestedPhotoHelper.sync();
+    }
+
+    public void selectPhoto(@NonNull PhotoGalleryModel model) {
+        suggestedPhotoHelper.selectPhoto(model);
+    }
+
+    public void attachSelectedSuggestionPhotos() {
+        Observable.from(getSelectedSuggestionPhotos())
+                .map(element -> {
+                    Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());
+                    return new PhotoGalleryModel(pair.first, pair.second);
+                })
+                .map(photoGalleryModel -> {
+                    ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
+                    chosenImages.add(photoGalleryModel);
+                    return new MediaAttachment(chosenImages, PickImageDelegate.PICK_PICTURE, CreateFeedPostPresenter.REQUEST_ID);
+                })
+                .compose(new IoToMainComposer<>())
+                .subscribe(mediaAttachment -> mediaPickerManager.attach(mediaAttachment),
+                        error -> Timber.e(error, ""));
+    }
+
+    public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {
+        return suggestedPhotoHelper.selectedPhotos();
+    }
+
+    public long lastSyncTimestamp() {
+        return suggestedPhotoHelper.lastSyncTime();
+    }
+
+    /////////////
+    // Refresh feeds
+    ////////////
+
     private void subscribeRefreshFeeds() {
-        view.bind(feedInteractor.getRefreshAccountFeedQueryPipe().observe())
+        view.bindUntilDropView(feedInteractor.getRefreshAccountFeedQueryPipe().observe()
                 .compose(new ActionStateToActionTransformer<>())
                 .map(GetAccountFeedQueryCommand.Refresh::getResult)
-                .compose(new IoToMainComposer<>())
-                .subscribe(parentFeedItems -> refreshFeedSucceed(parentFeedItems),
-                        throwable -> {
-                            refreshFeedError();
-                            Timber.e(throwable, "");
-                        });
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::refreshFeedSucceed,
+                        this::refreshFeedError);
     }
 
     private void refreshFeedSucceed(List<ParentFeedItem> freshItems) {
@@ -167,16 +235,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                 .map(element -> element.getItems().get(0))
                 .toList());
         //
-        doRequest(new PhotoGalleryRequest(context), photos -> {
-            if (isHasNewPhotos(photos)) {
-                view.refreshFeedItems(feedItems, Queryable.from(photos).take(SUGGESTION_ITEM_CHUNK).toList());
-            } else {
-                view.refreshFeedItems(feedItems);
-            }
-        }, error -> view.refreshFeedItems(feedItems));
+        suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
     }
 
-    private void refreshFeedError() {
+    private void refreshFeedError(Throwable throwable) {
+        Timber.e(throwable, "");
         view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
@@ -186,19 +249,18 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         view.startLoading();
         feedInteractor.getRefreshAccountFeedQueryPipe().send(new GetAccountFeedQueryCommand.Refresh(filterCircle.getId()));
     }
-    //endregion
 
-    //region load next feeds (temp refactoring region)
+    /////////////
+    // Load more feeds
+    ////////////
+
     private void subscribeLoadNextFeeds() {
-        view.bind(feedInteractor.getLoadNextAccountFeedQueryPipe().observe())
+        view.bindUntilDropView(feedInteractor.getLoadNextAccountFeedQueryPipe().observe()
                 .compose(new ActionStateToActionTransformer<>())
                 .map(GetAccountFeedQueryCommand.LoadNext::getResult)
-                .compose(new IoToMainComposer<>())
-                .subscribe(parentFeedItems -> addFeedItems(parentFeedItems),
-                        throwable -> {
-                            loadMoreItemsError();
-                            Timber.e(throwable, "");
-                        });
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::addFeedItems,
+                        this::loadMoreItemsError);
     }
 
     private void addFeedItems(List<ParentFeedItem> olderItems) {
@@ -212,35 +274,20 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         view.refreshFeedItems(feedItems);
     }
 
-    private void loadMoreItemsError() {
+    private void loadMoreItemsError(Throwable throwable) {
+        Timber.e(throwable, "");
         view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }
 
     public void loadNext() {
-        if (feedItems.size() > 0) {
-            feedInteractor.getLoadNextAccountFeedQueryPipe().send(new GetAccountFeedQueryCommand.LoadNext(
-                    filterCircle.getId(),
-                    feedItems.get(feedItems.size() - 1).getCreatedAt()));
-        }
-    }
-    //endregion
-
-    private void subscribeUnreadConversation() {
-        view.bindUntilStop(unreadConversationObservable.getObservable())
-                .subscribe(count -> {
-                    unreadConversationCount = count;
-                    view.setUnreadConversationCount(count);
-                }, throwable -> Timber.w("Can't get unread conversation count"));
+        feedInteractor.getLoadNextAccountFeedQueryPipe().send(new GetAccountFeedQueryCommand.LoadNext(
+                filterCircle.getId(), getLastFeedDate()));
     }
 
-    public boolean isHasNewPhotos(List<PhotoGalleryModel> photos) {
-        return photos != null && !photos.isEmpty() && photos.get(0).getDateTaken() > db.getLastSuggestedPhotosSyncTime();
-    }
-
-    public void removeSuggestedPhotos() {
-        presenterHelper.reset();
-        view.refreshFeedItems(feedItems);
+    private String getLastFeedDate() {
+        Date lastFeedDate = feedItems.get(feedItems.size() - 1).getCreatedAt();
+        return lastFeedDate == null ? null : DateTimeUtils.convertDateToUTCString(lastFeedDate);
     }
 
     public List<Circle> getFilterCircles() {
@@ -278,53 +325,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public int getUnreadConversationCount() {
         return unreadConversationCount;
-    }
-
-    public void takeSuggestionView(SuggestedPhotoCellPresenterHelper.View view, SuggestedPhotoCellPresenterHelper.OutViewBinder binder,
-                                   Bundle bundle, Observable<Void> notificationObservable) {
-        injectorProvider.get().inject(presenterHelper = new SuggestedPhotoCellPresenterHelper());
-
-        presenterHelper.takeView(view, binder, bundle);
-        presenterHelper.subscribeNewPhotoNotifications(notificationObservable);
-    }
-
-    public void preloadSuggestionChunk(@NonNull PhotoGalleryModel model) {
-        presenterHelper.preloadSuggestionPhotos(model);
-    }
-
-    public void syncSuggestionViewState() {
-        presenterHelper.sync();
-    }
-
-    public void selectPhoto(@NonNull PhotoGalleryModel model) {
-        presenterHelper.selectPhoto(model);
-    }
-
-    public void attachSelectedSuggestionPhotos() {
-        Observable.from(getSelectedSuggestionPhotos())
-                .map(element -> {
-                    Pair<String, Size> pair = ImageUtils.generateUri(drawableUtil, element.getOriginalPath());
-                    return new PhotoGalleryModel(pair.first, pair.second);
-                })
-                .map(photoGalleryModel -> {
-                    ArrayList<PhotoGalleryModel> chosenImages = new ArrayList<>();
-                    chosenImages.add(photoGalleryModel);
-                    return new MediaAttachment(chosenImages, PickImageDelegate.PICK_PICTURE, CreateFeedPostPresenter.REQUEST_ID);
-                })
-                .compose(new IoToMainComposer<>())
-                .subscribe(mediaAttachment -> {
-                    mediaPickerManager.attach(mediaAttachment);
-                }, error -> {
-                    Timber.e(error, "");
-                });
-    }
-
-    public List<PhotoGalleryModel> getSelectedSuggestionPhotos() {
-        return presenterHelper.selectedPhotos();
-    }
-
-    public long lastSyncTimestamp() {
-        return presenterHelper.lastSyncTime();
     }
 
     public void onEvent(DownloadPhotoEvent event) {
@@ -449,8 +449,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public interface View extends RxView, UidItemDelegate.View {
-
-        <T> rx.Observable<T> bindUntilStop(rx.Observable<T> observable);
 
         void setRequestsCount(int count);
 

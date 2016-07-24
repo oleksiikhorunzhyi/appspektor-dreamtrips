@@ -9,13 +9,13 @@ import android.view.View;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketTabsPresenter;
 import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CustomViewPager;
 import com.worldventures.dreamtrips.modules.common.view.adapter.item.DataFragmentItem;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.BasePagerAdapter;
 
 import java.io.Serializable;
@@ -28,7 +28,7 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 
 @Layout(R.layout.fragment_bucket_tab)
-public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends BaseFragmentWithArgs<PRESENTER, ForeignBucketTabsBundle> implements BucketTabsPresenter.View {
+public class BucketTabsFragment<PRESENTER extends BucketTabsPresenter> extends RxBaseFragmentWithArgs<PRESENTER, ForeignBucketTabsBundle> implements BucketTabsPresenter.View {
 
     @InjectView(R.id.tabs)
     BadgedTabLayout tabStrip;

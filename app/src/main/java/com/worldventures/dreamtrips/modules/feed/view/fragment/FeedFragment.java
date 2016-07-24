@@ -21,8 +21,6 @@ import android.widget.TextView;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.trello.rxlifecycle.FragmentEvent;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -66,15 +64,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
         implements FeedPresenter.View, SwipeRefreshLayout.OnRefreshListener,
         SuggestedPhotosDelegate, SuggestedPhotoCellPresenterHelper.OutViewBinder {
 
-    @InjectView(R.id.tv_search_friends)
-    public TextView tvSearchFriends;
-    @InjectView(R.id.arrow)
-    public ImageView ivArrow;
-    @InjectView(R.id.ll_empty_view)
-    public ViewGroup emptyView;
+    @InjectView(R.id.tv_search_friends) TextView tvSearchFriends;
+    @InjectView(R.id.arrow) ImageView ivArrow;
+    @InjectView(R.id.ll_empty_view) ViewGroup emptyView;
 
-    @Inject
-    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     BadgeImageView friendsBadge;
     BadgeImageView unreadConversationBadge;
@@ -336,11 +330,6 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
         getPresenter().refreshFeed();
     }
 
-    @Override
-    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
-        return observable.compose(RxLifecycle.bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
-    }
-
     public void onEvent(CommentIconClickedEvent event) {
         fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
     }
@@ -391,7 +380,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     private boolean isNeedToSaveSuggestions() {
         return fragmentWithFeedDelegate.getItemsCount() > 0
                 && fragmentWithFeedDelegate.getItem(0) instanceof MediaAttachment
-                && getPresenter().isHasNewPhotos(((MediaAttachment) fragmentWithFeedDelegate.getItem(0)).chosenImages);
+                && getPresenter().hasNewPhotos(((MediaAttachment) fragmentWithFeedDelegate.getItem(0)).chosenImages);
     }
 
     private void createSuggestionObserver() {

@@ -275,7 +275,7 @@ public interface DreamTripsApi {
     ArrayList<ParentFeedItem> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
 
     @Deprecated
-    @GET("/api/soc/feed")
+    @GET("/api/social/feed")
     ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before, @Query("circle_id") String circleId);
 
     @GET("/api/{object_id}/comments")

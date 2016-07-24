@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -265,7 +264,5 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
         void openDetails(BucketItem bucketItem);
 
         void openPopular(BucketBundle args);
-
-        <T> Observable<T> bindUntilStop(Observable<T> observable);
     }
 }

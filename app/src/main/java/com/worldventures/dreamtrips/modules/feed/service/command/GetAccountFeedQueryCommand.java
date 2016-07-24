@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.feed.api.GeAccountFeedsQueryHttpAction;
+import com.worldventures.dreamtrips.modules.feed.api.GetAccountFeedsQueryHttpAction;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,24 +17,24 @@ import rx.schedulers.Schedulers;
 
 public class GetAccountFeedQueryCommand extends Command<List<ParentFeedItem>> implements InjectableAction, UiErrorAction {
 
+    private static final int LIMIT = 20;
+
     @Inject
     Janet janet;
 
-    private static final int LIMIT = 20;
     private String circleId;
-    private Date before;
+    private String before;
 
-    public GetAccountFeedQueryCommand(String circleId, Date before) {
+    public GetAccountFeedQueryCommand(String circleId, String before) {
         this.circleId = circleId;
         this.before = before;
     }
 
     @Override
     protected void run(CommandCallback<List<ParentFeedItem>> callback) throws Throwable {
-        String before = this.before == null ? null : DateTimeUtils.convertDateToUTCString(this.before);
-        janet.createPipe(GeAccountFeedsQueryHttpAction.class, Schedulers.io())
-                .createObservableResult(new GeAccountFeedsQueryHttpAction(circleId, LIMIT, before))
-                .map(GeAccountFeedsQueryHttpAction::getResponseItems)
+        janet.createPipe(GetAccountFeedsQueryHttpAction.class, Schedulers.io())
+                .createObservableResult(new GetAccountFeedsQueryHttpAction(circleId, LIMIT, before))
+                .map(GetAccountFeedsQueryHttpAction::getResponseItems)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 
@@ -47,7 +45,7 @@ public class GetAccountFeedQueryCommand extends Command<List<ParentFeedItem>> im
 
     @CommandAction
     public static class LoadNext extends GetAccountFeedQueryCommand {
-        public LoadNext(String circleId, Date before) {
+        public LoadNext(String circleId, String before) {
             super(circleId, before);
         }
     }

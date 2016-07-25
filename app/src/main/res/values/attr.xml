@@ -88,7 +88,4 @@
         <attr name="own" format="boolean"/>
     </declare-styleable>
 
-    <declare-styleable name="TranslateView">
-        <attr name="action_view" format="reference"/>
-    </declare-styleable>
 </resources>

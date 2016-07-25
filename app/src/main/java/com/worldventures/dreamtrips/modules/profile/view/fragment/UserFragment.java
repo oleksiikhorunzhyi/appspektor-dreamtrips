@@ -105,7 +105,7 @@ public class UserFragment extends ProfileFragment<UserPresenter>
 
     @Override
     protected void initialToolbar() {
-        profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        profileToolbar.setNavigationIcon(R.drawable.back_icon);
         profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
     }
 

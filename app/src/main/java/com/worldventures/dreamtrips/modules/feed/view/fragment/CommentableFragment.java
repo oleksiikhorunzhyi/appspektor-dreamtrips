@@ -126,6 +126,16 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
             }
 
             @Override
+            public void onDeleteComment(Comment comment) {
+                getPresenter().deleteComment(comment);
+            }
+
+            @Override
+            public void onTranslateComment(Comment comment) {
+
+            }
+
+            @Override
             public void onFlagClicked(Flaggable flaggableView) {
                 getPresenter().loadFlags(flaggableView);
             }

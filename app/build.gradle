@@ -29,7 +29,7 @@ android {
 
     // App version
     def versionMajor = 1
-gi    def versionMinor = 14
+    def versionMinor = 14
     def versionPatch = 0
     def versionBuild = 0  // bump for dogfood builds, public betas, etc.
     //

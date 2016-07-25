@@ -1,9 +1,17 @@
 package com.worldventures.dreamtrips.modules.dtl.analytics;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
+import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
+import com.worldventures.dreamtrips.modules.dtl.model.location.DtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
+import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction;
 
 import javax.inject.Inject;
 
@@ -17,6 +25,8 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
     protected AnalyticsInteractor analyticsInteractor;
     @Inject
     protected DtlLocationInteractor dtlLocationInteractor;
+    @Inject
+    protected DtlMerchantInteractor merchantInteractor;
 
     private final DtlAnalyticsAction action;
 
@@ -34,7 +44,30 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
                 .createObservableResult(DtlLocationCommand.last())
                 .map(DtlLocationCommand::getResult)
                 .map(dtlLocation -> {
-                    action.setAnalyticsLocation(dtlLocation);
+                    if (dtlLocation.getLocationSourceType() == LocationSourceType.EXTERNAL) {
+                        action.setAnalyticsLocation(dtlLocation);
+                    } else {
+                        merchantInteractor.merchantsActionPipe().observeSuccessWithReplay()
+                                .map(DtlMerchantsAction::getResult)
+                                .map(merchants -> {
+                                    return Queryable.from(merchants)
+                                            .map(merchant -> {
+                                                merchant.setDistance(DtlLocationHelper.calculateDistance(
+                                                        dtlLocation.getCoordinates().asLatLng(),
+                                                        merchant.getCoordinates().asLatLng()));
+                                                return merchant;
+                                            })
+                                            .sort(DtlMerchant.DISTANCE_COMPARATOR::compare)
+                                            .first();
+                                })
+                                .map(dtlMerchant -> {
+                                    return ImmutableDtlManualLocation
+                                            .copyOf((DtlManualLocation) dtlLocation)
+                                            .withAnalyticsName(dtlMerchant.getAnalyticsName());
+                                })
+                                .subscribe(dtlLocation1 -> action.setAnalyticsLocation(dtlLocation1),
+                                        throwable -> action.setAnalyticsLocation(null));
+                    }
                     return action;
                 })
                 .flatMap(action -> analyticsInteractor.analyticsActionPipe()

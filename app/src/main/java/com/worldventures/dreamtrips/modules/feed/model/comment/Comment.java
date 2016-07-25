@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model.comment;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.feed.model.UidItem;
@@ -25,6 +26,8 @@ public class Comment implements Parcelable, Serializable, UidItem {
     @SerializedName("updated_at")
     Date updatedAt;
     boolean update;
+    String language;
+    String locale;
 
     public Comment() {
     }
@@ -34,6 +37,8 @@ public class Comment implements Parcelable, Serializable, UidItem {
         parent_id = in.readString();
         text = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
+        language = in.readString();
+        locale = in.readString();
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -73,6 +78,16 @@ public class Comment implements Parcelable, Serializable, UidItem {
         return uid;
     }
 
+    @Nullable
+    public String getLanguage() {
+        return language;
+    }
+
+    @Nullable
+    public String getLocale() {
+        return locale;
+    }
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
@@ -88,6 +103,8 @@ public class Comment implements Parcelable, Serializable, UidItem {
         parcel.writeString(parent_id);
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
+        parcel.writeString(language);
+        parcel.writeString(locale);
     }
 
     @Override

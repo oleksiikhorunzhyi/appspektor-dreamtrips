@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import android.support.annotation.Nullable;
+
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -28,6 +30,12 @@ public interface FeedEntity extends Serializable, UidItem {
     void setLikesCount(int count);
 
     int getLikesCount();
+
+    @Nullable
+    String getLanguage();
+
+    @Nullable
+    String getLocale();
 
     boolean isLiked();
 

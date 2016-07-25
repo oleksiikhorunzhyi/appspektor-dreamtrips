@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import android.support.annotation.Nullable;
+
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
@@ -22,6 +24,8 @@ public abstract class BaseFeedEntity implements FeedEntity {
     protected List<Comment> comments;
     protected boolean liked;
     protected int likesCount;
+    protected String language;
+    protected String locale;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters & Setters
@@ -84,6 +88,18 @@ public abstract class BaseFeedEntity implements FeedEntity {
     @Override
     public int getLikesCount() {
         return likesCount;
+    }
+
+    @Nullable
+    @Override
+    public String getLanguage() {
+        return language;
+    }
+
+    @Nullable
+    @Override
+    public String getLocale() {
+        return locale;
     }
 
     ///////////////////////////////////////////////////////////////////////////

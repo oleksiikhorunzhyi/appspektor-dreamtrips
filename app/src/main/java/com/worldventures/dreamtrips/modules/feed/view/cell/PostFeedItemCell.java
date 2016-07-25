@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
-import android.app.Activity;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,6 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
+import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageItem;
 import com.worldventures.dreamtrips.modules.feed.view.custom.collage.CollageView;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -37,26 +37,19 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.adapter_item_feed_post_event)
 public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
-    @InjectView(R.id.post)
-    HashtagTextView post;
-    @InjectView(R.id.card_view_wrapper)
-    View cardViewWrapper;
-    @Optional
-    @InjectView(R.id.collage)
-    CollageView collageView;
-    @Optional
-    @InjectView(R.id.tag)
-    ImageView tag;
+    @InjectView(R.id.post) HashtagTextView post;
+    @InjectView(R.id.translate_view) TranslateView translateView;
+    @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
+    @Optional @InjectView(R.id.collage) CollageView collageView;
+    @Optional @InjectView(R.id.tag) ImageView tag;
 
-    @Inject
-    FragmentManager fragmentManager;
-    @Inject
-    Activity activity;
+    @Inject FragmentManager fragmentManager;
 
     private int width;
 
@@ -77,6 +70,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
         }
+    }
+
+    @OnClick(R.id.translate)
+    public void translate() {
+
     }
 
     private void processPostText(TextualPost textualPost) {

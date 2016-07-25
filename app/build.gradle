@@ -21,8 +21,11 @@ repositories {
     maven { url "https://github.com/shaubert/maven-repo/raw/master/snapshots" }
     maven { url 'http://dl.bintray.com/amulyakhare/maven' }
     maven { url "http://repository.jetbrains.com/all" }
+    maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
 }
-
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -355,11 +358,11 @@ dependencies {
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
     // janet
-    compile "com.github.techery:janet:1.0.5"
+    compile "com.github.techery:janet:1.0.6"
     compile "com.github.techery:janet-command:1.0.3"
-    compile "com.github.techery.janet-http:service:1.0.5"
-    apt "com.github.techery.janet-http:service-compiler:1.0.5"
-    compile "com.github.techery.janet-http:client-okhttp:1.0.2"
+    compile "com.github.techery.janet-http:service:1.0.9"
+    apt "com.github.techery.janet-http:service-compiler:1.0.9"
+    compile "com.github.techery.janet-http:client-okhttp:1.0.9"
     compile "com.github.techery.janet-converters:gson:1.0.1"
     compile 'com.squareup.okhttp:logging-interceptor:2.+'
     // Data storage, flow
@@ -367,6 +370,9 @@ dependencies {
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     // Networking
+    compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.0.0-STAGE-SNAPSHOT', changing: true) {
+        exclude group:"joda-time"
+    }
     compile 'com.octo.android.robospice:robospice:1.4.14'
     compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
     compile 'com.squareup.okhttp:okhttp:2.7.5'
@@ -397,7 +403,7 @@ dependencies {
     compile 'com.stanfy.enroscar:enroscar-goro:3.0.0-RC1@aar'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'io.reactivex:rxjava:1.1.5'
+    compile 'io.reactivex:rxjava:1.1.6'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:0.4.0'
     compile 'com.trello:rxlifecycle:0.4.0'
@@ -487,7 +493,7 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile 'org.jetbrains.kotlin:kotlin-reflect:1.0.2'
     testCompile 'io.reactivex:rxkotlin:0.55.0'
-    testCompile 'io.reactivex:rxjava:1.1.5'
+    testCompile 'io.reactivex:rxjava:1.1.6'
     testCompile ('com.nhaarman:mockito-kotlin:0.5.0'){
         exclude group : 'org.mockito', module : 'mockito-core'
     }

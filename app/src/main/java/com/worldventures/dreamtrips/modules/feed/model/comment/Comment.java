@@ -27,7 +27,7 @@ public class Comment implements Parcelable, Serializable, UidItem {
     Date updatedAt;
     boolean update;
     String language;
-    String locale;
+    String translation;
 
     public Comment() {
     }
@@ -38,7 +38,7 @@ public class Comment implements Parcelable, Serializable, UidItem {
         text = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
         language = in.readString();
-        locale = in.readString();
+        translation = in.readString();
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -84,8 +84,8 @@ public class Comment implements Parcelable, Serializable, UidItem {
     }
 
     @Nullable
-    public String getLocale() {
-        return locale;
+    public String getTranslation() {
+        return translation;
     }
 
     public void setCreatedAt(Date createdAt) {
@@ -104,7 +104,7 @@ public class Comment implements Parcelable, Serializable, UidItem {
         parcel.writeString(text);
         parcel.writeParcelable(user, i);
         parcel.writeString(language);
-        parcel.writeString(locale);
+        parcel.writeString(translation);
     }
 
     @Override

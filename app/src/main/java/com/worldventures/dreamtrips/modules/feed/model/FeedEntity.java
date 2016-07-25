@@ -35,7 +35,7 @@ public interface FeedEntity extends Serializable, UidItem {
     String getLanguage();
 
     @Nullable
-    String getLocale();
+    String getTranslation();
 
     boolean isLiked();
 

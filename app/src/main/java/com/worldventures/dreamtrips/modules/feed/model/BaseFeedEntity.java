@@ -25,7 +25,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
     protected boolean liked;
     protected int likesCount;
     protected String language;
-    protected String locale;
+    protected String translation;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters & Setters
@@ -98,8 +98,8 @@ public abstract class BaseFeedEntity implements FeedEntity {
 
     @Nullable
     @Override
-    public String getLocale() {
-        return locale;
+    public String getTranslation() {
+        return translation;
     }
 
     ///////////////////////////////////////////////////////////////////////////

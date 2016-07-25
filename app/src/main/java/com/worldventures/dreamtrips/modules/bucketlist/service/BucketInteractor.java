@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.UploadPhotoControllerCommand;
 
 import io.techery.janet.ActionPipe;
@@ -33,8 +34,9 @@ public final class BucketInteractor {
 
     private final ActionPipe<BucketListCommand> bucketListActionPipe;
     private final ActionPipe<FindBucketItemByPhotoCommand> findBucketItemByPhotoActionPipe;
-    private final WriteActionPipe<UploadPhotoControllerCommand> uploadPhotoControllerCommandPipe;
+    private final ActionPipe<UploadPhotoControllerCommand> uploadPhotoControllerCommandPipe;
     private final WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe;
+    private final ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe;
 
     public BucketInteractor(Janet janet) {
         loadBucketListPipe = janet.createPipe(LoadBucketListFullHttpAction.class, Schedulers.io());
@@ -50,6 +52,7 @@ public final class BucketInteractor {
         findBucketItemByPhotoActionPipe = janet.createPipe(FindBucketItemByPhotoCommand.class, Schedulers.immediate());
         uploadPhotoControllerCommandPipe = janet.createPipe(UploadPhotoControllerCommand.class, Schedulers.immediate());
         mergeBucketItemPhotosWithStorageCommandPipe = janet.createPipe(MergeBucketItemPhotosWithStorageCommand.class, Schedulers.immediate());
+        recentlyAddedBucketsFromPopularCommandPipe = janet.createPipe(RecentlyAddedBucketsFromPopularCommand.class, Schedulers.immediate());
 
         connect();
     }
@@ -94,12 +97,16 @@ public final class BucketInteractor {
         return findBucketItemByPhotoActionPipe;
     }
 
-    public WriteActionPipe<UploadPhotoControllerCommand> uploadControllerCommandPipe() {
+    public ActionPipe<UploadPhotoControllerCommand> uploadControllerCommandPipe() {
         return uploadPhotoControllerCommandPipe;
     }
 
     public WriteActionPipe<MergeBucketItemPhotosWithStorageCommand> mergeBucketItemPhotosWithStorageCommandPipe() {
         return mergeBucketItemPhotosWithStorageCommandPipe;
+    }
+
+    public ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentlyAddedBucketsFromPopularCommandPipe() {
+        return recentlyAddedBucketsFromPopularCommandPipe;
     }
 
     private void connect() {

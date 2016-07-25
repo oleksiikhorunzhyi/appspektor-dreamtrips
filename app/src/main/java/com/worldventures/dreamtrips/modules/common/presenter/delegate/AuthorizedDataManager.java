@@ -13,6 +13,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 public class AuthorizedDataManager {
 
@@ -21,11 +22,13 @@ public class AuthorizedDataManager {
     private final AuthInteractor authInteractor;
     private Observable<UpdateAuthInfoCommand> authObservable;
     private boolean inProgress;
+    private CompositeSubscription compositeSubscription;
 
     public AuthorizedDataManager(SessionHolder<UserSession> appSessionHolder, AuthInteractor authInteractor, MessengerConnector messengerConnector) {
         this.appSessionHolder = appSessionHolder;
         this.authInteractor = authInteractor;
         this.messengerConnector = messengerConnector;
+        this.compositeSubscription = new CompositeSubscription();
     }
 
     public void updateData(AuthDataSubscriber authDataSubscriber) {
@@ -34,10 +37,17 @@ public class AuthorizedDataManager {
             authObservable = authInteractor.pipe().createObservableResult(new UpdateAuthInfoCommand())
                     .observeOn(AndroidSchedulers.mainThread())
                     .share();
-            authObservable
-                    .subscribe(this::done, this::onFail);
+            compositeSubscription.add(authObservable
+                    .subscribe(this::done, this::onFail));
         }
-        authObservable.subscribe(authDataSubscriber);
+        compositeSubscription.add(authObservable.subscribe(authDataSubscriber));
+    }
+
+    public void unsubscribe() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()
+                && !compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.clear();
+        }
     }
 
     protected void onFail(Throwable e) {
@@ -97,5 +107,4 @@ public class AuthorizedDataManager {
             return this;
         }
     }
-
 }

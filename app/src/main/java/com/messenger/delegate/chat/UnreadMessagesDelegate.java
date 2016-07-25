@@ -7,6 +7,7 @@ import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.storage.dao.ConversationsDAO;
 import com.messenger.storage.dao.MessageDAO;
 import com.messenger.ui.helper.ConversationHelper;
+import com.messenger.ui.helper.MessageHelper;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
@@ -47,7 +48,7 @@ public class UnreadMessagesDelegate {
     }
 
     public void tryMarkAsReadMessage(DataMessage lastMessage) {
-        if (lastMessage.getStatus() == MessageStatus.READ) return;
+        if (MessageHelper.isUserMessage(lastMessage) && lastMessage.getStatus() == MessageStatus.READ) return;
         conversationObservable
                 .take(1)
                 .flatMap(conversation -> chatObservable
@@ -61,10 +62,7 @@ public class UnreadMessagesDelegate {
 
     private Observable<Integer> changeUnreadCounter(int markCount) {
         return conversationObservable
-                .doOnNext(conversation -> {
-                    conversation.setUnreadMessageCount(0);
-                    conversationsDAO.save(conversation);
-                })
+                .doOnNext(conversation -> conversationsDAO.setUnreadCount(conversation.getId(), markCount))
                 .map(conversation -> markCount);
     }
 

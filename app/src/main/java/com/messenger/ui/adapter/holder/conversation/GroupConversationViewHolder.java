@@ -1,5 +1,6 @@
 package com.messenger.ui.adapter.holder.conversation;
 
+import android.database.Cursor;
 import android.view.View;
 
 import com.messenger.entities.DataConversation;
@@ -18,8 +19,8 @@ public class GroupConversationViewHolder extends BaseGroupConversationViewHolder
     }
 
     @Override
-    public void bindConversation(DataConversation conversation, String participantsList, int participantsCount) {
-        super.bindConversation(conversation, participantsList, participantsCount);
+    public void bindCursor(Cursor cursor) {
+        super.bindCursor(cursor);
         groupAvatarsView.setConversationAvatar(conversation);
     }
 }

@@ -26,22 +26,32 @@ public class UsersDAO extends BaseDAO {
         return new Select().from(DataUser.class).byIds(userId).querySingle();
     }
 
-    public Observable<List<DataUser>> getExitingUserByIds(List<String> ids) {
+    public Observable<List<DataUser>> getUsersByIds(List<String> ids) {
         if (ids == null || ids.isEmpty()) return Observable.from(Collections.emptyList());
-        //
+
+        return query(obtainUsersByIdsQuery(ids, "*"), DataUser.CONTENT_URI)
+                .compose(DaoTransformers.toEntityList(DataUser.class));
+    }
+
+    public Observable<List<String>> getExitingUserByIds(List<String> ids) {
+        if (ids == null || ids.isEmpty()) return Observable.from(Collections.emptyList());
+
+        return query(obtainUsersByIdsQuery(ids, DataUser$Table._ID), DataUser.CONTENT_URI)
+                .compose(DaoTransformers.toUserId());
+    }
+
+    private RxContentResolver.Query obtainUsersByIdsQuery(List<String> ids, String projection) {
         StringBuilder sb = new StringBuilder("(");
         for (String id: ids) {
             sb.append(String.format(" '%s',", id));
         }
         sb.setCharAt(sb.length() - 1, ')');
 
-        RxContentResolver.Query q = new RxContentResolver.Query.Builder(null)
-                .withSelection("SELECT " + DataUser$Table._ID +
+        return new RxContentResolver.Query.Builder(null)
+                .withSelection("SELECT " + projection +
                         " FROM " + DataUser.TABLE_NAME +
                         " WHERE " + DataUser$Table._ID + " in " + sb.toString())
-                        .build();
-        return query(q, DataUser.CONTENT_URI)
-                .compose(DaoTransformers.toEntityList(DataUser.class));
+                .build();
     }
 
     public Observable<DataUser> getUserById(String id) {

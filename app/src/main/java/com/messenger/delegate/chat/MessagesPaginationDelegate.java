@@ -1,11 +1,13 @@
 package com.messenger.delegate.chat;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.messenger.delegate.chat.command.LoadChatMessagesCommand;
 import com.messenger.messengerservers.constant.MessageStatus;
 import com.messenger.messengerservers.model.Message;
+import com.messenger.messengerservers.paginations.PaginationResult;
 import com.messenger.synchmechanism.SyncStatus;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -19,11 +21,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Command;
-import io.techery.janet.Janet;
 import rx.Observable;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class MessagesPaginationDelegate {
 
@@ -41,9 +41,9 @@ public class MessagesPaginationDelegate {
     private final ActionPipe<LoadChatMessagesCommand> loadMessagesPipe;
 
     @Inject
-    public MessagesPaginationDelegate(SessionHolder<UserSession> sessionHolder, Janet janet) {
+    public MessagesPaginationDelegate(SessionHolder<UserSession> sessionHolder, ChatExtensionInteractor chatExtensionInteractor) {
         this.sessionHolder = sessionHolder;
-        this.loadMessagesPipe = janet.createPipe(LoadChatMessagesCommand.class, Schedulers.io());
+        this.loadMessagesPipe = chatExtensionInteractor.getLoadChatMessagesCommandActionPipe();
     }
 
     public void loadFirstPage() {
@@ -51,6 +51,15 @@ public class MessagesPaginationDelegate {
         beforeMessageTimestamp = 0;
         hasMoreElements = true;
         loadNextPage();
+    }
+
+    public void forceLoadNextPage() {
+        hasMoreElements = true;
+        loadNextPage();
+    }
+
+    public boolean isLoading() {
+        return loading.get();
     }
 
     public void loadNextPage() {
@@ -66,11 +75,11 @@ public class MessagesPaginationDelegate {
 
         loadMessagesPipe.createObservableResult(new LoadChatMessagesCommand(conversationId,
                 page, MAX_MESSAGES_PER_PAGE, beforeMessageTimestamp))
-                .map(Command::getResult)
-                .subscribe(this::paginationPageLoaded, throwable -> pageLoadFailed());
+                .subscribe(command -> paginationPageLoaded(command.getResult()), this::pageLoadFailed);
     }
 
-    private void pageLoadFailed() {
+    private void pageLoadFailed(Throwable throwable) {
+        Timber.e(throwable, "pageLoadFailed");
         paginationStateObservable.onNext(ImmutablePaginationStatus.builder()
                 .status(Status.FAILED)
                 .page(page)
@@ -80,37 +89,26 @@ public class MessagesPaginationDelegate {
         loading.set(false);
     }
 
-    private void paginationPageLoaded(List<Message> loadedMessages) {
-        // pagination stops when we loaded nothing.
-        // In otherwise we can load not whole page cause localeName is present in some messages
-        if (loadedMessages == null || loadedMessages.size() == 0) {
-            loading.set(false);
-            hasMoreElements = false;
-            paginationStateObservable.onNext(ImmutablePaginationStatus.builder()
-                    .loadedElementsCount(0)
-                    .page(page)
-                    .status(Status.SUCCESS)
-                    .build()
-            );
-            return;
-        }
-
-        int loadedCount = loadedMessages.size();
-        Message lastMessage = loadedMessages.get(loadedCount - 1);
-        beforeMessageTimestamp = lastMessage.getDate();
-
-        if (!isLastLoadedMessageRead(loadedMessages)) {
+    private void paginationPageLoaded(@NonNull PaginationResult<Message> paginationResult) {
+        List<Message> messages = paginationResult.getResult();
+        beforeMessageTimestamp = getLastMessageDate(messages);
+        hasMoreElements = paginationResult.getLoadedCount() >= MAX_MESSAGES_PER_PAGE;
+        loading.set(false);
+        if (!isLastLoadedMessageRead(messages) && hasMoreElements) {
             loadNextPage();
-        } else {
-            loading.set(false);
         }
 
         paginationStateObservable.onNext(ImmutablePaginationStatus.builder()
                 .status(Status.SUCCESS)
                 .page(page)
-                .loadedElementsCount(loadedCount)
+                .loadedElementsCount(paginationResult.getLoadedCount())
                 .build()
         );
+    }
+
+    private long getLastMessageDate(@NonNull List<Message> messages) {
+        int messageCount = messages.size();
+        return messageCount > 0 ? messages.get(messageCount - 1).getDate(): 0;
     }
 
     // TODO: 4/13/16 LAST MESSAGE  remove iterator
@@ -133,14 +131,27 @@ public class MessagesPaginationDelegate {
         return paginationStateObservable;
     }
 
+    public void reset() {
+        this.page = 0;
+        this.beforeMessageTimestamp = 0;
+        this.hasMoreElements = false;
+    }
+
     private void handleConnectionState(SyncStatus state) {
         if (state == SyncStatus.CONNECTED && page == 0) loadNextPage();
     }
 
+    public boolean hasMoreElements() {
+        return hasMoreElements;
+    }
+
     @Value.Immutable()
     public interface PaginationStatus {
+
         Status getStatus();
+
         Integer getPage();
+
         @Nullable Integer getLoadedElementsCount();
     }
 

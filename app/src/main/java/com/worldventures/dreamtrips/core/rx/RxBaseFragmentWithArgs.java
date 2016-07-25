@@ -17,7 +17,7 @@ public abstract class RxBaseFragmentWithArgs<PM extends Presenter, P extends Par
 
     private final PublishSubject<FragmentEvent> lifecycleSubject = PublishSubject.create();
 
-    private Observable<FragmentEvent> lifecycle() {
+    protected final Observable<FragmentEvent> lifecycle() {
         return lifecycleSubject.asObservable();
     }
 

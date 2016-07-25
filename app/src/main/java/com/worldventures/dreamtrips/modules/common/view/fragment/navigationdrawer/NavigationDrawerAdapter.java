@@ -85,8 +85,8 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private void bindItemViewHolder(ItemHolder holder, int i) {
         ComponentDescription item = getItem(i);
-        //
         holder.sectionIcon.setImageResource(item.getIcon());
+        holder.sectionIcon.setContentDescription(item.getKey().toLowerCase());
         if (holder.itemName != null) {
             holder.itemName.setText(item.getNavMenuTitle());
         }

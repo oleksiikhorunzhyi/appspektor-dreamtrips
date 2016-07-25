@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 
 public class HashtagTextView extends TextView {
 
+    private static final int MAX_HASHTAG_LENGTH = 250;
+
     private @ColorInt int hashtagTextColor;
     private @ColorInt int selectedHashtagTextColor;
     private @ColorInt int selectedHashtagBackgroundColor;
@@ -41,8 +43,8 @@ public class HashtagTextView extends TextView {
 
     public HashtagTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        hashtagTextColor = context.getResources().getColor(android.R.color.holo_blue_light);
-        selectedHashtagTextColor = context.getResources().getColor(android.R.color.white);
+        hashtagTextColor = context.getResources().getColor(R.color.hashtag_text_color);
+        selectedHashtagTextColor = context.getResources().getColor(R.color.hashtag_text_color);
         selectedHashtagBackgroundColor = context.getResources().getColor(R.color.highlight_hashtag_bg);
     }
 
@@ -75,13 +77,16 @@ public class HashtagTextView extends TextView {
         final SpannableStringBuilder spannable = new SpannableStringBuilder(text);
 
         for (final String hashtag : clickableHashtags) {
+            if (hashtag != null) {
+                final String formattedHashtag = String.format("#%s", hashtag.toLowerCase());
+                List<Pair<Integer, Integer>> pairs = findIndexesForKeyword(text.toLowerCase(), formattedHashtag);
 
-            final String formattedHashtag = String.format("#%s", hashtag.toLowerCase());
-            List<Pair<Integer, Integer>> pairs = findIndexesForKeyword(text.toLowerCase(), formattedHashtag);
-
-            for (Pair<Integer, Integer> pair : pairs){
-                if (selectedHashtags.contains(hashtag)) highlight(spannable, pair.first, pair.second);
-                attachClick(spannable, pair.first, pair.second, formattedHashtag);
+                for (Pair<Integer, Integer> pair : pairs) {
+                    if (selectedHashtags.contains(hashtag)) {
+                        highlight(spannable, pair.first, pair.second);
+                    }
+                    attachClick(spannable, pair.first, pair.second, formattedHashtag);
+                }
             }
         }
 
@@ -103,19 +108,20 @@ public class HashtagTextView extends TextView {
     }
 
     /**
-     *
      * @param text
      * @param keyword
      * @return List <(keywordIndexStart, keywordIndexEnd)>
      */
     public List<Pair<Integer, Integer>> findIndexesForKeyword(String text, String keyword) {
-        String regex = String.format("%s\\b", keyword.toLowerCase());
+        keyword = keyword.trim().toLowerCase();
+        String regularExpression = keyword.length() >= MAX_HASHTAG_LENGTH ? "%s" : "%s\\b";
+        String regex = String.format(regularExpression, keyword);
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text.toLowerCase());
 
         List<Pair<Integer, Integer>> indexWrapper = new ArrayList<>();
 
-        while(matcher.find()){
+        while (matcher.find()) {
             int end = matcher.end();
             int start = matcher.start();
             indexWrapper.add(new Pair<>(start, end));

@@ -12,7 +12,7 @@ import com.worldventures.dreamtrips.R;
 
 import butterknife.InjectView;
 
-public abstract class LocationMessageHolder extends MessageViewHolder {
+public abstract class LocationMessageHolder extends UserMessageViewHolder {
 
     @InjectView(R.id.lite_map_view)
     MapView mapView;

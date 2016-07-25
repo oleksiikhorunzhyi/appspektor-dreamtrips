@@ -65,7 +65,10 @@
     <color name="open">#6ebffc</color>
     <color name="closed">#fe5353</color>
 
-    <color name="highlight_hashtag_bg">#53B5FE</color>
+    <color name="hashtag_text_color">#005E92</color>
+    <color name="highlight_hashtag_bg">#4C53B5FE</color>
+
+    <color name="dt_filter_apply_reset">#025E93</color>
 
     <!-- <DTL Toolbar colors> -->
     <!-- these shall have 'dtlt_' prefix -->
@@ -128,6 +131,9 @@
     <color name="chat_list_item_read_read_background">@color/white</color>
     <color name="chat_list_item_image_post_blue_loading_background">#DCF0FE</color>
     <color name="chat_list_item_image_post_grey_loading_background">#F8F8F8</color>
+    <color name="chat_list_item_reload_chat_history_info_text_color">#0A7F21</color>
+    <color name="chat_list_item_reload_chat_history_reload_text_color">#4A90E2</color>
+    <color name="chat_list_item_system_message_text_color">#0A7F21</color>
 
     <!-- Conversation list screen -->
     <color name="conversation_list_action_bar_spinner_item_normal">@color/white</color>

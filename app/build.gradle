@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
 apply plugin: 'newrelic'
-apply plugin: 'kotlin-android'
 //
 apply from: 'helper-methods.gradle'
 
@@ -29,9 +29,9 @@ android {
 
     // App version
     def versionMajor = 1
-    def versionMinor = 13
+gi    def versionMinor = 14
     def versionPatch = 0
-    def versionBuild = 1  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 0  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"
@@ -58,32 +58,39 @@ android {
     def BUILD_LOG_TAG = "BUILD_LOG"
     //
     def CONFIG_MAP_DEFAULT = [
-            'DreamTripsApi'    : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
-            'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
-            'MESSENGER_API_URL': '"dtmsgapp-dev.worldventures.biz"',
+            'DreamTripsApi'     : '"http://techery--dt--staging-techery-io-txbe74ea4jwh.runscope.net/"',
+            'S3Api'             : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/staging"',
+            'MESSENGER_API_URL' : '"dtmsgapp-dev.worldventures.biz"',
+            'NEWRELIC_API_KEY'  : '"AA02bc55e3bfb4886360f8be57d75b526bea2b1bcf"',
+    ]
+    def CONFIG_MAP_EXTERNAL = [
+            'NEWRELIC_API_KEY' : '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
     ]
     def CONFIG_MAP_PREPROD = [
-            'DreamTripsApi'    : '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net"',
-            'S3Api'            : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod"',
-            'MESSENGER_API_URL': '"dtmsgapp-qa.worldventures.biz"',
+            'DreamTripsApi'     : '"http://dtappstage.worldventures.biz/"',
+            'S3Api'             : '"http://dtapp.s3.amazonaws.com/config"',
+            'MESSENGER_API_URL' : '"dtmsgapp-qa.worldventures.biz"',
     ]
     def CONFIG_MAP_DTL = [
             'DreamTripsApi': '"http://techery--dt--dtl-techery-io-b8ctgyaku6eu.runscope.net/"',
     ]
     def CONFIG_MAP_PERF = [
             'DreamTripsApi': '"http://dtapp-perf.worldventures.biz"',
+            'NEWRELIC_API_KEY'  : '"AA8998d2de5c99adddd3668515e76b5d501271a04b"',
     ]
     def CONFIG_MAP_PROD = [
-            'DreamTripsApi'    : '"https://dtapp.worldventures.biz"',
-            'S3Api'            : '"http://dtappprd.s3.amazonaws.com/config"',
-            'MESSENGER_API_URL': '"dtmsgapp.worldventures.biz"',
+            'DreamTripsApi'     : '"https://dtapp.worldventures.biz"',
+            'S3Api'             : '"http://dtappprd.s3.amazonaws.com/config"',
+            'MESSENGER_API_URL' : '"dtmsgapp.worldventures.biz"',
+            'NEWRELIC_API_KEY'  : '"AAb8d55ede8fd2f0aeaaf66b18b8b53af90e48b371"',
     ]
     //
     def CONFIG_MAPS = [
-            "dtl"    : CONFIG_MAP_DTL,
-            "preprod": CONFIG_MAP_PREPROD,
-            "perf"   : CONFIG_MAP_PERF,
-            "prod"   : CONFIG_MAP_PROD,
+            "external"  : CONFIG_MAP_EXTERNAL,
+            "dtl"       : CONFIG_MAP_DTL,
+            "preprod"   : CONFIG_MAP_PREPROD,
+            "perf"      : CONFIG_MAP_PERF,
+            "prod"      : CONFIG_MAP_PROD,
     ]
 
     defaultConfig {
@@ -105,6 +112,7 @@ android {
         buildConfigField 'String', 'AWS_ACCOUNT_ID', '"503446126408"'
         buildConfigField 'String', 'API_VERSION', '"2"'
         buildConfigField 'boolean', 'SOCIAL_ENABLED', 'true'
+        buildConfigField 'boolean', 'ANALYTICS_LOG_ENABLED', 'false'
         resValue "string", "facebook_app_id", "761062457321921"
         //
         buildConfigField 'String', 'COGNITO_POOL_ID', '"us-east-1:1ac30be0-63da-444a-b667-4a63cc32bb39"'
@@ -116,7 +124,6 @@ android {
 
         buildConfigField 'boolean', 'RX_DEBUG_HOOK_ENABLED', 'false'
         buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'false'
-        buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'false'
         ext.enableCrashlytics = true
         //
         buildConfigField 'String', 'versionMajor', "\"${versionMajor}\""
@@ -142,7 +149,7 @@ android {
         // possible "build"-dimension flavors:
         dev {
             dimension "build"
-            minSdkVersion 21
+            minSdkVersion 23
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
@@ -171,7 +178,6 @@ android {
             //
             manifestPlaceholders['surveyApiToken'] = ["48bf60f3d43c8f8b1acb157cedeb2d334acb38e1e2c04e820d7a72168fd584aa"]
             buildConfigField 'long', 'API_TIMEOUT_SEC', '15'
-            buildConfigField 'boolean', 'NEWRELIC_ENABLED', 'true'
         }
     }
 
@@ -303,8 +309,8 @@ android {
             versionNameSuffix "-debug"
         }
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.release
             // proguard
             def proConfigs = file('proguard-rules').listFiles().collect { it }
@@ -365,7 +371,7 @@ dependencies {
     compile 'com.octo.android.robospice:robospice-retrofit:1.4.14'
     compile 'com.squareup.okhttp:okhttp:2.7.5'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
-    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.code.gson:gson:2.7'
     // Media
     compile 'io.techery:ijkmediaplayer:0.4.0@aar'
     compile 'io.techery:ijkmediawidget:0.4.0@aar'
@@ -431,6 +437,7 @@ dependencies {
     compile 'com.sothree.slidinguppanel:library:3.2.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     // Util
+    retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'pl.charmas.android:android-reactive-location:0.8@aar'
     compile 'com.intellij:annotations:12.0'

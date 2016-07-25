@@ -19,6 +19,12 @@ class LayoutManagerSingle extends LayoutManager {
         int originalWidth = (int) ViewUtils.pxFromDp(context, items.get(0).width);
         int originalHeight = (int) ViewUtils.pxFromDp(context, items.get(0).height);
 
+        //in case of server response width = 0, height = 0;
+        if (originalWidth == 0 || originalHeight == 0) {
+            originalWidth = holderSide / 2;
+            originalHeight = holderSide / 2;
+        }
+
         int calculatedHeight = (int) (holderSide / (float) originalWidth * originalHeight);
         int maxAvailableHeight = holderSide / 4 * 5;
         int resultHeight = Math.min(calculatedHeight, maxAvailableHeight);

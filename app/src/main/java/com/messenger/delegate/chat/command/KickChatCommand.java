@@ -26,9 +26,7 @@ public class KickChatCommand extends BaseChatCommand<Chat> {
         getChat()
                 .map(chat -> (GroupChat) chat)
                 .flatMap(groupChat -> groupChat.kick(userIdToKick))
-                .doOnNext(chat -> {
-                    participantsDAO.delete(conversationId, userIdToKick);
-                })
+                .doOnNext(chat -> participantsDAO.delete(conversationId, userIdToKick))
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 }

@@ -3,6 +3,7 @@ package com.messenger.messengerservers.model;
 import android.support.annotation.Nullable;
 
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 
 public class Message {
     private String id;
@@ -10,25 +11,14 @@ public class Message {
     private String toId;
     private String deleted;
 
-    @Nullable
-    private MessageBody messageBody;
+    @Nullable private MessageBody messageBody;
     // ms
     private long date;
     private String conversationId;
     private int status;
+    private @MessageType.Type String type;
 
     public Message() {
-    }
-
-    private Message(Builder builder) {
-        setId(builder.id);
-        setFromId(builder.fromId);
-        setToId(builder.toId);
-        setMessageBody(builder.messageBody);
-        setDate(builder.date);
-        setConversationId(builder.conversationId);
-        setStatus(builder.status);
-        setDeleted(builder.deleted);
     }
 
     public String getId() {
@@ -97,61 +87,68 @@ public class Message {
         this.deleted = deleted;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public static final class Builder {
-        private String id;
-        private String fromId;
-        private String toId;
-        private MessageBody messageBody;
-        private long date;
-        private String conversationId;
-        private int status;
-        private String deleted;
+        private Message message;
 
         public Builder() {
+            message = new Message();
         }
 
-        public Builder id(String val) {
-            id = val;
+        public Builder id(String id) {
+            message.setId(id);
             return this;
         }
 
-        public Builder fromId(String val) {
-            fromId = val;
+        public Builder fromId(String fromId) {
+            message.setFromId(fromId);
             return this;
         }
 
-        public Builder toId(String val) {
-            toId = val;
+        public Builder toId(String toId) {
+            message.setToId(toId);
             return this;
         }
 
-        public Builder messageBody(MessageBody val) {
-            messageBody = val;
+        public Builder messageBody(MessageBody messageBody) {
+            message.setMessageBody(messageBody);
             return this;
         }
 
-        public Builder date(long val) {
-            date = val;
+        public Builder date(long date) {
+            message.setDate(date);
             return this;
         }
 
-        public Builder conversationId(String val) {
-            conversationId = val;
+        public Builder conversationId(String conversationId) {
+            message.setConversationId(conversationId);
             return this;
         }
 
-        public Builder status(@MessageStatus.Status int val) {
-            status = val;
+        public Builder status(@MessageStatus.Status int status) {
+            message.setStatus(status);
             return this;
         }
 
-        public Builder deleted(String val) {
-            deleted = val;
+        public Builder deleted(String deleted) {
+            message.setDeleted(deleted);
+            return this;
+        }
+
+        public Builder type(@MessageType.Type String type) {
+            message.setType(type);
             return this;
         }
 
         public Message build() {
-            return new Message(this);
+            return message;
         }
     }
 }

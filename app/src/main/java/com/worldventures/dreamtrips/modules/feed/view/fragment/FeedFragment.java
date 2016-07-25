@@ -9,6 +9,8 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -307,7 +309,7 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     @Override
     public void showEdit(BucketBundle bucketBundle) {
-        fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
+        fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
     }
 
     @Override
@@ -336,17 +338,39 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     private void actionFilter() {
-        FeedPresenter presenter = getPresenter();
         View menuItemView = getActivity().findViewById(R.id.action_filter);
+        if (menuItemView == null) {
+            if (getCollapseView() == null) {
+                return;
+            } else {
+                menuItemView = getCollapseView();
+            }
+        }
         filterPopupWindow = new CirclesFilterPopupWindow(getContext());
-        filterPopupWindow.setCircles(presenter.getFilterCircles());
+        filterPopupWindow.setCircles(getPresenter().getFilterCircles());
         filterPopupWindow.setAnchorView(menuItemView);
         filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             filterPopupWindow.dismiss();
-            presenter.applyFilter((Circle) parent.getItemAtPosition(position));
+            getPresenter().applyFilter((Circle) parent.getItemAtPosition(position));
         });
         filterPopupWindow.show();
-        filterPopupWindow.setCheckedCircle(presenter.getAppliedFilterCircle());
+        filterPopupWindow.setCheckedCircle(getPresenter().getAppliedFilterCircle());
+    }
+
+    private View getCollapseView() {
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_actionbar);
+
+        if (toolbar == null) return null;
+
+        View collapseView = null;
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View view = toolbar.getChildAt(i);
+            if (view instanceof ActionMenuView) {
+                collapseView = view;
+                break;
+            }
+        }
+        return collapseView;
     }
 
     private boolean isNeedAddSuggestions(int suggestedPhotosSize, int feedItemsSize) {

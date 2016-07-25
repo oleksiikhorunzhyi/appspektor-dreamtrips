@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.messenger.delegate.MessageBodyParser;
 import com.messenger.messengerservers.constant.MessageStatus;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.messengerservers.xmpp.stanzas.incoming.MessagePageIQ;
 import com.messenger.messengerservers.xmpp.util.JidCreatorHelper;
+import com.messenger.messengerservers.xmpp.util.ParseUtils;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -16,8 +18,15 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MessagePageProvider extends IQProvider<MessagePageIQ> {
+
+    private static final String ELEMENT_CHAT = "chat";
+    private static final String ELEMENT_TO = "to";
+    private static final String ELEMENT_FROM = "from";
+    private static final String ELEMENT_BODY = "body";
+    private static final String ELEMENT_SERVICE = "service";
 
     private MessageBodyParser messageBodyParser;
 
@@ -27,34 +36,65 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
 
     @Override
     public MessagePageIQ parse(XmlPullParser parser, int initialDepth) throws XmlPullParserException, IOException, SmackException {
-        MessagePageIQ messagePageIQ = new MessagePageIQ();
-
-        String elementName;
+        ArrayList<Message> loadedMessages = new ArrayList<>();
+        int loadedMessageCount = 0;
+        String thread = null;
         Message.Builder messageBuilder = null;
 
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
+            int eventType = parser.getEventType();
+            String elementName = parser.getName();
             switch (eventType) {
                 case XmlPullParser.START_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "from":
-                        case "to":
+                        case ELEMENT_CHAT:
+                            thread = parser.getAttributeValue("", "thread");
+                            break;
+                        case ELEMENT_FROM:
+                        case ELEMENT_TO: {
+                            loadedMessageCount++;
                             long timestamp = ParserUtils.getLongAttribute(parser, "secs");
-                            String jid = parser.getAttributeValue("", "jid");
+                            String fromId = JidCreatorHelper.obtainId(parser.getAttributeValue("", "jid"));
                             String messageId = parser.getAttributeValue("", "client_msg_id");
                             Boolean unread = ParserUtils.getBooleanAttribute(parser, "unread");
                             String deleted = parser.getAttributeValue("", "deleted");
 
                             messageBuilder = new Message.Builder()
                                     .id(messageId)
+                                    .conversationId(thread)
                                     .deleted(deleted)
                                     .status((unread == null || !unread) ? MessageStatus.READ : MessageStatus.SENT)
                                     .date(timestamp)
-                                    .fromId(JidCreatorHelper.obtainId(jid));
+                                    .fromId(fromId)
+                                    .type(MessageType.MESSAGE);
                             break;
-                        case "body":
+                        }
+                        case ELEMENT_SERVICE: {
+                            loadedMessageCount++;
+                            long timestamp = ParserUtils.getLongAttribute(parser, "timestamp");
+                            String messageId = parser.getAttributeValue("", "id");
+                            String fromIdAttr = parser.getAttributeValue("", "from");
+                            String fromId = TextUtils.isEmpty(fromIdAttr) ? null : JidCreatorHelper.obtainId(fromIdAttr);
+
+                            String type = parser.getAttributeValue("", "type");
+
+                            messageBuilder = new Message.Builder()
+                                    .id(messageId)
+                                    .conversationId(thread)
+                                    .status(MessageStatus.READ)
+                                    .date(timestamp)
+                                    .type(ParseUtils.parseMessageType(type))
+                                    .fromId(fromId);
+
+                            String toJid = parser.getAttributeValue("", "to");
+                            if (!TextUtils.isEmpty(toJid)) {
+                                messageBuilder.toId(JidCreatorHelper.obtainId(toJid));
+                            }
+
+                            break;
+                        }
+                        case ELEMENT_BODY:
                             //noinspection all //messageBuilder cannot be null
                             messageBuilder.messageBody(messageBodyParser.
                                     parseMessageBody(parser.nextText()));
@@ -62,22 +102,24 @@ public class MessagePageProvider extends IQProvider<MessagePageIQ> {
                     }
                     break;
                 case XmlPullParser.END_TAG:
-                    elementName = parser.getName();
                     switch (elementName) {
-                        case "to":
-                        case "from":
-                            if (messageBuilder == null) continue;
+                        case ELEMENT_TO:
+                        case ELEMENT_FROM:
+                        case ELEMENT_SERVICE:
+                            if (messageBuilder == null) break;
                             Message message = messageBuilder.build();
-                            if (TextUtils.isEmpty(message.getId()) || message.getMessageBody() == null) continue;
-                            messagePageIQ.add(message);
+                            if (TextUtils.isEmpty(message.getId())) break;
+                            if (MessageType.MESSAGE.equals(message.getType()) && message.getMessageBody() == null) break;
+                            loadedMessages.add(message);
                             break;
-                        case "chat":
+                        case ELEMENT_CHAT:
                             done = true;
-                            break;
+                            continue;
                     }
                     break;
             }
+            parser.next();
         }
-        return messagePageIQ;
+        return new MessagePageIQ(loadedMessages, loadedMessageCount);
     }
 }

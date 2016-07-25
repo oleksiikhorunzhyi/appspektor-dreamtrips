@@ -39,11 +39,17 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 public class ConversationsDAO extends BaseDAO {
+    public static final String MESSAGE_TYPE_COLUMN = "messageType";
     public static final String ATTACHMENT_TYPE_COLUMN = "attachmentType";
     public static final String SINGLE_CONVERSATION_NAME_COLUMN = "oneToOneName";
     public static final String GROUP_CONVERSATION_NAME_COLUMN = "groupName";
     public static final String GROUP_CONVERSATION_USER_COUNT_COLUMN = "groupUserCount";
-    public static final String LAST_MESSAGE_AUTHOR_COLUMN = "authorName";
+    public static final String SENDER_ID_COLUMN = "senderId";
+    public static final String SENDER_FIRST_NAME_COLUMN = "senderFirstName";
+    public static final String SENDER_LAST_NAME_COLUMN = "senderLastName";
+    public static final String RECIPIENT_ID_COLUMN = "recipientId";
+    public static final String RECIPIENT_FIRST_NAME_COLUMN = "recipientFirstName";
+    public static final String RECIPIENT_LAST_NAME_COLUMN = "recipientLastName";
 
     private SessionHolder<UserSession> appSessionHolder;
 
@@ -146,19 +152,25 @@ public class ConversationsDAO extends BaseDAO {
         StringBuilder query = new StringBuilder("SELECT c.*, " +
                 "m." + DataMessage$Table.TEXT + " as " + DataMessage$Table.TEXT + ", " +
                 "m." + DataMessage$Table.FROMID + " as " + DataMessage$Table.FROMID + ", " +
+                "m." + DataMessage$Table.TOID + " as " + DataMessage$Table.TOID + ", " +
                 "m." + DataMessage$Table.DATE + " as " + DataMessage$Table.DATE + ", " +
+                "m." + DataMessage$Table.TYPE + " as " + MESSAGE_TYPE_COLUMN + ", " +
 
-                "IFNULL(u." + DataUser$Table.FIRSTNAME  + ",'') || ' ' || IFNULL(u." + DataUser$Table.LASTNAME + ",'') "+
-                                                            "as " + LAST_MESSAGE_AUTHOR_COLUMN + ", " +
-
+                "u." + DataUser$Table._ID + " as " + SENDER_ID_COLUMN + ", " +
+                "u." + DataUser$Table.FIRSTNAME + " as " + SENDER_FIRST_NAME_COLUMN + ", " +
+                "u." + DataUser$Table.LASTNAME + " as " + SENDER_LAST_NAME_COLUMN + ", " +
                 "uu." + DataUser$Table.USERAVATARURL + " as " + DataUser$Table.USERAVATARURL + ", " +
                 "uu." + DataUser$Table.ONLINE + " as " + DataUser$Table.ONLINE + ", " +
+
+                "uuuu." + DataUser$Table._ID + " as " + RECIPIENT_ID_COLUMN + ", " +
+                "uuuu." + DataUser$Table.FIRSTNAME + " as " + RECIPIENT_FIRST_NAME_COLUMN + ", " +
+                "uuuu." + DataUser$Table.LASTNAME + " as " + RECIPIENT_LAST_NAME_COLUMN + ", " +
+
                 "IFNULL(uu." + DataUser$Table.FIRSTNAME  + ",'') || ' ' || IFNULL(uu." + DataUser$Table.LASTNAME + ",'') "+
                                                 "as " + SINGLE_CONVERSATION_NAME_COLUMN + ", " +
                 "a." + DataAttachment$Table.TYPE + " as  " + ATTACHMENT_TYPE_COLUMN + ", " +
                 "t." + DataTranslation$Table.TRANSLATESTATUS + " as  " + DataTranslation$Table.TRANSLATESTATUS + ", " +
                 "t." + DataTranslation$Table.TRANSLATION + " as  " + DataTranslation$Table.TRANSLATION + ", " +
-
 
                 "GROUP_CONCAT(uuu." + DataUser$Table.FIRSTNAME + ", ', ') " +
                                                     "as " + GROUP_CONVERSATION_NAME_COLUMN + ", " +
@@ -169,10 +181,14 @@ public class ConversationsDAO extends BaseDAO {
                 "ON m." + DataMessage$Table._ID + "=(" +
                 "SELECT " + DataMessage$Table._ID + " FROM " + DataMessage.TABLE_NAME + " mm " +
                 "WHERE mm." + DataMessage$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
+                "AND mm." + DataMessage$Table.DATE + ">c." + DataConversation$Table.CLEARTIME + " " +
                 "ORDER BY mm." + DataMessage$Table.DATE + " DESC LIMIT 1) " +
 
                 "LEFT JOIN " + DataUser.TABLE_NAME + " u " +
                 "ON m." + DataMessage$Table.FROMID + "=u." + DataUser$Table._ID + " " +
+
+                "LEFT JOIN " + DataUser.TABLE_NAME + " uuuu " +
+                "ON m." + DataMessage$Table.TOID + "=uuuu." + DataUser$Table._ID + " " +
 
                 "JOIN " + DataParticipant.TABLE_NAME + " p " +
                 "ON p." + DataParticipant$Table.CONVERSATIONID + "=c." + DataConversation$Table._ID + " " +
@@ -203,7 +219,7 @@ public class ConversationsDAO extends BaseDAO {
         if (!TextUtils.isEmpty(searchQuery)) {
             whereBuilder.append(whereBuilder.length() == 0 ? "WHERE (" : "AND (");
             String wherePattern = "c." + DataConversation$Table.SUBJECT + " LIKE '%" + searchQuery + "%' " +
-                    "OR c." + DataConversation$Table.SUBJECT + " IS '' AND uu." + DataUser$Table.FIRSTNAME + " || ' ' || uu." + DataUser$Table.LASTNAME  + " LIKE '%" + searchQuery + "%')";
+                    "OR " + SINGLE_CONVERSATION_NAME_COLUMN + " LIKE '%" + searchQuery + "%')";
             whereBuilder.append(wherePattern);
         }
 
@@ -225,6 +241,20 @@ public class ConversationsDAO extends BaseDAO {
     public int updateDate(String conversationId, long date) {
         ContentValues contentValues = new ContentValues(1);
         contentValues.put(DataConversation$Table.LASTACTIVEDATE, date);
+        return getContentResolver().update(DataConversation.CONTENT_URI, contentValues,
+                DataConversation$Table._ID + "=?", new String[]{conversationId});
+    }
+
+    public int setClearDate(String conversationId, long date) {
+        ContentValues contentValues = new ContentValues(1);
+        contentValues.put(DataConversation$Table.CLEARTIME, date);
+        return getContentResolver().update(DataConversation.CONTENT_URI, contentValues,
+                DataConversation$Table._ID + "=?", new String[]{conversationId});
+    }
+
+    public int setUnreadCount(String conversationId, int unreadCount) {
+        ContentValues contentValues = new ContentValues(1);
+        contentValues.put(DataConversation$Table.UNREADMESSAGECOUNT, unreadCount);
         return getContentResolver().update(DataConversation.CONTENT_URI, contentValues,
                 DataConversation$Table._ID + "=?", new String[]{conversationId});
     }

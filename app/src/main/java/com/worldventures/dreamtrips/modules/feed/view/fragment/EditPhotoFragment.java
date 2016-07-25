@@ -40,4 +40,9 @@ public class EditPhotoFragment extends ActionEntityFragment<EditPhotoPresenter, 
         return new EditPhotoPresenter(getArgs().getPhoto());
     }
 
+    @Override
+    public void setText(String text) {
+        //nothing to do
+    }
+
 }

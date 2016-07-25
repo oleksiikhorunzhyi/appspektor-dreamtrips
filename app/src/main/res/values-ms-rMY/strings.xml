@@ -467,7 +467,7 @@
     <string name="no_mutual_friends">Anda tidak ada kawan bersama</string>
 
     <string name="photo_limitation_message">Sila pilih sehingga %1$d gambar</string>
-    <string name="pending">Sedang menunggu...</string>
+    <string name="pending">Sedang menunggu…</string>
 
     <string name="back">กลับไป</string>
     <string name="logout_component">Log keluar</string>
@@ -631,5 +631,19 @@
     <string name="audio_app_not_found_exception">Aplikasi untuk memainkan audio tidak didapati</string>
     <string name="complete_action_with">Lengkapkan tindakan dengan</string>
     <string name="error_fail_to_load_podcast">Gagal untuk memuatkan fail media digital</string>
+
+    <string name="min">min</string>
+    <string name="post_hint_with_hashtag">Kata sesuatu, tambah #hashtags</string>
+    <string name="add_text">Tambah teks</string>
+    <string name="action_search_by_hashtag">Cari mengikut \'hashtag\'</string>
+    <string name="error_fail_to_load_feeds_by_hashtag">Gagal memuatkan suapan mengikut \'hashtag\'</string>
+    <string name="no_feed_by_hashtag">Tiada \'hashtag\' ditemui</string>
+
+    <string name="friends_loading_info_text">Memuatkan Kawan anda</string>
+
+    <string name="hashtag_one_post">%1$d catatan</string>
+    <string name="hashtag_multiple_posts">%1$d catatan</string>
+
+    <string name="error_webview_secure_connection">Minta maaf tetapi aplikasi DreamTrips tidak boleh menetapkan sambungan selamat.\nKami telah dimaklumkan mengenai isu ini dan kami akan menyiasatnya tidak lama lagi.\n\nSila hubungi sokongan pelanggan untuk penyelesaian yang lebih cepat.</string>
 
 </resources>

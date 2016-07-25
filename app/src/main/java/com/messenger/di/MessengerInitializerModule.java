@@ -21,7 +21,7 @@ import dagger.Provides;
                 RosterListenerInitializer.class,
                 StorageInitializer.class,
                 PresenceListenerInitializer.class,
-                ChatFacadeInitializer.class,
+                ChatFacadeInitializer.class
         },
         complete = false, library = true
 )
@@ -56,6 +56,4 @@ public class MessengerInitializerModule {
     public AppInitializer provideFailedMessageInitializer() {
         return new FailedMessageInitializer();
     }
-
-
 }

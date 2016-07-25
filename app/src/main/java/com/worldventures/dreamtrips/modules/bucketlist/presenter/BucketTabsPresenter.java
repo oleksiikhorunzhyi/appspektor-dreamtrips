@@ -7,23 +7,26 @@ import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.RecentlyAddedBucketsFromPopularCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionPipe;
+import io.techery.janet.Command;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.ACTIVITY;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.DINING;
+import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType.LOCATION;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     @Inject
@@ -38,13 +41,24 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         setTabs();
         loadCategories();
 
-        view.bind(bucketInteractor.bucketListActionPipe().createObservableResult(BucketListCommand.fetch(false))
+        view.bind(bucketInteractor.bucketListActionPipe().createObservableResult(BucketListCommand.fetch(getUser().getId(),false))
                 .concatMap(bucketListAction -> bucketListAction.isFromCache() ?
-                        bucketInteractor.bucketListActionPipe().createObservable(BucketListCommand.fetch(true))
+                        bucketInteractor.bucketListActionPipe().createObservable(BucketListCommand.fetch(getUser().getId(), true))
                         : Observable.just(bucketListAction))
                 .observeOn(AndroidSchedulers.mainThread()))
                 .subscribe(bucketListAction -> {
                 }, this::handleError);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        view.bind(recentTabCountObservable()
+                .map(Command::getResult))
+                .subscribe(bucketTypeListPair -> {
+                    view.setRecentBucketItemCountByType(bucketTypeListPair.first, bucketTypeListPair.second.size());
+                });
     }
 
     @Override
@@ -57,33 +71,21 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         return getAccount();
     }
 
-    @Override
-    public void onResume() {
-        setRecentBucketItemsCounts();
-    }
-
     private void loadCategories() {
         doRequest(new GetCategoryQuery(),
                 categoryItems -> db.putList(SnappyRepository.CATEGORIES, categoryItems));
     }
 
     public void setTabs() {
-        view.setTypes(Arrays.asList(BucketType.LOCATION, BucketType.ACTIVITY, BucketType.DINING));
+        view.setTypes(Arrays.asList(LOCATION, ACTIVITY, DINING));
         view.updateSelection();
     }
 
     public void onTabChange(BucketType type) {
-        db.saveRecentlyAddedBucketItems(type.name(), 0);
-        db.saveOpenBucketTabType(type.name());
-        view.resetRecentlyAddedBucketItem(type);
-    }
+        bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe()
+                .send(RecentlyAddedBucketsFromPopularCommand.clear(type));
 
-    private void setRecentBucketItemsCounts() {
-        Map<BucketItem.BucketType, Integer> recentBucketItems = new HashMap<>();
-        for (BucketType type : BucketType.values()) {
-            recentBucketItems.put(type, db.getRecentlyAddedBucketItems(type.name()));
-        }
-        view.setRecentBucketItemsCount(recentBucketItems);
+        db.saveOpenBucketTabType(type.name());
     }
 
     public void onEvent(BucketAnalyticEvent event) {
@@ -96,6 +98,13 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     public void onEvent(BucketItemPhotoAnalyticEvent event) {
         TrackingHelper.actionBucketItemPhoto(event.getActionAttribute(), event.getBucketItemId());
+    }
+
+    private Observable<RecentlyAddedBucketsFromPopularCommand> recentTabCountObservable() {
+        ActionPipe<RecentlyAddedBucketsFromPopularCommand> recentPipe = bucketInteractor.recentlyAddedBucketsFromPopularCommandPipe();
+        return Observable.merge(recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(LOCATION)),
+                recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(ACTIVITY)),
+                recentPipe.createObservableResult(RecentlyAddedBucketsFromPopularCommand.get(DINING)));
     }
 
     private String getTabAttributeAnalytic() {
@@ -117,9 +126,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     public interface View extends RxView {
         void setTypes(List<BucketType> type);
 
-        void setRecentBucketItemsCount(Map<BucketType, Integer> items);
-
-        void resetRecentlyAddedBucketItem(BucketType type);
+        void setRecentBucketItemCountByType(BucketType type, int count);
 
         void updateSelection();
 

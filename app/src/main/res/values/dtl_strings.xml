@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">There are no merchants here</string>
     <string name="dtl_load_merchants_here_button_caption">Redo merchant search</string>
     <string name="dtl_place_list_empty_text">There are no places of selected type</string>
-    <string name="dtl_location_no_merchants_caption">There are no merchants near you.\n Please enter new city or</string>
+    <string name="dtl_location_no_merchants_caption">There are no merchants near you.\n Please enter a new city.</string>
+    <string name="dtl_location_select_from_nearby_caption">Select from nearby cities:</string>
     <string name="dtl_points_estimation_calculate_button_caption">Calculate</string>
     <string name="dtl_points_estimation_input_hint">Enter amount</string>
     <string name="dtl_header">Point Estimator</string>
@@ -86,9 +87,9 @@
     <string name="details_expanded_text_caption">Show Less</string>
     <string name="offer_expiration_format">Until %s</string>
     <string name="training_no_video">Videos coming soon</string>
-    <string name="dtl_withflow">DTL Flow</string> <!-- todo DELETE once migration to flow done -->
     <string name="help">Help</string>
     <string name="merchants_list_empty_text">Places coming soon</string>
+    <string name="merchants_list_empty_text_additional">- or -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">Food &amp; Drinks</string>

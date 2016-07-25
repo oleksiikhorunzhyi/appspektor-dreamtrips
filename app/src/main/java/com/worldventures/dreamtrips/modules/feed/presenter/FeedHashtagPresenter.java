@@ -81,21 +81,16 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
         }
+        view.onSuggestionsReceived(query, hashtagSuggestions);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
-
-        view.bind(interactor.getSuggestionPipe()
-                .observeSuccess()
-                .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(command -> {
-                    view.onSuggestionsReceived(command.getFullQueryText(), command.getResult());
-                    view.hideSuggestionProgress();
-                }, throwable -> {
-                    Timber.e(throwable, "");
-                    view.hideSuggestionProgress();
-                });
-
-        view.onSuggestionsReceived(query, hashtagSuggestions);
+        subscribeSuggestions();
     }
 
     @Override
@@ -140,7 +135,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     private void subscribeRefreshFeeds() {
-        view.bind(interactor.getRefreshFeedsByHashtagsPipe().observe()
+        view.bindUntilStop(interactor.getRefreshFeedsByHashtagsPipe().observe()
                 .compose(new ActionStateToActionTransformer<>())
                 .map(FeedByHashtagCommand.Refresh::getResult)
                 .compose(new IoToMainComposer<>()))
@@ -173,7 +168,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     private void subscribeLoadNextFeeds() {
-        view.bind(interactor.getLoadNextFeedsByHashtagsPipe().observe()
+        view.bindUntilStop(interactor.getLoadNextFeedsByHashtagsPipe().observe()
                 .compose(new ActionStateToActionTransformer<>())
                 .map(FeedByHashtagCommand.LoadNext::getResult)
                 .compose(new IoToMainComposer<>()))
@@ -201,6 +196,19 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     private void loadMoreItemsError() {
         view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
+    }
+
+    private void subscribeSuggestions() {
+        view.bindUntilStop(interactor.getSuggestionPipe()
+                .observeSuccess()
+                .observeOn(AndroidSchedulers.mainThread()))
+                .subscribe(command -> {
+                    view.onSuggestionsReceived(command.getFullQueryText(), command.getResult());
+                    view.hideSuggestionProgress();
+                }, throwable -> {
+                    Timber.e(throwable, "");
+                    view.hideSuggestionProgress();
+                });
     }
 
     public void onEvent(DownloadPhotoEvent event) {
@@ -324,7 +332,13 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         view.refreshFeedItems(feedItems);
     }
 
+    public void cancelLastSuggestionRequest() {
+        interactor.getSuggestionPipe().cancelLatest();
+    }
+
     public interface View extends RxView, UidItemDelegate.View {
+
+        <T> rx.Observable<T> bindUntilStop(rx.Observable<T> observable);
 
         void startLoading();
 

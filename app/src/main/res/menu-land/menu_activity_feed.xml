@@ -3,6 +3,12 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_menu_search"
+        android:title="@string/action_search_by_hashtag"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/action_friend_requests"
         app:actionViewClass="com.worldventures.dreamtrips.modules.common.view.custom.BadgeImageView"
         app:showAsAction="always"

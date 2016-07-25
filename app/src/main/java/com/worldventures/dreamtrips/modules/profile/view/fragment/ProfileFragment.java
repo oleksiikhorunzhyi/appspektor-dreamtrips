@@ -178,7 +178,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
     @Override
     public void showEdit(BucketBundle bucketBundle) {
-        fragmentWithFeedDelegate.openBucketEdit(getChildFragmentManager(), isTabletLandscape(), bucketBundle);
+        fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
     }
 
     public void onEvent(CommentIconClickedEvent event) {

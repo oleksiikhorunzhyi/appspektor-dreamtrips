@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">Something went wrong</string>
+    <string name="error_no_connection">You are not connected</string>
     <string name="messenger">Messenger</string>
     <string name="chat">Chat</string>
 
@@ -77,6 +78,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">Resend message?</string>
     <string name="chat_retry_send_message_dialog_resend">Resend</string>
     <string name="chat_retry_send_message_dialog_cancel">Cancel</string>
+    <string name="chat_reload_chat_history_reload">Reload</string>
+    <string name="chat_reload_chat_history_info_text">Your chat history was cleared. You can get it back by tapping “Reload”</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">You</string>
+    <string name="system_message_admin" formatted="false">%s(Admin)</string>
+    <string name="system_message_added" formatted="false">%s &lt;b>added&lt;/b> %s</string>
+    <string name="system_message_is_added" formatted="false">%s &lt;b>is added&lt;/b></string>
+    <string name="system_message_you_are_added" formatted="false">You &lt;b>are added&lt;/b></string>
+    <string name="system_message_removed" formatted="false">%s &lt;b>removed&lt;/b> %s from the chat</string>
+    <string name="system_message_is_removed" formatted="false">%s &lt;b>is removed&lt;/b></string>
+    <string name="system_message_you_are_removed" formatted="false">You &lt;b>are removed&lt;/b></string>
+    <string name="system_message_you_left_the_chat" formatted="false">You &lt;b>left&lt;/b> the chat</string>
+    <string name="system_message_left" formatted="false">%s &lt;b>left&lt;b></string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Loading…</string>
@@ -103,7 +118,7 @@
     <string name="chat_settings_row_shared_content">Shared Content</string>
     <string name="chat_settings_row_members_format">Members (%d)</string>
     <string name="chat_settings_row_assign_new_admin">Assign new admin</string>
-    <string name="chat_settings_row_clear_history">Clear history</string>
+    <string name="chat_settings_row_clear_chat">Clear chat</string>
     <string name="chat_settings_row_leave_chat">Leave chat</string>
     <string name="chat_settings_row_delete_chat">Delete chat</string>
     <string name="chat_settings_group_chat_info_text_format">This group was created by %s</string>
@@ -111,6 +126,9 @@
     <string name="chat_settings_menu_edit_chat_name">Edit chat name</string>
     <string name="chat_settings_menu_edit_change_chat_image">Change chat image</string>
     <string name="chat_settings_menu_edit_remove_chat_image">Remove chat image</string>
+    <string name="chat_settings_clear_chat_confirmation_text">Chat will be cleared from all your devices. You can reload it later. Do you want to proceed?</string>
+    <string name="chat_settings_clear_chat_ok">OK</string>
+    <string name="chat_settings_clear_chat_cancel">Cancel</string>
     <string name="chat_settings_leave_group_chat">Are you sure you want to quit from this chat</string>
     <string name="chat_settings_leave_group_chat_format">Are you sure you want to quit from %1$s chat</string>
     <string name="chat_settings_error_change_subject">You cannot change subject without network connection</string>

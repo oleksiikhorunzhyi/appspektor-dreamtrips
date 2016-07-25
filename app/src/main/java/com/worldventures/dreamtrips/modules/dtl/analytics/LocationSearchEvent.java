@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Attribute;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlExternalLocation;
 
-@AnalyticsEvent(action = "Local:City Search", trackers = AdobeTracker.TRACKER_KEY)
+@AnalyticsEvent(action = "local:City Search", trackers = AdobeTracker.TRACKER_KEY)
 public class LocationSearchEvent extends DtlAnalyticsAction {
 
     @Attribute("dtlcitysearch")

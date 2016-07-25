@@ -1,7 +1,9 @@
 package com.messenger.messengerservers;
 
 import com.messenger.messengerservers.chat.ChatState;
+import com.messenger.messengerservers.event.ClearChatEvent;
 import com.messenger.messengerservers.event.JoinedEvent;
+import com.messenger.messengerservers.event.RevertClearingEvent;
 import com.messenger.messengerservers.listeners.FriendsAddedListener;
 import com.messenger.messengerservers.listeners.FriendsRemovedListener;
 import com.messenger.messengerservers.listeners.GlobalMessageListener;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import rx.Observable;
+import rx.functions.Action1;
 
 public abstract class GlobalEventEmitter {
     protected static final int EVENT_PRE_OUTGOING = 0x777;
@@ -41,6 +44,9 @@ public abstract class GlobalEventEmitter {
     protected List<OnChatJoinedListener> onChatJoinedListeners = new CopyOnWriteArrayList<>();
     protected List<OnChatStateChangedListener> onChatStateChangedListeners = new CopyOnWriteArrayList<>();
     protected List<MessagesDeletedListener> onMessagesDeletedListener = new CopyOnWriteArrayList<>();
+
+    protected List<Action1<ClearChatEvent>> onClearChatEventListeners = new CopyOnWriteArrayList<>();
+    protected List<Action1<RevertClearingEvent>> onRevertClearingEventListeners = new CopyOnWriteArrayList<>();
 
     public void addGlobalMessageListener(GlobalMessageListener listener) {
         globalMessageListeners.add(listener);
@@ -213,6 +219,37 @@ public abstract class GlobalEventEmitter {
     protected void notifyMessagesDeleted(List<DeletedMessage> deletedMessages) {
         for (MessagesDeletedListener listener : onMessagesDeletedListener)
             listener.onMessagesDeleted(deletedMessages);
+    }
+
+
+
+    public void addOnRevertClearingEventListener(Action1<RevertClearingEvent> listener) {
+        onRevertClearingEventListeners.add(listener);
+    }
+
+    public void removeOnRevertClearingEventListener(Action1<RevertClearingEvent> listener) {
+        onRevertClearingEventListeners.remove(listener);
+    }
+
+    protected void notifyOnRevertClearingEventListener(RevertClearingEvent event) {
+        for (Action1<RevertClearingEvent> listener : onRevertClearingEventListeners) {
+            listener.call(event);
+        }
+    }
+
+
+    public void addOnClearChatEventListener(Action1<ClearChatEvent> listener) {
+        onClearChatEventListeners.add(listener);
+    }
+
+    public void removeOnClearChatEventListener(Action1<ClearChatEvent> listener) {
+        onClearChatEventListeners.remove(listener);
+    }
+
+    protected void notifyOnClearChatEventListener(ClearChatEvent event) {
+        for (Action1<ClearChatEvent> listener : onClearChatEventListeners) {
+            listener.call(event);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -104,7 +104,7 @@
                 android:id="@+id/comment_translate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/comment_action_translate"
+                android:text="@string/translate"
                 android:textColor="@color/comments_action_color"
                 android:textSize="@dimen/font_small"/>
         </LinearLayout>

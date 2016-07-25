@@ -42,8 +42,7 @@ public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<I
     @InjectView(R.id.likers_panel)
     TextView likersPanel;
 
-    LikersPanelHelper likersPanelHelper;
-
+    private LikersPanelHelper likersPanelHelper;
     private NavigationWrapper navigationWrapper;
     private boolean syncUIStateWithModelWasCalled = false;
 
@@ -90,6 +89,10 @@ public abstract class BaseFeedCell<ITEM extends FeedItem> extends AbstractCell<I
         if (!syncUIStateWithModelWasCalled) {
             throw new IllegalStateException("super.syncUIStateWithModel was not called");
         }
+    }
+
+    public void setLikersPanelListener(LikersPanelHelper.LikersPanelListener likersPanelListener) {
+        likersPanelHelper.setLikersPanelListener(likersPanelListener);
     }
 
     protected void showMoreDialog(@MenuRes int menuRes, @StringRes int headerDelete, @StringRes int textDelete) {

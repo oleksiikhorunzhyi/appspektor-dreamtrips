@@ -48,7 +48,7 @@ public class NotificationHeaderAdapter<T> implements StickyHeadersAdapter<Notifi
 
     @Override
     public long getHeaderId(int i) {
-        if (items.isEmpty()) return RecyclerView.NO_ID;
+        if (items.isEmpty() || items.size() < i) return RecyclerView.NO_ID;
         //
         HeaderItem header = converter.createHeader(items.get(i));
         String categoryTitle = header.getHeaderTitle();

@@ -108,8 +108,8 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter>
         friendsBadge = (BadgeImageView) MenuItemCompat.getActionView(menu.findItem(R.id.action_friend_requests));
         friendsBadge.setOnClickListener(v ->
                 router.moveTo(Route.FRIENDS, NavigationConfigBuilder.forActivity()
-                .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
-                .build()));
+                        .data(new FriendMainBundle(FriendMainBundle.REQUESTS))
+                        .build()));
         getPresenter().refreshRequestsCount();
     }
 
@@ -135,7 +135,9 @@ public class NotificationFragment extends RxBaseFragment<NotificationPresenter>
 
     @Override
     public void refreshNotifications(List<FeedItem> notifications) {
-        adapter.clearAndUpdateItems(notifications);
+        if (!adapter.getItems().containsAll(notifications)) {
+            adapter.clearAndUpdateItems(notifications);
+        }
     }
 
     @Override

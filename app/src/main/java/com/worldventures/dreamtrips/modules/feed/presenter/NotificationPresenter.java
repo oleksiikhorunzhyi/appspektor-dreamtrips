@@ -66,12 +66,6 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
         entityManager.setRequestingPresenter(this);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        refreshFeed();
-    }
-
     public void reload() {
         refreshFeed();
     }

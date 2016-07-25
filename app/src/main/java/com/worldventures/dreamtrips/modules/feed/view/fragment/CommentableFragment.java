@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.core.navigation.wrapper.NavigationWrapperFac
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
 import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
@@ -33,6 +32,7 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.comment.LoadMore;
 import com.worldventures.dreamtrips.modules.feed.presenter.BaseCommentPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.util.LikersPanelHelper;
 import com.worldventures.dreamtrips.modules.friends.bundle.UsersLikedEntityBundle;
@@ -68,7 +68,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
-    protected BaseArrayListAdapter adapter;
+    protected BaseDelegateAdapter adapter;
     protected LinearLayoutManager layout;
     //
     private LikersPanelHelper likersPanelHelper;
@@ -116,9 +116,30 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         super.afterCreateView(rootView);
         stateDelegate.setRecyclerView(recyclerView);
 
-        adapter = new BaseArrayListAdapter<>(getActivity(), this);
+        adapter = new BaseDelegateAdapter(getActivity(), this);
         adapter.registerCell(Comment.class, CommentCell.class);
         adapter.registerCell(LoadMore.class, LoadMoreCell.class);
+        adapter.registerDelegate(Comment.class, new CommentCell.CommentCellDelegate() {
+            @Override
+            public void onEditComment(Comment comment) {
+                getPresenter().editComment(comment);
+            }
+
+            @Override
+            public void onFlagClicked(Flaggable flaggableView) {
+                getPresenter().loadFlags(flaggableView);
+            }
+
+            @Override
+            public void onFlagChosen(Comment comment, int flagReasonId, String reason) {
+                getPresenter().flagItem(comment.getUid(), flagReasonId, reason);
+            }
+
+            @Override
+            public void onCellClicked(Comment model) {
+
+            }
+        });
 
         loadMore = new LoadMore();
         loadMore.setVisible(false);
@@ -306,5 +327,10 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     protected int getAdditionalItemsCount() {
         return 1;
+    }
+
+    @Override
+    public void flagSentSuccess() {
+        informUser(R.string.flag_sent_success_msg);
     }
 }

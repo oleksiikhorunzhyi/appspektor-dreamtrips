@@ -6,8 +6,10 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
+import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
@@ -17,7 +19,6 @@ import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
@@ -27,6 +28,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
@@ -41,12 +43,13 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
-    @Inject
-    FeedEntityManager entityManager;
 
     @Inject
+    FeedEntityManager entityManager;
+    @Inject
     BucketInteractor bucketInteractor;
-    //
+
+    private UidItemDelegate uidItemDelegate;
 
     @State
     FeedEntity feedEntity;
@@ -58,6 +61,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public BaseCommentPresenter(FeedEntity feedEntity) {
         this.feedEntity = feedEntity;
+        uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
@@ -114,6 +118,18 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         entityManager.createComment(feedEntity, draftComment);
     }
 
+    public void loadFlags(Flaggable flaggableView) {
+        uidItemDelegate.loadFlags(flaggableView);
+    }
+
+    public void flagItem(String uid, int reasonId, String reason) {
+        uidItemDelegate.flagItem(new FlagData(uid, reasonId, reason), view);
+    }
+
+    public void editComment(Comment comment) {
+        view.editComment(feedEntity, comment);
+        sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
+    }
 
     public void onEvent(FeedEntityManager.CommentEvent event) {
         switch (event.getType()) {
@@ -145,12 +161,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     public void onEvent(DeleteCommentRequestEvent event) {
         if (!view.isVisibleOnScreen()) return;
         entityManager.deleteComment(feedEntity, event.getComment());
-    }
-
-
-    public void onEvent(EditCommentRequestEvent event) {
-        view.editComment(feedEntity, event.getComment());
-        sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
     }
 
     public void onEvent(EditBucketEvent event) {
@@ -248,7 +258,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
     }
 
-    public interface View extends RxView {
+    public interface View extends RxView, UidItemDelegate.View {
 
         void addComments(List<Comment> commentList);
 

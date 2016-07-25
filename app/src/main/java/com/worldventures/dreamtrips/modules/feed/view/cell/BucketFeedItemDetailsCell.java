@@ -28,6 +28,7 @@ import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
 public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem> {
+
     @InjectView(R.id.imageViewCover)
     SimpleDraweeView imageViewCover;
     @InjectView(R.id.textViewName)

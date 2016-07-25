@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.app.Dialog;
-import android.support.v7.widget.PopupMenu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,7 +10,8 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -20,11 +20,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
-import com.worldventures.dreamtrips.modules.common.view.custom.FlagView;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
-import com.worldventures.dreamtrips.modules.feed.event.EditCommentRequestEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -42,7 +38,7 @@ import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.adapter_item_comment)
-public class CommentCell extends AbstractCell<Comment> implements Flaggable {
+public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.CommentCellDelegate> implements Flaggable {
 
     @InjectView(R.id.user_photo)
     SimpleDraweeView userPhoto;
@@ -52,17 +48,16 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     TextView date;
     @InjectView(R.id.text)
     TextView text;
-    @Optional
-    @InjectView(R.id.edit)
-    ImageView edit;
-    @Optional
-    @InjectView(R.id.reply)
-    ImageView reply;
     @InjectView(R.id.edited)
     ImageView edited;
-    @Optional
-    @InjectView(R.id.flag)
-    FlagView flag;
+    @InjectView(R.id.actions_wrapper)
+    View actionsWrapper;
+    @InjectView(R.id.self_actions_wrapper)
+    View selfActionsWrapper;
+    @InjectView(R.id.comment_edit)
+    View edit;
+    @InjectView(R.id.comment_flag)
+    View flag;
 
     @Inject
     SessionHolder<UserSession> appSessionHolder;
@@ -84,20 +79,12 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     protected void syncUIStateWithModel() {
         commentCellHelper.set(getModelObject(), injectorProvider.get());
         User owner = getModelObject().getOwner();
-
-        if (edit != null)
-            if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {
-                edit.setVisibility(View.VISIBLE);
-            } else {
-                edit.setVisibility(View.GONE);
-            }
-
-        if (flag != null) {
-            if (appSessionHolder.get().get().getUser().getId() == owner.getId()) {
-                flag.setVisibility(View.GONE);
-            } else {
-                flag.setVisibility(View.VISIBLE);
-            }
+        if (owner.getId() == appSessionHolder.get().get().getUser().getId()) {
+            selfActionsWrapper.setVisibility(View.VISIBLE);
+            actionsWrapper.setVisibility(View.GONE);
+        } else {
+            selfActionsWrapper.setVisibility(View.GONE);
+            actionsWrapper.setVisibility(View.VISIBLE);
         }
 
         if (getModelObject().isUpdate()) {
@@ -108,39 +95,30 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
     }
 
     @Optional
-    @OnClick(R.id.flag)
+    @OnClick(R.id.comment_flag)
     void onFlagClicked() {
-        flag.showProgress();
-        getEventBus().post(new LoadFlagEvent(this));
+        cellDelegate.onFlagClicked(this);
     }
 
     @Optional
-    @OnClick(R.id.edit)
+    @OnClick(R.id.comment_edit)
     void onEditClicked() {
-        PopupMenu popup = new PopupMenu(itemView.getContext(), edit);
-        popup.inflate(R.menu.menu_comment_edit);
-        popup.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_delete:
-                    Dialog dialog = new SweetAlertDialog(itemView.getContext(), SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText(itemView.getResources().getString(R.string.comment_delete))
-                            .setContentText(itemView.getResources().getString(R.string.comment_delete_caption))
-                            .setConfirmText(itemView.getResources().getString(R.string.comment_delete_confirm))
-                            .setConfirmClickListener(sDialog -> {
-                                sDialog.dismissWithAnimation();
-                                getEventBus().post(new DeleteCommentRequestEvent(getModelObject()));
-                            });
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
-                    break;
-                case R.id.action_edit:
-                    getEventBus().post(new EditCommentRequestEvent(getModelObject()));
-                    break;
-            }
+        cellDelegate.onEditComment(getModelObject());
+    }
 
-            return true;
-        });
-        popup.show();
+    @Optional
+    @OnClick(R.id.comment_delete)
+    void onDeleteClicked() {
+        Dialog dialog = new SweetAlertDialog(itemView.getContext(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(itemView.getResources().getString(R.string.comment_delete))
+                .setContentText(itemView.getResources().getString(R.string.comment_delete_caption))
+                .setConfirmText(itemView.getResources().getString(R.string.comment_delete_confirm))
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    getEventBus().post(new DeleteCommentRequestEvent(getModelObject()));
+                });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     @Override
@@ -150,9 +128,8 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
 
     @Override
     public void showFlagDialog(List<Flag> flags) {
-        flag.hideProgress();
         FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flag);
-        popupMenu.show(flags, (flagReasonId, reason) -> getEventBus().post(new ItemFlaggedEvent(getModelObject(), flagReasonId, reason)));
+        popupMenu.show(flags, (flagReasonId, reason) -> cellDelegate.onFlagChosen(getModelObject(), flagReasonId, reason));
     }
 
     @Optional
@@ -169,4 +146,12 @@ public class CommentCell extends AbstractCell<Comment> implements Flaggable {
                 .build());
     }
 
+    public interface CommentCellDelegate extends CellDelegate<Comment> {
+
+        void onEditComment(Comment comment);
+
+        void onFlagClicked(Flaggable flaggableView);
+
+        void onFlagChosen(Comment comment, int flagReasonId, String reason);
+    }
 }

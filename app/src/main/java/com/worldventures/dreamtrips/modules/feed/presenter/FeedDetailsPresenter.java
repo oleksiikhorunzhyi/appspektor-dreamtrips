@@ -2,14 +2,10 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
-import com.worldventures.dreamtrips.modules.common.model.FlagData;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.feed.api.GetFeedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityChangedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
-import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
@@ -25,8 +21,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
     private static final String TAG = FeedItemDetailsPresenter.class.getSimpleName();
 
     protected FeedItem feedItem;
-    //
-    private UidItemDelegate uidItemDelegate;
+
     private WeakHandler handler = new WeakHandler();
 
     @Inject
@@ -35,8 +30,6 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
     public FeedDetailsPresenter(FeedItem feedItem) {
         super(feedItem.getItem());
         this.feedItem = feedItem;
-
-        uidItemDelegate = new UidItemDelegate(this);
     }
 
     @Override
@@ -122,18 +115,7 @@ public class FeedDetailsPresenter<V extends FeedDetailsPresenter.View> extends B
         }
     }
 
-    public void onEvent(LoadFlagEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.loadFlags(event.getFlaggableView());
-    }
-
-    public void onEvent(ItemFlaggedEvent event) {
-        if (view.isVisibleOnScreen())
-            uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
-                    event.getFlagReasonId(), event.getNameOfReason()), view);
-    }
-
-    public interface View extends BaseCommentPresenter.View, UidItemDelegate.View {
+    public interface View extends BaseCommentPresenter.View {
 
         void setFeedItem(FeedItem feedItem);
 

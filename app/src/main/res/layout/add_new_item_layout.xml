@@ -6,7 +6,7 @@
     android:layout_centerInParent="true"
     android:hint="@string/bucket_hint_title"
     android:inputType="text|textAutoComplete|textNoSuggestions"
-    android:minWidth="@dimen/abc_search_view_text_min_width"
+    android:minWidth="@dimen/bucket_quick_input_edit_text_min_width"
     android:singleLine="true"
     android:textColor="@android:color/white"
     android:textColorHint="#979797" />

@@ -411,6 +411,20 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
+    // Cached translations
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void saveTranslation(String uid, String translation) {
+        act(db -> db.put(TRANSLATION + uid, translation));
+    }
+
+    @Override
+    public String getTranslation(String uid) {
+        return actWithResult(db -> db.get(TRANSLATION + uid)).or("");
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
     // Circles
     ///////////////////////////////////////////////////////////////////////////
 

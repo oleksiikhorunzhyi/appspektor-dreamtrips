@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface SnappyRepository {
 
@@ -34,6 +35,7 @@ public interface SnappyRepository {
     String ACTIVITIES = "activities_new";
     String BUCKET_LIST = "bucket_items";
     String SETTINGS_KEY = "settings";
+    String TRANSLATION = "translation";
     String POST = "post";
     String UPLOAD_TASK_KEY = "amazon_upload_task";
     String MEDIA_UPLOAD_ENTITY = "VIDEO_UPLOAD_ENTITY"; // "VIDEO_" left as is for existing user stores
@@ -130,6 +132,10 @@ public interface SnappyRepository {
     int getExclusiveNotificationsCount();
 
     int getFriendsRequestsCount();
+
+    void saveTranslation(String uid, String translation);
+
+    String getTranslation(String uid);
 
     void saveCircles(List<Circle> circles);
 

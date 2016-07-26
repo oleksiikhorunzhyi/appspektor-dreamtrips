@@ -33,8 +33,6 @@ import com.techery.spares.ui.fragment.FragmentHelper;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.OrientationUtil;
 import com.techery.spares.utils.ui.SoftInputUtil;
-import com.trello.rxlifecycle.FragmentEvent;
-import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -288,12 +286,6 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
         router.moveTo(Route.POPULAR_TAB_BUCKER, NavigationConfigBuilder.forActivity()
                 .data(args)
                 .build());
-    }
-
-    @Override
-    public <T> Observable<T> bindUntilStop(Observable<T> observable) {
-        return observable.compose(RxLifecycle
-                .bindUntilFragmentEvent(lifecycle(), FragmentEvent.STOP));
     }
 
     private void actionFilter() {

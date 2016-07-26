@@ -31,7 +31,7 @@ android {
     def versionMajor = 1
     def versionMinor = 13
     def versionPatch = 0
-    def versionBuild = 8  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 9  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"

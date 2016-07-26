@@ -4,6 +4,7 @@
     <color name="wallet_color_background_light">#008dbe</color>
     <color name="wallet_color_background_dark">#006699</color>
     <color name="wallet_color_primary">#00b3e3</color>
+    <color name="wallet_color_background_dark_with_alpha">#CC006699</color>
 
     <style name="WalletTheme" parent="AppTheme">
     </style>
@@ -12,14 +13,15 @@
         <item name="android:buttonStyle">@style/WalletWizardButton</item>
         <item name="android:editTextStyle">@style/WalletWizardEditText</item>
         <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textAppearanceMedium">@style/WalletTheme.Wizard.TextAppearance</item>
+        <item name="android:textAppearanceMedium">@style/WalletTheme.Wizard.TextAppearanceMedium
+        </item>
 
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorControlActivated">@color/wallet_color_background_light</item>
         <item name="colorControlHighlight">@color/wallet_color_background_light</item>
     </style>
 
-    <style name="WalletTheme.ToolbarLight" parent="ThemeOverlay.AppCompat.Dark" >
+    <style name="WalletTheme.ToolbarLight" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorControlNormal">@android:color/white</item>
         <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
     </style>
@@ -33,7 +35,11 @@
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
-    <style name="WalletTheme.Wizard.TextAppearance" parent="TextAppearance.AppCompat.Medium">
+    <style name="WalletTheme.Wizard.TextAppearanceMedium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="WalletTheme.Wizard.TextAppearanceSmall" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@android:color/white</item>
     </style>
 

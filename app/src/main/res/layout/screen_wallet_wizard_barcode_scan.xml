@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.worldventures.dreamtrips.wallet.ui.view.wizard.WizardScanBarcodeScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
                                                                                 android:layout_width="match_parent"
-                                                                                android:layout_height="match_parent">
+                                                                                android:layout_height="match_parent"
+                                                                                android:theme="@style/WalletTheme.Wizard">
 
     <me.dm7.barcodescanner.zxing.ZXingScannerView
         android:id="@+id/scanner_view"
@@ -9,28 +10,35 @@
         android:layout_height="match_parent"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="75dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="10dp"
-        android:text="@string/wallet_wizard_scan_barcode_header"/>
+        android:background="@color/wallet_color_background_dark_with_alpha"
+        android:gravity="center"
+        android:padding="25dp"
+        android:text="@string/wallet_wizard_scan_barcode_header"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
+        android:background="@color/wallet_color_background_dark_with_alpha"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="25dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wallet_wizard_scan_barcode_footer_title"/>
+            android:text="@string/wallet_wizard_scan_barcode_footer_title"
+            android:textAppearance="@style/WalletTheme.Wizard.TextAppearanceSmall"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
-            android:text="@string/wallet_wizard_scan_barcode_footer_btn"/>
+            android:text="@string/wallet_wizard_scan_barcode_footer_btn"
+            android:textAppearance="@style/WalletTheme.Wizard.TextAppearanceMedium"/>
     </LinearLayout>
 </com.worldventures.dreamtrips.wallet.ui.view.wizard.WizardScanBarcodeScreenImpl>

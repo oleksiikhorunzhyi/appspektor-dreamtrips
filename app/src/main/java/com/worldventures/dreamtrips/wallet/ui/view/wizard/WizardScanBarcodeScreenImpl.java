@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.wallet.ui.view.wizard;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.worldventures.dreamtrips.wallet.ui.WalletLinearLayout;
+import com.worldventures.dreamtrips.wallet.ui.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.presenter.WIzardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.presenter.WizardScanBarcodePresenterImpl;
 
-public class WizardScanBarcodeScreenImpl extends WalletLinearLayout<WizardScanBarcodeScreen, WIzardScanBarcodePresenter, WizardScanBarcodePath>
+public class WizardScanBarcodeScreenImpl extends WalletFrameLayout<WizardScanBarcodeScreen, WIzardScanBarcodePresenter, WizardScanBarcodePath>
         implements WizardScanBarcodeScreen {
 
 

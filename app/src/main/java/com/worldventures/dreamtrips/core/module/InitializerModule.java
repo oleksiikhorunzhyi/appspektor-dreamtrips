@@ -6,7 +6,6 @@ import com.messenger.di.MessengerInitializerModule;
 import com.techery.spares.application.AppInitializer;
 import com.worldventures.dreamtrips.core.initializer.AnalyticsInitializer;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
-import com.worldventures.dreamtrips.core.initializer.DtlInitializer;
 import com.worldventures.dreamtrips.core.initializer.FabricInitializer;
 import com.worldventures.dreamtrips.core.initializer.FrescoInitializer;
 import com.worldventures.dreamtrips.core.initializer.JodaTimeInitializer;
@@ -30,7 +29,6 @@ import dagger.Provides;
                 ViewServerInitializer.class,
                 BadgeCountObserverInitializer.class,
                 JodaTimeInitializer.class,
-                DtlInitializer.class,
                 AnalyticsInitializer.class,
         },
         includes = {
@@ -100,10 +98,5 @@ public class InitializerModule {
     @Provides(type = Provides.Type.SET)
     public AppInitializer provideBadgeCountObserverInitializer() {
         return new BadgeCountObserverInitializer();
-    }
-
-    @Provides(type = Provides.Type.SET)
-    public AppInitializer provideDtlInitializer() {
-        return new DtlInitializer();
     }
 }

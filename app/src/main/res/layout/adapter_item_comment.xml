@@ -75,6 +75,11 @@
             android:layout_marginRight="@dimen/spacing_small"
             tools:text="Lorem ipsulm bla blabla. Lorem ipsulm bla blablaL  oremf ipsulm bla blabla Lorem ipsulm bla blabla Lorem ipsulm bla blabla"/>
 
+        <com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView
+            android:id="@+id/comment_translate_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:id="@+id/actions_wrapper"
             android:layout_width="match_parent"

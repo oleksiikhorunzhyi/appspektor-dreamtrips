@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
 import android.app.Dialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,13 +21,14 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.view.custom.TranslateView;
 import com.worldventures.dreamtrips.modules.feed.view.util.CommentCellHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,32 +42,20 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 @Layout(R.layout.adapter_item_comment)
 public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.CommentCellDelegate> implements Flaggable {
 
-    @InjectView(R.id.user_photo)
-    SimpleDraweeView userPhoto;
-    @InjectView(R.id.user_name)
-    TextView userName;
-    @InjectView(R.id.date)
-    TextView date;
-    @InjectView(R.id.text)
-    TextView text;
-    @InjectView(R.id.edited)
-    ImageView edited;
-    @InjectView(R.id.actions_wrapper)
-    View actionsWrapper;
-    @InjectView(R.id.self_actions_wrapper)
-    View selfActionsWrapper;
-    @InjectView(R.id.comment_edit)
-    View edit;
-    @InjectView(R.id.comment_flag)
-    View flag;
+    @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
+    @InjectView(R.id.user_name) TextView userName;
+    @InjectView(R.id.date) TextView date;
+    @InjectView(R.id.text) TextView text;
+    @InjectView(R.id.edited) ImageView edited;
+    @InjectView(R.id.actions_wrapper) View actionsWrapper;
+    @InjectView(R.id.self_actions_wrapper) View selfActionsWrapper;
+    @InjectView(R.id.comment_flag) View flagButton;
+    @InjectView(R.id.comment_translate) View translateButton;
+    @InjectView(R.id.comment_translate_view) TranslateView viewWithTranslation;
 
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
     private CommentCellHelper commentCellHelper;
 
@@ -85,6 +75,16 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
         } else {
             selfActionsWrapper.setVisibility(View.GONE);
             actionsWrapper.setVisibility(View.VISIBLE);
+            if (TextUtils.isEmpty(getModelObject().getLanguage()) && TextUtils.isEmpty(getModelObject().getTranslation())) {
+                translateButton.setVisibility(View.VISIBLE);
+            } else {
+                translateButton.setVisibility(View.GONE);
+            }
+        }
+
+        if (TextUtils.isEmpty(getModelObject().getTranslation())) {
+            viewWithTranslation.showTranslation(getModelObject().getTranslation(),
+                    new Locale(getModelObject().getLanguage()).getCountry());
         }
 
         if (getModelObject().isUpdate()) {
@@ -92,6 +92,13 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
         } else {
             edited.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @OnClick(R.id.comment_translate)
+    void onTranslateClicked() {
+        viewWithTranslation.showProgress();
+        translateButton.setVisibility(View.GONE);
+        cellDelegate.onTranslateComment(getModelObject());
     }
 
     @Optional
@@ -115,7 +122,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
                 .setConfirmText(itemView.getResources().getString(R.string.comment_delete_confirm))
                 .setConfirmClickListener(sDialog -> {
                     sDialog.dismissWithAnimation();
-                    getEventBus().post(new DeleteCommentRequestEvent(getModelObject()));
+                    cellDelegate.onDeleteComment(getModelObject());
                 });
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
@@ -128,7 +135,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
 
     @Override
     public void showFlagDialog(List<Flag> flags) {
-        FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flag);
+        FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flagButton);
         popupMenu.show(flags, (flagReasonId, reason) -> cellDelegate.onFlagChosen(getModelObject(), flagReasonId, reason));
     }
 
@@ -149,6 +156,10 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
     public interface CommentCellDelegate extends CellDelegate<Comment> {
 
         void onEditComment(Comment comment);
+
+        void onDeleteComment(Comment comment);
+
+        void onTranslateComment(Comment comment);
 
         void onFlagClicked(Flaggable flaggableView);
 

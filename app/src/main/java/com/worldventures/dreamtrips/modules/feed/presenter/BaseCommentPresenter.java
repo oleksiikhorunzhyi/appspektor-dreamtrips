@@ -15,7 +15,6 @@ import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
-import com.worldventures.dreamtrips.modules.feed.event.DeleteCommentRequestEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
@@ -131,6 +130,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         sendAnalytic(TrackingHelper.ATTRIBUTE_EDIT_COMMENT);
     }
 
+    public void deleteComment(Comment comment) {
+        entityManager.deleteComment(feedEntity, comment);
+    }
+
     public void onEvent(FeedEntityManager.CommentEvent event) {
         switch (event.getType()) {
             case ADDED:
@@ -156,11 +159,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public void onEvent(LoadMoreEvent event) {
         loadComments();
-    }
-
-    public void onEvent(DeleteCommentRequestEvent event) {
-        if (!view.isVisibleOnScreen()) return;
-        entityManager.deleteComment(feedEntity, event.getComment());
     }
 
     public void onEvent(EditBucketEvent event) {

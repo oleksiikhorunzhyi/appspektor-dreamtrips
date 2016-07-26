@@ -23,9 +23,11 @@ repositories {
     maven { url "http://repository.jetbrains.com/all" }
     maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
 }
+
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -151,14 +153,14 @@ android {
         // possible "build"-dimension flavors:
         dev {
             dimension "build"
-            applicationIdSuffix = "." + DEV_CODE
+            applicationIdSuffix = DEV_CODE
             minSdkVersion 23
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
         devpremarshmallow {
             dimension "build"
-            applicationIdSuffix = "." + DEV_CODE
+            applicationIdSuffix = DEV_CODE
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
@@ -167,31 +169,31 @@ android {
         // possible "stream"-dimension flavors:
         dtl {
             dimension "stream"
-            applicationIdSuffix = "." + DTL_CODE
+            applicationIdSuffix = DTL_CODE
         }
         messenger {
             dimension "stream"
-            applicationIdSuffix = "" + MESSENGER_CODE
+            applicationIdSuffix = MESSENGER_CODE
             buildConfigField 'String', 'HOCKEY_APP_ID', '"d1ada40641214b4e9728a832c2d78d5c"'
         }
         social {
             dimension "stream"
-            applicationIdSuffix = "" + SOCIAL_CODE
+            applicationIdSuffix = SOCIAL_CODE
         }
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
         stage {
             dimension "config"
-            applicationIdSuffix = "." + STAGE_CODE
+            applicationIdSuffix = STAGE_CODE
         }
         preprod {
             dimension "config"
-            applicationIdSuffix = "." + PREPROD_CODE
+            applicationIdSuffix = PREPROD_CODE
         }
         perf {
             dimension "config"
-            applicationIdSuffix = "." + PERF_CODE
+            applicationIdSuffix = PERF_CODE
         }
         prod {
             dimension "config"

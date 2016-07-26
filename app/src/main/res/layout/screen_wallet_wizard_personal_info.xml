@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@drawable/wallet_wizard_background">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/WalletTheme.ToolbarLight"
+        app:title="@string/wallet_wizard_title"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="@dimen/wallet_common_screen_padding"
+        android:theme="@style/WalletTheme.Wizard">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/wallet_edit_profile_subtitle"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <RelativeLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="136dp"
+            android:layout_height="136dp"
+            android:layout_above="@+id/person_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="32dp">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/wallet_edit_profile_avatar_description"
+                android:src="@drawable/ic_dt_launcher"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/image"
+                android:background="#66666666"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/wallet_edit_profile_change_photo"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/person_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="136dp"
+            android:inputType="textPersonName"
+            tools:text="Shirley Temple"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/wallet_wizard_next"/>
+
+    </RelativeLayout>
+
+</FrameLayout>

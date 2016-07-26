@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="wallet">Wallet</string>
 
+    <string name="wallet">Wallet</string>
+    <string name="wallet_wizard_title">Set Up Smart Card</string>
+    <string name="wallet_wizard_next">Next</string>/
+
+    <!--edit profile-->
+    <string name="wallet_edit_profile_subtitle">Set your display photo and a name to be greeted by</string>
+    <string name="wallet_edit_profile_change_photo">Edit photo</string>
+    <string name="wallet_edit_profile_avatar_description">Your photo</string>
+
+    <!--splash-->
     <string name="wallet_wizard_splash_title1">Get ready</string>
     <string name="wallet_wizard_splash_title2">Scan the back of your flye smart card to begin</string>
     <string name="wallet_wizard_splash_start_btn">Scan Card</string>

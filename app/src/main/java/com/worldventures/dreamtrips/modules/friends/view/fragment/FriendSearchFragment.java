@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.friends.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -71,17 +72,17 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                updateEmptyCaption(newText.length());
                 getPresenter().setQuery(newText);
                 enableRefreshLayout(!newText.isEmpty());
                 return false;
             }
         });
 
-        if (getPresenter().getQuery().length() > 0)
+        if (getPresenter().getQuery().length() > 0) {
             searchView.setQuery(getPresenter().getQuery(), true);
-        else
+        } else {
             adapter.addItems(new ArrayList<>());
+        }
     }
 
     @Override
@@ -89,17 +90,25 @@ public class FriendSearchFragment extends BaseUsersFragment<FriendSearchPresente
         return new FriendSearchPresenter(getQueryFromArgs());
     }
 
-    private void updateEmptyCaption(int querySize) {
+    @Override
+    public void updateEmptyView(int friendsSize, boolean isLoading) {
         if (emptyView == null) {
             return; // rare NPE fix
         }
-        if (emptyView.getVisibility() == View.VISIBLE) {
-            if (querySize > 2) {
-                caption.setText(R.string.filter_no_results);
+        if (isLoading) {
+            emptyView.setVisibility(View.GONE);
+        } else {
+            if (friendsSize == 0) {
+                emptyView.setVisibility(View.VISIBLE);
+                updateEmptyCaption(R.string.filter_no_results);
             } else {
-                caption.setText(R.string.start_searching);
+                emptyView.setVisibility(View.GONE);
             }
         }
+    }
+
+    public void updateEmptyCaption(@StringRes int resource) {
+        caption.setText(resource);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.messenger.delegate;
 
-import com.messenger.api.TranslatedText;
+import com.messenger.api.TranslationInteractor;
 import com.messenger.delegate.MessageTranslationDelegate;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataTranslation;
@@ -9,6 +9,7 @@ import com.messenger.storage.MessengerDatabase;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
+import com.worldventures.dreamtrips.api.messenger.model.response.TranslatedText;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -186,8 +187,8 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
     //////////////////////////////////////////////////////////////////////////////////////////////
 
     private void translateMessage() {
-        MessageTranslationDelegate delegate = new MessageTranslationDelegate(janet, translationsDAO,
-                localeHelper, userSessionHolder);
+        MessageTranslationDelegate delegate = new MessageTranslationDelegate(new TranslationInteractor(janet),
+                translationsDAO, localeHelper, userSessionHolder);
         delegate.translateMessage(testMessage);
     }
 
@@ -200,7 +201,7 @@ public class MessageTranslationDelegateTest extends MessengerBaseTest {
 
     private MockHttpActionService.Response createSuccessResponse() {
         TranslatedText mockTranslatedText = mock(TranslatedText.class);
-        doReturn("Hello world").when(mockTranslatedText).getTranslatedText();
+        doReturn("Hello world").when(mockTranslatedText).text();
         return new MockHttpActionService.Response(200).body(mockTranslatedText);
     }
 

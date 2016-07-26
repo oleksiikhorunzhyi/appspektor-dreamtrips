@@ -8,6 +8,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.BuildConfig;
+import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
+import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
@@ -26,6 +28,7 @@ import dagger.Provides;
 import io.techery.janet.ActionService;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
 
 @Module(
@@ -33,6 +36,7 @@ import io.techery.janet.http.HttpClient;
         complete = false, library = true)
 public class JanetModule {
     public static final String JANET_QUALIFIER = "JANET";
+    public static final String JANET_API_LIB = "JANET_API_LIB";
 
     @Singleton
     @Provides(type = Provides.Type.SET)
@@ -58,6 +62,16 @@ public class JanetModule {
         }
         return builder.build();
     }
+
+    @Singleton
+    @Provides
+    @Named(JANET_API_LIB)
+    Janet provideApiLibJanet(@Named(JANET_API_LIB) ActionService httpActionService) {
+        Janet.Builder builder = new Janet.Builder();
+        builder.addService(new TimberServiceWrapper(httpActionService));
+        return builder.build();
+    }
+
 
     @Named(JANET_QUALIFIER)
     @Provides
@@ -88,8 +102,17 @@ public class JanetModule {
 
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionService provideHttpUploaderService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
-        return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient, new io.techery.janet.gson.GsonConverter(gson));
+    ActionService provideHttpService(@ForApplication Context appContext, HttpClient httpClient, Gson gson) {
+        return new DreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient,
+                new GsonConverter(gson));
+    }
+
+    @Singleton
+    @Provides
+    @Named(JANET_API_LIB)
+    ActionService provideApiLibHttpService(@ForApplication Context appContext, HttpClient httpClient) {
+        return new NewDreamTripsHttpService(appContext, BuildConfig.DreamTripsApi, httpClient,
+                new GsonConverter(new GsonProvider().provideGson()));
     }
 
     @Singleton

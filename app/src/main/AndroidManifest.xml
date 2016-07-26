@@ -121,7 +121,16 @@
             android:launchMode="singleTop">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity" />
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
+        </activity>
+
+        <!-- Wallet activities -->
+        <activity
+            android:name=".wallet.ui.WalletActivity"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>
         </activity>
 
         <!--For result activities-->

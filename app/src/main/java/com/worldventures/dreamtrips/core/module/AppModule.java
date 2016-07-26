@@ -60,8 +60,6 @@ import dagger.Provides;
                 MessengerModule.class,
                 FlaggingModule.class,
                 //
-                WalletActivityModule.class,
-                //
                 JanetModule.class,
                 AnalyticsModule.class,
                 SessionProcessingModule.class,

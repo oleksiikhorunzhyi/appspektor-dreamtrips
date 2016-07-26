@@ -36,6 +36,8 @@ import com.worldventures.dreamtrips.modules.dtl_flow.DtlActivity;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerPresenter;
 import com.worldventures.dreamtrips.modules.navdrawer.NavigationDrawerViewImpl;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -220,6 +222,11 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             DtlActivity.startDtl(this);
             return;
         }
+        if(component.getKey().equals(WalletActivityModule.WALLET)) {
+            closeLeftDrawer();
+            WalletActivity.startWallet(this);
+        }
+
         //
         currentComponent = component;
         //

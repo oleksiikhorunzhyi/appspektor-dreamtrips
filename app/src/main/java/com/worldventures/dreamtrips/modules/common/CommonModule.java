@@ -53,6 +53,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
 import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 import com.worldventures.dreamtrips.modules.video.presenter.PresentationVideosPresenter;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
+import com.worldventures.dreamtrips.wallet.ui.WalletActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +86,7 @@ import dagger.Provides;
                 PresentationVideosPresenter.class,
                 MessengerActivity.class,
                 DtlActivity.class,
+                WalletActivity.class,
                 ComponentActivity.class,
                 ComponentPresenter.class,
                 CopyFileCommand.class,
@@ -129,11 +132,12 @@ public class CommonModule {
 
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(FeedModule.NOTIFICATIONS));
         featureManager.with(Feature.SOCIAL, () -> activeComponents.add(MessengerActivityModule.MESSENGER));
-        featureManager.with(Feature.DTL, ()-> activeComponents.add(DtlActivityModule.DTL));
+        featureManager.with(Feature.DTL, () -> activeComponents.add(DtlActivityModule.DTL));
         featureManager.with(Feature.BOOK_TRAVEL, () -> activeComponents.add(TripsModule.OTA));
         activeComponents.add(TripsImagesModule.TRIP_IMAGES);
         featureManager.with(Feature.MEMBERSHIP, () -> activeComponents.add(VideoModule.MEMBERSHIP));
         activeComponents.add(BucketListModule.BUCKETLIST);
+        activeComponents.add(WalletActivityModule.WALLET);
         activeComponents.add(ProfileModule.MY_PROFILE);
 
         featureManager.with(Feature.REP_TOOLS, () -> activeComponents.add(ReptoolsModule.REP_TOOLS));

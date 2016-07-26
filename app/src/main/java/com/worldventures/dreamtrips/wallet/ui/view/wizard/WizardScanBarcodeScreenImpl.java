@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 import com.worldventures.dreamtrips.wallet.ui.WalletLinearLayout;
 import com.worldventures.dreamtrips.wallet.ui.presenter.WIzardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.presenter.WizardScanBarcodePresenterImpl;
 
 public class WizardScanBarcodeScreenImpl extends WalletLinearLayout<WizardScanBarcodeScreen, WIzardScanBarcodePresenter, WizardScanBarcodePath>
         implements WizardScanBarcodeScreen {
@@ -20,6 +21,6 @@ public class WizardScanBarcodeScreenImpl extends WalletLinearLayout<WizardScanBa
 
     @Override
     public WIzardScanBarcodePresenter createPresenter() {
-        return null;
+        return new WizardScanBarcodePresenterImpl(getContext(), getInjector());
     }
 }

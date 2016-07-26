@@ -45,7 +45,6 @@ public abstract class WalletLinearLayout<V extends WalletScreen, P extends ViewS
     @Override
     public void setInjector(Injector injector) {
         this.injector = injector;
-        injector.inject(this);
     }
 
     public Injector getInjector() {

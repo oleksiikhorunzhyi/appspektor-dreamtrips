@@ -23,9 +23,11 @@ repositories {
     maven { url "http://repository.jetbrains.com/all" }
     maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
 }
+
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -45,9 +47,9 @@ android {
     String DTL_CODE = "dtl"
     String MESSENGER_CODE = "messenger"
     String SOCIAL_CODE = "social"
-    String SMART_CARD_CODE = "smart-card"
+    String SMARTCARD_CODE = "smartcard"
     String STABLE_CODE = "stable"
-    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE, SMART_CARD_CODE]
+    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE, STABLE_CODE]
     //
     String STAGE_CODE = "stage"
     String PREPROD_CODE = "preprod"
@@ -152,14 +154,14 @@ android {
         // possible "build"-dimension flavors:
         dev {
             dimension "build"
-            applicationIdSuffix = "." + DEV_CODE
+            applicationIdSuffix = DEV_CODE
             minSdkVersion 23
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
         devpremarshmallow {
             dimension "build"
-            applicationIdSuffix = "." + DEV_CODE
+            applicationIdSuffix = DEV_CODE
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
@@ -168,32 +170,35 @@ android {
         // possible "stream"-dimension flavors:
         dtl {
             dimension "stream"
-            applicationIdSuffix = "." + DTL_CODE
+            applicationIdSuffix = DTL_CODE
         }
         messenger {
             dimension "stream"
-            applicationIdSuffix = "" + MESSENGER_CODE
+            applicationIdSuffix = MESSENGER_CODE
             buildConfigField 'String', 'HOCKEY_APP_ID', '"d1ada40641214b4e9728a832c2d78d5c"'
         }
         social {
             dimension "stream"
-            applicationIdSuffix = "" + SOCIAL_CODE
+            applicationIdSuffix = SOCIAL_CODE
+        }
+        smartcard {
+            dimension "stream"
+            applicationIdSuffix = SMARTCARD_CODE
         }
         stable { dimension "stream" }
-        smartCard { dimension "stream" }
 
         // possible "config"-dimension flavors:
         stage {
             dimension "config"
-            applicationIdSuffix = "." + STAGE_CODE
+            applicationIdSuffix = STAGE_CODE
         }
         preprod {
             dimension "config"
-            applicationIdSuffix = "." + PREPROD_CODE
+            applicationIdSuffix = PREPROD_CODE
         }
         perf {
             dimension "config"
-            applicationIdSuffix = "." + PERF_CODE
+            applicationIdSuffix = PERF_CODE
         }
         prod {
             dimension "config"
@@ -207,7 +212,7 @@ android {
         variant.ignore = true
         //
         String build = variant.flavors.get(0).name.toLowerCase() // dev / devpremarshmallow / external
-        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / stable
+        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / smartcard / stable
         String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
         //
         if (variant.buildType.name.equals("debug") && (config.equals(STAGE_CODE) || config.equals(PREPROD_CODE))) {

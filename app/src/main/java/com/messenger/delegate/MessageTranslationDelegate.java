@@ -1,12 +1,14 @@
 package com.messenger.delegate;
 
-import com.messenger.api.TranslateTextAction;
+import com.messenger.api.TranslationInteractor;
 import com.messenger.entities.DataMessage;
 import com.messenger.entities.DataTranslation;
 import com.messenger.messengerservers.constant.TranslationStatus;
 import com.messenger.storage.dao.TranslationsDAO;
 import com.messenger.util.SessionHolderHelper;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
+import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -15,23 +17,21 @@ import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.techery.janet.Janet;
 import io.techery.janet.helper.ActionStateSubscriber;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Singleton
 public class MessageTranslationDelegate {
 
-    private Janet janet;
     private TranslationsDAO translationsDAO;
     private LocaleHelper localeHelper;
     private SessionHolder<UserSession> sessionHolder;
+    private TranslationInteractor translationInteractor;
 
     @Inject
-    public MessageTranslationDelegate(Janet janet, TranslationsDAO translationsDAO,
+    public MessageTranslationDelegate(TranslationInteractor translationInteractor, TranslationsDAO translationsDAO,
                                       LocaleHelper localeHelper, SessionHolder<UserSession> sessionHolder) {
-        this.janet = janet;
+        this.translationInteractor = translationInteractor;
         this.translationsDAO = translationsDAO;
         this.localeHelper = localeHelper;
         this.sessionHolder = sessionHolder;
@@ -42,11 +42,11 @@ public class MessageTranslationDelegate {
                 .subscribe(dataTranslation -> {
                     String translateToLocale = localeHelper.getAccountLocaleFormatted(sessionHolder.get().get().getUser());
                     if ((dataTranslation == null || dataTranslation.getTranslateStatus() == TranslationStatus.ERROR)
-                            && SessionHolderHelper.hasEntity(sessionHolder)){
+                            && SessionHolderHelper.hasEntity(sessionHolder)) {
                         translateMessageRequest(message, translateToLocale);
                         return;
                     }
-                    if (dataTranslation != null && dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED){
+                    if (dataTranslation != null && dataTranslation.getTranslateStatus() == TranslationStatus.REVERTED) {
                         TrackingHelper.translateMessage(translateToLocale);
                         dataTranslation.setTranslateStatus(TranslationStatus.TRANSLATED);
                         translationsDAO.save(dataTranslation);
@@ -58,9 +58,12 @@ public class MessageTranslationDelegate {
         DataTranslation dataTranslation = new DataTranslation(dataMessage.getId(), null, TranslationStatus.TRANSLATING);
         translationsDAO.save(dataTranslation);
 
-        janet.createPipe(TranslateTextAction.class, Schedulers.io())
-                .createObservable(new TranslateTextAction(dataMessage.getText(), toLocale))
-                .subscribe(new ActionStateSubscriber<TranslateTextAction>()
+        translationInteractor.translatePipe()
+                .createObservable(new TranslateTextHttpAction(ImmutableTranslateTextBody
+                        .builder()
+                        .text(dataMessage.getText())
+                        .toLanguage(toLocale).build()))
+                .subscribe(new ActionStateSubscriber<TranslateTextHttpAction>()
                         .onSuccess(translateTextAction -> {
                             TrackingHelper.translateMessage(toLocale);
                             onTranslatedText(dataTranslation, translateTextAction.getTranslatedText());
@@ -80,7 +83,7 @@ public class MessageTranslationDelegate {
         translationsDAO.save(dataTranslation);
     }
 
-    public void revertTranslation(DataMessage message){
+    public void revertTranslation(DataMessage message) {
         translationsDAO.getTranslation(message.getId()).first()
                 .compose(new NonNullFilter<>())
                 .map(dataTranslation -> {

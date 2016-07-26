@@ -41,7 +41,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketItemEditPresenter.View> {
+
     public static final int BUCKET_MEDIA_REQUEST_ID = BucketItemEditPresenter.class.getSimpleName().hashCode();
+
     @Inject
     MediaPickerManager mediaPickerManager;
 
@@ -173,7 +175,6 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
         if (chosenImages.size() == 0) {
             return;
         }
-        view.hideMediaPicker();
         Queryable.from(chosenImages).forEachR(choseImage ->
                 imageSelected(Uri.parse(choseImage.getThumbnailPath())));
     }

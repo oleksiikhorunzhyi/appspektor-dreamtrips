@@ -1,56 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingTop="15dp">
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
+        android:id="@+id/recyclerViewFilters"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="15dp"
+        android:layout_above="@+id/footer"/>
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-            android:id="@+id/recyclerViewFilters"
-            android:layout_above="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:weightSum="2">
 
-        </com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView>
-
-        <RelativeLayout
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textViewApplyFilter"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:text="@string/filter_apply_all"
+            android:textColor="@color/dt_filter_apply_reset"
+            android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/textViewApplyFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:textStyle="bold"
-                android:layout_toLeftOf="@+id/textViewResetFilter"
-                android:textColor="#025E93"
-                android:gravity="end"
-                android:text="@string/filter_apply_all"/>
-
-            <TextView
-                android:id="@+id/textViewResetFilter"
-                android:layout_width="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:textColor="#025E93"
-                android:textStyle="bold"
-                android:text="@string/filter_reset_all"/>
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-
-</LinearLayout>
+        <TextView
+            android:id="@+id/textViewResetFilter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:text="@string/filter_reset_all"
+            android:textColor="@color/dt_filter_apply_reset"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</RelativeLayout>

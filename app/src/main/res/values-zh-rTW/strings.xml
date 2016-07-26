@@ -637,7 +637,7 @@
     <string name="add_text">添加文字</string>
     <string name="action_search_by_hashtag">通過標籤搜索</string>
     <string name="error_fail_to_load_feeds_by_hashtag">無法通過標籤加載内容</string>
-    <string name="no_feed_by_hashtag">沒有找到標籤</string>
+    <string name="no_feed_by_hashtag">没有发现帖子</string>
 
     <string name="friends_loading_info_text">正在加載您的好友</string>
 

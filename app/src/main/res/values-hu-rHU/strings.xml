@@ -637,7 +637,7 @@
     <string name="add_text">Szöveg hozzáadás</string>
     <string name="action_search_by_hashtag">Keresés hashtag alapján</string>
     <string name="error_fail_to_load_feeds_by_hashtag">Nem sikerült betölteni hashtag alapján</string>
-    <string name="no_feed_by_hashtag">Nincs ilyen hashtag</string>
+    <string name="no_feed_by_hashtag">Nem találhatók posztok</string>
 
     <string name="friends_loading_info_text">Barátok betöltése</string>
 

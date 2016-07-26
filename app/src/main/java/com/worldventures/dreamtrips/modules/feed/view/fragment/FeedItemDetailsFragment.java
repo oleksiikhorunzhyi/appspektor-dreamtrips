@@ -28,15 +28,9 @@ import butterknife.Optional;
 @Layout(R.layout.fragment_comments_with_details)
 public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetailsPresenter> implements FeedItemDetailsPresenter.View {
 
-    @Optional
-    @InjectView(R.id.feedDetailsLeftSpace)
-    protected View feedDetailsLeftSpace;
-    @Optional
-    @InjectView(R.id.feedDetailsRightSpace)
-    protected View feedDetailsRightSpace;
-    @Optional
-    @InjectView(R.id.comments_additional_info_container)
-    ViewGroup additionalContainer;
+    @Optional @InjectView(R.id.feedDetailsLeftSpace) View feedDetailsLeftSpace;
+    @Optional @InjectView(R.id.feedDetailsRightSpace) View feedDetailsRightSpace;
+    @Optional @InjectView(R.id.comments_additional_info_container) ViewGroup additionalContainer;
 
     @Override
     protected FeedItemDetailsPresenter createPresenter(Bundle savedInstanceState) {

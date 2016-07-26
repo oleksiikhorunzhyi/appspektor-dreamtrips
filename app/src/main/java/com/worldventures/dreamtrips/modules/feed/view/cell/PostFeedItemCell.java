@@ -44,9 +44,9 @@ import butterknife.Optional;
 public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @InjectView(R.id.post) HashtagTextView post;
-    @InjectView(R.id.translate_view) TranslateView translateView;
-    @Optional @InjectView(R.id.translate) View translate;
     @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
+    @InjectView(R.id.translate_view) TranslateView viewWithTranslation;
+    @InjectView(R.id.translate) View translateButton;
     @Optional @InjectView(R.id.collage) CollageView collageView;
     @Optional @InjectView(R.id.tag) ImageView tag;
 
@@ -76,7 +76,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
     @Optional
     @OnClick(R.id.translate)
     public void translate() {
-        translate.setVisibility(View.GONE);
+        translateButton.setVisibility(View.GONE);
     }
 
     private void processPostText(TextualPost textualPost) {

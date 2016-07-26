@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallet_wizard_splash_title1">Get ready</string>
+    <string name="wallet_wizard_splash_title2">Scan the back of your flye smart card to begin</string>
+    <string name="wallet_wizard_splash_start_btn">Scan Card</string>
+</resources>

@@ -1,4 +1,4 @@
-package com.messenger.ui.view.layout;
+package com.worldventures.dreamtrips.core.flow.layout;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -12,11 +12,11 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,6 +59,8 @@ import dagger.Provides;
                 //
                 MessengerModule.class,
                 FlaggingModule.class,
+                //
+                WalletActivityModule.class,
                 //
                 JanetModule.class,
                 AnalyticsModule.class,

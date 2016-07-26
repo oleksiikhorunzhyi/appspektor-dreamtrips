@@ -37,12 +37,12 @@ import com.worldventures.dreamtrips.modules.settings.SettingsModule;
 import com.worldventures.dreamtrips.modules.trips.TripsModule;
 import com.worldventures.dreamtrips.modules.tripsimages.TripsImagesModule;
 import com.worldventures.dreamtrips.modules.video.VideoModule;
+import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public abstract class BaseActivity extends InjectingActivity {
@@ -154,6 +154,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new SettingsModule());
         modules.add(new MessengerActivityModule());
         modules.add(new DtlActivityModule());
+        modules.add(new WalletActivityModule());
         modules.add(new LocationPickerModule());
         return modules;
     }

@@ -47,8 +47,9 @@ android {
     String DTL_CODE = "dtl"
     String MESSENGER_CODE = "messenger"
     String SOCIAL_CODE = "social"
+    String SMARTCARD_CODE = "smartcard"
     String STABLE_CODE = "stable"
-    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE]
+    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE, STABLE_CODE]
     //
     String STAGE_CODE = "stage"
     String PREPROD_CODE = "preprod"
@@ -180,6 +181,10 @@ android {
             dimension "stream"
             applicationIdSuffix = SOCIAL_CODE
         }
+        smartcard {
+            dimension "stream"
+            applicationIdSuffix = SMARTCARD_CODE
+        }
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
@@ -207,7 +212,7 @@ android {
         variant.ignore = true
         //
         String build = variant.flavors.get(0).name.toLowerCase() // dev / devpremarshmallow / external
-        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / stable
+        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / smartcard / stable
         String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
         //
         if (variant.buildType.name.equals("debug") && (config.equals(STAGE_CODE) || config.equals(PREPROD_CODE))) {

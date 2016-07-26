@@ -70,7 +70,7 @@ android {
             'NEWRELIC_API_KEY' : '"AAd06d4d4d218e74f8d48a7e0bf8d7de4623cb1662"',
     ]
     def CONFIG_MAP_PREPROD = [
-            'DreamTripsApi'     : '"http://dtappstage.worldventures.biz/"',
+            'DreamTripsApi'     : '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net/"',
             'S3Api'             : '"http://dtapp.s3.amazonaws.com/config"',
             'MESSENGER_API_URL' : '"dtmsgapp-qa.worldventures.biz"',
     ]

@@ -27,6 +27,8 @@ public interface FeedEntity extends Serializable, UidItem {
 
     void setComments(List<Comment> comments);
 
+    void setTranslation(String translation);
+
     void setLikesCount(int count);
 
     int getLikesCount();

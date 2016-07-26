@@ -102,6 +102,11 @@ public abstract class BaseFeedEntity implements FeedEntity {
         return translation;
     }
 
+    @Override
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////

@@ -76,11 +76,6 @@ public abstract class BaseUserCell<D extends CellDelegate<User>> extends Abstrac
         tvCompany.setText(companyName);
     }
 
-    @Override
-    public void prepareForReuse() {
-
-    }
-
     @OnClick(R.id.tv_mutual)
     void onMutualClick() {
         if (!mutualFriendsUtil.hasMutualFriends(getModelObject())) return;

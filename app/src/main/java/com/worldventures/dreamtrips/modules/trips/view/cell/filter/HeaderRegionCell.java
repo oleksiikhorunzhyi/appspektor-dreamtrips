@@ -16,8 +16,7 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_region_header)
 public class HeaderRegionCell extends AbstractDelegateCell<RegionHeaderModel, HeaderRegionCell.Delegate> {
 
-    @InjectView(R.id.checkBoxSelectAllRegion)
-    protected CheckBox checkBoxSelectAll;
+    @InjectView(R.id.checkBoxSelectAllRegion) CheckBox checkBoxSelectAll;
 
     public HeaderRegionCell(View view) {
         super(view);
@@ -47,13 +46,8 @@ public class HeaderRegionCell extends AbstractDelegateCell<RegionHeaderModel, He
         getEventBus().post(new ToggleRegionVisibilityEvent());
     }
 
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
-    }
-
-
     public interface Delegate extends CellDelegate<RegionHeaderModel> {
+
         void onCheckBoxAllRegionsPressedEvent(boolean isChecked);
     }
 }

@@ -23,22 +23,16 @@ import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_invite_member)
 public class MemberCell extends AbstractCell<Member> {
-    @InjectView(R.id.cb_checked)
-    CheckBox cbChecked;
-    @InjectView(R.id.tv_name)
-    TextView tvName;
-    @InjectView(R.id.tv_subtitle)
-    TextView tvSubtitle;
-    @InjectView(R.id.iv_phone)
-    ImageView ivPhone;
-    @InjectView(R.id.tv_date)
-    TextView tvDate;
-    @InjectView(R.id.tv_resend)
-    TextView tvResend;
-    @InjectView(R.id.ll_resend)
-    LinearLayout llResend;
 
-    String country;
+    @InjectView(R.id.cb_checked) CheckBox cbChecked;
+    @InjectView(R.id.tv_name) TextView tvName;
+    @InjectView(R.id.tv_subtitle) TextView tvSubtitle;
+    @InjectView(R.id.iv_phone) ImageView ivPhone;
+    @InjectView(R.id.tv_date) TextView tvDate;
+    @InjectView(R.id.tv_resend) TextView tvResend;
+    @InjectView(R.id.ll_resend) LinearLayout llResend;
+
+    private String country;
 
     public MemberCell(View view) {
         super(view);
@@ -73,10 +67,5 @@ public class MemberCell extends AbstractCell<Member> {
 
             getEventBus().post(new MemberCellSelectedEvent(getModelObject()));
         }
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

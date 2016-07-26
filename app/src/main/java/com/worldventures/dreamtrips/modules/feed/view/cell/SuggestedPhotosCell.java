@@ -113,11 +113,6 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
         cellDelegate.onSyncViewState();
     }
 
-    @Override
-    public void prepareForReuse() {
-
-    }
-
     @OnClick(R.id.suggestion_cancel)
     void onCancel() {
         cellDelegate.onCancelClicked();
@@ -137,7 +132,6 @@ public class SuggestedPhotosCell extends AbstractDelegateCell<MediaAttachment, S
     public void onCellClicked(PhotoGalleryModel model) {
         cellDelegate.onSelectPhoto(model);
         suggestionAdapter.notifyDataSetChanged();
-        //
     }
 
     @Override

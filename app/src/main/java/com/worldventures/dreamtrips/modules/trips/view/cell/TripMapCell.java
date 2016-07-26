@@ -16,18 +16,12 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_trip_map)
 public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<TripModel>> {
 
-    @InjectView(R.id.trip_cover)
-    SimpleDraweeView cover;
-    @InjectView(R.id.trip_title)
-    TextView title;
-    @InjectView(R.id.trip_location)
-    TextView location;
-    @InjectView(R.id.trip_date)
-    TextView date;
-    @InjectView(R.id.trip_price)
-    TextView price;
-    @InjectView(R.id.trip_mark)
-    TextView mark;
+    @InjectView(R.id.trip_cover) SimpleDraweeView cover;
+    @InjectView(R.id.trip_title) TextView title;
+    @InjectView(R.id.trip_location) TextView location;
+    @InjectView(R.id.trip_date) TextView date;
+    @InjectView(R.id.trip_price) TextView price;
+    @InjectView(R.id.trip_mark) TextView mark;
 
     public TripMapCell(View view) {
         super(view);
@@ -56,10 +50,5 @@ public class TripMapCell extends AbstractDelegateCell<TripModel, CellDelegate<Tr
         }
         //
         itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

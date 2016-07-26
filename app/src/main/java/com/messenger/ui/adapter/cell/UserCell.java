@@ -45,11 +45,6 @@ public abstract class UserCell<EntityType, D extends CellDelegate<EntityType>> e
     protected abstract DataUser getDataUser();
 
     @Override
-    public void prepareForReuse() {
-
-    }
-
-    @Override
     public boolean shouldInject() {
         return false;
     }

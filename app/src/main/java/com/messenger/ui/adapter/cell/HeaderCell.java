@@ -26,11 +26,6 @@ public class HeaderCell extends AbstractCell<Header> {
     }
 
     @Override
-    public void prepareForReuse() {
-
-    }
-
-    @Override
     public boolean shouldInject() {
         return false;
     }

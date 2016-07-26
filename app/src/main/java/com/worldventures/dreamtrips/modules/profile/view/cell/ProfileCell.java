@@ -60,87 +60,48 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_profile)
 public class ProfileCell extends AbstractCell<User> implements Expandable {
 
+    @InjectView(R.id.user_cover) SimpleDraweeView userCover;
+    @InjectView(R.id.user_photo) SmartAvatarView userPhoto;
+    @InjectView(R.id.cover_camera) ImageView cover;
+    @InjectView(R.id.avatar_camera) ImageView avatar;
+    @InjectView(R.id.user_name) TextView userName;
+    @InjectView(R.id.et_date_of_birth) DTEditText dateOfBirth;
+    @InjectView(R.id.pb) ProgressBar progressBar;
+    @InjectView(R.id.pb_cover) ProgressBar coverProgressBar;
+    @InjectView(R.id.trip_images) TextView tripImages;
+    @InjectView(R.id.add_friend) TextView addFriend;
+    @InjectView(R.id.company_name) TextView companyName;
+    @InjectView(R.id.user_status) TextView userStatus;
+    @InjectView(R.id.bucket_list) TextView buckets;
+    @InjectView(R.id.friends) TextView friends;
+    @InjectView(R.id.post) TextView post;
+    @InjectView(R.id.et_user_id) DTEditText etUserId;
+    @InjectView(R.id.et_from) DTEditText etFrom;
+    @InjectView(R.id.et_enroll) DTEditText etEnroll;
+    @InjectView(R.id.dt_points) TextView dtPoints;
+    @InjectView(R.id.rovia_bucks) TextView roviaBucks;
+    @InjectView(R.id.user_balance) ViewGroup userBalance;
+    @InjectView(R.id.expandable_info) ExpandableLayout info;
+    @InjectView(R.id.more) ViewGroup more;
+    @InjectView(R.id.friend_request_caption) TextView friendRequestCaption;
+    @InjectView(R.id.friend_request) ViewGroup friendRequest;
+    @InjectView(R.id.accept) AppCompatTextView accept;
+    @InjectView(R.id.reject) AppCompatTextView reject;
+    @InjectView(R.id.badge) BadgeView badge;
+    @InjectView(R.id.fl_friends_container) View friendsContainer;
+    @InjectView(R.id.divider1) View divider1;
+    @InjectView(R.id.divider3) View divider3;
+
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject SnappyRepository snapper;
+    @Inject FeatureManager featureManager;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
+
+    private Context context;
+    private OnExpandedListener onExpandedListener;
     private DecimalFormat df = new DecimalFormat("#0.00");
     private SimpleDateFormat dateFormat= new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-
     private boolean isExpandEnabled = true;
-
-    @InjectView(R.id.user_cover)
-    protected SimpleDraweeView userCover;
-    @InjectView(R.id.user_photo)
-    protected SmartAvatarView userPhoto;
-    @InjectView(R.id.cover_camera)
-    protected ImageView cover;
-    @InjectView(R.id.avatar_camera)
-    protected ImageView avatar;
-    @InjectView(R.id.user_name)
-    protected TextView userName;
-    @InjectView(R.id.et_date_of_birth)
-    protected DTEditText dateOfBirth;
-    @InjectView(R.id.pb)
-    protected ProgressBar progressBar;
-    @InjectView(R.id.pb_cover)
-    protected ProgressBar coverProgressBar;
-    @InjectView(R.id.trip_images)
-    protected TextView tripImages;
-    @InjectView(R.id.add_friend)
-    protected TextView addFriend;
-    @InjectView(R.id.company_name)
-    protected TextView companyName;
-    @InjectView(R.id.user_status)
-    protected TextView userStatus;
-    @InjectView(R.id.bucket_list)
-    protected TextView buckets;
-    @InjectView(R.id.friends)
-    protected TextView friends;
-    @InjectView(R.id.post)
-    protected TextView post;
-    @InjectView(R.id.et_user_id)
-    protected DTEditText etUserId;
-    @InjectView(R.id.et_from)
-    protected DTEditText etFrom;
-    @InjectView(R.id.et_enroll)
-    protected DTEditText etEnroll;
-    @InjectView(R.id.dt_points)
-    protected TextView dtPoints;
-    @InjectView(R.id.rovia_bucks)
-    protected TextView roviaBucks;
-    @InjectView(R.id.user_balance)
-    protected ViewGroup userBalance;
-    @InjectView(R.id.expandable_info)
-    protected ExpandableLayout info;
-    @InjectView(R.id.more)
-    protected ViewGroup more;
-    @InjectView(R.id.friend_request_caption)
-    protected TextView friendRequestCaption;
-    @InjectView(R.id.friend_request)
-    protected ViewGroup friendRequest;
-    @InjectView(R.id.accept)
-    protected AppCompatTextView accept;
-    @InjectView(R.id.reject)
-    protected AppCompatTextView reject;
-    @InjectView(R.id.badge)
-    BadgeView badge;
-    @InjectView(R.id.fl_friends_container)
-    View friendsContainer;
-    @InjectView(R.id.divider1)
-    View divider1;
-    @InjectView(R.id.divider3)
-    View divider3;
-
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    SnappyRepository snapper;
-    @Inject
-    FeatureManager featureManager;
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-
-    Context context;
-    OnExpandedListener onExpandedListener;
 
     public ProfileCell(View view) {
         super(view);
@@ -245,11 +206,6 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
 
     private boolean isAccount() {
         return appSessionHolder.get().isPresent() && appSessionHolder.get().get().getUser().getId() == getModelObject().getId();
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     private void setAvatarImage(Uri uri) {

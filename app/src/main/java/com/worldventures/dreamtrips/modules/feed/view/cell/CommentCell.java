@@ -129,11 +129,6 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
     }
 
     @Override
-    public void prepareForReuse() {
-
-    }
-
-    @Override
     public void showFlagDialog(List<Flag> flags) {
         FlagPopupMenu popupMenu = new FlagPopupMenu(itemView.getContext(), flagButton);
         popupMenu.show(flags, (flagReasonId, reason) -> cellDelegate.onFlagChosen(getModelObject(), flagReasonId, reason));

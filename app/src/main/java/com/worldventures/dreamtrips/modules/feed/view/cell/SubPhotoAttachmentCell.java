@@ -17,10 +17,8 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_feed_item_photo_atachment)
 public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDelegate<Photo>> {
 
-    @InjectView(R.id.iv_photo)
-    SimpleDraweeView photo;
-    @InjectView(R.id.tag)
-    protected ImageView tag;
+    @InjectView(R.id.iv_photo) SimpleDraweeView photo;
+    @InjectView(R.id.tag) ImageView tag;
 
     public SubPhotoAttachmentCell(View view) {
         super(view);
@@ -42,12 +40,6 @@ public class SubPhotoAttachmentCell extends AbstractDelegateCell<Photo, CellDele
 
         setImage(Uri.parse(getModelObject().getImages().getUrl()), photo);
         tag.setVisibility(getModelObject().getPhotoTagsCount() > 0 || !getModelObject().getPhotoTags().isEmpty() ? View.VISIBLE : View.GONE);
-    }
-
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     private void setImage(Uri uri, SimpleDraweeView draweeView) {

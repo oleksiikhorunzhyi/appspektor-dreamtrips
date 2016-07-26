@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
+import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 
 import com.techery.spares.adapter.BaseDelegateAdapter;
@@ -133,7 +134,7 @@ public class FragmentWithFeedDelegate {
 
     public void openBucketEdit(FragmentManager fragmentManager, boolean isTabletLandscape,
                                BucketBundle bucketBundle) {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         bucketBundle.setLock(true);
         if (isTabletLandscape) {
             router.moveTo(Route.BUCKET_EDIT, NavigationConfigBuilder.forFragment()

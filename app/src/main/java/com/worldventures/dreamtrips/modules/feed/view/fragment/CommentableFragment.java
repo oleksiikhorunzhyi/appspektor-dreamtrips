@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Gravity;
@@ -163,7 +164,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         if (getArgs().isOpenKeyboard() && getArgs().getFeedEntity().getCommentsCount() == 0) {
             showKeyboard();
         }
-        restorePostIfNeeded();
         showHeaderIfNeeded();
     }
 
@@ -172,10 +172,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
             header.setVisibility(View.VISIBLE);
             header.getBackground().mutate().setAlpha(255);
         }
-    }
-
-    private void restorePostIfNeeded() {
-
     }
 
     private void showKeyboard() {
@@ -276,7 +272,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     @Override
     public void showEdit(BucketBundle bucketBundle) {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         bucketBundle.setLock(true);
         try {
             bucketBundle.setOwnerId(getArgs().getFeedEntity().getOwner().getId());
@@ -298,7 +294,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         }
     }
 
-    private void showContainer(int containerId) {
+    private void showContainer(@IdRes int containerId) {
         View container = ButterKnife.findById(getActivity(), containerId);
         if (container != null) container.setVisibility(View.VISIBLE);
     }

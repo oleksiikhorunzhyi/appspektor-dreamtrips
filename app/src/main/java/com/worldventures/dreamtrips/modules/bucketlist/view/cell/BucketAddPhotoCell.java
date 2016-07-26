@@ -40,10 +40,6 @@ public class BucketAddPhotoCell extends AbstractDelegateCell<AddBucketPhotoModel
         itemView.setLayoutParams(layoutParams);
     }
 
-    @Override
-    public void prepareForReuse() {
-    }
-
     @OnClick(R.id.imageViewPhoto)
     public void onClick() {
         cellDelegate.onCellClicked(getModelObject());

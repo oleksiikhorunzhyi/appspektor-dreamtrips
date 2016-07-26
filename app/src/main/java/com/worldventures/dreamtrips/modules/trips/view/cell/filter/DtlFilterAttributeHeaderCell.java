@@ -21,10 +21,8 @@ public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<Selectabl
 
     private SelectableDelegate selectableDelegate;
 
-    @InjectView(R.id.checkBoxSelectAll)
-    protected CheckBox checkBoxSelectAll;
-    @InjectView(R.id.textViewAttributeHeaderCaption)
-    protected TextView textViewHeaderCaption;
+    @InjectView(R.id.checkBoxSelectAll) CheckBox checkBoxSelectAll;
+    @InjectView(R.id.textViewAttributeHeaderCaption) TextView textViewHeaderCaption;
 
     public DtlFilterAttributeHeaderCell(View view) {
         super(view);
@@ -56,11 +54,6 @@ public class DtlFilterAttributeHeaderCell extends AbstractDelegateCell<Selectabl
     @Override
     public void setSelectableDelegate(SelectableDelegate selectableDelegate) {
         this.selectableDelegate = selectableDelegate;
-    }
-
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
     }
 }
 

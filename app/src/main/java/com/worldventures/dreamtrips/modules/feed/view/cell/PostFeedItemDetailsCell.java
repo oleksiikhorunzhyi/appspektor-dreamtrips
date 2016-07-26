@@ -98,7 +98,6 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
                 result = i;
             }
         }
-
         return result;
     }
 
@@ -116,11 +115,6 @@ public class PostFeedItemDetailsCell extends PostFeedItemCell {
     protected void onDelete() {
         super.onDelete();
         getEventBus().post(new DeletePostEvent(getModelObject().getItem()));
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     @Override

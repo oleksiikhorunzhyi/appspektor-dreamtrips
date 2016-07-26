@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.view.cell;
 
+import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
@@ -41,7 +43,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 @Layout(R.layout.adapter_item_feed_post_event)
-public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
+public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeedItemCell.PostFeedItemDetailCellDelegate> {
 
     @InjectView(R.id.post) HashtagTextView post;
     @InjectView(R.id.card_view_wrapper) View cardViewWrapper;
@@ -71,12 +73,6 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
         }
-    }
-
-    @Optional
-    @OnClick(R.id.translate)
-    public void translate() {
-        translateButton.setVisibility(View.GONE);
     }
 
     private void processPostText(TextualPost textualPost) {
@@ -126,11 +122,20 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
         processTags(attachments);
     }
 
-    private void processTags(List<FeedEntityHolder> attachments) {
-        if (tag != null) tag.setVisibility(isHasTags(attachments) ? View.VISIBLE : View.GONE);
+    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
+        return Queryable.from(attachments)
+                .map(element -> (Photo) element.getItem())
+                .map(photo -> {
+                    return new CollageItem(photo.getImages().getUrl(), photo.getWidth(), photo.getHeight());
+                })
+                .toList();
     }
 
-    private boolean isHasTags(List<FeedEntityHolder> attachments) {
+    private void processTags(List<FeedEntityHolder> attachments) {
+        if (tag != null) tag.setVisibility(hasTags(attachments) ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean hasTags(List<FeedEntityHolder> attachments) {
         return Queryable.from(attachments)
                 .count(attachment -> attachment.getType() == FeedEntityHolder.Type.PHOTO &&
                         ((Photo) attachment.getItem()).getPhotoTagsCount() > 0) > 0;
@@ -163,20 +168,16 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
                 .build());
     }
 
-    private List<CollageItem> attachmentsToCollageItems(List<FeedEntityHolder> attachments) {
-        return Queryable.from(attachments)
-                .map(element -> (Photo) element.getItem())
-                .map(photo -> {
-                    return new CollageItem(photo.getImages().getUrl(), photo.getWidth(), photo.getHeight());
-                })
-                .toList();
-    }
-
     private void openHashtagFeeds(@NotNull String hashtag) {
         router.moveTo(Route.FEED_HASHTAG, NavigationConfigBuilder.forActivity()
                 .data(new FeedHashtagBundle(hashtag))
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(true).build())
                 .build());
+    }
+
+    @OnClick(R.id.translate)
+    public void translate() {
+        translateButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -187,7 +188,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
 
     @Override
     protected void onEdit() {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         router.moveTo(Route.EDIT_POST, NavigationConfigBuilder.forRemoval()
                 .containerId(containerId)
                 .fragmentManager(fragmentManager)
@@ -201,12 +202,17 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem> {
     }
 
     @Override
-    public void prepareForReuse() {
-
-    }
-
-    @Override
     protected void onMore() {
         showMoreDialog(R.menu.menu_feed_entity_edit, R.string.post_delete, R.string.post_delete_caption);
+    }
+
+    public interface PostFeedItemDetailCellDelegate extends CellDelegate<PostFeedItem>{
+
+        void onEditPost(PostFeedItem postFeedItem);
+
+        void onDeletePost(PostFeedItem postFeedItem);
+
+        void onTranslatePost(PostFeedItem postFeedItem);
+
     }
 }

@@ -16,10 +16,8 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_video_locale)
 public class VideoLocaleCell extends AbstractCell<VideoLocale> {
 
-    @InjectView(R.id.flag_image)
-    SimpleDraweeView flagImage;
-    @InjectView(R.id.country_name)
-    TextView countryName;
+    @InjectView(R.id.flag_image) SimpleDraweeView flagImage;
+    @InjectView(R.id.country_name) TextView countryName;
 
     public VideoLocaleCell(View view) {
         super(view);
@@ -32,10 +30,5 @@ public class VideoLocaleCell extends AbstractCell<VideoLocale> {
         }
         countryName.setText(getModelObject().getTitle());
         itemView.setOnClickListener(view -> getEventBus().post(new VideoLocaleSelectedEvent(getModelObject())));
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

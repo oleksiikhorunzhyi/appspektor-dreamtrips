@@ -35,11 +35,6 @@ public class BucketPhotoCell extends AbstractDelegateCell<BucketPhoto, BucketPho
                 .getFSImage().getThumbUrl(itemView.getResources())));
     }
 
-    @Override
-    public void prepareForReuse() {
-    }
-
-
     @OnClick(R.id.imageViewPhoto)
     public void onCellClick(View view) {
         showItemDialog(view);

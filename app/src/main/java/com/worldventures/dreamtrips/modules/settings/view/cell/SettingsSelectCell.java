@@ -21,13 +21,10 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_settings_select)
 public class SettingsSelectCell extends AbstractDelegateCell<SelectSetting, SettingsSelectCellDelegate> {
 
-    @InjectView(R.id.settings_title)
-    TextView settingsTitle;
-    @InjectView(R.id.settings_value)
-    TextView settingsValue;
+    @InjectView(R.id.settings_title) TextView settingsTitle;
+    @InjectView(R.id.settings_value) TextView settingsValue;
 
-    @Inject
-    FragmentManager fragmentManager;
+    @Inject FragmentManager fragmentManager;
 
     public SettingsSelectCell(View view) {
         super(view);
@@ -37,10 +34,6 @@ public class SettingsSelectCell extends AbstractDelegateCell<SelectSetting, Sett
     protected void syncUIStateWithModel() {
         settingsTitle.setText(SettingsManager.getLocalizedTitleResource(getModelObject().getName()));
         settingsValue.setText(SettingsManager.getLocalizedOptionResource(getModelObject().getValue()));
-    }
-
-    @Override
-    public void prepareForReuse() {
     }
 
     @OnClick({R.id.settings_item_holder})
@@ -62,5 +55,4 @@ public class SettingsSelectCell extends AbstractDelegateCell<SelectSetting, Sett
         });
         dialog.show(fragmentManager);
     }
-
 }

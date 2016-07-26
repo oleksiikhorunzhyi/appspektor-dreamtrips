@@ -88,6 +88,10 @@ public class Comment implements Parcelable, Serializable, UidItem {
         return translation;
     }
 
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }

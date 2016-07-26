@@ -47,6 +47,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedQueryCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
@@ -76,6 +77,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject FeedEntityManager entityManager;
     @Inject SnappyRepository db;
     @Inject MediaPickerManager mediaPickerManager;
+    @Inject TranslationFeedInteractor translationFeedInteractor;
     @Inject DrawableUtil drawableUtil;
     @Inject UnreadConversationObservable unreadConversationObservable;
     @Inject @ForActivity Provider<Injector> injectorProvider;

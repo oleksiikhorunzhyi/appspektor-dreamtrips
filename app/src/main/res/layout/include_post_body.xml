@@ -20,13 +20,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <Button
+    <TextView
         android:id="@+id/translate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:layout_marginLeft="@dimen/spacing_normal"
         android:background="@drawable/background_translate_button"
+        android:padding="@dimen/spacing_tiny"
         android:text="@string/translate"
-        android:visibility="gone"/>
+        android:textColor="@android:color/black"
+        android:visibility="visible"/>
 
     <FrameLayout
         android:layout_width="wrap_content"

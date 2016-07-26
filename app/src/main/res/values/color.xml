@@ -68,9 +68,9 @@
     <color name="hashtag_text_color">#005E92</color>
     <color name="highlight_hashtag_bg">#4C53B5FE</color>
 
-    <color name="background_translate_btn_stroke">#9b9999</color>
-    <color name="translate_from_color">#9b9999</color>
-    <color name="translate_vertical_line_color">#9b9999</color>
+    <color name="background_translate_btn_stroke">#979797</color>
+    <color name="translate_from_color">#929292</color>
+    <color name="translate_vertical_line_color">#929292</color>
 
     <color name="dt_filter_apply_reset">#025E93</color>
 

@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.location.ImmutableDtlManualLocation;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor;
+import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationCommand;
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlPresenterImpl;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
@@ -33,6 +34,8 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
     LocationDelegate gpsLocationDelegate;
     @Inject
     DtlLocationInteractor locationInteractor;
+    @Inject
+    DtlMerchantInteractor merchantInteractor;
     @Inject
     DtlFilterMerchantInteractor filterInteractor;
 
@@ -68,6 +71,7 @@ public class DtlStartPresenterImpl extends DtlPresenterImpl<DtlStartScreen, View
                 .compose(bindViewIoToMainComposer())
                 .subscribe(command -> {
                     if (!command.isResultDefined()) {
+                        merchantInteractor.merchantsActionPipe().clearReplays();
                         if (newLocation == null) navigatePath(DtlLocationsPath.getDefault());
                         else {
                             DtlLocation dtlLocation = ImmutableDtlManualLocation.builder()

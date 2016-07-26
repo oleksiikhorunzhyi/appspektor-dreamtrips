@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,7 +17,7 @@ class FragmentCompass {
 
     private FragmentActivity activity;
 
-    private int containerId;
+    @IdRes private int containerId;
     private boolean backStackEnabled = true;
     private FragmentManager fragmentManager;
 
@@ -28,7 +29,7 @@ class FragmentCompass {
         this.activity = activity;
     }
 
-    public void setContainerId(int containerId) {
+    public void setContainerId(@IdRes int containerId) {
         this.containerId = containerId;
     }
 

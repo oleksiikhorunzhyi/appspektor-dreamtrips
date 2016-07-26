@@ -38,32 +38,20 @@ import mbanje.kurt.fabbutton.FabButton;
 @Layout(R.layout.adapter_item_photo_post)
 public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationItem, PhotoPostCreationDelegate> {
 
-    @Inject
-    @ForActivity
-    Injector injector;
-    @Inject
-    SessionHolder<UserSession> userSessionHolder;
+    @Inject @ForActivity Injector injector;
+    @Inject SessionHolder<UserSession> userSessionHolder;
 
-    @InjectView(R.id.shadow)
-    View shadow;
-    @InjectView(R.id.photo_container)
-    View photoContainer;
-    @InjectView(R.id.fab_progress)
-    FabButton fabProgress;
-    @InjectView(R.id.attached_photo)
-    SimpleDraweeView attachedPhoto;
-    @InjectView(R.id.fabbutton_circle)
-    CircleImageView circleView;
-    @InjectView(R.id.tag_btn)
-    TextView tagButton;
-    @InjectView(R.id.photo_title)
-    EditText photoTitle;
-    @InjectView(R.id.photo_post_taggable_holder)
-    PhotoTagHolder photoTagHolder;
-    @InjectView(R.id.remove)
-    View remove;
+    @InjectView(R.id.shadow) View shadow;
+    @InjectView(R.id.photo_container) View photoContainer;
+    @InjectView(R.id.fab_progress) FabButton fabProgress;
+    @InjectView(R.id.attached_photo) SimpleDraweeView attachedPhoto;
+    @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
+    @InjectView(R.id.tag_btn) TextView tagButton;
+    @InjectView(R.id.photo_title) EditText photoTitle;
+    @InjectView(R.id.photo_post_taggable_holder) PhotoTagHolder photoTagHolder;
+    @InjectView(R.id.remove) View remove;
 
-    int cellWidth;
+    private int cellWidth;
 
     public PhotoPostCreationCell(View view) {
         super(view);
@@ -213,11 +201,6 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     @OnClick(R.id.remove)
     void onDelete() {
         cellDelegate.onRemoveClicked(getModelObject());
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 
 @Layout(R.layout.adapter_item_entity_details)
 public class BucketFeedEntityDetailsCell extends FeedEntityDetailsCell<BucketFeedItem> {
+
     public BucketFeedEntityDetailsCell(View view) {
         super(view);
     }

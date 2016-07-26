@@ -33,11 +33,6 @@ public class PostCreationTextCell extends AbstractDelegateCell<PostDescription, 
         post.setOnFocusChangeListener(null);
     }
 
-    @Override
-    public void prepareForReuse() {
-
-    }
-
     public interface Delegate extends CellDelegate<PostDescription> {
 
     }

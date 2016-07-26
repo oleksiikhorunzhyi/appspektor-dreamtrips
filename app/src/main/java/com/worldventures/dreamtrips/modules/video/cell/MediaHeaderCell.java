@@ -18,14 +18,10 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_media_header)
 public class MediaHeaderCell extends AbstractDelegateCell<MediaHeader, VideoHeaderDelegate> {
 
-    @InjectView(R.id.header)
-    TextView header;
-    @InjectView((R.id.wrapper_spinner_language))
-    View language;
-    @InjectView(R.id.language)
-    TextView languageCaption;
-    @InjectView(R.id.spinner_language)
-    SimpleDraweeView flag;
+    @InjectView(R.id.header) TextView header;
+    @InjectView(R.id.wrapper_spinner_language) View language;
+    @InjectView(R.id.language) TextView languageCaption;
+    @InjectView(R.id.spinner_language) SimpleDraweeView flag;
 
     public MediaHeaderCell(View view) {
         super(view);
@@ -56,7 +52,4 @@ public class MediaHeaderCell extends AbstractDelegateCell<MediaHeader, VideoHead
         if (cellDelegate != null) cellDelegate.onLanguageClicked();
     }
 
-    @Override
-    public void prepareForReuse() {
-    }
 }

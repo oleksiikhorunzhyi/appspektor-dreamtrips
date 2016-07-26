@@ -14,8 +14,7 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_more_comments)
 public class LoadMoreCell extends AbstractCell<LoadMore> {
 
-    @InjectView(R.id.caption)
-    TextView caption;
+    @InjectView(R.id.caption) TextView caption;
 
     public LoadMoreCell(View view) {
         super(view);
@@ -31,10 +30,5 @@ public class LoadMoreCell extends AbstractCell<LoadMore> {
                 R.string.loading : R.string.comment_view_more);
         caption.setVisibility(getModelObject().isVisible() ?
                 View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

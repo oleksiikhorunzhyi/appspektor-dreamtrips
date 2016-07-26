@@ -22,18 +22,12 @@ import mbanje.kurt.fabbutton.ProgressRingView;
 @Layout(R.layout.adapter_item_photo_upload)
 public class PhotoUploadCell extends AbstractCell<UploadTask> {
 
-    @InjectView(R.id.imageViewPhoto)
-    protected SimpleDraweeView imageView;
+    @InjectView(R.id.imageViewPhoto) SimpleDraweeView imageView;
+    @InjectView(R.id.fab_progress) FabButton fabProgress;
+    @InjectView(R.id.fabbutton_circle) CircleImageView circleView;
+    @InjectView(R.id.fabbutton_ring) ProgressRingView ring;
 
-    @InjectView(R.id.fab_progress)
-    protected FabButton fabProgress;
-    @InjectView(R.id.fabbutton_circle)
-    protected CircleImageView circleView;
-    @InjectView(R.id.fabbutton_ring)
-    protected ProgressRingView ring;
-
-    @Inject
-    protected SnappyRepository db;
+    @Inject SnappyRepository db;
 
     public PhotoUploadCell(View view) {
         super(view);
@@ -52,10 +46,6 @@ public class PhotoUploadCell extends AbstractCell<UploadTask> {
         } else {
             setupViewAsLoading();
         }
-    }
-
-    @Override
-    public void prepareForReuse() {
     }
 
     private void setupViewAsLoading() {
@@ -80,5 +70,4 @@ public class PhotoUploadCell extends AbstractCell<UploadTask> {
         int color = fabProgress.getContext().getResources().getColor(R.color.bucket_green);
         circleView.setColor(color);
     }
-
 }

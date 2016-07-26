@@ -34,17 +34,11 @@ import butterknife.Optional;
 @Layout(R.layout.adapter_feed_item_cell)
 public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
 
-    @InjectView(R.id.cell_container)
-    ViewGroup cellContainer;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
+    @InjectView(R.id.cell_container) ViewGroup cellContainer;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
 
-    CommentCellHelper commentCellHelper;
-
+    private CommentCellHelper commentCellHelper;
     private FeedItemDetailsCell feedItemDetailsCell;
 
     public FeedItemCell(View view) {
@@ -103,11 +97,6 @@ public class FeedItemCell<ITEM extends FeedItem> extends AbstractCell<ITEM> {
     private void hideLikersPanel() {
         View likersPanel = itemView.findViewById(R.id.likers_panel);
         if (likersPanel != null) likersPanel.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 
     @Optional

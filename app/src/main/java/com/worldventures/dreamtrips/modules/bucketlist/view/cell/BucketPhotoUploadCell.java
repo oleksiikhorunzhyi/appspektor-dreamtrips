@@ -70,10 +70,6 @@ public class BucketPhotoUploadCell extends AbstractDelegateCell<EntityStateHolde
         }
     }
 
-    @Override
-    public void prepareForReuse() {
-    }
-
     @OnLongClick(R.id.imageViewPhoto)
     boolean onImageClicked(View v) {
         showItemDialog(v);

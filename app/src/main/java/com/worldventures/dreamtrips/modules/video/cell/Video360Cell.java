@@ -26,21 +26,14 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_video_360)
 public class Video360Cell extends AbstractDelegateCell<Video, VideoCellDelegate> {
 
-    @InjectView(R.id.textViewDuration)
-    protected TextView textViewDuration;
-    @InjectView(R.id.tv_title)
-    protected TextView textViewTitle;
-    @InjectView(R.id.iv_bg)
-    protected SimpleDraweeView imageViewPreview;
-    @InjectView(R.id.download_progress)
-    protected PinProgressButton downloadProgress;
+    @InjectView(R.id.textViewDuration) TextView textViewDuration;
+    @InjectView(R.id.tv_title) TextView textViewTitle;
+    @InjectView(R.id.iv_bg) SimpleDraweeView imageViewPreview;
+    @InjectView(R.id.download_progress) PinProgressButton downloadProgress;
 
-    @Inject
-    protected ActivityRouter activityRouter;
-    @Inject
-    protected Context context;
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
+    @Inject Context context;
+    @Inject ActivityRouter activityRouter;
+    @Inject SessionHolder<UserSession> appSessionHolder;
 
     private ProgressVideoCellHelper progressVideoCellHelper;
 

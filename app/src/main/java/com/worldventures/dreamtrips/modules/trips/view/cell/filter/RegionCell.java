@@ -17,18 +17,14 @@ import javax.inject.Inject;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-
 @Layout(R.layout.adapter_item_filter_checkbox)
 public class RegionCell extends AbstractDelegateCell<RegionModel, RegionCell.Delegate> {
 
-    @InjectView(R.id.textViewAttributeCaption)
-    protected TextView textViewName;
-    @InjectView(R.id.checkBox)
-    protected CheckBox checkBox;
-    @Inject
-    protected Context context;
-    @InjectView(R.id.cell)
-    protected LinearLayout cell;
+    @InjectView(R.id.textViewAttributeCaption) TextView textViewName;
+    @InjectView(R.id.checkBox) CheckBox checkBox;
+    @InjectView(R.id.cell) LinearLayout cell;
+
+    @Inject Context context;
 
     public RegionCell(View view) {
         super(view);

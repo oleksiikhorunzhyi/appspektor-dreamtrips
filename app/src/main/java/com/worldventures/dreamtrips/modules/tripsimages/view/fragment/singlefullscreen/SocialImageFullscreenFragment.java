@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.tripsimages.view.fragment.singleful
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -100,7 +101,7 @@ public class SocialImageFullscreenFragment extends FullScreenPhotoFragment<Socia
 
     @Override
     public void openEdit(EditPhotoBundle bundle) {
-        int containerId = R.id.container_details_floating;
+        @IdRes int containerId = R.id.container_details_floating;
         router.moveTo(Route.EDIT_PHOTO, NavigationConfigBuilder.forRemoval()
                 .containerId(containerId)
                 .fragmentManager(getFragmentManager())

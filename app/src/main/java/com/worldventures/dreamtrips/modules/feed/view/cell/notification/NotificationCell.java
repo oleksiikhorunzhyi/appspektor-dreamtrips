@@ -43,32 +43,15 @@ import timber.log.Timber;
 @Layout(R.layout.adapter_item_notification)
 public class NotificationCell extends AbstractCell<FeedItem> {
 
-    @Optional
-    @InjectView(R.id.notification_avatar)
-    SmartAvatarView notificationAvatar;
-    @Optional
-    @InjectView(R.id.notification_owner)
-    TextView notificationOwner;
-    @Optional
-    @InjectView(R.id.notification_text)
-    TextView notificationText;
-    @Optional
-    @InjectView(R.id.notification_time)
-    TextView notificationTime;
-    @Optional
-    @InjectView(R.id.notification_header_image)
-    SimpleDraweeView notificationImage;
+    @Optional @InjectView(R.id.notification_avatar) SmartAvatarView notificationAvatar;
+    @Optional @InjectView(R.id.notification_owner) TextView notificationOwner;
+    @Optional @InjectView(R.id.notification_text) TextView notificationText;
+    @Optional @InjectView(R.id.notification_time) TextView notificationTime;
+    @Optional @InjectView(R.id.notification_header_image) SimpleDraweeView notificationImage;
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> profileRouteCreator;
-
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> profileRouteCreator;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
     public NotificationCell(View view) {
         super(view);
@@ -162,10 +145,5 @@ public class NotificationCell extends AbstractCell<FeedItem> {
                 .data(bundle)
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .build());
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

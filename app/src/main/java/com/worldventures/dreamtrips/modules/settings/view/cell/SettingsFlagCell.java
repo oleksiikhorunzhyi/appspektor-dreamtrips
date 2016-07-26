@@ -17,10 +17,8 @@ import butterknife.OnClick;
 @Layout(R.layout.adapter_item_settings_flag)
 public class SettingsFlagCell extends AbstractDelegateCell<FlagSetting, CellDelegate<FlagSetting>> {
 
-    @InjectView(R.id.settings_title)
-    TextView settingsTitle;
-    @InjectView(R.id.flag_checkbox)
-    CheckBox flag;
+    @InjectView(R.id.settings_title) TextView settingsTitle;
+    @InjectView(R.id.flag_checkbox) CheckBox flag;
 
     public SettingsFlagCell(View view) {
         super(view);
@@ -37,10 +35,5 @@ public class SettingsFlagCell extends AbstractDelegateCell<FlagSetting, CellDele
         getModelObject().setValue(!getModelObject().getValue());
         flag.setChecked(getModelObject().getValue());
         cellDelegate.onCellClicked(getModelObject());
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

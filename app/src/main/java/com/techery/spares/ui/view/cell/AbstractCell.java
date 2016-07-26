@@ -66,6 +66,11 @@ public abstract class AbstractCell<T> extends RecyclerView.ViewHolder implements
 
     }
 
+    @Override
+    public void prepareForReuse() {
+
+    }
+
     protected abstract void syncUIStateWithModel();
 
     public void afterInject() {

@@ -27,12 +27,6 @@ public class ReloadFeedCell extends AbstractDelegateCell<ReloadFeedModel, CellDe
         itemView.setLayoutParams(layoutParams);
     }
 
-    @Override
-    public void prepareForReuse() {
-
-    }
-
-
     @OnClick(R.id.profile_feed_reload)
     protected void onProfileFeedReload() {
         itemView.setVisibility(View.GONE);

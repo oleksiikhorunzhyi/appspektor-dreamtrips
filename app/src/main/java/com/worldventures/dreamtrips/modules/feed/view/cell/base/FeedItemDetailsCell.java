@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -29,19 +30,14 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 
-public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCell<T> {
+public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDelegate<I>> extends BaseFeedCell<I, D> {
 
     FeedItemCommonDataHelper feedItemCommonDataHelper;
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
-    @InjectView(R.id.card_view_wrapper)
-    CardView cardViewWrapper;
+    @InjectView(R.id.card_view_wrapper) CardView cardViewWrapper;
 
     public FeedItemDetailsCell(View view) {
         super(view);
@@ -85,5 +81,4 @@ public abstract class FeedItemDetailsCell<T extends FeedItem> extends BaseFeedCe
                 .data(new UserBundle(user))
                 .build());
     }
-
 }

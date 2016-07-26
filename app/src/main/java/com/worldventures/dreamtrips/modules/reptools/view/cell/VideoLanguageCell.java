@@ -13,8 +13,7 @@ import butterknife.InjectView;
 @Layout(android.R.layout.simple_list_item_1)
 public class VideoLanguageCell extends AbstractCell<VideoLanguage> {
 
-    @InjectView(android.R.id.text1)
-    TextView text;
+    @InjectView(android.R.id.text1) TextView text;
 
     public VideoLanguageCell(View view) {
         super(view);
@@ -24,10 +23,5 @@ public class VideoLanguageCell extends AbstractCell<VideoLanguage> {
     protected void syncUIStateWithModel() {
         text.setText(getModelObject().getTitle());
         itemView.setOnClickListener(view -> getEventBus().post(new VideoLanguageSelectedEvent(getModelObject())));
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

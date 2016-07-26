@@ -24,14 +24,10 @@ public class DateCell extends AbstractDelegateCell<DateFilterItem, DateCell.Dele
     public static final String START = "start";
     public static final String END = "end";
 
-    @InjectView(R.id.textViewStartDate)
-    protected TextView textViewStart;
+    @InjectView(R.id.textViewStartDate) TextView textViewStart;
+    @InjectView(R.id.textViewEndDate) TextView textViewEnd;
 
-    @InjectView(R.id.textViewEndDate)
-    protected TextView textViewEnd;
-
-    @Inject
-    protected FragmentManager fragmentManager;
+    @Inject FragmentManager fragmentManager;
 
     public DateCell(View view) {
         super(view);
@@ -121,11 +117,6 @@ public class DateCell extends AbstractDelegateCell<DateFilterItem, DateCell.Dele
 
     private boolean validateStartDate(Calendar selectedStartDate) {
         return selectedStartDate.getTimeInMillis() < getModelObject().getEndDate().getTime();
-    }
-
-    @Override
-    public void prepareForReuse() {
-        //nothing to do here
     }
 
     public interface Delegate extends CellDelegate<DateFilterItem> {

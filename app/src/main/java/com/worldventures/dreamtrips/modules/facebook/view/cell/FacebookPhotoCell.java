@@ -18,10 +18,8 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_photo_facebook)
 public class FacebookPhotoCell extends AbstractCell<FacebookPhoto> {
 
-    @InjectView(R.id.imageViewPhoto)
-    protected SimpleDraweeView ivBg;
-    @InjectView(R.id.pick)
-    protected ImageView pick;
+    @InjectView(R.id.imageViewPhoto) SimpleDraweeView ivBg;
+    @InjectView(R.id.pick) ImageView pick;
 
     public FacebookPhotoCell(View view) {
         super(view);
@@ -54,10 +52,5 @@ public class FacebookPhotoCell extends AbstractCell<FacebookPhoto> {
         } else {
             pick.setImageResource(R.drawable.add_photo_icon);
         }
-    }
-
-    @Override
-    public void prepareForReuse() {
-
     }
 }

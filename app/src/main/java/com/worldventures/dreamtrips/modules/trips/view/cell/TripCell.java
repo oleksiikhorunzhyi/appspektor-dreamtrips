@@ -17,10 +17,8 @@ import javax.inject.Inject;
 @Layout(R.layout.adapter_item_trip)
 public class TripCell extends AbstractCell<TripModel> {
 
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    protected Presenter.TabletAnalytic tabletAnalytic;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject Presenter.TabletAnalytic tabletAnalytic;
 
     private TripFeedViewInjector tripFeedViewInjector;
 
@@ -41,9 +39,4 @@ public class TripCell extends AbstractCell<TripModel> {
         if (userSessionOptional.isPresent())
             tripFeedViewInjector.initTripData(getModelObject(), userSessionOptional.get().getUser());
     }
-
-    @Override
-    public void prepareForReuse() {
-    }
-
 }

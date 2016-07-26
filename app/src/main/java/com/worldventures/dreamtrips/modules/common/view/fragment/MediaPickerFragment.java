@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.view.View;
 
 import com.techery.spares.annotations.Layout;
@@ -96,7 +97,7 @@ public class MediaPickerFragment extends BaseFragmentWithArgs<MediaPickerPresent
 
     @Override
     public boolean back() {
-        int containerId = (getView() != null && getView().getParent() != null)
+        @IdRes int containerId = (getView() != null && getView().getParent() != null)
                 ? ((View) getView().getParent()).getId()
                 : DEFAULT_CONTAINER_ID;
         router.moveTo(Route.MEDIA_PICKER, NavigationConfigBuilder.forRemoval()

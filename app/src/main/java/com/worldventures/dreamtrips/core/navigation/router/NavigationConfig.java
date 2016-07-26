@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.navigation.router;
 
 import android.os.Parcelable;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +14,7 @@ public class NavigationConfig {
     Parcelable data;
     FragmentManager fragmentManager;
     ToolbarConfig toolbarConfig;
-    int containerId;
+    @IdRes int containerId;
     Boolean backStackEnabled;
     Boolean clearBackStack = false;
     int gravity = 0x0000;

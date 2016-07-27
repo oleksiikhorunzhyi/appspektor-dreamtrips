@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 
 public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocationsSearchScreen, DtlLocationsSearchViewState>
@@ -86,11 +87,11 @@ public class DtlLocationsSearchPresenterImpl extends DtlPresenterImpl<DtlLocatio
         locationInteractor.searchLocationPipe().clearReplays();
         locationInteractor.locationPipe()
                 .createObservableResult(DtlLocationCommand.change(location))
-                .map(dtlLocationCommand -> dtlLocationCommand.getResult())
+                .map(Command::getResult)
                 .cast(DtlExternalLocation.class)
-                .subscribe(dtlLocation -> analyticsInteractor.dtlAnalyticsCommandPipe()
-                        .send(DtlAnalyticsCommand.create(
-                                new LocationSearchEvent(dtlLocation))));
+                .map(LocationSearchEvent::new)
+                .map(DtlAnalyticsCommand::create)
+                .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         History history = History.single(DtlMerchantsPath.getDefault());
         Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);

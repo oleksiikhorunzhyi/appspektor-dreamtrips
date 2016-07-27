@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import flow.Flow;
 import flow.History;
 import icepick.State;
+import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -165,11 +166,11 @@ public class DtlLocationsPresenterImpl extends DtlPresenterImpl<DtlLocationsScre
     public void onLocationSelected(DtlExternalLocation location) {
         locationInteractor.locationPipe()
                 .createObservableResult(DtlLocationCommand.change(location))
-                .map(dtlLocationCommand -> dtlLocationCommand.getResult())
+                .map(Command::getResult)
                 .cast(DtlExternalLocation.class)
-                .subscribe(dtlLocation -> analyticsInteractor.dtlAnalyticsCommandPipe()
-                        .send(DtlAnalyticsCommand.create(
-                                new LocationSearchEvent(dtlLocation))));
+                .map(LocationSearchEvent::new)
+                .map(DtlAnalyticsCommand::create)
+                .subscribe(analyticsInteractor.dtlAnalyticsCommandPipe()::send);
         filterInteractor.filterMerchantsActionPipe().clearReplays();
         navigateToMerchants();
     }

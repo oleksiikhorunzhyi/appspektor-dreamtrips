@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.core.module;
 
 import android.content.Context;
 
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.LocaleSwitcher;
 
@@ -17,8 +19,8 @@ import dagger.Provides;
 public class LocaleModule {
 
     @Provides
-    LocaleHelper provideLocaleHelper(LocalesHolder localesHolder) {
-        return new LocaleHelper(localesHolder);
+    LocaleHelper provideLocaleHelper(LocalesHolder localesHolder, SessionHolder<UserSession> appSessionHolder) {
+        return new LocaleHelper(localesHolder, appSessionHolder);
     }
 
     @Provides

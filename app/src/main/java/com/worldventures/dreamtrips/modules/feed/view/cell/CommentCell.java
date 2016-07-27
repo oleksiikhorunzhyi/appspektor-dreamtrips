@@ -19,6 +19,7 @@ import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.FlagPopupMenu;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
@@ -55,6 +56,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
     @InjectView(R.id.translation_dot_separator) View translationDotSeparator;
 
     @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject LocaleHelper localeHelper;
     @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
     @Inject @ForActivity Provider<Injector> injectorProvider;
 
@@ -76,7 +78,9 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
         } else {
             selfActionsWrapper.setVisibility(View.GONE);
             actionsWrapper.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(getModelObject().getLanguage()) && TextUtils.isEmpty(getModelObject().getTranslation())) {
+            if (!TextUtils.isEmpty(getModelObject().getLanguage())
+                    && !localeHelper.isOwnLanguage(getModelObject().getLanguage())
+                    && TextUtils.isEmpty(getModelObject().getTranslation())) {
                 showTranslationButton();
             } else {
                 hideTranslationButton();

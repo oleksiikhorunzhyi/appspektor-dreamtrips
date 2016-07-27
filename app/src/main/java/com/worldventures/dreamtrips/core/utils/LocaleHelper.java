@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.core.utils;
 
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
@@ -12,9 +14,11 @@ import java.util.Locale;
 public class LocaleHelper {
 
     private LocalesHolder localesStorage;
+    private SessionHolder<UserSession> appSessionHolder;
 
-    public LocaleHelper(LocalesHolder localesStorage) {
+    public LocaleHelper(LocalesHolder localesStorage, SessionHolder<UserSession> appSessionHolder) {
         this.localesStorage = localesStorage;
+        this.appSessionHolder = appSessionHolder;
     }
 
     public Locale getDefaultLocale() {
@@ -54,6 +58,13 @@ public class LocaleHelper {
         }
 
         return new Locale(language, country);
+    }
+
+    public boolean isOwnLanguage(String languageCode) {
+        if (!appSessionHolder.get().isPresent()) return false;
+
+        String userLanguageCode = appSessionHolder.get().get().getUser().getLocale().split("-")[0];
+        return languageCode.equalsIgnoreCase(userLanguageCode);
     }
 
     private AvailableLocale obtainAvailableLocale(String localeName){

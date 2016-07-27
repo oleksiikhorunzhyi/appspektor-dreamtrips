@@ -23,7 +23,7 @@ import static com.worldventures.dreamtrips.wallet.di.WalletActivityModule.WALLET
 
 @Layout(R.layout.activity_wallet)
 public class WalletActivity extends FlowActivity<WalletActivityPresenter> {
-    @InjectView(R.id.chat_photo_picker)
+    @InjectView(R.id.wallet_photo_picker)
     PhotoPickerLayout photoPickerLayout;
 
     @Inject

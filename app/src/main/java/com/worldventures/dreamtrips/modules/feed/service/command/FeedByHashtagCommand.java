@@ -5,7 +5,7 @@ import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.feed.api.GetFeedsByHashtagHttpAction;
+import com.worldventures.dreamtrips.modules.feed.service.api.GetFeedsByHashtagHttpAction;
 import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;

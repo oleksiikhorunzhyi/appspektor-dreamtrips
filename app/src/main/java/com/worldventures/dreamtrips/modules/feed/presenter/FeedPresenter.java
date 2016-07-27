@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -45,10 +44,11 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedQueryCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
@@ -137,9 +137,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     ///////////////////////////////////////////////////////////////////////////
 
     private void subscribeRefreshFeeds() {
-        view.bindUntilDropView(feedInteractor.getRefreshAccountFeedQueryPipe().observe()
+        view.bindUntilDropView(feedInteractor.getRefreshAccountFeedPipe().observe()
                 .compose(new ActionStateToActionTransformer<>())
-                .map(GetAccountFeedQueryCommand.Refresh::getResult)
+                .map(BaseGetFeedCommand::getResult)
                 .compose(new IoToMainComposer<>()))
                 .subscribe(this::refreshFeedSucceed,
                         this::refreshFeedError);
@@ -165,7 +165,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public void refreshFeed() {
         view.startLoading();
-        feedInteractor.getRefreshAccountFeedQueryPipe().send(new GetAccountFeedQueryCommand.Refresh(filterCircle.getId()));
+        feedInteractor.getRefreshAccountFeedPipe().send(new GetAccountFeedCommand.Refresh(filterCircle.getId()));
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -173,9 +173,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     ///////////////////////////////////////////////////////////////////////////
 
     private void subscribeLoadNextFeeds() {
-        view.bindUntilDropView(feedInteractor.getLoadNextAccountFeedQueryPipe().observe()
+        view.bindUntilDropView(feedInteractor.getLoadNextAccountFeedPipe().observe()
                 .compose(new ActionStateToActionTransformer<>())
-                .map(GetAccountFeedQueryCommand.LoadNext::getResult)
+                .map(BaseGetFeedCommand::getResult)
                 .compose(new IoToMainComposer<>()))
                 .subscribe(this::addFeedItems,
                         this::loadMoreItemsError);
@@ -196,13 +196,12 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public void loadNext() {
-        feedInteractor.getLoadNextAccountFeedQueryPipe().send(new GetAccountFeedQueryCommand.LoadNext(
+        feedInteractor.getLoadNextAccountFeedPipe().send(new GetAccountFeedCommand.LoadNext(
                 filterCircle.getId(), getLastFeedDate()));
     }
 
-    private String getLastFeedDate() {
-        Date lastFeedDate = feedItems.get(feedItems.size() - 1).getCreatedAt();
-        return lastFeedDate == null ? null : DateTimeUtils.convertDateToUTCString(lastFeedDate);
+    private Date getLastFeedDate() {
+        return feedItems.get(feedItems.size() - 1).getCreatedAt();
     }
 
     public List<Circle> getFilterCircles() {

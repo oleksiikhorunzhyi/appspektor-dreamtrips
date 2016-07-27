@@ -3,17 +3,17 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
-import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
 import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.UnfriendCommand;
@@ -31,21 +31,20 @@ import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRe
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateToActionTransformer;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     private int notificationId;
     private boolean acceptFriend;
 
-    @Inject
-    NotificationDelegate notificationDelegate;
-    @Inject
-    StartChatDelegate startSingleChatDelegate;
+    @Inject NotificationDelegate notificationDelegate;
+    @Inject StartChatDelegate startSingleChatDelegate;
 
     private UidItemDelegate uidItemDelegate;
 
@@ -66,6 +65,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        subscribeLoadNextFeeds();
+        subscribeRefreshFeeds();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (notificationId != UserBundle.NO_NOTIFICATION) {
@@ -78,20 +84,39 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         }
     }
 
+    private void subscribeRefreshFeeds() {
+        view.bindUntilDropView(feedInteractor.getRefreshUserTimelinePipe().observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(BaseGetFeedCommand::getResult)
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::refreshFeedSucceed,
+                        this::refreshFeedError);
+    }
+
+
+    private void subscribeLoadNextFeeds() {
+        view.bindUntilDropView(feedInteractor.getLoadNextUserTimelinePipe().observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(BaseGetFeedCommand::getResult)
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::addFeedItems,
+                        this::loadMoreItemsError);
+    }
+
+    @Override
+    public void refreshFeed() {
+        feedInteractor.getRefreshUserTimelinePipe().send(new GetUserTimelineCommand.Refresh(user.getId()));
+    }
+
+    @Override
+    public void loadNext(Date date) {
+        feedInteractor.getLoadNextUserTimelinePipe().send(new GetUserTimelineCommand.LoadNext(user.getId(), date));
+    }
+
     @Override
     protected void loadProfile() {
         view.startLoading();
         doRequest(new GetPublicProfileQuery(user), this::onProfileLoaded);
-    }
-
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId());
-    }
-
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     @Override

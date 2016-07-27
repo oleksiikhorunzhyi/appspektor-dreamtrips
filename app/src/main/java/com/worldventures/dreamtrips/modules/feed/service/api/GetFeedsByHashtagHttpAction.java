@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.api;
+package com.worldventures.dreamtrips.modules.feed.service.api;
 
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;

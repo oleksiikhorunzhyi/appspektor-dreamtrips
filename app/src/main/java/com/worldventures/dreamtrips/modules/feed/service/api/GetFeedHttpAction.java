@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.api;
+package com.worldventures.dreamtrips.modules.feed.service.api;
 
 import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
@@ -9,17 +9,14 @@ import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Query;
 import io.techery.janet.http.annotations.Response;
 
-@HttpAction(value = "/api/social/feed", method = HttpAction.Method.GET)
-public class GetAccountFeedsQueryHttpAction extends AuthorizedHttpAction {
+public abstract class GetFeedHttpAction extends AuthorizedHttpAction {
 
-    @Query("circle_id") String circleId;
     @Query("per_page") int perPage;
     @Query("before") String before;
 
     @Response ArrayList<ParentFeedItem> responseItems;
 
-    public GetAccountFeedsQueryHttpAction(String circleId, int perPage, String before) {
-        this.circleId = circleId;
+    public GetFeedHttpAction(int perPage, String before) {
         this.perPage = perPage;
         this.before = before;
     }

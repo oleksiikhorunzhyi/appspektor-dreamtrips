@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.service;
 
+import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
+
 import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;

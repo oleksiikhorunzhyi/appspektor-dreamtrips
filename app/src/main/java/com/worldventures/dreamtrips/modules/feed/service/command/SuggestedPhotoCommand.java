@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.feed.service;
+package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import android.content.Context;
 import android.database.Cursor;

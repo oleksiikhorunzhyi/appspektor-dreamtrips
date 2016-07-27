@@ -89,7 +89,7 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
                 fragmentWithFeedDelegate.addItem(new LoadMoreModel());
                 fragmentWithFeedDelegate.notifyDataSetChanged();
             }
-            getPresenter().loadNext();
+            getPresenter().onLoadNext();
         });
         statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(true));
         statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {

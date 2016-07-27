@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -267,16 +266,6 @@ public interface DreamTripsApi {
 
     @DELETE("/api/social/friends/{user_id}")
     JSONObject unfriend(@Path("user_id") int userId);
-
-    @GET("/api/social/users/{user_id}/timeline")
-    ArrayList<ParentFeedItem> getUserTimeline(@Path("user_id") int userId, @Query("per_page") int perPage, @Query("before") String before);
-
-    @GET("/api/social/timeline")
-    ArrayList<ParentFeedItem> getAccountTimeline(@Query("per_page") int perPage, @Query("before") String before);
-
-    @Deprecated
-    @GET("/api/social/feed")
-    ArrayList<ParentFeedItem> getAccountFeed(@Query("per_page") int perPage, @Query("before") String before, @Query("circle_id") String circleId);
 
     @GET("/api/{object_id}/comments")
     ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);

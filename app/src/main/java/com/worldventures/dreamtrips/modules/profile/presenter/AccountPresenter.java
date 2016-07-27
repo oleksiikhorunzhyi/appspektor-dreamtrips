@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.content.Intent;
 
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
-import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -17,8 +16,8 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
-import com.worldventures.dreamtrips.modules.feed.api.GetUserTimelineQuery;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
@@ -31,12 +30,12 @@ import com.worldventures.dreamtrips.util.Action;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import retrofit.mime.TypedFile;
 import rx.Subscription;
 import timber.log.Timber;
@@ -45,37 +44,48 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     public static final int AVATAR_MEDIA_REQUEST_ID = 155322;
     public static final int COVER_MEDIA_REQUEST_ID = 155323;
-
     public static final int DEFAULT_RATIO_X = 3;
     public static final int DEFAULT_RATIO_Y = 1;
 
-    @Inject
-    RootComponentsProvider rootComponentsProvider;
-    @Inject
-    LogoutDelegate logoutDelegate;
-    @Inject
-    MediaPickerManager mediaPickerManager;
-    @Inject
-    SocialCropImageManager socialCropImageManager;
+    @Inject RootComponentsProvider rootComponentsProvider;
+    @Inject LogoutDelegate logoutDelegate;
+    @Inject MediaPickerManager mediaPickerManager;
+    @Inject SocialCropImageManager socialCropImageManager;
 
     private Subscription mediaSubscription;
     private Subscription cropSubscription;
 
     private String coverTempFilePath;
 
-    @State
-    boolean shouldReload;
-    @State
-    int mediaRequestId;
+    @State boolean shouldReload;
+    @State int mediaRequestId;
 
     public AccountPresenter() {
         super();
     }
 
     @Override
-    protected void loadProfile() {
-        view.startLoading();
-        doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
+    public void takeView(View view) {
+        super.takeView(view);
+        TrackingHelper.profile(getAccountUserId());
+        //
+        subscribeLoadNextFeeds();
+        subscribeRefreshFeeds();
+        mediaSubscription = mediaPickerManager.toObservable()
+                .filter(attachment -> (attachment.requestId == AVATAR_MEDIA_REQUEST_ID
+                        || attachment.requestId == COVER_MEDIA_REQUEST_ID) && attachment.chosenImages.size() > 0)
+                .subscribe(mediaAttachment -> {
+                    if (view != null) {
+                        view.hideMediaPicker();
+                        //
+                        imageSelected(mediaAttachment);
+                    }
+                }, error -> {
+                    Timber.e(error, "");
+                });
+        //
+        socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
+        connectToCroppedImageStream();
     }
 
     @Override
@@ -93,6 +103,40 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onInjected() {
         super.onInjected();
         user = getAccount();
+    }
+
+    private void subscribeRefreshFeeds() {
+        view.bindUntilDropView(feedInteractor.getRefreshAccountTimelinePipe().observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(BaseGetFeedCommand::getResult)
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::refreshFeedSucceed,
+                        this::refreshFeedError);
+    }
+
+    private void subscribeLoadNextFeeds() {
+        view.bindUntilDropView(feedInteractor.getLoadNextAccountTimelinePipe().observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(BaseGetFeedCommand::getResult)
+                .compose(new IoToMainComposer<>()))
+                .subscribe(this::addFeedItems,
+                        this::loadMoreItemsError);
+    }
+
+    @Override
+    public void refreshFeed() {
+        feedInteractor.getRefreshAccountTimelinePipe().send(new GetAccountTimelineCommand.Refresh());
+    }
+
+    @Override
+    public void loadNext(Date date) {
+        feedInteractor.getLoadNextAccountTimelinePipe().send(new GetAccountTimelineCommand.LoadNext(date));
+    }
+
+    @Override
+    protected void loadProfile() {
+        view.startLoading();
+        doRequest(new GetProfileQuery(appSessionHolder), this::onProfileLoaded);
     }
 
     private void onAvatarUploadSuccess(User obj) {
@@ -130,28 +174,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     public void logout() {
         logoutDelegate.logout();
-    }
-
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        TrackingHelper.profile(getAccountUserId());
-        //
-        mediaSubscription = mediaPickerManager.toObservable()
-                .filter(attachment -> (attachment.requestId == AVATAR_MEDIA_REQUEST_ID
-                        || attachment.requestId == COVER_MEDIA_REQUEST_ID) && attachment.chosenImages.size() > 0)
-                .subscribe(mediaAttachment -> {
-                    if (view != null) {
-                        view.hideMediaPicker();
-                        //
-                        imageSelected(mediaAttachment);
-                    }
-                }, error -> {
-                    Timber.e(error, "");
-                });
-        //
-        socialCropImageManager.setAspectRatio(DEFAULT_RATIO_X, DEFAULT_RATIO_Y);
-        connectToCroppedImageStream();
     }
 
     private void connectToCroppedImageStream() {
@@ -223,16 +245,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         } else {
             view.informUser(errorMsg);
         }
-    }
-
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId());
-    }
-
-    @Override
-    protected DreamTripsRequest<ArrayList<ParentFeedItem>> getNextPageFeedRequest(Date date) {
-        return new GetUserTimelineQuery(user.getId(), date);
     }
 
     ////////////////////////////////////////

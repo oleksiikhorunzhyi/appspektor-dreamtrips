@@ -117,8 +117,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:el_contentLayout="@layout/adapter_item_merchant_hours_content"
-                    app:el_headerLayout="@layout/adapter_item_merchant_hours_header">
-                </com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView>
+                    app:el_headerLayout="@layout/adapter_item_merchant_hours_header"/>
 
                 <com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView
                     android:id="@+id/legal_text"

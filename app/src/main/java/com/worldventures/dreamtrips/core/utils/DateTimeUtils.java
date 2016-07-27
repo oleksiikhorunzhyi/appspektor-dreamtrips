@@ -292,11 +292,8 @@ public class DateTimeUtils {
 
     public static boolean isSameDayOfWeek(DayOfWeek day, int timezoneOffset) {
         DateTimeZone timeZone = DateTimeZone.forOffsetHours(timezoneOffset);
-        Calendar calendar = DateTime.now(timeZone).toCalendar(Locale.getDefault());
-        int d = calendar.get(Calendar.DAY_OF_WEEK);
-        int s = day.getDay();
-        boolean r = d == s;
-        return r;
+        Calendar calendar = DateTime.now(timeZone).toCalendar(Locale.US);
+        return calendar.get(Calendar.DAY_OF_WEEK) == day.getDay();
 
     }
 

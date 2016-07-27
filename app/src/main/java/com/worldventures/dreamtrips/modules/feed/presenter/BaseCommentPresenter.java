@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -27,6 +28,8 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
@@ -39,21 +42,20 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
 
-    @Inject
-    FeedEntityManager entityManager;
-    @Inject
-    BucketInteractor bucketInteractor;
+    @Inject FeedEntityManager entityManager;
+    @Inject BucketInteractor bucketInteractor;
+    @Inject TranslationFeedInteractor translationFeedInteractor;
 
     private UidItemDelegate uidItemDelegate;
 
-    @State
-    FeedEntity feedEntity;
-    @State
-    String draftComment;
+    @State FeedEntity feedEntity;
+    @State String draftComment;
+
     private int page = 1;
     private int commentsCount = 0;
     private boolean loadInitiated;
@@ -66,7 +68,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @Override
     public void onInjected() {
         super.onInjected();
-
         entityManager.setRequestingPresenter(this);
     }
 
@@ -75,9 +76,22 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         super.takeView(view);
         view.setDraftComment(draftComment);
         view.setLikePanel(feedEntity);
-        //
+
         if (isNeedCheckCommentsWhenStart())
             checkCommentsAndLikesToLoad();
+
+        subscribeToCommentTranslation();
+    }
+
+    private void subscribeToCommentTranslation() {
+        view.bindUntilDropView(translationFeedInteractor.translateCommentPipe().observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(TranslateUidItemCommand.TranslateCommentCommand::getResult))
+                .compose(new IoToMainComposer<>())
+                .subscribe(comment -> {
+                    updateEntityComments(comment);
+                    view.updateComment(comment);
+                }, this::handleError);
     }
 
     /**
@@ -134,6 +148,11 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         entityManager.deleteComment(feedEntity, comment);
     }
 
+    public void translateComment(Comment comment) {
+        translationFeedInteractor.translateCommentPipe().send(TranslateUidItemCommand.forComment(comment,
+                getAccount().getLocale()));
+    }
+
     public void onEvent(FeedEntityManager.CommentEvent event) {
         switch (event.getType()) {
             case ADDED:
@@ -152,7 +171,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             case EDITED:
                 view.updateComment(event.getComment());
                 break;
-
         }
         eventBus.post(new FeedEntityCommentedEvent(feedEntity));
     }
@@ -254,6 +272,11 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         }
         view.setLikePanel(feedEntity);
         eventBus.post(new FeedEntityChangedEvent(feedEntity));
+    }
+
+    private void updateEntityComments(Comment comment) {
+        int commentIndex = feedEntity.getComments().indexOf(comment);
+        if (commentIndex != -1) feedEntity.getComments().set(commentIndex, comment);
     }
 
     public interface View extends RxView, UidItemDelegate.View {

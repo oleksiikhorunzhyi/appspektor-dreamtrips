@@ -50,22 +50,17 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_comments)
-public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends RxBaseFragmentWithArgs<T, P> implements BaseCommentPresenter.View {
+public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends RxBaseFragmentWithArgs<T, P>
+        implements BaseCommentPresenter.View {
 
-    @InjectView(R.id.list)
-    protected EmptyRecyclerView recyclerView;
-    @InjectView(R.id.input)
-    protected EditText input;
-    @InjectView(R.id.post)
-    protected Button post;
-    @Optional
-    @InjectView(R.id.likers_panel)
-    protected TextView likersPanel;
-    @Optional
-    @InjectView(R.id.title)
-    protected TextView header;
-    @InjectView(R.id.input_container)
-    View inputContainer;
+    @InjectView(R.id.list) protected EmptyRecyclerView recyclerView;
+    @InjectView(R.id.input) protected EditText input;
+    @InjectView(R.id.post) protected Button post;
+    @InjectView(R.id.input_container) View inputContainer;
+    @Optional @InjectView(R.id.likers_panel) protected TextView likersPanel;
+    @Optional @InjectView(R.id.title) protected TextView header;
+
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
 
     protected LoadMore loadMore;
     protected RecyclerViewStateDelegate stateDelegate;
@@ -74,10 +69,6 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     //
     private LikersPanelHelper likersPanelHelper;
     private NavigationWrapper likersNavigationWrapper;
-
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
 
     private TextWatcherAdapter inputWatcher = new TextWatcherAdapter() {
         @Override
@@ -133,7 +124,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
             @Override
             public void onTranslateComment(Comment comment) {
-
+                getPresenter().translateComment(comment);
             }
 
             @Override

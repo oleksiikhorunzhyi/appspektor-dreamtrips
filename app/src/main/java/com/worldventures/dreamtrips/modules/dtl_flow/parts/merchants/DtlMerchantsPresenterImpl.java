@@ -64,8 +64,11 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
         super.onAttachedToWindow();
         apiErrorPresenter.setView(getView());
         //
-        analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(DtlAnalyticsCommand.create(new MerchantsListingViewEvent()));
+        merchantInteractor.merchantsActionPipe().observe()
+                .compose(bindView())
+                .compose(new ActionStateToActionTransformer())
+                .subscribe(merchantsAction -> analyticsInteractor.dtlAnalyticsCommandPipe()
+                        .send(DtlAnalyticsCommand.create(new MerchantsListingViewEvent())));
         //
         getView().getToggleObservable()
                 .subscribe(offersOnly -> filterInteractor.filterDataPipe()

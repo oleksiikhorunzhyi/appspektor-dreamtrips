@@ -28,7 +28,6 @@ import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,7 +39,8 @@ import butterknife.Optional;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @Layout(R.layout.adapter_item_comment)
-public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.CommentCellDelegate> implements Flaggable {
+public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.CommentCellDelegate>
+        implements Flaggable {
 
     @InjectView(R.id.user_photo) SimpleDraweeView userPhoto;
     @InjectView(R.id.user_name) TextView userName;
@@ -52,6 +52,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
     @InjectView(R.id.comment_flag) View flagButton;
     @InjectView(R.id.comment_translate) View translateButton;
     @InjectView(R.id.comment_translate_view) TranslateView viewWithTranslation;
+    @InjectView(R.id.translation_dot_separator) View translationDotSeparator;
 
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
@@ -75,16 +76,17 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
         } else {
             selfActionsWrapper.setVisibility(View.GONE);
             actionsWrapper.setVisibility(View.VISIBLE);
-            if (TextUtils.isEmpty(getModelObject().getLanguage()) && TextUtils.isEmpty(getModelObject().getTranslation())) {
-                translateButton.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(getModelObject().getLanguage()) && TextUtils.isEmpty(getModelObject().getTranslation())) {
+                showTranslationButton();
             } else {
-                translateButton.setVisibility(View.GONE);
+                hideTranslationButton();
             }
-        }
-
-        if (TextUtils.isEmpty(getModelObject().getTranslation())) {
-            viewWithTranslation.showTranslation(getModelObject().getTranslation(),
-                    new Locale(getModelObject().getLanguage()).getCountry());
+            if (!TextUtils.isEmpty(getModelObject().getTranslation())) {
+                viewWithTranslation.showTranslation(getModelObject().getTranslation(),
+                        getModelObject().getLanguage());
+            } else {
+                viewWithTranslation.hide();
+            }
         }
 
         if (getModelObject().isUpdate()) {
@@ -97,7 +99,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
     @OnClick(R.id.comment_translate)
     void onTranslateClicked() {
         viewWithTranslation.showProgress();
-        translateButton.setVisibility(View.GONE);
+        hideTranslationButton();
         cellDelegate.onTranslateComment(getModelObject());
     }
 
@@ -146,6 +148,16 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(new UserBundle(user))
                 .build());
+    }
+
+    private void showTranslationButton() {
+        translateButton.setVisibility(View.VISIBLE);
+        translationDotSeparator.setVisibility(View.VISIBLE);
+    }
+
+    private void hideTranslationButton() {
+        translateButton.setVisibility(View.GONE);
+        translationDotSeparator.setVisibility(View.GONE);
     }
 
     public interface CommentCellDelegate extends CellDelegate<Comment> {

@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
 
+import java.util.Locale;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -43,10 +45,10 @@ public class TranslateView extends FrameLayout {
         translateHolder.setVisibility(GONE);
     }
 
-    public void showTranslation(String translation, String originalLanguage) {
+    public void showTranslation(String translation, String language) {
         progressView.setVisibility(GONE);
         translateHolder.setVisibility(VISIBLE);
         translatedText.setText(translation);
-        translatedInfo.setText(getResources().getString(R.string.translated_from, originalLanguage));
+        translatedInfo.setText(getResources().getString(R.string.translated_from, new Locale(language).getDisplayLanguage()));
     }
 }

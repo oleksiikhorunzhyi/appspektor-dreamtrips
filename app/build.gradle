@@ -29,8 +29,8 @@ configurations.all {
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
 
     // App version
     def versionMajor = 1
@@ -350,7 +350,8 @@ android {
     }
 }
 
-def googleLibrariesVersion = '24.0.0'
+def googleLibrariesVersion = '24.1.1'
+def googlePlayServicesVersion = '9.2.1'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -385,10 +386,10 @@ dependencies {
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'com.google.android.gms:play-services-maps:9.0.2'
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
-    compile 'com.google.android.gms:play-services-location:9.0.2'
-    compile 'com.google.android.gms:play-services-vision:9.0.2'
+    compile "com.google.android.gms:play-services-maps:${googlePlayServicesVersion}"
+    compile "com.google.android.gms:play-services-gcm:${googlePlayServicesVersion}"
+    compile "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
+    compile "com.google.android.gms:play-services-vision:${googlePlayServicesVersion}"
     //
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
@@ -424,8 +425,8 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.getbase:floatingactionbutton:1.10.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
-    compile 'com.github.afollestad.material-dialogs:core:0.8.5.2'
-    compile 'com.github.afollestad.material-dialogs:commons:0.8.5.2'
+    compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
+    compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
     compile 'com.github.techery:material-range-bar:9762c0a79b'

@@ -2,10 +2,12 @@ package com.worldventures.dreamtrips.core.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.CallSuper;
 import android.text.format.DateUtils;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.DayOfWeek;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import org.joda.time.DateTime;
@@ -286,6 +288,13 @@ public class DateTimeUtils {
         }
 
         return calendar.getTime();
+    }
+
+    public static boolean isSameDayOfWeek(DayOfWeek day, int timezoneOffset) {
+        DateTimeZone timeZone = DateTimeZone.forOffsetHours(timezoneOffset);
+        Calendar calendar = DateTime.now(timeZone).toCalendar(Locale.US);
+        return calendar.get(Calendar.DAY_OF_WEEK) == day.getDay();
+
     }
 
     public static boolean isSameDayOfWeek(int calendarDayOfWeek, String dayName) {

@@ -67,7 +67,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">Presentationer</string>
     <string name="dtl_open_now">Öppet</string>
-    <string name="dtl_closed">Stängt</string>
+    <string name="dtl_closed_now">Stängt</string>
     <string name="directions">Hitta hit</string>
     <string name="checked_in">Du har checkat in</string>
     <string name="point_estimator">Poängberäkning</string>

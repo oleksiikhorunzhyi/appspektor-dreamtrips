@@ -145,7 +145,24 @@ public class DtlMerchantHelper {
     private static String provideOpenClosedStatus(Context context, boolean openNow) {
         return openNow ?
                 context.getString(R.string.dtl_open_now) :
-                context.getString(R.string.dtl_closed);
+                context.getString(R.string.dtl_closed_now);
     }
 
+    public static String formatOperationDayHours(Context context, List<OperationHours> hours) {
+        if (hours == null || hours.isEmpty()) return context.getString(R.string.dtl_closed);
+        //
+        final List<String> workingHours = Queryable.from(hours)
+                .map(DtlMerchantHelper::getFormattedHours).toList();
+        return TextUtils.join("\n", workingHours);
+    }
+
+    private static String getFormattedHours(OperationHours hours) {
+        LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
+        LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
+        //
+        DateTime start = DateTime.now().withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);
+        DateTime end = DateTime.now().withTime(localTimeEnd.getHourOfDay(), localTimeEnd.getMinuteOfHour(), 0, 0);
+        //
+        return String.format("%s - %s", start.toString(OPERATION_TIME_FORMATTER), end.toString(OPERATION_TIME_FORMATTER));
+    }
 }

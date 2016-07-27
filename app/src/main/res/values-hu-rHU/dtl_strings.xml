@@ -67,7 +67,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">Bemutatók</string>
     <string name="dtl_open_now">Jelenleg nyitva</string>
-    <string name="dtl_closed">Jelenleg zárva</string>
+    <string name="dtl_closed_now">Jelenleg zárva</string>
     <string name="directions">Útmutatás</string>
     <string name="checked_in">Sikeresen bejelentkezett</string>
     <string name="point_estimator">Pontbecslő</string>

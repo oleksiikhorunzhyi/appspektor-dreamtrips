@@ -67,7 +67,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">Pembentangan</string>
     <string name="dtl_open_now">Dibuka sekarang</string>
-    <string name="dtl_closed">Ditutup sekarang</string>
+    <string name="dtl_closed_now">Ditutup sekarang</string>
     <string name="directions">Arahan</string>
     <string name="checked_in">Anda telah berjaya mendaftar masuk </string>
     <string name="point_estimator">Penganggar Mata</string>

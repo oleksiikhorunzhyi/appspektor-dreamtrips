@@ -67,7 +67,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">Παρουσίαση</string>
     <string name="dtl_open_now">Ανοιχτό αυτή τη στιγμή</string>
-    <string name="dtl_closed">Κλειστό αυτή τη στιγμή</string>
+    <string name="dtl_closed_now">Κλειστό αυτή τη στιγμή</string>
     <string name="directions">Οδηγίες</string>
     <string name="checked_in">Το check-in σας ολοκληρώθηκε με επιτυχία</string>
     <string name="point_estimator">Εκτίμηση πόντων</string>

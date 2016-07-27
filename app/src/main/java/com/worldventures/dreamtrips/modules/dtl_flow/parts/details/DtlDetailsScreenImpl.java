@@ -38,7 +38,8 @@ import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBundle;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
-import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantDataInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantWorkingHoursInflater;
+import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantInfoInflater;
 import com.worldventures.dreamtrips.modules.dtl.helper.inflater.MerchantOffersInflater;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -77,7 +78,7 @@ public class DtlDetailsScreenImpl
     @InjectView(R.id.merchant_address) TextView merchantAddress;
     //
     MerchantOffersInflater merchantDataInflater;
-    MerchantDataInflater merchantInfoInflater;
+    MerchantInflater merchantInfoInflater, merchantHoursInflater;
     DtlMerchant merchant;
 
     @Override
@@ -95,17 +96,21 @@ public class DtlDetailsScreenImpl
         //
         activityResultDelegate.addListener(this);
         //
+        merchantHoursInflater = new MerchantWorkingHoursInflater(injector);
         merchantDataInflater = new MerchantOffersInflater(injector);
         merchantInfoInflater = new MerchantInfoInflater();
+        //
         merchantDataInflater.registerOfferClickListener(offer -> getPresenter().onOfferClick(offer));
         merchantDataInflater.setView(this);
         merchantInfoInflater.setView(this);
+        merchantHoursInflater.setView(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         if (merchantDataInflater != null) merchantDataInflater.release();
         if (merchantInfoInflater != null) merchantInfoInflater.release();
+        if (merchantHoursInflater != null) merchantHoursInflater.release();
         activityResultDelegate.removeListener(this);
         super.onDetachedFromWindow();
     }
@@ -115,6 +120,7 @@ public class DtlDetailsScreenImpl
         this.merchant = merchant;
         merchantDataInflater.applyMerchant(merchant);
         merchantInfoInflater.applyMerchant(merchant);
+        merchantHoursInflater.applyMerchant(merchant);
         //
         toolbar.setTitle(merchant.getDisplayName());
         //

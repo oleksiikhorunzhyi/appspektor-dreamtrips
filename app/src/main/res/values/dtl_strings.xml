@@ -67,7 +67,8 @@
     <string name="pdf">PDF</string>
     <string name="presentation">Presentation</string>
     <string name="dtl_open_now">Open now</string>
-    <string name="dtl_closed">Closed now</string>
+    <string name="dtl_closed_now">Closed now</string>
+    <string name="dtl_closed">Closed</string>
     <string name="directions">Directions</string>
     <string name="checked_in">You have successfully checked in</string>
     <string name="point_estimator">Point estimator</string>

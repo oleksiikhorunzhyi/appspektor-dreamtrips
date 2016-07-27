@@ -67,7 +67,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">演示</string>
     <string name="dtl_open_now">现在营业</string>
-    <string name="dtl_closed">现已停业</string>
+    <string name="dtl_closed_now">现已停业</string>
     <string name="directions">路线</string>
     <string name="checked_in">您已成功签入</string>
     <string name="point_estimator">点数估计</string>

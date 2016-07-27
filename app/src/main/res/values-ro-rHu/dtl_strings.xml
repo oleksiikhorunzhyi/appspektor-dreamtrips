@@ -67,7 +67,7 @@
     <string name="pdf">PDF</string>
     <string name="presentation">Prezentări</string>
     <string name="dtl_open_now">Acum este deschis</string>
-    <string name="dtl_closed">Acum este închis</string>
+    <string name="dtl_closed_now">Acum este închis</string>
     <string name="directions">Indicații de orientare</string>
     <string name="checked_in">Ați făcut check-in</string>
     <string name="point_estimator">Calculator de puncte</string>

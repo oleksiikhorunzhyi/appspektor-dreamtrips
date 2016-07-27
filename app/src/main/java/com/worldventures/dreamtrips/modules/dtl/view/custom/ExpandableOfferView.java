@@ -53,7 +53,7 @@ public class ExpandableOfferView extends ExpandableLayout {
     }
 
     protected int getRotateViewResourceId() {
-        return R.id.perk_arrow;
+        return R.id.view_arrow;
     }
 
     @Override

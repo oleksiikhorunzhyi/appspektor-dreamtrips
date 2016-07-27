@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 
 import java.util.Locale;
 
-public enum PartnerStatus {
-    PARTICIPANT, PROSPECT, EXCLUDED, PENDING, UNKNOWN;
+public enum MerchantType {
+    RESTAURANT, BAR, UNKNOWN;
 
     @Override
     public String toString() {

@@ -25,7 +25,7 @@ import timber.log.Timber;
 public class DtlMerchant {
 
     String id;
-    String type;
+    MerchantType type;
     PartnerStatus partnerStatus;
     String displayName;
     String address1;
@@ -58,8 +58,12 @@ public class DtlMerchant {
         return id;
     }
 
-    public String getType() {
+    public MerchantType getType() {
         return type;
+    }
+
+    public PartnerStatus getPartnerStatus() {
+        return partnerStatus;
     }
 
     public String getDisplayName() {

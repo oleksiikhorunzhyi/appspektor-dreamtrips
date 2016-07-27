@@ -12,8 +12,10 @@ import javax.inject.Inject;
 
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
+import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
+@CommandAction
 public class GetCommentsCommand extends Command<List<Comment>> implements InjectableAction {
 
     public static final int LIMIT = 10;

@@ -80,12 +80,12 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
             actionsWrapper.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(getModelObject().getLanguage())
                     && !localeHelper.isOwnLanguage(getModelObject().getLanguage())
-                    && TextUtils.isEmpty(getModelObject().getTranslation())) {
+                    && !getModelObject().isTranslated()) {
                 showTranslationButton();
             } else {
                 hideTranslationButton();
             }
-            if (!TextUtils.isEmpty(getModelObject().getTranslation())) {
+            if (getModelObject().isTranslated()) {
                 viewWithTranslation.showTranslation(getModelObject().getTranslation(),
                         getModelObject().getLanguage());
             } else {

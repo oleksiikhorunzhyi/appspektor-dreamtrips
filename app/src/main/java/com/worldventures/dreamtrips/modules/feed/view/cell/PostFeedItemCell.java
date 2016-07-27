@@ -8,17 +8,21 @@ import android.widget.ImageView;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
+import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -53,6 +57,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
     @Optional @InjectView(R.id.tag) ImageView tag;
 
     @Inject FragmentManager fragmentManager;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject LocaleHelper localeHelper;
 
     private int width;
 
@@ -69,9 +75,32 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
             itemView.setVisibility(View.VISIBLE);
             processAttachments(obj.getItem().getAttachments());
             processPostText(obj.getItem());
+            processTranslations();
         } else {
             itemView.setVisibility(View.INVISIBLE);
             itemView.post(this::syncUIStateWithModel);
+        }
+    }
+
+    private void processTranslations() {
+        if (getModelObject().getItem().getOwner().getId() == appSessionHolder.get().get().getUser().getId()) {
+            viewWithTranslation.setVisibility(View.GONE);
+            translateButton.setVisibility(View.GONE);
+        } else {
+            FeedEntity entity = getModelObject().getItem();
+            if (!TextUtils.isEmpty(entity.getLanguage())
+                    && !localeHelper.isOwnLanguage(entity.getLanguage())
+                    && !entity.isTranslated()) {
+                translateButton.setVisibility(View.VISIBLE);
+            } else {
+                translateButton.setVisibility(View.GONE);
+            }
+            if (entity.isTranslated()) {
+                viewWithTranslation.showTranslation(entity.getTranslation(),
+                        entity.getLanguage());
+            } else {
+                viewWithTranslation.hide();
+            }
         }
     }
 

@@ -39,6 +39,10 @@ public interface FeedEntity extends Serializable, UidItem {
     @Nullable
     String getTranslation();
 
+    boolean isTranslated();
+
+    void setTranslated(boolean translated);
+
     boolean isLiked();
 
     void setLiked(boolean isLiked);

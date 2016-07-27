@@ -26,6 +26,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
     protected int likesCount;
     protected String language;
     protected String translation;
+    protected boolean translated;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters & Setters
@@ -105,6 +106,16 @@ public abstract class BaseFeedEntity implements FeedEntity {
     @Override
     public void setTranslation(String translation) {
         this.translation = translation;
+    }
+
+    @Override
+    public boolean isTranslated() {
+        return translated;
+    }
+
+    @Override
+    public void setTranslated(boolean translated) {
+        this.translated = translated;
     }
 
     ///////////////////////////////////////////////////////////////////////////

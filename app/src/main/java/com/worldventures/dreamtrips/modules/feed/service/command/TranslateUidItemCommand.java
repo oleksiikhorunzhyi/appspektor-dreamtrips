@@ -65,6 +65,7 @@ public abstract class TranslateUidItemCommand<T extends UidItem> extends Command
         @Override
         protected Comment mapResult(String translatedText) {
             comment.setTranslation(translatedText);
+            comment.setTranslated(true);
             return comment;
         }
     }
@@ -82,6 +83,7 @@ public abstract class TranslateUidItemCommand<T extends UidItem> extends Command
         @Override
         protected TextualPost mapResult(String translatedText) {
             textualPost.setTranslation(translatedText);
+            textualPost.setTranslated(true);
             return textualPost;
         }
     }

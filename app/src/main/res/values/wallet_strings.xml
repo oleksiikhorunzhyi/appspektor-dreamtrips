@@ -5,9 +5,14 @@
     <string name="wallet_wizard_title">Set Up Smart Card</string>
     <string name="wallet_wizard_next">Next</string>/
 
+    <!--card alias-->
+    <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>
+    <string name="wallet_wizard_card_alias_hint">Example: Shirley\'s Smart Card</string>
+
     <!--edit profile-->
     <string name="wallet_edit_profile_subtitle">Set your display photo and a name to be greeted by</string>
     <string name="wallet_edit_profile_change_photo">Edit photo</string>
+    <string name="wallet_edit_profile_name_hint">Enter your name</string>
     <string name="wallet_edit_profile_avatar_description">Your photo</string>
 
     <!--splash-->

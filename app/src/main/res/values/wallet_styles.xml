@@ -13,8 +13,9 @@
         <item name="android:buttonStyle">@style/WalletWizardButton</item>
         <item name="android:editTextStyle">@style/WalletWizardEditText</item>
         <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textAppearanceMedium">@style/WalletTheme.Wizard.TextAppearanceMedium
-        </item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:textAppearanceMedium">@style/WalletTheme.Wizard.TextAppearanceMedium</item>
+        <item name="android:imeOptions">actionNext</item>
 
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorControlActivated">@color/wallet_color_background_light</item>
@@ -44,6 +45,27 @@
     </style>
 
     <style name="WalletWizardEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    
+    <style name="WalletTheme.Wizard.RootStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/wallet_wizard_background</item>
+    </style>
+
+    <style name="WalletTheme.Wizard.ContentContainerStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:padding">@dimen/wallet_common_screen_padding</item>
+    </style>
+
+    <style name="WalletTheme.Wizard.DescriptionTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 </resources>

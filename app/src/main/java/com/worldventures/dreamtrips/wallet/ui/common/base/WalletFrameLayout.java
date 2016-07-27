@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui;
+package com.worldventures.dreamtrips.wallet.ui.common.base;
 
 import android.content.Context;
 import android.util.AttributeSet;

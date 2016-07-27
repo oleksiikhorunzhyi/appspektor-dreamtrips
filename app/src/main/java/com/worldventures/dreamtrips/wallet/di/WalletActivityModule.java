@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
-import com.worldventures.dreamtrips.wallet.ui.presenter.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreenPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -12,6 +14,8 @@ import dagger.Provides;
         },
         injects = {
                 WalletActivityPresenter.class,
+                WizardSplashScreenPresenter.class,
+                WizardScanBarcodePresenter.class,
         },
         complete = false, library = true
 )

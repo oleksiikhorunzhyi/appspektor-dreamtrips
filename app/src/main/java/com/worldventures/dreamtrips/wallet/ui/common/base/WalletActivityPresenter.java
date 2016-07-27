@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.presenter;
+package com.worldventures.dreamtrips.wallet.ui.common.base;
 
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 

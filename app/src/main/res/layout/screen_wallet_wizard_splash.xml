@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.view.wizard.WizardSplashScreenImpl xmlns:android="http://schemas.android.com/apk/res/android"
-                                                                           xmlns:tools="http://schemas.android.com/tools"
-                                                                           android:layout_width="match_parent"
-                                                                           android:layout_height="match_parent"
-                                                                           android:background="@drawable/wallet_wizard_background"
-                                                                           android:gravity="center"
-                                                                           android:orientation="vertical"
-                                                                           android:padding="20dp"
-                                                                           android:theme="@style/WalletTheme.Wizard"
-                                                                           android:weightSum="4">
+<com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                                                                         xmlns:tools="http://schemas.android.com/tools"
+                                                                         android:layout_width="match_parent"
+                                                                         android:layout_height="match_parent"
+                                                                         android:background="@drawable/wallet_wizard_background"
+                                                                         android:gravity="center"
+                                                                         android:orientation="vertical"
+                                                                         android:padding="20dp"
+                                                                         android:theme="@style/WalletTheme.Wizard"
+                                                                         android:weightSum="4">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,6 +21,7 @@
             android:id="@+id/wallet_wizard_splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/wallet_wizard_splash_title1"
             android:textAppearance="?android:attr/textAppearanceLarge"
             tools:text="@string/wallet_wizard_splash_title1"/>
 
@@ -41,4 +42,4 @@
         android:padding="25dp"
         android:text="@string/wallet_wizard_splash_start_btn"
         />
-</com.worldventures.dreamtrips.wallet.ui.view.wizard.WizardSplashScreenImpl>
+</com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreen>

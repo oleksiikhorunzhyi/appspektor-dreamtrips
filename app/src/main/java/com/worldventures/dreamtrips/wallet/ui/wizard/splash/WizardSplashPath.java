@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.view.wizard;
+package com.worldventures.dreamtrips.wallet.ui.wizard.splash;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

@@ -1,40 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@drawable/wallet_wizard_background">
+<com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen
+    style="@style/WalletTheme.Wizard.RootStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/WalletTheme.ToolbarLight"
+        app:navigationIcon="@drawable/back_icon"
         app:title="@string/wallet_wizard_title"/>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        style="@style/WalletTheme.Wizard.ContentContainerStyle"
         android:layout_marginTop="?attr/actionBarSize"
-        android:padding="@dimen/wallet_common_screen_padding"
         android:theme="@style/WalletTheme.Wizard">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/wallet_edit_profile_subtitle"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:id="@+id/text_description"
+            style="@style/WalletTheme.Wizard.DescriptionTextStyle"
+            android:text="@string/wallet_edit_profile_subtitle"/>
 
-        <RelativeLayout
+        <com.messenger.ui.widget.roundedcorners.RoundedCornersLayout
             android:id="@+id/imageContainer"
             android:layout_width="136dp"
             android:layout_height="136dp"
-            android:layout_above="@+id/person_name"
+            android:layout_below="@+id/text_description"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="32dp">
+            android:layout_marginTop="32dp"
+            app:rcl_radius="10dp">
 
             <ImageView
                 android:id="@+id/image"
@@ -46,13 +43,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/image"
+                android:layout_gravity="bottom"
                 android:background="#66666666"
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="@string/wallet_edit_profile_change_photo"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
-        </RelativeLayout>
+        </com.messenger.ui.widget.roundedcorners.RoundedCornersLayout>
 
         <EditText
             android:id="@+id/person_name"
@@ -60,10 +57,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="136dp"
+            android:hint="@string/wallet_edit_profile_name_hint"
             android:inputType="textPersonName"
             tools:text="Shirley Temple"/>
 
         <Button
+            android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -71,4 +70,4 @@
 
     </RelativeLayout>
 
-</FrameLayout>
+</com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfileScreen>

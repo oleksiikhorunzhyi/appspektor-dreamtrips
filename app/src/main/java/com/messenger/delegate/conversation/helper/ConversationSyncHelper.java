@@ -9,6 +9,7 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.util.DecomposeMessagesHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,6 +66,8 @@ public class ConversationSyncHelper {
                                 .toBlocking().first();
                         if (existingConversation != null) {
                             conversation.setLastActiveDate(existingConversation.getLastActiveDate());
+                        } else {
+                            conversation.setLastActiveDate(Calendar.getInstance().getTimeInMillis());
                         }
                     }
 

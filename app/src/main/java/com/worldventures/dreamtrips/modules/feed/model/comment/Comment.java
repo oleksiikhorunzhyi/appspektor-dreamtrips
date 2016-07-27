@@ -5,8 +5,8 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 
 import java.io.Serializable;
 import java.util.Date;

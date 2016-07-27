@@ -13,7 +13,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
-import com.worldventures.dreamtrips.modules.feed.api.GetCommentsQuery;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePhotoEvent;
@@ -28,14 +27,15 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
+import com.worldventures.dreamtrips.modules.feed.service.CommentsInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.feed.view.cell.Flaggable;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Photo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,6 +50,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @Inject FeedEntityManager entityManager;
     @Inject BucketInteractor bucketInteractor;
     @Inject TranslationFeedInteractor translationFeedInteractor;
+    @Inject CommentsInteractor commentsInteractor;
 
     private UidItemDelegate uidItemDelegate;
 
@@ -80,6 +81,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         if (isNeedCheckCommentsWhenStart())
             checkCommentsAndLikesToLoad();
 
+        subscribeToCommentsLoading();
         subscribeToCommentTranslation();
     }
 
@@ -116,7 +118,27 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     private void loadComments() {
         view.setLoading(true);
-        doRequest(new GetCommentsQuery(feedEntity.getUid(), page), this::onCommentsLoaded);
+        commentsInteractor.commentsPipe().send(new GetCommentsCommand(feedEntity.getUid(), page));
+    }
+
+    private void subscribeToCommentsLoading() {
+        view.bindUntilDropView(commentsInteractor.commentsPipe().observe()
+                .compose(new ActionStateToActionTransformer<>())
+                .map(GetCommentsCommand::getResult)
+                .compose(new IoToMainComposer<>())
+        ).subscribe(this::onCommentsLoaded, this::handleError);
+    }
+
+    private void onCommentsLoaded(List<Comment> comments) {
+        if (comments.size() > 0) {
+            page++;
+            commentsCount += comments.size();
+            view.setLoading(false);
+            feedEntity.getComments().addAll(comments);
+            view.addComments(comments);
+            if (commentsCount >= feedEntity.getCommentsCount()) view.hideViewMore();
+            else view.showViewMore();
+        } else view.hideViewMore();
     }
 
     private void loadLikes() {
@@ -245,21 +267,6 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
         if (type != FeedEntityHolder.Type.UNDEFINED) {
             TrackingHelper.sendActionItemFeed(actionAttribute, id, type);
-        }
-    }
-
-    private void onCommentsLoaded(ArrayList<Comment> comments) {
-        if (comments.size() > 0) {
-            page++;
-            commentsCount += comments.size();
-            view.setLoading(false);
-            feedEntity.getComments().addAll(comments);
-            view.addComments(comments);
-            if (commentsCount >= feedEntity.getCommentsCount()) view.hideViewMore();
-            else view.showViewMore();
-
-        } else {
-            view.hideViewMore();
         }
     }
 

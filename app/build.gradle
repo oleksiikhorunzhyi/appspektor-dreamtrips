@@ -71,7 +71,7 @@ android {
     ]
     def CONFIG_MAP_PREPROD = [
             'DreamTripsApi'     : '"http://techery--dt--preprod-techery-io-kkdni8u7u523.runscope.net/"',
-            'S3Api'             : '"http://dtapp.s3.amazonaws.com/config"',
+            'S3Api'             : '"https://s3-us-west-2.amazonaws.com/techery-worldventures/config/preprod/settings_v4.json"',
             'MESSENGER_API_URL' : '"dtmsgapp-qa.worldventures.biz"',
     ]
     def CONFIG_MAP_DTL = [

@@ -6,9 +6,7 @@ import com.worldventures.dreamtrips.BaseSpec
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.janet.StubServiceWrapper
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantAttribute
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantType
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.*
 import com.worldventures.dreamtrips.modules.dtl.service.DtlLocationInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantsAction
@@ -24,6 +22,7 @@ import rx.observers.TestSubscriber
 abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec(spekBody) {
 
     companion object {
+
         val MERCHANT_ID = "test"
         private val merchant: DtlMerchant = mock()
         private val merchantList = listOf(merchant)
@@ -33,7 +32,6 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
         lateinit var merchantInteractor: DtlMerchantInteractor
         lateinit var httpStubWrapper: StubServiceWrapper
         lateinit var db: SnappyRepository
-
 
         //initialization base objects to send DtlMerchantsAction
         fun initVars() {
@@ -52,7 +50,6 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
                     .addService(httpStubWrapper.wrapCache())
                     .build()
 
-
             locationInteractor = DtlLocationInteractor(janet)
             merchantInteractor = DtlMerchantInteractor(janet, locationInteractor)
             db = spy()
@@ -70,11 +67,14 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
             whenever(merchant.budget).thenReturn(3)
             whenever(merchant.displayName).thenReturn("test")
             whenever(merchant.merchantType).thenReturn(DtlMerchantType.DINING)
+            whenever(merchant.partnerStatus).thenReturn(PartnerStatus.PARTICIPANT)
+            whenever(merchant.type).thenReturn(MerchantType.RESTAURANT)
         }
 
         fun checkMerchantActionLoad() {
             val subscriber = TestSubscriber<ActionState<DtlMerchantsAction>>()
             val spyHttpCallback = httpStubWrapper.spyCallback()
+
             merchantInteractor.merchantsActionPipe()
                     .createObservable(DtlMerchantsAction.load(mock()))
                     .subscribe(subscriber)
@@ -85,6 +85,7 @@ abstract class DtlBaseMerchantSpec(spekBody: DescribeBody.() -> Unit) : BaseSpec
         fun checkMerchantActionRestore() {
             val subscriber = TestSubscriber<ActionState<DtlMerchantsAction>>()
             val spyHttpCallback = httpStubWrapper.spyCallback()
+
             merchantInteractor.merchantsActionPipe()
                     .createObservable(DtlMerchantsAction.restore())
                     .subscribe(subscriber)

@@ -6,7 +6,10 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.rx.composer.ListFilter;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.PartnerStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,9 @@ public class DtlMerchantsAction extends Command<List<DtlMerchant>>
             janet.createPipe(DtlLoadMerchantsAction.class)
                     .createObservableResult(new DtlLoadMerchantsAction(location))
                     .map(DtlLoadMerchantsAction::getResponse)
+                    .compose(new ListFilter<>(
+                            merchant -> merchant.getPartnerStatus() != PartnerStatus.UNKNOWN,
+                            merchant -> merchant.getType() != MerchantType.UNKNOWN))
                     .subscribe(callback::onSuccess, callback::onFail);
         } else {
             callback.onSuccess(cache);

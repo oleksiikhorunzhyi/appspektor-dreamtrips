@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.wallet.di;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.home.cardlist.CardListScreenPresenter;
+import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.BankCardCell;
+import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
@@ -17,19 +20,21 @@ import dagger.Provides;
         },
         injects = {
                 WalletActivityPresenter.class,
+                BankCardCell.class,
+                CardStackCell.class,
                 WizardSplashScreenPresenter.class,
                 WizardScanBarcodePresenter.class,
                 WizardManualInputPresenter.class,
                 WizardCardNamePresenter.class,
-                WizardEditProfilePresenter.class
+                WizardEditProfilePresenter.class,
+                CardListScreenPresenter.class
         },
         complete = false, library = true
 )
 public class WalletActivityModule {
     public static final String WALLET = "Wallet";
 
-    @Provides(type = Provides.Type.SET)
-    ComponentDescription provideMessengerComponent() {
+    @Provides(type = Provides.Type.SET) ComponentDescription provideMessengerComponent() {
         return new ComponentDescription(WALLET, R.string.wallet, R.string.wallet, R.drawable.ic_messenger,
                 true, null);
     }

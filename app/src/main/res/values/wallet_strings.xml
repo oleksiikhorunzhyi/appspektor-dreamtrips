@@ -27,6 +27,16 @@
     <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
     <string name="waller_wizard_scan_barcode_progress_label">Connecting to smartcard…</string>
 
+    <string name="wallet_add_credit_card">Add credit card</string>
+    <string name="wallet_add_debit_card">Add debit card</string>
+    <string name="wallet_credit_cards_title">Credit Cards(%d)</string>
+    <string name="wallet_debit_cards_title">Debit Cards(%d)</string>
+
+    <string name="wallet_credit_card_title">Credit Card</string>
+    <string name="wallet_debit_card_title">Debit Card</string>
+    <string name="wallet_default_card_title">Default Card</string>
+
     <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
     <string name="wallet_wizard_manual_input_hint">SCID Number</string>
+    <string name="wallet_bank_name_text_holder">Bank Name</string>
 </resources>

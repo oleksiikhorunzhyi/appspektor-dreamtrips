@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/wallet_bank_card_default_height"
+    android:background="@drawable/wallet_flye_card"
+    android:paddingBottom="@dimen/spacing_normal"
+    android:paddingLeft="@dimen/spacing_large"
+    android:paddingRight="@dimen/spacing_large"
+    android:paddingTop="@dimen/spacing_normal">
+
+    <FrameLayout
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/spacing_small">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/wallet_card_locked_track"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/wallet_card_lock"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/bankLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/connectedCardCount"
+        android:layout_alignParentStart="false"
+        android:layout_marginBottom="8dp"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_large"
+        tools:text="Jhon's card"/>
+
+    <TextView
+        android:id="@+id/connectedCardCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/wallet_card_list_header_text"
+        android:textSize="@dimen/font_medium"
+        tools:text="4 cards loaded"/>
+
+</RelativeLayout>

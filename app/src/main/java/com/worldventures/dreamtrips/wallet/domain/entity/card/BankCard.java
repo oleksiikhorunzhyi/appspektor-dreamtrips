@@ -1,14 +1,16 @@
 package com.worldventures.dreamtrips.wallet.domain.entity.card;
 
+import android.support.annotation.Nullable;
+
 import org.immutables.value.Value;
 
 @Value.Immutable
 public interface BankCard extends Card {
-    String bankName();
+    @Nullable String title();
 
-    CARD_TYPE cardType();
+    @Nullable CARD_TYPE cardType();
 
-    String type();
+    @Nullable String type();
 
     enum CARD_TYPE {
         DEBIT, CREDIT

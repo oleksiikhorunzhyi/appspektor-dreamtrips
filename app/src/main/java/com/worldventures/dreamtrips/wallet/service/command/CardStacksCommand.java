@@ -1,0 +1,65 @@
+package com.worldventures.dreamtrips.wallet.service.command;
+
+import android.content.Context;
+
+import com.innahema.collections.query.queriables.Queryable;
+import com.techery.spares.module.qualifier.ForApplication;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.utils.QuantityHelper;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import io.techery.janet.Command;
+import io.techery.janet.Janet;
+import io.techery.janet.command.annotations.CommandAction;
+
+import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+
+@CommandAction
+public class CardStacksCommand extends Command<List<CardStackViewModel>> implements InjectableAction {
+
+    @Inject @Named(JANET_WALLET) Janet janet;
+    @Inject @ForApplication Context context;
+
+    @Override protected void run(CommandCallback<List<CardStackViewModel>> callback) throws Throwable {
+        janet.createPipe(CardListCommand.class)
+                .createObservableResult(new CardListCommand())
+                .map(Command::getResult)
+                .map(this::convert)
+                .subscribe(callback::onSuccess, callback::onFail);
+
+    }
+
+    private List<CardStackViewModel> convert(List<Card> cardList) {
+        ArrayList<CardStackViewModel> result = new ArrayList<>();
+        List<BankCard> creditsBankCards = getBankCardsByType(cardList, BankCard.CARD_TYPE.CREDIT);
+        List<BankCard> debitBankCards = getBankCardsByType(cardList, BankCard.CARD_TYPE.DEBIT);
+
+        int creditCardTitle = QuantityHelper.chooseResource(creditsBankCards.size(), R.string.wallet_credit_card_title, R.string.wallet_credit_cards_title);
+        int debitCardTitle = QuantityHelper.chooseResource(debitBankCards.size(), R.string.wallet_debit_card_title, R.string.wallet_debit_cards_title);
+
+        if (creditsBankCards.size() > 0)
+            result.add(new CardStackViewModel(context.getString(creditCardTitle, creditsBankCards.size()), creditsBankCards));
+        if (debitBankCards.size() > 0)
+            result.add(new CardStackViewModel(context.getString(debitCardTitle, debitBankCards.size()), debitBankCards));
+        return result;
+    }
+
+    protected List<BankCard> getBankCardsByType(List<Card> result, BankCard.CARD_TYPE credit) {
+        return Queryable.from(result)
+                .filter(it -> it instanceof BankCard)
+                .map(it -> (BankCard) it)
+                .filter(it -> it.cardType() == credit)
+                .toList();
+    }
+
+
+}

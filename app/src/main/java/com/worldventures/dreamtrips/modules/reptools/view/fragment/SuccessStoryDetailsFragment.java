@@ -141,8 +141,10 @@ public class SuccessStoryDetailsFragment
     public void updateStoryLike(boolean isLiked) {
         if (isLiked) {
             ivLike.setImageResource(R.drawable.ic_success_heart_selected);
+            ivLike.setContentDescription("selected");
         } else {
             ivLike.setImageResource(R.drawable.ic_success_heart_normal);
+            ivLike.setContentDescription("");
         }
     }
 }

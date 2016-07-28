@@ -7,15 +7,19 @@ import android.util.AttributeSet;
 import android.view.inputmethod.EditorInfo;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import rx.Observable;
 
 public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
+
+    private MediaPickerService mediaPickerService;
 
     public WizardEditProfileScreen(Context context) {
         super(context);
@@ -34,6 +38,8 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        //noinspection all
+        mediaPickerService = (MediaPickerService) getContext().getSystemService(MediaPickerService.SERVICE_NAME);
         toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
     }
 
@@ -51,5 +57,20 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
         if (action != EditorInfo.IME_ACTION_NEXT) return false;
         presenter.doOnNext();
         return true;
+    }
+
+    @OnClick(R.id.imageContainer)
+    public void choosePhotoClick() {
+        presenter.choosePhoto();
+    }
+
+    @Override
+    public Observable<String> showPhotoPicker() {
+        return mediaPickerService.pickPhotoAndCrop();
+    }
+
+    @Override
+    public void hidePhotoPicker() {
+        mediaPickerService.hidePicker();
     }
 }

@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Pair;
 
-import com.kbeanie.imagechooser.api.ChosenImage;
 import com.messenger.util.CroppingUtils;
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;

@@ -13,6 +13,7 @@ import dagger.Provides;
 
 @Module(
         includes = {
+                WalletScreenModule.class
         },
         injects = {
                 WalletActivityPresenter.class,

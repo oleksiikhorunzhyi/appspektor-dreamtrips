@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.innahema.collections.query.queriables.Queryable;
+import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.error.DtApiException;
@@ -90,6 +91,8 @@ public class ApiErrorPresenter {
                 logError(errorResponse);
                 if (!apiErrorView.onApiError(errorResponse))
                     apiErrorView.informUser(errorResponse.getFirstMessage());
+            } else if (httpAction instanceof UiErrorAction) {
+                apiErrorView.informUser(((UiErrorAction) httpAction).getErrorMessage());
             } else {
                 apiErrorView.informUser(exception.getCause().getLocalizedMessage());
             }

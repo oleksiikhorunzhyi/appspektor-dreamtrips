@@ -22,6 +22,7 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -405,5 +406,14 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     private void registerCellDelegates() {
         fragmentWithFeedDelegate.registerDelegate(MediaAttachment.class, this);
         fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().refreshFeed());
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

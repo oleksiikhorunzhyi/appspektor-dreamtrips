@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
@@ -222,5 +223,14 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
 
     private void registerCellDelegates() {
         fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

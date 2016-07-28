@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
-import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
@@ -35,7 +34,7 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import icepick.State;
-import io.techery.janet.helper.ActionStateToActionTransformer;
+import io.techery.janet.helper.ActionStateSubscriber;
 import retrofit.mime.TypedFile;
 import rx.Subscription;
 import timber.log.Timber;
@@ -107,20 +106,18 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     private void subscribeRefreshFeeds() {
         view.bindUntilDropView(feedInteractor.getRefreshAccountTimelinePipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(BaseGetFeedCommand::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(this::refreshFeedSucceed,
-                        this::refreshFeedError);
+                .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.Refresh>()
+                        .onFail(this::refreshFeedError)
+                        .onSuccess(action -> refreshFeedSucceed(action.getResult())));
     }
 
     private void subscribeLoadNextFeeds() {
         view.bindUntilDropView(feedInteractor.getLoadNextAccountTimelinePipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(BaseGetFeedCommand::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(this::addFeedItems,
-                        this::loadMoreItemsError);
+                .subscribe(new ActionStateSubscriber<GetAccountTimelineCommand.LoadNext>()
+                        .onFail(this::loadMoreItemsError)
+                        .onSuccess(action -> addFeedItems(action.getResult())));
     }
 
     @Override

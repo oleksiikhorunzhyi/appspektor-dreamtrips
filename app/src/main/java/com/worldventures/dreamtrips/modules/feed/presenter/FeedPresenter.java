@@ -23,6 +23,7 @@ import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -46,7 +47,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -122,6 +122,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribePhotoGalleryCheck();
@@ -132,17 +133,22 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         }
     }
 
+    @Override
+    public void dropView() {
+        apiErrorPresenter.dropView();
+        super.dropView();
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Refresh feeds
     ///////////////////////////////////////////////////////////////////////////
 
     private void subscribeRefreshFeeds() {
         view.bindUntilDropView(feedInteractor.getRefreshAccountFeedPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(BaseGetFeedCommand::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(this::refreshFeedSucceed,
-                        this::refreshFeedError);
+                .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.Refresh>()
+                        .onFail(this::refreshFeedError)
+                        .onSuccess(action -> refreshFeedSucceed(action.getResult())));
     }
 
     private void refreshFeedSucceed(List<FeedItem<FeedEntity>> freshItems) {
@@ -156,8 +162,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
     }
 
-    private void refreshFeedError(Throwable throwable) {
-        Timber.e(throwable, "");
+    private void refreshFeedError(Object action, Throwable throwable) {
+        apiErrorPresenter.handleActionError(action, throwable);
         view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
@@ -174,11 +180,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private void subscribeLoadNextFeeds() {
         view.bindUntilDropView(feedInteractor.getLoadNextAccountFeedPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(BaseGetFeedCommand::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(this::addFeedItems,
-                        this::loadMoreItemsError);
+                .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.LoadNext>()
+                        .onFail(this::loadMoreItemsError)
+                        .onSuccess(action -> addFeedItems(action.getResult())));
     }
 
     private void addFeedItems(List<FeedItem<FeedEntity>> olderItems) {
@@ -189,8 +194,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         view.refreshFeedItems(feedItems);
     }
 
-    private void loadMoreItemsError(Throwable throwable) {
-        Timber.e(throwable, "");
+    private void loadMoreItemsError(Object action, Throwable throwable) {
+        apiErrorPresenter.handleActionError(action, throwable);
         view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }
@@ -446,7 +451,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                 }, throwable -> Timber.w("Can't get unread conversation count"));
     }
 
-    public interface View extends RxView, UidItemDelegate.View {
+    public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
 
         void setRequestsCount(int count);
 

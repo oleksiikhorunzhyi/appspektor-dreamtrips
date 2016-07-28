@@ -17,6 +17,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -32,7 +33,6 @@ import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
@@ -53,7 +53,6 @@ import javax.inject.Named;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
 
@@ -97,12 +96,19 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
         }
         //
         attachUserToView(user);
         loadProfile();
+    }
+
+    @Override
+    public void dropView() {
+        apiErrorPresenter.dropView();
+        super.dropView();
     }
 
     protected void onProfileLoaded(U user) {
@@ -303,20 +309,20 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         view.refreshFeedItems(feedItems);
     }
 
-    protected void refreshFeedError(Throwable throwable) {
-        Timber.e(throwable, "");
+    protected void refreshFeedError(Object action, Throwable throwable) {
+        apiErrorPresenter.handleActionError(action, throwable);
         view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
     }
 
-    protected void loadMoreItemsError(Throwable throwable) {
-        Timber.e(throwable, "");
+    protected void loadMoreItemsError(Object action, Throwable throwable) {
+        apiErrorPresenter.handleActionError(action, throwable);
         view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }
 
-    public interface View extends RxView {
+    public interface View extends RxView, ApiErrorView {
         
         void openPost();
 

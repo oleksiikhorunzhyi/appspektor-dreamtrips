@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
+import com.messenger.api.UiErrorAction;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
@@ -12,7 +14,7 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
-public abstract class TranslateUidItemCommand<T extends TranslatableItem> extends Command<T> implements InjectableAction {
+public abstract class TranslateUidItemCommand<T extends TranslatableItem> extends Command<T> implements InjectableAction, UiErrorAction {
 
     @Inject  Janet janet;
 
@@ -60,5 +62,10 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
         public TranslatePostCommand(TextualPost translatableItem, String languageTo) {
             super(translatableItem, languageTo);
         }
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_translate_text;
     }
 }

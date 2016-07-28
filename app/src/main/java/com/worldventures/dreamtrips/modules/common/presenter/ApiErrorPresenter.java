@@ -90,7 +90,9 @@ public class ApiErrorPresenter {
                 errorResponse = ((BaseHttpAction) action).getErrorResponse();
             } else {
                 errorResponse = new ErrorResponse();
-                errorResponse.setErrors(((com.worldventures.dreamtrips.api.api_common.BaseHttpAction) action).errorResponse().errors());
+                com.worldventures.dreamtrips.api.api_common.error.ErrorResponse errorResponseNew =
+                        ((com.worldventures.dreamtrips.api.api_common.BaseHttpAction) action).errorResponse();
+                if (errorResponseNew != null) errorResponse.setErrors(errorResponseNew.errors());
             }
 
             if (getCauseByType(IOException.class, exception.getCause()) != null) {

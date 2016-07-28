@@ -649,4 +649,6 @@
     <string name="translate">Translate</string>
     <string name="translated_from">Translated from %s</string>
 
+    <string name="error_fail_to_translate_text">Failed to translate text</string>
+
 </resources>

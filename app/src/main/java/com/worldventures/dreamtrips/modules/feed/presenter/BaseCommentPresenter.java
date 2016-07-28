@@ -12,6 +12,7 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.api.GetUsersLikedEntityQuery;
@@ -43,7 +44,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends Presenter<T> {
@@ -77,6 +77,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
+
         view.setDraftComment(draftComment);
         view.setLikePanel(feedEntity);
 
@@ -87,15 +89,23 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         subscribeToCommentTranslation();
     }
 
+    @Override
+    public void dropView() {
+        apiErrorPresenter.dropView();
+        super.dropView();
+    }
+
     private void subscribeToCommentTranslation() {
         view.bindUntilDropView(translationFeedInteractor.translateCommentPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(TranslateUidItemCommand.TranslateCommentCommand::getResult))
-                .compose(new IoToMainComposer<>())
-                .subscribe(comment -> {
-                    updateEntityComments(comment);
-                    view.updateComment(comment);
-                }, this::handleError);
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslateCommentCommand>()
+                        .onSuccess(translateCommentCommand -> {
+                            updateEntityComments(translateCommentCommand.getResult());
+                            view.updateComment(translateCommentCommand.getResult());
+                        }).onFail((translateCommentCommand, throwable) -> {
+                            view.notifyDataSetChanged();
+                            apiErrorPresenter.handleActionError(translateCommentCommand, throwable);
+                        }));
     }
 
     /**
@@ -125,10 +135,10 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     private void subscribeToCommentsLoading() {
         view.bindUntilDropView(commentsInteractor.commentsPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(GetCommentsCommand::getResult)
-                .compose(new IoToMainComposer<>())
-        ).subscribe(this::onCommentsLoaded, this::handleError);
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<GetCommentsCommand>()
+                        .onSuccess(getCommentsCommand -> onCommentsLoaded(getCommentsCommand.getResult()))
+                        .onFail((getCommentsCommand, throwable) -> apiErrorPresenter.handleActionError(getCommentsCommand, throwable)));
     }
 
     private void onCommentsLoaded(List<Comment> comments) {
@@ -138,9 +148,14 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
             view.setLoading(false);
             feedEntity.getComments().addAll(comments);
             view.addComments(comments);
-            if (commentsCount >= feedEntity.getCommentsCount()) view.hideViewMore();
-            else view.showViewMore();
-        } else view.hideViewMore();
+            if (commentsCount >= feedEntity.getCommentsCount()) {
+                view.hideViewMore();
+            } else {
+                view.showViewMore();
+            }
+        } else {
+            view.hideViewMore();
+        }
     }
 
     private void loadLikes() {
@@ -288,7 +303,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         if (commentIndex != -1) feedEntity.getComments().set(commentIndex, comment);
     }
 
-    public interface View extends RxView, UidItemDelegate.View {
+    public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
 
         void addComments(List<Comment> commentList);
 
@@ -301,6 +316,8 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
         void setDraftComment(String comment);
 
         void setLoading(boolean loading);
+
+        void notifyDataSetChanged();
 
         void editComment(FeedEntity feedEntity, Comment comment);
 

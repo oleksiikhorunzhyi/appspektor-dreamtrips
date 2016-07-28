@@ -81,11 +81,6 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
         return uid;
     }
 
-    @Nullable
-    public String getLanguage() {
-        return language;
-    }
-
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }

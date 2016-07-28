@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
+import com.messenger.api.UiErrorAction;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.service.api.GetCommentsHttpAction;
@@ -14,7 +16,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class GetCommentsCommand extends Command<List<Comment>> implements InjectableAction {
+public class GetCommentsCommand extends Command<List<Comment>> implements InjectableAction, UiErrorAction {
 
     public static final int LIMIT = 10;
 
@@ -34,5 +36,10 @@ public class GetCommentsCommand extends Command<List<Comment>> implements Inject
                 .createObservableResult(new GetCommentsHttpAction(itemUid, page, LIMIT))
                 .map(GetCommentsHttpAction::response)
                 .subscribe(callback::onSuccess, callback::onFail);
+    }
+
+    @Override
+    public int getErrorMessage() {
+        return R.string.error_fail_to_load_comments;
     }
 }

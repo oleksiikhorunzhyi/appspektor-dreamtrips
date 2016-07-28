@@ -15,6 +15,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -314,6 +315,11 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         adapter.notifyItemChanged(getLoadMorePosition());
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
     public void onEvent(CommentIconClickedEvent event) {
         if (isVisibleOnScreen()) SoftInputUtil.showSoftInputMethod(input);
     }
@@ -329,5 +335,14 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     @Override
     public void flagSentSuccess() {
         informUser(R.string.flag_sent_success_msg);
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

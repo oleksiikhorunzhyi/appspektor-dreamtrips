@@ -78,8 +78,8 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
         } else {
             selfActionsWrapper.setVisibility(View.GONE);
             actionsWrapper.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(getModelObject().getLanguage())
-                    && !localeHelper.isOwnLanguage(getModelObject().getLanguage())
+            if (!TextUtils.isEmpty(getModelObject().getLanguageFrom())
+                    && !localeHelper.isOwnLanguage(getModelObject().getLanguageFrom())
                     && !getModelObject().isTranslated()) {
                 showTranslationButton();
             } else {
@@ -87,7 +87,7 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
             }
             if (getModelObject().isTranslated()) {
                 viewWithTranslation.showTranslation(getModelObject().getTranslation(),
-                        getModelObject().getLanguage());
+                        getModelObject().getLanguageFrom());
             } else {
                 viewWithTranslation.hide();
             }

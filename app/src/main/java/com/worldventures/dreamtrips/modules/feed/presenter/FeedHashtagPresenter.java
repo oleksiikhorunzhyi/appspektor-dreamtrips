@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItem
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -46,7 +47,6 @@ import javax.inject.Inject;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -72,19 +72,21 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
         }
         view.onSuggestionsReceived(query, hashtagSuggestions);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribeSuggestions();
+    }
+
+    @Override
+    public void dropView() {
+        apiErrorPresenter.dropView();
+        super.dropView();
     }
 
     @Override
@@ -130,15 +132,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
     private void subscribeRefreshFeeds() {
         view.bindUntilStop(interactor.getRefreshFeedsByHashtagsPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(FeedByHashtagCommand.Refresh::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(dataMetaData -> refreshFeedSucceed(dataMetaData.getParentFeedItems()),
-                        throwable -> {
+                .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>()
+                        .onSuccess(refresh -> refreshFeedSucceed(refresh.getResult().getParentFeedItems()))
+                        .onFail((refresh, throwable) -> {
+                            apiErrorPresenter.handleActionError(refresh, throwable);
                             refreshFeedError();
                             Timber.e(throwable, "");
-                        }
-                );
+                        }));
     }
 
     private void refreshFeedSucceed(ArrayList<ParentFeedItem> freshItems) {
@@ -163,16 +164,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
     private void subscribeLoadNextFeeds() {
         view.bindUntilStop(interactor.getLoadNextFeedsByHashtagsPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(FeedByHashtagCommand.LoadNext::getResult)
                 .compose(new IoToMainComposer<>()))
-                .subscribe(dataMetaData -> {
-                            addFeedItems(dataMetaData.getParentFeedItems());
-                        },
-                        throwable -> {
+                .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>()
+                        .onSuccess(loadNext -> addFeedItems(loadNext.getResult().getParentFeedItems()))
+                        .onFail((loadNext, throwable) -> {
+                            apiErrorPresenter.handleActionError(loadNext, throwable);
                             loadMoreItemsError();
                             Timber.e(throwable, "");
-                        });
+                        }));
     }
 
     private void addFeedItems(List<ParentFeedItem> olderItems) {
@@ -193,16 +192,16 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     private void subscribeSuggestions() {
-        view.bindUntilStop(interactor.getSuggestionPipe()
-                .observeSuccess()
-                .observeOn(AndroidSchedulers.mainThread()))
-                .subscribe(command -> {
-                    view.onSuggestionsReceived(command.getFullQueryText(), command.getResult());
-                    view.hideSuggestionProgress();
-                }, throwable -> {
-                    Timber.e(throwable, "");
-                    view.hideSuggestionProgress();
-                });
+        view.bindUntilStop(interactor.getSuggestionPipe().observe()
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<HashtagSuggestionCommand>()
+                        .onSuccess(hashtagSuggestionCommand -> {
+                            view.onSuggestionsReceived(hashtagSuggestionCommand.getFullQueryText(), hashtagSuggestionCommand.getResult());
+                            view.hideSuggestionProgress();
+                        }).onFail((hashtagSuggestionCommand, throwable) -> {
+                            Timber.e(throwable, "");
+                            view.hideSuggestionProgress();
+                        }));
     }
 
     public void onEvent(DownloadPhotoEvent event) {
@@ -330,7 +329,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         interactor.getSuggestionPipe().cancelLatest();
     }
 
-    public interface View extends RxView, UidItemDelegate.View {
+    public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
 
         void startLoading();
 

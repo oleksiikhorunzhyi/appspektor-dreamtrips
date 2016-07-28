@@ -37,7 +37,6 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 

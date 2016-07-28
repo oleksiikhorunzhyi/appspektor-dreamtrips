@@ -12,8 +12,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDel
 import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
-import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
@@ -38,7 +36,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 

@@ -65,7 +65,6 @@ import javax.inject.Provider;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
@@ -147,8 +146,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         view.bindUntilDropView(feedInteractor.getRefreshAccountFeedPipe().observe()
                 .compose(new IoToMainComposer<>()))
                 .subscribe(new ActionStateSubscriber<GetAccountFeedCommand.Refresh>()
-                        .onFail(this::refreshFeedError)
-                        .onSuccess(action -> refreshFeedSucceed(action.getResult())));
+                        .onSuccess(action -> refreshFeedSucceed(action.getResult()))
+                        .onFail(this::refreshFeedError));
     }
 
     private void refreshFeedSucceed(List<FeedItem<FeedEntity>> freshItems) {
@@ -373,16 +372,17 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private void subscribePhotoGalleryCheck() {
         view.bindUntilDropView(suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(SuggestedPhotoCommand::getResult))
-                .compose(new IoToMainComposer<>())
-                .subscribe(photos -> {
-                    if (hasNewPhotos(photos)) {
-                        view.refreshFeedItems(feedItems, Queryable.from(photos).take(SUGGESTION_ITEM_CHUNK).toList());
-                    } else {
-                        view.refreshFeedItems(feedItems);
-                    }
-                }, throwable -> view.refreshFeedItems(feedItems));
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<SuggestedPhotoCommand>()
+                        .onSuccess(suggestedPhotoCommand -> {
+                            if (hasNewPhotos(suggestedPhotoCommand.getResult())) {
+                                view.refreshFeedItems(feedItems, Queryable.from(suggestedPhotoCommand.getResult())
+                                        .take(SUGGESTION_ITEM_CHUNK).toList());
+                            } else {
+                                view.refreshFeedItems(feedItems);
+                            }
+                        })
+                        .onFail((suggestedPhotoCommand, throwable) -> view.refreshFeedItems(feedItems)));
     }
 
     public boolean hasNewPhotos(List<PhotoGalleryModel> photos) {

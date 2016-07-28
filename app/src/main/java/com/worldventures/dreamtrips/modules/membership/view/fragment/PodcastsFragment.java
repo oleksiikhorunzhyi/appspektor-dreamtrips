@@ -15,6 +15,7 @@ import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
@@ -33,12 +34,9 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_podcasts)
 public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implements PodcastsPresenter.View, SwipeRefreshLayout.OnRefreshListener, PodcastCellDelegate {
 
-    @InjectView(R.id.list_items)
-    EmptyRecyclerView recyclerView;
-    @InjectView(R.id.swipe_container)
-    SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.empty_view)
-    ViewGroup emptyView;
+    @InjectView(R.id.list_items) EmptyRecyclerView recyclerView;
+    @InjectView(R.id.swipe_container) SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.empty_view) ViewGroup emptyView;
 
     private BaseDelegateAdapter<Object> adapter;
     private RecyclerViewStateDelegate stateDelegate;
@@ -188,5 +186,14 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
                 .onPositive(callback)
                 .onNegative((dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

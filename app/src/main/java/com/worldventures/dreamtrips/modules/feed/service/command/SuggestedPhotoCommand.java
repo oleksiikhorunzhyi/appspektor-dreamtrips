@@ -22,9 +22,7 @@ import timber.log.Timber;
 @CommandAction
 public class SuggestedPhotoCommand extends Command<List<PhotoGalleryModel>> implements InjectableAction {
 
-    @Inject
-    @ForApplication
-    Context context;
+    @Inject @ForApplication Context context;
 
     @Override
     protected void run(CommandCallback<List<PhotoGalleryModel>> callback) throws Throwable {

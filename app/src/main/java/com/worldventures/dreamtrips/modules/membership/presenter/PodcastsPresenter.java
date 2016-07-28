@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.membership.presenter;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.R;
@@ -14,12 +14,12 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.presenter.HumaneErrorTextFactory;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 import com.worldventures.dreamtrips.modules.membership.model.MediaHeader;
 import com.worldventures.dreamtrips.modules.membership.model.Podcast;
-import com.worldventures.dreamtrips.modules.membership.presenter.interactor.PodcastInteractor;
+import com.worldventures.dreamtrips.modules.membership.service.PodcastsInteractor;
 import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.PublicMediaCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
@@ -31,34 +31,21 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
-import io.techery.janet.helper.ActionStateToActionTransformer;
-import rx.Observable;
-import rx.functions.Action1;
-import timber.log.Timber;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPresenter<T> {
 
-    @Inject
-    protected SnappyRepository db;
-    @Inject
-    @ForApplication
-    protected Injector injector;
-    @Inject
-    protected FileDownloadSpiceManager fileDownloadSpiceManager;
-    @Inject
-    protected Janet janet;
-    @Inject
-    protected Context context;
-    @Inject
-    protected ActivityRouter activityRouter;
-    @Inject
-    PodcastInteractor podcastInteractor;
+    @Inject protected SnappyRepository db;
+    @Inject @ForApplication protected Injector injector;
+    @Inject protected FileDownloadSpiceManager fileDownloadSpiceManager;
+    @Inject protected Janet janet;
+    @Inject protected Context context;
+    @Inject protected ActivityRouter activityRouter;
+    @Inject PodcastsInteractor podcastsInteractor;
 
     private static final int PODCAST_PRE_PAGE = 10;
 
-    private ActionPipe<PodcastCommand> podcastsActionPipe;
     private PublicMediaCachingDelegate fileCachingDelegate;
 
     private List<Podcast> items = new ArrayList<>();
@@ -69,11 +56,17 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
     @Override
     public void takeView(T view) {
         super.takeView(view);
+        apiErrorPresenter.setView(view);
         fileCachingDelegate = new PublicMediaCachingDelegate(db, context, injector, fileDownloadSpiceManager, Environment.DIRECTORY_PODCASTS);
         fileCachingDelegate.setView(this.view);
-        podcastsActionPipe = podcastInteractor.pipe();
         subscribeGetPodcasts();
         reloadPodcasts();
+    }
+
+    @Override
+    public void dropView() {
+        apiErrorPresenter.dropView();
+        super.dropView();
     }
 
     @Override
@@ -121,31 +114,23 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
     private void loadPodcasts(int page) {
         loading = true;
         view.startLoading();
-        podcastsActionPipe.send(new PodcastCommand(page, PODCAST_PRE_PAGE));
+        podcastsInteractor.podcastsActionPipe().send(new PodcastCommand(page, PODCAST_PRE_PAGE));
     }
 
     private void subscribeGetPodcasts() {
-        view.bind(podcastsActionPipe.observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(PodcastCommand::getResult)
-                .flatMap(podcasts -> Observable.from(podcasts)
-                        .doOnNext(podcast -> attachCache())
-                        .doOnNext(PodcastsPresenter.this::attachPodcastDownloadListener)
-                        .toList())
+        view.bindUntilDropView(podcastsInteractor.podcastsActionPipe().observe()
                 .compose(new IoToMainComposer<>()))
-                .subscribe(this::onPodcastsLoaded,
-                        throwable -> {
-                            view.informUser(new HumaneErrorTextFactory().create(throwable));
-                            Timber.e(throwable, "");
-                        });
+                .subscribe(new ActionStateSubscriber<PodcastCommand>()
+                        .onSuccess(podcastCommand -> onPodcastsLoaded(podcastCommand.getResult()))
+                        .onFail((podcastCommand, throwable) -> {
+                            apiErrorPresenter.handleActionError(podcastCommand, throwable);
+                            view.finishLoading();
+                        }));
     }
 
-    @NonNull
-    private Action1<Podcast> attachCache() {
-        return podcast -> {
-            CachedEntity e = db.getDownloadMediaEntity(podcast.getUid());
-            podcast.setCacheEntity(e);
-        };
+    private void attachCache(Podcast podcast) {
+        CachedEntity e = db.getDownloadMediaEntity(podcast.getUid());
+        podcast.setCacheEntity(e);
     }
 
     private void attachPodcastDownloadListener(Podcast podcast) {
@@ -165,6 +150,10 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
     }
 
     private void onPodcastsLoaded(List<Podcast> podcasts) {
+        Queryable.from(podcasts).forEachR(podcast -> {
+            attachCache(podcast);
+            attachPodcastDownloadListener(podcast);
+        });
         items.addAll(podcasts);
         updateUi(items);
     }
@@ -212,7 +201,8 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
         TrackingHelper.podcasts(getAccountUserId());
     }
 
-    public interface View extends RxView, FileCachingDelegate.View {
+    public interface View extends RxView, FileCachingDelegate.View, ApiErrorView {
+
         void startLoading();
 
         void finishLoading();

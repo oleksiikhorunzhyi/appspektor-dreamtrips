@@ -21,6 +21,7 @@ import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
@@ -46,14 +47,10 @@ import butterknife.InjectView;
 @Layout(R.layout.fragment_hashtag_feed)
 public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPresenter, FeedHashtagBundle> implements FeedHashtagPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.empty_view)
-    ViewGroup emptyView;
-    @InjectView(R.id.suggestionProgress)
-    View suggestionProgressBar;
-    @InjectView(R.id.suggestions)
-    ProgressEmptyRecyclerView suggestions;
-    @Inject
-    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+    @InjectView(R.id.empty_view) ViewGroup emptyView;
+    @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
+    @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
+    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
     RecyclerViewStateDelegate stateDelegate;
@@ -293,5 +290,14 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
     public void onEvent(CommentIconClickedEvent event) {
         fragmentWithFeedDelegate.openComments(event.getFeedItem(), isVisibleOnScreen(), isTabletLandscape());
+    }
+
+    @Override
+    public boolean onApiError(ErrorResponse errorResponse) {
+        return false;
+    }
+
+    @Override
+    public void onApiCallFailed() {
     }
 }

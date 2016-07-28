@@ -18,8 +18,9 @@ import rx.schedulers.Schedulers;
 
 @CommandAction
 public class PodcastCommand extends Command<List<Podcast>> implements InjectableAction, UiErrorAction {
-    @Inject
-    Janet janet;
+
+    @Inject Janet janet;
+
     private int page;
     private int perPage;
 

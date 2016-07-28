@@ -29,14 +29,18 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 
@@ -62,6 +66,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     @Inject HashtagInteractor interactor;
     @Inject FeedEntityManager entityManager;
     @Inject BucketInteractor bucketInteractor;
+    @Inject TranslationFeedInteractor translationFeedInteractor;
 
     private UidItemDelegate uidItemDelegate;
 
@@ -294,6 +299,14 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         if (view.isVisibleOnScreen())
             doRequest(new DeletePostCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
+    }
+
+    public void onEvent(TranslatePostEvent event) {
+        if (view.isVisibleOnScreen()){
+            translationFeedInteractor.translatePostPipe().send(
+                    TranslateUidItemCommand.forPost(event.getTextualPost(),
+                            getAccount().getLocale()));
+        }
     }
 
     public void onEvent(DeletePhotoEvent event) {

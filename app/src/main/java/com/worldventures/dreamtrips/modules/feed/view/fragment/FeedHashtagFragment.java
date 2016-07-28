@@ -219,6 +219,11 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     }
 
     @Override
+    public void updateItem(int position) {
+        fragmentWithFeedDelegate.notifyItemChanged(position);
+    }
+
+    @Override
     public void startLoading() {
         statePaginatedRecyclerViewManager.startLoading();
         if (emptyView != null) emptyView.setVisibility(View.GONE);

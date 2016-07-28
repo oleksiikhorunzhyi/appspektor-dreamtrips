@@ -252,6 +252,11 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     @Override
+    public void updateItem(int position) {
+        fragmentWithFeedDelegate.notifyItemChanged(position);
+    }
+
+    @Override
     public void setRequestsCount(int count) {
         if (friendsBadge != null) {
             friendsBadge.setBadgeValue(count);

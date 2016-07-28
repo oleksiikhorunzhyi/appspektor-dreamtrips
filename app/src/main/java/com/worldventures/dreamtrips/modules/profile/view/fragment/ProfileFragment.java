@@ -40,15 +40,11 @@ import butterknife.Optional;
 public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBaseFragmentWithArgs<T, UserBundle>
         implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @InjectView(R.id.profile_toolbar)
-    protected Toolbar profileToolbar;
-    @InjectView(R.id.profile_toolbar_title)
-    protected TextView profileToolbarTitle;
-    @InjectView(R.id.profile_user_status)
-    protected TextView profileToolbarUserStatus;
+    @InjectView(R.id.profile_toolbar) Toolbar profileToolbar;
+    @InjectView(R.id.profile_toolbar_title) TextView profileToolbarTitle;
+    @InjectView(R.id.profile_user_status) TextView profileToolbarUserStatus;
 
-    @Inject
-    FragmentWithFeedDelegate fragmentWithFeedDelegate;
+    @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     private int scrollArea;
 
@@ -123,6 +119,11 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
         //
         ProfileViewUtils.setUserStatus(user, profileToolbarUserStatus, getResources());
         profileToolbarTitle.setText(user.getFullName());
+    }
+
+    @Override
+    public void updateItem(int position) {
+        fragmentWithFeedDelegate.notifyItemChanged(position);
     }
 
     @Override

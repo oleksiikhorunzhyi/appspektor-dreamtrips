@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
@@ -30,10 +31,14 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
@@ -52,6 +57,7 @@ import javax.inject.Named;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
@@ -66,6 +72,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
     @Inject BucketInteractor bucketInteractor;
     @Inject FeedInteractor feedInteractor;
+    @Inject TranslationFeedInteractor translationFeedInteractor;
 
     public ProfilePresenter() {
     }
@@ -257,6 +264,14 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         if (view.isVisibleOnScreen())
             doRequest(new DeletePostCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
+    }
+
+    public void onEvent(TranslatePostEvent event) {
+        if (view.isVisibleOnScreen()){
+            translationFeedInteractor.translatePostPipe().send(
+                    TranslateUidItemCommand.forPost(event.getTextualPost(),
+                            getAccount().getLocale()));
+        }
     }
 
     public void onEvent(DeletePhotoEvent event) {

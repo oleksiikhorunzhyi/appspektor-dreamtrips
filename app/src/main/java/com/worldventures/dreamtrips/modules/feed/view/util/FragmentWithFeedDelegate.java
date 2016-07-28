@@ -95,6 +95,10 @@ public class FragmentWithFeedDelegate {
         adapter.notifyItemInserted(position);
     }
 
+    public void notifyItemChanged(int position) {
+        adapter.notifyItemChanged(position);
+    }
+
     public void clearItems() {
         adapter.clear();
     }

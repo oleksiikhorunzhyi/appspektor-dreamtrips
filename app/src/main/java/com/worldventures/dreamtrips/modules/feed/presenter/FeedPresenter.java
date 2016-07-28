@@ -41,14 +41,17 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
@@ -337,6 +340,14 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
+    public void onEvent(TranslatePostEvent event) {
+        if (view.isVisibleOnScreen()){
+            translationFeedInteractor.translatePostPipe().send(
+                    TranslateUidItemCommand.forPost(event.getTextualPost(),
+                    getAccount().getLocale()));
+        }
+    }
+
     public void onEvent(DeletePhotoEvent event) {
         if (view.isVisibleOnScreen())
             doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
@@ -452,6 +463,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
+
+        void updateItem(int position);
 
         void setRequestsCount(int count);
 

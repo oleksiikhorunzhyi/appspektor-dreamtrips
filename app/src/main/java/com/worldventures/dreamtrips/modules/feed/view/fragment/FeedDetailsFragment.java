@@ -74,7 +74,11 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
 
     @Override
     public void updateFeedItem(FeedItem feedItem) {
-        adapter.updateItem(feedItem);
+        if (feedItem != null) {
+            adapter.updateItem(feedItem);
+        } else {
+            adapter.notifyDataSetChanged(); //there has been error. Cells need to be resynced
+        }
     }
 
     @Override

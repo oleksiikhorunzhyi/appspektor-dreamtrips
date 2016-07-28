@@ -24,13 +24,13 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:connectingLineColor="#54B5FC"
-            custom:pinColor="#54B5FC"
-            custom:rangeBar="true"
-            custom:selectorColor="#54B5FC"
-            custom:tickEnd="9"
-            custom:tickInterval="1"
-            custom:tickStart="0" />
+            custom:mrb_connectingLineColor="#54B5FC"
+            custom:mrb_pinColor="#54B5FC"
+            custom:mrb_rangeBar="true"
+            custom:mrb_selectorColor="#54B5FC"
+            custom:mrb_tickEnd="9"
+            custom:mrb_tickInterval="1"
+            custom:mrb_tickStart="0" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -78,12 +78,12 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:connectingLineColor="#54B5FC"
-            custom:pinColor="#54B5FC"
-            custom:selectorColor="#54B5FC"
-            custom:tickEnd="500"
-            custom:tickInterval="100"
-            custom:tickStart="100" />
+            custom:mrb_connectingLineColor="#54B5FC"
+            custom:mrb_pinColor="#54B5FC"
+            custom:mrb_selectorColor="#54B5FC"
+            custom:mrb_tickEnd="500"
+            custom:mrb_tickInterval="100"
+            custom:mrb_tickStart="100" />
 
         <TextView
             android:layout_width="wrap_content"

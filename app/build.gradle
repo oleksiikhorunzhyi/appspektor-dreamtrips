@@ -412,7 +412,7 @@ dependencies {
     compile 'io.reactivex:rxjava-debug:1.0.3'
     // Ui
     compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
-    compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
+    compile 'cn.pedant.sweetalert:library:1.3'
     compile "com.android.support:design:${googleLibrariesVersion}"
     compile 'com.github.traex.expandablelayout:library:1.3'
     compile 'com.facebook.fresco:fresco:0.8.1'
@@ -428,7 +428,7 @@ dependencies {
     compile 'com.github.afollestad.material-dialogs:commons:0.8.5.2'
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
-    compile 'com.github.techery:material-range-bar:9762c0a79b'
+    compile 'com.github.techery:material-range-bar:db6fec9fdd'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
     compile 'me.relex:circleindicator:1.1.5@aar'

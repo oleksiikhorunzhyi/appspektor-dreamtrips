@@ -9,8 +9,8 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -36,7 +36,6 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
@@ -62,16 +61,16 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     protected U user;
     protected List<Circle> circles;
-    private TextualPostTranslationDelegate textualPostTranslationDelegate;
 
     @State ArrayList<FeedItem> feedItems;
 
     @Inject FeedEntityManager entityManager;
     @Inject SnappyRepository snappyRepository;
+    @Inject LocaleHelper localeHelper;
     @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
     @Inject BucketInteractor bucketInteractor;
     @Inject FeedInteractor feedInteractor;
-    @Inject TranslationFeedInteractor translationFeedInteractor;
 
     public ProfilePresenter() {
     }
@@ -109,18 +108,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         //
         attachUserToView(user);
         loadProfile();
-        textualPostTranslationDelegate.onTakeView(view, feedItems);
-    }
-
-    @Override
-    public void dropView() {
-        super.dropView();
-        textualPostTranslationDelegate.onDropView();
+        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
     }
 
     @Override
     public void dropView() {
         apiErrorPresenter.dropView();
+        textualPostTranslationDelegate.onDropView();
         super.dropView();
     }
 
@@ -274,7 +268,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public void onEvent(TranslatePostEvent event) {
         if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getTextualPost(), getAccount().getLocale());
+            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
         }
     }
 
@@ -343,8 +337,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     public interface View extends RxView, TextualPostTranslationDelegate.View, ApiErrorView {
 
-        void updateItem(int position);
-        
         void openPost();
 
         void openFriends();

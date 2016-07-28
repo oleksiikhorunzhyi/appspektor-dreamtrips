@@ -5,42 +5,31 @@ import com.worldventures.dreamtrips.modules.feed.event.DownloadPhotoEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 
 import javax.inject.Inject;
 
-import icepick.State;
-
 public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetailsPresenter.View> {
 
-    @Inject TranslationFeedInteractor translationFeedInteractor;
-
-    private FeedItem feedItem;
-    private TextualPostTranslationDelegate textualPostTranslationDelegate;
+    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
 
     public FeedItemDetailsPresenter(FeedItem feedItem) {
         super(feedItem);
-        this.feedItem = feedItem;
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        textualPostTranslationDelegate.onTakeView(view, feedItem);
+        apiErrorPresenter.setView(view);
+        textualPostTranslationDelegate.onTakeView(view, feedItem, apiErrorPresenter);
     }
 
     @Override
     public void dropView() {
-        super.dropView();
+        apiErrorPresenter.dropView();
         textualPostTranslationDelegate.onDropView();
-    }
-
-    @Override
-    public void onInjected() {
-        super.onInjected();
-        textualPostTranslationDelegate = new TextualPostTranslationDelegate(translationFeedInteractor);
+        super.dropView();
     }
 
     @Override
@@ -58,7 +47,7 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
 
     public void onEvent(TranslatePostEvent event) {
         if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getTextualPost(), getAccount().getLocale());
+            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
         }
     }
 

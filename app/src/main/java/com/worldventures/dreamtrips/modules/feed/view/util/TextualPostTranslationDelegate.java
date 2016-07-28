@@ -1,38 +1,39 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.techery.janet.helper.ActionStateToActionTransformer;
-import timber.log.Timber;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public final class TextualPostTranslationDelegate<V extends RxView & TextualPostTranslationDelegate.View> {
 
-    private TranslationFeedInteractor translationFeedInteractor;
     private V view;
     private List<FeedItem> feedItems;
+    private ApiErrorPresenter apiErrorPresenter;
+
+    private TranslationFeedInteractor translationFeedInteractor;
 
     public TextualPostTranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
-       this.translationFeedInteractor = translationFeedInteractor;
+        this.translationFeedInteractor = translationFeedInteractor;
     }
 
-    public void onTakeView(V view, List<FeedItem> feedItems) {
+    public void onTakeView(V view, List<FeedItem> feedItems, ApiErrorPresenter apiErrorPresenter) {
         this.view = view;
         this.feedItems = feedItems;
+        this.apiErrorPresenter = apiErrorPresenter;
         subscribeToPostTranslation();
     }
 
-    public void onTakeView(V view, FeedItem feedItem) {
-        onTakeView(view, Queryable.from(feedItem).toList());
+    public void onTakeView(V view, FeedItem feedItem, ApiErrorPresenter apiErrorPresenter) {
+        onTakeView(view, Queryable.from(feedItem).toList(), apiErrorPresenter);
     }
 
     public void onDropView() {
@@ -46,10 +47,10 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
 
     private void subscribeToPostTranslation() {
         view.bindUntilDropView(translationFeedInteractor.translatePostPipe().observe()
-                .compose(new ActionStateToActionTransformer<>())
-                .map(TranslateUidItemCommand.TranslatePostCommand::getResult))
-                .compose(new IoToMainComposer<>())
-                .subscribe(this::translateSuccess, this::translateFail);
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<TranslateUidItemCommand.TranslatePostCommand>()
+                        .onSuccess(translatePostCommand -> translateSuccess(translatePostCommand.getResult()))
+                        .onFail(this::translateFail));
     }
 
     private void translateSuccess(TextualPost textualPost) {
@@ -60,9 +61,8 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
         }
     }
 
-    private void translateFail(Throwable throwable) {
-        Timber.e(throwable, "translateFail");
-        view.informUser(R.string.smth_went_wrong);
+    private void translateFail(Object action, Throwable throwable) {
+        apiErrorPresenter.handleActionError(action, throwable);
         view.updateItem(null);
     }
 

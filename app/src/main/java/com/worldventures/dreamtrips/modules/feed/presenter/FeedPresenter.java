@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -47,10 +48,8 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
-import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
@@ -79,9 +78,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject FeedEntityManager entityManager;
     @Inject SnappyRepository db;
     @Inject MediaPickerManager mediaPickerManager;
-    @Inject TranslationFeedInteractor translationFeedInteractor;
+    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
     @Inject DrawableUtil drawableUtil;
     @Inject UnreadConversationObservable unreadConversationObservable;
+    @Inject LocaleHelper localeHelper;
     @Inject @ForActivity Provider<Injector> injectorProvider;
 
     @Inject BucketInteractor bucketInteractor;
@@ -91,7 +91,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     private Circle filterCircle;
     private UidItemDelegate uidItemDelegate;
     private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
-    private TextualPostTranslationDelegate textualPostTranslationDelegate;
 
     @State ArrayList<FeedItem> feedItems;
     @State int unreadConversationCount;
@@ -104,7 +103,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void onInjected() {
         super.onInjected();
         entityManager.setRequestingPresenter(this);
-        textualPostTranslationDelegate = new TextualPostTranslationDelegate(translationFeedInteractor);
     }
 
     @Override
@@ -131,7 +129,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         subscribeLoadNextFeeds();
         subscribePhotoGalleryCheck();
         subscribeUnreadConversation();
-        textualPostTranslationDelegate.onTakeView(view, feedItems);
+        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
 
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
@@ -346,7 +344,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public void onEvent(TranslatePostEvent event) {
         if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getTextualPost(), getAccount().getLocale());
+            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
         }
     }
 
@@ -464,8 +462,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
-
-        void updateItem(int position);
 
         void setRequestsCount(int count);
 

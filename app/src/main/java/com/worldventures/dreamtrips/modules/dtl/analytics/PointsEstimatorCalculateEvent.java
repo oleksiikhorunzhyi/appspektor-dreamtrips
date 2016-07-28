@@ -15,11 +15,15 @@ public class PointsEstimatorCalculateEvent extends DtlAnalyticsAction {
     @Attribute("merchantID")
     final String merchantId;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     @Attribute("calcpoints")
     final String attribute = "1";
 
     public PointsEstimatorCalculateEvent(DtlMerchant dtlMerchant) {
         merchantName = dtlMerchant.getDisplayName();
         merchantId = dtlMerchant.getId();
+        merchantType = dtlMerchant.getType().toString();
     }
 }

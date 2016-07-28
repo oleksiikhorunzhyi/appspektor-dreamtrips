@@ -15,6 +15,9 @@ public class CheckinEvent extends DtlAnalyticsAction {
     @Attribute("merchantID")
     final String merchantId;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     @Attribute("merchantname")
     final String merchantName;
 
@@ -27,6 +30,7 @@ public class CheckinEvent extends DtlAnalyticsAction {
     public CheckinEvent(DtlMerchant merchant) {
         merchantId = merchant.getId();
         merchantName = merchant.getDisplayName();
+        merchantType = merchant.getType().toString();
         perksAvailable = merchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = merchant.hasPoints() ? "Yes" : "No";
     }

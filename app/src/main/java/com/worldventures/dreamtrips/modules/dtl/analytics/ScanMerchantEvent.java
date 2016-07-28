@@ -18,6 +18,9 @@ public class ScanMerchantEvent extends DtlAnalyticsAction {
     @Attribute("merchantname")
     final String merchantName;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     @Attribute("scan_id")
     final String merchantToken;
 
@@ -26,5 +29,6 @@ public class ScanMerchantEvent extends DtlAnalyticsAction {
         this.merchantToken = merchantToken;
         merchantId = dtlMerchant.getId();
         merchantName = dtlMerchant.getDisplayName();
+        merchantType = dtlMerchant.getType().toString();
     }
 }

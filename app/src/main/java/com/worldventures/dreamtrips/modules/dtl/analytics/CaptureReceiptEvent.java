@@ -18,8 +18,12 @@ public class CaptureReceiptEvent extends DtlAnalyticsAction {
     @Attribute("merchantID")
     final String merchantId;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     public CaptureReceiptEvent(DtlMerchant dtlMerchant) {
         merchantId = dtlMerchant.getId();
         merchantName = dtlMerchant.getDisplayName();
+        merchantType = dtlMerchant.getType().toString();
     }
 }

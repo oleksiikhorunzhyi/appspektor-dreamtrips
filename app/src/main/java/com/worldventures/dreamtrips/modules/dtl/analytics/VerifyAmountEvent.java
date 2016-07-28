@@ -23,6 +23,9 @@ public class VerifyAmountEvent extends DtlAnalyticsAction {
     @Attribute("merchantID")
     final String merchantId;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     @Attribute("amount_cc")
     final String currencyCode;
 
@@ -30,6 +33,7 @@ public class VerifyAmountEvent extends DtlAnalyticsAction {
         this.enteredAmount = String.format(Locale.US, "%.2f", enteredAmount);
         merchantName = dtlMerchant.getDisplayName();
         merchantId = dtlMerchant.getId();
+        merchantType = dtlMerchant.getType().toString();
         this.currencyCode = currencyCode;
     }
 }

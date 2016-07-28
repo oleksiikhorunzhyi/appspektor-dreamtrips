@@ -18,8 +18,12 @@ public class PointsEstimatorViewEvent extends DtlAnalyticsAction {
     @Attribute("merchantID")
     final String merchantId;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     public PointsEstimatorViewEvent(DtlMerchant dtlMerchant) {
         merchantName = dtlMerchant.getDisplayName();
         merchantId = dtlMerchant.getId();
+        merchantType = dtlMerchant.getType().toString();
     }
 }

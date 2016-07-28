@@ -18,6 +18,9 @@ public class TransactionSuccessEvent extends DtlAnalyticsAction {
     @Attribute("merchantID")
     final String merchantId;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     @Attribute("merchantearned")
     final String attribute = "1";
 
@@ -39,6 +42,7 @@ public class TransactionSuccessEvent extends DtlAnalyticsAction {
     public TransactionSuccessEvent(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
         merchantId = dtlMerchant.getId();
         merchantName = dtlMerchant.getDisplayName();
+        merchantType = dtlMerchant.getType().toString();
         perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
         currencyCode = dtlMerchant.getDefaultCurrency().getCode();

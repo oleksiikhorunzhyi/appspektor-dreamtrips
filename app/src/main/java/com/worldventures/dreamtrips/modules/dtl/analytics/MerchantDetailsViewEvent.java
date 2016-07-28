@@ -17,6 +17,9 @@ public class MerchantDetailsViewEvent extends DtlAnalyticsAction {
     @Attribute("merchantID")
     final String merchantId;
 
+    @Attribute("merchanttype")
+    final String merchantType;
+
     @Attribute("areperksavail")
     final String perksAvailable;
 
@@ -32,6 +35,7 @@ public class MerchantDetailsViewEvent extends DtlAnalyticsAction {
     public MerchantDetailsViewEvent(DtlMerchant dtlMerchant) {
         merchantId = dtlMerchant.getId();
         merchantName = dtlMerchant.getDisplayName();
+        merchantType = dtlMerchant.getType().toString();
         perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
         perksNumber = String.valueOf(Queryable.from(dtlMerchant.getOffers())

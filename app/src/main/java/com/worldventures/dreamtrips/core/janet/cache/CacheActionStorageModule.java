@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBuc
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlLocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
+import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
 
 import javax.inject.Singleton;
 
@@ -40,6 +41,12 @@ public class CacheActionStorageModule {
     @Provides(type = Provides.Type.SET)
     ActionStorage provideBucketListStorage(SnappyRepository snappyRepository) {
         return new BucketListDiskStorage(new BucketMemoryStorage(), snappyRepository);
+    }
+
+    @Singleton
+    @Provides(type = Provides.Type.SET)
+    ActionStorage provideTranslationStorage(SnappyRepository snappyRepository) {
+        return new TranslationDiscStorage(snappyRepository);
     }
 
     @Singleton

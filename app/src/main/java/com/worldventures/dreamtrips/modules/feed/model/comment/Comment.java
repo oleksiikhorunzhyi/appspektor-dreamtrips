@@ -6,12 +6,13 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.model.UidItem;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Comment implements Parcelable, Serializable, UidItem {
+public class Comment implements Parcelable, Serializable, UidItem, TranslatableItem {
 
     String uid;
     String parent_id;
@@ -85,25 +86,8 @@ public class Comment implements Parcelable, Serializable, UidItem {
         return language;
     }
 
-    @Nullable
-    public String getTranslation() {
-        return translation;
-    }
-
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
-
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public boolean isTranslated() {
-        return translated;
-    }
-
-    public void setTranslated(boolean translated) {
-        this.translated = translated;
     }
 
     @Override
@@ -136,5 +120,39 @@ public class Comment implements Parcelable, Serializable, UidItem {
     @Override
     public int hashCode() {
         return uid != null ? uid.hashCode() : 0;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Translation
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public String getTranslation() {
+        return translation;
+    }
+
+    @Override
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
+    @Override
+    public String getOriginalText() {
+        return text;
+    }
+
+    @Override
+    public String getLanguageFrom() {
+        return language;
+    }
+
+    @Override
+    public boolean isTranslated() {
+        return translated;
+    }
+
+    @Override
+    public void setTranslated(boolean translated) {
+        this.translated = translated;
     }
 }

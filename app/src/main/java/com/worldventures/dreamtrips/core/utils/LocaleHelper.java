@@ -60,6 +60,13 @@ public class LocaleHelper {
         return new Locale(language, country);
     }
 
+    public String getOwnAccountLocaleFormatted() {
+        if (!appSessionHolder.get().isPresent()) return null;
+        //
+        User user = appSessionHolder.get().get().getUser();
+        return getAccountLocaleFormatted(user);
+    }
+
     public boolean isOwnLanguage(String languageCode) {
         if (!appSessionHolder.get().isPresent()) return false;
 
@@ -67,12 +74,12 @@ public class LocaleHelper {
         return languageCode.equalsIgnoreCase(userLanguageCode);
     }
 
-    private AvailableLocale obtainAvailableLocale(String localeName){
+    private AvailableLocale obtainAvailableLocale(String localeName) {
         AvailableLocale mappedLocale = null;
         if (localesStorage.get().isPresent()) {
             ArrayList<AvailableLocale> availableLocales = localesStorage.get().get();
             mappedLocale = Queryable.from(availableLocales).firstOrDefault(l ->
-                            l.getLocale().toLowerCase().equals(localeName.toLowerCase())
+                    l.getLocale().toLowerCase().equals(localeName.toLowerCase())
             );
         }
         return mappedLocale;

@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetCommentsComm
 import com.worldventures.dreamtrips.modules.feed.service.command.GetUserTimelineCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
+import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 
@@ -53,6 +54,7 @@ import dagger.Module;
         FeedByHashtagCommand.LoadNext.class,
         TranslateUidItemCommand.TranslateCommentCommand.class,
         TranslateUidItemCommand.TranslatePostCommand.class,
+        TranslateTextCachedCommand.class,
         HashtagSuggestionCommand.class},
 
         complete = false, library = true)

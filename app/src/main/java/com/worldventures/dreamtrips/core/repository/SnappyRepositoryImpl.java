@@ -415,13 +415,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     ///////////////////////////////////////////////////////////////////////////
 
     @Override
-    public void saveTranslation(String uid, String translation) {
-        act(db -> db.put(TRANSLATION + uid, translation));
+    public void saveTranslation(String originalText, String translation, String toLanguage) {
+        act(db -> db.put(TRANSLATION + originalText + toLanguage, translation));
     }
 
     @Override
-    public String getTranslation(String uid) {
-        return actWithResult(db -> db.get(TRANSLATION + uid)).or("");
+    public String getTranslation(String originalText, String toLanguage) {
+        return actWithResult(db -> db.get(TRANSLATION + originalText + toLanguage)).or("");
     }
 
     ///////////////////////////////////////////////////////////////////////////

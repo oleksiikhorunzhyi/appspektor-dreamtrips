@@ -1,48 +1,44 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.messenger.api.TranslationInteractor;
-import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
-import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
-import com.worldventures.dreamtrips.modules.feed.model.UidItem;
+import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import javax.inject.Inject;
 
 import io.techery.janet.Command;
+import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.schedulers.Schedulers;
 
-public abstract class TranslateUidItemCommand<T extends UidItem> extends Command<T> implements InjectableAction {
+public abstract class TranslateUidItemCommand<T extends TranslatableItem> extends Command<T> implements InjectableAction {
 
-    @Inject TranslationInteractor translationInteractor;
-    @Inject SnappyRepository snappyRepository;
+    @Inject  Janet janet;
 
-    private UidItem uidItem;
-    private String text;
+    private T translatableItem;
     private String languageTo;
 
-    public TranslateUidItemCommand(UidItem uidItem, String text, String languageTo) {
-        this.uidItem = uidItem;
-        this.text = text;
+    public TranslateUidItemCommand(T translatableItem, String languageTo) {
+        this.translatableItem = translatableItem;
         this.languageTo = languageTo;
     }
 
     @Override
     protected void run(CommandCallback<T> callback) throws Throwable {
-        translationInteractor.translatePipe()
-                .createObservableResult(new TranslateTextHttpAction(ImmutableTranslateTextBody
-                        .builder()
-                        .text(text)
-                        .toLanguage(languageTo).build()))
-                .map(TranslateTextHttpAction::getTranslatedText)
-                .doOnNext(translatedText -> snappyRepository.saveTranslation(uidItem.getUid(), translatedText))
+        janet.createPipe(TranslateTextCachedCommand.class, Schedulers.io())
+                .createObservableResult(new TranslateTextCachedCommand(translatableItem.getOriginalText(),
+                        languageTo))
+                .map(TranslateTextCachedCommand::getResult)
                 .map(this::mapResult)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 
-    protected abstract T mapResult(String translatedText);
+    protected T mapResult(String translatedText) {
+        translatableItem.setTranslation(translatedText);
+        translatableItem.setTranslated(true);
+        return translatableItem;
+    }
 
     public static TranslateCommentCommand forComment(Comment comment, String languageTo) {
         return new TranslateCommentCommand(comment, languageTo);
@@ -54,38 +50,15 @@ public abstract class TranslateUidItemCommand<T extends UidItem> extends Command
 
     @CommandAction
     public static class TranslateCommentCommand extends TranslateUidItemCommand<Comment> {
-
-        private Comment comment;
-
-        private TranslateCommentCommand(Comment uidItem, String languageTo) {
-            super(uidItem, uidItem.getMessage(), languageTo);
-            this.comment = uidItem;
-        }
-
-        @Override
-        protected Comment mapResult(String translatedText) {
-            comment.setTranslation(translatedText);
-            comment.setTranslated(true);
-            return comment;
+        public TranslateCommentCommand(Comment translatableItem, String languageTo) {
+            super(translatableItem, languageTo);
         }
     }
 
     @CommandAction
     public static class TranslatePostCommand extends TranslateUidItemCommand<TextualPost> {
-
-        private TextualPost textualPost;
-
-        private TranslatePostCommand(TextualPost textualPost, String languageTo) {
-            super(textualPost, textualPost.getDescription(), languageTo);
-            this.textualPost = textualPost;
-        }
-
-        @Override
-        protected TextualPost mapResult(String translatedText) {
-            textualPost.setTranslation(translatedText);
-            textualPost.setTranslated(true);
-            return textualPost;
+        public TranslatePostCommand(TextualPost translatableItem, String languageTo) {
+            super(translatableItem, languageTo);
         }
     }
-
 }

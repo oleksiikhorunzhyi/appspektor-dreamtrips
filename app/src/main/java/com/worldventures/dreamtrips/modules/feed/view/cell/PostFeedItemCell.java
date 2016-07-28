@@ -87,17 +87,17 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
             viewWithTranslation.setVisibility(View.GONE);
             translateButton.setVisibility(View.GONE);
         } else {
-            FeedEntity entity = getModelObject().getItem();
-            if (!TextUtils.isEmpty(entity.getLanguage())
-                    && !localeHelper.isOwnLanguage(entity.getLanguage())
-                    && !entity.isTranslated()) {
+            TextualPost textualPost = getModelObject().getItem();
+            if (!TextUtils.isEmpty(textualPost.getLanguageFrom())
+                    && !localeHelper.isOwnLanguage(textualPost.getLanguageFrom())
+                    && !textualPost.isTranslated()) {
                 translateButton.setVisibility(View.VISIBLE);
             } else {
                 translateButton.setVisibility(View.GONE);
             }
-            if (entity.isTranslated()) {
-                viewWithTranslation.showTranslation(entity.getTranslation(),
-                        entity.getLanguage());
+            if (textualPost.isTranslated()) {
+                viewWithTranslation.showTranslation(textualPost.getTranslation(),
+                        textualPost.getLanguageFrom());
             } else {
                 viewWithTranslation.hide();
             }

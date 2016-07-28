@@ -133,9 +133,9 @@ public interface SnappyRepository {
 
     int getFriendsRequestsCount();
 
-    void saveTranslation(String uid, String translation);
+    void saveTranslation(String originalText, String translation, String toLanguage);
 
-    String getTranslation(String uid);
+    String getTranslation(String originalText, String toLanguage);
 
     void saveCircles(List<Circle> circles);
 

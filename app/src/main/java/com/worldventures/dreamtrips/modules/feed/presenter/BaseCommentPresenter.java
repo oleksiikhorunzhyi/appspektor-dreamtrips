@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -51,6 +52,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
     @Inject BucketInteractor bucketInteractor;
     @Inject TranslationFeedInteractor translationFeedInteractor;
     @Inject CommentsInteractor commentsInteractor;
+    @Inject LocaleHelper localeHelper;
 
     private UidItemDelegate uidItemDelegate;
 
@@ -172,7 +174,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public void translateComment(Comment comment) {
         translationFeedInteractor.translateCommentPipe().send(TranslateUidItemCommand.forComment(comment,
-                getAccount().getLocale()));
+                localeHelper.getOwnAccountLocaleFormatted()));
     }
 
     public void onEvent(FeedEntityManager.CommentEvent event) {

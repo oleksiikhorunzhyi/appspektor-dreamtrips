@@ -27,6 +27,7 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.ProgressEmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
+import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
@@ -50,6 +51,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     @InjectView(R.id.empty_view) ViewGroup emptyView;
     @InjectView(R.id.suggestionProgress) View suggestionProgressBar;
     @InjectView(R.id.suggestions) ProgressEmptyRecyclerView suggestions;
+
     @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
     BaseDelegateAdapter<HashtagSuggestion> suggestionAdapter;
@@ -219,8 +221,8 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     }
 
     @Override
-    public void updateItem(int position) {
-        fragmentWithFeedDelegate.notifyItemChanged(position);
+    public void updateItem(FeedItem feedItem) {
+        fragmentWithFeedDelegate.notifyItemChanged(feedItem);
     }
 
     @Override

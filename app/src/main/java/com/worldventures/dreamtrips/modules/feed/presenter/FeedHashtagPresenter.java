@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -33,14 +34,13 @@ import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSuggestion;
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
-import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
+import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 
@@ -69,6 +69,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     @Inject TranslationFeedInteractor translationFeedInteractor;
 
     private UidItemDelegate uidItemDelegate;
+    private TextualPostTranslationDelegate textualPostTranslationDelegate;
 
     public FeedHashtagPresenter() {
         uidItemDelegate = new UidItemDelegate(this);
@@ -86,10 +87,12 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribeSuggestions();
+        textualPostTranslationDelegate.onTakeView(view, feedItems);
     }
 
     @Override
     public void dropView() {
+        textualPostTranslationDelegate.onDropView();
         apiErrorPresenter.dropView();
         super.dropView();
     }
@@ -98,6 +101,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     public void onInjected() {
         super.onInjected();
         entityManager.setRequestingPresenter(this);
+        textualPostTranslationDelegate = new TextualPostTranslationDelegate(translationFeedInteractor);
     }
 
     @Nullable
@@ -302,10 +306,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     }
 
     public void onEvent(TranslatePostEvent event) {
-        if (view.isVisibleOnScreen()){
-            translationFeedInteractor.translatePostPipe().send(
-                    TranslateUidItemCommand.forPost(event.getTextualPost(),
-                            getAccount().getLocale()));
+        if (view.isVisibleOnScreen()) {
+            textualPostTranslationDelegate.translate(event.getTextualPost(), getAccount().getLocale());
         }
     }
 
@@ -313,7 +315,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         if (view.isVisibleOnScreen())
             doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
-
     }
 
     public void onEvent(LoadFlagEvent event) {
@@ -342,7 +343,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         interactor.getSuggestionPipe().cancelLatest();
     }
 
-    public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
+    public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
 
         void startLoading();
 

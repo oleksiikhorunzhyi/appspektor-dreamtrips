@@ -35,10 +35,9 @@ import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
+import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
@@ -57,13 +56,13 @@ import javax.inject.Named;
 
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
 
     protected U user;
     protected List<Circle> circles;
+    private TextualPostTranslationDelegate textualPostTranslationDelegate;
 
     @State ArrayList<FeedItem> feedItems;
 
@@ -110,6 +109,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         //
         attachUserToView(user);
         loadProfile();
+        textualPostTranslationDelegate.onTakeView(view, feedItems);
+    }
+
+    @Override
+    public void dropView() {
+        super.dropView();
+        textualPostTranslationDelegate.onDropView();
     }
 
     @Override
@@ -267,10 +273,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     }
 
     public void onEvent(TranslatePostEvent event) {
-        if (view.isVisibleOnScreen()){
-            translationFeedInteractor.translatePostPipe().send(
-                    TranslateUidItemCommand.forPost(event.getTextualPost(),
-                            getAccount().getLocale()));
+        if (view.isVisibleOnScreen()) {
+            textualPostTranslationDelegate.translate(event.getTextualPost(), getAccount().getLocale());
         }
     }
 
@@ -337,7 +341,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         addFeedItems(new ArrayList<>());
     }
 
-    public interface View extends RxView, ApiErrorView {
+    public interface View extends RxView, TextualPostTranslationDelegate.View, ApiErrorView {
+
+        void updateItem(int position);
         
         void openPost();
 

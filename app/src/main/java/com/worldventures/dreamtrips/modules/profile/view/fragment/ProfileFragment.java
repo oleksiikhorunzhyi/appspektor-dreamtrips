@@ -122,8 +122,8 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
     }
 
     @Override
-    public void updateItem(int position) {
-        fragmentWithFeedDelegate.notifyItemChanged(position);
+    public void updateItem(FeedItem feedItem) {
+        fragmentWithFeedDelegate.notifyItemChanged(feedItem);
     }
 
     @Override

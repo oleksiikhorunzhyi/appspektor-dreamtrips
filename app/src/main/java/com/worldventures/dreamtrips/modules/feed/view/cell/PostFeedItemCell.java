@@ -208,6 +208,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
     @OnClick(R.id.translate)
     public void translate() {
         translateButton.setVisibility(View.GONE);
+        viewWithTranslation.showProgress();
         getEventBus().post(new TranslatePostEvent(getModelObject().getItem()));
     }
 

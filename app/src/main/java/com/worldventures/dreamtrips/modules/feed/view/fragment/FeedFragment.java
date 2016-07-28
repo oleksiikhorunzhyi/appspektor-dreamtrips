@@ -252,8 +252,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     @Override
-    public void updateItem(int position) {
-        fragmentWithFeedDelegate.notifyItemChanged(position);
+    public void updateItem(FeedItem feedItem) {
+        fragmentWithFeedDelegate.notifyItemChanged(feedItem);
     }
 
     @Override

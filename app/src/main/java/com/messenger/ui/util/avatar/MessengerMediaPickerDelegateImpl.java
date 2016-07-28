@@ -14,7 +14,6 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDelegate {
 
@@ -96,8 +95,7 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
         photoPickerLayoutDelegate.setOnDoneClickListener((chosenImages, type) ->
                 onImagesPicked(Queryable.from(chosenImages)
                         .map(BasePhotoPickerModel::getOriginalPath)
-                        .toList())
-        );
+                        .toList()));
     }
 
     @Override

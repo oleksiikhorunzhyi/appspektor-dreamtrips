@@ -2,10 +2,16 @@ package com.worldventures.dreamtrips.modules.tripsimages.vision;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.util.SparseArray;
 
@@ -32,6 +38,9 @@ import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.Size;
 import com.worldventures.dreamtrips.util.ValidationUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import rx.Observable;
@@ -173,6 +182,57 @@ public class ImageUtils {
         //
         if (index < 0) return "";
         return path.substring(index);
+    }
+
+    public static Bitmap fromFile(String filePath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        return BitmapFactory.decodeFile(filePath, options);
+    }
+
+    public static File saveToFile(Context context, Bitmap bitmap) throws IOException {
+        FileOutputStream out = null;
+        File file = createFile(context);
+        if (file == null) throw new IOException("Bitmap cannot be saved");
+        try {
+            out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            // PNG is a lossless format, the compression factor (100) is ignored
+        } finally {
+                if (out != null) {
+                    out.close();
+                }
+        }
+        return file;
+    }
+
+    @Nullable
+    private static File createFile(Context context) {
+        long time = System.currentTimeMillis();
+        String filePath = context.getCacheDir()
+                .getAbsolutePath() + File.separator + "bitmaps" + File.separator + time + ".png";
+        File file = new File(filePath);
+        if (file.getParentFile().exists() || file.getParentFile().mkdirs()) {
+            return file;
+        }
+        return null;
+    }
+
+    public static Bitmap scaleBitmap(Bitmap source, int imageSize) {
+        return Bitmap.createScaledBitmap(source, imageSize, imageSize, true);
+    }
+
+    public static Bitmap toMonochromeBitmap(Bitmap source) {
+        Bitmap bmpMonochrome = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bmpMonochrome);
+        ColorMatrix ma = new ColorMatrix();
+        ma.setSaturation(0);
+        Paint paint = new Paint();
+        paint.setColorFilter(new ColorMatrixColorFilter(ma));
+        canvas.drawBitmap(source, 0, 0, paint);
+
+        return bmpMonochrome;
     }
 
     private interface BitmapReceiverListener {

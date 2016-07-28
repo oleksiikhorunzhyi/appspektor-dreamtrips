@@ -200,10 +200,6 @@ public interface DreamTripsApi {
     JSONObject sendInvitations(@Body InviteBody body);
 
     @FormUrlEncoded
-    @POST("/api/invitations/templates/{id}")
-    InviteTemplate getFilledInviteTemplate(@Path("id") int id, @Field("message") String message);
-
-    @FormUrlEncoded
     @POST("/api/invitations/filled_templates")
     InviteTemplate createInviteTemplate(@Field("template_id") int id,
                                         @Field("message") String message,
@@ -267,16 +263,9 @@ public interface DreamTripsApi {
     @DELETE("/api/social/friends/{user_id}")
     JSONObject unfriend(@Path("user_id") int userId);
 
-    @GET("/api/{object_id}/comments")
-    ArrayList<Comment> getComments(@Path("object_id") String objectId, @Query("per_page") int perPage, @Query("page") int page);
-
     @FormUrlEncoded
     @POST("/api/social/comments")
     Comment createComment(@Field("origin_id") String objectId, @Field("text") String text);
-
-    @FormUrlEncoded
-    @POST("/api/social/comments")
-    Comment replyComment(@Field("reply_comment_id") String commentId, @Field("text") String text);
 
     @FormUrlEncoded
     @POST("/api/social/posts")
@@ -327,9 +316,6 @@ public interface DreamTripsApi {
     @POST("/api/social/push_subscriptions")
     Void subscribeDevice(@Body PushSubscription pushSubscription);
 
-    @DELETE("/api/social/push_subscriptions/{token}")
-    Void unsubscribeDevice(@Path("token") String token);
-
     @FormUrlEncoded
     @POST("/api/{uid}/flags")
     Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
@@ -337,9 +323,6 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/terms_and_conditions/accept")
     Void acceptTermsConditions(@Field("text") String text);
-
-    @DELETE("/api/sessions")
-    Void logout();
 
     @GET("/api/social/friends/{userId}/mutual/")
     ArrayList<User> getMutualFriends(@Path("userId") int userId);

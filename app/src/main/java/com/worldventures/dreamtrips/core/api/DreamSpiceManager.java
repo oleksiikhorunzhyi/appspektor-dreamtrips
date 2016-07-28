@@ -76,7 +76,6 @@ public class DreamSpiceManager extends SpiceManager {
         super(spiceServiceClass);
         injector.inject(this);
         Ln.getConfig().setLoggingLevel(Log.ERROR);
-        logoutDelegate.setDreamSpiceManager(this);
         errorParser = new ErrorParser(context);
     }
 

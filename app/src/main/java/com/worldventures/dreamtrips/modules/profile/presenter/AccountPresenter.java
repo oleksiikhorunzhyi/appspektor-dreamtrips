@@ -94,8 +94,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
             shouldReload = false;
             loadProfile();
         }
-        //
-        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     @Override

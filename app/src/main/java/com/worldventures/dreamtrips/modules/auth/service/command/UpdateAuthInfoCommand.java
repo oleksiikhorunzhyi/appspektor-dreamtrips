@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.common.api.janet.command;
+package com.worldventures.dreamtrips.modules.auth.service.command;
 
 import android.support.annotation.NonNull;
 
@@ -8,6 +8,12 @@ import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.GlobalConfigCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageConfigCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;

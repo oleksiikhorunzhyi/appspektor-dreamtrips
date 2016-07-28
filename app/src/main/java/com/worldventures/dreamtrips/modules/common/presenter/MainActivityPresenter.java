@@ -21,12 +21,6 @@ public class MainActivityPresenter extends ActivityPresenter<MainActivityPresent
         checkGoogleServices();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
-    }
-
     public void logout() {
         logoutDelegate.logout();
     }

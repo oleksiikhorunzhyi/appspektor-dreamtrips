@@ -46,7 +46,6 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
         super.onResume();
         //Some third-party libraries can change the locale.
         setupUserLocale();
-        logoutDelegate.setDreamSpiceManager(dreamSpiceManager);
     }
 
     public void logout() {

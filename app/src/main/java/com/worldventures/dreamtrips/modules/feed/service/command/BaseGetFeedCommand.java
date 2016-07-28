@@ -1,9 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.ListFilter;
 import com.worldventures.dreamtrips.core.rx.composer.ListMapper;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
@@ -27,7 +25,6 @@ public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends Co
     protected static final int TIMELINE_LIMIT = 10;
 
     @Inject Janet janet;
-    @Inject SnappyRepository snappyRepository;
 
     protected String before;
 
@@ -42,17 +39,10 @@ public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends Co
                 .map(GetFeedHttpAction::getResponseItems)
                 .compose(new ListFilter<>(ParentFeedItem::isSingle))
                 .compose(new ListMapper<>(parentFeedItem -> parentFeedItem.getItems().get(0)))
-                .doOnNext(this::mixCachedTranslations)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 
     protected abstract Class<T> provideHttpActionClass();
 
     protected abstract T provideRequest();
-
-    private void mixCachedTranslations(List<FeedItem<FeedEntity>> feedItems) {
-        Queryable.from(feedItems)
-                .map(FeedItem::getItem)
-                .forEachR(feedEntity -> feedEntity.setTranslation(snappyRepository.getTranslation(feedEntity.getUid())));
-    }
 }

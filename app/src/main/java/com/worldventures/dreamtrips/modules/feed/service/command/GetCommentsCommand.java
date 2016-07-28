@@ -1,8 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.service.api.GetCommentsHttpAction;
 
@@ -21,7 +19,6 @@ public class GetCommentsCommand extends Command<List<Comment>> implements Inject
     public static final int LIMIT = 10;
 
     @Inject Janet janet;
-    @Inject SnappyRepository snappyRepository;
 
     private final String itemUid;
     private final int page;
@@ -36,13 +33,6 @@ public class GetCommentsCommand extends Command<List<Comment>> implements Inject
         janet.createPipe(GetCommentsHttpAction.class, Schedulers.io())
                 .createObservableResult(new GetCommentsHttpAction(itemUid, page, LIMIT))
                 .map(GetCommentsHttpAction::response)
-                .doOnNext(this::mixCachedTranslations)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
-
-    private void mixCachedTranslations(List<Comment> comments) {
-        Queryable.from(comments)
-                .forEachR(comment -> comment.setTranslation(snappyRepository.getTranslation(comment.getUid())));
-    }
-
 }

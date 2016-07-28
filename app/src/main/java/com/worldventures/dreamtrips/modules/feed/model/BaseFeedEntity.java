@@ -91,33 +91,6 @@ public abstract class BaseFeedEntity implements FeedEntity {
         return likesCount;
     }
 
-    @Nullable
-    @Override
-    public String getLanguage() {
-        return language;
-    }
-
-    @Nullable
-    @Override
-    public String getTranslation() {
-        return translation;
-    }
-
-    @Override
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
-
-    @Override
-    public boolean isTranslated() {
-        return translated;
-    }
-
-    @Override
-    public void setTranslated(boolean translated) {
-        this.translated = translated;
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
@@ -169,6 +142,40 @@ public abstract class BaseFeedEntity implements FeedEntity {
                 ", owner=" + owner +
                 ", uid='" + uid + '\'' +
                 '}';
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Translation
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public String getOriginalText() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getLanguageFrom() {
+        return language;
+    }
+
+    @Override
+    public String getTranslation() {
+        return translation;
+    }
+
+    @Override
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
+    @Override
+    public boolean isTranslated() {
+        return translated;
+    }
+
+    @Override
+    public void setTranslated(boolean translated) {
+        this.translated = translated;
     }
 
 }

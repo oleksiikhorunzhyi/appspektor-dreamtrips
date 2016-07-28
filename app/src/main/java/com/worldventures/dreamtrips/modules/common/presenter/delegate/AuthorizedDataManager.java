@@ -5,8 +5,8 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.UpdateAuthInfoCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.AuthInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.command.UpdateAuthInfoCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -34,7 +34,7 @@ public class AuthorizedDataManager {
     public void updateData(AuthDataSubscriber authDataSubscriber) {
         if (!inProgress) {
             inProgress = true;
-            authObservable = authInteractor.pipe().createObservableResult(new UpdateAuthInfoCommand())
+            authObservable = authInteractor.updateAuthInfoCommandActionPipe().createObservableResult(new UpdateAuthInfoCommand())
                     .observeOn(AndroidSchedulers.mainThread())
                     .share();
             compositeSubscription.add(authObservable

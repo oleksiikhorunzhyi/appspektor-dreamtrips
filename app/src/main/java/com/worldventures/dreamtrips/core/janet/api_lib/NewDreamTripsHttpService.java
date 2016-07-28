@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.api.api_common.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.api.api_common.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
-import com.worldventures.dreamtrips.core.api.action.LogoutAction;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -97,7 +96,6 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
     protected <A> boolean onInterceptFail(ActionHolder<A> holder, JanetException e) {
         //checking with retry-login policy
         if (holder.action() instanceof AuthorizedHttpAction
-                && !(holder.action() instanceof LogoutAction)
                 && !retriedActions.remove(holder.action())) {
             AuthorizedHttpAction action = (AuthorizedHttpAction) holder.action();
             String authHeader = action.getAuthorizationHeader();

@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.common;
 
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.AuthInteractor;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.StaticPagesInteractor;

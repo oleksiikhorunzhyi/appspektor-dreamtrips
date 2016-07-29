@@ -37,7 +37,7 @@ public class TranslateTextCachedCommand extends Command<String> implements Cache
 
     @Override
     protected void run(CommandCallback<String> callback) throws Throwable {
-        if (TextUtils.isEmpty(cachedTranslation))
+        if (cachedTranslation == null || cachedTranslation.length() == 0)
             translationInteractor.translatePipe()
                     .createObservableResult(new TranslateTextHttpAction(ImmutableTranslateTextBody
                             .builder()

@@ -19,7 +19,7 @@ import flow.History;
 @Layout(R.layout.activity_dtl)
 public class DtlActivity extends FlowActivity<ActivityPresenter<ActivityPresenter.View>> {
 
-    public static final int GPS_LOCATION_RESOLUTION_REQUEST = 48151623;
+    public static final int GPS_LOCATION_RESOLUTION_REQUEST = 481;
 
     @InjectView(R.id.drawer_filter_layout)
     DtlFilterViewImpl filterView;

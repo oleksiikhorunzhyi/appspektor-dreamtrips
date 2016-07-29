@@ -23,7 +23,6 @@ import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
@@ -87,24 +86,24 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
         PostFeedItem postFeedItem = getModelObject();
         TextualPost textualPost = postFeedItem.getItem();
 
-        if (textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId()
-                || TextUtils.isEmpty(textualPost.getDescription())) {
-            viewWithTranslation.setVisibility(View.GONE);
-            translateButton.setVisibility(View.GONE);
-        } else {
-            if (!TextUtils.isEmpty(textualPost.getLanguageFrom())
-                    && !localeHelper.isOwnLanguage(textualPost.getLanguageFrom())
-                    && !postFeedItem.isTranslated()) {
-                translateButton.setVisibility(View.VISIBLE);
-            } else {
+        boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
+        boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
+        boolean sameLanguage = localeHelper.isOwnLanguage(textualPost.getLanguageFrom());
+        boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguageFrom());
+        boolean alreadyTranslated = postFeedItem.isTranslated();
+
+        if (!ownPost && !emptyPostText && !sameLanguage && !emptyPostLanguage) {
+            if (alreadyTranslated) {
                 translateButton.setVisibility(View.GONE);
-            }
-            if (postFeedItem.isTranslated()) {
                 viewWithTranslation.showTranslation(postFeedItem.getTranslation(),
                         textualPost.getLanguageFrom());
             } else {
+                translateButton.setVisibility(View.VISIBLE);
                 viewWithTranslation.hide();
             }
+        } else {
+            translateButton.setVisibility(View.GONE);
+            viewWithTranslation.hide();
         }
     }
 

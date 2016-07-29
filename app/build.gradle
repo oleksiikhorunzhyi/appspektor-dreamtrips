@@ -23,9 +23,11 @@ repositories {
     maven { url "http://repository.jetbrains.com/all" }
     maven { url "http://artifactory.techery.io:8081/artifactory/worldventures" }
 }
+
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
+
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
@@ -45,8 +47,9 @@ android {
     String DTL_CODE = "dtl"
     String MESSENGER_CODE = "messenger"
     String SOCIAL_CODE = "social"
+    String SMARTCARD_CODE = "smartcard"
     String STABLE_CODE = "stable"
-    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, STABLE_CODE]
+    String[] STREAM_CODES = [DTL_CODE, MESSENGER_CODE, SOCIAL_CODE, SMARTCARD_CODE, STABLE_CODE]
     //
     String STAGE_CODE = "stage"
     String PREPROD_CODE = "preprod"
@@ -54,7 +57,6 @@ android {
     String PROD_CODE = "prod"
     String[] CONFIG_CODES = [STAGE_CODE, PREPROD_CODE, PERF_CODE, PROD_CODE]
     //
-    def APP_ID_BASE = "com.worldventures.dreamtrips"
     def APP_VERSION_NAME_BASE = "${versionMajor}.${versionMinor}.${versionPatch}"
     //
     def ALLOW_BUILD_LOG = true
@@ -97,7 +99,7 @@ android {
     ]
 
     defaultConfig {
-        applicationId APP_ID_BASE
+        applicationId "com.worldventures.dreamtrips"
         //
         archivesBaseName = "DreamTrips"
         versionCode versionMajor * 100000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
@@ -152,30 +154,52 @@ android {
         // possible "build"-dimension flavors:
         dev {
             dimension "build"
+            applicationIdSuffix = DEV_CODE
             minSdkVersion 23
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
         devpremarshmallow {
             dimension "build"
+            applicationIdSuffix = DEV_CODE
             ext.enableCrashlytics = false
             buildConfigField 'boolean', 'CRASHLYTICS_DISABLED', 'true'
         }
         external { dimension "build" }
 
         // possible "stream"-dimension flavors:
-        dtl { dimension "stream" }
+        dtl {
+            dimension "stream"
+            applicationIdSuffix = DTL_CODE
+        }
         messenger {
             dimension "stream"
+            applicationIdSuffix = MESSENGER_CODE
             buildConfigField 'String', 'HOCKEY_APP_ID', '"d1ada40641214b4e9728a832c2d78d5c"'
         }
-        social { dimension "stream" }
+        social {
+            dimension "stream"
+            applicationIdSuffix = SOCIAL_CODE
+        }
+        smartcard {
+            dimension "stream"
+            applicationIdSuffix = SMARTCARD_CODE
+        }
         stable { dimension "stream" }
 
         // possible "config"-dimension flavors:
-        stage { dimension "config" }
-        preprod { dimension "config" }
-        perf { dimension "config" }
+        stage {
+            dimension "config"
+            applicationIdSuffix = STAGE_CODE
+        }
+        preprod {
+            dimension "config"
+            applicationIdSuffix = PREPROD_CODE
+        }
+        perf {
+            dimension "config"
+            applicationIdSuffix = PERF_CODE
+        }
         prod {
             dimension "config"
             //
@@ -188,7 +212,7 @@ android {
         variant.ignore = true
         //
         String build = variant.flavors.get(0).name.toLowerCase() // dev / devpremarshmallow / external
-        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / stable
+        String stream = variant.flavors.get(1).name.toLowerCase() // dtl / messenger / social / smartcard / stable
         String config = variant.flavors.get(2).name.toLowerCase() // stage / prepord / perf / prod
         //
         if (variant.buildType.name.equals("debug") && (config.equals(STAGE_CODE) || config.equals(PREPROD_CODE))) {
@@ -243,28 +267,6 @@ android {
         }
 
         ///////////////////////////////////////////////////////////////////////////
-        // appId constructor
-        ///////////////////////////////////////////////////////////////////////////
-
-        if (streamSuffix.equals(STABLE_CODE) && configSuffix.equals(PROD_CODE)) {
-            writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
-                    "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
-                            "appId = ${APP_ID_BASE}\n" +
-                            "versionName = ${APP_VERSION_NAME_BASE}"
-            )
-            return
-        }
-        //
-        String generatedAppId = APP_ID_BASE
-        //
-        if (equalsAnyOf(buildSuffix, DEV_CODE, DEV_PRE_MARSHMALLOW_CODE))
-            generatedAppId += ".${DEV_CODE}"
-        if (!streamSuffix.equals(STABLE_CODE)) generatedAppId += ".${streamSuffix}"
-        if (!configSuffix.equals(PROD_CODE)) generatedAppId += ".${configSuffix}"
-        //
-        variant.mergedFlavor.setApplicationId generatedAppId
-
-        ///////////////////////////////////////////////////////////////////////////
         // Version name constructor
         ///////////////////////////////////////////////////////////////////////////
 
@@ -282,7 +284,6 @@ android {
         //
         writeBuildLog(ALLOW_BUILD_LOG, BUILD_LOG_TAG,
                 "Flavor = ${variant.flavorName + variant.buildType.name}\n" +
-                        "appId = ${generatedAppId}\n" +
                         "versionName = ${versionName}"
         )
     }
@@ -411,7 +412,7 @@ dependencies {
     compile 'io.reactivex:rxjava-debug:1.0.3'
     // Ui
     compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
-    compile 'com.github.zhangchaoxu:sweet-alert-dialog:e8920134fc'
+    compile 'cn.pedant.sweetalert:library:1.3'
     compile "com.android.support:design:${googleLibrariesVersion}"
     compile 'com.github.traex.expandablelayout:library:1.3'
     compile 'com.facebook.fresco:fresco:0.8.1'
@@ -427,7 +428,7 @@ dependencies {
     compile 'com.github.afollestad.material-dialogs:commons:0.8.5.2'
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
-    compile 'com.github.techery:material-range-bar:9762c0a79b'
+    compile 'com.github.techery:material-range-bar:db6fec9fdd'
     compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.7'
     compile 'com.github.frankiesardo:linearlistview:1.0.1@aar'
     compile 'me.relex:circleindicator:1.1.5@aar'

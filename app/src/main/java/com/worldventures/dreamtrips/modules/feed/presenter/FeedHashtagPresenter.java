@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
@@ -37,6 +39,7 @@ import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.HashtagSugge
 import com.worldventures.dreamtrips.modules.feed.service.HashtagInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.HashtagSuggestionCommand;
+import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 
@@ -59,6 +62,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     @State ArrayList<FeedItem> feedItems = new ArrayList<>();
     @State ArrayList<HashtagSuggestion> hashtagSuggestions = new ArrayList<>();
 
+    @Inject LocaleHelper localeHelper;
+    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
     @Inject HashtagInteractor interactor;
     @Inject FeedEntityManager entityManager;
     @Inject BucketInteractor bucketInteractor;
@@ -81,11 +86,13 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribeSuggestions();
+        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
     }
 
     @Override
     public void dropView() {
         apiErrorPresenter.dropView();
+        textualPostTranslationDelegate.onDropView();
         super.dropView();
     }
 
@@ -296,11 +303,16 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
+    public void onEvent(TranslatePostEvent event) {
+        if (view.isVisibleOnScreen()) {
+            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
+        }
+    }
+
     public void onEvent(DeletePhotoEvent event) {
         if (view.isVisibleOnScreen())
             doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
-
     }
 
     public void onEvent(LoadFlagEvent event) {
@@ -329,7 +341,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         interactor.getSuggestionPipe().cancelLatest();
     }
 
-    public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
+    public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
 
         void startLoading();
 

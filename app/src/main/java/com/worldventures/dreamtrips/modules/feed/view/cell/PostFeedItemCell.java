@@ -22,6 +22,7 @@ import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
@@ -207,6 +208,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
     @OnClick(R.id.translate)
     public void translate() {
         translateButton.setVisibility(View.GONE);
+        viewWithTranslation.showProgress();
+        getEventBus().post(new TranslatePostEvent(getModelObject().getItem()));
     }
 
     @Override

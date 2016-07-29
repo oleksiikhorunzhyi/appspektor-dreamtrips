@@ -16,7 +16,6 @@
         android:id="@+id/translate_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/spacing_tiny"
         android:visibility="gone">
 
         <View

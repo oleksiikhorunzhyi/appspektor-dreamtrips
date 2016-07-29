@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -30,10 +31,12 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedEntityCommentedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedEntityDeletedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
@@ -63,7 +66,9 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
 
     @Inject FeedEntityManager entityManager;
     @Inject SnappyRepository snappyRepository;
+    @Inject LocaleHelper localeHelper;
     @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
     @Inject BucketInteractor bucketInteractor;
     @Inject FeedInteractor feedInteractor;
 
@@ -103,11 +108,13 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         //
         attachUserToView(user);
         loadProfile();
+        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
     }
 
     @Override
     public void dropView() {
         apiErrorPresenter.dropView();
+        textualPostTranslationDelegate.onDropView();
         super.dropView();
     }
 
@@ -259,6 +266,12 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
+    public void onEvent(TranslatePostEvent event) {
+        if (view.isVisibleOnScreen()) {
+            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
+        }
+    }
+
     public void onEvent(DeletePhotoEvent event) {
         if (view.isVisibleOnScreen())
             doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
@@ -322,8 +335,8 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         addFeedItems(new ArrayList<>());
     }
 
-    public interface View extends RxView, ApiErrorView {
-        
+    public interface View extends RxView, TextualPostTranslationDelegate.View, ApiErrorView {
+
         void openPost();
 
         void openFriends();

@@ -95,6 +95,14 @@ public class FragmentWithFeedDelegate {
         adapter.notifyItemInserted(position);
     }
 
+    public void notifyItemChanged(FeedItem feedItem) {
+        if (feedItem != null) {
+            adapter.notifyItemChanged(adapter.getItems().indexOf(feedItem));
+        } else {
+            adapter.notifyDataSetChanged(); //there has been error. Cells need to be resynced
+        }
+    }
+
     public void clearItems() {
         adapter.clear();
     }

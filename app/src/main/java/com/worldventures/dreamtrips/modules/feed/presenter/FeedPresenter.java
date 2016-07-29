@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -41,14 +42,15 @@ import com.worldventures.dreamtrips.modules.feed.event.FeedItemAddedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LikesPressedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
+import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
-import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
+import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
@@ -76,9 +78,10 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject FeedEntityManager entityManager;
     @Inject SnappyRepository db;
     @Inject MediaPickerManager mediaPickerManager;
-    @Inject TranslationFeedInteractor translationFeedInteractor;
+    @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
     @Inject DrawableUtil drawableUtil;
     @Inject UnreadConversationObservable unreadConversationObservable;
+    @Inject LocaleHelper localeHelper;
     @Inject @ForActivity Provider<Injector> injectorProvider;
 
     @Inject BucketInteractor bucketInteractor;
@@ -126,6 +129,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         subscribeLoadNextFeeds();
         subscribePhotoGalleryCheck();
         subscribeUnreadConversation();
+        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
 
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
@@ -135,6 +139,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void dropView() {
         apiErrorPresenter.dropView();
+        textualPostTranslationDelegate.onDropView();
         super.dropView();
     }
 
@@ -337,11 +342,16 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                     aVoid -> itemDeleted(event.getEntity()));
     }
 
+    public void onEvent(TranslatePostEvent event) {
+        if (view.isVisibleOnScreen()) {
+            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
+        }
+    }
+
     public void onEvent(DeletePhotoEvent event) {
         if (view.isVisibleOnScreen())
             doRequest(new DeletePhotoCommand(event.getEntity().getUid()),
                     aVoid -> itemDeleted(event.getEntity()));
-
     }
 
     public void onEvent(LoadFlagEvent event) {
@@ -451,7 +461,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                 }, throwable -> Timber.w("Can't get unread conversation count"));
     }
 
-    public interface View extends RxView, UidItemDelegate.View, ApiErrorView {
+    public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
 
         void setRequestsCount(int count);
 

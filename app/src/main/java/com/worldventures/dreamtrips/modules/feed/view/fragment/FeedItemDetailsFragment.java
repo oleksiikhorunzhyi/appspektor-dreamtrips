@@ -81,6 +81,11 @@ public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetails
         }
     }
 
+    @Override
+    public void updateItem(FeedItem feedItem) {
+        updateFeedItem(feedItem);
+    }
+
     private boolean isShowAdditionalInfo() {
         return getActivity().getSupportFragmentManager().findFragmentById(R.id.comments_additional_info_container) == null
                 && getArgs().isShowAdditionalInfo();

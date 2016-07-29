@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed;
 
+import com.messenger.api.TranslationInteractor;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.R;
@@ -29,6 +30,7 @@ import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
+import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
@@ -72,6 +74,7 @@ import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewAc
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
 import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
+import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 
 import dagger.Module;
@@ -193,5 +196,10 @@ public class FeedModule {
     @Provides
     FragmentWithFeedDelegate provideFragmentWithFeedDelegate(Router router) {
         return new FragmentWithFeedDelegate(router);
+    }
+
+    @Provides
+    TextualPostTranslationDelegate provideTextualPostTranslationDelegate(TranslationFeedInteractor translationFeedInteractor) {
+        return new TextualPostTranslationDelegate(translationFeedInteractor);
     }
 }

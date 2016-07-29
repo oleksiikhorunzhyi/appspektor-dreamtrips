@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
+import android.support.annotation.Nullable;
+
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -8,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-public interface FeedEntity extends Serializable, UidItem, TranslatableItem {
+public interface FeedEntity extends Serializable, UidItem {
 
     User getOwner();
 
@@ -38,4 +40,7 @@ public interface FeedEntity extends Serializable, UidItem, TranslatableItem {
     void setFirstLikerName(String fullName);
 
     void syncLikeState(FeedEntity feedEntity);
+
+    @Nullable
+    String getLanguageFrom();
 }

@@ -305,7 +305,7 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
 
     public void onEvent(TranslatePostEvent event) {
         if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
+            textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getOwnAccountLocaleFormatted());
         }
     }
 

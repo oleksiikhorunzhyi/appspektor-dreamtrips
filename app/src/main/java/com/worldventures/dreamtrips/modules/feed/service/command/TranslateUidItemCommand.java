@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.service.command;
 import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
@@ -46,8 +46,8 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
         return new TranslateCommentCommand(comment, languageTo);
     }
 
-    public static TranslatePostCommand forPost(TextualPost textualPost, String languageTo) {
-        return new TranslatePostCommand(textualPost, languageTo);
+    public static TranslatePostCommand forPost(PostFeedItem postFeedItem, String languageTo) {
+        return new TranslatePostCommand(postFeedItem, languageTo);
     }
 
     @CommandAction
@@ -58,8 +58,8 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
     }
 
     @CommandAction
-    public static class TranslatePostCommand extends TranslateUidItemCommand<TextualPost> {
-        public TranslatePostCommand(TextualPost translatableItem, String languageTo) {
+    public static class TranslatePostCommand extends TranslateUidItemCommand<PostFeedItem> {
+        public TranslatePostCommand(PostFeedItem translatableItem, String languageTo) {
             super(translatableItem, languageTo);
         }
     }

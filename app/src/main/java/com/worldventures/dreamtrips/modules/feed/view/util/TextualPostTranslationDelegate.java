@@ -5,7 +5,7 @@ import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 
@@ -40,9 +40,9 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
         view = null;
     }
 
-    public void translate(TextualPost textualPost, String languageTo) {
+    public void translate(PostFeedItem postFeedItem, String languageTo) {
         translationFeedInteractor.translatePostPipe().send(
-                TranslateUidItemCommand.forPost(textualPost, languageTo));
+                TranslateUidItemCommand.forPost(postFeedItem, languageTo));
     }
 
     private void subscribeToPostTranslation() {
@@ -53,24 +53,17 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
                         .onFail(this::translateFail));
     }
 
-    private void translateSuccess(TextualPost textualPost) {
-        int textualPostIndex = getFeedItemPositionForPost(textualPost);
-        if (textualPostIndex != -1) {
-            feedItems.get(textualPostIndex).setItem(textualPost);
-            view.updateItem(feedItems.get(textualPostIndex));
+    private void translateSuccess(FeedItem postFeedItem) {
+        int postFeedItemIndex = feedItems.indexOf(postFeedItem);
+        if (postFeedItemIndex != -1) {
+            feedItems.set(postFeedItemIndex, postFeedItem);
+            view.updateItem(feedItems.get(postFeedItemIndex));
         }
     }
 
     private void translateFail(Object action, Throwable throwable) {
         apiErrorPresenter.handleActionError(action, throwable);
         view.updateItem(null);
-    }
-
-    private int getFeedItemPositionForPost(TextualPost textualPost) {
-        for (int i = 0; i < feedItems.size(); i++) {
-            if (feedItems.get(i).getItem().equals(textualPost)) return i;
-        }
-        return -1;
     }
 
     public interface View {

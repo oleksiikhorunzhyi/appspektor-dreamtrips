@@ -344,7 +344,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public void onEvent(TranslatePostEvent event) {
         if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getTextualPost(), localeHelper.getOwnAccountLocaleFormatted());
+            textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getOwnAccountLocaleFormatted());
         }
     }
 

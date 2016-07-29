@@ -54,9 +54,4 @@ public class TextualPost extends BaseFeedEntity {
     public String place() {
         return location != null ? location.getName() : "";
     }
-
-    @Override
-    public String getOriginalText() {
-        return description;
-    }
 }

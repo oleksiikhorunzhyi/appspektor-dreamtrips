@@ -22,4 +22,9 @@ public class PostFeedItem extends FeedItem<TextualPost> {
             return new PostFeedItem[size];
         }
     };
+
+    @Override
+    public String getOriginalText() {
+        return getItem().getDescription();
+    }
 }

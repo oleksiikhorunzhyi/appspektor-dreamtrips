@@ -9,9 +9,6 @@ public interface TranslatableItem {
     @Nullable
     String getTranslation();
 
-    @Nullable
-    String getLanguageFrom();
-
     void setTranslation(String text);
 
     boolean isTranslated();

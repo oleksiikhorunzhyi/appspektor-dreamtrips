@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.feed.model.comment;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -136,7 +135,6 @@ public class Comment implements Parcelable, Serializable, UidItem, TranslatableI
         return text;
     }
 
-    @Override
     public String getLanguageFrom() {
         return language;
     }

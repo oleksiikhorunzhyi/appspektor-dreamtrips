@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class WizardSplashScreen extends WalletFrameLayout<WizardSplashScreenPresenter.WizardSplashScreen, WizardSplashScreenPresenter, WizardSplashPath>
-        implements WizardSplashScreenPresenter.WizardSplashScreen {
+public class WizardSplashScreen extends WalletFrameLayout<WizardSplashScreenPresenter.Screen, WizardSplashScreenPresenter, WizardSplashPath>
+        implements WizardSplashScreenPresenter.Screen {
     @InjectView(R.id.wallet_wizard_splash_title)
     TextView title;
 

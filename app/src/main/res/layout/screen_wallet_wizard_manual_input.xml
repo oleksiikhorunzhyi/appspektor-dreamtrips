@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                                                                              xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                                              xmlns:tools="http://schemas.android.com/tools"
+                                                                              android:layout_width="match_parent"
+                                                                              android:layout_height="match_parent"
+                                                                              android:background="@drawable/wallet_wizard_background"
+                                                                              android:orientation="vertical"
+                                                                              android:theme="@style/WalletTheme.Wizard">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/WalletTheme.ToolbarLight"
+        app:navigationIcon="@drawable/back_icon"
+        app:title="@string/wallet_wizard_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wallet_wizard_manual_input_header"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            tools:src="@drawable/ic_cover_place_holder"/>
+
+        <EditText
+            android:id="@+id/wallet_wizard_manual_input_scid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:hint="@string/wallet_wizard_manual_input_hint"
+            android:inputType="numberSigned"/>
+
+        <Button
+            android:id="@+id/wallet_wizard_manual_input_next_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/wallet_next_label"/>
+
+    </LinearLayout>
+
+</com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen>

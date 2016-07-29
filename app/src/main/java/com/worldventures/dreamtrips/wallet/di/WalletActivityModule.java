@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresente
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreenPresenter;
 
 import dagger.Module;
@@ -18,6 +19,7 @@ import dagger.Provides;
                 WalletActivityPresenter.class,
                 WizardSplashScreenPresenter.class,
                 WizardScanBarcodePresenter.class,
+                WizardManualInputPresenter.class,
                 WizardCardNamePresenter.class,
                 WizardEditProfilePresenter.class
         },

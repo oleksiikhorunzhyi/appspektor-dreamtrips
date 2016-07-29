@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 import android.content.Context;
 import android.os.Parcelable;
 
-import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.CompressImageInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
@@ -20,8 +19,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
-public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable>
-        implements ViewStateMvpPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
+public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
     @Inject
     CompressImageInteractor compressImageInteractor;

@@ -222,9 +222,10 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             DtlActivity.startDtl(this);
             return;
         }
-        if(component.getKey().equals(WalletActivityModule.WALLET)) {
+        if (component.getKey().equals(WalletActivityModule.WALLET)) {
             closeLeftDrawer();
             WalletActivity.startWallet(this);
+            return;
         }
 
         //

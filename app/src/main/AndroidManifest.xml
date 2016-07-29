@@ -127,7 +127,8 @@
         <!-- Wallet activities -->
         <activity
             android:name=".wallet.ui.WalletActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.worldventures.dreamtrips.modules.common.view.activity.MainActivity"/>

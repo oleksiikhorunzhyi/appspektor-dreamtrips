@@ -2,19 +2,28 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.barcode;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcodePresenter.WizardScanBarcodeScreen, WizardScanBarcodePresenter, WizardScanBarcodePath>
-        implements WizardScanBarcodePresenter.WizardScanBarcodeScreen, ZXingScannerView.ResultHandler {
+public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath>
+        implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+
     @InjectView(R.id.scanner_view)
     ZXingScannerView scanner;
+
+    private SweetAlertDialog progressDialog;
 
     public WizardScanBarcodeScreen(Context context) {
         super(context);
@@ -27,13 +36,16 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        toolbar.setNavigationOnClickListener(v -> presenter.goBack());
         scanner.setResultHandler(this);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getPresenter().requestCamera();
+        if (!isInEditMode()) {
+            getPresenter().requestCamera();
+        }
     }
 
     @Override
@@ -64,6 +76,29 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
 
     @Override
     public void handleResult(Result result) {
+        Toast.makeText(getContext(), "Got barcode " + result.getText(), Toast.LENGTH_SHORT).show();
         getPresenter().barcodeScanned(result.getText());
+    }
+
+    @OnClick(R.id.wallet_wizard_scan_barcode_manual_input)
+    void onInputManuallyClicked() {
+        getPresenter().startManualInput();
+    }
+
+    @Override
+    public void notifyError(Throwable throwable) {
+        //do specific error handling or move it upper
+    }
+
+    @Override
+    public void showProgress() {
+        progressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE)
+                .setContentText("Test text");
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgress() {
+        progressDialog.dismiss();
     }
 }

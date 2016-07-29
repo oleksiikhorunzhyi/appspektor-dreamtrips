@@ -15,6 +15,8 @@ import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
+import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision;
 
 import java.net.CookieManager;
 import java.util.Set;
@@ -28,15 +30,24 @@ import dagger.Provides;
 import io.techery.janet.ActionService;
 import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
+import io.techery.janet.SmartCardActionService;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
+import io.techery.janet.http.test.MockHttpActionService;
+import io.techery.janet.smartcard.client.SmartCardClient;
 
 @Module(
-        includes = {JanetCommandModule.class, JanetServiceModule.class, CacheActionStorageModule.class},
+        includes = {
+                JanetCommandModule.class,
+                JanetServiceModule.class,
+                CacheActionStorageModule.class,
+                SmartCardModule.class
+        },
         complete = false, library = true)
 public class JanetModule {
     public static final String JANET_QUALIFIER = "JANET";
     public static final String JANET_API_LIB = "JANET_API_LIB";
+    public static final String JANET_WALLET = "JANET_WALLET";
 
     @Singleton
     @Provides(type = Provides.Type.SET)
@@ -121,4 +132,37 @@ public class JanetModule {
         return new AnalyticsService(trackers);
     }
 
+    //
+    @Singleton
+    @Provides
+    @Named(JANET_WALLET)
+    Janet provideWalletJanet(@Named(JANET_WALLET) Set<ActionService> services,
+                             @ForApplication Context context) {
+        Janet.Builder builder = new Janet.Builder();
+        for (ActionService service : services) {
+            service = new TimberServiceWrapper(service);
+            service = new DaggerActionServiceWrapper(service, context);
+
+            builder.addService(service);
+        }
+
+        return builder.build();
+    }
+
+    @Singleton
+    @Provides(type = Provides.Type.SET)
+    @Named(JANET_WALLET)
+    ActionService provideWalletHttpService() {
+        return new MockHttpActionService.Builder()
+                .bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
+                        .build()), request -> request.getUrl().endsWith("create_card"))
+                .build();
+    }
+
+    @Singleton
+    @Provides(type = Provides.Type.SET)
+    @Named(JANET_WALLET)
+    ActionService provideSmartCardService(@Named("MockSmartCardClient") SmartCardClient client) {
+        return SmartCardActionService.createDefault(client);
+    }
 }

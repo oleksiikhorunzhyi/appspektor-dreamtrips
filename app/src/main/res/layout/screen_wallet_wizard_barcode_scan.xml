@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodeScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                                                                               android:layout_width="match_parent"
-                                                                               android:layout_height="match_parent"
-                                                                               android:theme="@style/WalletTheme.Wizard">
+<com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodeScreen style="@style/WalletTheme.Wizard.RootStyle"
+                                                                               xmlns:android="http://schemas.android.com/apk/res/android"
+                                                                               xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                                               android:theme="@style/WalletTheme.Wizard"
+    >
 
     <me.dm7.barcodescanner.zxing.ZXingScannerView
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/wallet_color_background_dark_with_alpha"
+        android:theme="@style/WalletTheme.ToolbarLight"
+        app:navigationIcon="@drawable/back_icon"
+        app:title="@string/wallet_wizard_title"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/wallet_color_background_dark_with_alpha"
         android:gravity="center"
-        android:padding="25dp"
+        android:padding="@dimen/spacing_large"
         android:text="@string/wallet_wizard_scan_barcode_header"
         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
@@ -26,7 +37,7 @@
         android:background="@color/wallet_color_background_dark_with_alpha"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="25dp">
+        android:padding="@dimen/spacing_large">
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,6 +46,7 @@
             android:textAppearance="@style/WalletTheme.Wizard.TextAppearanceSmall"/>
 
         <TextView
+            android:id="@+id/wallet_wizard_scan_barcode_manual_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"

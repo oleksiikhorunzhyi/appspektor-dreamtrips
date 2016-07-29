@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:text="@string/wallet_wizard_next"/>
+            android:text="@string/wallet_next_label"/>
 
     </FrameLayout>
 </com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNameScreen>

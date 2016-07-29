@@ -3,18 +3,26 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.barcode;
 import android.content.Context;
 import android.os.Parcelable;
 
-import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
+import com.worldventures.dreamtrips.wallet.ui.common.base.ErrorScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.ProgressScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardAliasPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPath;
 
 import javax.inject.Inject;
 
-public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.WizardScanBarcodeScreen, Parcelable>
-        implements ViewStateMvpPresenter<WizardScanBarcodePresenter.WizardScanBarcodeScreen, Parcelable> {
+import flow.Flow;
+
+public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.Screen, Parcelable> {
+    @Inject
+    WizardInteractor wizardInteractor;
+
     @Inject
     PermissionDispatcher permissionDispatcher;
 
@@ -32,14 +40,19 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
     }
 
     public void barcodeScanned(String barcode) {
-
+        //check
+        Flow.get(getContext()).set(new WizardCardAliasPath());
     }
 
     public void startManualInput() {
-        //route to manual input screen
+        Flow.get(getContext()).set(new WizardManualInputPath());
     }
 
-    public interface WizardScanBarcodeScreen extends WalletScreen {
+    public void goBack() {
+        Flow.get(getContext()).goBack();
+    }
+
+    public interface Screen extends WalletScreen, ProgressScreen, ErrorScreen {
         void startCamera();
 
         void showRationaleForCamera();

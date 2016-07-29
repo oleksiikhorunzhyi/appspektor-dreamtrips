@@ -40,6 +40,7 @@ public class LocaleHelper {
                 .toLowerCase();
     }
 
+    @Deprecated
     public Locale getAccountLocale(User user) {
         if (user.getLocale() == null) return null;
         //
@@ -74,7 +75,20 @@ public class LocaleHelper {
         return languageCode.equalsIgnoreCase(userLanguageCode);
     }
 
-    private AvailableLocale obtainAvailableLocale(String localeName) {
+    public Locale getMappedLocale(User user) {
+        if (user.getLocale() == null) return Locale.US;
+
+        AvailableLocale mappedLocale = obtainAvailableLocale(user.getLocale());
+        if (mappedLocale == null) {
+            return Locale.US;
+        } else {
+            String language = mappedLocale.getLanguage();
+            String country = mappedLocale.getCountry();
+            return new Locale(language, country);
+        }
+    }
+
+    private AvailableLocale obtainAvailableLocale(String localeName){
         AvailableLocale mappedLocale = null;
         if (localesStorage.get().isPresent()) {
             ArrayList<AvailableLocale> availableLocales = localesStorage.get().get();
@@ -84,5 +98,4 @@ public class LocaleHelper {
         }
         return mappedLocale;
     }
-
 }

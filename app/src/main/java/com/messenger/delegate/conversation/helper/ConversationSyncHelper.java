@@ -9,10 +9,13 @@ import com.messenger.storage.dao.ParticipantsDAO;
 import com.messenger.util.DecomposeMessagesHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observable;
 
 import static com.innahema.collections.query.queriables.Queryable.from;
 
@@ -52,8 +55,26 @@ public class ConversationSyncHelper {
 
     private void saveConversations(List<Conversation> conversations, long syncTime) {
         List<DataConversation> dataConversations = from(conversations).map(DataConversation::new).toList();
-        from(dataConversations).forEachR(conversation -> conversation.setSyncTime(syncTime));
-        conversationsDAO.save(dataConversations);
+        Observable.from(dataConversations)
+                .doOnNext(conversation -> {
+                    // workaround to keep old active date to save position of the conversation
+                    // in the list if it was cleared as server starts to send 0 as last message timestamp
+                    // after that
+                    if (conversation.getLastActiveDate() == 0 && conversation.getClearTime() > 0) {
+                        DataConversation existingConversation =
+                                conversationsDAO.getConversation(conversation.getId())
+                                .toBlocking().first();
+                        if (existingConversation != null) {
+                            conversation.setLastActiveDate(existingConversation.getLastActiveDate());
+                        } else {
+                            conversation.setLastActiveDate(Calendar.getInstance().getTimeInMillis());
+                        }
+                    }
+
+                    conversation.setSyncTime(syncTime);
+                })
+                .toList()
+                .subscribe(conversationsDAO::save);
     }
 
     private void saveLastMessages(List<Conversation> conversations, long syncTime) {

@@ -637,7 +637,7 @@
     <string name="add_text">Add text</string>
     <string name="action_search_by_hashtag">Search by hashtag</string>
     <string name="error_fail_to_load_feeds_by_hashtag">Failed to load feeds by hashtag</string>
-    <string name="no_feed_by_hashtag">No hashtags found</string>
+    <string name="no_feed_by_hashtag">No posts found</string>
 
     <string name="friends_loading_info_text">Loading your Friends</string>
 

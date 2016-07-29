@@ -61,6 +61,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     private Bundle savedInstanceState;
     private SearchView searchView;
     private EditText searchText;
+    private MenuItem searchItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,7 +118,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
 
             searchText.setText(newText);
             searchText.setSelection(startReplace + HashtagSuggestionUtil.replaceableText(suggestion).length());
-            clearSuggestions();
+            searchPosts(searchText.getText().toString());
         }
     }
 
@@ -157,7 +158,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
     protected void onMenuInflated(Menu menu) {
         super.onMenuInflated(menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
         searchItem.expandActionView();
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -167,11 +168,7 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getPresenter().setQuery(query);
-                releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
-                getPresenter().onRefresh();
-                clearSuggestions();
-                getPresenter().cancelLastSuggestionRequest();
+                searchPosts(query);
                 return true;
             }
 
@@ -201,6 +198,14 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         });
 
         releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+    }
+
+    private void searchPosts(String query) {
+        getPresenter().setQuery(query);
+        if (searchItem != null) releaseSearchFocus(MenuItemCompat.getActionView(searchItem));
+        getPresenter().onRefresh();
+        clearSuggestions();
+        getPresenter().cancelLastSuggestionRequest();
     }
 
     @Override

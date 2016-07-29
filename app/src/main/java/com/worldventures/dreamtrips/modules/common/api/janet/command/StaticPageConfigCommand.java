@@ -44,7 +44,7 @@ public class StaticPageConfigCommand extends Command<StaticPageConfig> implement
     }
 
     private Observable<StaticPageConfig> fromNetwork() {
-        Locale locale = localeHelper.getAccountLocale(session.get().get().getUser());
+        Locale locale = localeHelper.getMappedLocale(session.get().get().getUser());
 
         return configPipe.createObservableResult(new GetStaticPagesHttpAction(getBaseUrl(session), locale.getCountry(), locale.getLanguage()))
                 .map(GetStaticPagesHttpAction::getStaticPageConfig)

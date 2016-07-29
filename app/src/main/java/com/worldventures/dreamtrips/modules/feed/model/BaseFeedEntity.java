@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.model;
 
-import android.support.annotation.Nullable;
-
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
@@ -17,16 +15,13 @@ import java.util.List;
 public abstract class BaseFeedEntity implements FeedEntity {
 
     protected String uid;
-    @SerializedName("user")
-    protected User owner;
+    @SerializedName("user") protected User owner;
 
     protected int commentsCount;
     protected List<Comment> comments;
     protected boolean liked;
     protected int likesCount;
     protected String language;
-    protected String translation;
-    protected boolean translated;
 
     ///////////////////////////////////////////////////////////////////////////
     // Getters & Setters
@@ -91,6 +86,11 @@ public abstract class BaseFeedEntity implements FeedEntity {
         return likesCount;
     }
 
+    @Override
+    public String getLanguageFrom() {
+        return language;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Helpers
     ///////////////////////////////////////////////////////////////////////////
@@ -141,41 +141,7 @@ public abstract class BaseFeedEntity implements FeedEntity {
                 ", comments=" + comments +
                 ", owner=" + owner +
                 ", uid='" + uid + '\'' +
+                ", language='" + language + '\'' +
                 '}';
     }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Translation
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public String getOriginalText() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String getLanguageFrom() {
-        return language;
-    }
-
-    @Override
-    public String getTranslation() {
-        return translation;
-    }
-
-    @Override
-    public void setTranslation(String translation) {
-        this.translation = translation;
-    }
-
-    @Override
-    public boolean isTranslated() {
-        return translated;
-    }
-
-    @Override
-    public void setTranslated(boolean translated) {
-        this.translated = translated;
-    }
-
 }

@@ -84,20 +84,23 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
     }
 
     private void processTranslations() {
-        if (getModelObject().getItem().getOwner().getId() == appSessionHolder.get().get().getUser().getId()) {
+        PostFeedItem postFeedItem = getModelObject();
+        TextualPost textualPost = postFeedItem.getItem();
+
+        if (textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId()
+                || TextUtils.isEmpty(textualPost.getDescription())) {
             viewWithTranslation.setVisibility(View.GONE);
             translateButton.setVisibility(View.GONE);
         } else {
-            TextualPost textualPost = getModelObject().getItem();
             if (!TextUtils.isEmpty(textualPost.getLanguageFrom())
                     && !localeHelper.isOwnLanguage(textualPost.getLanguageFrom())
-                    && !textualPost.isTranslated()) {
+                    && !postFeedItem.isTranslated()) {
                 translateButton.setVisibility(View.VISIBLE);
             } else {
                 translateButton.setVisibility(View.GONE);
             }
-            if (textualPost.isTranslated()) {
-                viewWithTranslation.showTranslation(textualPost.getTranslation(),
+            if (postFeedItem.isTranslated()) {
+                viewWithTranslation.showTranslation(postFeedItem.getTranslation(),
                         textualPost.getLanguageFrom());
             } else {
                 viewWithTranslation.hide();
@@ -116,7 +119,8 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
                     .map(element -> element != null ? element.getName() : null)
                     .toList();
 
-            List<String> hightlightedHashtags = getModelObject().getMetaData() != null && getModelObject().getMetaData().getHashtags() != null ?
+            List<String> hightlightedHashtags = getModelObject().getMetaData() != null
+                    && getModelObject().getMetaData().getHashtags() != null ?
                     Queryable.from(getModelObject()
                             .getMetaData()
                             .getHashtags())
@@ -209,7 +213,7 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
     public void translate() {
         translateButton.setVisibility(View.GONE);
         viewWithTranslation.showProgress();
-        getEventBus().post(new TranslatePostEvent(getModelObject().getItem()));
+        getEventBus().post(new TranslatePostEvent(getModelObject()));
     }
 
     @Override

@@ -20,19 +20,18 @@ import java.util.Calendar;
 import java.util.Date;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
-public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder {
+public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEntityHolder, TranslatableItem {
 
-    @SerializedName("notification_id")
-    protected int notificationId;
-
+    @SerializedName("notification_id") protected int notificationId;
     protected FeedItem.Type type = Type.UNDEFINED;
     protected FeedItem.Action action;
     protected T item;
     protected Links links;
-
-    @SerializedName("posted_at")
-    protected Date createdAt;
+    @SerializedName("posted_at") protected Date createdAt;
     protected Date readAt;
+
+    protected String translation;
+    protected boolean translated;
 
     private MetaData metaData;
 
@@ -281,9 +280,37 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Inner
+    // Translation
     ///////////////////////////////////////////////////////////////////////////
 
+    @Override
+    public String getOriginalText() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String getTranslation() {
+        return translation;
+    }
+
+    @Override
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
+    @Override
+    public boolean isTranslated() {
+        return translated;
+    }
+
+    @Override
+    public void setTranslated(boolean translated) {
+        this.translated = translated;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Inner
+    ///////////////////////////////////////////////////////////////////////////
 
     public enum Action {
         @SerializedName("share")

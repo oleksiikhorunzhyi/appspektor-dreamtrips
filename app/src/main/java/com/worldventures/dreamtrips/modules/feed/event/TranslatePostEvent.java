@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.modules.feed.event;
 
-import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
-import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
+import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 
 public class TranslatePostEvent {
 
-    public TextualPost textualPost;
+    private PostFeedItem postFeedItem;
 
-    public TranslatePostEvent(TextualPost feedItem) {
-        this.textualPost = feedItem;
+    public TranslatePostEvent(PostFeedItem postFeedItem) {
+        this.postFeedItem = postFeedItem;
     }
 
-    public TextualPost getTextualPost() {
-        return textualPost;
+    public PostFeedItem getPostFeedItem() {
+        return postFeedItem;
     }
 }

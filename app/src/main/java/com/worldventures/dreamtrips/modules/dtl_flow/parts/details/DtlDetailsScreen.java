@@ -42,5 +42,9 @@ public interface DtlDetailsScreen extends DtlScreen {
 
     void expandOffers(List<Integer> positions);
 
+    void expandHoursView();
+
     List<Integer> getExpandedOffers();
+
+    boolean isHoursViewExpanded();
 }

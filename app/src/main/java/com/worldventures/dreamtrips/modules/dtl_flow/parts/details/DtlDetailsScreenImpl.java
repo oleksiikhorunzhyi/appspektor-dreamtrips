@@ -78,7 +78,8 @@ public class DtlDetailsScreenImpl
     @InjectView(R.id.merchant_address) TextView merchantAddress;
     //
     MerchantOffersInflater merchantDataInflater;
-    MerchantInflater merchantInfoInflater, merchantHoursInflater;
+    MerchantWorkingHoursInflater merchantHoursInflater;
+    MerchantInflater merchantInfoInflater;
     DtlMerchant merchant;
 
     @Override
@@ -152,8 +153,18 @@ public class DtlDetailsScreenImpl
     }
 
     @Override
+    public void expandHoursView() {
+        merchantHoursInflater.preexpand();
+    }
+
+    @Override
     public List<Integer> getExpandedOffers() {
         return merchantDataInflater.getExpandedOffers();
+    }
+
+    @Override
+    public boolean isHoursViewExpanded() {
+        return merchantHoursInflater != null && merchantHoursInflater.isViewExpanded();
     }
 
     private void setContacts() {

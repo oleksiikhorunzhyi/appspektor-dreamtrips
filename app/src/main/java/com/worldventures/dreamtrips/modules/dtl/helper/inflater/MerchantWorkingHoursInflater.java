@@ -49,4 +49,12 @@ public class MerchantWorkingHoursInflater extends MerchantDataInflater {
         adapter.setItems(merchant.getOperationDays());
         hoursRecyclerView.setAdapter(adapter);
     }
+
+    public boolean isViewExpanded() {
+        return expandedView.isOpened();
+    }
+
+    public void preexpand() {
+        expandedView.showWithoutAnimation();
+    }
 }

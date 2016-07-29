@@ -30,8 +30,8 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     @SerializedName("posted_at") protected Date createdAt;
     protected Date readAt;
 
-    protected String translation;
-    protected boolean translated;
+    protected transient String translation;
+    protected transient boolean translated;
 
     private MetaData metaData;
 

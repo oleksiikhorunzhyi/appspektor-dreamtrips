@@ -98,6 +98,10 @@ public class MessengerMediaPickerDelegateImpl implements MessengerMediaPickerDel
                         .toList()));
     }
 
+    @Override
+    public void resetPhotoPicker() {
+        initPhotoPicker();
+    }
     private void onImagesPicked(List<String> imagePaths) {
         photoPickerLayoutDelegate.hidePicker();
         Queryable.from(imagePaths)

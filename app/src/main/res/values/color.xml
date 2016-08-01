@@ -179,6 +179,7 @@
     <color name="retry_send_message_dialog_button_text_color">#2b9bf3</color>
 
     <color name="hashtag_suggestion_count_color">#88343434</color>
+    <color name="wallet_card_list_header_text">#90979a</color>
 
     <!--end messenger-->
 </resources>

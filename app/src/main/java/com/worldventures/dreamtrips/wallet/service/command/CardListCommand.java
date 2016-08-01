@@ -1,9 +1,14 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
+import android.support.annotation.NonNull;
+
+import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,7 +25,8 @@ import rx.functions.Func1;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class CardConvertorCommand extends Command<List<Card>> {
+public class CardListCommand extends Command<List<Card>> implements InjectableAction {
+
     @Inject
     @Named(JANET_WALLET)
     Janet janet;
@@ -37,12 +43,18 @@ public class CardConvertorCommand extends Command<List<Card>> {
                         return Observable.from(records)
                                 .map((Func1<Record, Card>) record -> ImmutableBankCard.builder()
                                         .number(record.csc())
-                                        .type("VISA")
-                                        .bankName(record.title())
+                                        .type("VISA") //todo
+                                        .cardType(generateRandomCardType())
+                                        .title(record.title())
                                         .build())
                                 .toList();
                     }
                 })
                 .subscribe(callback::onSuccess, callback::onFail);
+    }
+
+    //todo
+    @NonNull protected BankCard.CARD_TYPE generateRandomCardType() {
+        return new Random().nextBoolean() ? BankCard.CARD_TYPE.CREDIT : BankCard.CARD_TYPE.DEBIT;
     }
 }

@@ -347,4 +347,7 @@
     <dimen name="dtlt_input_drawable_padding">6dp</dimen>
     <dimen name="dtlt_second_row_side_padding">54dp</dimen>
     <!-- </DTL Toolbar dimens> -->
+    <!-- Wallet-->
+
+    <dimen name="wallet_bank_card_default_height">200dp</dimen>
 </resources>

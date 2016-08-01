@@ -5,6 +5,6 @@ import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter.View> {
 
     public boolean hasSmartCard() {
-        return false;
+        return true;
     }
 }

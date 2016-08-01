@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bank_card"
     android:layout_width="match_parent"
     android:layout_height="@dimen/wallet_bank_card_default_height"
     android:background="@drawable/creditcard_blue"
@@ -16,9 +17,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="18dp"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/font_extra_large"
+        android:textSize="@dimen/font_large"
         android:text="@string/wallet_bank_name_text_holder"/>
 
     <TextView
@@ -26,9 +27,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bankLabel"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/spacing_medium"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/font_large"
+        android:textSize="@dimen/font_normal"
         tools:text="Shirly A template"/>
 
     <TextView
@@ -49,6 +50,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="false"
         android:textColor="@android:color/white"
+        android:layout_marginBottom="2dp"
+        android:textSize="9sp"
         tools:text="GOOD THRU"/>
 
     <ImageView
@@ -69,7 +72,7 @@
         android:layout_toEndOf="@+id/someStrangeInfo"
         android:layout_toRightOf="@+id/someStrangeInfo"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/font_large"
+        android:textSize="@dimen/font_normal"
         tools:text="09/18"/>
-</RelativeLayout>
+</com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget>
 

@@ -39,4 +39,11 @@
     <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
     <string name="wallet_wizard_manual_input_hint">SCID Number</string>
     <string name="wallet_bank_name_text_holder">Bank Name</string>
+
+    <!--details-->
+    <string name="wallet_card_details_option_set_as_default_card">Set As Default Payment Card</string>
+    <string name="wallet_card_details_label_billing_address">Billing Address</string>
+    <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
+    <string name="wallet_card_details_button_delete_card">Delete Card</string>
+
 </resources>

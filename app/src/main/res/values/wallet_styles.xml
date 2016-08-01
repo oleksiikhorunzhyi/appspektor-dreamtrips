@@ -5,6 +5,8 @@
     <color name="wallet_color_background_dark">#006699</color>
     <color name="wallet_color_primary">#00b3e3</color>
     <color name="wallet_color_background_dark_with_alpha">#CC006699</color>
+    <color name="wallet_color_text_color_toolbar">#005e92</color>
+    <color name="wallet_color_round_check_box_text">#666666</color>
 
     <style name="WalletTheme" parent="AppTheme">
     </style>
@@ -27,8 +29,19 @@
         <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
     </style>
 
+    <style name="WalletTheme.ToolbarWhite" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:textColorPrimary">@color/wallet_color_text_color_toolbar</item>
+        <item name="android:textColorSecondary">@color/wallet_color_text_color_toolbar</item>
+        <item name="toolbarStyle">@style/WalletTheme.WhiteToolbarStyle</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
     <style name="WalletTheme.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="WalletTheme.WhiteToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="textColor">@color/wallet_color_text_color_toolbar</item>
     </style>
 
     <style name="WalletWizardButton" parent="Widget.AppCompat.Button">
@@ -68,4 +81,14 @@
         <item name="android:gravity">center</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
+
+    <style name="WalletTheme.RoundCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:button">@drawable/round_check_box</item>
+        <item name="android:paddingLeft">@dimen/wallet_round_check_box_left_padding</item>
+        <item name="android:textColor">@color/wallet_color_round_check_box_text</item>
+        <item name="android:textSize">@dimen/wallet_round_check_box_text_size</item>
+    </style>
+
 </resources>

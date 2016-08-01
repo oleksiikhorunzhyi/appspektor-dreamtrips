@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +22,12 @@ import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardListHeaderA
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.HidingScrollListener;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.CardStackCell;
+import com.worldventures.dreamtrips.wallet.ui.settings.card_details.CardDetailsPath;
 
 import java.util.List;
 
 import butterknife.InjectView;
+import flow.Flow;
 
 public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath>
         implements CardListScreenPresenter.Screen {
@@ -60,7 +61,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
         adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
             @Override public void onCardClicked(BankCard bankCard) {
-                Snackbar.make(CardListScreen.this, "bank card clicked", Snackbar.LENGTH_SHORT).show();
+                Flow.get(getContext()).set(new CardDetailsPath());
             }
 
             @Override public void onCellClicked(CardStackViewModel model) {

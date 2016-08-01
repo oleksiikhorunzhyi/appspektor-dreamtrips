@@ -349,5 +349,4 @@
     <!-- </DTL Toolbar dimens> -->
     <!-- Wallet-->
 
-    <dimen name="wallet_bank_card_default_height">200dp</dimen>
 </resources>

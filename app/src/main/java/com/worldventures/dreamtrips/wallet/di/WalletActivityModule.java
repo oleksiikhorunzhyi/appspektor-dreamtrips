@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.BankCardCe
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.card_details.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreenPresenter;
@@ -27,6 +28,7 @@ import dagger.Provides;
                 WizardManualInputPresenter.class,
                 WizardCardNamePresenter.class,
                 WizardEditProfilePresenter.class,
+                CardDetailsPresenter.class,
                 CardListScreenPresenter.class
         },
         complete = false, library = true

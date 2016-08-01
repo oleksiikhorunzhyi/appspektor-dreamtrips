@@ -97,10 +97,17 @@ public class FragmentWithFeedDelegate {
     }
 
     public void notifyItemChanged(FeedItem feedItem) {
-        if (feedItem != null) {
-            adapter.notifyItemChanged(adapter.getItems().indexOf(feedItem));
-        } else {
-            adapter.notifyDataSetChanged(); //there has been error. Cells need to be resynced
+        if (feedItem == null) {
+            adapter.notifyDataSetChanged();
+            return;
+        }
+        int size = adapter.getItems().size();
+        for (int i = 0; i < size; i++) {
+            Object object = adapter.getItems().get(i);
+            if (object instanceof FeedItem && ((FeedItem)object).equalsWith(feedItem)) {
+                adapter.notifyItemChanged(i);
+                return;
+            }
         }
     }
 

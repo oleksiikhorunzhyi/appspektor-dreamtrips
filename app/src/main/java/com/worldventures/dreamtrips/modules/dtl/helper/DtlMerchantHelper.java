@@ -62,7 +62,7 @@ public class DtlMerchantHelper {
         return contact.intent != null && contact.intent.resolveActivityInfo(activity.getPackageManager(), 0) != null;
     }
 
-    public static Spannable getOperationalTime(Context context, DtlMerchant merchant) {
+    public static Spannable getOperationalTime(Context context, DtlMerchant merchant) throws Exception {
         return getOperationalTime(context, merchant, true);
     }
 
@@ -92,7 +92,7 @@ public class DtlMerchantHelper {
         return spanned;
     }
 
-    public static Spannable getOperationalTime(Context context, DtlMerchant dtlMerchant, boolean includeTime) {
+    public static Spannable getOperationalTime(Context context, DtlMerchant dtlMerchant, boolean includeTime) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
         boolean openNow = false;
 

@@ -5,13 +5,17 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 
 import butterknife.InjectView;
 import io.techery.properratingbar.ProperRatingBar;
+import rx.Observable;
 
 public class MerchantInfoInflater extends MerchantDataInflater {
 
@@ -42,13 +46,17 @@ public class MerchantInfoInflater extends MerchantDataInflater {
 
         CharSequence distanceText = hasDistance ? resources.getString(R.string.distance_caption_format, merchant.getDistance(),
                 resources.getString(merchant.getDistanceType() == DistanceType.MILES ? R.string.mi : R.string.km)) : "";
-
-        CharSequence operDays = hasOperationDays ? DtlMerchantHelper.getOperationalTime(rootView.getContext(), merchant) : "";
         CharSequence categoriesText = hasCategories ? DtlMerchantHelper.getCategories(merchant) : "";
 
         ViewUtils.setTextOrHideView(distance, distanceText);
         ViewUtils.setTextOrHideView(categories, categoriesText);
-        ViewUtils.setTextOrHideView(operationalTime, operDays);
+
+        if (hasOperationDays) {
+            Observable.fromCallable(() -> DtlMerchantHelper.getOperationalTime(rootView.getContext(), merchant))
+                    .compose(RxLifecycle.bindView(rootView))
+                    .subscribe(operationalTime::setText, ex -> operationalTime.setVisibility(View.GONE));
+        } else ViewUtils.setViewVisibility(operationalTime, View.GONE);
+
     }
 
 }

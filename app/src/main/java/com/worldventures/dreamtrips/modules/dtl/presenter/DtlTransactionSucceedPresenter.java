@@ -1,5 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.presenter;
 
+import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
@@ -13,7 +15,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import javax.inject.Inject;
@@ -65,18 +66,22 @@ public class DtlTransactionSucceedPresenter
     }
 
     public void done() {
-        if (stars != 0) {
-            transactionInteractor.transactionActionPipe()
-                    .createObservableResult(DtlTransactionAction.get(dtlMerchant))
-                    .map(DtlTransactionAction::getResult)
-                    .flatMap(transaction ->
-                            transactionInteractor.rateActionPipe()
-                                    .createObservableResult(
-                                            new DtlRateAction(dtlMerchant, stars, transaction))
-                    ).compose(bindViewIoToMainComposer())
-                    .subscribe(action -> {
-                    }, apiErrorPresenter::handleError);
-        }
+        if (stars == 0) return;
+        transactionInteractor.transactionActionPipe()
+                .createObservableResult(DtlTransactionAction.get(dtlMerchant))
+                .map(DtlTransactionAction::getResult)
+                .flatMap(transaction ->
+                        transactionInteractor.rateActionPipe()
+                                .createObservableResult(
+                                        new RatingHttpAction(dtlMerchant.getId(),
+                                                ImmutableRatingParams.builder()
+                                                        .rating(stars)
+                                                        .transactionId(transaction
+                                                                .getDtlTransactionResult().getId())
+                                                        .build())))
+                .compose(bindViewIoToMainComposer())
+                .subscribe(action -> {
+                }, apiErrorPresenter::handleError);
     }
 
     @Override
@@ -99,7 +104,7 @@ public class DtlTransactionSucceedPresenter
 
     private void bindApiPipe() {
         transactionInteractor.rateActionPipe().observe()
-                .subscribe(new ActionStateSubscriber<DtlRateAction>()
+                .subscribe(new ActionStateSubscriber<RatingHttpAction>()
                         .onFail(apiErrorPresenter::handleActionError));
     }
 

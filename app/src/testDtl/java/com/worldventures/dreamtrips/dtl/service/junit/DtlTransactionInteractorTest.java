@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.dtl.service.junit;
 
 import com.worldventures.dreamtrips.BaseTest;
+import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
@@ -13,7 +15,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTr
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import org.junit.Before;
@@ -143,12 +144,16 @@ public class DtlTransactionInteractorTest extends BaseTest {
     }
 
     @Test
-    public void testDtlRateAction() {
-        TestSubscriber<ActionState<DtlRateAction>> subscriber = new TestSubscriber<>();
+    public void testRatingHttpAction() {
+        TestSubscriber<ActionState<RatingHttpAction>> subscriber = new TestSubscriber<>();
         transactionInteractor.rateActionPipe()
-                .createObservable(new DtlRateAction(testMerchant, 5, testTransaction))
+                .createObservable(new RatingHttpAction(testMerchant.getId(),
+                        ImmutableRatingParams.builder()
+                                .rating(5)
+                                .transactionId(testTransaction.getDtlTransactionResult()
+                                        .getId()).build()))
                 .subscribe(subscriber);
-        assertActionSuccess(subscriber, action -> action.getErrorResponse() == null);
+        assertActionSuccess(subscriber, action -> action.errorResponse() == null);
     }
 
     @Test

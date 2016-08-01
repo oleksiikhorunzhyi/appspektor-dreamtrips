@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils
 import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder
@@ -14,7 +16,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTr
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -129,13 +130,17 @@ class DtlTransactionInteractorSpec : BaseSpec({
         }
     }
 
-    describe("DtlRateAction") {
-        it("should send DtlRateAction") {
-            val subscriber = TestSubscriber<ActionState<DtlRateAction>>()
+    describe("RatingHttpAction") {
+        it("should send RatingHttpAction") {
+            val subscriber = TestSubscriber<ActionState<RatingHttpAction>>()
             transactionInteractor.rateActionPipe()
-                    .createObservable(DtlRateAction(merchant, 5, transaction))
+                    .createObservable(RatingHttpAction(merchant.id,
+                            ImmutableRatingParams.builder()
+                                    .rating(5)
+                                    .transactionId(transaction.dtlTransactionResult?.id)
+                                    .build()))
                     .subscribe(subscriber)
-            assertActionSuccess<DtlRateAction>(subscriber) { it.getErrorResponse() == null }
+            assertActionSuccess<RatingHttpAction>(subscriber) { it.errorResponse() == null }
         }
     }
 

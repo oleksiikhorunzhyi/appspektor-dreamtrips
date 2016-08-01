@@ -637,7 +637,7 @@
     <string name="add_text">Tambah teks</string>
     <string name="action_search_by_hashtag">Cari mengikut \'hashtag\'</string>
     <string name="error_fail_to_load_feeds_by_hashtag">Gagal memuatkan suapan mengikut \'hashtag\'</string>
-    <string name="no_feed_by_hashtag">Tiada \'hashtag\' ditemui</string>
+    <string name="no_feed_by_hashtag">Tiada catatan ditemui</string>
 
     <string name="friends_loading_info_text">Memuatkan Kawan anda</string>
 

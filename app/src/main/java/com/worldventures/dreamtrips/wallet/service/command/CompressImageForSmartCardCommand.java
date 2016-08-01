@@ -7,12 +7,10 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.command.annotations.CommandAction;
 
 @CommandAction
-public class CompressImageForSmartCardCommand extends Command<File> implements InjectableAction {
-    public static final int DEFAULT_IMAGE_SIZE = 256;
+public class CompressImageForSmartCardCommand extends SmartCardAvatarCommand implements InjectableAction {
 
     @Inject
     SmartCardAvatarHelper smartCardAvatarHelper;
@@ -33,7 +31,7 @@ public class CompressImageForSmartCardCommand extends Command<File> implements I
     @Override
     protected void run(CommandCallback<File> callback) throws Throwable {
         try {
-            callback.onSuccess(smartCardAvatarHelper.compressPhoto(filePath, imageSize));
+            callback.onSuccess(smartCardAvatarHelper.compressPhotoFromFile(filePath, imageSize));
         } catch (Throwable throwable) {
             callback.onFail(throwable);
         }

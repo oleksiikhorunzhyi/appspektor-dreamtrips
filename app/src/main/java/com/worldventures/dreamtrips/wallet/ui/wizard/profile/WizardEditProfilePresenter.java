@@ -4,8 +4,13 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
-import com.worldventures.dreamtrips.wallet.service.CompressImageInteractor;
+import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
@@ -22,10 +27,32 @@ import timber.log.Timber;
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
     @Inject
-    CompressImageInteractor compressImageInteractor;
+    SmartCardAvatarInteractor smartCardAvatarInteractor;
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
 
     public WizardEditProfilePresenter(Context context, Injector injector) {
         super(context, injector);
+    }
+
+    @Override
+    public void attachView(Screen view) {
+        super.attachView(view);
+        subscribeSmartCardCommand();
+
+        User userProfile = appSessionHolder.get().get().getUser();
+        view.setUserFullName(userProfile.getFullName());
+        smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
+                .send(new LoadImageForSmartCardCommand(userProfile.getAvatar().getThumb()));
+    }
+
+    public void subscribeSmartCardCommand() {
+        smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
+                        .onSuccess(command -> getView().setPreviewPhoto(command.getResult())));
     }
 
     public void goToBack() {
@@ -33,7 +60,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     }
 
     public void doOnNext() {
-
     }
 
     public void choosePhoto() {
@@ -43,12 +69,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     }
 
     private void prepareImage(String path) {
-        compressImageInteractor.getCompressImageForSmartCardCommandPipe()
-                .createObservable(new CompressImageForSmartCardCommand(path))
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
-                .subscribe(new ActionStateSubscriber<CompressImageForSmartCardCommand>()
-                .onSuccess(command -> getView().setPreviewPhoto(command.getResult())));
+        smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
+                .send(new CompressImageForSmartCardCommand(path));
     }
 
     public interface Screen extends WalletScreen {
@@ -58,5 +80,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         void hidePhotoPicker();
 
         void setPreviewPhoto(File photo);
+
+        void setUserFullName(String fullName);
     }
 }

@@ -40,25 +40,17 @@ public class LocaleHelper {
                 .toLowerCase();
     }
 
-    @Deprecated
     public Locale getAccountLocale(User user) {
-        if (user.getLocale() == null) return null;
-        //
-        // check mapped locale first
+        if (user.getLocale() == null) return Locale.US;
+
         AvailableLocale mappedLocale = obtainAvailableLocale(user.getLocale());
-
-        String language;
-        String country;
         if (mappedLocale == null) {
-            String[] args = user.getLocale().split("-"); // e.g. en-us
-            language = args[0];
-            country = args[1];
+            return Locale.US;
         } else {
-            language = mappedLocale.getLanguage();
-            country = mappedLocale.getCountry();
+            String language = mappedLocale.getLanguage();
+            String country = mappedLocale.getCountry();
+            return new Locale(language, country);
         }
-
-        return new Locale(language, country);
     }
 
     public String getOwnAccountLocaleFormatted() {
@@ -73,19 +65,6 @@ public class LocaleHelper {
 
         String userLanguageCode = appSessionHolder.get().get().getUser().getLocale().split("-")[0];
         return languageCode.equalsIgnoreCase(userLanguageCode);
-    }
-
-    public Locale getMappedLocale(User user) {
-        if (user.getLocale() == null) return Locale.US;
-
-        AvailableLocale mappedLocale = obtainAvailableLocale(user.getLocale());
-        if (mappedLocale == null) {
-            return Locale.US;
-        } else {
-            String language = mappedLocale.getLanguage();
-            String country = mappedLocale.getCountry();
-            return new Locale(language, country);
-        }
     }
 
     private AvailableLocale obtainAvailableLocale(String localeName){

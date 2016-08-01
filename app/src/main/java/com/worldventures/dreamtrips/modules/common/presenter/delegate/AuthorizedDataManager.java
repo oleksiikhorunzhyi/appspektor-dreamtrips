@@ -39,8 +39,8 @@ public class AuthorizedDataManager {
                     .share();
             compositeSubscription.add(authObservable
                     .subscribe(this::done, this::onFail));
+            compositeSubscription.add(authObservable.subscribe(authDataSubscriber));
         }
-        compositeSubscription.add(authObservable.subscribe(authDataSubscriber));
     }
 
     public void unsubscribe() {

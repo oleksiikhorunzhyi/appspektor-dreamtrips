@@ -3,26 +3,18 @@ package com.worldventures.dreamtrips.modules.common.presenter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
-import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.gcm.service.RegistrationIntentService;
 
 import javax.inject.Inject;
 
 public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
 
-    @Inject
-    protected RootComponentsProvider rootComponentsProvider;
-    @Inject
-    LogoutDelegate logoutDelegate;
+    @Inject protected RootComponentsProvider rootComponentsProvider;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         checkGoogleServices();
-    }
-
-    public void logout() {
-        logoutDelegate.logout();
     }
 
     private void checkGoogleServices() {

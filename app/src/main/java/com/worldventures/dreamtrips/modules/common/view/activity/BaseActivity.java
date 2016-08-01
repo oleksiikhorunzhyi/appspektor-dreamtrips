@@ -42,21 +42,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public abstract class BaseActivity extends InjectingActivity {
 
-    @Inject
-    protected ActivityResultDelegate activityResultDelegate;
-    @Inject
-    BackStackDelegate backStackDelegate;
-    @Inject
-    AnalyticsInteractor analyticsInteractor;
-    @Inject
-    protected PermissionDispatcher permissionDispatcher;
-    @Inject
-    protected Router router;
+    @Inject protected ActivityResultDelegate activityResultDelegate;
+    @Inject BackStackDelegate backStackDelegate;
+    @Inject AnalyticsInteractor analyticsInteractor;
+    @Inject protected PermissionDispatcher permissionDispatcher;
+    @Inject protected Router router;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

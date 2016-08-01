@@ -12,12 +12,9 @@ import javax.inject.Inject;
 
 public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDialogPresenter.View> {
 
-    @Inject
-    StaticPageProvider provider;
-    @Inject
-    SnappyRepository snappyRepository;
-    @Inject
-    LogoutDelegate logoutDelegate;
+    @Inject StaticPageProvider provider;
+    @Inject SnappyRepository snappyRepository;
+    @Inject LogoutDelegate logoutDelegate;
 
     @Override
     public void takeView(View view) {
@@ -62,6 +59,7 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
     }
 
     public interface View extends Presenter.View {
+
         void loadContent(String url);
 
         void dismissDialog();

@@ -24,15 +24,10 @@ import rx.functions.Action1;
 
 public class NavigationDrawerPresenter {
 
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    protected SnappyRepository db;
-    @Inject
-    @Global
-    protected EventBus eventBus;
-    @Inject
-    protected UnreadConversationObservable unreadObservable;
+    @Inject protected SessionHolder<UserSession> appSessionHolder;
+    @Inject protected SnappyRepository db;
+    @Inject @Global protected EventBus eventBus;
+    @Inject protected UnreadConversationObservable unreadObservable;
 
     private NavigationDrawerView navigationDrawerView;
     private DrawerLayout drawerLayout;
@@ -62,7 +57,6 @@ public class NavigationDrawerPresenter {
 
         unreadConversationSubscription = unreadObservable
                 .subscribe(navigationDrawerView::setUnreadMessagesCount);
-
     }
 
     public void detach() {
@@ -86,7 +80,6 @@ public class NavigationDrawerPresenter {
 
     public void setCurrentComponent(ComponentDescription componentDescription) {
         navigationDrawerView.setCurrentComponent(componentDescription);
-
     }
 
     private Action1<ComponentDescription> onItemSelected;
@@ -120,5 +113,4 @@ public class NavigationDrawerPresenter {
     void onLogout() {
         if (onLogout != null) onLogout.call();
     }
-
 }

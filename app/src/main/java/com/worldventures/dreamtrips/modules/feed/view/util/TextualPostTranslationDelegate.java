@@ -54,11 +54,16 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
     }
 
     private void translateSuccess(FeedItem postFeedItem) {
-        int postFeedItemIndex = feedItems.indexOf(postFeedItem);
-        if (postFeedItemIndex != -1) {
-            feedItems.set(postFeedItemIndex, postFeedItem);
-            view.updateItem(feedItems.get(postFeedItemIndex));
+        int size = feedItems.size();
+        for (int i = 0; i < size; i++) {
+            if (feedItems.get(i).equalsWith(postFeedItem)) {
+                feedItems.set(i, postFeedItem);
+                view.updateItem(postFeedItem);
+                return;
+            }
         }
+        view.updateItem(null);
+        return;
     }
 
     private void translateFail(Object action, Throwable throwable) {

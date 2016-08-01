@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import android.content.res.Resources;
 import android.os.Parcel;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
@@ -133,6 +134,11 @@ public class FeedItem<T extends FeedEntity> extends BaseEntity implements FeedEn
     public int hashCode() {
         if (item == null) return super.hashCode();
         return item != null ? item.hashCode() : 0;
+    }
+
+    public boolean equalsWith(@Nullable FeedItem feedItem){
+        if (feedItem == null) return false;
+        return getItem().getUid().equals(feedItem.getItem().getUid()) && getAction().equals(feedItem.getAction());
     }
 
     public FeedItem() {

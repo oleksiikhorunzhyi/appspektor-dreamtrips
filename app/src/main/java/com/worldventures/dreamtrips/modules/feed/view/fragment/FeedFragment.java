@@ -96,6 +96,12 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        fragmentWithFeedDelegate.resetTranslatedStatus();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         filterPopupWindow = null;

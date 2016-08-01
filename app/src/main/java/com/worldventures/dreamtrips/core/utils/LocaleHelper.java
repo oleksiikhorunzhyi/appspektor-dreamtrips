@@ -1,6 +1,8 @@
 package com.worldventures.dreamtrips.core.utils;
 
 
+import android.support.annotation.Nullable;
+
 import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
@@ -60,11 +62,11 @@ public class LocaleHelper {
         return getAccountLocaleFormatted(user);
     }
 
-    public boolean isOwnLanguage(String languageCode) {
+    public boolean isOwnLanguage(@Nullable String languageCode) {
         if (!appSessionHolder.get().isPresent()) return false;
 
         String userLanguageCode = appSessionHolder.get().get().getUser().getLocale().split("-")[0];
-        return languageCode.equalsIgnoreCase(userLanguageCode);
+        return userLanguageCode.equalsIgnoreCase(languageCode);
     }
 
     private AvailableLocale obtainAvailableLocale(String localeName){

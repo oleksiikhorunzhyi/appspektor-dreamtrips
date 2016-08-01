@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.feed.view.util;
 import android.support.annotation.IdRes;
 import android.support.v4.app.FragmentManager;
 
+import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -101,6 +102,17 @@ public class FragmentWithFeedDelegate {
         } else {
             adapter.notifyDataSetChanged(); //there has been error. Cells need to be resynced
         }
+    }
+
+    /**
+     * After leaving feed items list screen all translated items should reset view state to original
+     * (translation hides and 'Translation' button is visible)
+     */
+    public void resetTranslatedStatus() {
+        Queryable.from(adapter.getItems()).forEachR(item -> {
+            if (item instanceof FeedItem) ((FeedItem)item).setTranslated(false);
+        });
+        notifyDataSetChanged();
     }
 
     public void clearItems() {

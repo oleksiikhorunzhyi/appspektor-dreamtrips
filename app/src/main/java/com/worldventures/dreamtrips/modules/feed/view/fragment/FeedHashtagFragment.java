@@ -122,6 +122,12 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        fragmentWithFeedDelegate.resetTranslatedStatus();
+    }
+
     public void onDestroyView() {
         SoftInputUtil.hideSoftInputMethod(searchView);
         super.onDestroyView();

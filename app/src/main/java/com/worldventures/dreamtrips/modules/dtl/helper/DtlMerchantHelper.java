@@ -152,17 +152,29 @@ public class DtlMerchantHelper {
         if (hours == null || hours.isEmpty()) return context.getString(R.string.dtl_closed);
         //
         final List<String> workingHours = Queryable.from(hours)
-                .map(DtlMerchantHelper::getFormattedHours).toList();
+                .map(DtlMerchantHelper::getFormattedHours)
+                .filter(format -> !format.isEmpty())
+                .toList();
         return TextUtils.join("\n", workingHours);
     }
 
+    /**
+     * Formatting merchant operation hours to format %s - %s. Return empty string if formatting failed
+     *
+     * @param hours merchant operation hours to format
+     * @return formatted operation hours.
+     */
     private static String getFormattedHours(OperationHours hours) {
-        LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
-        LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
-        //
-        DateTime start = DateTime.now().withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);
-        DateTime end = DateTime.now().withTime(localTimeEnd.getHourOfDay(), localTimeEnd.getMinuteOfHour(), 0, 0);
-        //
-        return String.format("%s - %s", start.toString(OPERATION_TIME_FORMATTER), end.toString(OPERATION_TIME_FORMATTER));
+        try {
+            LocalTime localTimeStart = LocalTime.parse(hours.getFrom());
+            LocalTime localTimeEnd = LocalTime.parse(hours.getTo());
+            //
+            DateTime start = DateTime.now().withTime(localTimeStart.getHourOfDay(), localTimeStart.getMinuteOfHour(), 0, 0);
+            DateTime end = DateTime.now().withTime(localTimeEnd.getHourOfDay(), localTimeEnd.getMinuteOfHour(), 0, 0);
+            //
+            return String.format("%s - %s", start.toString(OPERATION_TIME_FORMATTER), end.toString(OPERATION_TIME_FORMATTER));
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

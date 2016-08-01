@@ -18,9 +18,9 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
@@ -170,8 +170,8 @@ public class ManagerModule {
 
     @Provides
     @Singleton
-    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO, SnappyRepository snappyRepository) {
-        return new ClearDirectoryDelegate(context, photoDAO, snappyRepository);
+    ClearDirectoryDelegate provideClearDirectoryDelegate(@ForApplication Context context, PhotoDAO photoDAO) {
+        return new ClearDirectoryDelegate(context, photoDAO);
     }
 
     @Provides

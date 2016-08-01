@@ -20,7 +20,8 @@ public final class AssertUtil {
         subscriber.assertUnsubscribed();
         assertStatusCount(subscriber, ActionState.Status.START, 1);
         assertStatusCount(subscriber, ActionState.Status.SUCCESS, 1);
-        Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents().get(0).action));
+        Assert.assertTrue(assertPredicate.call(subscriber.getOnNextEvents()
+                .get(subscriber.getOnNextEvents().size() - 1).action));
     }
 
     public static <T> void assertSubscriberWithSingleValue(TestSubscriber<T> subscriber) {

@@ -60,13 +60,5 @@ abstract class BucketInteractorBaseSpec(speckBody: DescribeBody.() -> Unit) : Ba
             whenever(userSession.user).thenReturn(mockUser)
             whenever(mockSessionHolder.get()).thenReturn(Optional.of(userSession))
         }
-
-        fun CacheResultWrapper.bindStorageSet(storageSet: Set<ActionStorage<*>>): CacheResultWrapper {
-            storageSet.forEach {
-                bindStorage(it.actionClass, it)
-            }
-
-            return this
-        }
     }
 }

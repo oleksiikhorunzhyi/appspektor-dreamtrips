@@ -7,12 +7,10 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
-import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
-import com.worldventures.dreamtrips.wallet.ui.common.base.ErrorScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.base.ProgressScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardAliasPath;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.WizardCodeHelper;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPath;
 
 import javax.inject.Inject;
@@ -21,7 +19,7 @@ import flow.Flow;
 
 public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcodePresenter.Screen, Parcelable> {
     @Inject
-    WizardInteractor wizardInteractor;
+    WizardCodeHelper wizardCodeHelper;
 
     @Inject
     PermissionDispatcher permissionDispatcher;
@@ -40,19 +38,19 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
     }
 
     public void barcodeScanned(String barcode) {
-        //check
-        Flow.get(getContext()).set(new WizardCardAliasPath());
+        wizardCodeHelper.createAndConnect(getView(), barcode, bindViewIoToMainComposer());
     }
 
     public void startManualInput() {
         Flow.get(getContext()).set(new WizardManualInputPath());
     }
 
+
     public void goBack() {
         Flow.get(getContext()).goBack();
     }
 
-    public interface Screen extends WalletScreen, ProgressScreen, ErrorScreen {
+    public interface Screen extends WalletScreen, DelayedSuccessScreen {
         void startCamera();
 
         void showRationaleForCamera();

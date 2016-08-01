@@ -10,6 +10,12 @@ public class CreateCardHttpAction {
     @Response
     Provision response;
 
+    String code;
+
+    public CreateCardHttpAction(String code) {
+        this.code = code;
+    }
+
     public Provision getResponse() {
         return response;
     }

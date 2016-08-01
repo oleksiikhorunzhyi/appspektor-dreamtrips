@@ -2,6 +2,7 @@
 <resources>
     <!-- Common -->
     <string name="wallet_next_label">Next</string>
+    <string name="wallet_got_it_label">Got it!</string>
 
     <string name="wallet">Wallet</string>
     <string name="wallet_wizard_title">Set Up Smart Card</string>
@@ -24,6 +25,7 @@
     <string name="wallet_wizard_scan_barcode_header">Position smart card\nbarcode in the frame</string>
     <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
     <string name="wallet_wizard_scan_barcode_footer_btn">Input ID manually</string>
+    <string name="waller_wizard_scan_barcode_progress_label">Connecting to smartcard…</string>
 
     <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
     <string name="wallet_wizard_manual_input_hint">SCID Number</string>

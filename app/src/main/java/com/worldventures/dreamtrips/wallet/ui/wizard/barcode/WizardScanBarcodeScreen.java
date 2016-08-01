@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.worldventures.dreamtrips.R;
@@ -14,6 +13,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+import static cn.pedant.SweetAlert.SweetAlertDialog.SUCCESS_TYPE;
 
 public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath>
         implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
@@ -76,7 +77,6 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
 
     @Override
     public void handleResult(Result result) {
-        Toast.makeText(getContext(), "Got barcode " + result.getText(), Toast.LENGTH_SHORT).show();
         getPresenter().barcodeScanned(result.getText());
     }
 
@@ -93,12 +93,26 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
     @Override
     public void showProgress() {
         progressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE)
-                .setContentText("Test text");
+                .setContentText(getContext().getString(R.string.waller_wizard_scan_barcode_progress_label));
+        progressDialog.setCancelable(false);
         progressDialog.show();
     }
 
     @Override
     public void hideProgress() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void showSuccessWithDelay(Runnable action, long delay) {
+        final SweetAlertDialog successDialog = new SweetAlertDialog(getContext(), SUCCESS_TYPE)
+                .setTitleText(getContext().getString(R.string.wallet_got_it_label));
+        successDialog.setCancelable(false);
+        successDialog.show();
+
+        postDelayed(() -> {
+            successDialog.dismiss();
+            action.run();
+        }, delay);
     }
 }

@@ -12,6 +12,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static cn.pedant.SweetAlert.SweetAlertDialog.PROGRESS_TYPE;
+import static cn.pedant.SweetAlert.SweetAlertDialog.SUCCESS_TYPE;
+
 public class WizardManualInputScreen extends WalletFrameLayout<WizardManualInputPresenter.Screen, WizardManualInputPresenter, WizardManualInputPath>
         implements WizardManualInputPresenter.Screen {
     @InjectView(R.id.toolbar)
@@ -53,13 +56,27 @@ public class WizardManualInputScreen extends WalletFrameLayout<WizardManualInput
 
     @Override
     public void showProgress() {
-        progressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE)
-                .setContentText("Test progress");
+        progressDialog = new SweetAlertDialog(getContext(), PROGRESS_TYPE)
+                .setTitleText(getContext().getString(R.string.waller_wizard_scan_barcode_progress_label));
+        progressDialog.setCancelable(false);
         progressDialog.show();
     }
 
     @Override
     public void hideProgress() {
         progressDialog.dismiss();
+    }
+
+    @Override
+    public void showSuccessWithDelay(Runnable action, long delay) {
+        final SweetAlertDialog successDialog = new SweetAlertDialog(getContext(), SUCCESS_TYPE)
+                .setTitleText(getContext().getString(R.string.wallet_got_it_label));
+        successDialog.setCancelable(false);
+        successDialog.show();
+
+        postDelayed(() -> {
+            successDialog.dismiss();
+            action.run();
+        }, delay);
     }
 }

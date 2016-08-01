@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.messenger.ui.presenter.BaseViewStateMvpPresenter;
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 public abstract class WalletPresenter<V extends WalletScreen, S extends Parcelable>
         extends BaseViewStateMvpPresenter<V, S> implements ViewStateMvpPresenter<V, S> {

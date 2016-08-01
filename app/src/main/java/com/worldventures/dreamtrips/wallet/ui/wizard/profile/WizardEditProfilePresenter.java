@@ -7,7 +7,7 @@ import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.service.CompressImageInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 
 import java.io.File;
 

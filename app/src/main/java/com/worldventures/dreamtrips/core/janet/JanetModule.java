@@ -155,6 +155,8 @@ public class JanetModule {
     ActionService provideWalletHttpService() {
         return new MockHttpActionService.Builder()
                 .bind(new MockHttpActionService.Response(200).body(ImmutableProvision.builder()
+                        .memberId("1")
+                        .userSecret("test")
                         .build()), request -> request.getUrl().endsWith("create_card"))
                 .build();
     }
@@ -164,5 +166,12 @@ public class JanetModule {
     @Named(JANET_WALLET)
     ActionService provideSmartCardService(@Named("MockSmartCardClient") SmartCardClient client) {
         return SmartCardActionService.createDefault(client);
+    }
+
+    @Singleton
+    @Provides(type = Provides.Type.SET)
+    @Named(JANET_WALLET)
+    ActionService provideWalletCommandService() {
+        return new CommandActionService();
     }
 }

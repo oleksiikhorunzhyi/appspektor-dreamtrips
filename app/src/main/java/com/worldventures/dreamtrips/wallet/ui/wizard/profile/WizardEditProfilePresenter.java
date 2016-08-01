@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
@@ -39,8 +40,10 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         super.attachView(view);
         subscribeSmartCardCommand();
 
+        User userProfile = appSessionHolder.get().get().getUser();
+        view.setUserFullName(userProfile.getFullName());
         smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
-                .send(new LoadImageForSmartCardCommand(appSessionHolder.get().get().getUser().getAvatar().getThumb()));
+                .send(new LoadImageForSmartCardCommand(userProfile.getAvatar().getThumb()));
     }
 
     public void subscribeSmartCardCommand() {
@@ -57,7 +60,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     }
 
     public void doOnNext() {
-
     }
 
     public void choosePhoto() {
@@ -78,5 +80,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         void hidePhotoPicker();
 
         void setPreviewPhoto(File photo);
+
+        void setUserFullName(String fullName);
     }
 }

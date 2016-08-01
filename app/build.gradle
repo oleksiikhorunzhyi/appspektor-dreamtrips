@@ -414,7 +414,7 @@ dependencies {
     compile 'io.reactivex:rxjava-debug:1.0.3'
     // Ui
     compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
-    compile 'cn.pedant.sweetalert:library:1.3'
+    compile 'com.github.techery:sweet-alert-dialog:d82b5e4764'
     compile "com.android.support:design:${googleLibrariesVersion}"
     compile 'com.github.traex.expandablelayout:library:1.3'
     compile 'com.facebook.fresco:fresco:0.8.1'

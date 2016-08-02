@@ -358,6 +358,8 @@ dependencies {
     compile 'com.squareup.dagger:dagger:1.2.2'
     apt 'com.squareup.dagger:dagger-compiler:1.2.2'
     apt 'com.github.idamobile:dagger-proguard-helper-processor:1.0.1-SNAPSHOT'
+    // Dagger-related. Needed for @Generated annotation (missing in Java <= 1.6 & Android)
+    compile 'javax.annotation:jsr250-api:1.0'
     // janet
     compile "com.github.techery:janet:1.0.6"
     compile "com.github.techery:janet-command:1.0.3"
@@ -371,7 +373,7 @@ dependencies {
     compile 'com.snappydb:snappydb-lib:0.5.2'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     // Networking
-    compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.0.0-STAGE-SNAPSHOT', changing: true) {
+    compile(group: 'com.worldventures.dreamtrips', name: 'api', version: '2.1.0-STAGE-SNAPSHOT', changing: true) {
         exclude group:"joda-time"
     }
     compile 'com.octo.android.robospice:robospice:1.4.14'
@@ -412,7 +414,7 @@ dependencies {
     compile 'io.reactivex:rxjava-debug:1.0.3'
     // Ui
     compile 'com.github.markushi:android-ui:1.2' // fancy action view in custom DTL toolbar
-    compile 'cn.pedant.sweetalert:library:1.3'
+    compile 'com.github.techery:sweet-alert-dialog:d82b5e4764'
     compile "com.android.support:design:${googleLibrariesVersion}"
     compile 'com.github.traex.expandablelayout:library:1.3'
     compile 'com.facebook.fresco:fresco:0.8.1'

@@ -16,6 +16,8 @@ public class GetFeedsByHashtagHttpAction extends AuthorizedHttpAction {
     int perPage;
     @Query("before")
     String before;
+    @Query("type")
+    String type = "post";
 
     @Response
     DataMetaData responseItems;

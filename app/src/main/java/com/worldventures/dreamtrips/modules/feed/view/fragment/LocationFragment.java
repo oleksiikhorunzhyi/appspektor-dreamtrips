@@ -36,22 +36,16 @@ import timber.log.Timber;
 @Layout(R.layout.fragment_add_location)
 public class LocationFragment extends RxBaseFragmentWithArgs<LocationPresenter, Location> implements LocationPresenter.View {
 
-    private static final int REQUEST_CHECK_SETTINGS = 81680085;
+    private static final int REQUEST_CHECK_SETTINGS = 65001;
 
-    @Inject
-    ActivityResultDelegate activityResultDelegate;
-    @Inject
-    PermissionDispatcher permissionDispatcher;
+    @Inject ActivityResultDelegate activityResultDelegate;
+    @Inject PermissionDispatcher permissionDispatcher;
 
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-    @InjectView(R.id.input_location)
-    EditText input;
-    @InjectView(R.id.progress)
-    View progress;
+    @InjectView(R.id.toolbar) Toolbar toolbar;
+    @InjectView(R.id.input_location) EditText input;
+    @InjectView(R.id.progress) View progress;
 
-    @State
-    Location obtainedLocation;
+    @State Location obtainedLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

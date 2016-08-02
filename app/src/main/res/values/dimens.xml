@@ -75,6 +75,9 @@
     <dimen name="locale_flag_size_width">38dp</dimen>
     <dimen name="locale_flag_size_height">22dp</dimen>
 
+    <dimen name="feed_details_additional_info_container_width">306dp</dimen>
+    <dimen name="feed_details_space_width">150dp</dimen>
+
     <!-- dimen for video items -->
     <dimen name="podcast_play_icon_size">24dp</dimen>
 

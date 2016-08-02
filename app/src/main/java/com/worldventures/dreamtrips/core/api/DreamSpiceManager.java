@@ -56,19 +56,12 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 public class DreamSpiceManager extends SpiceManager {
 
-    @Inject
-    protected Context context;
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    @Global
-    protected EventBus eventBus;
-    @Inject
-    DTErrorHandler dtErrorHandler;
-    @Inject
-    LogoutDelegate logoutDelegate;
-    @Inject
-    GlobalConfigInteractor globalConfigInteractor;
+    @Inject protected Context context;
+    @Inject protected SessionHolder<UserSession> appSessionHolder;
+    @Inject @Global protected EventBus eventBus;
+    @Inject DTErrorHandler dtErrorHandler;
+    @Inject LogoutDelegate logoutDelegate;
+    @Inject GlobalConfigInteractor globalConfigInteractor;
     //
     private final ErrorParser errorParser;
 

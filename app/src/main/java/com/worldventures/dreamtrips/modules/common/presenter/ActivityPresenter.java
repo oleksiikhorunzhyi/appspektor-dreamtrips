@@ -17,17 +17,12 @@ import icepick.State;
 
 public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presenter<VT> {
 
-    @Inject
-    protected Activity activity;
-    @Inject
-    protected LocaleSwitcher localeSwitcher;
-    @Inject
-    protected LocaleHelper localeHelper;
-    @Inject
-    protected LogoutDelegate logoutDelegate;
+    @Inject protected Activity activity;
+    @Inject protected LocaleSwitcher localeSwitcher;
+    @Inject protected LocaleHelper localeHelper;
+    @Inject protected LogoutDelegate logoutDelegate;
 
-    @State
-    boolean isTermsShown;
+    @State boolean isTermsShown;
 
     @Override
     public void onInjected() {

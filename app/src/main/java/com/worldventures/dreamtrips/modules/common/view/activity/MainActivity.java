@@ -52,25 +52,18 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
 
     public static final String COMPONENT_KEY = "MainActivity$ComponentKey";
 
-    @InjectView(R.id.toolbar_actionbar)
-    protected Toolbar toolbar;
-    @InjectView(R.id.drawer)
-    protected DrawerLayout drawerLayout;
-    @InjectView(R.id.drawer_layout)
-    protected NavigationDrawerViewImpl navDrawer;
+    @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
+    @InjectView(R.id.drawer) protected DrawerLayout drawerLayout;
+    @InjectView(R.id.drawer_layout) protected NavigationDrawerViewImpl navDrawer;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private List<DrawerListener> rightDrawerListeners = new ArrayList<>();
 
-    @Inject
-    protected RootComponentsProvider rootComponentsProvider;
-    @Inject
-    CropImageDelegate cropImageDelegate;
+    @Inject protected RootComponentsProvider rootComponentsProvider;
+    @Inject CropImageDelegate cropImageDelegate;
 
-    @State
-    protected ComponentDescription currentComponent;
-    @State
-    protected boolean toolbarGone;
+    @State protected ComponentDescription currentComponent;
+    @State protected boolean toolbarGone;
 
     protected NavigationDrawerPresenter navigationDrawerPresenter;
 

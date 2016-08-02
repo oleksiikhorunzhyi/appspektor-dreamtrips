@@ -59,17 +59,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
         extends BaseFragmentWithArgs<T, P>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
-    @Inject
-    protected StaticPageProvider provider;
+    @Inject protected StaticPageProvider provider;
 
-    @InjectView(R.id.web_view)
-    protected VideoEnabledWebView webView;
-    @InjectView(R.id.swipe_container)
-    protected SwipeRefreshLayout refreshLayout;
-    @InjectView(R.id.nonVideoLayout)
-    View nonVideoLayout;
-    @InjectView(R.id.videoLayout)
-    ViewGroup videoLayout;
+    @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
+    @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
+    @InjectView(R.id.nonVideoLayout) View nonVideoLayout;
+    @InjectView(R.id.videoLayout) ViewGroup videoLayout;
 
     protected Bundle savedState;
     protected boolean isLoading;

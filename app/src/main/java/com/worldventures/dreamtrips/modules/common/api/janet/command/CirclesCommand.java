@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.api.janet.command;
 
-import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.common.api.janet.GetCirclesHttpAction;
@@ -11,18 +11,15 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class CirclesCommand extends Command<ArrayList<Circle>> implements InjectableAction, UiErrorAction {
+public class CirclesCommand extends CommandWithError<ArrayList<Circle>> implements InjectableAction {
 
-    @Inject
-    SnappyRepository repository;
-    @Inject
-    Janet janet;
+    @Inject SnappyRepository repository;
+    @Inject Janet janet;
 
     @Override
     protected void run(CommandCallback<ArrayList<Circle>> callback) throws Throwable {
@@ -34,7 +31,7 @@ public class CirclesCommand extends Command<ArrayList<Circle>> implements Inject
     }
 
     @Override
-    public int getErrorMessage() {
+    public int getFallbackErrorMessage() {
         return R.string.error_fail_to_load_circles;
     }
 }

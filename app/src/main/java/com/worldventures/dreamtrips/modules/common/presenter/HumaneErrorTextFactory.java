@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 
 import java.io.IOException;
 
@@ -17,14 +17,14 @@ public class HumaneErrorTextFactory {
     }
 
     /**
-     * There are only 3 types of errors: no connection, message from UiErrorAction and smth went wrong
+     * There are only 3 types of errors: no connection, message from CommandWithError and smth went wrong
      */
     public int create(Object action, Throwable exception) {
         int result = R.string.smth_went_wrong;
         if (getCauseByType(IOException.class, exception.getCause()) != null) {
             result = R.string.no_connection;
-        } else if (action instanceof UiErrorAction) {
-            result = ((UiErrorAction) action).getErrorMessage();
+        } else if (action instanceof CommandWithError) {
+            result = ((CommandWithError) action).getFallbackErrorMessage();
         } else if (exception instanceof JanetActionException) {
             JanetActionException actionError = (JanetActionException) exception;
             return create(actionError.getAction(), actionError.getCause());

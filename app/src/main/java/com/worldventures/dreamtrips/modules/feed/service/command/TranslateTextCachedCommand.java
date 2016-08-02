@@ -1,7 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import android.text.TextUtils;
-
 import com.messenger.api.TranslationInteractor;
 import com.worldventures.dreamtrips.api.messenger.TranslateTextHttpAction;
 import com.worldventures.dreamtrips.api.messenger.model.request.ImmutableTranslateTextBody;

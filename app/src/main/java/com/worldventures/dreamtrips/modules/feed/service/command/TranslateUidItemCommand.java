@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.TranslatableItem;
@@ -9,14 +9,14 @@ import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
-public abstract class TranslateUidItemCommand<T extends TranslatableItem> extends Command<T> implements InjectableAction, UiErrorAction {
+public abstract class TranslateUidItemCommand<T extends TranslatableItem> extends CommandWithError<T>
+        implements InjectableAction {
 
-    @Inject  Janet janet;
+    @Inject Janet janet;
 
     private T translatableItem;
     private String languageTo;
@@ -42,6 +42,11 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
         return translatableItem;
     }
 
+    @Override
+    public int getFallbackErrorMessage() {
+        return R.string.error_fail_to_translate_text;
+    }
+
     public static TranslateCommentCommand forComment(Comment comment, String languageTo) {
         return new TranslateCommentCommand(comment, languageTo);
     }
@@ -62,10 +67,5 @@ public abstract class TranslateUidItemCommand<T extends TranslatableItem> extend
         public TranslatePostCommand(PostFeedItem translatableItem, String languageTo) {
             super(translatableItem, languageTo);
         }
-    }
-
-    @Override
-    public int getErrorMessage() {
-        return R.string.error_fail_to_translate_text;
     }
 }

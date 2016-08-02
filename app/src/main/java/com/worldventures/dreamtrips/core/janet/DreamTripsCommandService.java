@@ -81,7 +81,7 @@ public class DreamTripsCommandService extends ActionServiceWrapper {
 
             if (getCauseByType(IOException.class, exception.getCause()) != null) {
                 return appContext.getString(R.string.no_connection);
-            } else if (errorResponse != null && !errorResponse.getErrors().isEmpty()) {
+            } else if (errorResponse != null && errorResponse.getErrors() != null && !errorResponse.getErrors().isEmpty()) {
                 return errorResponse.getFirstMessage();
             } else return fallbackMessage;
         }

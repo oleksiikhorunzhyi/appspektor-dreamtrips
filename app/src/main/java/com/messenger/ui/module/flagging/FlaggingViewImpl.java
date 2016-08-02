@@ -156,6 +156,12 @@ public class FlaggingViewImpl extends ModuleStatefulViewImpl<FlaggingPresenter>
                 .show();
     }
 
+    @Override
+    public void showError(@StringRes int message) {
+        Snackbar.make(getParentView(), message, Snackbar.LENGTH_SHORT)
+                .show();
+    }
+
     private void onDialogCanceled(DialogInterface dialog, int which) {
         canceledDialogsStream.onNext(null);
     }

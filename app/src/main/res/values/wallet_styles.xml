@@ -75,7 +75,7 @@
         <item name="android:padding">@dimen/wallet_common_screen_padding</item>
     </style>
 
-    <style name="WalletTheme.Wizard.DescriptionTextStyle">
+    <style name="WalletTheme.Wizard.HeaderTextStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
@@ -91,4 +91,10 @@
         <item name="android:textSize">@dimen/wallet_round_check_box_text_size</item>
     </style>
 
+    <style name="WalletTheme.Wizard.PinImageButton">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:src">@drawable/ic_smart_card_pin_button</item>
+    </style>
 </resources>

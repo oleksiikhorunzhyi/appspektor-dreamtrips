@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetupPinCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,6 +21,7 @@ public final class SmartCardInteractor {
     private final WriteActionPipe<CardListCommand> cardsListPipe;
     private final WriteActionPipe<AttachCardCommand> addRecordPipe;
     private final WriteActionPipe<CardStacksCommand> cardStacksPipe;
+    private final ActionPipe<SetupPinCommand> setupPinPipe;
 
     @Inject
     public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
@@ -27,6 +29,7 @@ public final class SmartCardInteractor {
         cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());
         addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
         cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
+        setupPinPipe = janet.createPipe(SetupPinCommand.class, Schedulers.io());
     }
 
     public ActionPipe<ConnectAction> connectActionPipe() {
@@ -43,5 +46,9 @@ public final class SmartCardInteractor {
 
     public WriteActionPipe<CardStacksCommand> cardStacksPipe() {
         return cardStacksPipe;
+    }
+
+    public ActionPipe<SetupPinCommand> setupPinPipe() {
+        return setupPinPipe;
     }
 }

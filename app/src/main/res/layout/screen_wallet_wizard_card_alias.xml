@@ -19,7 +19,7 @@
         android:theme="@style/WalletTheme.Wizard">
 
         <TextView
-            style="@style/WalletTheme.Wizard.DescriptionTextStyle"
+            style="@style/WalletTheme.Wizard.HeaderTextStyle"
             android:layout_gravity="top"
             android:layout_marginTop="32dp"
             android:text="@string/wallet_wizard_card_alias_subtitle"/>

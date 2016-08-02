@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupScreen
+    style="@style/WalletTheme.Wizard.RootStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/WalletTheme.Wizard">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/WalletTheme.ToolbarLight"
+        app:navigationIcon="@drawable/back_icon"
+        app:title="@string/wallet_wizard_setup_pin_title"/>
+
+    <RelativeLayout
+        style="@style/WalletTheme.Wizard.ContentContainerStyle"
+        android:layout_marginTop="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/header_text_view"
+            style="@style/WalletTheme.Wizard.HeaderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/wallet_wizard_setup_pin_header"/>
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/profile_proto"
+            android:layout_width="@dimen/wallet_wizard_avatar_size"
+            android:layout_height="@dimen/wallet_wizard_avatar_size"
+            android:layout_below="@+id/header_text_view"
+            android:layout_centerHorizontal="true"
+            app:placeholderImage="@drawable/ic_cover_place_holder"/>
+
+        <RelativeLayout
+            android:layout_width="@dimen/wallet_wizard_avatar_size"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profile_proto"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                style="@style/WalletTheme.Wizard.PinImageButton"
+                android:layout_alignParentStart="true"
+                tools:ignore="ContentDescription"/>
+
+            <ImageView
+                style="@style/WalletTheme.Wizard.PinImageButton"
+                android:layout_centerHorizontal="true"
+                tools:ignore="ContentDescription"/>
+
+            <ImageView
+                style="@style/WalletTheme.Wizard.PinImageButton"
+                android:layout_alignParentEnd="true"
+                tools:ignore="ContentDescription"/>
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/wallet_got_it_label"/>
+    </RelativeLayout>
+</com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupScreen>

@@ -20,7 +20,8 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import rx.Observable;
 
-public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath> implements WizardEditProfilePresenter.Screen {
+public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfilePresenter.Screen, WizardEditProfilePresenter, WizardEditProfilePath>
+        implements WizardEditProfilePresenter.Screen {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -60,13 +61,13 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
 
     @OnClick(R.id.next_button)
     public void nextClick() {
-        presenter.doOnNext();
+        presenter.goNext();
     }
 
     @OnEditorAction(R.id.person_name)
     public boolean actionNext(int action) {
         if (action != EditorInfo.IME_ACTION_NEXT) return false;
-        presenter.doOnNext();
+        presenter.goNext();
         return true;
     }
 

@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 
 import java.io.File;
 
@@ -59,9 +60,6 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         Flow.get(getContext()).goBack();
     }
 
-    public void doOnNext() {
-    }
-
     public void choosePhoto() {
         getView().choosePhotoAndCrop()
                 .compose(bindView())
@@ -71,6 +69,10 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     private void prepareImage(String path) {
         smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
                 .send(new CompressImageForSmartCardCommand(path));
+    }
+
+    public void goNext() {
+        Flow.get(getContext()).set(new WizardPinSetupPath());
     }
 
     public interface Screen extends WalletScreen {

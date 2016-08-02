@@ -17,6 +17,10 @@
     <string name="wallet_edit_profile_name_hint">Enter your name</string>
     <string name="wallet_edit_profile_avatar_description">Your photo</string>
 
+    <!--pin setup-->
+    <string name="wallet_wizard_setup_pin_title">Set Touch PIN</string>
+    <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
+
     <!--splash-->
     <string name="wallet_wizard_splash_title1">Get ready</string>
     <string name="wallet_wizard_splash_title2">Scan the back of your flye smart card to begin</string>

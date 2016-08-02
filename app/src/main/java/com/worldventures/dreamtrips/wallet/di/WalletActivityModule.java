@@ -6,11 +6,12 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresente
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.CardListScreenPresenter;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.CardStackCell;
+import com.worldventures.dreamtrips.wallet.ui.settings.card_details.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePresenter;
-import com.worldventures.dreamtrips.wallet.ui.settings.card_details.CardDetailsPresenter;
-import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreenPresenter;
 
 import dagger.Module;
@@ -29,7 +30,8 @@ import dagger.Provides;
                 WizardCardNamePresenter.class,
                 WizardEditProfilePresenter.class,
                 CardDetailsPresenter.class,
-                CardListScreenPresenter.class
+                CardListScreenPresenter.class,
+                WizardPinSetupPresenter.class
         },
         complete = false, library = true
 )

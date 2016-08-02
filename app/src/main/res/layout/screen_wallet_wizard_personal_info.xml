@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/text_description"
-            style="@style/WalletTheme.Wizard.DescriptionTextStyle"
+            style="@style/WalletTheme.Wizard.HeaderTextStyle"
             android:text="@string/wallet_edit_profile_subtitle"/>
 
         <com.messenger.ui.widget.roundedcorners.RoundedCornersLayout

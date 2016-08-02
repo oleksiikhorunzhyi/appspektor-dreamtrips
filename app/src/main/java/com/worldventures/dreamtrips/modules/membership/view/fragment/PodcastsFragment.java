@@ -88,9 +88,8 @@ public class PodcastsFragment extends RxBaseFragment<PodcastsPresenter> implemen
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) getPresenter().track();
+    protected void track() {
+        getPresenter().track();
     }
 
     @Override

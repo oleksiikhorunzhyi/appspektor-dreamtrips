@@ -26,7 +26,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import io.techery.janet.ActionService;
-import io.techery.janet.CommandActionService;
 import io.techery.janet.Janet;
 import io.techery.janet.gson.GsonConverter;
 import io.techery.janet.http.HttpClient;
@@ -40,8 +39,8 @@ public class JanetModule {
 
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionService provideCommandService() {
-        return new CommandActionService();
+    ActionService provideCommandService(@ForApplication Context context) {
+        return new DreamTripsCommandService(context);
     }
 
     @Singleton

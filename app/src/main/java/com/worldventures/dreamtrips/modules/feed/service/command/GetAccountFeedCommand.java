@@ -27,7 +27,7 @@ public class GetAccountFeedCommand extends BaseGetFeedCommand<GetAccountFeedHttp
     }
 
     @Override
-    public int getErrorMessage() {
+    public int getFallbackErrorMessage() {
         return R.string.error_fail_to_load_feed;
     }
 

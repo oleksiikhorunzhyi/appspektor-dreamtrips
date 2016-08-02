@@ -36,6 +36,7 @@ import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
@@ -101,19 +102,17 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        apiErrorPresenter.setView(view);
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
         }
         //
         attachUserToView(user);
         loadProfile();
-        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
+        textualPostTranslationDelegate.onTakeView(view, feedItems);
     }
 
     @Override
     public void dropView() {
-        apiErrorPresenter.dropView();
         textualPostTranslationDelegate.onDropView();
         super.dropView();
     }
@@ -322,15 +321,15 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         view.refreshFeedItems(feedItems);
     }
 
-    protected void refreshFeedError(Object action, Throwable throwable) {
-        apiErrorPresenter.handleActionError(action, throwable);
+    protected void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
+        view.informUser(action.getErrorMessage());
         view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
     }
 
-    protected void loadMoreItemsError(Object action, Throwable throwable) {
-        apiErrorPresenter.handleActionError(action, throwable);
+    protected void loadMoreItemsError(BaseGetFeedCommand action, Throwable throwable) {
+        view.informUser(action.getErrorMessage());
         view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }

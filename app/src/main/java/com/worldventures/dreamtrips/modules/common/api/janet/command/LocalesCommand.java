@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.common.api.janet.command;
 
 import android.support.annotation.NonNull;
 
-import com.messenger.api.UiErrorAction;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.modules.common.api.janet.GetLocalesHttpAction;
@@ -16,19 +16,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.ActionPipe;
-import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class LocalesCommand extends Command<List<AvailableLocale>> implements InjectableAction, UiErrorAction {
+public class LocalesCommand extends CommandWithError<List<AvailableLocale>> implements InjectableAction {
 
-    @Inject
-    Janet janet;
-    @Inject
-    LocalesHolder localeStorage;
+    @Inject Janet janet;
+    @Inject LocalesHolder localeStorage;
 
     ActionPipe<GetLocalesHttpAction> localeActionActionPipe;
 
@@ -58,7 +55,7 @@ public class LocalesCommand extends Command<List<AvailableLocale>> implements In
     }
 
     @Override
-    public int getErrorMessage() {
+    public int getFallbackErrorMessage() {
         return R.string.error_fail_to_locales;
     }
 }

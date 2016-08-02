@@ -1,9 +1,9 @@
 package com.worldventures.dreamtrips.modules.feed.view.util;
 
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
-import com.worldventures.dreamtrips.modules.common.presenter.ApiErrorPresenter;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostFeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.TranslationFeedInteractor;
@@ -17,7 +17,6 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
 
     private V view;
     private List<FeedItem> feedItems;
-    private ApiErrorPresenter apiErrorPresenter;
 
     private TranslationFeedInteractor translationFeedInteractor;
 
@@ -25,15 +24,14 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
         this.translationFeedInteractor = translationFeedInteractor;
     }
 
-    public void onTakeView(V view, List<FeedItem> feedItems, ApiErrorPresenter apiErrorPresenter) {
+    public void onTakeView(V view, List<FeedItem> feedItems) {
         this.view = view;
         this.feedItems = feedItems;
-        this.apiErrorPresenter = apiErrorPresenter;
         subscribeToPostTranslation();
     }
 
-    public void onTakeView(V view, FeedItem feedItem, ApiErrorPresenter apiErrorPresenter) {
-        onTakeView(view, Queryable.from(feedItem).toList(), apiErrorPresenter);
+    public void onTakeView(V view, FeedItem feedItem) {
+        onTakeView(view, Queryable.from(feedItem).toList());
     }
 
     public void onDropView() {
@@ -63,16 +61,14 @@ public final class TextualPostTranslationDelegate<V extends RxView & TextualPost
             }
         }
         view.updateItem(null);
-        return;
     }
 
-    private void translateFail(Object action, Throwable throwable) {
-        apiErrorPresenter.handleActionError(action, throwable);
+    private void translateFail(CommandWithError action, Throwable throwable) {
+        view.informUser(action.getErrorMessage());
         view.updateItem(null);
     }
 
     public interface View {
-
         void updateItem(FeedItem feedItem);
     }
 }

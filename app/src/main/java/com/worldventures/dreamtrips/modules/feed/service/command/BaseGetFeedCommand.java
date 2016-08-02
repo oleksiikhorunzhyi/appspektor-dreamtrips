@@ -1,6 +1,6 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
-import com.messenger.api.UiErrorAction;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.rx.composer.ListFilter;
 import com.worldventures.dreamtrips.core.rx.composer.ListMapper;
@@ -15,11 +15,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import rx.schedulers.Schedulers;
 
-public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends Command<List<FeedItem<FeedEntity>>> implements InjectableAction, UiErrorAction {
+public abstract class BaseGetFeedCommand<T extends GetFeedHttpAction> extends CommandWithError<List<FeedItem<FeedEntity>>>
+        implements InjectableAction {
 
     protected static final int FEED_LIMIT = 20;
     protected static final int TIMELINE_LIMIT = 10;

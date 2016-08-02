@@ -3,13 +3,13 @@ package com.messenger.ui.module.flagging;
 import android.text.TextUtils;
 
 import com.messenger.api.GetFlagsAction;
-import com.messenger.api.exception.UiMessageException;
 import com.messenger.delegate.FlagsDelegate;
 import com.messenger.delegate.chat.flagging.FlagMessageCommand;
 import com.messenger.delegate.chat.flagging.FlagMessageDelegate;
 import com.messenger.delegate.chat.flagging.ImmutableFlagMessageDTO;
 import com.messenger.ui.module.ModuleStatefulPresenterImpl;
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 
@@ -23,10 +23,8 @@ import timber.log.Timber;
 public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingView, FlaggingState>
         implements FlaggingPresenter {
 
-    @Inject
-    FlagsDelegate flagsDelegate;
-    @Inject
-    FlagMessageDelegate flagMessageDelegate;
+    @Inject FlagsDelegate flagsDelegate;
+    @Inject FlagMessageDelegate flagMessageDelegate;
 
     private Subscription getFlagsSubscription;
 
@@ -107,9 +105,11 @@ public class FlaggingPresenterImpl extends ModuleStatefulPresenterImpl<FlaggingV
 
     private void onFlagsLoadingError(BaseHttpAction action, Throwable e) {
         getView().hideFlagsLoadingDialog();
-        if (e instanceof UiMessageException) {
-            getView().showError(((UiMessageException) e).getUiMessage());
-        }
+
+        if (action.getErrorResponse() != null && !action.getErrorResponse().getErrors().isEmpty())
+            getView().showError((action.getErrorResponse().getFirstMessage()));
+        else getView().showError(R.string.error_fail_to_load_flag_reason);
+
         Timber.e(e, "[Flagging] Could not load flags");
     }
 

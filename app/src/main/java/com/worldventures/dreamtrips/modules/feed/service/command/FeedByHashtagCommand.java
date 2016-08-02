@@ -1,25 +1,24 @@
 package com.worldventures.dreamtrips.modules.feed.service.command;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.messenger.api.UiErrorAction;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.modules.feed.service.api.GetFeedsByHashtagHttpAction;
 import com.worldventures.dreamtrips.modules.feed.model.DataMetaData;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
+import com.worldventures.dreamtrips.modules.feed.service.api.GetFeedsByHashtagHttpAction;
 
 import java.util.Date;
 
 import javax.inject.Inject;
 
-import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
-public class FeedByHashtagCommand extends Command<DataMetaData> implements InjectableAction, UiErrorAction {
+public class FeedByHashtagCommand extends CommandWithError<DataMetaData> implements InjectableAction {
 
     @Inject Janet janet;
 
@@ -49,7 +48,7 @@ public class FeedByHashtagCommand extends Command<DataMetaData> implements Injec
     }
 
     @Override
-    public int getErrorMessage() {
+    public int getFallbackErrorMessage() {
         return R.string.error_fail_to_load_feeds_by_hashtag;
     }
 

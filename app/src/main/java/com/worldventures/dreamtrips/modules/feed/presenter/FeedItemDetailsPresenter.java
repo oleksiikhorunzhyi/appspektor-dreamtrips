@@ -21,13 +21,11 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        apiErrorPresenter.setView(view);
-        textualPostTranslationDelegate.onTakeView(view, feedItem, apiErrorPresenter);
+        textualPostTranslationDelegate.onTakeView(view, feedItem);
     }
 
     @Override
     public void dropView() {
-        apiErrorPresenter.dropView();
         textualPostTranslationDelegate.onDropView();
         super.dropView();
     }

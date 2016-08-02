@@ -77,7 +77,6 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        apiErrorPresenter.setView(view);
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
         }
@@ -86,12 +85,11 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribeSuggestions();
-        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
+        textualPostTranslationDelegate.onTakeView(view, feedItems);
     }
 
     @Override
     public void dropView() {
-        apiErrorPresenter.dropView();
         textualPostTranslationDelegate.onDropView();
         super.dropView();
     }
@@ -143,9 +141,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                 .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.Refresh>()
                         .onSuccess(refresh -> refreshFeedSucceed(refresh.getResult().getParentFeedItems()))
                         .onFail((refresh, throwable) -> {
-                            apiErrorPresenter.handleActionError(refresh, throwable);
+                            view.informUser(refresh.getErrorMessage());
                             refreshFeedError();
-                            Timber.e(throwable, "");
                         }));
     }
 
@@ -175,9 +172,8 @@ public class FeedHashtagPresenter<T extends FeedHashtagPresenter.View> extends J
                 .subscribe(new ActionStateSubscriber<FeedByHashtagCommand.LoadNext>()
                         .onSuccess(loadNext -> addFeedItems(loadNext.getResult().getParentFeedItems()))
                         .onFail((loadNext, throwable) -> {
-                            apiErrorPresenter.handleActionError(loadNext, throwable);
+                            view.informUser(loadNext.getErrorMessage());
                             loadMoreItemsError();
-                            Timber.e(throwable, "");
                         }));
     }
 

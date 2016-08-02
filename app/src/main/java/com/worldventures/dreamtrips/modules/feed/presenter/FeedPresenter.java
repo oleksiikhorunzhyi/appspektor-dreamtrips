@@ -48,6 +48,7 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.SuggestedPhotoInteractor;
+import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
@@ -124,12 +125,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        apiErrorPresenter.setView(view);
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribePhotoGalleryCheck();
         subscribeUnreadConversation();
-        textualPostTranslationDelegate.onTakeView(view, feedItems, apiErrorPresenter);
+        textualPostTranslationDelegate.onTakeView(view, feedItems);
 
         if (feedItems.size() != 0) {
             view.refreshFeedItems(feedItems);
@@ -138,7 +138,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     @Override
     public void dropView() {
-        apiErrorPresenter.dropView();
         textualPostTranslationDelegate.onDropView();
         super.dropView();
     }
@@ -166,8 +165,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         suggestedPhotoInteractor.getSuggestedPhotoCommandActionPipe().send(new SuggestedPhotoCommand());
     }
 
-    private void refreshFeedError(Object action, Throwable throwable) {
-        apiErrorPresenter.handleActionError(action, throwable);
+    private void refreshFeedError(BaseGetFeedCommand action, Throwable throwable) {
+        view.informUser(action.getErrorMessage());
         view.updateLoadingStatus(false, false);
         view.finishLoading();
         view.refreshFeedItems(feedItems);
@@ -198,8 +197,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         view.refreshFeedItems(feedItems);
     }
 
-    private void loadMoreItemsError(Object action, Throwable throwable) {
-        apiErrorPresenter.handleActionError(action, throwable);
+    private void loadMoreItemsError(BaseGetFeedCommand action, Throwable throwable) {
+        view.informUser(action.getErrorMessage());
         view.updateLoadingStatus(false, false);
         addFeedItems(new ArrayList<>());
     }

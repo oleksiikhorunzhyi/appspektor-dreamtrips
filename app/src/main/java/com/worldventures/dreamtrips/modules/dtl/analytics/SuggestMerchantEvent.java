@@ -7,19 +7,12 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Suggest Merchant",
         trackers = AdobeTracker.TRACKER_KEY)
-public class SuggestMerchantEvent extends DtlAnalyticsAction {
+public class SuggestMerchantEvent extends MerchantAnalyticsAction {
 
     @Attribute("suggestmerchant")
     final String attribute = "1";
 
-    @Attribute("merchantname")
-    final String merchantName;
-
-    @Attribute("merchantID")
-    final String merchantId;
-
     public SuggestMerchantEvent(DtlMerchant dtlMerchant) {
-        merchantId = dtlMerchant.getId();
-        merchantName = dtlMerchant.getDisplayName();
+        super(dtlMerchant);
     }
 }

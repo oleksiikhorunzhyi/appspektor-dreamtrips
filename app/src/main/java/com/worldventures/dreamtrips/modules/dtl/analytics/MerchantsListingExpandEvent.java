@@ -8,13 +8,7 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Offer View", trackers = AdobeTracker.TRACKER_KEY)
-public class MerchantsListingExpandEvent extends DtlAnalyticsAction {
-
-    @Attribute("merchantname")
-    final String merchantName;
-
-    @Attribute("merchantID")
-    final String merchantId;
+public class MerchantsListingExpandEvent extends MerchantAnalyticsAction {
 
     @Attribute("offerview")
     final String attribute = "1";
@@ -29,8 +23,7 @@ public class MerchantsListingExpandEvent extends DtlAnalyticsAction {
     final String pointsAvailable;
 
     public MerchantsListingExpandEvent(DtlMerchant dtlMerchant) {
-        merchantId = dtlMerchant.getId();
-        merchantName = dtlMerchant.getDisplayName();
+        super(dtlMerchant);
         perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
         perksNumber = String.valueOf(Queryable.from(dtlMerchant.getOffers())

@@ -7,19 +7,10 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Check-In",
         trackers = AdobeTracker.TRACKER_KEY)
-public class CheckinEvent extends DtlAnalyticsAction {
+public class CheckinEvent extends MerchantAnalyticsAction {
 
     @Attribute("checkin")
     final String attribute = "1";
-
-    @Attribute("merchantID")
-    final String merchantId;
-
-    @Attribute("merchanttype")
-    final String merchantType;
-
-    @Attribute("merchantname")
-    final String merchantName;
 
     @Attribute("areperksavail")
     final String perksAvailable;
@@ -28,9 +19,7 @@ public class CheckinEvent extends DtlAnalyticsAction {
     final String pointsAvailable;
 
     public CheckinEvent(DtlMerchant merchant) {
-        merchantId = merchant.getId();
-        merchantName = merchant.getDisplayName();
-        merchantType = merchant.getType().toString();
+        super(merchant);
         perksAvailable = merchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = merchant.hasPoints() ? "Yes" : "No";
     }

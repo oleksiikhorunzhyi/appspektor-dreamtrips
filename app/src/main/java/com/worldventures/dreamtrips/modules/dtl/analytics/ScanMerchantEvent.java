@@ -7,28 +7,16 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:QR Scan",
         trackers = AdobeTracker.TRACKER_KEY)
-public class ScanMerchantEvent extends DtlAnalyticsAction {
+public class ScanMerchantEvent extends MerchantAnalyticsAction {
 
     @Attribute("scan")
     final String attribute = "1";
 
-    @Attribute("merchantID")
-    final String merchantId;
-
-    @Attribute("merchantname")
-    final String merchantName;
-
-    @Attribute("merchanttype")
-    final String merchantType;
-
     @Attribute("scan_id")
     final String merchantToken;
 
-    public ScanMerchantEvent(DtlMerchant dtlMerchant,
-                             String merchantToken) {
+    public ScanMerchantEvent(DtlMerchant dtlMerchant, String merchantToken) {
+        super(dtlMerchant);
         this.merchantToken = merchantToken;
-        merchantId = dtlMerchant.getId();
-        merchantName = dtlMerchant.getDisplayName();
-        merchantType = dtlMerchant.getType().toString();
     }
 }

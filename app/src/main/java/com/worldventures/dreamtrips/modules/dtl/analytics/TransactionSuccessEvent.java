@@ -10,16 +10,7 @@ import java.util.Locale;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Congratulations",
         trackers = AdobeTracker.TRACKER_KEY)
-public class TransactionSuccessEvent extends DtlAnalyticsAction {
-
-    @Attribute("merchantname")
-    final String merchantName;
-
-    @Attribute("merchantID")
-    final String merchantId;
-
-    @Attribute("merchanttype")
-    final String merchantType;
+public class TransactionSuccessEvent extends MerchantAnalyticsAction {
 
     @Attribute("merchantearned")
     final String attribute = "1";
@@ -40,9 +31,7 @@ public class TransactionSuccessEvent extends DtlAnalyticsAction {
     final String pointsAvailable;
 
     public TransactionSuccessEvent(DtlMerchant dtlMerchant, DtlTransaction dtlTransaction) {
-        merchantId = dtlMerchant.getId();
-        merchantName = dtlMerchant.getDisplayName();
-        merchantType = dtlMerchant.getType().toString();
+        super(dtlMerchant);
         perksAvailable = dtlMerchant.hasPerks() ? "Yes" : "No";
         pointsAvailable = dtlMerchant.hasPoints() ? "Yes" : "No";
         currencyCode = dtlMerchant.getDefaultCurrency().getCode();

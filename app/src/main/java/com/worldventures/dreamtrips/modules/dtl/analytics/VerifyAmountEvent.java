@@ -9,7 +9,7 @@ import java.util.Locale;
 
 @AnalyticsEvent(action = "local:Restaurant-Listings:Merchant View:Amount Verified",
         trackers = AdobeTracker.TRACKER_KEY)
-public class VerifyAmountEvent extends DtlAnalyticsAction {
+public class VerifyAmountEvent extends MerchantAnalyticsAction {
 
     @Attribute("verify")
     final String attribute = "1";
@@ -17,23 +17,12 @@ public class VerifyAmountEvent extends DtlAnalyticsAction {
     @Attribute("amount_id")
     final String enteredAmount;
 
-    @Attribute("merchantname")
-    final String merchantName;
-
-    @Attribute("merchantID")
-    final String merchantId;
-
-    @Attribute("merchanttype")
-    final String merchantType;
-
     @Attribute("amount_cc")
     final String currencyCode;
 
     public VerifyAmountEvent(DtlMerchant dtlMerchant, String currencyCode, Double enteredAmount) {
+        super(dtlMerchant);
         this.enteredAmount = String.format(Locale.US, "%.2f", enteredAmount);
-        merchantName = dtlMerchant.getDisplayName();
-        merchantId = dtlMerchant.getId();
-        merchantType = dtlMerchant.getType().toString();
         this.currencyCode = currencyCode;
     }
 }

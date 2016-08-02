@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/grey_lighter"
-              android:orientation="horizontal">
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_lighter">
 
     <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2">
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/additional_info_container"
+        app:layout_heightPercent="100%"
+        app:layout_widthPercent="68%">
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_container"
@@ -20,7 +22,6 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <LinearLayout
@@ -88,7 +89,6 @@
                         android:textColor="@color/theme_main"
                         android:textSize="20sp"
                         android:textStyle="bold"/>
-
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -96,9 +96,7 @@
 
     <FrameLayout
         android:id="@+id/additional_info_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-    </FrameLayout>
-
-</LinearLayout>
+        android:layout_alignParentRight="true"
+        app:layout_heightPercent="100%"
+        app:layout_widthPercent="32%"/>
+</android.support.percent.PercentRelativeLayout>

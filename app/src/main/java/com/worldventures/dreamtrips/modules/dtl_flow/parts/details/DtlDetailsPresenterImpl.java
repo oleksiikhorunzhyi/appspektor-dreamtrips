@@ -80,13 +80,8 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
                 .send(new MerchantDetailsViewCommand(new MerchantDetailsViewEvent(merchant)));
         //
         getView().setMerchant(merchant);
-        getView().expandOffers(getViewState().getOffers() != null ?
-                getViewState().getOffers() : preExpandOffers);
-        //
-        if (merchant.hasNoOffers()) {
-            getView().setSuggestMerchantButtonAvailable(
-                    featureManager.available(Feature.REP_SUGGEST_MERCHANT));
-        } else processTransaction();
+        preExpandOffers();
+        tryHideSuggestMerchantButton();
     }
 
     @Override
@@ -97,7 +92,14 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
         state.setOffers(getView().getExpandedOffers());
+        state.setHoursViewExpanded(getView().isHoursViewExpanded());
         super.onSaveInstanceState(bundle);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle instanceState) {
+        super.onRestoreInstanceState(instanceState);
+        preExpandHours();
     }
 
     @Override
@@ -120,6 +122,26 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
     public boolean onToolbarMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.action_share) onShareClick();
         return super.onToolbarMenuItemClick(item);
+    }
+
+    protected void preExpandOffers() {
+        boolean isRestore = getViewState().getOffers() != null;
+        final List<Integer> offers = isRestore ? getViewState().getOffers() : this.preExpandOffers;
+        //
+        getView().expandOffers(offers);
+    }
+
+    protected void preExpandHours() {
+        if (getViewState().isHoursViewExpanded()) {
+            getView().expandHoursView();
+        }
+    }
+
+    private void tryHideSuggestMerchantButton() {
+        boolean repToolsAvailable = featureManager.available(Feature.REP_SUGGEST_MERCHANT);
+        if (merchant.hasNoOffers()) {
+            getView().setSuggestMerchantButtonAvailable(repToolsAvailable);
+        } else processTransaction();
     }
 
     private void processTransaction() {

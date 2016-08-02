@@ -13,7 +13,9 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -38,6 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import io.techery.properratingbar.ProperRatingBar;
+import rx.Observable;
 
 @Layout(R.layout.adapter_item_dtl_merchant_expandable)
 public class DtlMerchantExpandableCell
@@ -122,10 +125,12 @@ public class DtlMerchantExpandableCell
     }
 
     private void setOperationalStatus() {
-        if (getModelObject().hasPoints() &&
-                getModelObject().getOperationDays() != null && !getModelObject().getOperationDays().isEmpty()) {
+        if (getModelObject().hasPoints() && getModelObject().getOperationDays() != null
+                && !getModelObject().getOperationDays().isEmpty()) {
             ViewUtils.setViewVisibility(merchantOperationalStatus, View.VISIBLE);
-            this.merchantOperationalStatus.setText(DtlMerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false));
+            Observable.fromCallable(() -> DtlMerchantHelper.getOperationalTime(itemView.getContext(), getModelObject(), false))
+                    .compose(RxLifecycle.bindView(itemView))
+                    .subscribe(merchantOperationalStatus::setText, ex -> merchantOperationalStatus.setVisibility(View.GONE));
         } else ViewUtils.setViewVisibility(merchantOperationalStatus, View.INVISIBLE);
     }
 

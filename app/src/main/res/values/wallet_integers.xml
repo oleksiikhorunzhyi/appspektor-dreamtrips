@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="wallet_wizard_card_alias_length">256</integer>
+</resources>

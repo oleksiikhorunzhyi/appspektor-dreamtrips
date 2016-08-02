@@ -6,7 +6,7 @@ import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
 
 @Layout(R.layout.screen_wallet_wizard_card_alias)
-public class WizardCardAliasPath extends StyledPath {
+public class WizardCardNamePath extends StyledPath {
 
     @Override
     public MasterDetailPath getMaster() {

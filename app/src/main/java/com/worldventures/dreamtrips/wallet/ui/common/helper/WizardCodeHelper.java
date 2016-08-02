@@ -6,7 +6,7 @@ import com.techery.spares.module.qualifier.ForActivity;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
-import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardAliasPath;
+import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePath;
 
 import javax.inject.Inject;
 
@@ -38,7 +38,7 @@ public final class WizardCodeHelper {
                         .onStart(createAndConnectToCardCommand -> view.showProgress())
                         .onSuccess(createAndConnectToCardCommand -> {
                             view.hideProgress();
-                            view.showSuccessWithDelay(() -> Flow.get(context).set(new WizardCardAliasPath()), DIALOG_DELAY);
+                            view.showSuccessWithDelay(() -> Flow.get(context).set(new WizardCardNamePath()), DIALOG_DELAY);
                         })
                         .onFail((createAndConnectToCardCommand, throwable) -> {
                             view.hideProgress();

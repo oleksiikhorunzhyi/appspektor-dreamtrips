@@ -25,12 +25,13 @@
             android:text="@string/wallet_wizard_card_alias_subtitle"/>
 
         <EditText
-            android:id="@+id/card_alias"
+            android:id="@+id/card_name_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_marginTop="128dp"
             android:inputType="textPersonName"
+            android:maxLength="@integer/wallet_wizard_card_alias_length"
             android:hint="@string/wallet_wizard_card_alias_hint" />
 
         <Button

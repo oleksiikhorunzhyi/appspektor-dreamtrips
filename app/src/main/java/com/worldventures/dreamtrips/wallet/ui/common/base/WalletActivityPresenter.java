@@ -1,20 +1,12 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
-import android.os.Bundle;
-
 import com.worldventures.dreamtrips.modules.common.presenter.ActivityPresenter;
 
 public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter.View> {
 
-    public static boolean hasSmartCard = true;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        hasSmartCard = !hasSmartCard;
-    }
+    private static boolean smart_card_attached;
 
     public boolean hasSmartCard() {
-        return hasSmartCard;
+        return smart_card_attached = !smart_card_attached;
     }
 }

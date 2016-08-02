@@ -17,6 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
@@ -29,16 +30,26 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
     @Inject @Named(JANET_WALLET) Janet janet;
     @Inject @ForApplication Context context;
 
+    private List<Card> cachedList = new ArrayList<>();
+
     @Override protected void run(CommandCallback<List<CardStackViewModel>> callback) throws Throwable {
         janet.createPipe(CardListCommand.class)
-                .createObservableResult(new CardListCommand())
-                .map(Command::getResult)
+                .createObservable(new CardListCommand())
+                .doOnNext(it -> {
+                    if (it.status == ActionState.Status.PROGRESS) {
+                        setCachedList(it.action.getCachedItems());
+                        callback.onProgress(0);
+                    }
+                })
+                .filter(it -> it.status != ActionState.Status.PROGRESS)
+                .map(it -> it.action.getResult())
                 .map(this::convert)
                 .subscribe(callback::onSuccess, callback::onFail);
-
     }
 
     private List<CardStackViewModel> convert(List<Card> cardList) {
+        if (cardList == null) return new ArrayList<>();
+
         ArrayList<CardStackViewModel> result = new ArrayList<>();
         List<BankCard> creditsBankCards = getBankCardsByType(cardList, BankCard.CARD_TYPE.CREDIT);
         List<BankCard> debitBankCards = getBankCardsByType(cardList, BankCard.CARD_TYPE.DEBIT);
@@ -61,5 +72,11 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
                 .toList();
     }
 
+    public void setCachedList(List<Card> cachedList) {
+        this.cachedList = cachedList;
+    }
 
+    public List<CardStackViewModel> getCachedList() {
+        return convert(cachedList);
+    }
 }

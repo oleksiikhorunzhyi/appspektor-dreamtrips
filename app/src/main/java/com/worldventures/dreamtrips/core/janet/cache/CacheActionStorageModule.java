@@ -9,6 +9,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBuc
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlLocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
+import com.worldventures.dreamtrips.wallet.service.storage.WalletCardsDiskStorage;
 
 import javax.inject.Singleton;
 
@@ -52,5 +53,11 @@ public class CacheActionStorageModule {
     @Provides(type = Provides.Type.SET)
     ActionStorage provideRecentlyAddedBucketsStorage() {
         return new RecentlyAddedBucketItemStorage();
+    }
+
+    @Singleton
+    @Provides(type = Provides.Type.SET)
+    ActionStorage provideWalletCardListStorage(SnappyRepository snappyRepository) {
+        return new WalletCardsDiskStorage(snappyRepository);
     }
 }

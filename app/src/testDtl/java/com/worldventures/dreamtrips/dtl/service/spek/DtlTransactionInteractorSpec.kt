@@ -3,9 +3,13 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction
+import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction
+import com.worldventures.dreamtrips.api.dtl.merchats.model.EstimationResult
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableEstimationParams
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils
-import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
@@ -13,8 +17,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlRateAction
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
@@ -23,7 +25,6 @@ import io.techery.janet.http.test.MockHttpActionService
 import org.mockito.Mockito.eq
 import org.powermock.api.mockito.PowerMockito.mockStatic
 import org.powermock.core.classloader.annotations.PrepareForTest
-import rx.functions.Func1
 import rx.observers.TestSubscriber
 
 @PrepareForTest(DateTimeUtils::class)
@@ -33,7 +34,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
     merchant = mock()
     transaction = mock()
     transactionResult = mock()
-    pointsHolder = mock()
+    estimationResult = mock()
 
     whenever(merchant.id).thenReturn("test")
     whenever(merchant.defaultCurrency).thenReturn(DtlCurrency())
@@ -53,7 +54,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
                 .addService(MockHttpActionService.Builder()
                         .bind(MockHttpActionService
                                 .Response(200)
-                                .body(pointsHolder)) { it.url.contains("/estimations") }
+                                .body(estimationResult)) { it.url.contains("/estimations") }
                         .bind(MockHttpActionService
                                 .Response(200)
                                 .body(transactionResult)) { it.url.contains("/transactions") }
@@ -114,28 +115,37 @@ class DtlTransactionInteractorSpec : BaseSpec({
         }
     }
 
-    describe("DtlEstimatePointsAction") {
+    describe("EstimationHttpAction") {
         beforeEach {
             mockStatic(DateTimeUtils::class.java)
             whenever(DateTimeUtils.currentUtcString()).thenReturn("")
         }
 
-        it("should send DtlEstimatePointsAction") {
-            val subscriber = TestSubscriber<ActionState<DtlEstimatePointsAction>>()
+        it("should send EstimationHttpAction") {
+            val subscriber = TestSubscriber<ActionState<EstimationHttpAction>>()
             transactionInteractor.estimatePointsActionPipe()
-                    .createObservable(DtlEstimatePointsAction(merchant, Double.MAX_VALUE, ""))
+                    .createObservable(EstimationHttpAction(merchant.id,
+                            ImmutableEstimationParams.builder()
+                                    .billTotal(Double.MAX_VALUE)
+                                    .checkinTime(DateTimeUtils.currentUtcString())
+                                    .currencyCode("USD")
+                                    .build()))
                     .subscribe(subscriber)
-            assertActionSuccess(subscriber) { it.estimationPointsHolder != null }
+            assertActionSuccess(subscriber) { it.estimatedPoints().points() != null }
         }
     }
 
-    describe("DtlRateAction") {
-        it("should send DtlRateAction") {
-            val subscriber = TestSubscriber<ActionState<DtlRateAction>>()
+    describe("RatingHttpAction") {
+        it("should send RatingHttpAction") {
+            val subscriber = TestSubscriber<ActionState<RatingHttpAction>>()
             transactionInteractor.rateActionPipe()
-                    .createObservable(DtlRateAction(merchant, 5, transaction))
+                    .createObservable(RatingHttpAction(merchant.id,
+                            ImmutableRatingParams.builder()
+                                    .rating(5)
+                                    .transactionId(transaction.dtlTransactionResult?.id)
+                                    .build()))
                     .subscribe(subscriber)
-            assertActionSuccess<DtlRateAction>(subscriber) { it.getErrorResponse() == null }
+            assertActionSuccess<RatingHttpAction>(subscriber) { it.errorResponse() == null }
         }
     }
 
@@ -156,14 +166,14 @@ class DtlTransactionInteractorSpec : BaseSpec({
         lateinit var db: SnappyRepository
         lateinit var merchant: DtlMerchant
         lateinit var transaction: DtlTransaction
-        lateinit var pointsHolder: EstimationPointsHolder
+        lateinit var estimationResult: EstimationResult
         lateinit var transactionResult: DtlTransactionResult
 
         //sugar method for sending and checking DtlTransactionAction using predicate
         fun checkTransactionAction(transactionAction: DtlTransactionAction, assertPredicate: (DtlTransactionAction) -> Boolean) {
             val subscriber = TestSubscriber<ActionState<DtlTransactionAction>>()
             transactionInteractor.transactionActionPipe().createObservable(transactionAction).subscribe(subscriber)
-            assertActionSuccess(subscriber, Func1 { assertPredicate(transactionAction) })
+            assertActionSuccess(subscriber, { assertPredicate(transactionAction) })
         }
     }
 }

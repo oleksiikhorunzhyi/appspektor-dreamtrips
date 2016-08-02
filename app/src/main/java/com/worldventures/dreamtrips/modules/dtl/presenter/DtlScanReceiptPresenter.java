@@ -3,8 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.net.Uri;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickRequestEvent;
 import com.worldventures.dreamtrips.core.utils.events.ImagePickedEvent;
 import com.worldventures.dreamtrips.modules.common.api.CopyFileCommand;
@@ -20,7 +23,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 import com.worldventures.dreamtrips.modules.tripsimages.view.custom.PickImageDelegate;
@@ -112,10 +114,10 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                 .takeUntil(state -> state.status == ActionState.Status.SUCCESS
                         || state.status == ActionState.Status.FAIL)
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
+                .subscribe(new ActionStateSubscriber<EstimationHttpAction>()
                         .onStart(action -> view.showProgress())
                         .onFail(apiErrorPresenter::handleActionError)
-                        .onSuccess(action -> attachDtPoints(action.getEstimationPointsHolder().getPoints())));
+                        .onSuccess(action -> attachDtPoints(action.estimatedPoints().points())));
     }
 
     public void verify() {
@@ -130,8 +132,16 @@ public class DtlScanReceiptPresenter extends JobPresenter<DtlScanReceiptPresente
                                         .withBillTotal(amount))
                 )
                 .map(DtlTransactionAction::getResult)
-                .flatMap(transaction -> transactionInteractor.estimatePointsActionPipe().createObservableResult(
-                        new DtlEstimatePointsAction(dtlMerchant, transaction.getBillTotal(), dtlMerchant.getDefaultCurrency().getCode()))
+                .flatMap(transaction -> transactionInteractor.estimatePointsActionPipe()
+                        .createObservableResult(
+                                new EstimationHttpAction(dtlMerchant.getId(),
+                                        ImmutableEstimationParams.builder()
+                                                .checkinTime(
+                                                        DateTimeUtils.currentUtcString())
+                                                .billTotal(transaction.getBillTotal())
+                                                .currencyCode(dtlMerchant.getDefaultCurrency()
+                                                        .getCode())
+                                                .build()))
                 ).compose(bindViewIoToMainComposer())
                 .subscribe(action -> {
                 }, apiErrorPresenter::handleError);

@@ -3,8 +3,11 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
+import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.presenter.JobPresenter;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.dtl.analytics.DtlAnalyticsCommand;
@@ -13,7 +16,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlMerchantByIdAction;
 
 import javax.inject.Inject;
@@ -60,10 +62,11 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
     private void bindApiJob() {
         transactionInteractor.estimatePointsActionPipe().observe()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<DtlEstimatePointsAction>()
+                .subscribe(new ActionStateSubscriber<EstimationHttpAction>()
                         .onStart(action -> view.showProgress())
                         .onFail(apiErrorPresenter::handleActionError)
-                        .onSuccess(action -> view.showEstimatedPoints(action.getEstimationPointsHolder().getPointsInteger())));
+                        .onSuccess(action -> view.showEstimatedPoints(action.estimatedPoints()
+                                .points().intValue())));
     }
 
     public void onCalculateClicked(String userInput) {
@@ -73,8 +76,12 @@ public class DtlPointsEstimationPresenter extends JobPresenter<DtlPointsEstimati
                 .send(DtlAnalyticsCommand.create(new PointsEstimatorCalculateEvent(dtlMerchant)));
         //
         transactionInteractor.estimatePointsActionPipe()
-                .send(new DtlEstimatePointsAction(dtlMerchant, Double.valueOf(userInput),
-                        dtlMerchant.getDefaultCurrency().getCode()));
+                .send(new EstimationHttpAction(dtlMerchant.getId(),
+                        ImmutableEstimationParams.builder()
+                                .billTotal(Double.valueOf(userInput))
+                                .checkinTime(DateTimeUtils.currentUtcString())
+                                .currencyCode(dtlMerchant.getDefaultCurrency().getCode())
+                                .build()));
     }
 
     protected boolean validateInput(String pointsInput) {

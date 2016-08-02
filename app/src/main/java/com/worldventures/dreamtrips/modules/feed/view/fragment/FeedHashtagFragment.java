@@ -86,7 +86,9 @@ public class FeedHashtagFragment extends RxBaseFragmentWithArgs<FeedHashtagPrese
             }
             getPresenter().loadNext();
         });
-        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(false));
+        if (isTabletLandscape()) {
+            statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16));
+        }
         fragmentWithFeedDelegate.init(feedAdapter);
 
         suggestionAdapter = new BaseDelegateAdapter<>(getActivity(), this);

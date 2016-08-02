@@ -69,7 +69,6 @@
     <dimen name="filter_popup_width">175dp</dimen>
 
     <dimen name="feed_item_height">250dp</dimen>
-    <dimen name="feed_spacing">0dp</dimen>
     <dimen name="tablet_details_spacing">0dp</dimen>
 
     <dimen name="locale_flag_size_width">38dp</dimen>

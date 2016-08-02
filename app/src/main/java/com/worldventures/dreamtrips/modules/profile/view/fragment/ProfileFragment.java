@@ -94,7 +94,9 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
             }
             getPresenter().onLoadNext();
         });
-        statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(true));
+        if (isTabletLandscape()) {
+            statePaginatedRecyclerViewManager.addItemDecoration(new SideMarginsItemDecorator(16, true));
+        }
         statePaginatedRecyclerViewManager.setOffsetYListener(yOffset -> {
             float percent = calculateOffset();
             setToolbarAlpha(percent);

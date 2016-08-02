@@ -28,8 +28,6 @@ import butterknife.Optional;
 @Layout(R.layout.fragment_comments_with_details)
 public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetailsPresenter> implements FeedItemDetailsPresenter.View {
 
-    @Optional @InjectView(R.id.feedDetailsLeftSpace) View feedDetailsLeftSpace;
-    @Optional @InjectView(R.id.feedDetailsRightSpace) View feedDetailsRightSpace;
     @Optional @InjectView(R.id.comments_additional_info_container) ViewGroup additionalContainer;
 
     @Override
@@ -64,8 +62,6 @@ public class FeedItemDetailsFragment extends FeedDetailsFragment<FeedItemDetails
         //todo until Trip becomes as all normal entities
         if (feedItem instanceof TripFeedItem) {
             if (additionalContainer != null) additionalContainer.setVisibility(View.GONE);
-            if (feedDetailsLeftSpace != null) feedDetailsLeftSpace.setVisibility(View.VISIBLE);
-            if (feedDetailsRightSpace != null) feedDetailsRightSpace.setVisibility(View.VISIBLE);
         }
     }
 

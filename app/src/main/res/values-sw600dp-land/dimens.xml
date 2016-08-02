@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="feed_spacing">200dp</dimen>
     ///////Post sizes
     <dimen name="post_spacing_horizontal">128dp</dimen>
     <dimen name="post_spacing_vertical_top">16dp</dimen>

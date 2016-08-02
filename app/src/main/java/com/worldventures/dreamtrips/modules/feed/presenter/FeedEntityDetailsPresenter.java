@@ -14,8 +14,7 @@ import javax.inject.Inject;
 
 public class FeedEntityDetailsPresenter extends FeedDetailsPresenter<FeedEntityDetailsPresenter.View> {
 
-    @Inject
-    FeedEntityContentFragmentFactory fragmentFactory;
+    @Inject FeedEntityContentFragmentFactory fragmentFactory;
 
     private boolean isSlave;
 

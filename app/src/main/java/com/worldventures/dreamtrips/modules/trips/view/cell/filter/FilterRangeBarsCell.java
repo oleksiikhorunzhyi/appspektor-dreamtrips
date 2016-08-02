@@ -45,26 +45,8 @@ public class FilterRangeBarsCell extends AbstractDelegateCell<FilterModel, Filte
             cellDelegate.rangeBarPriceEvent(minPrice, maxPrice);
         });
 
-        //in case of rare bug like:
-        //java.lang.IllegalArgumentException: Pin index left 0, or right 13 is out of bounds.
-        //Check that it is greater than the minimum (100.0) and less than the maximum value (500.0)
-        int leftDuration = getModelObject().getIndexLeftDuration();
-        int rightDuration = getModelObject().getIndexRightDuration();
-        if (leftDuration < minNights || rightDuration > maxNights) {
-            rangeBarDay.setRangePinsByIndices(minNights, maxNights);
-            Timber.e("left duration = %d; right duration = %d; not in range (%d %d)", leftDuration, rightDuration, minNights, maxNights);
-        } else {
-            rangeBarDay.setRangePinsByIndices(leftDuration, rightDuration);
-        }
-
-        int leftPrice = getModelObject().getIndexLeftPrice();
-        int rightPrice = getModelObject().getIndexRightPrice();
-        if (leftPrice < minPrice || rightPrice > maxPrice) {
-            rangeBarPrice.setRangePinsByIndices((int)minPrice, (int)maxPrice);
-            Timber.e("left price = %d; right price = %d; not in range (%d %d)", leftPrice, rightPrice, minPrice, maxPrice);
-        } else {
-            rangeBarPrice.setRangePinsByIndices(leftPrice, rightPrice);
-        }
+        this.rangeBarDay.setRangePinsByIndices(getModelObject().getIndexLeftDuration(), getModelObject().getIndexRightDuration());
+        this.rangeBarPrice.setRangePinsByIndices(getModelObject().getIndexLeftPrice(), getModelObject().getIndexRightPrice());
     }
 
     public interface Delegate extends CellDelegate<FilterModel> {

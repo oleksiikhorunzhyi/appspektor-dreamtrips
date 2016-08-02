@@ -1,12 +1,14 @@
 package com.worldventures.dreamtrips.dtl.service.junit;
 
 import com.worldventures.dreamtrips.BaseTest;
+import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchats.model.EstimationResult;
+import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
-import com.worldventures.dreamtrips.modules.dtl.model.EstimationPointsHolder;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
@@ -14,7 +16,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
-import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEstimatePointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 
 import org.junit.Before;
@@ -45,7 +46,7 @@ public class DtlTransactionInteractorTest extends BaseTest {
 
     private static DtlMerchant testMerchant = mock(DtlMerchant.class);
     private static DtlTransaction testTransaction = mock(DtlTransaction.class);
-    private static EstimationPointsHolder testPointsHolder = mock(EstimationPointsHolder.class);
+    private static EstimationResult testEstimationResult = mock(EstimationResult.class);
     private static DtlTransactionResult testTransactionResult = mock(DtlTransactionResult.class);
 
     static {
@@ -70,7 +71,7 @@ public class DtlTransactionInteractorTest extends BaseTest {
                         daggerActionService = new MockDaggerActionService(new CommandActionService())))
                 .addService(cachedService(
                         new MockHttpActionService.Builder()
-                                .bind(new MockHttpActionService.Response(200).body(testPointsHolder),
+                                .bind(new MockHttpActionService.Response(200).body(testEstimationResult),
                                         request -> request.getUrl().contains("/estimations"))
                                 .bind(new MockHttpActionService.Response(200).body(testTransactionResult),
                                         request -> request.getUrl().contains("/transactions"))
@@ -136,11 +137,16 @@ public class DtlTransactionInteractorTest extends BaseTest {
 
     @Test
     public void testDtlEstimatePointsAction() {
-        TestSubscriber<ActionState<DtlEstimatePointsAction>> subscriber = new TestSubscriber<>();
+        TestSubscriber<ActionState<EstimationHttpAction>> subscriber = new TestSubscriber<>();
         transactionInteractor.estimatePointsActionPipe()
-                .createObservable(new DtlEstimatePointsAction(testMerchant, Double.MAX_VALUE, ""))
+                .createObservable(new EstimationHttpAction(testMerchant.getId(),
+                        ImmutableEstimationParams.builder()
+                                .checkinTime(DateTimeUtils.currentUtcString())
+                                .billTotal(Double.MAX_VALUE)
+                                .currencyCode("USD")
+                                .build()))
                 .subscribe(subscriber);
-        assertActionSuccess(subscriber, action -> action.getEstimationPointsHolder() != null);
+        assertActionSuccess(subscriber, action -> action.estimatedPoints().points() != null);
     }
 
     @Test

@@ -6,6 +6,8 @@
     <dimen name="photo_thumb_size">200dp</dimen>
     <dimen name="tripImageHeight">240dp</dimen>
 
+    <dimen name="bucket_quick_input_edit_text_min_width">192dp</dimen>
+
     /////Map info sizes
     <dimen name="map_trip_info_size">412dp</dimen>
     <dimen name="map_trip_image_size">225dp</dimen>

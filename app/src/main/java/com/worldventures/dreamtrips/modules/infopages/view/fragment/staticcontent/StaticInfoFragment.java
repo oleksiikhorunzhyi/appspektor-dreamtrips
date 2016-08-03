@@ -564,9 +564,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
         }
 
         @Override
-        public void setUserVisibleHint(boolean isVisibleToUser) {
-            super.setUserVisibleHint(isVisibleToUser);
-            if (isVisibleToUser) getPresenter().track(Route.ENROLL_MEMBER);
+        protected void track() {
+            getPresenter().track(Route.ENROLL_MEMBER);
         }
     }
 
@@ -587,9 +586,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
         }
 
         @Override
-        public void setUserVisibleHint(boolean isVisibleToUser) {
-            super.setUserVisibleHint(isVisibleToUser);
-            if (isVisibleToUser) getPresenter().track(Route.ENROLL_MERCHANT);
+        protected void track() {
+            getPresenter().track(Route.ENROLL_MERCHANT);
         }
     }
 

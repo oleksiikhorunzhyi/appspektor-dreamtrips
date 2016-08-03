@@ -110,7 +110,7 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
                             ((MainActivity) getActivity()).openLeftDrawer()
             );
         } else {
-            profileToolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            profileToolbar.setNavigationIcon(R.drawable.back_icon);
             profileToolbar.setNavigationOnClickListener(view -> getActivity().onBackPressed());
         }
     }

@@ -4,15 +4,21 @@ import android.support.annotation.Nullable;
 
 import org.immutables.value.Value;
 
+import io.techery.janet.smartcard.model.Record;
+
 @Value.Immutable
 public interface BankCard extends Card {
-    @Nullable String title();
+    @Nullable
+    String title();
 
-    @Nullable CARD_TYPE cardType();
+    @Nullable
+    CardType cardType();
 
-    @Nullable String type();
+    Record.FinancialService type();
 
-    enum CARD_TYPE {
+    int cvv();
+
+    enum CardType {
         DEBIT, CREDIT
     }
 }

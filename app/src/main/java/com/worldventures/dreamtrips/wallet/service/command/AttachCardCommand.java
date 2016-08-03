@@ -23,6 +23,8 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
     @Named(JANET_WALLET)
     Janet janet;
 
+    private final BankCardToRecordConverter converter = new BankCardToRecordConverter();
+
     private final BankCard card;
 
     public AttachCardCommand(BankCard card) {
@@ -30,7 +32,7 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
     }
 
     @Override protected void run(CommandCallback<Record> callback) throws Throwable {
-        Record record = BankCardToRecordConverter.convert(card);
+        Record record = converter.convert(card);
         janet.createPipe(AddRecordAction.class)
                 .createObservable(new AddRecordAction(record))
                 .compose(new ActionStateToActionTransformer<>())

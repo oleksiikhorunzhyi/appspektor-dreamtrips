@@ -22,6 +22,7 @@ public class BankCardCell extends AbstractDelegateCell<BankCard, BankCardCell.De
     }
 
     @Override protected void syncUIStateWithModel() {
+        bankCardWidget.setBankCardInfo(getModelObject());
         itemView.setOnClickListener(v -> cellDelegate.onCellClicked(getModelObject()));
     }
 

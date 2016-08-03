@@ -7,6 +7,7 @@
     <string name="wallet">Wallet</string>
     <string name="wallet_wizard_title">Set Up Smart Card</string>
     <string name="wallet_input_data_is_incorrect">Input data is incorrect</string>
+    <string name="wallet_bank_card_good_thru">GOOD THRU</string>
 
     <!--card alias-->
     <string name="wallet_wizard_card_alias_subtitle">Name your smart card</string>

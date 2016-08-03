@@ -2,18 +2,21 @@ package com.worldventures.dreamtrips.wallet.domain.entity.card;
 
 import android.support.annotation.Nullable;
 
-import java.util.Date;
-
 public interface Card {
-    @Nullable String id();
+    @Nullable
+    String id();
 
-    @Nullable String scid();
+    @Nullable
+    String scid(); //smart card id
 
-    @Nullable String number();
+    long number();
 
-    @Nullable Category category();
+    int expiryMonth();
 
-    @Nullable Date endDate();
+    int expiryYear();
+
+    @Nullable
+    Category category();
 
     enum Category {
         BANK, DISCOUNT

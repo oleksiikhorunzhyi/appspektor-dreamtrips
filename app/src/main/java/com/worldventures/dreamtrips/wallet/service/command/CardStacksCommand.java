@@ -51,8 +51,8 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
         if (cardList == null) return new ArrayList<>();
 
         ArrayList<CardStackViewModel> result = new ArrayList<>();
-        List<BankCard> creditsBankCards = getBankCardsByType(cardList, BankCard.CARD_TYPE.CREDIT);
-        List<BankCard> debitBankCards = getBankCardsByType(cardList, BankCard.CARD_TYPE.DEBIT);
+        List<BankCard> creditsBankCards = getBankCardsByType(cardList, BankCard.CardType.CREDIT);
+        List<BankCard> debitBankCards = getBankCardsByType(cardList, BankCard.CardType.DEBIT);
 
         int creditCardTitle = QuantityHelper.chooseResource(creditsBankCards.size(), R.string.wallet_credit_card_title, R.string.wallet_credit_cards_title);
         int debitCardTitle = QuantityHelper.chooseResource(debitBankCards.size(), R.string.wallet_debit_card_title, R.string.wallet_debit_cards_title);
@@ -64,7 +64,7 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
         return result;
     }
 
-    protected List<BankCard> getBankCardsByType(List<Card> result, BankCard.CARD_TYPE credit) {
+    protected List<BankCard> getBankCardsByType(List<Card> result, BankCard.CardType credit) {
         return Queryable.from(result)
                 .filter(it -> it instanceof BankCard)
                 .map(it -> (BankCard) it)

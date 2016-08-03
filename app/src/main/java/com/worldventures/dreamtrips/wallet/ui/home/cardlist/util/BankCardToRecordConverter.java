@@ -1,28 +1,45 @@
 package com.worldventures.dreamtrips.wallet.ui.home.cardlist.util;
 
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
+
+import java.util.Random;
 
 import io.techery.janet.smartcard.model.ImmutableRecord;
 import io.techery.janet.smartcard.model.Record;
-import rx.functions.Func1;
 
 public class BankCardToRecordConverter  {
 
-     public static Record convert(BankCard card) {
+     public Record convert(BankCard card) {
+         // TODO: use normal id
         return ImmutableRecord.builder()
-                .csc(card.number())
+                .id((byte) 1)
                 .title(card.title())
-                .idx((byte) 1)
-                .recType((byte) 2)
-                .financialService((byte) 3)
-                .exp("1216")
-                .pan("Pan??")
+                .cardNumber(String.valueOf(card.number()))
+                .cvv(String.valueOf(card.cvv()))
+                .expiryMonth(card.expiryMonth())
+                .expiryYear(card.expiryYear())
+                .financialService(Record.FinancialService.MASTERCARD)
                 .t1("T1??")
                 .t2("T2??")
                 .t3("T3??")
-                .numMeta((byte) 5)
                 .build();
     }
 
+    public BankCard convert(Record record) {
+        return ImmutableBankCard.builder()
+                .title(record.title())
+                .cvv(Integer.parseInt(record.cvv()))
+                .number(Long.parseLong(record.cardNumber()))
+                .type(record.financialService())
+                .expiryMonth(record.expiryMonth())
+                .expiryYear(record.expiryYear())
+                .cardType(generateRandomCardType())
+                .build();
+    }
 
+    //todo
+    private BankCard.CardType generateRandomCardType() {
+        return new Random().nextBoolean() ? BankCard.CardType.CREDIT : BankCard.CardType.DEBIT;
+    }
 }

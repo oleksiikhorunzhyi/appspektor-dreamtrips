@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -16,13 +17,10 @@ public class BankCardWidget extends RelativeLayout {
 
     @InjectView(R.id.bankLabel)
     TextView bankLabel;
-    @InjectView(R.id.connectedCardCount)
-    TextView connectedCardCount;
+    @InjectView(R.id.cardTitle)
+    TextView cardTitle;
     @InjectView(R.id.cardNumber)
     TextView cardNumber;
-    //// TODO: 8/1/16 rename this naming
-    @InjectView(R.id.someStrangeInfo)
-    TextView someStrangeInfo;
     @InjectView(R.id.typeIcon)
     ImageView cardTypeIcon;
     @InjectView(R.id.expireDate)
@@ -44,6 +42,13 @@ public class BankCardWidget extends RelativeLayout {
 
     public BankCardWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setBankCardInfo(BankCard bankCard) {
+        cardTitle.setText(bankCard.title());
+        cardNumber.setText(String.format("•••• •••• •••• •••• %04d", bankCard.number() % 10000));
+        expireDate.setText(String.format("%02d/%02d", bankCard.expiryMonth(), bankCard.expiryYear()));
+        //// TODO: add setting cardTypeIcon and bank name
     }
 
 }

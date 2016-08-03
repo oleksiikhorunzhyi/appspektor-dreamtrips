@@ -38,9 +38,7 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
         BankCardCell.Delegate childCellDelegate = model -> cellDelegate.onCardClicked(model);
 
         BaseDelegateAdapter adapter = new BaseDelegateAdapter(itemView.getContext(), injector);
-        adapter.registerCell(BankCard.class, BankCardCell.class);
         adapter.registerCell(ImmutableBankCard.class, BankCardCell.class);
-        adapter.registerDelegate(BankCard.class, childCellDelegate);
         adapter.registerDelegate(ImmutableBankCard.class, childCellDelegate);
 
         adapter.setHasStableIds(true);

@@ -17,17 +17,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="@dimen/spacing_medium"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/font_large"
+        android:textSize="18sp"
         android:text="@string/wallet_bank_name_text_holder"/>
 
     <TextView
-        android:id="@+id/connectedCardCount"
+        android:id="@+id/cardTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bankLabel"
-        android:layout_marginBottom="@dimen/spacing_medium"
+        android:layout_marginBottom="@dimen/spacing_small"
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_normal"
         tools:text="Shirly A template"/>
@@ -36,14 +36,14 @@
         android:id="@+id/cardNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/connectedCardCount"
+        android:layout_below="@+id/cardTitle"
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_large"
         tools:text="**** **** **** 1234"
         />
 
     <TextView
-        android:id="@+id/someStrangeInfo"
+        android:id="@+id/good_thru_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -52,7 +52,7 @@
         android:textColor="@android:color/white"
         android:layout_marginBottom="2dp"
         android:textSize="9sp"
-        tools:text="GOOD THRU"/>
+        android:text="@string/wallet_bank_card_good_thru"/>
 
     <ImageView
         android:id="@+id/typeIcon"
@@ -61,7 +61,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:src="@drawable/mastercard"
-        android:textColor="@android:color/white"/>
+        android:textColor="@android:color/white"
+        android:visibility="visible"/>
 
     <TextView
         android:id="@+id/expireDate"
@@ -69,8 +70,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="8dp"
-        android:layout_toEndOf="@+id/someStrangeInfo"
-        android:layout_toRightOf="@+id/someStrangeInfo"
+        android:layout_toEndOf="@+id/good_thru_label"
+        android:layout_toRightOf="@+id/good_thru_label"
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_normal"
         tools:text="09/18"/>

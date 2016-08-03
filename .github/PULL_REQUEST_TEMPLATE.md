@@ -1,8 +1,11 @@
-**Ticket**
+### Ticket
 
-**Task/Problem**
 
-**Solution**
+### Task/Problem
 
-**Affected functionality**
+
+### Solution
+
+
+### Affected functionality
 

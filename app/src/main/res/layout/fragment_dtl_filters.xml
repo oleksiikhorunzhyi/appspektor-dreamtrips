@@ -28,13 +28,13 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:connectingLineColor="#54B5FC"
-            custom:pinColor="#54B5FC"
-            custom:rangeBar="true"
-            custom:selectorColor="#54B5FC"
-            custom:tickEnd="5"
-            custom:tickInterval="1"
-            custom:tickStart="1"/>
+            custom:mrb_connectingLineColor="#54B5FC"
+            custom:mrb_pinColor="#54B5FC"
+            custom:mrb_rangeBar="true"
+            custom:mrb_selectorColor="#54B5FC"
+            custom:mrb_tickEnd="5"
+            custom:mrb_tickInterval="1"
+            custom:mrb_tickStart="1"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -76,13 +76,13 @@
             android:layout_height="72dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:connectingLineColor="#54B5FC"
-            custom:pinColor="#54B5FC"
-            custom:rangeBar="false"
-            custom:selectorColor="#54B5FC"
-            custom:tickEnd="50"
-            custom:tickInterval="10"
-            custom:tickStart="10"/>
+            custom:mrb_connectingLineColor="#54B5FC"
+            custom:mrb_pinColor="#54B5FC"
+            custom:mrb_rangeBar="false"
+            custom:mrb_selectorColor="#54B5FC"
+            custom:mrb_tickEnd="50"
+            custom:mrb_tickInterval="10"
+            custom:mrb_tickStart="10"/>
 
         <TextView
             android:id="@+id/distance_filter_caption"

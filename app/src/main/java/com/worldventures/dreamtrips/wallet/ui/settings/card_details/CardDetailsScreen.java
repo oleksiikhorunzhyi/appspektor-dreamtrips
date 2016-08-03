@@ -56,11 +56,6 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
         getPresenter().onDeleteCardRequired();
     }
 
-    @OnClick(R.id.edit_address)
-    public void onEditAddressClicked() {
-        getPresenter().onEditCardAddressRequired();
-    }
-
     @Override
     public void showDefaultAddress(AddressInfo addressInfo, String country) {
         addressText.setText(AddressUtil.obtainAddressLabel(addressInfo, country));

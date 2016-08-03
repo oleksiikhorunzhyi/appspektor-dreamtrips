@@ -15,7 +15,7 @@ public class OtaFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
 
     @Override
     protected String getURL() {
-        return provider.getOtaPageURL();
+        return provider.getOtaPageUrl();
     }
 
     @Override

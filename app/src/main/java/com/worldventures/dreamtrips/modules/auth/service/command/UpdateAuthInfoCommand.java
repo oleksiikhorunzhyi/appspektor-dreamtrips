@@ -10,12 +10,10 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.GlobalConfigCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageConfigCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.StaticPagesInteractor;
@@ -34,22 +32,13 @@ import rx.Observable;
 @CommandAction
 public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAction {
 
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    LocalesInteractor getLocalesManager;
-    @Inject
-    AppSettingsInteractor queryAppSettingsInteractor;
-    @Inject
-    QueryTripsFilterDataInteractor queryTripsFilterDataInteractor;
-    @Inject
-    StaticPagesInteractor getStaticPageConfigManager;
-    @Inject
-    CirclesInteractor queryCirclesInteractor;
-    @Inject
-    GlobalConfigInteractor globalConfigManager;
-    @Inject
-    FeatureManager featureManager;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject LocalesInteractor getLocalesManager;
+    @Inject AppSettingsInteractor queryAppSettingsInteractor;
+    @Inject QueryTripsFilterDataInteractor queryTripsFilterDataInteractor;
+    @Inject StaticPagesInteractor getStaticPageConfigManager;
+    @Inject CirclesInteractor queryCirclesInteractor;
+    @Inject FeatureManager featureManager;
 
     @Override
     protected void run(CommandCallback<Void> callback) throws Throwable {
@@ -58,7 +47,6 @@ public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAc
         sessionQueries.add(queryAppSettingsInteractor.pipe().createObservableResult(new AppSettingsCommand()));
         sessionQueries.add(circles());
         sessionQueries.add(queryTripsFilterDataInteractor.pipe().createObservableResult(new TripsFilterDataCommand()));
-        sessionQueries.add(globalConfigManager.pipe().createObservableResult(new GlobalConfigCommand()));
         sessionQueries.add(getLocalesManager.pipe().createObservableResult(new LocalesCommand())
                         .flatMap(staticPageConfig -> getStaticPageConfigManager.pipe().createObservableResult(new StaticPageConfigCommand())));
 

@@ -22,8 +22,6 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.GlobalConfigCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
@@ -39,7 +37,6 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
@@ -48,8 +45,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import roboguice.util.temp.Ln;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
@@ -61,8 +56,7 @@ public class DreamSpiceManager extends SpiceManager {
     @Inject @Global protected EventBus eventBus;
     @Inject DTErrorHandler dtErrorHandler;
     @Inject LogoutDelegate logoutDelegate;
-    @Inject GlobalConfigInteractor globalConfigInteractor;
-    //
+
     private final ErrorParser errorParser;
 
     public DreamSpiceManager(Class<? extends SpiceService> spiceServiceClass, Injector injector) {
@@ -136,25 +130,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     private void processError(SpiceRequest request, SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
-        if (isLoginError(error) && isCredentialExist(appSessionHolder)) {
-            reloadGlobalConfig(onLoginSuccess, getParcedException(request, error));
-        } else {
-            failureListener.handleError(getParcedException(request, error));
-        }
-    }
-
-    private void reloadGlobalConfig(OnLoginSuccess onLoginSuccess, SpiceException error) {
-        globalConfigInteractor.pipe().createObservableResult(new GlobalConfigCommand())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.from(Executors.newFixedThreadPool(5)))
-                .subscribe(appConfig -> {
-                    UserSession userSession = appSessionHolder.get().get();
-                    String username = userSession.getUsername();
-                    String userPassword = userSession.getUserPassword();
-                    loginUser(userPassword, username, onLoginSuccess);
-                }, throwable -> {
-                    onLoginSuccess.result(null, error);
-                });
+        failureListener.handleError(getParcedException(request, error));
     }
 
     public void login(RequestListener<LoginResponse> requestListener) {

@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.GlobalConfigInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
@@ -72,7 +71,6 @@ import io.techery.janet.Janet;
                 DtlMerchantInteractor.class,
                 DtlTransactionInteractor.class,
 
-                GlobalConfigInteractor.class,
                 AuthorizedDataManager.class,
                 AppSettingsInteractor.class,
                 LocalesInteractor.class,
@@ -178,13 +176,6 @@ public class ManagerModule {
     @Singleton
     MediaPickerManager provideMediaPickerManager() {
         return new MediaPickerManager();
-    }
-
-
-    @Provides
-    @Singleton
-    GlobalConfigInteractor provideGlobalConfigManager(Janet janet) {
-        return new GlobalConfigInteractor(janet);
     }
 
     @Provides

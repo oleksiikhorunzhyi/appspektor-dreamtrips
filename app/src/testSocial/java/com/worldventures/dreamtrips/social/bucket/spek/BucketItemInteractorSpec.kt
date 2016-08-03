@@ -389,8 +389,6 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
             whenever(uploadControllerStorage.actionClass).thenCallRealMethod()
             whenever(testPhotoUploadResponse.location).thenReturn(TEST_BACKEND_PATH)
 
-
-            whenever(mockConfig.uploaderyBaseURL).thenReturn("http://test-uploadery")
             whenever(mockUrls.production).thenReturn(mockConfig)
             whenever(mockAppConfig.urls).thenReturn(mockUrls)
             whenever(userSession.globalConfig).thenReturn(mockAppConfig)

@@ -192,9 +192,7 @@
                         android:drawablePadding="8dp"
                         android:gravity="center"
                         android:padding="4dp"
-
-                        tools:text="www.cafedefore.ukoz.ru"
-                        />
+                        tools:text="www.cafedefore.ukoz.ru"/>
 
                     <TextView
                         android:id="@+id/diningPhone"

@@ -72,22 +72,27 @@ public class CommentCell extends AbstractDelegateCell<Comment, CommentCell.Comme
     protected void syncUIStateWithModel() {
         commentCellHelper.set(getModelObject(), injectorProvider.get());
         User owner = getModelObject().getOwner();
-        if (owner.getId() == appSessionHolder.get().get().getUser().getId()) {
+
+        boolean ownComment = owner.getId() == appSessionHolder.get().get().getUser().getId();
+        boolean emptyCommentLanguage = TextUtils.isEmpty(getModelObject().getLanguageFrom());
+        boolean ownLanguage = localeHelper.isOwnLanguage(getModelObject().getLanguageFrom());
+        boolean alreadyTranslated = getModelObject().isTranslated();
+
+        if (ownComment) {
             selfActionsWrapper.setVisibility(View.VISIBLE);
             actionsWrapper.setVisibility(View.GONE);
+            viewWithTranslation.hide();
+            hideTranslationButton();
         } else {
             selfActionsWrapper.setVisibility(View.GONE);
             actionsWrapper.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(getModelObject().getLanguageFrom())
-                    && !localeHelper.isOwnLanguage(getModelObject().getLanguageFrom())
-                    && !getModelObject().isTranslated()) {
+            if (!emptyCommentLanguage && !ownLanguage && !getModelObject().isTranslated()) {
                 showTranslationButton();
             } else {
                 hideTranslationButton();
             }
-            if (getModelObject().isTranslated()) {
-                viewWithTranslation.showTranslation(getModelObject().getTranslation(),
-                        getModelObject().getLanguageFrom());
+            if (alreadyTranslated) {
+                viewWithTranslation.showTranslation(getModelObject().getTranslation(), getModelObject().getLanguageFrom());
             } else {
                 viewWithTranslation.hide();
             }

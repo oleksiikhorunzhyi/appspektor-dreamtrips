@@ -18,7 +18,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.api.DeletePostCommand;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
@@ -39,10 +38,6 @@ import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFriendsClickedEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
@@ -147,26 +142,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         if (featureManager.available(Feature.SOCIAL)) {
             view.openFriends();
         }
-    }
-
-    public void onEvent(OnBucketListClickedEvent event) {
-        if (event.getUserId() == user.getId() && view.isVisibleOnScreen()) {
-            openBucketList();
-        }
-    }
-
-    public void onEvent(OnTripImageClickedEvent event) {
-        if (event.getUserId() == user.getId() && view.isVisibleOnScreen()) {
-            openTripImages();
-        }
-    }
-
-    public void onEvent(OnFriendsClickedEvent event) {
-        openFriends();
-    }
-
-    public void onEvent(OnCreatePostClickEvent event) {
-        makePost();
     }
 
     public User getUser() {
@@ -334,7 +309,7 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
         addFeedItems(new ArrayList<>());
     }
 
-    public interface View extends RxView, TextualPostTranslationDelegate.View, ApiErrorView {
+    public interface View extends RxView, TextualPostTranslationDelegate.View {
 
         void openPost();
 

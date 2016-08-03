@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
@@ -27,6 +26,7 @@ import com.worldventures.dreamtrips.modules.profile.model.ReloadFeedModel;
 import com.worldventures.dreamtrips.modules.profile.presenter.ProfilePresenter;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
 import com.worldventures.dreamtrips.modules.profile.view.cell.ProfileCell;
+import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCellDelegate;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 
 import java.util.List;
@@ -38,7 +38,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBaseFragmentWithArgs<T, UserBundle>
-        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener {
+        implements ProfilePresenter.View, SwipeRefreshLayout.OnRefreshListener, ProfileCellDelegate {
 
     @InjectView(R.id.profile_toolbar) Toolbar profileToolbar;
     @InjectView(R.id.profile_toolbar_title) TextView profileToolbarTitle;
@@ -231,15 +231,57 @@ public abstract class ProfileFragment<T extends ProfilePresenter> extends RxBase
     }
 
     private void registerCellDelegates() {
+        fragmentWithFeedDelegate.registerDelegate(User.class, this);
         fragmentWithFeedDelegate.registerDelegate(ReloadFeedModel.class, model -> getPresenter().onRefresh());
     }
 
     @Override
-    public boolean onApiError(ErrorResponse errorResponse) {
-        return false;
+    public void onBucketListClicked() {
+        getPresenter().openBucketList();
     }
 
     @Override
-    public void onApiCallFailed() {
+    public void onTripImagesClicked() {
+        getPresenter().openTripImages();
+    }
+
+    @Override
+    public void onFriendsClicked() {
+        getPresenter().openFriends();
+    }
+
+    @Override
+    public void onCreatePostClicked() {
+        getPresenter().makePost();
+    }
+
+    @Override
+    public void onUserPhotoClicked() {
+        //
+    }
+
+    @Override
+    public void onUserCoverClicked() {
+        //
+    }
+
+    @Override
+    public void onAcceptRequest() {
+        //
+    }
+
+    @Override
+    public void onRejectRequest() {
+        //
+    }
+
+    @Override
+    public void onAddFriend() {
+        //
+    }
+
+    @Override
+    public void onCellClicked(User model) {
+        //
     }
 }

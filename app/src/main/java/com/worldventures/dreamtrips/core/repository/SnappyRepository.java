@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,6 +61,8 @@ public interface SnappyRepository {
     String DTL_AMENITIES = "DTL_AMENITIES";
     String FEEDBACK_TYPES = "FEEDBACK_TYPES";
     String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
+
+    String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
 
     void clearAll();
 
@@ -159,8 +162,7 @@ public interface SnappyRepository {
 
     void cleanDtlLocation();
 
-    @Nullable
-    DtlLocation getDtlLocation();
+    @Nullable DtlLocation getDtlLocation();
 
     void saveDtlMerhants(List<DtlMerchant> merchants);
 
@@ -193,4 +195,8 @@ public interface SnappyRepository {
     void saveDownloadMediaEntity(CachedEntity e);
 
     CachedEntity getDownloadMediaEntity(String id);
+
+    void saveWalletCardsList(List<Card> items);
+
+    List<Card> readWalletCardsList();
 }

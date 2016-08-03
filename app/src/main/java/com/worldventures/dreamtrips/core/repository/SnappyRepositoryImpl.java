@@ -29,6 +29,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -217,6 +219,14 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     public CachedEntity getDownloadMediaEntity(String id) {
         return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class))
                 .orNull();
+    }
+
+    @Override public void saveWalletCardsList(List<Card> items) {
+        putList(WALLET_CARDS_LIST, items);
+    }
+
+    @Override public List<Card> readWalletCardsList() {
+        return readList(WALLET_CARDS_LIST, Card.class);
     }
 
     ///////////////////////////////////////////////////////////////////////////

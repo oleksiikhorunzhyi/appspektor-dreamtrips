@@ -136,13 +136,17 @@ public class JanetModule {
     @Singleton
     @Provides
     @Named(JANET_WALLET)
-    Janet provideWalletJanet(@Named(JANET_WALLET) Set<ActionService> services,
-                             @ForApplication Context context) {
+    Janet provideWalletJanet(@Named(JANET_WALLET) Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
+                                                  @ForApplication Context context) {
         Janet.Builder builder = new Janet.Builder();
         for (ActionService service : services) {
             service = new TimberServiceWrapper(service);
             service = new DaggerActionServiceWrapper(service, context);
-
+            service = new CacheResultWrapper(service) {{
+                for (ActionStorage storage : cacheStorageSet) {
+                    bindStorage(storage.getActionClass(), storage);
+                }
+            }};
             builder.addService(service);
         }
 

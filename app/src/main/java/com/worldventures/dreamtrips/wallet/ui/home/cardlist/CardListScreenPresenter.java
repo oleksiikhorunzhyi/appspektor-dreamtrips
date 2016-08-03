@@ -17,7 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import flow.Flow;
-import io.techery.janet.Command;
+import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.smartcard.action.support.ConnectAction;
 import rx.Subscription;
 import timber.log.Timber;
@@ -37,14 +37,12 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
 
         cardsListSubscription = smartCardInteractor
                 .cardStacksPipe()
-                .createObservableResult(new CardStacksCommand())
-                .map(Command::getResult)
+                .createObservable(new CardStacksCommand())
                 .compose(bindViewIoToMainComposer())
-                .subscribe(response -> {
-                    getView().onListReceived(response);
-                }, throwable -> {
-                    Timber.e(throwable, "");
-                });
+                .subscribe(new ActionStateSubscriber<CardStacksCommand>()
+                        .onProgress((command, integer) -> getView().onListReceived(command.getCachedList()))
+                        .onSuccess(command -> getView().onListReceived(command.getResult()))
+                        .onFail((command, throwable) -> onError(throwable)));
     }
 
     //be there until add card functionality will be implemented
@@ -70,6 +68,10 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
 
     public void goToBack() {
         Flow.get(getContext()).goBack();
+    }
+
+    private void onError(Throwable throwable) {
+        Timber.e(throwable, "");
     }
 
     public interface Screen extends WalletScreen {

@@ -14,9 +14,13 @@ public abstract class MerchantAnalyticsAction extends DtlAnalyticsAction {
     @Attribute("merchanttype")
     final String merchantType;
 
+    @Attribute("partnerstatus")
+    final String partnerStatus;
+
     public MerchantAnalyticsAction(DtlMerchant merchant) {
         merchantName = merchant.getDisplayName();
         merchantId = merchant.getId();
         merchantType = merchant.getType().toString();
+        partnerStatus = merchant.getPartnerStatus().toString();
     }
 }

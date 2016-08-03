@@ -41,7 +41,7 @@
     </style>
 
     <style name="WalletTheme.WhiteToolbarStyle" parent="Widget.AppCompat.Toolbar">
-        <item name="textColor">@color/wallet_color_text_color_toolbar</item>
+        <item name="android:textColor">@color/wallet_color_text_color_toolbar</item>
     </style>
 
     <style name="WalletWizardButton" parent="Widget.AppCompat.Button">

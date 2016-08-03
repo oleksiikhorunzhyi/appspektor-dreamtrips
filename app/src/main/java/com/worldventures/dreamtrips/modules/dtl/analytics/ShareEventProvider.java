@@ -39,7 +39,7 @@ public final class ShareEventProvider {
         }
     }
 
-    public static class BaseDtlShareEvent extends DtlAnalyticsAction {
+    public static class BaseDtlShareEvent extends MerchantAnalyticsAction {
 
         @Attribute("share")
         final String attribute = "1";
@@ -47,16 +47,9 @@ public final class ShareEventProvider {
         @Attribute("share_id")
         final String sharingType;
 
-        @Attribute("merchantname")
-        final String merchantName;
-
-        @Attribute("merchantID")
-        final String merchantId;
-
         public BaseDtlShareEvent(DtlMerchant dtlMerchant, @ShareType String sharingType) {
+            super(dtlMerchant);
             this.sharingType = sharingType;
-            merchantName = dtlMerchant.getDisplayName();
-            merchantId = dtlMerchant.getId();
         }
     }
 }

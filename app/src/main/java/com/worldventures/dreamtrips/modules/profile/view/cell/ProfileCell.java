@@ -50,6 +50,7 @@ import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayou
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -157,6 +158,7 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
             companyName.setVisibility(View.GONE);
 
         setUserName(user.getFullName());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         setDateOfBirth(DateTimeUtils.convertDateToString(user.getBirthDate(), dateFormat));
         setEnrollDate(DateTimeUtils.convertDateToString(user.getEnrollDate(), dateFormat));
         setUserId(user.getUsername());

@@ -19,6 +19,9 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -41,6 +44,8 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     }
 
     protected abstract PM createPresenter(Bundle savedInstanceState);
+
+    private List<Boolean> userVisibleHints = new ArrayList<>();
 
     @Override
     protected ObjectGraph getInitialObjectGraph() {
@@ -82,8 +87,22 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         return inflater.inflate(layout.value(), container, false);
     }
 
+    @Override
+    public void afterCreateView(View rootView) {
+        super.afterCreateView(rootView);
+        if (userVisibleHints.contains(true)) track();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        userVisibleHints.add(isVisibleToUser);
+        if (isVisibleToUser && presenter != null) track();
+    }
+
     /**
      * Recursively scans class hierarchy searching for {@link Layout} annotation defined.
+     *
      * @param clazz class to search for annotation
      * @return defined layout if any or <b>null</b>
      */
@@ -118,7 +137,6 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
         if (this.presenter != null && isAdded()) this.presenter.onMenuPrepared();
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -147,6 +165,7 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
     public void onDestroyView() {
         presenter.dropView();
         ButterKnife.reset(this);
+        userVisibleHints.clear();
         super.onDestroyView();
     }
 
@@ -184,6 +203,10 @@ public abstract class BaseFragment<PM extends Presenter> extends InjectingFragme
                 builder.title(R.string.alert).content(s).positiveText(R.string.OK).show();
             }));
         }
+    }
+
+    protected void track() {
+
     }
 
     ///////////////////////////////////////////////////////////////////////////

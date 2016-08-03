@@ -29,14 +29,14 @@ configurations.all {
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
 
     // App version
     def versionMajor = 1
     def versionMinor = 14
     def versionPatch = 0
-    def versionBuild = 0  // bump for dogfood builds, public betas, etc.
+    def versionBuild = 2  // bump for dogfood builds, public betas, etc.
     //
     // flavor codes
     String DEV_CODE = "dev"
@@ -350,7 +350,8 @@ android {
     }
 }
 
-def googleLibrariesVersion = '23.3.0'
+def googleLibrariesVersion = '24.1.1'
+def googlePlayServicesVersion = '9.2.1'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -387,10 +388,10 @@ dependencies {
     // 3rd services
     compile 'com.amazonaws:aws-android-sdk-core:2.2.6'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.6'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
-    compile 'com.google.android.gms:play-services-vision:8.4.0'
+    compile "com.google.android.gms:play-services-maps:${googlePlayServicesVersion}"
+    compile "com.google.android.gms:play-services-gcm:${googlePlayServicesVersion}"
+    compile "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
+    compile "com.google.android.gms:play-services-vision:${googlePlayServicesVersion}"
     //
     compile 'me.dm7.barcodescanner:zxing:1.8.3'
     compile 'com.facebook.android:facebook-android-sdk:3.23.1'
@@ -426,8 +427,8 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.getbase:floatingactionbutton:1.10.0'
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
-    compile 'com.github.afollestad.material-dialogs:core:0.8.5.2'
-    compile 'com.github.afollestad.material-dialogs:commons:0.8.5.2'
+    compile 'com.github.afollestad.material-dialogs:core:0.8.6.2'
+    compile 'com.github.afollestad.material-dialogs:commons:0.8.6.2'
     compile 'com.orhanobut:dialogplus:1.10@aar'
     compile 'com.kbeanie:image-chooser-library:1.5.2@aar'
     compile 'com.github.techery:material-range-bar:db6fec9fdd'

@@ -54,6 +54,7 @@
     <dimen name="video_item_height">200dp</dimen>
 
     <dimen name="bucket_button_width">250dp</dimen>
+    <dimen name="bucket_quick_input_edit_text_min_width">160dp</dimen>
 
     <dimen name="bucket_detail_cover_size">250dp</dimen>
 

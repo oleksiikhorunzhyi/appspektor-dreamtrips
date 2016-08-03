@@ -23,7 +23,8 @@
                  android:id="@+id/card"
                  android:layout_alignParentTop="true"
                  android:layout_width="@dimen/wallet_details_screen_card_width"
-                 android:layout_height="@dimen/wallet_bank_card_default_height"/>
+                 android:layout_height="@dimen/wallet_bank_card_default_height"
+                 android:layout_centerHorizontal="true"/>
 
 
         <CheckBox
@@ -68,26 +69,6 @@
             android:background="@color/wallet_card_details_delete_card_button_color"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/wallet_details_screen_component_margin_top"/>
-
-        <LinearLayout
-            android:id="@+id/edit_address"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="vertical"
-            android:layout_above="@+id/delete_button"
-            android:background="@drawable/background_while_button_with_blue_border"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/pencil"
-                android:drawablePadding="8dp"
-                android:textSize="@dimen/wallet_details_screen_edit_address_button_text_size"
-                android:textColor="@color/wallet_card_details_edit_billing_address_color"
-                android:text="@string/wallet_card_details_button_edit_billing_address"/>
-
-        </LinearLayout>
 
     </RelativeLayout>
 

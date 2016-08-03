@@ -40,10 +40,6 @@ public class CardDetailsPresenter extends WalletPresenter<CardDetailsPresenter.S
 
     }
 
-    public void onEditCardAddressRequired() {
-
-    }
-
     public void goToBack() {
         Flow.get(getContext()).goBack();
     }

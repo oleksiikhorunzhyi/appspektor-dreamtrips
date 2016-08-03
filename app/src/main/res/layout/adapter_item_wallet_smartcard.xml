@@ -2,20 +2,19 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/wallet_bank_card_default_height"
+    android:layout_width="@dimen/wallet_smart_card_default_width"
+    android:layout_height="@dimen/wallet_smart_card_default_height"
     android:background="@drawable/wallet_flye_card"
     android:paddingBottom="@dimen/spacing_normal"
     android:paddingLeft="@dimen/spacing_large"
-    android:paddingRight="@dimen/spacing_large"
-    android:paddingTop="@dimen/spacing_normal">
+    android:paddingRight="@dimen/spacing_large">
 
     <FrameLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/spacing_small">
+        android:layout_marginTop="12dp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -26,6 +25,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:src="@drawable/wallet_card_lock"/>
     </FrameLayout>

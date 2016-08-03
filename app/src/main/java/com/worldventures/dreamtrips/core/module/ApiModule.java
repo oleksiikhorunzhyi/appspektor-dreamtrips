@@ -9,14 +9,11 @@ import com.google.gson.GsonBuilder;
 import com.innahema.collections.query.queriables.Queryable;
 import com.squareup.okhttp.OkHttpClient;
 import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.gson.LowercaseEnumTypeAdapterFactory;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.core.api.DateTimeDeserializer;
 import com.worldventures.dreamtrips.core.api.DateTimeSerializer;
 import com.worldventures.dreamtrips.core.api.DreamTripsApi;
-import com.worldventures.dreamtrips.core.api.SharedServicesApi;
-import com.worldventures.dreamtrips.core.api.UploaderyApi;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
@@ -27,7 +24,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdapter
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketCoverBody;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketPostBody;
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.GsonAdaptersBucketStatusBody;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferDeserializer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferSerializer;
@@ -47,8 +43,6 @@ import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RequestInterceptor;
@@ -64,23 +58,6 @@ public class ApiModule {
     @Provides
     DreamTripsApi provideApi(RestAdapter adapter) {
         return adapter.create(DreamTripsApi.class);
-    }
-
-    @Provides
-    UploaderyApi provideImageryApi(RestAdapter.Builder adapterBuilder, SessionHolder<UserSession> appSessionHolder) {
-        UploaderyApi api = null;
-        if (appSessionHolder.get().isPresent()) {
-            AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
-            if (appConfig != null) {
-                AppConfig.URLS urls = appConfig.getUrls();
-                if (urls.getProduction().getUploaderyBaseURL() != null)
-                    api = adapterBuilder
-                            .setEndpoint(urls.getProduction().getUploaderyBaseURL())
-                            .build()
-                            .create(UploaderyApi.class);
-            }
-        }
-        return api;
     }
 
     @Provides
@@ -156,25 +133,6 @@ public class ApiModule {
                 .setConverter(gsonConverter)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
-    }
-
-    @Provides
-    @Singleton
-    SharedServicesApi provideSharedServicesApi(SessionHolder<UserSession> session,
-                                               GsonConverter gsonConverter) {
-        String baseUrl = BuildConfig.SharedServicesApi;
-
-        Optional<UserSession> userSessionOptional = session.get();
-
-        if (userSessionOptional.isPresent()) {
-            AppConfig config = session.get().get().getGlobalConfig();
-
-            if (config != null) {
-                baseUrl = config.getUrls().getProduction().getAuthBaseURL();
-            }
-        }
-
-        return createRestAdapter(baseUrl, gsonConverter).create(SharedServicesApi.class);
     }
 
     @Provides

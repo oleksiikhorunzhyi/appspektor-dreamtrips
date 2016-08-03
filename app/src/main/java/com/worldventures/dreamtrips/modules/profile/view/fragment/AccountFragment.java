@@ -143,4 +143,14 @@ public class AccountFragment extends ProfileFragment<AccountPresenter>
         if (!getPresenter().onActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    public void onUserCoverClicked() {
+        getPresenter().coverClicked();
+    }
+
+    @Override
+    public void onUserPhotoClicked() {
+        getPresenter().photoClicked();
+    }
 }

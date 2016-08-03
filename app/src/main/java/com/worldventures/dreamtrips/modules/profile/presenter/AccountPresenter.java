@@ -20,8 +20,6 @@ import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimel
 import com.worldventures.dreamtrips.modules.profile.api.GetProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.api.UploadAvatarCommand;
 import com.worldventures.dreamtrips.modules.profile.api.UploadCoverCommand;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
@@ -296,14 +294,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         return socialCropImageManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public void onEvent(OnPhotoClickEvent e) {
-        photoClicked();
-    }
-
-    public void onEvent(OnCoverClickEvent e) {
-        coverClicked();
     }
 
     public interface View extends ProfilePresenter.View {

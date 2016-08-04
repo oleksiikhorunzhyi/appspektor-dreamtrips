@@ -122,7 +122,7 @@ public enum Route {
 
     MEMBERSHIP(MembershipFragment.class),
     TRAINING_VIDEOS(TrainingVideosFragment.class),
-    ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class),
+    ENROLL_MEMBER(StaticInfoFragment.EnrollMemberFragment.class, R.string.enroll_member),
     ENROLL_MERCHANT(StaticInfoFragment.EnrollMerchantFragment.class, R.string.suggest_merchant_title),
     SELECT_INVITE_TEMPLATE(SelectTemplateFragment.class, R.string.invitation_template),
     INVITE(InviteFragment.class),

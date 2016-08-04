@@ -169,7 +169,6 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
             setRoviaBucks(df.format(user.getRoviaBucks()));
             setDreamTripPoints(df.format(user.getDreamTripsPoints()));
         } else {
-            setSocial(user.isSocialEnabled());
             setIsFriend(false);
             if (user.getRelationship() != null) {
                 switch (user.getRelationship()) {
@@ -269,12 +268,6 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
         int stringResource = QuantityHelper.chooseResource(count, R.string.empty,
                 R.string.profile_friend_formatter, R.string.profile_friends_formatter);
         friends.setText(String.format(context.getString(stringResource), count));
-    }
-
-    private void setSocial(Boolean isEnabled) {
-        addFriend.setEnabled(isEnabled);
-        friendRequest.setEnabled(isEnabled);
-        friendRequest.setEnabled(isEnabled);
     }
 
     private void setIsExpandEnabled(boolean isExpandEnabled) {

@@ -157,9 +157,6 @@ public interface DreamTripsApi {
     @DELETE("/api/success_stories/{id}/like")
     JsonObject unlikeSS(@Path("id") int photoId);
 
-    @GET("/api/trips/{id}")
-    TripDetails getDetails(@Path("id") String tripId);
-
     @GET("/api/bucket_list/locations")
     ArrayList<PopularBucketItem> getPopularLocations();
 

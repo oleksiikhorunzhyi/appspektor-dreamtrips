@@ -5,6 +5,7 @@ import android.webkit.WebViewClient;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.common.model.Session;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,12 +22,12 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
 
     @Override
     public void load() {
-        doWithAuth(() -> super.load());
+        doWithAuth(super::load);
     }
 
     @Override
     protected void reload() {
-        doWithAuth(() -> super.reload());
+        doWithAuth(super::reload);
     }
 
     private void doWithAuth(Action0 action) {
@@ -35,7 +36,7 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
             action.call();
         } else {
             view.setRefreshing(true);
-            dreamSpiceManager.login(new RequestListener() {
+            dreamSpiceManager.login(new RequestListener<Session>() {
                 @Override
                 public void onRequestFailure(SpiceException spiceException) {
                     Timber.e(spiceException, "Can't login during WebView loading");
@@ -44,7 +45,7 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
                 }
 
                 @Override
-                public void onRequestSuccess(Object o) {
+                public void onRequestSuccess(Session o) {
                     view.setRefreshing(false);
                     reload();
                 }
@@ -54,5 +55,4 @@ public class AuthorizedStaticInfoPresenter extends WebViewFragmentPresenter<Auth
 
     public interface View extends WebViewFragmentPresenter.View {
     }
-
 }

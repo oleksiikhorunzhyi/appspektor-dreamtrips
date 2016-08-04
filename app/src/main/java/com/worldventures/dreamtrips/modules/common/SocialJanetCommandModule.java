@@ -11,7 +11,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBuck
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageConfigCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.auth.service.command.UpdateAuthInfoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
@@ -36,7 +35,6 @@ import dagger.Module;
         MergeBucketItemPhotosWithStorageCommand.class,
         LocalesCommand.class,
         TripsFilterDataCommand.class,
-        StaticPageConfigCommand.class,
         CirclesCommand.class,
         AppSettingsCommand.class,
         GetCommentsCommand.class,

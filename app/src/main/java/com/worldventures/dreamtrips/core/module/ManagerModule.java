@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteracto
 import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.delegate.StaticPagesInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
@@ -74,7 +73,6 @@ import io.techery.janet.Janet;
                 AuthorizedDataManager.class,
                 AppSettingsInteractor.class,
                 LocalesInteractor.class,
-                StaticPagesInteractor.class,
                 QueryTripsFilterDataInteractor.class,
         },
         library = true, complete = false

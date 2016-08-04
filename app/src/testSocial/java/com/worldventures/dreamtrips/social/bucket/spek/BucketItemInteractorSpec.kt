@@ -25,7 +25,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBu
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
-import com.worldventures.dreamtrips.modules.common.model.AppConfig
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
 import io.techery.janet.ActionState
@@ -382,16 +381,8 @@ class BucketItemInteractorSpec : BucketInteractorBaseSpec({
         }
 
         init {
-            val mockConfig: AppConfig.URLS.Config = mock()
-            val mockAppConfig: AppConfig = mock()
-            val mockUrls: AppConfig.URLS = mock()
-
             whenever(uploadControllerStorage.actionClass).thenCallRealMethod()
             whenever(testPhotoUploadResponse.location).thenReturn(TEST_BACKEND_PATH)
-
-            whenever(mockUrls.production).thenReturn(mockConfig)
-            whenever(mockAppConfig.urls).thenReturn(mockUrls)
-            whenever(userSession.globalConfig).thenReturn(mockAppConfig)
         }
 
         fun subscribeAddBucketItem(body: BucketBody): TestSubscriber<ActionState<CreateBucketItemHttpAction>> {

@@ -24,30 +24,16 @@ import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 @Layout(R.layout.fragment_login)
 public class LoginFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.View {
 
-    @InjectView(R.id.btn_login)
-    protected Button loginButton;
-    @InjectView(R.id.et_username)
-    protected DTEditText usernameEditText;
-    @InjectView(R.id.et_password)
-    protected DTEditText passwordEditText;
-    @InjectView(R.id.iv_bg)
-    protected ImageView ivBg;
-    @InjectView(R.id.vg_content_container)
-    protected ViewGroup vgContentContainer;
-
-    public LoginFragment() {
-        //nothing to do
-    }
+    @InjectView(R.id.btn_login) protected Button loginButton;
+    @InjectView(R.id.et_username) protected DTEditText usernameEditText;
+    @InjectView(R.id.et_password) protected DTEditText passwordEditText;
+    @InjectView(R.id.iv_bg) protected ImageView ivBg;
+    @InjectView(R.id.vg_content_container) protected ViewGroup vgContentContainer;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         vgContentContainer.getLayoutParams().width = getMinSideSize(getActivity());
-    }
-
-    @Override
-    public void afterCreateView(View rootView) {
-        super.afterCreateView(rootView);
     }
 
     @Override

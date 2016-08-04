@@ -1,22 +1,18 @@
 package com.worldventures.dreamtrips.core.session;
 
 import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.common.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.client.Header;
-
 public class UserSession {
+
     private User user;
     private String apiToken;
     private String legacyApiToken;
     private String userPassword;
     private String username;
     private long lastUpdate;
-    private AppConfig globalConfig;
     private List<Feature> permissions;
 
     public User getUser() {
@@ -65,14 +61,6 @@ public class UserSession {
 
     public void setLastUpdate(long lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    public AppConfig getGlobalConfig() {
-        return globalConfig;
-    }
-
-    public void setGlobalConfig(AppConfig globalConfig) {
-        this.globalConfig = globalConfig;
     }
 
     public List<Feature> getFeatures() {

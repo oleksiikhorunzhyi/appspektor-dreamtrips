@@ -59,6 +59,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
         extends BaseFragmentWithArgs<T, P>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
+    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
+
     @Inject protected StaticPageProvider provider;
 
     @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
@@ -494,7 +496,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     public static class CookiePolicyFragment extends StaticInfoFragment {
         @Override
         protected String getURL() {
-            return provider.getCookiePolicyUrl();
+            return provider.getCookiesPolicyUrl();
         }
 
         @Override
@@ -614,7 +616,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class BookItFragment extends BundleUrlFragment {
+    public static class BookItFragment extends BundleUrlFragment<WebViewFragmentPresenter> {
 
         private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
         private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
@@ -626,6 +628,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             if (!isLoading && savedState == null) {
                 Map<String, String> additionalHeaders = new HashMap<>();
                 additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
+                additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
                 webView.loadUrl(url, additionalHeaders);
             }
         }

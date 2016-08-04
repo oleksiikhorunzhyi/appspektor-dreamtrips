@@ -4,7 +4,6 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.preferences.SimpleKeyValueStorage;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
-import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 
@@ -33,11 +32,5 @@ public class HolderModule {
     @Singleton
     public LocalesHolder locales(SimpleKeyValueStorage simpleKeyValueStorage) {
         return new LocalesHolder(simpleKeyValueStorage);
-    }
-
-    @Provides
-    @Singleton
-    public StaticPageHolder staticPage(SimpleKeyValueStorage simpleKeyValueStorage) {
-        return new StaticPageHolder(simpleKeyValueStorage);
     }
 }

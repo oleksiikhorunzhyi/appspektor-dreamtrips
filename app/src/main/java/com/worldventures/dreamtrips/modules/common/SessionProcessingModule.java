@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.common;
 
-import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
@@ -15,12 +14,6 @@ import io.techery.janet.Janet;
         AuthorizedDataManager.class
 }, library = true, complete = false)
 public class SessionProcessingModule {
-
-    @Provides
-    @Singleton
-    public AppSettingsInteractor provideAppSettingsInteractor(Janet janet) {
-        return new AppSettingsInteractor(janet);
-    }
 
     @Provides
     @Singleton

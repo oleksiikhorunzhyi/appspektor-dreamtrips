@@ -8,10 +8,8 @@ import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
-import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -29,7 +27,6 @@ import rx.Observable;
 public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAction {
 
     @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject AppSettingsInteractor queryAppSettingsInteractor;
     @Inject QueryTripsFilterDataInteractor queryTripsFilterDataInteractor;
     @Inject CirclesInteractor queryCirclesInteractor;
     @Inject FeatureManager featureManager;
@@ -38,7 +35,6 @@ public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAc
     protected void run(CommandCallback<Void> callback) throws Throwable {
         ArrayList<Observable<?>> sessionQueries = new ArrayList<>();
         sessionQueries.add(sessionExistObservable());
-        sessionQueries.add(queryAppSettingsInteractor.pipe().createObservableResult(new AppSettingsCommand()));
         sessionQueries.add(circles());
         sessionQueries.add(queryTripsFilterDataInteractor.pipe().createObservableResult(new TripsFilterDataCommand()));
 

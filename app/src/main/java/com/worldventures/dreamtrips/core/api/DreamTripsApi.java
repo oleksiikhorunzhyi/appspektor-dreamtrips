@@ -319,9 +319,6 @@ public interface DreamTripsApi {
     @GET("/api/photos/{uid}")
     Photo getPhotoInfo(@Path("uid") String uid);
 
-    @GET("/api/user/settings")
-    SettingsHolder getSettings();
-
     @PATCH("/api/user/settings")
     Void updateSettings(@Body SettingsHolder settingsHolder);
 

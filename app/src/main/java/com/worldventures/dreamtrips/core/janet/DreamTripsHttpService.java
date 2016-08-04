@@ -10,10 +10,13 @@ import com.worldventures.dreamtrips.core.api.action.AuthorizedHttpAction;
 import com.worldventures.dreamtrips.core.api.action.BaseHttpAction;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.AppVersionNameBuilder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.model.Session;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -38,12 +41,10 @@ import timber.log.Timber;
 @Deprecated
 public class DreamTripsHttpService extends ActionServiceWrapper {
 
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    LocaleHelper localeHelper;
-    @Inject
-    AppVersionNameBuilder appVersionNameBuilder;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject LocaleHelper localeHelper;
+    @Inject AppVersionNameBuilder appVersionNameBuilder;
+    @Inject SnappyRepository db;
 
     private final ActionPipe<LoginAction> loginActionPipe;
     private final Set<Object> retriedActions = new CopyOnWriteArraySet<>();
@@ -131,7 +132,9 @@ public class DreamTripsHttpService extends ActionServiceWrapper {
                 .toBlocking()
                 .last();
         if (loginState.status == ActionState.Status.SUCCESS) {
-            return loginState.action.getLoginResponse();
+            Session session = loginState.action.getLoginResponse();
+            db.saveSettings(SettingsManager.merge(session.getSettings(), SettingsFactory.createSettings()), true);
+            return session;
         } else {
             Timber.w(loginState.exception, "Login error");
         }

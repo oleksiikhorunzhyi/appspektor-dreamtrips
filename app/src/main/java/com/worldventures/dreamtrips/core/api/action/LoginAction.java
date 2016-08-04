@@ -6,7 +6,6 @@ import io.techery.janet.http.annotations.Body;
 import io.techery.janet.http.annotations.HttpAction;
 import io.techery.janet.http.annotations.Response;
 
-
 @HttpAction(value = "/api/sessions", type = HttpAction.Type.SIMPLE, method = HttpAction.Method.POST)
 public class LoginAction extends BaseHttpAction{
 
@@ -31,5 +30,4 @@ public class LoginAction extends BaseHttpAction{
             this.password = password;
         }
     }
-
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="wallet_photo_rounded_corner_radius">10dp</dimen>
     <dimen name="wallet_common_screen_padding">24dp</dimen>
     <dimen name="wallet_bank_card_default_height">150dp</dimen>
     <dimen name="wallet_smart_card_default_height">150dp</dimen>
@@ -17,5 +18,5 @@
     <dimen name="wallet_details_screen_edit_address_button_text_size">16sp</dimen>
     <dimen name="wallet_details_screen_delete_card_button_text_size">20sp</dimen>
 
-    <dimen name="wallet_wizard_avatar_size">256dp</dimen>
+    <dimen name="wallet_wizard_avatar_size">192dp</dimen>
 </resources>

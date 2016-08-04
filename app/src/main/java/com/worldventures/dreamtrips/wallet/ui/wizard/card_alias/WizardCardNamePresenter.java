@@ -21,11 +21,13 @@ import io.techery.janet.helper.ActionStateSubscriber;
 
 public class WizardCardNamePresenter extends WalletPresenter<WizardCardNamePresenter.Screen, Parcelable> {
 
-    @Inject
-    WizardInteractor wizardInteractor;
+    private static final int DIALOG_DELAY = 2000;
+    private final String smartCardId;
+    @Inject WizardInteractor wizardInteractor;
 
-    public WizardCardNamePresenter(Context context, Injector injector) {
+    public WizardCardNamePresenter(Context context, Injector injector, String smartCardId) {
         super(context, injector);
+        this.smartCardId = smartCardId;
     }
 
     public void goToBack() {
@@ -47,18 +49,17 @@ public class WizardCardNamePresenter extends WalletPresenter<WizardCardNamePrese
                         .onStart(command -> getView().showProgress())
                         .onSuccess(command ->
                                 getView().showSuccessWithDelay(
-                                        () -> Flow.get(getContext()).set(new WizardEditProfilePath()), 2000))
+                                        () -> Flow.get(getContext()).set(new WizardEditProfilePath(command.getCardId())), DIALOG_DELAY))
                         .onFail((command, throwable) -> getView().notifyError(throwable.getCause()))
                 );
     }
 
     public void setupCardName() {
-        wizardInteractor.setupSmartCardNamePipe().send(new SetupSmartCardNameCommand(getView().getCardName().trim()));
+        wizardInteractor.setupSmartCardNamePipe().send(new SetupSmartCardNameCommand(getView().getCardName().trim(), smartCardId));
     }
 
     public interface Screen extends WalletScreen, DelayedSuccessScreen {
 
-        @NonNull
-        String getCardName();
+        @NonNull String getCardName();
     }
 }

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.service.storage;
+package com.worldventures.dreamtrips.wallet.domain.storage;
 
 import android.support.annotation.Nullable;
 

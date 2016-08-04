@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.wallet.util;
 
 
-import com.worldventures.dreamtrips.wallet.model.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 
 public class AddressUtil {
 

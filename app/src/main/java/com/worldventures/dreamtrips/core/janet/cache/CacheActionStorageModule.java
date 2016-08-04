@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBuc
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlLocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
-import com.worldventures.dreamtrips.wallet.service.storage.WalletCardsDiskStorage;
+import com.worldventures.dreamtrips.wallet.domain.storage.WalletCardsDiskStorage;
 
 import javax.inject.Singleton;
 

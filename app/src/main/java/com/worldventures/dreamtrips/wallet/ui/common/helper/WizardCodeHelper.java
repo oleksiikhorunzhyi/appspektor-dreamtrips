@@ -36,9 +36,9 @@ public final class WizardCodeHelper {
                 .compose(bindComposer)
                 .subscribe(new ActionStateSubscriber<CreateAndConnectToCardCommand>()
                         .onStart(createAndConnectToCardCommand -> view.showProgress())
-                        .onSuccess(createAndConnectToCardCommand -> {
+                        .onSuccess(command -> {
                             view.hideProgress();
-                            view.showSuccessWithDelay(() -> Flow.get(context).set(new WizardCardNamePath()), DIALOG_DELAY);
+                            view.showSuccessWithDelay(() -> Flow.get(context).set(new WizardCardNamePath(command.getCode())), DIALOG_DELAY);
                         })
                         .onFail((createAndConnectToCardCommand, throwable) -> {
                             view.hideProgress();

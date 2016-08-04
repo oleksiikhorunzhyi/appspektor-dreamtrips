@@ -46,7 +46,7 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
     @NonNull
     @Override
     public WizardEditProfilePresenter createPresenter() {
-        return new WizardEditProfilePresenter(getContext(), getInjector());
+        return new WizardEditProfilePresenter(getContext(), getInjector(), getPath().getSmartCardId());
     }
 
     @Override

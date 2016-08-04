@@ -29,10 +29,14 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/profile_proto"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
             android:layout_width="@dimen/wallet_wizard_avatar_size"
             android:layout_height="@dimen/wallet_wizard_avatar_size"
+            android:scaleType="centerCrop"
             android:layout_below="@+id/header_text_view"
             android:layout_centerHorizontal="true"
+            app:roundedCornerRadius="@dimen/wallet_photo_rounded_corner_radius"
             app:placeholderImage="@drawable/ic_cover_place_holder"/>
 
         <RelativeLayout

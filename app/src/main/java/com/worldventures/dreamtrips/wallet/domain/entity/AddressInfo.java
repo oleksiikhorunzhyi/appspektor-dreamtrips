@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.model;
+package com.worldventures.dreamtrips.wallet.domain.entity;
 
 import org.immutables.value.Value;
 

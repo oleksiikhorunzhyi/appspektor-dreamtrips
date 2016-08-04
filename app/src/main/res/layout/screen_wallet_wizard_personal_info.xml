@@ -31,7 +31,7 @@
             android:layout_below="@+id/text_description"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
-            app:rcl_radius="10dp">
+            app:rcl_radius="@dimen/wallet_photo_rounded_corner_radius">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/photo_preview"

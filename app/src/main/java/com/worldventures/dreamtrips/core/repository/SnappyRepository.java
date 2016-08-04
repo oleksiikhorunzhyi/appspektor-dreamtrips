@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public interface SnappyRepository {
     String SUGGESTED_PHOTOS_SYNC_TIME = "SUGGESTED_PHOTOS_SYNC_TIME";
 
     String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
+    String WALLET_SMART_CARD = "WALLET_SMART_CARD";
 
     void clearAll();
 
@@ -199,4 +201,8 @@ public interface SnappyRepository {
     void saveWalletCardsList(List<Card> items);
 
     List<Card> readWalletCardsList();
+
+    void saveSmartCard(SmartCard smartCard);
+
+    SmartCard getSmartCard(String smartCardId);
 }

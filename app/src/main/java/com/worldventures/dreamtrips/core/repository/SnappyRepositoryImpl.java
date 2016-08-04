@@ -34,6 +34,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
 import org.objenesis.strategy.StdInstantiatorStrategy;
@@ -263,6 +265,17 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     @Override
     public List<Card> readWalletCardsList() {
         return readList(WALLET_CARDS_LIST, Card.class);
+    }
+
+    @Override
+    public void saveSmartCard(SmartCard smartCard) {
+        act(db -> db.put(WALLET_SMART_CARD + smartCard.getSmartCardId(), smartCard));
+    }
+
+    @Override
+    public SmartCard getSmartCard(String smartCardId) {
+        return actWithResult(db -> db.getObject(WALLET_SMART_CARD + smartCardId, ImmutableSmartCard.class))
+                .orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////

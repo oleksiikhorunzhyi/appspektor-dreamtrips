@@ -2,8 +2,11 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import java.io.File;
@@ -28,14 +31,17 @@ public class SetupUserDataCommand extends Command<Void> implements InjectableAct
 
     @Inject @Named(JANET_WALLET) Janet janet;
     @Inject SessionHolder<UserSession> userSessionHolder;
+    @Inject SnappyRepository snappyRepository;
 
     private final String fullName;
     private final File avatarFile;
+    private final String getSmartCardId;
 
-    public SetupUserDataCommand(String fullName, File avatarFile) {
+    public SetupUserDataCommand(String fullName, File avatarFile, String getSmartCardId) {
         // TODO: 8/2/16 change on first name and second name
         this.fullName = fullName;
         this.avatarFile = avatarFile;
+        this.getSmartCardId = getSmartCardId;
     }
 
     @Override
@@ -46,7 +52,17 @@ public class SetupUserDataCommand extends Command<Void> implements InjectableAct
                 .flatMap(action -> Observable.fromCallable(this::getAvatarAsByteArray))
                 .flatMap(bytesArray -> janet.createPipe(UpdateUserPhotoAction.class)
                         .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
+                .doOnNext(action -> updateCashedSmartCard())
                 .subscribe(action -> callback.onSuccess(null), callback::onFail);
+    }
+
+    private void updateCashedSmartCard() {
+        SmartCard smartCard = snappyRepository.getSmartCard(getSmartCardId);
+        smartCard = ImmutableSmartCard.builder()
+                .from(smartCard)
+                .userPhoto("file://" + avatarFile.getAbsolutePath())
+                .build();
+        snappyRepository.saveSmartCard(smartCard);
     }
 
     private User createUser() {

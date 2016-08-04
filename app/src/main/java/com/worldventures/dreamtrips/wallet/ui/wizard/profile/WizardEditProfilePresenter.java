@@ -38,8 +38,11 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
     private File preparedPhotoFile;
 
-    public WizardEditProfilePresenter(Context context, Injector injector) {
+    private final String smartCardId;
+
+    public WizardEditProfilePresenter(Context context, Injector injector, String smartCardId) {
         super(context, injector);
+        this.smartCardId = smartCardId;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     }
 
     private void handleSuccess() {
-        getView().showSuccessWithDelay(() -> Flow.get(getContext()).set(new WizardPinSetupPath()), SUCCESS_DELAY_MS);
+        getView().showSuccessWithDelay(() -> Flow.get(getContext()).set(new WizardPinSetupPath(smartCardId)), SUCCESS_DELAY_MS);
     }
 
     private void handleError(Throwable throwable) {
@@ -106,7 +109,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
     public void setupUserData() {
         wizardInteractor.setupUserDataPipe()
-                .send(new SetupUserDataCommand(getView().getUserName().trim(), preparedPhotoFile));
+                .send(new SetupUserDataCommand(getView().getUserName().trim(), preparedPhotoFile, smartCardId));
     }
 
     public interface Screen extends WalletScreen, DelayedSuccessScreen {

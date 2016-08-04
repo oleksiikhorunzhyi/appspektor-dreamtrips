@@ -40,7 +40,7 @@ public class WizardCardNameScreen extends WalletFrameLayout<WizardCardNamePresen
     @NonNull
     @Override
     public WizardCardNamePresenter createPresenter() {
-        return new WizardCardNamePresenter(getContext(), getInjector());
+        return new WizardCardNamePresenter(getContext(), getInjector(), getPath().getSmartCardId());
     }
 
     @Override

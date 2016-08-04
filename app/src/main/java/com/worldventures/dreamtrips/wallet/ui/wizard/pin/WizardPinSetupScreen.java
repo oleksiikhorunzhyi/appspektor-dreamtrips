@@ -12,8 +12,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import static cn.pedant.SweetAlert.SweetAlertDialog.SUCCESS_TYPE;
-
 public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath>
         implements WizardPinSetupPresenter.Screen {
 
@@ -49,19 +47,6 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
     @OnClick(R.id.button_next)
     public void nextClick() {
         presenter.setupPIN();
-    }
-
-    @Override
-    public void showSuccessWithDelay(Runnable action, long delay) {
-        final SweetAlertDialog successDialog = new SweetAlertDialog(getContext(), SUCCESS_TYPE)
-                .setTitleText(getContext().getString(R.string.wallet_got_it_label));
-        successDialog.setCancelable(false);
-        successDialog.show();
-
-        postDelayed(() -> {
-            successDialog.dismiss();
-            action.run();
-        }, delay);
     }
 
     @Override

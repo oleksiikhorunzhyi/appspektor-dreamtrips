@@ -28,6 +28,10 @@
     <string name="wallet_wizard_setup_pin_title">Set Touch PIN</string>
     <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
 
+    <!--pin is set-->
+    <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>
+    <string name="wallet_wizard_pin_is_set_suggestion">You can now begin loading credit and debit cards</string>
+
     <!--splash-->
     <string name="wallet_wizard_splash_title1">Get ready</string>
     <string name="wallet_wizard_splash_title2">Scan the back of your flye smart card to begin</string>

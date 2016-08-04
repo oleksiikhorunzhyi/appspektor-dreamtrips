@@ -8,7 +8,9 @@ import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupPinCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.ProgressErrorScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPath;
 
 import javax.inject.Inject;
 
@@ -37,7 +39,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
                         .onStart(command -> getView().showProgress())
                         .onSuccess(command -> {
                             getView().hideProgress();
-                            getView().showSuccessWithDelay(getView()::hideProgress, 3000);
+                            Flow.get(getContext()).set(new WalletPinIsSetPath());
                         })
                         .onFail((setupPinCommand, throwable) -> {
                             getView().hideProgress();
@@ -46,6 +48,6 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
                 );
     }
 
-    public interface Screen extends WalletScreen, DelayedSuccessScreen {
+    public interface Screen extends WalletScreen, ProgressErrorScreen {
     }
 }

@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.settings.card_details.CardDetailsPath;
 
 import java.util.List;
 import java.util.Random;
@@ -48,6 +49,10 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                         .onProgress((command, integer) -> getView().onListReceived(command.getCachedList()))
                         .onSuccess(command -> getView().onListReceived(command.getResult()))
                         .onFail((command, throwable) -> onError(throwable)));
+    }
+
+    public void showBankCardDetails(BankCard bankCard) {
+        Flow.get(getContext()).set(new CardDetailsPath(bankCard));
     }
 
     //be there until add card functionality will be implemented

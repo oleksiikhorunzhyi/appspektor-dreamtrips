@@ -25,6 +25,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoC
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 
 import dagger.Module;
 
@@ -57,6 +58,7 @@ import dagger.Module;
         TranslateUidItemCommand.TranslatePostCommand.class,
         TranslateTextCachedCommand.class,
         UnsubribeFromPushCommand.class,
+        GetTripDetailsCommand.class,
         HashtagSuggestionCommand.class},
 
         complete = false, library = true)

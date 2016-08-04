@@ -684,6 +684,9 @@ public class TrackingHelper {
 
     public static void actionBookIt(@MagicConstant(stringValues = {ATTRIBUTE_BOOK_IT})
                                     String eventType, String tripId, String tripName) {
+        //apptentive, probabaly legacy code
+        bookIt(tripId, tripId);
+
         Map data = new HashMap<>();
         data.put("trip_id", tripName + "-" + tripId);
         data.put(eventType, 1);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <dimen name="tripImageHeightDetailed">450dp</dimen>
+    <dimen name="tripImageHeightDetailed">400dp</dimen>
     <dimen name="bucket_detail_cover_size">300dp</dimen>
 
     <dimen name="tablet_details_spacing">300dp</dimen>

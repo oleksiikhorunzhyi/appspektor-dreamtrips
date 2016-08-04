@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEvent;
-import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
@@ -221,7 +220,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         }
     }
 
-    public void onEventMainThread(MemberCellSelectedEvent event) {
+    public void onMemberCellSelected(Member member) {
         boolean isVisible = isVisible();
 
         eventBus.removeStickyEvent(MemberStickyEvent.class);
@@ -233,14 +232,10 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
         int count = Queryable.from(members).count(element -> element.isChecked());
         view.setSelectedCount(count);
 
-        if (event.isSelected()) {
-            view.move(event.getMember(), 0);
-        } else {
-            int to = event.getMember().getOriginalPosition();
-            Member lastSelectedMember = Queryable.from(members).lastOrDefault((member) -> member.isChecked());
-            int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
-            view.move(event.getMember(), to < lastSelected ? lastSelected : to);
-        }
+        int to = member.getOriginalPosition();
+        Member lastSelectedMember = Queryable.from(members).lastOrDefault(Member::isChecked);
+        int lastSelected = lastSelectedMember != null ? lastSelectedMember.getOriginalPosition() : 0;
+        view.move(member, to < lastSelected ? lastSelected : to);
     }
 
     public boolean isVisible() {

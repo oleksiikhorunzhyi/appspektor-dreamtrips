@@ -22,24 +22,30 @@ import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardListHeaderA
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.HidingScrollListener;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.CardStackCell;
-import com.worldventures.dreamtrips.wallet.ui.settings.card_details.CardDetailsPath;
 
 import java.util.List;
 
 import butterknife.InjectView;
-import flow.Flow;
 
 public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath>
         implements CardListScreenPresenter.Screen {
 
-    @InjectView(R.id.toolbar) Toolbar toolbar;
-    @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
-    @InjectView(R.id.appbar) AppBarLayout appbar;
-    @InjectView(R.id.bankCardList) RecyclerView bankCardList;
-    @InjectView(R.id.add_credit_list) View addCreditList;
-    @InjectView(R.id.add_debit_list) View addDebitList;
-    @InjectView(R.id.main_content) CoordinatorLayout mainContent;
-    @InjectView(R.id.wallet_list_buttons_wrapper) View buttonsWrapper;
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+    @InjectView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @InjectView(R.id.appbar)
+    AppBarLayout appbar;
+    @InjectView(R.id.bankCardList)
+    RecyclerView bankCardList;
+    @InjectView(R.id.add_credit_list)
+    View addCreditList;
+    @InjectView(R.id.add_debit_list)
+    View addDebitList;
+    @InjectView(R.id.main_content)
+    CoordinatorLayout mainContent;
+    @InjectView(R.id.wallet_list_buttons_wrapper)
+    View buttonsWrapper;
     private BaseDelegateAdapter adapter;
 
     public CardListScreen(Context context) {
@@ -55,46 +61,54 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         return new CardListScreenPresenter(getContext(), getInjector());
     }
 
-    @Override protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if(isInEditMode()) return;
-        adapter = new BaseDelegateAdapter(getContext(), getInjector());
-        adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
-        adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
-            @Override public void onCardClicked(BankCard bankCard) {
-                getPresenter().showBankCardDetails(bankCard);
-            }
-
-            @Override public void onCellClicked(CardStackViewModel model) {
-
-            }
-        });
-
-        adapter.setHasStableIds(true);
-
-        bankCardList.setAdapter(adapter);
-        bankCardList.setItemAnimator(new DefaultItemAnimator());
-        bankCardList.addItemDecoration(getStickyHeadersItemDecoration(adapter));
-        bankCardList.setLayoutManager(new LinearLayoutManager(getContext()));
-        bankCardList.addOnScrollListener(new HidingScrollListener() {
-            @Override public void onHide() {
-                buttonsWrapper.setVisibility(GONE);
-            }
-
-            @Override public void onShow() {
-                buttonsWrapper.setVisibility(VISIBLE);
-            }
-        });
-    }
-
-    @Override protected void onFinishInflate() {
+    @Override
+    protected void onFinishInflate() {
         super.onFinishInflate();
         toolbar.setTitle(R.string.wallet);
         toolbar.setNavigationOnClickListener(this::onNavigateButtonClick);
     }
 
-    @Override public void onListReceived(List<CardStackViewModel> result) {
-        adapter.addItems(result);
+    @Override
+    protected void onPostAttachToWindowView() {
+        adapter = new BaseDelegateAdapter(getContext(), getInjector());
+        adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
+        adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
+            @Override
+            public void onCardClicked(BankCard bankCard) {
+                getPresenter().showBankCardDetails(bankCard);
+            }
+
+            @Override
+            public void onCellClicked(CardStackViewModel model) {
+
+            }
+        });
+        adapter.registerIdDelegate(CardStackViewModel.class, model -> {
+            return ((CardStackViewModel) model).getHeaderTitle().hashCode();
+        });
+
+        bankCardList.setAdapter(adapter);
+        bankCardList.setItemAnimator(new DefaultItemAnimator());
+        bankCardList.addItemDecoration(getStickyHeadersItemDecoration(adapter));
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
+        layout.setAutoMeasureEnabled(true);
+        bankCardList.setLayoutManager(layout);
+        bankCardList.addOnScrollListener(new HidingScrollListener() {
+            @Override
+            public void onHide() {
+                buttonsWrapper.setVisibility(GONE);
+            }
+
+            @Override
+            public void onShow() {
+                buttonsWrapper.setVisibility(VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    public void onListReceived(List<CardStackViewModel> result) {
+        adapter.clearAndUpdateItems(result);
     }
 
     private void onNavigateButtonClick(View view) {

@@ -23,6 +23,8 @@ import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
+import static io.techery.janet.ActionState.Status.FAIL;
+import static io.techery.janet.ActionState.Status.SUCCESS;
 
 @CommandAction
 public class CardStacksCommand extends Command<List<CardStackViewModel>> implements InjectableAction {
@@ -30,7 +32,7 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
     @Inject @Named(JANET_WALLET) Janet janet;
     @Inject @ForApplication Context context;
 
-    private List<Card> cachedList = new ArrayList<>();
+    private volatile List<Card> cachedList = new ArrayList<>();
 
     @Override protected void run(CommandCallback<List<CardStackViewModel>> callback) throws Throwable {
         janet.createPipe(CardListCommand.class)
@@ -41,7 +43,7 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
                         callback.onProgress(0);
                     }
                 })
-                .filter(it -> it.status != ActionState.Status.PROGRESS)
+                .filter(it -> it.status == SUCCESS || it.status == FAIL)
                 .map(it -> it.action.getResult())
                 .map(this::convert)
                 .subscribe(callback::onSuccess, callback::onFail);
@@ -72,8 +74,9 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
                 .toList();
     }
 
-    public void setCachedList(List<Card> cachedList) {
-        this.cachedList = cachedList;
+    private void setCachedList(List<Card> cachedList) {
+        this.cachedList.clear();
+        if (cachedList != null) this.cachedList.addAll(cachedList);
     }
 
     public List<CardStackViewModel> getCachedList() {

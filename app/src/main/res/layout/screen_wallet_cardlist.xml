@@ -52,8 +52,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/bankCardList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/white"
+            android:clipToPadding="false"
             android:paddingBottom="@dimen/spacing_large"
             android:paddingLeft="@dimen/spacing_large"
             android:paddingRight="@dimen/spacing_large"

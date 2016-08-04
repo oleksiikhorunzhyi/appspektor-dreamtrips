@@ -23,32 +23,40 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_wallet_cardstack)
 public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, CardStackCell.Delegate> {
 
-    private static final double VISIBLE_SCALE = 0.65;
-
-    @InjectView(R.id.cardStack) RecyclerView cardStack;
     @Inject
     @ForActivity
     Injector injector;
 
+    @InjectView(R.id.cardStack) RecyclerView cardStack;
+    BaseDelegateAdapter adapter;
+
+    private static final double VISIBLE_SCALE = 0.75;
+
     public CardStackCell(View view) {
         super(view);
+
+        int dimension = itemView.getResources().getDimensionPixelSize(R.dimen.wallet_bank_card_default_height);
+        cardStack.addItemDecoration(new OverlapDecoration((int) (dimension * VISIBLE_SCALE * -1)));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext());
+        layoutManager.setAutoMeasureEnabled(true);
+        cardStack.setLayoutManager(layoutManager);
+        cardStack.setNestedScrollingEnabled(false);
+
     }
 
-    @Override protected void syncUIStateWithModel() {
+    @Override
+    public void afterInject() {
+        super.afterInject();
         BankCardCell.Delegate childCellDelegate = model -> cellDelegate.onCardClicked(model);
-
-        BaseDelegateAdapter adapter = new BaseDelegateAdapter(itemView.getContext(), injector);
+        adapter = new BaseDelegateAdapter(itemView.getContext(), injector);
         adapter.registerCell(ImmutableBankCard.class, BankCardCell.class);
         adapter.registerDelegate(ImmutableBankCard.class, childCellDelegate);
 
-        adapter.setHasStableIds(true);
-        adapter.addItems(getModelObject().getBankCards());
-
         cardStack.setAdapter(adapter);
-        int dimension = itemView.getResources().getDimensionPixelSize(R.dimen.wallet_bank_card_default_height);
-        cardStack.addItemDecoration(new OverlapDecoration((int) (dimension * VISIBLE_SCALE * -1)));
-        cardStack.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
-        cardStack.setNestedScrollingEnabled(false);
+    }
+
+    @Override protected void syncUIStateWithModel() {
+        adapter.clearAndUpdateItems(getModelObject().getBankCards());
     }
 
     @Override public void prepareForReuse() {

@@ -3,6 +3,11 @@ package com.worldventures.dreamtrips.core.repository;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.innahema.collections.query.queriables.Queryable;
 import com.snappydb.DB;
 import com.snappydb.DBFactory;
@@ -30,12 +35,14 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerSta
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 
+import org.objenesis.strategy.StdInstantiatorStrategy;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -47,11 +54,23 @@ import timber.log.Timber;
 public class SnappyRepositoryImpl implements SnappyRepository {
     private Context context;
     private ExecutorService executorService;
+    private Kryo kryo;
 
     public SnappyRepositoryImpl(Context context) {
         ValidationUtils.checkNotNull(context);
         this.context = context;
         this.executorService = Executors.newSingleThreadExecutor();
+        //
+        initCustomKryo();
+    }
+
+    private void initCustomKryo() {
+        this.kryo = new Kryo();
+        this.kryo.register(Date.class, new DefaultSerializers.DateSerializer());
+        this.kryo.setDefaultSerializer(CompatibleFieldSerializer.class);
+        Kryo.DefaultInstantiatorStrategy strategy = new Kryo.DefaultInstantiatorStrategy();
+        strategy.setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
+        this.kryo.setInstantiatorStrategy(strategy);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -129,13 +148,28 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
     @Override
     public <T> void putList(String key, Collection<T> list) {
-        act(db -> db.put(key, list.toArray()));
+        act(db -> {
+            Output output = new Output(new ByteArrayOutputStream());
+            kryo.writeClassAndObject(output, list);
+            db.put(key, output.getBuffer());
+        });
     }
 
     @Override
     public <T> List<T> readList(String key, Class<T> clazz) {
-        return actWithResult(db -> new ArrayList<>(Arrays.asList(db.getObjectArray(key, clazz))))
-                .or(new ArrayList<>());
+        return actWithResult(
+                db -> {
+                    Collection<T> result;
+                    Input input = new Input();
+                    try {
+                        input.setBuffer(db.getBytes(key));
+                        result = (Collection<T>) kryo.readClassAndObject(input);
+                    } finally {
+                        input.close();
+                    }
+                    return new ArrayList(result);
+                }
+        ).or(new ArrayList<>());
     }
 
     /**
@@ -221,11 +255,13 @@ public class SnappyRepositoryImpl implements SnappyRepository {
                 .orNull();
     }
 
-    @Override public void saveWalletCardsList(List<Card> items) {
+    @Override
+    public void saveWalletCardsList(List<Card> items) {
         putList(WALLET_CARDS_LIST, items);
     }
 
-    @Override public List<Card> readWalletCardsList() {
+    @Override
+    public List<Card> readWalletCardsList() {
         return readList(WALLET_CARDS_LIST, Card.class);
     }
 

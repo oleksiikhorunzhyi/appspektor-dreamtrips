@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.BankCardToRecordConverter;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
     private final BankCardToRecordConverter converter = new BankCardToRecordConverter();
 
-    private List<Card> cachedItems = new ArrayList<>();
+    private volatile List<Card> cachedItems;
 
     @Override
     protected void run(CommandCallback<List<Card>> callback) throws Throwable {
@@ -58,7 +58,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
     }
 
     @Override public void onRestore(ActionHolder holder, List<Card> cache) {
-        if (cache == null) cachedItems = new ArrayList<>();
+        if (cache == null) cachedItems = Collections.emptyList();
         else cachedItems = cache;
     }
 

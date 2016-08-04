@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.util;
 
 import java.util.regex.Pattern;
 
-public class CardValidateHelper {
+public class WalletValidateHelper {
 
     public static boolean validateCardName(String cardName) {
         return Pattern.compile("[a-zA-Z ]{2,256}").matcher(cardName).matches();
@@ -14,5 +14,13 @@ public class CardValidateHelper {
         }
     }
 
+    public static boolean validateUserFullName(String cardName) {
+        return Pattern.compile("[A-Za-z]{2,21}+ [A-Za-z]{2,21}+").matcher(cardName).matches();
+    }
 
+    public static void validateUserFullNameOrThrow(String cardName) throws FormatException {
+        if (!validateUserFullName(cardName)) {
+            throw new FormatException();
+        }
+    }
 }

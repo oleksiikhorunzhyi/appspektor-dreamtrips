@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCar
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 
 import dagger.Module;
 
@@ -20,6 +21,7 @@ import dagger.Module;
                 CardStacksCommand.class,
                 LoadImageForSmartCardCommand.class,
                 SetupSmartCardNameCommand.class,
+                SetupUserDataCommand.class,
                 CreateAndConnectToCardCommand.class
         },
         complete = false, library = true

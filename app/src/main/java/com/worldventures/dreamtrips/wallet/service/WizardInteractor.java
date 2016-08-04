@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,11 +17,13 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 public final class WizardInteractor {
     private WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
     private ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe;
+    private ActionPipe<SetupUserDataCommand> setupUserDataPipe;
 
     @Inject
     public WizardInteractor(@Named(JANET_WALLET) Janet janet) {
         createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
         setupSmartCardNamePipe = janet.createPipe(SetupSmartCardNameCommand.class, Schedulers.io());
+        setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
     }
 
     public WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
@@ -29,5 +32,9 @@ public final class WizardInteractor {
 
     public ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe() {
         return setupSmartCardNamePipe;
+    }
+
+    public ActionPipe<SetupUserDataCommand> setupUserDataPipe() {
+        return setupUserDataPipe;
     }
 }

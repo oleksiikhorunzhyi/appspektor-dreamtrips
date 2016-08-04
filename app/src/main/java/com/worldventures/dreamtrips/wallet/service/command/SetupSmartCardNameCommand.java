@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.wallet.util.CardValidateHelper;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,7 +28,7 @@ public class SetupSmartCardNameCommand extends Command<Void> implements Injectab
 
     @Override
     protected void run(CommandCallback<Void> callback) throws Throwable {
-        CardValidateHelper.validateCardNameOrThrow(cardName);
+        WalletValidateHelper.validateCardNameOrThrow(cardName);
 
         janet.createPipe(SetMetaDataPairAction.class)
                 .createObservableResult(new SetMetaDataPairAction(CARD_NAME_KEY, cardName))

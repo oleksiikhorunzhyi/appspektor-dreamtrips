@@ -2,16 +2,20 @@ package com.worldventures.dreamtrips.wallet.ui.wizard.profile;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
+import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 
@@ -22,15 +26,17 @@ import javax.inject.Inject;
 import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
 
-    @Inject
-    SmartCardAvatarInteractor smartCardAvatarInteractor;
-    @Inject
-    SessionHolder<UserSession> appSessionHolder;
+    private static final int SUCCESS_DELAY_MS = 3000;
+
+    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
+    @Inject WizardInteractor wizardInteractor;
+    @Inject SessionHolder<UserSession> appSessionHolder;
+
+    private File preparedPhotoFile;
 
     public WizardEditProfilePresenter(Context context, Injector injector) {
         super(context, injector);
@@ -39,7 +45,8 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     @Override
     public void attachView(Screen view) {
         super.attachView(view);
-        subscribeSmartCardCommand();
+        subscribePreparingAvatarCommand();
+        subscribeSetupUserCommand();
 
         User userProfile = appSessionHolder.get().get().getUser();
         view.setUserFullName(userProfile.getFullName());
@@ -47,16 +54,42 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                 .send(new LoadImageForSmartCardCommand(userProfile.getAvatar().getThumb()));
     }
 
-    public void subscribeSmartCardCommand() {
+    public void subscribePreparingAvatarCommand() {
         smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
                 .observe()
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
+                .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<SmartCardAvatarCommand>()
-                        .onSuccess(command -> getView().setPreviewPhoto(command.getResult())));
+                        .onFail((command, throwable) -> Timber.e("", throwable))
+                        .onSuccess(command -> photoPrepared(command.getResult()))
+                );
+    }
+
+    public void subscribeSetupUserCommand() {
+        wizardInteractor.setupUserDataPipe()
+                .observe()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(new ActionStateSubscriber<SetupUserDataCommand>()
+                        .onStart(command -> getView().showProgress())
+                        .onSuccess(command -> handleSuccess())
+                        .onFail((command, throwable) -> handleError(throwable))
+                );
+    }
+
+    private void handleSuccess() {
+        getView().showSuccessWithDelay(() -> Flow.get(getContext()).set(new WizardPinSetupPath()), SUCCESS_DELAY_MS);
+    }
+
+    private void handleError(Throwable throwable) {
+        getView().notifyError(throwable);
+    }
+
+    private void photoPrepared(File filePhoto) {
+        preparedPhotoFile = filePhoto;
+        getView().setPreviewPhoto(filePhoto);
     }
 
     public void goToBack() {
+        getView().hidePhotoPicker();
         Flow.get(getContext()).goBack();
     }
 
@@ -71,11 +104,12 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                 .send(new CompressImageForSmartCardCommand(path));
     }
 
-    public void goNext() {
-        Flow.get(getContext()).set(new WizardPinSetupPath());
+    public void setupUserData() {
+        wizardInteractor.setupUserDataPipe()
+                .send(new SetupUserDataCommand(getView().getUserName().trim(), preparedPhotoFile));
     }
 
-    public interface Screen extends WalletScreen {
+    public interface Screen extends WalletScreen, DelayedSuccessScreen {
 
         Observable<String> choosePhotoAndCrop();
 
@@ -84,5 +118,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         void setPreviewPhoto(File photo);
 
         void setUserFullName(String fullName);
+
+        @NonNull String getUserName();
     }
 }

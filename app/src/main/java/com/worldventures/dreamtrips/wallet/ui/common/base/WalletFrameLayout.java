@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 
 import com.messenger.ui.presenter.ViewStateMvpPresenter;
@@ -49,5 +50,9 @@ public abstract class WalletFrameLayout<V extends WalletScreen, P extends ViewSt
 
     public Injector getInjector() {
         return injector;
+    }
+
+    protected String getString(@StringRes int stringId) {
+        return getResources().getString(stringId);
     }
 }

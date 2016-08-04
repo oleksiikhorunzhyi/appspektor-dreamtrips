@@ -47,16 +47,21 @@ public class NotificationsSettingsFragment extends SettingsFragment implements C
                 .title(R.string.save_changes_before_proceed)
                 .positiveText(R.string.save)
                 .negativeText(R.string.discard)
-                .onPositive((materialDialog, dialogAction) -> getPresenter().applyChanges(true))
+                .onPositive((materialDialog, dialogAction) -> getPresenter().applyChanges())
                 .onNegative((materialDialog1, dialogAction1) -> close())
                 .show();
+    }
+
+    @Override
+    public void onAppliedChanges() {
+        close();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.done:
-                getPresenter().applyChanges(true);
+                getPresenter().applyChanges();
                 break;
         }
         return super.onOptionsItemSelected(item);

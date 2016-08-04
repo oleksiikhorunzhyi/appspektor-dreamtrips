@@ -24,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoC
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 
 import dagger.Module;
@@ -57,7 +58,8 @@ import dagger.Module;
         AcceptTermsCommand.class,
         UnsubribeFromPushCommand.class,
         GetTripDetailsCommand.class,
-        HashtagSuggestionCommand.class},
+        HashtagSuggestionCommand.class,
+        SettingsCommand.class},
 
         complete = false, library = true)
 public class SocialJanetCommandModule {

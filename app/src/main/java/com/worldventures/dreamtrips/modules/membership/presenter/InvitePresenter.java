@@ -24,11 +24,11 @@ import com.worldventures.dreamtrips.modules.membership.api.GetInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
+import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellResendEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberCellSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.event.MemberStickyEvent;
-import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate.Type;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -51,6 +51,8 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     @ForApplication
     Injector injector;
     WeakHandler queryHandler = new WeakHandler();
+    @Inject
+    SearchFocusChangedDelegate searchFocusChangedDelegate;
 
     @State
     ArrayList<Member> members = new ArrayList<>();
@@ -180,7 +182,7 @@ public class InvitePresenter extends Presenter<InvitePresenter.View> {
     }
 
     public void searchToggle(boolean hasFocus) {
-        eventBus.post(new SearchFocusChangedEvent(hasFocus));
+        searchFocusChangedDelegate.post(hasFocus);
     }
 
     public void onFilter(String newText) {

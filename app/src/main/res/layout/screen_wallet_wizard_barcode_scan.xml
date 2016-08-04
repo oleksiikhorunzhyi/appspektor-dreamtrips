@@ -17,7 +17,7 @@
         android:background="@color/wallet_color_background_dark_with_alpha"
         android:theme="@style/WalletTheme.ToolbarLight"
         app:navigationIcon="@drawable/back_icon"
-        app:title="@string/wallet_wizard_title"/>
+        app:title="@string/wallet_wizard_splash_scan_title"/>
 
     <TextView
         android:layout_width="match_parent"

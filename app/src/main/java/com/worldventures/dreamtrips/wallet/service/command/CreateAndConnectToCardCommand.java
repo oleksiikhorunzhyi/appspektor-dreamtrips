@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
+import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,6 +31,7 @@ public class CreateAndConnectToCardCommand extends Command<Void> implements Inje
 
     @Override
     protected void run(CommandCallback<Void> callback) throws Throwable {
+        WalletValidateHelper.validateSCIdOrThrow(code);
         janet.createPipe(CreateCardHttpAction.class)
                 .createObservable(new CreateCardHttpAction(code))
                 .compose(new ActionStateToActionTransformer<>())

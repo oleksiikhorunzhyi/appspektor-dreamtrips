@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                                                                              xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                                              xmlns:tools="http://schemas.android.com/tools"
-                                                                              android:layout_width="match_parent"
-                                                                              android:layout_height="match_parent"
-                                                                              android:background="@drawable/wallet_wizard_background"
-                                                                              android:orientation="vertical"
-                                                                              android:theme="@style/WalletTheme.Wizard">
+<com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen
+    style="@style/WalletTheme.Wizard.RootStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wallet_wizard_background">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,42 +13,47 @@
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/WalletTheme.ToolbarLight"
         app:navigationIcon="@drawable/back_icon"
-        app:title="@string/wallet_wizard_title"/>
+        app:title="@string/wallet_wizard_manual_input_title"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+    <RelativeLayout
+        style="@style/WalletTheme.Wizard.ContentContainerStyle"
+        android:layout_marginTop="?attr/actionBarSize"
         android:orientation="vertical"
-        android:padding="25dp">
+        android:theme="@style/WalletTheme.Wizard">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/wallet_wizard_manual_input_header"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:id="@+id/wizard_manual_text"
+            style="@style/WalletTheme.Wizard.HeaderTextStyle"
+            android:layout_gravity="top"
+            android:layout_marginTop="32dp"
+            android:text="@string/wallet_wizard_manual_input_header"/>
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:id="@+id/img"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            tools:src="@drawable/ic_cover_place_holder"/>
+            android:layout_below="@+id/wizard_manual_text"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/wallet_manual_scid_input_card_holder"/>
 
         <EditText
             android:id="@+id/wallet_wizard_manual_input_scid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_above="@+id/wallet_wizard_manual_input_next_btn"
+            android:layout_marginBottom="30dp"
             android:hint="@string/wallet_wizard_manual_input_hint"
-            android:inputType="numberSigned"/>
+            android:inputType="numberSigned">
+
+            <requestFocus/>
+        </EditText>
 
         <Button
             android:id="@+id/wallet_wizard_manual_input_next_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_alignParentBottom="true"
             android:text="@string/wallet_next_label"/>
 
-    </LinearLayout>
-
+    </RelativeLayout>
 </com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputScreen>

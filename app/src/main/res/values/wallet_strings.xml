@@ -34,8 +34,9 @@
 
     <!--splash-->
     <string name="wallet_wizard_splash_title1">Get ready</string>
-    <string name="wallet_wizard_splash_title2">Scan the back of your flye smart card to begin</string>
+    <string name="wallet_wizard_splash_title2">Scan the back of your flye&#8482; smart card to begin</string>
     <string name="wallet_wizard_splash_start_btn">Scan Card</string>
+    <string name="wallet_wizard_splash_scan_title">Scan Card</string>
 
     <string name="wallet_wizard_scan_barcode_header">Position smart card\nbarcode in the frame</string>
     <string name="wallet_wizard_scan_barcode_footer_title">Not scanning?</string>
@@ -52,7 +53,9 @@
     <string name="wallet_default_card_title">Default Card</string>
 
     <string name="wallet_wizard_manual_input_header">Enter the SCID manually</string>
+    <string name="wallet_wizard_manual_input_title">Enter SCID</string>
     <string name="wallet_wizard_manual_input_hint">SCID Number</string>
+    <string name="wallet_wizard_scid_validation_error">Wrong SCID Number</string>
     <string name="wallet_bank_name_text_holder">Bank Name</string>
 
     <!--details-->

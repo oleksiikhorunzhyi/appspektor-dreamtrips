@@ -23,4 +23,14 @@ public class WalletValidateHelper {
             throw new FormatException();
         }
     }
+
+    public static void validateSCIdOrThrow(String scid) throws FormatException {
+        if (!validateSCId(scid)) {
+            throw new FormatException();
+        }
+    }
+
+    public static boolean validateSCId(String scid) {
+        return scid != null && !scid.isEmpty();
+    }
 }

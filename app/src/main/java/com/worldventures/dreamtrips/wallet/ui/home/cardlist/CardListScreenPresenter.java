@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
@@ -28,6 +29,7 @@ import timber.log.Timber;
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
 
     @Inject SmartCardInteractor smartCardInteractor;
+    @Inject SnappyRepository snappyRepository;
     private Subscription cardsListSubscription;
 
     public CardListScreenPresenter(Context context, Injector injector) {
@@ -50,27 +52,29 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
 
     //be there until add card functionality will be implemented
     protected void temporaryStabSolution() {
-        Random random = new Random(System.currentTimeMillis());
-        smartCardInteractor.connectActionPipe().createObservable(new ConnectAction("any_memberid", "any_userSecret"))
-                .subscribe(connectActionActionState -> {
-                }, throwable -> {
-                    Timber.e(throwable, "");
-                });
-        for (int i = 0; i < 8; i++) {
-            BankCard bankCard = ImmutableBankCard.builder()
-                    .number(Math.abs(random.nextLong()) % 1000000000000000l)
-                    .title("Jane's card" + (i + 1))
-                    .type(Record.FinancialService.MASTERCARD)
-                    .cvv(random.nextInt(1000))
-                    .expiryMonth(random.nextInt(13))
-                    .expiryYear(random.nextInt(100))
-                    .build();
-
-            smartCardInteractor.addRecordPipe().createObservableResult(new AttachCardCommand(bankCard))
+        if (snappyRepository.readWalletCardsList().isEmpty()) {
+            Random random = new Random(System.currentTimeMillis());
+            smartCardInteractor.connectActionPipe().createObservable(new ConnectAction("any_memberid", "any_userSecret"))
                     .subscribe(connectActionActionState -> {
                     }, throwable -> {
                         Timber.e(throwable, "");
                     });
+            for (int i = 0; i < 10; i++) {
+                BankCard bankCard = ImmutableBankCard.builder()
+                        .number(Math.abs(random.nextLong()) % 1000000000000000l)
+                        .title("Jane's card" + (i + 1))
+                        .type(Record.FinancialService.MASTERCARD)
+                        .cvv(random.nextInt(1000))
+                        .expiryMonth(random.nextInt(13))
+                        .expiryYear(random.nextInt(100))
+                        .build();
+
+                smartCardInteractor.addRecordPipe().createObservableResult(new AttachCardCommand(bankCard))
+                        .subscribe(connectActionActionState -> {
+                        }, throwable -> {
+                            Timber.e(throwable, "");
+                        });
+            }
         }
     }
 

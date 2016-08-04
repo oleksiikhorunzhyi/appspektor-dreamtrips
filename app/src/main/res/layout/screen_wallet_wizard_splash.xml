@@ -26,18 +26,21 @@
             android:id="@+id/wallet_wizard_splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:text="@string/wallet_wizard_splash_title1"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            tools:text="@string/wallet_wizard_splash_title1"/>
+            tools:text="@string/wallet_wizard_splash_title2"
+            android:gravity="center"
+            android:layout_marginLeft="55dp"
+            android:layout_marginRight="55dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="55dp"/>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
             android:src="@drawable/smartcard_front"
-            tools:src="@drawable/smartcard_front"/>
+            tools:src="@drawable/flye_card_back"
+            android:scaleType="fitCenter"/>
 
     </LinearLayout>
 

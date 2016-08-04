@@ -23,7 +23,7 @@ import butterknife.InjectView;
 @Layout(R.layout.adapter_item_wallet_cardstack)
 public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, CardStackCell.Delegate> {
 
-    private static final double VISIBLE_SCALE = 0.75;
+    private static final double VISIBLE_SCALE = 0.65;
 
     @InjectView(R.id.cardStack) RecyclerView cardStack;
     @Inject

@@ -57,6 +57,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
 
     @Override protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        if(isInEditMode()) return;
         adapter = new BaseDelegateAdapter(getContext(), getInjector());
         adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
         adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {

@@ -44,6 +44,7 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
     protected void onFinishInflate() {
         super.onFinishInflate();
         toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
+        bankCardWidget.setBankCardInfo(getPath().getBankCard());
     }
 
     @OnCheckedChanged(R.id.default_payment_card_checkbox)

@@ -62,7 +62,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
         adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
             @Override public void onCardClicked(BankCard bankCard) {
-                Flow.get(getContext()).set(new CardDetailsPath());
+                getPresenter().showBankCardDetails(bankCard);
             }
 
             @Override public void onCellClicked(CardStackViewModel model) {

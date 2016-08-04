@@ -1,5 +1,6 @@
 package com.techery.spares.module;
 
+import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 
 import javax.inject.Singleton;
@@ -14,5 +15,11 @@ public class EventDelegateModule {
     @Singleton
     SearchFocusChangedDelegate provideSearchFocusChangedDelegate() {
         return new SearchFocusChangedDelegate();
+    }
+
+    @Provides
+    @Singleton
+    ScreenChangedEventDelegate provideScreenChangedDelegate() {
+        return new ScreenChangedEventDelegate();
     }
 }

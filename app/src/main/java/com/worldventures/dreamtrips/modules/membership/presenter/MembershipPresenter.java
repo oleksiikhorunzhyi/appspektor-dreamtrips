@@ -24,15 +24,15 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
     public void onInjected() {
         super.onInjected();
         items = provideScreens();
-        searchFocusChangedDelegate.getObservable()
-                .compose(bindView())
-                .subscribe(hasFocus -> view.toggleTabStripVisibility(!hasFocus));
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         view.setScreens(items);
+        searchFocusChangedDelegate.getObservable()
+                .compose(bindView())
+                .subscribe(hasFocus -> view.toggleTabStripVisibility(!hasFocus));
     }
 
     @NonNull

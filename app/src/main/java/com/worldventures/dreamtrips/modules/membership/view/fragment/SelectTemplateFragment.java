@@ -37,7 +37,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
 
-    BaseDelegateAdapter<InviteTemplate> adapter;
+    private BaseDelegateAdapter<InviteTemplate> adapter;
     private WeakHandler weakHandler;
 
     @Override

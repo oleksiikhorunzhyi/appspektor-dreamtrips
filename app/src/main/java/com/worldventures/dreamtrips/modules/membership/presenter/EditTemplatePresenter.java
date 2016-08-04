@@ -14,19 +14,15 @@ import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.membership.api.CreateFilledInvitationsTemplateQuery;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
-import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import timber.log.Timber;
 
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
 
@@ -126,10 +122,6 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         notifyServer();
     }
 
-    private void sentInviteSuccess(JSONObject aVoid) {
-        Timber.d("Success sending invite");
-    }
-
     private String getSubject() {
         return template.getTitle();
     }
@@ -161,7 +153,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
         body.setType(template.getType());
         doRequest(
                 new SendInvitationsQuery(body),
-                this::sentInviteSuccess);
+                jsonObject -> {});
     }
 
     private List<String> getContactAddress() {

@@ -2,11 +2,9 @@ package com.worldventures.dreamtrips.core.api.uploadery;
 
 import android.content.Context;
 
-import com.messenger.util.SessionHolderHelper;
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,15 +21,9 @@ import rx.schedulers.Schedulers;
 public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T> implements InjectableAction {
     private final int commandId;
 
-    @ForApplication
-    @Inject
-    Context context;
-
-    @Inject
-    SessionHolder<UserSession> userSessionHolder;
-
-    @Inject
-    Janet janet;
+    @ForApplication @Inject Context context;
+    @Inject Janet janet;
+    @Inject StaticPageProvider staticPageProvider;
 
     private final String filePath;
 
@@ -58,11 +50,7 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
     }
 
     protected Observable<ActionState<UploadImageAction>> upload(File file) {
-        if (!SessionHolderHelper.hasEntity(userSessionHolder)) {
-            throw new IllegalStateException("User session is not present");
-        }
-
-        String uploaderyUrl = userSessionHolder.get().get().getGlobalConfig().getUrls().getProduction().getUploaderyBaseURL();
+        String uploaderyUrl = staticPageProvider.getUploaderyUrl();
         try {
             return janet
                     .createPipe(UploadImageAction.class, Schedulers.io())
@@ -73,5 +61,4 @@ public abstract class UploaderyImageCommand<T> extends BaseUploadImageCommand<T>
     }
 
     protected abstract Observable.Transformer<ActionState<UploadImageAction>, T> nextAction();
-
 }

@@ -2,9 +2,8 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -15,9 +14,13 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
 
     private List<TripImage> filteredImages;
+
+    @Inject StaticPageProvider staticPageProvider;
 
     public TripDetailsPresenter(TripModel trip) {
         super(trip);
@@ -47,15 +50,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
 
     public void actionBookIt() {
         TrackingHelper.bookIt(String.valueOf(trip.getTripId()), getAccountUserId());
-        UserSession userSession = appSessionHolder.get().get();
 
-        AppConfig.URLS urls = userSession.getGlobalConfig().getUrls();
-        AppConfig.URLS.Config config = urls.getProduction();
-
-        String url = config.getBookingPageURL()
-                .replace(AppConfig.TRIP_ID, trip.getTripId())
-                .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
-                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+        String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
         view.openBookIt(url);
     }
 
@@ -91,6 +87,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     }
 
     public interface View extends BaseTripPresenter.View {
+
         void setContent(List<ContentItem> contentItems);
 
         void hideBookIt();

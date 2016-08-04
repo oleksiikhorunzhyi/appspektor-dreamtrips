@@ -110,7 +110,6 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
         val mockAppConfig = mock(AppConfig::class.java)
         val mockUrls = mock(AppConfig.URLS::class.java)
 
-        `when`(mockConfig.uploaderyBaseURL).thenReturn("http://test-uploadery")
         `when`(mockUrls.production).thenReturn(mockConfig)
         `when`(mockAppConfig.urls).thenReturn(mockUrls)
         `when`(userSession!!.globalConfig).thenReturn(mockAppConfig)

@@ -10,6 +10,50 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 
 public class StaticPageProvider {
 
+    private static final String ENDPOINT = BuildConfig.DreamTripsApi;
+
+    ///////////////////////////////////////////
+    //// URLS
+    //////////////////////////////////////////
+
+    private static final String ENROLL_MEMBER_URL = ENDPOINT + "/gateway/enroll_member?userId=%user_id%";
+    private static final String ENROLL_REP_URL = ENDPOINT + "/gateway/enroll_rep?userId=%user_id%";
+    private static final String BOOKING_PAGE_URL = ENDPOINT + "/gateway/booking_page/%trip_id%";
+    private static final String OTA_PAGE_URL = ENDPOINT + "/gateway/ota_page";
+
+    ///////////////////////////////////////////
+    //// Query params
+    //////////////////////////////////////////
+
+    private static final String USER_ID = "%user_id%";
+    private static final String TRIP_ID = "%trip_id%";
+
+    public String getEnrollMemberUrl() {
+        return ENROLL_MEMBER_URL.replace(USER_ID,
+                String.valueOf(appSessionHolder.get().get().getUser().getId()));
+    }
+
+    public String getEnrollRepUrl() {
+        return ENROLL_REP_URL.replace(USER_ID,
+                String.valueOf(appSessionHolder.get().get().getUser().getId()));
+    }
+
+    public String getBookingPageUrl(String tripId) {
+        return BOOKING_PAGE_URL.replace(TRIP_ID, tripId);
+    }
+
+    public String getOtaPageUrl() {
+        return OTA_PAGE_URL;
+    }
+
+    public String getUploaderyUrl() {
+        return BuildConfig.UPLOADERY_API_URL;
+    }
+
+    ///////////////
+    //////////////
+    //////////////
+
     private static final String PRIVACY_TITLE = "Privacy Policy";
     private static final String COOKIE_TITLE = "Cookie Policy";
     private static final String FAQ_TITLE = "FAQ";
@@ -25,23 +69,10 @@ public class StaticPageProvider {
         this.localeHelper = localeHelper;
     }
 
-    private AppConfig.URLS.Config getConfig() {
-        AppConfig appConfig = appSessionHolder.get().get().getGlobalConfig();
-        AppConfig.URLS urls = appConfig.getUrls();
-
-        return urls.getProduction();
-    }
-
     public String getStaticInfoUrl(String title) {
         if (storage.get().isPresent())
             return getLocalizedUrl(storage.get().get().getUrlByTitle(title));
         else return "";
-    }
-
-    public String getEnrollMemberUrl() {
-        String enrollUrlFromServer = getConfig().getEnrollMemberURL(appSessionHolder.get().get().getUsername());
-        String additionalParams = "utm_medium=MobileApp&utm_source=MobileApp&utm_campaign=MobileApp";
-        return getLocalizedUrl(enrollUrlFromServer + "&" + additionalParams);
     }
 
     public String getEnrollMerchantUrl(MerchantIdBundle args) {
@@ -56,21 +87,6 @@ public class StaticPageProvider {
                     .append(args.getMerchantId());
         }
         return builder.toString();
-    }
-
-    public String getEnrollRepUrl() {
-        return getLocalizedUrl(getConfig().getEnrollRepURL(appSessionHolder.get().get().getUsername()));
-    }
-
-    public String getOtaPageURL() {
-        UserSession userSession = appSessionHolder.get().get();
-        return getLocalizedUrl(getConfig().getOtaPageURL())
-                .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
-                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
-    }
-
-    public String getTrainingVideosURL() {
-        return getLocalizedUrl(getConfig().getTrainingVideosURL());
     }
 
     public String getTermsOfServiceUrl() {

@@ -10,7 +10,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucke
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.GlobalConfigCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.StaticPageConfigCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
@@ -38,7 +37,6 @@ import dagger.Module;
         LocalesCommand.class,
         TripsFilterDataCommand.class,
         StaticPageConfigCommand.class,
-        GlobalConfigCommand.class,
         CirclesCommand.class,
         AppSettingsCommand.class,
         GetCommentsCommand.class,

@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage
 import com.worldventures.dreamtrips.modules.common.model.User
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.http.test.MockHttpActionService
@@ -29,14 +30,11 @@ abstract class BucketInteractorBaseTest : BaseTest() {
         MockitoAnnotations.initMocks(this)
     }
 
-    @Mock
-    var mockSessionHolder: SessionHolder<UserSession>? = null
+    @Mock var mockSessionHolder: SessionHolder<UserSession>? = null
+    @Mock var mockDb: SnappyRepository? = null
+    @Mock var staticPageProvider: StaticPageProvider? = null
 
-    @Spy
-    var mockMemoryStorage: BucketMemoryStorage? = null
-
-    @Mock
-    var mockDb: SnappyRepository? = null
+    @Spy var mockMemoryStorage: BucketMemoryStorage? = null
 
     var janet: Janet? = null
 
@@ -62,6 +60,7 @@ abstract class BucketInteractorBaseTest : BaseTest() {
         daggerActionService.registerProvider(SnappyRepository::class.java) { mockDb }
         daggerActionService.registerProvider(SessionHolder::class.java) { mockSessionHolder }
         daggerActionService.registerProvider(BucketInteractor::class.java) { bucketInteractor }
+        daggerActionService.registerProvider(StaticPageProvider::class.java, { staticPageProvider })
 
         janet = Janet.Builder()
                 .addService(daggerActionService)
@@ -76,6 +75,7 @@ abstract class BucketInteractorBaseTest : BaseTest() {
         `when`(mockUser.id).thenReturn(MOCK_USER_ID)
         `when`(userSession!!.user).thenReturn(mockUser)
         `when`(mockSessionHolder!!.get()).thenReturn(Optional.of(userSession))
+        `when`(staticPageProvider!!.uploaderyUrl).thenReturn("http://test-uploadery")
     }
 
     protected abstract fun mockHttpService(): MockHttpActionService

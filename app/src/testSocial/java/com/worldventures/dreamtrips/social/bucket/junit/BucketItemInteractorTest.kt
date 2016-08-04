@@ -24,7 +24,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.model.EntityState
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketBodyImpl
 import com.worldventures.dreamtrips.modules.bucketlist.service.model.ImmutableBucketPostBody
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.UploadBucketPhotoInMemoryStorage
-import com.worldventures.dreamtrips.modules.common.model.AppConfig
 import com.worldventures.dreamtrips.modules.trips.model.TripModel
 import com.worldventures.dreamtrips.modules.tripsimages.uploader.UploadingFileManager
 import io.techery.janet.ActionState
@@ -56,14 +55,11 @@ import java.util.concurrent.TimeUnit
 @PrepareForTest(UploadingFileManager::class, FileUtils::class, EntityStateHolder::class)
 class BucketItemInteractorTest : BucketInteractorBaseTest() {
 
-    @Rule
-    val folder = TemporaryFolder()
+    @Rule val folder = TemporaryFolder()
 
-    @Mock
-    internal var uploadControllerStorage: UploadBucketPhotoInMemoryStorage? = null
+    @Mock internal var uploadControllerStorage: UploadBucketPhotoInMemoryStorage? = null
 
     private var testBucketItem: BucketItem? = null
-
     private var testPhotoUploadResponse: PhotoUploadResponse? = null
     private var testBucketPhoto: BucketPhoto? = null
 
@@ -104,15 +100,6 @@ class BucketItemInteractorTest : BucketInteractorBaseTest() {
 
         doReturn(Lists.newArrayList<BucketItem>(testBucketItem, mock(BucketItem::class.java)))
                 .whenever(mockMemoryStorage)!!.get(any())
-
-        //session
-        val mockConfig = mock(AppConfig.URLS.Config::class.java)
-        val mockAppConfig = mock(AppConfig::class.java)
-        val mockUrls = mock(AppConfig.URLS::class.java)
-
-        `when`(mockUrls.production).thenReturn(mockConfig)
-        `when`(mockAppConfig.urls).thenReturn(mockUrls)
-        `when`(userSession!!.globalConfig).thenReturn(mockAppConfig)
     }
 
     @Test

@@ -15,8 +15,7 @@ import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LoginPresenter extends Presenter<LoginPresenter.View> {
 
-    @Inject
-    LocaleHelper localeHelper;
+    @Inject LocaleHelper localeHelper;
 
     public void loginAction() {
         String username = view.getUsername();
@@ -30,7 +29,7 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
             return;
         }
 
-        dreamSpiceManager.loginUser(userPassword, username, (loginResponse, error) -> {
+        dreamSpiceManager.loginUser(userPassword, username, (session, error) -> {
             if (error != null) {
                 TrackingHelper.loginError();
                 if (TextUtils.isEmpty(error.getMessage())) {
@@ -39,7 +38,7 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                     view.alert(error.getMessage());
                 }
             } else {
-                User user = loginResponse.getSession().getUser();
+                User user = session.getUser();
                 TrackingHelper.login(user.getEmail());
                 TrackingHelper.setUserId(Integer.toString(user.getId()));
 
@@ -53,6 +52,7 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
     }
 
     public interface View extends Presenter.View {
+
         void showProgressDialog();
 
         void showLoginSuccess();

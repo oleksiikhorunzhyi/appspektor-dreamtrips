@@ -4,7 +4,6 @@ import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteracto
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.StaticPagesInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 
 import javax.inject.Singleton;
@@ -28,12 +27,6 @@ public class SessionProcessingModule {
     @Singleton
     public AppSettingsInteractor provideAppSettingsInteractor(Janet janet) {
         return new AppSettingsInteractor(janet);
-    }
-
-    @Provides
-    @Singleton
-    public StaticPagesInteractor provideStaticPagesInteractor(Janet janet) {
-        return new StaticPagesInteractor(janet);
     }
 
     @Provides

@@ -1,30 +1,15 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
-
-import android.util.Base64;
-
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
-import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-
-import java.io.UnsupportedEncodingException;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
-
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
 
-    @Inject
-    StaticPageProvider staticPageProvider;
-    @Inject
-    StaticPageHolder staticPageHolder;
-    @Inject
-    LocaleHelper localeHelper;
+    @Inject LocaleHelper localeHelper;
 
     private final String url;
     private boolean inErrorState;
@@ -46,19 +31,11 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
     }
 
     protected void load() {
-        view.load(getLocalizedUrl());
+        view.load(url);
     }
 
     protected void reload() {
-        view.reload(getLocalizedUrl());
-    }
-
-    protected String getLocalizedUrl() {
-        return url
-                .replaceAll("\\{locale\\}", localeHelper.getDefaultLocaleFormatted())
-                .replaceAll("\\{language\\}", localeHelper.getDefaultLocale().getLanguage())
-                .replaceAll("\\{country\\}", localeHelper.getDefaultLocale().getCountry())
-                .replaceAll("\\{BASE64_ENCODED_LOCALE\\}", getBase64String(localeHelper.getDefaultLocaleFormatted()));
+        view.reload(url);
     }
 
     public void onReload() {
@@ -67,6 +44,10 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
     public void setInErrorState(boolean inErrorState) {
         this.inErrorState = inErrorState;
+    }
+
+    public String getAuthToken() {
+        return "Token token=" + appSessionHolder.get().get().getApiToken();
     }
 
     public void track(Route route) {
@@ -96,16 +77,8 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         }
     }
 
-    private String getBase64String(String string) {
-        try {
-            return Base64.encodeToString(string.getBytes("UTF-8"), Base64.DEFAULT);
-        } catch (UnsupportedEncodingException e) {
-            Timber.e(e.toString());
-            return "";
-        }
-    }
-
     public interface View extends Presenter.View {
+
         void load(String localizedUrl);
 
         void reload(String localizedUrl);
@@ -114,5 +87,4 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
 
         void showError(int code);
     }
-
 }

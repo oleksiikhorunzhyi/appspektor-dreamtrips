@@ -13,7 +13,6 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.preference.LocalesHolder;
-import com.worldventures.dreamtrips.core.preference.StaticPageHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
@@ -42,7 +41,6 @@ public class LogoutDelegate {
     @Inject AuthInteractor authInteractor;
     @Inject FlagsDelegate flagsDelegate;
     @Inject LocalesHolder localesHolder;
-    @Inject StaticPageHolder staticPageHolder;
     @Inject MessengerConnector messengerConnector;
 
     private OnLogoutSuccessListener onLogoutSuccessListener;
@@ -73,7 +71,6 @@ public class LogoutDelegate {
         cookieManager.clearCookies();
         snappyRepository.clearAll();
         appSessionHolder.destroy();
-        staticPageHolder.destroy();
         localesHolder.destroy();
         notificationDelegate.cancelAll();
         badgeUpdater.updateBadge(0);

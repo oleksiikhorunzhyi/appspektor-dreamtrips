@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
-import com.worldventures.dreamtrips.modules.auth.model.LoginResponse;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
@@ -92,20 +91,6 @@ public class DreamSpiceManager extends SpiceManager {
         });
     }
 
-    public <T> void clearExecute(final SpiceRequest<T> request, SuccessListener<T> successListener, FailureListener failureListener) {
-        super.execute(request, new RequestListener<T>() {
-            @Override
-            public void onRequestFailure(SpiceException spiceException) {
-                failureListener.handleError(spiceException);
-            }
-
-            @Override
-            public void onRequestSuccess(T t) {
-                successListener.onRequestSuccess(t);
-            }
-        });
-    }
-
     public <T> void execute(final SpiceRequest<T> request, String cacheKey, long cacheExpiryDuration,
                             SuccessListener<T> successListener, FailureListener failureListener) {
         request.setRetryPolicy(new DefaultRetryPolicy(0, 0, 1));
@@ -133,15 +118,15 @@ public class DreamSpiceManager extends SpiceManager {
         failureListener.handleError(getParcedException(request, error));
     }
 
-    public void login(RequestListener<LoginResponse> requestListener) {
+    public void login(RequestListener<Session> requestListener) {
         if (isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
             String username = userSession.getUsername();
             String userPassword = userSession.getUserPassword();
-            loginUser(userPassword, username, (loginResponse, error) -> {
+            loginUser(userPassword, username, (session, error) -> {
                 if (requestListener != null) {
-                    if (loginResponse != null) {
-                        requestListener.onRequestSuccess(loginResponse);
+                    if (session != null) {
+                        requestListener.onRequestSuccess(session);
                     } else {
                         requestListener.onRequestFailure(error);
                     }
@@ -153,14 +138,10 @@ public class DreamSpiceManager extends SpiceManager {
     public void loginUser(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
         LoginCommand request = new LoginCommand(username, userPassword);
         execute(request, session -> {
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setSession(session);
-            handleSession(loginResponse.getSession(), loginResponse.getSession().getSsoToken(),
+            handleSession(session, session.getSsoToken(),
                     username, userPassword);
-            onLoginSuccess.result(loginResponse, null);
-        }, error -> {
-            onLoginSuccess.result(null, getParcedException(request, error));
-        });
+            onLoginSuccess.result(session, null);
+        }, error -> onLoginSuccess.result(null, getParcedException(request, error)));
     }
 
     public static boolean isLoginError(Exception error) {
@@ -223,7 +204,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public interface OnLoginSuccess {
-        void result(LoginResponse loginResponse, SpiceException exception);
+        void result(Session session, SpiceException exception);
     }
 
     public interface FailureListener {

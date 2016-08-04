@@ -27,18 +27,12 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI
 
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
-    @Inject
-    SnappyRepository snappyRepository;
-    @Inject
-    ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
-    @Inject
-    DrawableUtil drawableUtil;
-    @Inject
-    SnappyRepository db;
-    @Inject
-    DtlLocationInteractor dtlLocationInteractor;
-    @Inject
-    AuthorizedDataManager authorizedDataManager;
+    @Inject SnappyRepository snappyRepository;
+    @Inject ClearDirectoryDelegate clearTemporaryDirectoryDelegate;
+    @Inject DrawableUtil drawableUtil;
+    @Inject SnappyRepository db;
+    @Inject DtlLocationInteractor dtlLocationInteractor;
+    @Inject AuthorizedDataManager authorizedDataManager;
 
     private AuthorizedDataManager.AuthDataSubscriber authDataSubscriber;
 

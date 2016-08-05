@@ -16,7 +16,6 @@ import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.api.SendInvitationsQuery;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.membership.bundle.TemplateBundle;
-import com.worldventures.dreamtrips.modules.membership.event.InvitesSentEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
 
@@ -26,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import timber.log.Timber;
 
 public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View> {
 
@@ -126,7 +127,7 @@ public class EditTemplatePresenter extends Presenter<EditTemplatePresenter.View>
     }
 
     private void sentInviteSuccess(JSONObject aVoid) {
-        eventBus.post(new InvitesSentEvent());
+        Timber.d("Success sending invite");
     }
 
     private String getSubject() {

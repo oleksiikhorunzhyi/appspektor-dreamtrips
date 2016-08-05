@@ -9,7 +9,6 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.view.cell.AbstractCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
-import com.worldventures.dreamtrips.core.utils.events.SuccessStoryItemSelectedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 import butterknife.InjectView;
@@ -33,15 +32,6 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
 
         updateSelection();
         tvTitle.setText(getModelObject().getAuthor());
-    }
-
-    public void onEventMainThread(SuccessStoryItemSelectedEvent event) {
-        if (getPosition() == event.getPosition()) {
-            getModelObject().setSelected(true);
-        } else {
-            getModelObject().setSelected(false);
-        }
-        updateSelection();
     }
 
     private void updateSelection() {

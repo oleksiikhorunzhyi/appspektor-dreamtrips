@@ -2,11 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.service;
 
 import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction;
 import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
-
-import javax.inject.Named;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
@@ -19,8 +16,7 @@ public class DtlTransactionInteractor {
     private final ActionPipe<DtlEarnPointsAction> earnPointsActionPipe;
     private final ActionPipe<DtlTransactionAction> transactionActionPipe;
 
-    public DtlTransactionInteractor(Janet janet,
-                                    @Named(JanetModule.JANET_API_LIB) Janet apiLibJanet) {
+    public DtlTransactionInteractor(Janet janet, Janet apiLibJanet) {
         estimatePointsActionPipe =
                 apiLibJanet.createPipe(EstimationHttpAction.class, Schedulers.io());
         rateActionPipe = apiLibJanet.createPipe(RatingHttpAction.class, Schedulers.io());

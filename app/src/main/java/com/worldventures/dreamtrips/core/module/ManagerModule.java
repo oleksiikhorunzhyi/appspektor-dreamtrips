@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.core.api.FileDownloadSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -46,6 +47,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPi
 import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;
 import com.worldventures.dreamtrips.modules.video.api.DownloadFileListener;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -128,8 +130,9 @@ public class ManagerModule {
 
     @Singleton
     @Provides
-    DtlTransactionInteractor provideDtlTransactionInteractor(Janet janet) {
-        return new DtlTransactionInteractor(janet);
+    DtlTransactionInteractor provideDtlTransactionInteractor(Janet janet,
+                                                             @Named(JanetModule.JANET_API_LIB) Janet apiLibJanet) {
+        return new DtlTransactionInteractor(janet, apiLibJanet);
     }
 
     @Singleton

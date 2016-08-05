@@ -68,4 +68,7 @@
     <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
     <string name="wallet_card_details_button_delete_card">Delete Card</string>
 
+    <string name="wallet_card_list_records_connected">%d cards loaded</string>
+    <string name="wallet_card_list_record_connected">%d card loaded</string>
+
 </resources>

@@ -37,13 +37,12 @@
                         android:layout_height="?attr/actionBarSize"
                         app:titleTextColor="@android:color/white"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget
+                        android:layout_width="wrap_content"
+                        android:id="@+id/widget_dashboard_smart_card"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal">
+                        android:layout_gravity="center_horizontal"/>
 
-                        <include layout="@layout/adapter_item_wallet_smartcard"/>
-                    </LinearLayout>
                 </LinearLayout>
             </android.support.design.widget.CollapsingToolbarLayout>
 

@@ -289,6 +289,14 @@ public class SnappyRepositoryImpl implements SnappyRepository {
         }).or(Collections.emptyList());
     }
 
+    @Override public String getActiveSmartCardId() {
+        return actWithResult(db -> db.get(WALLET_ACTIVE_SMART_CARD_ID)).orNull();
+    }
+
+    @Override public void setActiveSmartCardId(String scid) {
+        act(db -> db.put(WALLET_ACTIVE_SMART_CARD_ID, scid));
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Settings
     ///////////////////////////////////////////////////////////////////////////

@@ -35,5 +35,6 @@ public class SetupPinCommand extends Command<Void> implements InjectableAction {
                 .status(SmartCard.CardStatus.ACTIVE)
                 .build();
         snappyRepository.saveSmartCard(smartCard);
+        snappyRepository.setActiveSmartCardId(smartCard.getSmartCardId());
     }
 }

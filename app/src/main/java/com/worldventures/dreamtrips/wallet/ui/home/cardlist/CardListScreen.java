@@ -16,12 +16,14 @@ import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardListHeaderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.HidingScrollListener;
 import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.CardStackCell;
+import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
 import java.util.List;
 
@@ -46,6 +48,9 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
     CoordinatorLayout mainContent;
     @InjectView(R.id.wallet_list_buttons_wrapper)
     View buttonsWrapper;
+    @InjectView(R.id.widget_dashboard_smart_card)
+    SmartCardWidget smartCardWidget;
+
     private BaseDelegateAdapter adapter;
 
     public CardListScreen(Context context) {
@@ -107,8 +112,14 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
     }
 
     @Override
-    public void onListReceived(List<CardStackViewModel> result) {
+    public void showRecordsInfo(List<CardStackViewModel> result) {
         adapter.clearAndUpdateItems(result);
+        smartCardWidget.bindCount(result);
+    }
+
+    @Override
+    public void showSmartCardInfo(SmartCard smartCard) {
+        smartCardWidget.bindCard(smartCard);
     }
 
     private void onNavigateButtonClick(View view) {

@@ -30,24 +30,36 @@
             android:src="@drawable/wallet_card_lock"/>
     </FrameLayout>
 
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/cardListSCAvatar"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="2dp"
+        android:src="@drawable/avatar"/>
+
     <TextView
         android:id="@+id/bankLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/connectedCardCount"
+        android:layout_above="@+id/connectedCardsCount"
         android:layout_alignParentStart="false"
-        android:layout_marginBottom="8dp"
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_large"
-        tools:text="Jhon's card"/>
+        tools:text="Jhon's card"
+        android:singleLine="true"
+        android:ellipsize="end"/>
 
     <TextView
-        android:id="@+id/connectedCardCount"
+        android:id="@+id/connectedCardsCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:textColor="@color/wallet_card_list_header_text"
         android:textSize="@dimen/font_medium"
-        tools:text="4 cards loaded"/>
+        tools:text="@string/wallet_card_list_records_connected"/>
 
 </RelativeLayout>

@@ -278,6 +278,17 @@ public class SnappyRepositoryImpl implements SnappyRepository {
                 .orNull();
     }
 
+    @Override
+    public List<SmartCard> getSmartCards() {
+        return actWithResult(db -> {
+            List<SmartCard> result = new ArrayList<>();
+            String[] keys = db.findKeys(WALLET_SMART_CARD);
+
+            for (String key : keys) result.add(db.getObject(key, ImmutableSmartCard.class));
+            return result;
+        }).or(Collections.emptyList());
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Settings
     ///////////////////////////////////////////////////////////////////////////

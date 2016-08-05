@@ -205,4 +205,6 @@ public interface SnappyRepository {
     void saveSmartCard(SmartCard smartCard);
 
     SmartCard getSmartCard(String smartCardId);
+
+    List<SmartCard> getSmartCards();
 }

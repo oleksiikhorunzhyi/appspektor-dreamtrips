@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.FileUtils;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 import com.worldventures.dreamtrips.wallet.util.WalletValidateHelper;
 
 import java.io.File;
@@ -46,9 +47,9 @@ public class SetupUserDataCommand extends Command<Void> implements InjectableAct
 
     @Override
     protected void run(CommandCallback<Void> callback) throws Throwable {
-        WalletValidateHelper.validateUserFullNameOrThrow(fullName);
+        User user = validateUserNameAndCreateUser();
         janet.createPipe(AssignUserAction.class)
-                .createObservableResult(new AssignUserAction(createUser()))
+                .createObservableResult(new AssignUserAction(user))
                 .flatMap(action -> Observable.fromCallable(this::getAvatarAsByteArray))
                 .flatMap(bytesArray -> janet.createPipe(UpdateUserPhotoAction.class)
                         .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
@@ -65,11 +66,24 @@ public class SetupUserDataCommand extends Command<Void> implements InjectableAct
         snappyRepository.saveSmartCard(smartCard);
     }
 
-    private User createUser() {
+    private User validateUserNameAndCreateUser() throws FormatException {
         String[] nameParts = fullName.split(" ");
+        String firstName, lastName, middleName = null;
+        if (nameParts.length < 2) throw new FormatException();
+        if (nameParts.length == 2) {
+            firstName = nameParts[0];
+            lastName = nameParts[1];
+        } else {
+            firstName = nameParts[0];
+            middleName = nameParts[1];
+            lastName = nameParts[2];
+        }
+        WalletValidateHelper.validateUserFullNameOrThrow(firstName, middleName, lastName);
+
         return ImmutableUser.builder()
-                .firstName(nameParts[0])
-                .lastName(nameParts[0])
+                .firstName(firstName)
+                .lastName(lastName)
+                .middleName(middleName)
                 .memberStatus(getMemberStatus())
                 .memberId(userSessionHolder.get().get().getUser().getId())
                 .build();

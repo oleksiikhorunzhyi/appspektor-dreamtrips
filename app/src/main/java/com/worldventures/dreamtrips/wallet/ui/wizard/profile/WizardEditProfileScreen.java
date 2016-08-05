@@ -12,6 +12,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import java.io.File;
 
@@ -135,7 +136,12 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
     @Override
     public void notifyError(Throwable throwable) {
         if (sweetAlertDialog == null) return;
-        sweetAlertDialog.setTitleText(getString(R.string.error_something_went_wrong));
+        if (throwable instanceof FormatException) {
+            sweetAlertDialog.setTitleText(getString(R.string.wallet_edit_profile_name_format_title));
+            sweetAlertDialog.setContentText(getString(R.string.wallet_edit_profile_name_format_detail));
+        } else {
+            sweetAlertDialog.setTitleText(getString(R.string.error_something_went_wrong));
+        }
         sweetAlertDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
     }
 

@@ -86,7 +86,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                 .subscribe(new ActionStateSubscriber<SetupUserDataCommand>()
                         .onStart(command -> getView().showProgress())
                         .onSuccess(command -> handleSuccess())
-                        .onFail((command, throwable) -> handleError(throwable))
+                        .onFail((command, throwable) -> handleError(throwable.getCause()))
                 );
     }
 

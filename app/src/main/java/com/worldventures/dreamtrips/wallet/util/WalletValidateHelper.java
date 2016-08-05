@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.wallet.util;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.regex.Pattern;
 
 public class WalletValidateHelper {
@@ -14,12 +17,15 @@ public class WalletValidateHelper {
         }
     }
 
-    public static boolean validateUserFullName(String cardName) {
-        return Pattern.compile("[A-Za-z]{2,21}+ [A-Za-z]{2,21}+").matcher(cardName).matches();
+    public static boolean validateUserFullName(@NonNull String firstName, @Nullable String middleName, @NonNull String lastName) {
+        Pattern pattern = Pattern.compile("[A-Za-z]{2,21}+");
+        boolean result = pattern.matcher(firstName).matches() && pattern.matcher(lastName).matches();
+        return result && (middleName == null || pattern.matcher(middleName).matches());
     }
 
-    public static void validateUserFullNameOrThrow(String cardName) throws FormatException {
-        if (!validateUserFullName(cardName)) {
+    public static void validateUserFullNameOrThrow(
+            @NonNull String firstName, @Nullable String middleName, @NonNull String lastName) throws FormatException {
+        if (!validateUserFullName(firstName, middleName, lastName)) {
             throw new FormatException();
         }
     }

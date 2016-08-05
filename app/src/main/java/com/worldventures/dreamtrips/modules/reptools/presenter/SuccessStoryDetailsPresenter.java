@@ -1,16 +1,20 @@
 package com.worldventures.dreamtrips.modules.reptools.presenter;
 
+import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.LikeSuccessStoryCommand;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.UnlikeSuccessStoryCommand;
-import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
+
+import javax.inject.Inject;
 
 public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<SuccessStoryDetailsPresenter.View> {
 
     private SuccessStory successStory;
+
+    @Inject StoryLikedEventDelegate storyLikedEventDelegate;
 
     public SuccessStoryDetailsPresenter(SuccessStory story, String url) {
         super(url);
@@ -47,8 +51,9 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
         view.openShare(successStory.getSharingUrl(), type);
     }
 
-    public void onEvent(StoryLikedEvent event) {
-        view.updateStoryLike(event.isLiked);
+    public void onStoryLiked(SuccessStory successStory) {
+        view.updateStoryLike(successStory.isLiked());
+        storyLikedEventDelegate.post(successStory);
     }
 
     public interface View extends WebViewFragmentPresenter.View {

@@ -17,7 +17,6 @@ import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
-import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
 
@@ -124,7 +123,7 @@ public class SuccessStoryDetailsFragment
             informUser(getString(R.string.ss_has_been_removed_from_favorites));
         }
 
-        eventBus.post(new StoryLikedEvent(story.getUrl(), story.isLiked()));
+        getPresenter().onStoryLiked(story);
     }
 
     @Override

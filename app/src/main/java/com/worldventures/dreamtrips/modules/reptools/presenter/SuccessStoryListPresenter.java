@@ -5,11 +5,11 @@ import android.support.v4.app.FragmentManager;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
-import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.view.fragment.SuccessStoryDetailsFragment;
 
@@ -17,10 +17,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresenter.View> {
 
     private boolean onlyFavorites = false;
     private int lastSelectedPosition = -1;
+
+    @Inject StoryLikedEventDelegate storyLikedEventDelegate;
+
+    @Override
+    public void takeView(View view) {
+        super.takeView(view);
+        storyLikedEventDelegate.getObservable()
+                .compose(bindView())
+                .subscribe(this::onSuccessStoryLiked);
+    }
 
     @Override
     public void onResume() {
@@ -49,10 +61,10 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
         view.onStoryClicked();
     }
 
-    public void onEvent(StoryLikedEvent event) {
+    private void onSuccessStoryLiked(SuccessStory successStory) {
         List<SuccessStory> stories = view.getAdapter().getItems();
-        Queryable.from(stories).filter(story -> story.getUrl().equals(event.storyUrl)).forEachR(story -> {
-            story.setLiked(event.isLiked);
+        Queryable.from(stories).filter(story -> story.getUrl().equals(successStory.getUrl())).forEachR(story -> {
+            story.setLiked(successStory.isLiked());
             view.getAdapter().notifyItemChanged(stories.indexOf(story));
         });
     }

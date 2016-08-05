@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.auth.presenter.LoginPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -22,7 +22,7 @@ import butterknife.OnClick;
 import static com.worldventures.dreamtrips.core.utils.ViewUtils.getMinSideSize;
 
 @Layout(R.layout.fragment_login)
-public class LoginFragment extends BaseFragment<LoginPresenter> implements LoginPresenter.View {
+public class LoginFragment extends RxBaseFragment<LoginPresenter> implements LoginPresenter.View {
 
     @InjectView(R.id.btn_login) protected Button loginButton;
     @InjectView(R.id.et_username) protected DTEditText usernameEditText;
@@ -51,12 +51,6 @@ public class LoginFragment extends BaseFragment<LoginPresenter> implements Login
     public void alert(String s) {
         super.alert(s);
         dismissProgressDialog();
-    }
-
-    @Override
-    public void showLoginErrorMessage() {
-        dismissProgressDialog();
-        informUser(getString(R.string.error_log_in));
     }
 
     private void dismissProgressDialog() {

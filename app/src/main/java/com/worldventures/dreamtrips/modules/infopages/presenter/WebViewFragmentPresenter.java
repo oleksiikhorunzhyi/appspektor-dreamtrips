@@ -1,15 +1,11 @@
 package com.worldventures.dreamtrips.modules.infopages.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
-import javax.inject.Inject;
-
 public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> extends Presenter<T> {
-
-    @Inject LocaleHelper localeHelper;
 
     private final String url;
     private boolean inErrorState;
@@ -77,7 +73,7 @@ public class WebViewFragmentPresenter<T extends WebViewFragmentPresenter.View> e
         }
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void load(String localizedUrl);
 

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.auth.service.command;
+package com.worldventures.dreamtrips.modules.auth.api.command;
 
 import android.content.Context;
 import android.text.TextUtils;

@@ -33,10 +33,10 @@ import com.techery.spares.utils.event.ScreenChangedEvent;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -56,7 +56,7 @@ import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable>
-        extends BaseFragmentWithArgs<T, P>
+        extends RxBaseFragmentWithArgs<T, P>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
@@ -474,6 +474,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class TermsOfServiceFragment extends StaticInfoFragment {
+
         @Override
         protected String getURL() {
             return provider.getTermsOfServiceUrl();
@@ -494,6 +495,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class CookiePolicyFragment extends StaticInfoFragment {
+
         @Override
         protected String getURL() {
             return provider.getCookiesPolicyUrl();
@@ -534,6 +536,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class PrivacyPolicyFragment extends StaticInfoFragment {
+
         @Override
         protected String getURL() {
             return provider.getPrivacyPolicyUrl();
@@ -553,6 +556,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
+
         @Override
         protected String getURL() {
             return provider.getEnrollMemberUrl();

@@ -116,8 +116,5 @@
                     bind:onClick="loginAction"/>
             </RelativeLayout>
         </LinearLayout>
-
-
     </RelativeLayout>
-
 </ScrollView>

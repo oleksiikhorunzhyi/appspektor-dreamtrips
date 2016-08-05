@@ -12,7 +12,6 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
@@ -37,8 +36,6 @@ import dagger.Provides;
                 //
                 ApiModule.class,
                 AmazonModule.class,
-                RetryModule.class,
-                ApiFactoryModule.class,
                 //
                 UiBindingModule.class,
                 //

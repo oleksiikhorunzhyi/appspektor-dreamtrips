@@ -6,7 +6,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
 import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
-import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -65,10 +64,6 @@ public interface DreamTripsApi {
     String TYPE_MEMBER_360 = "DTAPP360";
     String TYPE_REP = "dtapprep";
     String TYPE_HELP = "DTAPPHELP";
-
-    @FormUrlEncoded
-    @POST("/api/sessions")
-    Session login(@Field("username") String username, @Field("password") String password);
 
     @POST("/api/profile/avatar")
     @Multipart
@@ -347,5 +342,4 @@ public interface DreamTripsApi {
 
     @POST("/api/feedbacks")
     Void sendFeedback(@Body FeedbackBody feedbackBody);
-
 }

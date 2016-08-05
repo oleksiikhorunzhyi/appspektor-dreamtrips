@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.auth.service.command.UnsubribeFromPushCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import javax.inject.Inject;

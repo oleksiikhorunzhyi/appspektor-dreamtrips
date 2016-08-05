@@ -29,15 +29,12 @@ import dagger.ObjectGraph;
 import icepick.Icepick;
 import timber.log.Timber;
 
-
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {
 
     private PM presenter;
 
-    @Inject
-    protected Router router;
-    @Inject
-    protected Presenter.TabletAnalytic tabletAnalytic;
+    @Inject protected Router router;
+    @Inject protected Presenter.TabletAnalytic tabletAnalytic;
 
     public PM getPresenter() {
         return presenter;

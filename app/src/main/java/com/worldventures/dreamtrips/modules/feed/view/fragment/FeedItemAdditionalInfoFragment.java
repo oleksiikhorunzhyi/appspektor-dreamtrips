@@ -13,10 +13,9 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -34,28 +33,18 @@ import butterknife.Optional;
 import static com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder.forActivity;
 
 @Layout(R.layout.fragment_feed_item_additional_info)
-public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPresenter> extends BaseFragmentWithArgs<P, FeedAdditionalInfoBundle> implements FeedItemAdditionalInfoPresenter.View {
+public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPresenter> extends RxBaseFragmentWithArgs<P, FeedAdditionalInfoBundle> implements FeedItemAdditionalInfoPresenter.View {
 
-    @Inject
-    @Named(RouteCreatorModule.PROFILE)
-    RouteCreator<Integer> routeCreator;
+    @InjectView(R.id.user_cover) SimpleDraweeView userCover;
+    @InjectView(R.id.user_photo) SmartAvatarView userPhoto;
+    @InjectView(R.id.user_name) TextView userName;
+    @InjectView(R.id.company_name) TextView companyName;
+    @InjectView(R.id.view_profile) TextView viewProfile;
 
-    @Inject
-    @ForActivity
-    Provider<Injector> injectorProvider;
+    @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
+    @Inject @ForActivity Provider<Injector> injectorProvider;
 
     DecimalFormat df = new DecimalFormat("#0.00");
-
-    @InjectView(R.id.user_cover)
-    SimpleDraweeView userCover;
-    @InjectView(R.id.user_photo)
-    SmartAvatarView userPhoto;
-    @InjectView(R.id.user_name)
-    TextView userName;
-    @InjectView(R.id.company_name)
-    TextView companyName;
-    @InjectView(R.id.view_profile)
-    TextView viewProfile;
 
     @Override
     protected P createPresenter(Bundle savedInstanceState) {
@@ -87,15 +76,4 @@ public class FeedItemAdditionalInfoFragment<P extends FeedItemAdditionalInfoPres
                 .data(new UserBundle(getArgs().getUser()))
                 .build());
     }
-
-    public void onEventMainThread(UpdateUserInfoEvent event) {
-        if (getArgs() != null) {
-            User user = getArgs().getUser();
-            if (user != null && event.user.getId() == user.getId()) {
-                getPresenter().setUser(event.user);
-                setupView(event.user);
-            }
-        }
-    }
-
 }

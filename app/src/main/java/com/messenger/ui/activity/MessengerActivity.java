@@ -30,15 +30,11 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
 
     public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
-    @Inject
-    PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
-    @Inject
-    PickLocationDelegate pickLocationDelegate;
-    @Inject
-    CropImageDelegate cropImageDelegate;
+    @InjectView(R.id.chat_photo_picker) PhotoPickerLayout photoPickerLayout;
 
-    @InjectView(R.id.chat_photo_picker)
-    PhotoPickerLayout photoPickerLayout;
+    @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
+    @Inject PickLocationDelegate pickLocationDelegate;
+    @Inject CropImageDelegate cropImageDelegate;
 
     String conversationId;
 
@@ -108,7 +104,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
         //
         context.startActivity(resultIntent);
     }
-
 
     @Override
     protected MessengerActivityPresenter createPresentationModel(Bundle savedInstanceState) {

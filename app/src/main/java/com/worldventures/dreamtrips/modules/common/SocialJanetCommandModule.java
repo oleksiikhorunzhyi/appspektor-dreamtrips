@@ -2,7 +2,9 @@ package com.worldventures.dreamtrips.modules.common;
 
 import com.worldventures.dreamtrips.core.api.uploadery.SimpleUploaderyCommand;
 import com.worldventures.dreamtrips.core.api.uploadery.UploaderyImageCommand;
-import com.worldventures.dreamtrips.modules.auth.service.command.UnsubribeFromPushCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.AddBucketItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
@@ -12,7 +14,7 @@ import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettings
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
-import com.worldventures.dreamtrips.modules.auth.service.command.UpdateAuthInfoCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.UpdateAuthInfoCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountTimelineCommand;
@@ -39,6 +41,8 @@ import dagger.Module;
         AppSettingsCommand.class,
         GetCommentsCommand.class,
         UpdateAuthInfoCommand.class,
+        LoginCommand.class,
+        UpdateUserCommand.class,
         PodcastCommand.class,
         SuggestedPhotoCommand.class,
         GetAccountFeedCommand.Refresh.class,

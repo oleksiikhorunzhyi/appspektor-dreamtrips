@@ -1,6 +1,5 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -19,8 +18,7 @@ import javax.inject.Inject;
 
 public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPresenter<FeedListAdditionalInfoPresenter.View> {
 
-    @Inject
-    SnappyRepository db;
+    @Inject SnappyRepository db;
 
     private int nextPage = 1;
     private int prevTotalItemCount = 0;
@@ -140,6 +138,5 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
         void setCurrentCircle(Circle currentCircle);
 
         void openUser(UserBundle bundle);
-
     }
 }

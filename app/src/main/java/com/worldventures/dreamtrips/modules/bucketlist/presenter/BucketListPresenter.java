@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.api.DreamTripsApi;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.events.MarkBucketItemDoneEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
@@ -35,19 +36,14 @@ import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.C
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.NEW;
 
 public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
-    @Inject
-    DreamTripsApi api;
 
-    @Inject
-    BucketInteractor bucketInteractor;
+    @Inject DreamTripsApi api;
+    @Inject BucketInteractor bucketInteractor;
+    @Inject LoginInteractor loginInteractor;
 
-    @State
-    BucketItem.BucketType type;
-
-    @State
-    boolean showToDO = true;
-    @State
-    boolean showCompleted = true;
+    @State BucketItem.BucketType type;
+    @State boolean showToDO = true;
+    @State boolean showCompleted = true;
 
     private BucketItem currentItem;
 
@@ -235,7 +231,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public AutoCompleteAdapter.Loader getSuggestionLoader() {
-        return new SuggestionLoader(type, dreamSpiceManager, api);
+        return new SuggestionLoader(type, api, loginInteractor);
     }
 
     private int getOriginalPosition(int filteredPosition) {
@@ -247,6 +243,7 @@ public class BucketListPresenter extends Presenter<BucketListPresenter.View> {
     }
 
     public interface View extends RxView {
+
         BaseArrayListAdapter<BucketItem> getAdapter();
 
         void startLoading();

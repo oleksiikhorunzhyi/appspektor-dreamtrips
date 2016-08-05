@@ -15,7 +15,6 @@ import android.widget.CheckBox;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.IntentUtils;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.TermsConditionsDialogPresenter;
 
 import butterknife.InjectView;
@@ -23,14 +22,10 @@ import butterknife.InjectView;
 @Layout(R.layout.dialog_terms_conditions)
 public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<TermsConditionsDialogPresenter> implements TermsConditionsDialogPresenter.View {
 
-    @InjectView(R.id.terms_content)
-    WebView termsContent;
-    @InjectView(R.id.accept_checkbox)
-    CheckBox acceptCheckbox;
-    @InjectView(R.id.accept)
-    Button accept;
-    @InjectView(R.id.reject)
-    Button reject;
+    @InjectView(R.id.terms_content) WebView termsContent;
+    @InjectView(R.id.accept_checkbox) CheckBox acceptCheckbox;
+    @InjectView(R.id.accept) Button accept;
+    @InjectView(R.id.reject) Button reject;
 
     private String termsText;
 

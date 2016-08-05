@@ -11,18 +11,15 @@ import com.octo.android.robospice.request.SpiceRequest;
 import com.octo.android.robospice.request.listener.RequestListener;
 import com.octo.android.robospice.retry.DefaultRetryPolicy;
 import com.techery.spares.module.Injector;
-import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.DTErrorHandler;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
-import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.modules.auth.api.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.common.model.Session;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
 import org.apache.http.HttpStatus;
@@ -35,26 +32,23 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
+import io.techery.janet.helper.ActionStateSubscriber;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import roboguice.util.temp.Ln;
 import timber.log.Timber;
 
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
-
 public class DreamSpiceManager extends SpiceManager {
 
     @Inject protected Context context;
     @Inject protected SessionHolder<UserSession> appSessionHolder;
-    @Inject @Global protected EventBus eventBus;
     @Inject DTErrorHandler dtErrorHandler;
     @Inject LogoutDelegate logoutDelegate;
+    @Inject LoginInteractor loginInteractor;
 
     private final ErrorParser errorParser;
 
@@ -115,44 +109,16 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     private void processError(SpiceRequest request, SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
-        failureListener.handleError(getParcedException(request, error));
-    }
-
-    public void login(RequestListener<Session> requestListener) {
-        if (isCredentialExist(appSessionHolder)) {
+        if (AuthRetryPolicy.isLoginError(error) && isCredentialExist(appSessionHolder)) {
             UserSession userSession = appSessionHolder.get().get();
-            String username = userSession.getUsername();
-            String userPassword = userSession.getUserPassword();
-            loginUser(userPassword, username, (session, error) -> {
-                if (requestListener != null) {
-                    if (session != null) {
-                        requestListener.onRequestSuccess(session);
-                    } else {
-                        requestListener.onRequestFailure(error);
-                    }
-                }
-            });
+            loginInteractor.loginActionPipe()
+                    .createObservable(new LoginCommand(userSession.getUsername(), userSession.getUserPassword()))
+                    .subscribe(new ActionStateSubscriber<LoginCommand>()
+                            .onSuccess(loginCommand -> onLoginSuccess.result(loginCommand.getResult(), null))
+                            .onFail((loginCommand, throwable) -> onLoginSuccess.result(null, getParcedException(request, error))));
+        } else {
+            failureListener.handleError(getParcedException(request, error));
         }
-    }
-
-    public void loginUser(String userPassword, String username, OnLoginSuccess onLoginSuccess) {
-        LoginCommand request = new LoginCommand(username, userPassword);
-        execute(request, session -> {
-            handleSession(session, session.getSsoToken(),
-                    username, userPassword);
-            onLoginSuccess.result(session, null);
-        }, error -> onLoginSuccess.result(null, getParcedException(request, error)));
-    }
-
-    public static boolean isLoginError(Exception error) {
-        if (error instanceof RetrofitError) {
-            RetrofitError cause = (RetrofitError) error;
-            return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
-        } else if (error.getCause() instanceof RetrofitError) {
-            RetrofitError cause = (RetrofitError) error.getCause();
-            return cause.getResponse() != null && cause.getResponse().getStatus() == HTTP_UNAUTHORIZED;
-        }
-        return false;
     }
 
     public static boolean isCredentialExist(SessionHolder<UserSession> appSessionHolder) {
@@ -163,38 +129,6 @@ public class DreamSpiceManager extends SpiceManager {
         } else {
             return false;
         }
-    }
-
-    private boolean handleSession(Session session, String legacyToken,
-                                  String username, String userPassword) {
-        String sessionToken = session.getToken();
-        User sessionUser = session.getUser();
-
-        UserSession userSession;
-        if (appSessionHolder.get().isPresent()) {
-            userSession = appSessionHolder.get().get();
-        } else {
-            userSession = new UserSession();
-        }
-
-        userSession.setUser(sessionUser);
-        userSession.setApiToken(sessionToken);
-        userSession.setLegacyApiToken(legacyToken);
-
-        userSession.setUsername(username);
-        userSession.setUserPassword(userPassword);
-        userSession.setLastUpdate(System.currentTimeMillis());
-
-        List<Feature> features = session.getPermissions();
-        userSession.setFeatures(features);
-
-        if (sessionUser != null & sessionToken != null) {
-            appSessionHolder.put(userSession);
-            eventBus.postSticky(new UpdateUserInfoEvent(sessionUser));
-            return true;
-        }
-
-        return false;
     }
 
 

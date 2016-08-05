@@ -30,23 +30,14 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     protected VT view;
 
-    @Inject
-    protected Context context;
-    @Inject
-    protected ActivityRouter activityRouter;
-    @Inject
-    @Global
-    protected EventBus eventBus;
-    @Inject
-    protected SessionHolder<UserSession> appSessionHolder;
-    @Inject
-    protected AnalyticsInteractor analyticsInteractor;
-    @Inject
-    protected FeatureManager featureManager;
-    @Inject
-    protected DreamSpiceManager dreamSpiceManager;
-    @Inject
-    protected PhotoUploadingManagerS3 photoUploadingManagerS3;
+    @Inject protected Context context;
+    @Inject protected ActivityRouter activityRouter;
+    @Inject @Global protected EventBus eventBus;
+    @Inject protected SessionHolder<UserSession> appSessionHolder;
+    @Inject protected AnalyticsInteractor analyticsInteractor;
+    @Inject protected FeatureManager featureManager;
+    @Inject protected DreamSpiceManager dreamSpiceManager;
+    @Inject protected PhotoUploadingManagerS3 photoUploadingManagerS3;
 
     protected int priorityEventBus = 0;
 
@@ -114,7 +105,6 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     public void onCreate(Bundle savedInstanceState) {
 
     }
-
 
     ///////////////////////////////////////////////////////////////////////////
     // Spice manager
@@ -206,6 +196,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     ///////////////////////////////////////////////////////////////////////////
 
     public interface View extends TabletAnalytic {
+
         void informUser(int stringId);
 
         void informUser(String string);
@@ -216,6 +207,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     }
 
     public interface TabletAnalytic {
+
         boolean isTabletLandscape();
     }
 }

@@ -1,21 +1,24 @@
 package com.worldventures.dreamtrips.modules.auth.presenter;
 
-import android.text.TextUtils;
-
 import com.techery.spares.utils.ValidationUtils;
-import com.worldventures.dreamtrips.core.utils.LocaleHelper;
+import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
 
 import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LoginPresenter extends Presenter<LoginPresenter.View> {
 
-    @Inject LocaleHelper localeHelper;
+    @Inject LoginInteractor loginInteractor;
 
     public void loginAction() {
         String username = view.getUsername();
@@ -29,35 +32,30 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
             return;
         }
 
-        dreamSpiceManager.loginUser(userPassword, username, (session, error) -> {
-            if (error != null) {
-                TrackingHelper.loginError();
-                if (TextUtils.isEmpty(error.getMessage())) {
-                    view.showLoginErrorMessage();
-                } else {
-                    view.alert(error.getMessage());
-                }
-            } else {
-                User user = session.getUser();
-                TrackingHelper.login(user.getEmail());
-                TrackingHelper.setUserId(Integer.toString(user.getId()));
+        view.bindUntilDropView(loginInteractor.loginActionPipe()
+                .createObservable(new LoginCommand(username, userPassword))
+                .compose(new IoToMainComposer<>()))
+                .subscribe(new ActionStateSubscriber<LoginCommand>()
+                        .onSuccess(loginCommand -> {
+                            User user = loginCommand.getResult().getUser();
+                            TrackingHelper.login(user.getEmail());
+                            TrackingHelper.setUserId(Integer.toString(user.getId()));
 
-                view.showLoginSuccess();
-                activityRouter.openLaunch();
-                activityRouter.finish();
-            }
-        });
-
-        this.view.showProgressDialog();
+                            view.showLoginSuccess();
+                            activityRouter.openLaunch();
+                            activityRouter.finish();
+                        }).onFail((loginCommand, throwable) -> {
+                            TrackingHelper.loginError();
+                            view.alert(loginCommand.getErrorMessage());
+                        }));
+        view.showProgressDialog();
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void showProgressDialog();
 
         void showLoginSuccess();
-
-        void showLoginErrorMessage();
 
         void showLocalErrors(int userNameError, int passwordError);
 

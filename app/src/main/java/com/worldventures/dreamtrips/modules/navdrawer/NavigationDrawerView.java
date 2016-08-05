@@ -5,7 +5,11 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.List;
 
+import rx.Observable;
+
 public interface NavigationDrawerView {
+
+    <T> Observable<T> bind(Observable<T> observable);
 
     void setData(List<ComponentDescription> activeComponents);
 

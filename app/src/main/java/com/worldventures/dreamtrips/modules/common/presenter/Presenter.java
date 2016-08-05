@@ -24,6 +24,8 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import icepick.Icepick;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class Presenter<VT extends Presenter.View> implements RequestingPresenter, DreamSpiceManager.FailureListener {
@@ -51,6 +53,8 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     protected int priorityEventBus = 0;
 
     protected ApiErrorPresenter apiErrorPresenter;
+
+    PublishSubject<Void> destroyViewStopper = PublishSubject.create();
 
     public Presenter() {
         apiErrorPresenter = provideApiErrorPresenter();
@@ -86,6 +90,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
     }
 
     public void dropView() {
+        destroyViewStopper.onNext(null);
         this.view = null;
         apiErrorPresenter.dropView();
         if (eventBus.isRegistered(this)) eventBus.unregister(this);
@@ -115,6 +120,10 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     }
 
+
+    protected <T> Observable.Transformer<T, T> bindView() {
+        return input -> input.takeUntil(destroyViewStopper);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Spice manager

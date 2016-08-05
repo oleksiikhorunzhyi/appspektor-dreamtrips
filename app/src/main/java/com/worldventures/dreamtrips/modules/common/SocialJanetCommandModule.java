@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.GlobalConfigCommand;
@@ -57,6 +58,7 @@ import dagger.Module;
         TranslateUidItemCommand.TranslateCommentCommand.class,
         TranslateUidItemCommand.TranslatePostCommand.class,
         TranslateTextCachedCommand.class,
+        AcceptTermsCommand.class,
         UnsubribeFromPushCommand.class,
         GetTripDetailsCommand.class,
         HashtagSuggestionCommand.class},

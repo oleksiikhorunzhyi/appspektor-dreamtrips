@@ -133,9 +133,7 @@ public class NewDreamTripsHttpService extends ActionServiceWrapper {
                 .toBlocking()
                 .last();
         if (loginState.status == ActionState.Status.SUCCESS) {
-            Session session = loginState.action.getLoginResponse();
-            db.saveSettings(SettingsManager.merge(session.getSettings(), SettingsFactory.createSettings()), true);
-            return session;
+            return loginState.action.getLoginResponse();
         } else {
             Timber.w(loginState.exception, "Login error");
         }

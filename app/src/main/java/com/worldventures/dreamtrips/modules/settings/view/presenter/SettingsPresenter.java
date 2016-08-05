@@ -5,7 +5,6 @@ import android.support.annotation.StringRes;
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlFilterMerchantInteractor;
@@ -25,6 +24,7 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
 
@@ -62,7 +62,10 @@ public class SettingsPresenter extends Presenter<SettingsPresenter.View> {
     }
 
     private void subscribeUpdateSettings() {
-        view.bindUntilDropView(settingsInteractor.settingsActionPipe().observe().compose(new IoToMainComposer<>()))
+        settingsInteractor.settingsActionPipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
                 .subscribe(new ActionStateSubscriber<SettingsCommand>()
                         .onSuccess(settingsCommand -> onSettingsSaved())
                         .onFail((settingsCommand, throwable) -> onSaveError(settingsCommand.getFallbackErrorMessage())));

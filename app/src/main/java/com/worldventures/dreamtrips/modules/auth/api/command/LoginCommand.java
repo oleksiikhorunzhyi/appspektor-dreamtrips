@@ -6,12 +6,17 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.settings.model.Setting;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
+import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,6 +31,7 @@ public class LoginCommand extends CommandWithError<Session> implements Injectabl
     @Inject Janet janet;
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject AuthInteractor authInteractor;
+    @Inject SnappyRepository db;
 
     private String userName;
     private String userPassword;
@@ -54,6 +60,7 @@ public class LoginCommand extends CommandWithError<Session> implements Injectabl
                 .createObservableResult(new LoginAction(userName, userPassword))
                 .map(LoginAction::getLoginResponse)
                 .doOnNext(this::updateSession)
+                .doOnNext(this::saveSettings)
                 .doOnNext(this::notifyUserUpdated)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
@@ -94,6 +101,12 @@ public class LoginCommand extends CommandWithError<Session> implements Injectabl
         if (sessionUser != null & sessionToken != null) {
             appSessionHolder.put(userSession);
         }
+    }
+
+    private void saveSettings(Session session) {
+        List<Setting> settings = session.getSettings();
+        if (settings == null) settings = new ArrayList<>();
+        db.saveSettings(SettingsManager.merge(settings, SettingsFactory.createSettings()), true);
     }
 
     private void notifyUserUpdated(Session session) {

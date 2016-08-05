@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common;
 
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 
@@ -16,12 +15,6 @@ import io.techery.janet.Janet;
         AuthorizedDataManager.class
 }, library = true, complete = false)
 public class SessionProcessingModule {
-
-    @Provides
-    @Singleton
-    public LocalesInteractor provideLocalesInteractor(Janet janet) {
-        return new LocalesInteractor(janet);
-    }
 
     @Provides
     @Singleton

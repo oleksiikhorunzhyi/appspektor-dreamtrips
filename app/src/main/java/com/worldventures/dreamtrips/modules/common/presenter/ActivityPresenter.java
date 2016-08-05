@@ -75,18 +75,8 @@ public class ActivityPresenter<VT extends ActivityPresenter.View> extends Presen
     }
 
     protected void setupUserLocale() {
-        Optional<UserSession> userSession = appSessionHolder.get();
-        if (!userSession.isPresent()) {
-            localeSwitcher.resetLocale();
-        } else {
-            User user = userSession.get().getUser();
-            if (user != null && user.getLocale() != null) {
-                localeSwitcher.applyLocale(localeHelper.getAccountLocale(user));
-            } else {
-                localeSwitcher.resetLocale();
-            }
-        }
-    }
+        localeSwitcher.applyLocale(localeHelper.getDefaultLocale());
+      }
 
     private void subscribeToUserUpdate() {
         view.bindUntilDropView(authInteractor.updateUserPipe().observe()

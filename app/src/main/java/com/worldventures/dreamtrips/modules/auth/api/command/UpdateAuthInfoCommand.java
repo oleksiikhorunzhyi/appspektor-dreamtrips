@@ -10,10 +10,8 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -31,7 +29,6 @@ import rx.Observable;
 public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAction {
 
     @Inject SessionHolder<UserSession> appSessionHolder;
-    @Inject LocalesInteractor getLocalesManager;
     @Inject AppSettingsInteractor queryAppSettingsInteractor;
     @Inject QueryTripsFilterDataInteractor queryTripsFilterDataInteractor;
     @Inject CirclesInteractor queryCirclesInteractor;
@@ -44,7 +41,6 @@ public class UpdateAuthInfoCommand extends Command<Void> implements InjectableAc
         sessionQueries.add(queryAppSettingsInteractor.pipe().createObservableResult(new AppSettingsCommand()));
         sessionQueries.add(circles());
         sessionQueries.add(queryTripsFilterDataInteractor.pipe().createObservableResult(new TripsFilterDataCommand()));
-        sessionQueries.add(getLocalesManager.pipe().createObservableResult(new LocalesCommand()));
 
         Observable.zip(sessionQueries, args -> (Void) null)
                 .timeout(30, TimeUnit.SECONDS)

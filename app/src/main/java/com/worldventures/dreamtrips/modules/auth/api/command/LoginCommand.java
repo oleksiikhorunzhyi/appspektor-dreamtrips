@@ -82,6 +82,7 @@ public class LoginCommand extends CommandWithError<Session> implements Injectabl
         userSession.setUser(sessionUser);
         userSession.setApiToken(sessionToken);
         userSession.setLegacyApiToken(session.getSsoToken());
+        userSession.setLocale(session.getLocale());
 
         userSession.setUsername(userName);
         userSession.setUserPassword(userPassword);

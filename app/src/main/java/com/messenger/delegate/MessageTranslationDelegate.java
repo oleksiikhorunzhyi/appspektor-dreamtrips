@@ -40,7 +40,7 @@ public class MessageTranslationDelegate {
     public void translateMessage(DataMessage message) {
         translationsDAO.getTranslation(message.getId()).first()
                 .subscribe(dataTranslation -> {
-                    String translateToLocale = localeHelper.getAccountLocaleFormatted(sessionHolder.get().get().getUser());
+                    String translateToLocale = localeHelper.getDefaultLocaleFormatted();
                     if ((dataTranslation == null || dataTranslation.getTranslateStatus() == TranslationStatus.ERROR)
                             && SessionHolderHelper.hasEntity(sessionHolder)) {
                         translateMessageRequest(message, translateToLocale);

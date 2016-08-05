@@ -20,7 +20,7 @@ public class LoginAction extends BaseHttpAction{
         return loginResponse;
     }
 
-    private class LoginBody {
+    private static class LoginBody {
 
         private final String username;
         private final String password;

@@ -83,7 +83,7 @@ public class ImageUtils {
             @Override
             protected void onFailureImpl(DataSource<CloseableReference<CloseableBitmap>> dataSource) {
                 if (errorReceiverListener != null) {
-                    errorReceiverListener.onError();
+                    errorReceiverListener.onError(dataSource.getFailureCause());
                 }
             }
         };
@@ -112,8 +112,8 @@ public class ImageUtils {
                         subscriber.onNext(bitmap);
                         subscriber.onCompleted();
                     }
-                }, () -> {
-                    subscriber.onError(new RuntimeException());
+                }, t -> {
+                    subscriber.onError(t);
                     if (!subscriber.isUnsubscribed()) {
                         subscriber.unsubscribe();
                     }
@@ -240,7 +240,7 @@ public class ImageUtils {
     }
 
     private interface BitmapErrorReceiverListener {
-        void onError();
+        void onError(Throwable t);
     }
 
     public static String getParametrizedUrl(String url, int width, int height) {

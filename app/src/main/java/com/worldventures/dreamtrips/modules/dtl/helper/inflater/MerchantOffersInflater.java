@@ -193,7 +193,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
         if (DtlMerchantHelper.isOfferExpiringSoon(offerData)) {
             ViewUtils.setTextOrHideView(expirationBarCaption, DtlMerchantHelper.
                     getOfferExpiringCaption(perkView.getContext(), offerData,
-                            localeHelper.getAccountLocale(sessionHolder.get().get().getUser())));
+                            localeHelper.getDefaultLocale()));
         }
     }
 

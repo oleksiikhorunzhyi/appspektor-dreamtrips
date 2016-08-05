@@ -45,7 +45,7 @@ public class FeedItemDetailsPresenter extends FeedDetailsPresenter<FeedItemDetai
 
     public void onEvent(TranslatePostEvent event) {
         if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getOwnAccountLocaleFormatted());
+            textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
         }
     }
 

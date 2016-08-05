@@ -13,6 +13,7 @@ public class Session extends BaseEntity {
     @SerializedName("sso_token")
     private String ssoToken;
     private User user;
+    private String locale;
     private List<Feature> permissions;
 
     public Session() {
@@ -29,6 +30,10 @@ public class Session extends BaseEntity {
 
     public String getSsoToken() {
         return ssoToken;
+    }
+
+    public String getLocale() {
+        return locale;
     }
 
     public void setSsoToken(String ssoToken) {

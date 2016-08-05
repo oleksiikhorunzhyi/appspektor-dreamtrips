@@ -4,9 +4,8 @@ import android.app.Activity;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.IRoboSpiceAdapter;
-import com.worldventures.dreamtrips.core.preference.Prefs;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.rx.RxView;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.events.AddToBucketEvent;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.core.utils.events.FilterBusEvent;
@@ -28,6 +27,7 @@ import com.worldventures.dreamtrips.modules.trips.model.TripsFilterDataAnalytics
 import com.worldventures.dreamtrips.util.TripsFilterData;
 
 import javax.inject.Inject;
+
 import icepick.State;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -36,9 +36,6 @@ public class TripListPresenter extends Presenter<TripListPresenter.View> {
 
     @Inject
     Activity activity;
-
-    @Inject
-    Prefs prefs;
 
     @Inject
     FeedEntityManager entityManager;

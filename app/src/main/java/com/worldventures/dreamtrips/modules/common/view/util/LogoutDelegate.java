@@ -12,13 +12,12 @@ import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.api.session.LogoutHttpAction;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
-import com.worldventures.dreamtrips.core.preference.LocalesHolder;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import javax.inject.Inject;
@@ -40,7 +39,6 @@ public class LogoutDelegate {
     @Inject DTCookieManager cookieManager;
     @Inject AuthInteractor authInteractor;
     @Inject FlagsDelegate flagsDelegate;
-    @Inject LocalesHolder localesHolder;
     @Inject MessengerConnector messengerConnector;
 
     public LogoutDelegate(Injector injector) {
@@ -66,7 +64,6 @@ public class LogoutDelegate {
         cookieManager.clearCookies();
         snappyRepository.clearAll();
         appSessionHolder.destroy();
-        localesHolder.destroy();
         notificationDelegate.cancelAll();
         badgeUpdater.updateBadge(0);
         FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);

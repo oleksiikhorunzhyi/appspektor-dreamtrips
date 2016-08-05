@@ -71,8 +71,6 @@ public class DtlMerchantExpandableCell
     @Inject
     AnalyticsInteractor analyticsInteractor;
     @Inject
-    protected SessionHolder<UserSession> sessionHolder;
-    @Inject
     LocaleHelper localeHelper;
 
     private final LayoutInflater inflater;
@@ -221,8 +219,7 @@ public class DtlMerchantExpandableCell
         //
         if (DtlMerchantHelper.isOfferExpiringSoon(offer)) { // expiration bar
             ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
-                    getOfferExpiringCaption(itemView.getContext(), offer,
-                            localeHelper.getAccountLocale(sessionHolder.get().get().getUser())));
+                    getOfferExpiringCaption(itemView.getContext(), offer, localeHelper.getDefaultLocale()));
         } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
         //
         title.setText(offer.getTitle()); // description

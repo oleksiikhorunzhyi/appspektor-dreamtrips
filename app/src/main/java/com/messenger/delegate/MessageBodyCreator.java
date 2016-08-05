@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.model.MessageBody;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
-import com.worldventures.dreamtrips.modules.common.model.User;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -13,11 +12,9 @@ import java.util.Locale;
 public class MessageBodyCreator {
 
     private LocaleHelper localeHelper;
-    private User currentUser;
 
-    public MessageBodyCreator(LocaleHelper localeHelper, User currentUser) {
+    public MessageBodyCreator(LocaleHelper localeHelper) {
         this.localeHelper = localeHelper;
-        this.currentUser = currentUser;
     }
 
     public MessageBody provideForAttachment(AttachmentHolder attachmentHolder) {
@@ -37,7 +34,7 @@ public class MessageBodyCreator {
         if (!TextUtils.isEmpty(text)) builder.text(text);
 
         return builder
-                .locale(generateMessageLocale(localeHelper.getAccountLocale(currentUser)))
+                .locale(generateMessageLocale(localeHelper.getDefaultLocale()))
                 .build();
     }
 

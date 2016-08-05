@@ -181,7 +181,7 @@ public class BaseCommentPresenter<T extends BaseCommentPresenter.View> extends P
 
     public void translateComment(Comment comment) {
         translationFeedInteractor.translateCommentPipe().send(TranslateUidItemCommand.forComment(comment,
-                localeHelper.getOwnAccountLocaleFormatted()));
+                localeHelper.getDefaultLocaleFormatted()));
     }
 
     public void onEvent(FeedEntityManager.CommentEvent event) {

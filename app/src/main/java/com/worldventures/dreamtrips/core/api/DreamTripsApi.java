@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
-import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -198,9 +197,6 @@ public interface DreamTripsApi {
 
     @GET("/api/invitations/filled_templates/{id} ")
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);
-
-    @GET("/api/locales")
-    ArrayList<AvailableLocale> getLocales();
 
     @GET("/api/member_videos/")
     ArrayList<Category> getVideos(@Query("type") String type);

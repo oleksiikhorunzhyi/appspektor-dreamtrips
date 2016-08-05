@@ -12,11 +12,20 @@ public class UserSession {
     private String legacyApiToken;
     private String userPassword;
     private String username;
+    private String locale;
     private long lastUpdate;
     private List<Feature> permissions;
 
     public User getUser() {
         return user;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     public void setUser(User user) {

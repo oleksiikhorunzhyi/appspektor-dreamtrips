@@ -49,6 +49,7 @@ public class AuthRetryPolicy {
         if (appSessionHolder.get().isPresent()) {
             userSession = appSessionHolder.get().get();
         }
+        userSession.setLocale(session.getLocale());
         userSession.setUser(sessionUser);
         userSession.setApiToken(session.getToken());
         userSession.setLegacyApiToken(session.getSsoToken());

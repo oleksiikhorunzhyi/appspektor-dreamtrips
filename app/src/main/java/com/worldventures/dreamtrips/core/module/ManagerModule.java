@@ -21,7 +21,6 @@ import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.AppSettingsInteractor;
-import com.worldventures.dreamtrips.modules.common.delegate.LocalesInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
@@ -72,7 +71,6 @@ import io.techery.janet.Janet;
 
                 AuthorizedDataManager.class,
                 AppSettingsInteractor.class,
-                LocalesInteractor.class,
                 QueryTripsFilterDataInteractor.class,
         },
         library = true, complete = false

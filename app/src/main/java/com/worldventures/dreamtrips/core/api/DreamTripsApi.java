@@ -27,7 +27,6 @@ import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripDetails;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
@@ -316,10 +315,6 @@ public interface DreamTripsApi {
     @FormUrlEncoded
     @POST("/api/{uid}/flags")
     Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
-
-    @FormUrlEncoded
-    @POST("/api/terms_and_conditions/accept")
-    Void acceptTermsConditions(@Field("text") String text);
 
     @GET("/api/social/friends/{userId}/mutual/")
     ArrayList<User> getMutualFriends(@Path("userId") int userId);

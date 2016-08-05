@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.custom.BadgedTabLayout;
@@ -17,6 +17,8 @@ import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
 import com.worldventures.dreamtrips.modules.reptools.presenter.RepToolsPresenter;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.InjectView;
 
@@ -31,6 +33,8 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     protected ViewPager pager;
 
     private BaseStatePagerAdapter adapter;
+
+    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
     @Override
     protected RepToolsPresenter createPresenter(Bundle savedInstanceState) {
@@ -67,7 +71,7 @@ public class RepToolsFragment extends BaseFragment<RepToolsPresenter> implements
     public void onPageSelected(int position) {
         getPresenter().trackState(position);
         SoftInputUtil.hideSoftInputMethod(pager);
-        eventBus.post(new ScreenChangedEvent());
+        screenChangedEventDelegate.post(null);
     }
 
     @Override

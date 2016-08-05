@@ -6,14 +6,18 @@ import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
+import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
 
     private List<FragmentItem> screens;
+    @Inject
+    SearchFocusChangedDelegate searchFocusChangedDelegate;
 
     @Override
     public void onInjected() {
@@ -25,6 +29,9 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         view.setScreens(screens);
+        searchFocusChangedDelegate.getObservable()
+                .compose(bindView())
+                .subscribe(hasFocus -> view.toggleTabStripVisibility(!hasFocus));
     }
 
     private List<FragmentItem> provideScreens() {
@@ -58,10 +65,6 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
                 TrackingHelper.actionRepToolsInviteShare(TrackingHelper.ATTRIBUTE_VIEW);
                 break;
         }
-    }
-
-    public void onEvent(SearchFocusChangedEvent event) {
-        view.toggleTabStripVisibility(!event.hasFocus());
     }
 
     public interface View extends Presenter.View {

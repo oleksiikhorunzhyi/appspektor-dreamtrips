@@ -29,14 +29,14 @@ import com.badoo.mobile.util.WeakHandler;
 import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
@@ -49,17 +49,17 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import timber.log.Timber;
 
 import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
 public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable>
-        extends BaseFragmentWithArgs<T, P>
+        extends RxBaseFragmentWithArgs<T, P>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject protected StaticPageProvider provider;
+    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
     @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
     @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
@@ -128,7 +128,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
-                Timber.d("Page started");
                 isLoading = true;
                 weakHandler.post(() -> {
                     if (refreshLayout != null) refreshLayout.setRefreshing(true);
@@ -139,7 +138,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Timber.d("Page finished");
                 isLoading = false;
                 if (!(isDetached() || isRemoving() || refreshLayout == null)) {
                     weakHandler.post(() -> {
@@ -310,6 +308,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             return false;
         });
 
+        bindUntilDropView(screenChangedEventDelegate.getObservable())
+                .subscribe(event -> {
+                    lockHandler.removeCallbacksAndMessages(null);
+                    lockOrientationIfNeeded();
+                });
+
         if (savedState != null) webView.restoreState(savedState);
     }
 
@@ -445,11 +449,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     ///////////////////////////////////////////////////////////////////////////
 
     WeakHandler lockHandler = new WeakHandler();
-
-    public void onEventMainThread(ScreenChangedEvent event) {
-        lockHandler.removeCallbacksAndMessages(null);
-        lockOrientationIfNeeded();
-    }
 
     protected void lockOrientationIfNeeded() {
         lockHandler.postDelayed(() -> {

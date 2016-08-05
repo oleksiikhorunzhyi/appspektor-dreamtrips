@@ -18,10 +18,12 @@ import android.widget.TextView;
 import com.badoo.mobile.util.WeakHandler;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragment;
 import com.worldventures.dreamtrips.modules.membership.model.Member;
@@ -98,6 +100,7 @@ public class InviteFragment
                 DividerItemDecoration.VERTICAL_LIST));
         adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(Member.class, MemberCell.class);
+        adapter.registerDelegate(Member.class, getPresenter()::onMemberCellSelected);
 
         lvUsers.setAdapter(adapter);
 

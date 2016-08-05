@@ -6,16 +6,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_success_story)
-public class SuccessStoryCell extends AbstractCell<SuccessStory> {
+public class SuccessStoryCell extends AbstractDelegateCell<SuccessStory, SuccessStoryCell.Delegate> {
 
     @InjectView(R.id.tv_title) TextView tvTitle;
     @InjectView(R.id.vg_parent) ViewGroup vgParent;
@@ -26,10 +26,6 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
 
     @Override
     protected void syncUIStateWithModel() {
-        if (!getEventBus().isRegistered(this)) {
-            getEventBus().register(this);
-        }
-
         updateSelection();
         tvTitle.setText(getModelObject().getAuthor());
     }
@@ -44,6 +40,13 @@ public class SuccessStoryCell extends AbstractCell<SuccessStory> {
 
     @OnClick(R.id.vg_parent)
     public void onItemClick() {
-        getEventBus().post(new OnSuccessStoryCellClickEvent(getModelObject(), getPosition()));
+        cellDelegate.onCellClicked(getModelObject(), getPosition());
+    }
+
+    public static abstract class Delegate implements CellDelegate<SuccessStory> {
+        @Override
+        public void onCellClicked(SuccessStory model) {}
+
+        public abstract void onCellClicked(SuccessStory model, int position);
     }
 }

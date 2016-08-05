@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.utils.events.OnSuccessStoryCellClickEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.reptools.api.successstories.GetSuccessStoriesQuery;
@@ -45,8 +44,8 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
         super.handleError(error);
     }
 
-    public void onEvent(OnSuccessStoryCellClickEvent event) {
-        handleListItemClick(event.getModelObject(), event.getPosition());
+    public void onSuccessStoryCellClick(SuccessStory successStory, int position) {
+        handleListItemClick(successStory, position);
         view.onStoryClicked();
     }
 

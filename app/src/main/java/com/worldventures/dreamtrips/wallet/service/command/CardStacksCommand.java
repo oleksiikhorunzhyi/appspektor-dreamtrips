@@ -17,36 +17,50 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.techery.janet.ActionPipe;
 import io.techery.janet.ActionState;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import io.techery.janet.helper.ActionStateToActionTransformer;
+import io.techery.janet.smartcard.action.support.ConnectAction;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
-import static io.techery.janet.ActionState.Status.FAIL;
-import static io.techery.janet.ActionState.Status.SUCCESS;
 
 @CommandAction
 public class CardStacksCommand extends Command<List<CardStackViewModel>> implements InjectableAction {
 
-    @Inject @Named(JANET_WALLET) Janet janet;
-    @Inject @ForApplication Context context;
+    @Inject
+    @Named(JANET_WALLET)
+    Janet janet;
+    @Inject
+    @ForApplication
+    Context context;
 
     private volatile List<Card> cachedList = new ArrayList<>();
 
-    @Override protected void run(CommandCallback<List<CardStackViewModel>> callback) throws Throwable {
-        janet.createPipe(CardListCommand.class)
-                .createObservable(new CardListCommand())
-                .doOnNext(it -> {
-                    if (it.status == ActionState.Status.PROGRESS) {
-                        setCachedList(it.action.getCachedItems());
-                        callback.onProgress(0);
-                    }
-                })
-                .filter(it -> it.status == SUCCESS || it.status == FAIL)
-                .map(it -> it.action.getResult())
-                .map(this::convert)
-                .subscribe(callback::onSuccess, callback::onFail);
+    @Override
+    protected void run(CommandCallback<List<CardStackViewModel>> callback) throws Throwable {
+        ActionPipe<ConnectAction> pipe = janet.createPipe(ConnectAction.class);
+        pipe.createObservableResult(new ConnectAction("any_memberid", "any_userSecret"))
+                .flatMap(action ->
+                        janet.createPipe(CardListCommand.class)
+                                .createObservable(new CardListCommand())
+                                .doOnNext(it -> {
+                                    if (it.status == ActionState.Status.PROGRESS) {
+                                        setCachedList(it.action.getCachedItems());
+                                        callback.onProgress(0);
+                                    }
+                                })
+                                .compose(new ActionStateToActionTransformer<>())
+                                .map(it -> it.getResult())
+                                .map(this::convert)
+                )
+                .subscribe((result) -> {
+                    callback.onSuccess(result);
+                }, (throwable) -> {
+                    callback.onFail(throwable);
+                });
     }
 
     private List<CardStackViewModel> convert(List<Card> cardList) {
@@ -82,4 +96,5 @@ public class CardStacksCommand extends Command<List<CardStackViewModel>> impleme
     public List<CardStackViewModel> getCachedList() {
         return convert(cachedList);
     }
+
 }

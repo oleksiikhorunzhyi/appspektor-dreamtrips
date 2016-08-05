@@ -38,7 +38,7 @@ public class BankCardToRecordConverter  {
                 .build();
     }
 
-    //todo
+    //TODO use real record type instead of random
     private BankCard.CardType generateRandomCardType() {
         return new Random().nextBoolean() ? BankCard.CardType.CREDIT : BankCard.CardType.DEBIT;
     }

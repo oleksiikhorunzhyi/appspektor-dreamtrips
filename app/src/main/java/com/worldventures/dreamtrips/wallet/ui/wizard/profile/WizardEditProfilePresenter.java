@@ -48,6 +48,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     @Override
     public void attachView(Screen view) {
         super.attachView(view);
+        observePickerAndCropper(view);
         subscribePreparingAvatarCommand();
         subscribeSetupUserCommand();
 
@@ -55,6 +56,17 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         view.setUserFullName(userProfile.getFullName());
         smartCardAvatarInteractor.getSmartCardAvatarCommandPipe()
                 .send(new LoadImageForSmartCardCommand(userProfile.getAvatar().getThumb()));
+    }
+
+
+    private void observePickerAndCropper(Screen view) {
+        view.observePickPhoto()
+                .compose(bindView())
+                .subscribe(view::cropPhoto);
+
+        view.observeCropper()
+                .compose(bindView())
+                .subscribe(this::prepareImage);
     }
 
     public void subscribePreparingAvatarCommand() {
@@ -97,9 +109,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
     }
 
     public void choosePhoto() {
-        getView().choosePhotoAndCrop()
-                .compose(bindView())
-                .subscribe(this::prepareImage, throwable -> Timber.e(throwable, ""));
+        getView().pickPhoto();
     }
 
     private void prepareImage(String path) {
@@ -114,7 +124,13 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
     public interface Screen extends WalletScreen, DelayedSuccessScreen {
 
-        Observable<String> choosePhotoAndCrop();
+        void pickPhoto();
+
+        void cropPhoto(String photoPath);
+
+        Observable<String> observePickPhoto();
+
+        Observable<String> observeCropper();
 
         void hidePhotoPicker();
 

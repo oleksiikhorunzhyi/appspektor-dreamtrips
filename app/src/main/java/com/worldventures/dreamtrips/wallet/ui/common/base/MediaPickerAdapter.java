@@ -3,6 +3,9 @@ package com.worldventures.dreamtrips.wallet.ui.common.base;
 import com.messenger.delegate.CropImageDelegate;
 import com.messenger.ui.util.avatar.MessengerMediaPickerDelegate;
 
+import java.io.File;
+
+import rx.Notification;
 import rx.Observable;
 
 public class MediaPickerAdapter implements MediaPickerService {
@@ -16,28 +19,30 @@ public class MediaPickerAdapter implements MediaPickerService {
     }
 
     @Override
-    public Observable<String> pickPhoto() {
+    public void pickPhoto() {
         messengerMediaPickerDelegate.showPhotoPicker();
-        return messengerMediaPickerDelegate.getImagePathsStream().take(1);
     }
 
     @Override
-    public Observable<String> pickPhotoAndCrop() {
-        messengerMediaPickerDelegate.showPhotoPicker();
-        return messengerMediaPickerDelegate.getImagePathsStream().take(1)
-                .flatMap(imagePath -> {
-                    cropImageDelegate.cropImage(imagePath);
-                    return cropImageDelegate.getCroppedImagesStream().take(1)
-                            .flatMap(cropNotification -> {
-                                if (cropNotification.getValue() == null) return Observable.empty();
-                                return Observable.just(cropNotification.getValue().getPath());
-                            });
-                });
+    public void crop(String filePath) {
+        cropImageDelegate.cropImage(filePath);
     }
 
     @Override
     public void hidePicker() {
         messengerMediaPickerDelegate.hidePhotoPicker();
+    }
+
+    @Override
+    public Observable<String> observePicker() {
+        return messengerMediaPickerDelegate.getImagePathsStream();
+    }
+
+    @Override
+    public Observable<File> observeCropper() {
+        return cropImageDelegate.getCroppedImagesStream()
+                .filter(cropNotification -> cropNotification.getKind() == Notification.Kind.OnNext)
+                .map(Notification::getValue);
     }
 
 }

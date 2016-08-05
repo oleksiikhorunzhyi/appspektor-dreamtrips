@@ -79,8 +79,23 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
     }
 
     @Override
-    public Observable<String> choosePhotoAndCrop() {
-        return mediaPickerService.pickPhotoAndCrop();
+    public void pickPhoto() {
+        mediaPickerService.pickPhoto();
+    }
+
+    @Override
+    public void cropPhoto(String photoPath) {
+        mediaPickerService.crop(photoPath);
+    }
+
+    @Override
+    public Observable<String> observePickPhoto() {
+        return mediaPickerService.observePicker();
+    }
+
+    @Override
+    public Observable<String> observeCropper() {
+        return mediaPickerService.observeCropper().map(File::getAbsolutePath);
     }
 
     @Override

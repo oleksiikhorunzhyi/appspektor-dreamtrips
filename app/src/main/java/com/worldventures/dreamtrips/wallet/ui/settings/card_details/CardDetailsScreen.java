@@ -6,13 +6,13 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 
 import butterknife.InjectView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Screen, CardDetailsPresenter, CardDetailsPath>
@@ -36,19 +36,13 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
 
     @Override
     public CardDetailsPresenter createPresenter() {
-        return new CardDetailsPresenter(getContext(), getInjector());
+        return new CardDetailsPresenter(getContext(), getInjector(), getPath().getBankCard());
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         toolbar.setNavigationOnClickListener(v -> navigateButtonClick());
-        bankCardWidget.setBankCardInfo(getPath().getBankCard());
-    }
-
-    @OnCheckedChanged(R.id.default_payment_card_checkbox)
-    public void onUsageDefaultAddressChanged(boolean useAsDefaultAddress) {
-        getPresenter().useDefaultAddressRequired(useAsDefaultAddress);
     }
 
     @OnClick(R.id.delete_button)
@@ -57,13 +51,18 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
     }
 
     @Override
-    public void showDefaultAddress(AddressInfo addressInfo, String country) {
-        addressText.setText(AddressUtil.obtainAddressLabel(addressInfo, country));
+    public void setTitle(String title) {
+        toolbar.setTitle(title);
     }
 
     @Override
-    public void showCardInfo(String cardNumber) {
-        toolbar.setTitle(cardNumber);
+    public void showCardBankInfo(BankCard bankCard) {
+        bankCardWidget.setBankCardInfo(bankCard);
+    }
+
+    @Override
+    public void showDefaultAddress(AddressInfoWithLocale addressInfoWithLocale) {
+        addressText.setText(AddressUtil.obtainAddressLabel(addressInfoWithLocale));
     }
 
     protected void navigateButtonClick() {

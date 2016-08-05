@@ -88,11 +88,11 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
 
         boolean ownPost = textualPost.getOwner().getId() == appSessionHolder.get().get().getUser().getId();
         boolean emptyPostText = TextUtils.isEmpty(textualPost.getDescription());
-        boolean sameLanguage = localeHelper.isOwnLanguage(textualPost.getLanguageFrom());
+        boolean ownLanguage = localeHelper.isOwnLanguage(textualPost.getLanguageFrom());
         boolean emptyPostLanguage = TextUtils.isEmpty(textualPost.getLanguageFrom());
         boolean alreadyTranslated = postFeedItem.isTranslated();
 
-        if (!ownPost && !emptyPostText && !sameLanguage && !emptyPostLanguage) {
+        if (!ownPost && !emptyPostText && !ownLanguage && !emptyPostLanguage) {
             if (alreadyTranslated) {
                 translateButton.setVisibility(View.GONE);
                 viewWithTranslation.showTranslation(postFeedItem.getTranslation(),

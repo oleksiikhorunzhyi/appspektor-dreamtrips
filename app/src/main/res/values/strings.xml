@@ -651,4 +651,6 @@
 
     <string name="error_fail_to_translate_text">Failed to translate text</string>
 
+    <string name="book_it_disabled">You must be a DreamTrips Member\nto book a trip. Click here to <a href="enroll_member">Sign up</a></string>
+
 </resources>

@@ -43,16 +43,11 @@ public class LogoutDelegate {
     @Inject LocalesHolder localesHolder;
     @Inject MessengerConnector messengerConnector;
 
-    private OnLogoutSuccessListener onLogoutSuccessListener;
-
     public LogoutDelegate(Injector injector) {
         injector.inject(this);
     }
 
     public void logout() {
-        if (onLogoutSuccessListener != null) {
-            onLogoutSuccessListener.onLogoutSuccess();
-        }
         eventBus.post(new SessionHolder.Events.SessionDestroyed());
         messengerConnector.disconnect();
         flagsDelegate.clearCache();
@@ -75,13 +70,5 @@ public class LogoutDelegate {
         notificationDelegate.cancelAll();
         badgeUpdater.updateBadge(0);
         FlowManager.getDatabase(MessengerDatabase.NAME).reset(context);
-    }
-
-    public void setOnLogoutSuccessListener(OnLogoutSuccessListener onLogoutSuccessListener) {
-        this.onLogoutSuccessListener = onLogoutSuccessListener;
-    }
-
-    public interface OnLogoutSuccessListener {
-        void onLogoutSuccess();
     }
 }

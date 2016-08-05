@@ -1,10 +1,10 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
-import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
-import com.worldventures.dreamtrips.modules.trips.api.GetTripDetailsQuery;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
+import com.worldventures.dreamtrips.modules.trips.command.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -16,7 +16,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+
 public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
+
+    @Inject TripsInteractor tripsInteractor;
 
     private List<TripImage> filteredImages;
 
@@ -29,8 +34,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     }
 
     @Override
-    public void onInjected() {
-        super.onInjected();
+    public void takeView(View view) {
+        super.takeView(view);
         TrackingHelper.trip(String.valueOf(trip.getTripId()), getAccountUserId());
         loadTripDetails();
     }
@@ -38,8 +43,11 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     @Override
     public void onResume() {
         super.onResume();
-        if (trip.isSoldOut() || (!appSessionHolder.get().get().getUser().isPlatinum()
-                && trip.isPlatinum())) {
+        if (!getAccount().isMember()) {
+            view.hideBookIt();
+            view.showSignUp();
+        } else if (trip.isSoldOut()
+                || (!getAccount().isPlatinum() && trip.isPlatinum())) {
             view.hideBookIt();
         }
     }
@@ -49,7 +57,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     }
 
     public void actionBookIt() {
-        TrackingHelper.bookIt(String.valueOf(trip.getTripId()), getAccountUserId());
+        TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
 
         String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
         view.openBookIt(url);
@@ -63,16 +71,18 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     }
 
     public void loadTripDetails() {
-        doRequest(new GetTripDetailsQuery(trip.getTripId()), tripDetails -> {
-            view.setContent(tripDetails.getContent());
-            TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
-        });
-    }
-
-    @Override
-    public void handleError(SpiceException error) {
-        super.handleError(error);
-        view.setContent(null);
+        view.bindUntilDropView(tripsInteractor.detailsPipe()
+                .createObservable(new GetTripDetailsCommand(trip.getTripId()))
+                .observeOn(AndroidSchedulers.mainThread())
+        ).subscribe(new ActionStateSubscriber<GetTripDetailsCommand>()
+                .onSuccess(command -> {
+                    TrackingHelper.tripInfo(String.valueOf(trip.getTripId()), getAccountUserId());
+                    view.setContent(command.getResult().getContent());
+                })
+                .onFail((command, e) -> {
+                    view.setContent(null);
+                    view.informUser(command.getErrorMessage());
+                }));
     }
 
     public void onItemClick(int position) {
@@ -91,6 +101,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
         void setContent(List<ContentItem> contentItems);
 
         void hideBookIt();
+
+        void showSignUp();
 
         void openFullscreen(FullScreenImagesBundle data);
 

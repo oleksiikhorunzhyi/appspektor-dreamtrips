@@ -59,9 +59,6 @@ public class User extends BaseEntity implements Parcelable {
      */
     private List<String> subscriptions;
 
-    //TEMP SOLUTION, NOT NEEDED IN FUTURE, JUST FOR APPERIAN RELEASE
-    private boolean socialEnabled;
-
     @SerializedName("circles")
     List<Circle> circles;
 
@@ -102,10 +99,6 @@ public class User extends BaseEntity implements Parcelable {
 
     public void setBackgroundPhotoUrl(String backgroundPhotoUrl) {
         this.backgroundPhotoUrl = backgroundPhotoUrl;
-    }
-
-    public boolean isSocialEnabled() {
-        return socialEnabled;
     }
 
     public String getUsername() {
@@ -210,6 +203,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public boolean isGeneral() {
         return contains(DTM_SUBSCRIPTION, DTS_SUBSCRIPTION);
+    }
+
+    public boolean isMember() {
+        return contains(DTM_SUBSCRIPTION, DTG_SUBSCRIPTION, DTP_SUBSCRIPTION);
     }
 
     private boolean contains(String... keys) {
@@ -400,7 +397,6 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeInt(this.relationship == null ? -1 : this.relationship.ordinal());
         dest.writeString(this.backgroundPhotoUrl);
         dest.writeStringList(this.subscriptions);
-        dest.writeByte(socialEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.mutualFriends, 0);
         dest.writeList(this.circles);
@@ -429,7 +425,6 @@ public class User extends BaseEntity implements Parcelable {
         this.relationship = tmpRelationship == -1 ? null : Relationship.values()[tmpRelationship];
         this.backgroundPhotoUrl = in.readString();
         this.subscriptions = in.createStringArrayList();
-        this.socialEnabled = in.readByte() != 0;
         this.termsAccepted = in.readByte() != 0;
         this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
         circles = new ArrayList<>();

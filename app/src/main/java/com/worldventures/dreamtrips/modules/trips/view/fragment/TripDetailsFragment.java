@@ -16,9 +16,12 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.utils.TextViewLinkHandler;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ImageClickedEvent;
-import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.presenter.SweetDialogHelper;
 import com.worldventures.dreamtrips.modules.common.view.adapter.ContentAdapter;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
@@ -37,25 +40,28 @@ import butterknife.Optional;
 
 @Layout(R.layout.fragment_trip_details)
 @MenuResource(R.menu.menu_detailed_trip)
-public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresenter, TripDetailsBundle>
+public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPresenter, TripDetailsBundle>
         implements TripDetailsPresenter.View {
 
     @InjectView(R.id.textViewReload)
-    protected TextView textViewReloadTripDetails;
+    TextView textViewReloadTripDetails;
     @InjectView(R.id.listViewContent)
-    protected LinearListView linearListView;
+    LinearListView linearListView;
     @InjectView(R.id.progressBarDetailLoading)
-    protected ProgressBar progressBarDetailLoading;
+    ProgressBar progressBarDetailLoading;
     @InjectView(R.id.textViewBookIt)
-    protected TextView textViewBookIt;
+    TextView textViewBookIt;
+    @InjectView(R.id.signUp)
+    TextView signUp;
     @Optional
     @InjectView(R.id.toolbar_actionbar)
-    protected Toolbar toolbar;
+    Toolbar toolbar;
     @Optional
     @InjectView(R.id.toolbar_actionbar_landscape)
-    protected Toolbar toolbarLandscape;
+    Toolbar toolbarLandscape;
 
-    TripDetailsViewInjector tripDetailsViewInjector;
+    private TripDetailsViewInjector tripDetailsViewInjector;
+    private SweetDialogHelper sweetDialogHelper;
 
     @Override
     protected TripDetailsPresenter createPresenter(Bundle savedInstanceState) {
@@ -64,8 +70,6 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
 
     @OnClick(R.id.textViewBookIt)
     public void bookIt() {
-        TripModel tripModel = getArgs().tripModel();
-        TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, tripModel.getTripId(), tripModel.getName());
         getPresenter().actionBookIt();
     }
 
@@ -91,6 +95,9 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
+        sweetDialogHelper = new SweetDialogHelper();
+        signUp.setMovementMethod(new TextViewLinkHandler(url -> router.moveTo(Route.ENROLL_MEMBER)));
+
         tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -131,6 +138,11 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
     }
 
     @Override
+    public void showSignUp() {
+        signUp.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void hideBookIt() {
         textViewBookIt.setEnabled(false);
         textViewBookIt.setBackgroundColor(getResources().getColor(R.color.tripButtonDisabled));
@@ -156,6 +168,16 @@ public class TripDetailsFragment extends BaseFragmentWithArgs<TripDetailsPresent
         tripDetailsViewInjector.initTripData(tripModel, getPresenter().getAccount());
         if (toolbarLandscape != null)
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(tripModel.getName());
+    }
+
+    @Override
+    public void tripAddedToBucketItem(BucketItem bucketItem) {
+        sweetDialogHelper.notifyItemAddedToBucket(getActivity(), bucketItem);
+    }
+
+    @Override
+    public void tripLiked(TripModel tripModel) {
+        sweetDialogHelper.notifyTripLiked(getActivity(), tripModel);
     }
 
     @Override

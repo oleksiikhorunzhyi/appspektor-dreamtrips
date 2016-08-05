@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketLis
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteItemPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.LocalesCommand;
@@ -25,6 +26,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoC
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 
 import dagger.Module;
 
@@ -56,7 +58,9 @@ import dagger.Module;
         TranslateUidItemCommand.TranslateCommentCommand.class,
         TranslateUidItemCommand.TranslatePostCommand.class,
         TranslateTextCachedCommand.class,
+        AcceptTermsCommand.class,
         UnsubribeFromPushCommand.class,
+        GetTripDetailsCommand.class,
         HashtagSuggestionCommand.class},
 
         complete = false, library = true)

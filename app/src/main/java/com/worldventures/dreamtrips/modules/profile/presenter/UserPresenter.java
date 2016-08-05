@@ -24,9 +24,6 @@ import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 import com.worldventures.dreamtrips.modules.profile.api.GetPublicProfileQuery;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
@@ -236,18 +233,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         if (view.isVisibleOnScreen())
             uidItemDelegate.flagItem(new FlagData(event.getEntity().getUid(),
                     event.getFlagReasonId(), event.getNameOfReason()), view);
-    }
-
-    public void onEvent(OnAcceptRequestEvent e) {
-        acceptClicked();
-    }
-
-    public void onEvent(OnRejectRequestEvent e) {
-        rejectClicked();
-    }
-
-    public void onEvent(OnAddFriendEvent e) {
-        addFriendClicked();
     }
 
     public interface View extends ProfilePresenter.View, UidItemDelegate.View {

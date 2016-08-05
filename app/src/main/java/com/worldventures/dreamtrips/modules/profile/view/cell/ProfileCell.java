@@ -20,7 +20,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
 import com.techery.spares.session.SessionHolder;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
@@ -35,16 +35,8 @@ import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.profile.adapters.Expandable;
 import com.worldventures.dreamtrips.modules.profile.adapters.OnExpandedListener;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAcceptRequestEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnAddFriendEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnBucketListClickedEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCoverClickEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnCreatePostClickEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnFriendsClickedEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnPhotoClickEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnRejectRequestEvent;
-import com.worldventures.dreamtrips.modules.profile.event.profilecell.OnTripImageClickedEvent;
 import com.worldventures.dreamtrips.modules.profile.view.ProfileViewUtils;
+import com.worldventures.dreamtrips.modules.profile.view.cell.delegate.ProfileCellDelegate;
 import com.worldventures.dreamtrips.modules.profile.view.widgets.ExpandableLayout;
 
 import java.text.DecimalFormat;
@@ -59,7 +51,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_profile)
-public class ProfileCell extends AbstractCell<User> implements Expandable {
+public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate> implements Expandable {
 
     @InjectView(R.id.user_cover) SimpleDraweeView userCover;
     @InjectView(R.id.user_photo) SmartAvatarView userPhoto;
@@ -177,7 +169,6 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
             setRoviaBucks(df.format(user.getRoviaBucks()));
             setDreamTripPoints(df.format(user.getDreamTripsPoints()));
         } else {
-            setSocial(user.isSocialEnabled());
             setIsFriend(false);
             if (user.getRelationship() != null) {
                 switch (user.getRelationship()) {
@@ -279,12 +270,6 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
         friends.setText(String.format(context.getString(stringResource), count));
     }
 
-    private void setSocial(Boolean isEnabled) {
-        addFriend.setEnabled(isEnabled);
-        friendRequest.setEnabled(isEnabled);
-        friendRequest.setEnabled(isEnabled);
-    }
-
     private void setIsExpandEnabled(boolean isExpandEnabled) {
         this.isExpandEnabled = isExpandEnabled;
     }
@@ -355,55 +340,53 @@ public class ProfileCell extends AbstractCell<User> implements Expandable {
 
     @OnClick(R.id.bucket_list)
     protected void onBucketListClicked() {
-        getEventBus().post(new OnBucketListClickedEvent(getModelObject().getId()));
+        cellDelegate.onBucketListClicked();
         sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_BUCKETLIST);
     }
 
     @OnClick(R.id.trip_images)
     protected void onTripImageClicked() {
-        getEventBus().post(new OnTripImageClickedEvent(getModelObject().getId()));
+        cellDelegate.onTripImagesClicked();
         sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_TRIPS);
     }
 
     @OnClick(R.id.friends)
     protected void onFriendsClick() {
         if (isAccount()) {
-            getEventBus().post(new OnFriendsClickedEvent());
+            cellDelegate.onFriendsClicked();
             sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_SHOW_FRIENDS);
         }
     }
 
     @OnClick(R.id.post)
     protected void onPostClick() {
-        getEventBus().post(new OnCreatePostClickEvent());
+        cellDelegate.onCreatePostClicked();
         sendAnalyticIfNeed(TrackingHelper.ATTRIBUTE_NEW_POST);
     }
 
     @OnClick(R.id.user_photo)
     protected void onPhotoClick() {
-        getEventBus().post(new OnPhotoClickEvent());
-
+        cellDelegate.onUserPhotoClicked();
     }
 
     @OnClick(R.id.user_cover)
     protected void onCoverClick() {
-        getEventBus().post(new OnCoverClickEvent());
+        cellDelegate.onUserCoverClicked();
     }
 
     @OnClick(R.id.accept)
     protected void onAcceptRequest() {
-        getEventBus().post(new OnAcceptRequestEvent());
-
+        cellDelegate.onAcceptRequest();
     }
 
     @OnClick(R.id.reject)
     protected void onRejectRequest() {
-        getEventBus().post(new OnRejectRequestEvent());
+        cellDelegate.onRejectRequest();
     }
 
     @OnClick(R.id.add_friend)
     protected void onAddFriend() {
-        getEventBus().post(new OnAddFriendEvent());
+        cellDelegate.onAddFriend();
     }
 
     @OnClick({R.id.header, R.id.info, R.id.more, R.id.et_from, R.id.et_enroll, R.id.et_date_of_birth, R.id.et_user_id})

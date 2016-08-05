@@ -19,4 +19,5 @@
     <dimen name="wallet_details_screen_delete_card_button_text_size">20sp</dimen>
 
     <dimen name="wallet_wizard_avatar_size">192dp</dimen>
+    <dimen name="wallet_wizard_bar_code_border_size">48dp</dimen>
 </resources>

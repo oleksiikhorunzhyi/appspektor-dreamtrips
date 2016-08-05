@@ -5,7 +5,7 @@
                                                                                android:theme="@style/WalletTheme.Wizard"
     >
 
-    <me.dm7.barcodescanner.zxing.ZXingScannerView
+    <com.worldventures.dreamtrips.wallet.ui.widget.WalletBarCodeScaner
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

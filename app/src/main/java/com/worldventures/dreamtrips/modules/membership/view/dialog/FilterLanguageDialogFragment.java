@@ -14,10 +14,9 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.techery.spares.ui.fragment.InjectingDialogFragment;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.modules.common.view.adapter.FilterableArrayListAdapter;
-import com.worldventures.dreamtrips.modules.membership.event.VideoLanguageSelectedEvent;
-import com.worldventures.dreamtrips.modules.membership.event.VideoLocaleSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.view.util.WrapContentLinearLayoutManager;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLanguage;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
@@ -65,7 +64,17 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
         listCountry.setLayoutManager(new WrapContentLinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         adapter.registerCell(VideoLocale.class, VideoLocaleCell.class);
+        adapter.registerDelegate(VideoLocale.class, new CellDelegate<VideoLocale>() {
+            @Override public void onCellClicked(VideoLocale videoLocale) {
+                onVideoLocaleSelected(videoLocale);
+            }
+        });
         adapter.registerCell(VideoLanguage.class, VideoLanguageCell.class);
+        adapter.registerDelegate(VideoLanguage.class, new CellDelegate<VideoLanguage>() {
+            @Override public void onCellClicked(VideoLanguage videoLanguage) {
+                onVideoLanguageSelected(videoLanguage);
+            }
+        });
         adapter.setItems(new ArrayList<>(locales));
         listCountry.setAdapter(adapter);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -99,8 +108,8 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
         this.selectionListener = selectionListener;
     }
 
-    public void onEvent(VideoLocaleSelectedEvent event) {
-        selectedLocale = event.getVideoLocale();
+    public void onVideoLocaleSelected(VideoLocale videoLocale) {
+        selectedLocale = videoLocale;
         title.setText(R.string.filter_video_title_language);
         search.setVisibility(View.GONE);
         adapter.setFilter("");
@@ -108,9 +117,9 @@ public class FilterLanguageDialogFragment extends InjectingDialogFragment {
         adapter.setItems(Arrays.asList(selectedLocale.getLanguage()));
     }
 
-    public void onEvent(VideoLanguageSelectedEvent event) {
+    public void onVideoLanguageSelected(VideoLanguage videoLanguage) {
         if (selectionListener != null)
-            selectionListener.onSelected(selectedLocale, event.getVideoLanguage());
+            selectionListener.onSelected(selectedLocale, videoLanguage);
         dismiss();
     }
 

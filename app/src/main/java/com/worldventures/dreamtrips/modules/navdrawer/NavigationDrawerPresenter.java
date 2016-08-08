@@ -7,20 +7,21 @@ import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.Global;
 import com.techery.spares.session.SessionHolder;
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
-import rx.Subscription;
+import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.subjects.PublishSubject;
 
 public class NavigationDrawerPresenter {
 
@@ -28,11 +29,12 @@ public class NavigationDrawerPresenter {
     @Inject protected SnappyRepository db;
     @Inject @Global protected EventBus eventBus;
     @Inject protected UnreadConversationObservable unreadObservable;
+    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
     private NavigationDrawerView navigationDrawerView;
     private DrawerLayout drawerLayout;
 
-    private Subscription unreadConversationSubscription;
+    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
 
     public NavigationDrawerPresenter() {
     }
@@ -55,7 +57,11 @@ public class NavigationDrawerPresenter {
 
         eventBus.register(this);
 
-        unreadConversationSubscription = unreadObservable
+        notificationCountEventDelegate.getObservable()
+                .compose(bindView())
+                .subscribe(event -> updateNotificationsCount());
+        unreadObservable.getObservable()
+                .compose(bindView())
                 .subscribe(navigationDrawerView::setUnreadMessagesCount);
     }
 
@@ -65,16 +71,14 @@ public class NavigationDrawerPresenter {
         onItemSelected = null;
         onLogout = null;
         eventBus.unregister(this);
-        if (unreadConversationSubscription != null &&
-                !unreadConversationSubscription.isUnsubscribed())
-            unreadConversationSubscription.unsubscribe();
+        destroyViewStopper.onNext(null);
     }
 
     public void onEventMainThread(UpdateUserInfoEvent event) {
         navigationDrawerView.setUser(appSessionHolder.get().get().getUser());
     }
 
-    public void onEventMainThread(HeaderCountChangedEvent event) {
+    public void updateNotificationsCount() {
         navigationDrawerView.setNotificationCount(db.getExclusiveNotificationsCount());
     }
 
@@ -112,5 +116,9 @@ public class NavigationDrawerPresenter {
 
     void onLogout() {
         if (onLogout != null) onLogout.call();
+    }
+
+    protected <T> Observable.Transformer<T, T> bindView() {
+        return input -> input.takeUntil(destroyViewStopper);
     }
 }

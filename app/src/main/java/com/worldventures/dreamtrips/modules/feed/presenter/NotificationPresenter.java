@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
@@ -11,7 +12,6 @@ import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.feed.api.MarkAsReadNotificationsCommand;
 import com.worldventures.dreamtrips.modules.feed.api.NotificationsQuery;
@@ -42,6 +42,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
     RouteCreator<Integer> routeCreator;
     @Inject
     BucketInteractor bucketInteractor;
+    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
     public NotificationPresenter() {
     }
@@ -58,6 +59,9 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
         if (notifications.size() != 0) {
             view.refreshNotifications(notifications);
         }
+        notificationCountEventDelegate.getObservable()
+                .compose(bindView())
+                .subscribe(event -> view.setRequestsCount(db.getFriendsRequestsCount()));
     }
 
     @Override
@@ -84,10 +88,6 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
                     this::addFeedItems, this::loadMoreItemsError);
         }
         TrackingHelper.loadMoreNotifications();
-    }
-
-    public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.setRequestsCount(db.getFriendsRequestsCount());
     }
 
     private DreamTripsRequest<ArrayList<ParentFeedItem>> getRefreshFeedRequest(Date date) {

@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForApplication;
-import com.techery.spares.module.qualifier.Global;
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.utils.BadgeCountObserver;
 import com.worldventures.dreamtrips.core.initializer.BadgeCountObserverInitializer;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
@@ -13,7 +13,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import de.greenrobot.event.EventBus;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 @Module(injects = {
@@ -25,8 +24,8 @@ public class BadgeCountObserverModule {
 
     @Provides
     @Singleton
-    BadgeCountObserver provideBadgeCountObserver(BadgeUpdater badgeUpdater, @Global EventBus bus, SnappyRepository repository){
-        return new BadgeCountObserver(badgeUpdater, repository, bus);
+    BadgeCountObserver provideBadgeCountObserver(BadgeUpdater badgeUpdater, NotificationCountEventDelegate notificationCountEventDelegate, SnappyRepository repository){
+        return new BadgeCountObserver(badgeUpdater, repository, notificationCountEventDelegate);
     }
 
     @Provides

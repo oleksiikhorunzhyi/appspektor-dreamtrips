@@ -1,5 +1,6 @@
 package com.techery.spares.module;
 
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 import com.techery.spares.utils.delegate.StoryLikedEventDelegate;
@@ -28,5 +29,11 @@ public class EventDelegateModule {
     @Singleton
     StoryLikedEventDelegate provideStoryLikedEventDelegate() {
         return new StoryLikedEventDelegate();
+    }
+
+    @Provides
+    @Singleton
+    NotificationCountEventDelegate provideNotificationCountDelegate() {
+        return new NotificationCountEventDelegate();
     }
 }

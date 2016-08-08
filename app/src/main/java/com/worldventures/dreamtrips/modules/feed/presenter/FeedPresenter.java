@@ -9,6 +9,7 @@ import com.messenger.ui.activity.MessengerActivity;
 import com.messenger.util.UnreadConversationObservable;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForActivity;
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
@@ -18,7 +19,6 @@ import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -84,6 +84,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject UnreadConversationObservable unreadConversationObservable;
     @Inject LocaleHelper localeHelper;
     @Inject @ForActivity Provider<Injector> injectorProvider;
+    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
     @Inject BucketInteractor bucketInteractor;
     @Inject FeedInteractor feedInteractor;
@@ -128,7 +129,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribePhotoGalleryCheck();
-        subscribeUnreadConversation();
+        subscribeUnreadConversationsCount();
+        subscribeFriendsNotificationsCount();
         textualPostTranslationDelegate.onTakeView(view, feedItems);
 
         if (feedItems.size() != 0) {
@@ -235,10 +237,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public void onUnreadConversationsClick() {
         MessengerActivity.startMessenger(activityRouter.getContext());
-    }
-
-    public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.setRequestsCount(getFriendsRequestsCount());
     }
 
     public int getFriendsRequestsCount() {
@@ -452,12 +450,21 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     // Unread conversations
     ///////////////////////////////////////////////////////////////////////////
 
-    private void subscribeUnreadConversation() {
-        view.bindUntilDropView(unreadConversationObservable.getObservable())
+    private void subscribeUnreadConversationsCount() {
+        unreadConversationObservable.getObservable()
+                .compose(bindView())
                 .subscribe(count -> {
                     unreadConversationCount = count;
                     view.setUnreadConversationCount(count);
                 }, throwable -> Timber.w("Can't get unread conversation count"));
+    }
+
+    private void subscribeFriendsNotificationsCount() {
+        notificationCountEventDelegate.getObservable()
+                .compose(bindView())
+                .subscribe(event -> {
+                    view.setRequestsCount(getFriendsRequestsCount());
+                }, throwable -> Timber.w("Can't get friends notifications count"));
     }
 
     public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {

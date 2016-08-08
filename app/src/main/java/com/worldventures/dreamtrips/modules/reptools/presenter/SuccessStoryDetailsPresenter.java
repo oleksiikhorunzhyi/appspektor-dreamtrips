@@ -43,17 +43,17 @@ public class SuccessStoryDetailsPresenter extends WebViewFragmentPresenter<Succe
         view.likeRequestSuccess();
     }
 
+    public void onStoryLiked(SuccessStory successStory) {
+        view.updateStoryLike(successStory.isLiked());
+        storyLikedEventDelegate.post(successStory);
+    }
+
     public void share() {
         view.showShareDialog();
     }
 
     public void onShare(@ShareType String type, SuccessStory successStory) {
         view.openShare(successStory.getSharingUrl(), type);
-    }
-
-    public void onStoryLiked(SuccessStory successStory) {
-        view.updateStoryLike(successStory.isLiked());
-        storyLikedEventDelegate.post(successStory);
     }
 
     public interface View extends WebViewFragmentPresenter.View {

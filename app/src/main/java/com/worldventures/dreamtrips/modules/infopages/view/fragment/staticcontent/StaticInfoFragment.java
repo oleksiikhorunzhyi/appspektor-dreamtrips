@@ -49,6 +49,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
@@ -309,6 +310,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
         });
 
         bindUntilDropView(screenChangedEventDelegate.getObservable())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
                     lockHandler.removeCallbacksAndMessages(null);
                     lockOrientationIfNeeded();

@@ -60,7 +60,7 @@ public class NotificationPresenter extends Presenter<NotificationPresenter.View>
             view.refreshNotifications(notifications);
         }
         notificationCountEventDelegate.getObservable()
-                .compose(bindView())
+                .compose(bindViewToMainComposer())
                 .subscribe(event -> view.setRequestsCount(db.getFriendsRequestsCount()));
     }
 

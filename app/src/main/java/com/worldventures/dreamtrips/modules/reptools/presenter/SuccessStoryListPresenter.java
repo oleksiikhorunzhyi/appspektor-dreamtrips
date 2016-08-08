@@ -30,7 +30,7 @@ public class SuccessStoryListPresenter extends Presenter<SuccessStoryListPresent
     public void takeView(View view) {
         super.takeView(view);
         storyLikedEventDelegate.getObservable()
-                .compose(bindView())
+                .compose(bindViewToMainComposer())
                 .subscribe(this::onSuccessStoryLiked);
     }
 

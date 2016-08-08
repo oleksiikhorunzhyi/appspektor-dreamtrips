@@ -105,7 +105,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
     private void subscribeNotificationsBadgeUpdates() {
         notificationCountEventDelegate.getObservable()
-                .compose(bindView())
+                .compose(bindViewToMainComposer())
                 .subscribe(o -> view.updateBadgeCount(snappyRepository.getFriendsRequestsCount()));
     }
 

@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.subjects.PublishSubject;
@@ -58,6 +59,7 @@ public class NavigationDrawerPresenter {
         eventBus.register(this);
 
         notificationCountEventDelegate.getObservable()
+                .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(event -> updateNotificationsCount());
         unreadObservable.getObservable()

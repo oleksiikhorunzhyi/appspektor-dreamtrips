@@ -452,7 +452,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private void subscribeUnreadConversationsCount() {
         unreadConversationObservable.getObservable()
-                .compose(bindView())
+                .compose(bindViewToMainComposer())
                 .subscribe(count -> {
                     unreadConversationCount = count;
                     view.setUnreadConversationCount(count);
@@ -461,7 +461,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private void subscribeFriendsNotificationsCount() {
         notificationCountEventDelegate.getObservable()
-                .compose(bindView())
+                .compose(bindViewToMainComposer())
                 .subscribe(event -> {
                     view.setRequestsCount(getFriendsRequestsCount());
                 }, throwable -> Timber.w("Can't get friends notifications count"));

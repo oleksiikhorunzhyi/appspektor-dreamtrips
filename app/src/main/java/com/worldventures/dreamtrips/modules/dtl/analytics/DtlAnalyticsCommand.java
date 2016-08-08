@@ -65,8 +65,10 @@ public class DtlAnalyticsCommand extends Command<Void> implements InjectableActi
                                             .copyOf((DtlManualLocation) dtlLocation)
                                             .withAnalyticsName(dtlMerchant.getAnalyticsName());
                                 })
-                                .subscribe(dtlLocation1 -> action.setAnalyticsLocation(dtlLocation1),
-                                        throwable -> action.setAnalyticsLocation(null));
+                                .subscribe(dtlLocation1 ->
+                                                action.setAnalyticsLocation(dtlLocation1),
+                                        throwable -> {
+                                        });
                     }
                     return action;
                 })

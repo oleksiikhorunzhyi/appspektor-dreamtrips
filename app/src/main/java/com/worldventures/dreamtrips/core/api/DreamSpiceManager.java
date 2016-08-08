@@ -19,7 +19,6 @@ import com.worldventures.dreamtrips.core.api.request.DreamTripsRequest;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
-import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 
 import org.apache.http.HttpStatus;
@@ -110,9 +109,8 @@ public class DreamSpiceManager extends SpiceManager {
 
     private void processError(SpiceRequest request, SpiceException error, FailureListener failureListener, OnLoginSuccess onLoginSuccess) {
         if (AuthRetryPolicy.isLoginError(error) && isCredentialExist(appSessionHolder)) {
-            UserSession userSession = appSessionHolder.get().get();
             loginInteractor.loginActionPipe()
-                    .createObservable(new LoginCommand(userSession.getUsername(), userSession.getUserPassword()))
+                    .createObservable(new LoginCommand())
                     .subscribe(new ActionStateSubscriber<LoginCommand>()
                             .onSuccess(loginCommand -> onLoginSuccess.result(loginCommand.getResult(), null))
                             .onFail((loginCommand, throwable) -> onLoginSuccess.result(null, getParcedException(request, error))));
@@ -138,7 +136,7 @@ public class DreamSpiceManager extends SpiceManager {
     }
 
     public interface OnLoginSuccess {
-        void result(Session session, SpiceException exception);
+        void result(UserSession session, SpiceException exception);
     }
 
     public interface FailureListener {

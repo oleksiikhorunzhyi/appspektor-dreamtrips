@@ -1,17 +1,16 @@
 package com.worldventures.dreamtrips.modules.auth.api.command;
 
 import com.techery.spares.session.SessionHolder;
-import com.techery.spares.storage.complex_objects.Optional;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.api.action.LoginAction;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.auth.util.SessionUtil;
 import com.worldventures.dreamtrips.modules.common.model.Session;
-import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsFactory;
 import com.worldventures.dreamtrips.modules.settings.util.SettingsManager;
@@ -26,7 +25,7 @@ import io.techery.janet.command.annotations.CommandAction;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class LoginCommand extends CommandWithError<Session> implements InjectableAction {
+public class LoginCommand extends CommandWithError<UserSession> implements InjectableAction {
 
     @Inject Janet janet;
     @Inject SessionHolder<UserSession> appSessionHolder;
@@ -37,11 +36,6 @@ public class LoginCommand extends CommandWithError<Session> implements Injectabl
     private String userPassword;
 
     public LoginCommand() {
-        if (isCredentialExists()) {
-            UserSession userSession = appSessionHolder.get().get();
-            this.userName = userSession.getUsername();
-            this.userPassword = userSession.getUserPassword();
-        }
     }
 
     public LoginCommand(String userName, String userPassword) {
@@ -55,50 +49,29 @@ public class LoginCommand extends CommandWithError<Session> implements Injectabl
     }
 
     @Override
-    protected void run(CommandCallback<Session> callback) throws Throwable {
+    protected void run(CommandCallback<UserSession> callback) throws Throwable {
+        if (userName == null || userPassword == null) {
+            if (AuthRetryPolicy.isCredentialExist(appSessionHolder)) {
+                UserSession userSession = appSessionHolder.get().get();
+                this.userName = userSession.getUsername();
+                this.userPassword = userSession.getUserPassword();
+            } else {
+                throw new Exception("You have to set username and password");
+            }
+        }
+
         janet.createPipe(LoginAction.class, Schedulers.io())
                 .createObservableResult(new LoginAction(userName, userPassword))
                 .map(LoginAction::getLoginResponse)
-                .doOnNext(this::updateSession)
                 .doOnNext(this::saveSettings)
+                .map(session -> SessionUtil.createUserSession(session, userName, userPassword))
+                .doOnNext(this::saveSession)
                 .doOnNext(this::notifyUserUpdated)
                 .subscribe(callback::onSuccess, callback::onFail);
     }
 
-    private boolean isCredentialExists() {
-        Optional<UserSession> userSessionOptional = appSessionHolder.get();
-        if (userSessionOptional.isPresent()) {
-            UserSession userSession = userSessionOptional.get();
-            return userSession.getUsername() != null && userSession.getUserPassword() != null;
-        } else {
-            return false;
-        }
-    }
-
-    private void updateSession(Session session) {
-        String sessionToken = session.getToken();
-        User sessionUser = session.getUser();
-
-        UserSession userSession;
-        if (appSessionHolder.get().isPresent()) {
-            userSession = appSessionHolder.get().get();
-        } else {
-            userSession = new UserSession();
-        }
-
-        userSession.setUser(sessionUser);
-        userSession.setApiToken(sessionToken);
-        userSession.setLegacyApiToken(session.getSsoToken());
-        userSession.setLocale(session.getLocale());
-
-        userSession.setUsername(userName);
-        userSession.setUserPassword(userPassword);
-        userSession.setLastUpdate(System.currentTimeMillis());
-
-        List<Feature> features = session.getPermissions();
-        userSession.setFeatures(features);
-
-        if (sessionUser != null & sessionToken != null) {
+    private void saveSession(UserSession userSession) {
+        if (userSession.getUser() != null & userSession.getApiToken() != null) {
             appSessionHolder.put(userSession);
         }
     }
@@ -109,7 +82,7 @@ public class LoginCommand extends CommandWithError<Session> implements Injectabl
         db.saveSettings(SettingsManager.merge(settings, SettingsFactory.createSettings()), true);
     }
 
-    private void notifyUserUpdated(Session session) {
-        authInteractor.updateUserPipe().send(new UpdateUserCommand(session.getUser()));
+    private void notifyUserUpdated(UserSession userSession) {
+        authInteractor.updateUserPipe().send(new UpdateUserCommand(userSession.getUser()));
     }
 }

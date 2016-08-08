@@ -24,6 +24,14 @@ public class Session {
         return ssoToken;
     }
 
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    public void setSsoToken(String ssoToken) {
+        this.ssoToken = ssoToken;
+    }
+
     public User getUser() {
         return user;
     }
@@ -38,5 +46,21 @@ public class Session {
 
     public List<Setting> getSettings() {
         return settings;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setPermissions(List<Feature> permissions) {
+        this.permissions = permissions;
+    }
+
+    public void setSettings(List<Setting> settings) {
+        this.settings = settings;
     }
 }

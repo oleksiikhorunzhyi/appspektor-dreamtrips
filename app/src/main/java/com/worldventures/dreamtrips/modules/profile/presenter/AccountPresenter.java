@@ -3,6 +3,7 @@ package com.worldventures.dreamtrips.modules.profile.presenter;
 import android.content.Intent;
 
 import com.octo.android.robospice.request.simple.BigBinaryRequest;
+import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
@@ -10,7 +11,6 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -48,6 +48,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Inject LogoutDelegate logoutDelegate;
     @Inject MediaPickerManager mediaPickerManager;
     @Inject SocialCropImageManager socialCropImageManager;
+    @Inject NotificationCountEventDelegate notificationCountEventDelegate;
 
     private Subscription mediaSubscription;
     private Subscription cropSubscription;
@@ -65,6 +66,8 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void takeView(View view) {
         super.takeView(view);
         TrackingHelper.profile(getAccountUserId());
+        //
+        subscribeNotificationsBadgeUpdates();
         //
         subscribeLoadNextFeeds();
         subscribeRefreshFeeds();
@@ -98,6 +101,12 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onInjected() {
         super.onInjected();
         user = getAccount();
+    }
+
+    private void subscribeNotificationsBadgeUpdates() {
+        notificationCountEventDelegate.getObservable()
+                .compose(bindViewToMainComposer())
+                .subscribe(o -> view.updateBadgeCount(snappyRepository.getFriendsRequestsCount()));
     }
 
     private void subscribeRefreshFeeds() {
@@ -252,10 +261,6 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     public void onCoverClicked() {
         this.mediaRequestId = COVER_MEDIA_REQUEST_ID;
         view.showMediaPicker(mediaRequestId);
-    }
-
-    public void onEventMainThread(HeaderCountChangedEvent event) {
-        view.updateBadgeCount(snappyRepository.getFriendsRequestsCount());
     }
 
     private void imageSelected(MediaAttachment mediaAttachment) {

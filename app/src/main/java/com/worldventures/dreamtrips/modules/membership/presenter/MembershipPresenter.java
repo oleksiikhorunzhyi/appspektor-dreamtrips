@@ -31,7 +31,7 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
         super.takeView(view);
         view.setScreens(items);
         searchFocusChangedDelegate.getObservable()
-                .compose(bindView())
+                .compose(bindViewToMainComposer())
                 .subscribe(hasFocus -> view.toggleTabStripVisibility(!hasFocus));
     }
 

@@ -30,7 +30,7 @@ public class RepToolsPresenter extends Presenter<RepToolsPresenter.View> {
         super.takeView(view);
         view.setScreens(screens);
         searchFocusChangedDelegate.getObservable()
-                .compose(bindView())
+                .compose(bindViewToMainComposer())
                 .subscribe(hasFocus -> view.toggleTabStripVisibility(!hasFocus));
     }
 

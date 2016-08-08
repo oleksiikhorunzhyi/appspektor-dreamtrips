@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.common.delegate;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
 /**
  * Base class for usage with event bus like logic.
@@ -9,7 +10,7 @@ import rx.subjects.PublishSubject;
  */
 public class EventDelegate<Event> {
 
-    private PublishSubject<Event> publishSubject = PublishSubject.create();
+    private final Subject<Event, Event> publishSubject = PublishSubject.<Event>create().toSerialized();
 
     public void post(Event event) {
         publishSubject.onNext(event);

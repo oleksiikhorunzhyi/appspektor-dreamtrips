@@ -22,7 +22,6 @@ import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
 import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
@@ -318,12 +317,6 @@ public interface DreamTripsApi {
 
     @GET("/api/photos/{uid}")
     Photo getPhotoInfo(@Path("uid") String uid);
-
-    @GET("/api/user/settings")
-    SettingsHolder getSettings();
-
-    @PATCH("/api/user/settings")
-    Void updateSettings(@Body SettingsHolder settingsHolder);
 
     @GET("/api/feedbacks/reasons")
     ArrayList<FeedbackType> getFeedbackReasons();

@@ -12,7 +12,6 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.DeleteIte
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.FindBucketItemByPhotoCommand;
 import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBucketItemPhotosWithStorageCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
-import com.worldventures.dreamtrips.modules.common.api.janet.command.AppSettingsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
@@ -25,6 +24,7 @@ import com.worldventures.dreamtrips.modules.feed.service.command.SuggestedPhotoC
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCachedCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
+import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
 
 import dagger.Module;
@@ -38,7 +38,6 @@ import dagger.Module;
         MergeBucketItemPhotosWithStorageCommand.class,
         TripsFilterDataCommand.class,
         CirclesCommand.class,
-        AppSettingsCommand.class,
         GetCommentsCommand.class,
         UpdateAuthInfoCommand.class,
         LoginCommand.class,
@@ -59,7 +58,8 @@ import dagger.Module;
         AcceptTermsCommand.class,
         UnsubribeFromPushCommand.class,
         GetTripDetailsCommand.class,
-        HashtagSuggestionCommand.class},
+        HashtagSuggestionCommand.class,
+        SettingsCommand.class},
 
         complete = false, library = true)
 public class SocialJanetCommandModule {

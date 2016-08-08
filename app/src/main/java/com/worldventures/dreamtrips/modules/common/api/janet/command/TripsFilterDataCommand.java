@@ -5,9 +5,12 @@ import android.util.Pair;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.action.CommandWithError;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
-import com.worldventures.dreamtrips.modules.common.api.janet.GetActivitiesHttpAction;
-import com.worldventures.dreamtrips.modules.common.api.janet.GetRegionsHttpAction;
+import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
+import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
+import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -18,33 +21,32 @@ import rx.Observable;
 import rx.schedulers.Schedulers;
 
 @CommandAction
-public class TripsFilterDataCommand extends CommandWithError<Pair<GetActivitiesHttpAction, GetRegionsHttpAction>>
+public class TripsFilterDataCommand extends CommandWithError<Pair<List<ActivityModel>, List<RegionModel>>>
         implements InjectableAction {
 
     @Inject Janet janet;
-    @Inject SnappyRepository db;
 
     @Override
-    protected void run(CommandCallback<Pair<GetActivitiesHttpAction, GetRegionsHttpAction>> callback) {
-        ActionPipe<GetActivitiesHttpAction> activitiesActionPipe = janet
-                .createPipe(GetActivitiesHttpAction.class, Schedulers.io());
-        ActionPipe<GetRegionsHttpAction> regionsActionPipe = janet
-                .createPipe(GetRegionsHttpAction.class, Schedulers.io());
+    protected void run(CommandCallback<Pair<List<ActivityModel>, List<RegionModel>>> callback)
+            throws Throwable {
+        ActionPipe<GetActivitiesCommand> activitiesActionPipe = janet
+                .createPipe(GetActivitiesCommand.class, Schedulers.io());
+        ActionPipe<GetRegionsCommand> regionsActionPipe = janet
+                .createPipe(GetRegionsCommand.class, Schedulers.io());
 
-        Observable<GetActivitiesHttpAction> activitiesObservable = activitiesActionPipe
-                .createObservableResult(new GetActivitiesHttpAction());
-        Observable<GetRegionsHttpAction> regionsObservable = regionsActionPipe
-                .createObservableResult(new GetRegionsHttpAction());
+        Observable<List<ActivityModel>> activitiesObservable = activitiesActionPipe
+                .createObservableResult(new GetActivitiesCommand())
+                .map(GetActivitiesCommand::getResult);
+        Observable<List<RegionModel>> regionsObservable = regionsActionPipe
+                .createObservableResult(new GetRegionsCommand())
+                .map(GetRegionsCommand::getResult);
 
         Observable.zip(activitiesObservable, regionsObservable, Pair::new)
-                .doOnNext(pair -> {
-                    db.putList(SnappyRepository.ACTIVITIES, pair.first.getActivityModels());
-                    db.putList(SnappyRepository.REGIONS, pair.second.getRegionModels());
-                }).subscribe(callback::onSuccess, callback::onFail);
+                .subscribe(callback::onSuccess, callback::onFail);
     }
 
     @Override
     public int getFallbackErrorMessage() {
-        return R.string.error_fail_to_load_podcast;
+        return R.string.error_failed_to_load_activities;
     }
 }

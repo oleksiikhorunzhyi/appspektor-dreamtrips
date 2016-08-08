@@ -25,7 +25,10 @@ import com.worldventures.dreamtrips.modules.feed.service.command.TranslateTextCa
 import com.worldventures.dreamtrips.modules.feed.service.command.TranslateUidItemCommand;
 import com.worldventures.dreamtrips.modules.membership.command.PodcastCommand;
 import com.worldventures.dreamtrips.modules.settings.command.SettingsCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetActivitiesCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetRegionsCommand;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
+import com.worldventures.dreamtrips.modules.trips.command.GetTripsCommand;
 
 import dagger.Module;
 
@@ -58,6 +61,9 @@ import dagger.Module;
         AcceptTermsCommand.class,
         UnsubribeFromPushCommand.class,
         GetTripDetailsCommand.class,
+        GetActivitiesCommand.class,
+        GetRegionsCommand.class,
+        GetTripsCommand.class,
         HashtagSuggestionCommand.class,
         SettingsCommand.class},
 

@@ -20,6 +20,10 @@ public class TermsConditionsDialogPresenter extends Presenter<TermsConditionsDia
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        loadContent();
+    }
+
+    public void loadContent() {
         view.loadContent(provider.getTermsOfServiceUrl());
     }
 

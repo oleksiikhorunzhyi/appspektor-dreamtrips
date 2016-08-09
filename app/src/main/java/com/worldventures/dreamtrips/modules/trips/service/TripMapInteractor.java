@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.modules.trips.manager;
+package com.worldventures.dreamtrips.modules.trips.service;
 
 import com.worldventures.dreamtrips.modules.trips.api.GetDetailedTripsHttpAction;
 import com.worldventures.dreamtrips.modules.trips.api.GetMapObjectsHttpAction;

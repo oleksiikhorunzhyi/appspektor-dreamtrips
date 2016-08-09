@@ -36,7 +36,7 @@ import com.worldventures.dreamtrips.modules.dtl.service.DtlTransactionInteractor
 import com.worldventures.dreamtrips.modules.feed.manager.FeedEntityManager;
 import com.worldventures.dreamtrips.modules.membership.api.PhoneContactRequest;
 import com.worldventures.dreamtrips.modules.trips.manager.TripFilterDataProvider;
-import com.worldventures.dreamtrips.modules.trips.manager.TripMapInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.TripMapInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.EditPhotoTagsCallback;
 import com.worldventures.dreamtrips.modules.tripsimages.view.util.PostLocationPickerCallback;
 import com.worldventures.dreamtrips.modules.video.FileCachingDelegate;

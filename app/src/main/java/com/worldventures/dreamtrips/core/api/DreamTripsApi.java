@@ -22,9 +22,6 @@ import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -75,32 +72,6 @@ public interface DreamTripsApi {
 
     @GET("/api/profiles/{id}")
     User getPublicProfile(@Path("id") int id);
-
-    @GET("/api/trips")
-    ArrayList<TripModel> getTrips();
-
-    @GET("/api/trips")
-    ArrayList<TripModel> getTripsPaginated(
-            @Query("page") int page,
-            @Query("per_page") int perPage,
-            @Query("query") String query,
-            @Query("duration_min") Integer durationMin,
-            @Query("duration_max") Integer durationMax,
-            @Query("price_min") Double priceMin,
-            @Query("price_max") Double priceMax,
-            @Query("start_date") String startDate,
-            @Query("end_date") String endDate,
-            @Query("regions") String regions,
-            @Query("activities") String activities,
-            @Query("sold_out") int soldOut,
-            @Query("recent") int recent,
-            @Query("liked") int liked);
-
-    @GET("/api/regions")
-    List<RegionModel> getRegions();
-
-    @GET("/api/activities")
-    List<ActivityModel> getActivities();
 
     /* *** PHOTOS *****************************/
 

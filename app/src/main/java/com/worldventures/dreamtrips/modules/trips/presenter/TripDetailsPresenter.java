@@ -4,7 +4,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.TripsInteractor;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
@@ -22,10 +22,9 @@ import rx.android.schedulers.AndroidSchedulers;
 public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
 
     @Inject TripsInteractor tripsInteractor;
+    @Inject StaticPageProvider staticPageProvider;
 
     private List<TripImage> filteredImages;
-
-    @Inject StaticPageProvider staticPageProvider;
 
     public TripDetailsPresenter(TripModel trip) {
         super(trip);

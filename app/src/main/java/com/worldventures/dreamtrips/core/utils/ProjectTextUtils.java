@@ -1,12 +1,17 @@
 package com.worldventures.dreamtrips.core.utils;
 
+import android.util.Base64;
+
 import com.innahema.collections.query.functions.Predicate;
 import com.innahema.collections.query.queriables.Queryable;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.List;
 
-public class TextUtils {
+import timber.log.Timber;
+
+public class ProjectTextUtils {
 
     public static String joinWithFirstUpperCase(Object[] groups) {
         String result = "";
@@ -73,5 +78,14 @@ public class TextUtils {
                     .map(String::trim)
                     .toList();
         }
+    }
+
+    public static String convertToBase64(String s) {
+        try {
+            return Base64.encodeToString(s.getBytes("UTF-8"), Base64.DEFAULT);
+        } catch (UnsupportedEncodingException e) {
+            Timber.e(e, "Failed to convert string");
+        }
+        return "";
     }
 }

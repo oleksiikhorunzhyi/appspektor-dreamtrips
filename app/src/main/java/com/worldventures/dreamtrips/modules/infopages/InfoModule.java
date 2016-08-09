@@ -42,6 +42,7 @@ import dagger.Provides;
                 StaticInfoFragment.CookiePolicyFragment.class,
                 StaticInfoFragment.FAQFragment.class,
                 StaticInfoFragment.EnrollRepFragment.class,
+                StaticInfoFragment.EnrollUpgradeFragment.class,
 
                 VideoCell.class,
                 MediaHeaderLightCell.class,

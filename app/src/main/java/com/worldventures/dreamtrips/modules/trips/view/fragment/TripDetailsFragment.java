@@ -96,7 +96,7 @@ public class TripDetailsFragment extends RxBaseFragmentWithArgs<TripDetailsPrese
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         sweetDialogHelper = new SweetDialogHelper();
-        signUp.setMovementMethod(new TextViewLinkHandler(url -> router.moveTo(Route.ENROLL_MEMBER)));
+        signUp.setMovementMethod(new TextViewLinkHandler(url -> router.moveTo(Route.ENROLL_UPGRADE)));
 
         tripDetailsViewInjector = new TripDetailsViewInjector(rootView);
         if (toolbar != null) {

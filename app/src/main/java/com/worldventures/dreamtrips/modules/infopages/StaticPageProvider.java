@@ -44,6 +44,14 @@ public class StaticPageProvider {
         return getLocalizedUrl(enrollUrlFromServer + "&" + additionalParams);
     }
 
+    public String getEnrollUpdateUrl() {
+       String url = getLocalizedUrl(getConfig().getEnrollUpgradeUrl(appSessionHolder.get().get().getUser().getSponsorUsername(),
+               appSessionHolder.get().get().getLegacyApiToken(),
+               localeHelper.getDefaultLocaleFormatted(),
+               localeHelper.getDefaultLocale().getCountry()));
+        return url;
+    }
+
     public String getEnrollMerchantUrl(MerchantIdBundle args) {
         StringBuilder builder = new StringBuilder(BuildConfig.DreamTripsApi);
         builder.append("/gateway/dtl/enroll_merchant")

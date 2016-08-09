@@ -615,6 +615,27 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
+    public static class EnrollUpgradeFragment extends AuthorizedStaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return provider.getEnrollUpdateUrl();
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setUseWideViewPort(true);
+        }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
+        }
+
+    }
+
+    @Layout(R.layout.fragment_webview)
     public static class BookItFragment extends BundleUrlFragment {
 
         private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";

@@ -1,13 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.model;
 
-import android.text.TextUtils;
-import android.util.Base64;
-
 import com.google.gson.annotations.SerializedName;
-
-import java.io.UnsupportedEncodingException;
-
-import timber.log.Timber;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 
 public class AppConfig {
 
@@ -18,6 +12,9 @@ public class AppConfig {
     public static final String COUNTRY = "{country}";
     public static final String LANGUAGE = "{language}";
     public static final String ENROLL_UID = "{BASE64_ENCODED_USERID}";
+    public static final String SPONSOR_ID_BASE_64 = "{BASE64_ENCODED_SPONSORID}";
+    public static final String COUNTRY_BASE_64 = "{BASE64_ENCODED_LANGUAGE}";
+    public static final String LANGUAGE_BASE_64 = "{BASE64_ENCODED_COUNTRY}";
 
     @SerializedName("URLS")
     protected URLS urls;
@@ -68,6 +65,9 @@ public class AppConfig {
             @SerializedName("UploaderyBaseURL")
             private String uploaderyBaseURL;
 
+            @SerializedName("EnrollUpgrade")
+            private String enrollUpgradeUrl;
+
             public String getAuthBaseURL() {
                 return this.authBaseURL;
             }
@@ -81,12 +81,21 @@ public class AppConfig {
             }
 
             public String getEnrollRepURL(String uid) {
-                return replaceWithBase64(uid, enrollRepURL);
+                return enrollRepURL.replace(ENROLL_UID, ProjectTextUtils.convertToBase64(uid));
             }
 
             public String getEnrollMemberURL(String uid) {
-                return replaceWithBase64(uid, enrollMemeberURL);
+                return enrollMemeberURL.replace(ENROLL_UID, ProjectTextUtils.convertToBase64(uid));
             }
+
+            public String getEnrollUpgradeUrl(String sponsorId, String token, String locale,
+                                              String country) {
+                return enrollMemeberURL.replace(SPONSOR_ID_BASE_64, ProjectTextUtils.convertToBase64(sponsorId))
+                        .replace(TOKEN, token)
+                        .replace(LANGUAGE_BASE_64, ProjectTextUtils.convertToBase64(locale.toUpperCase()))
+                        .replace(COUNTRY_BASE_64, ProjectTextUtils.convertToBase64(country.toUpperCase()));
+            }
+
 
             public String getSurveyApiToken() {
                 return this.surveyApiToken;
@@ -98,21 +107,6 @@ public class AppConfig {
 
             public String getUploaderyBaseURL() {
                 return uploaderyBaseURL;
-            }
-
-            private String replaceWithBase64(String uid, String url) {
-                String encodedUrl = "";
-
-                if (!TextUtils.isEmpty(url)) {
-                    try {
-                        encodedUrl = url.replace(ENROLL_UID,
-                                Base64.encodeToString(uid.getBytes("UTF-8"), Base64.DEFAULT));
-                    } catch (UnsupportedEncodingException e) {
-                        Timber.e(e, "Can't base64");
-                    }
-                }
-
-                return encodedUrl;
             }
         }
     }

@@ -23,24 +23,24 @@ public class DtMediaPlayer implements DtPlayer {
         this.context = context;
         this.uri = uri;
         setState(State.UNKNOWN);
+        mediaPlayer = new MediaPlayer();
     }
 
     @Override
     public void start() {
-        if (state == State.PREPARING) {
+        if (state == State.PREPARING || state == State.PLAYING) {
             return;
         }
-        if (state == State.PAUSED) {
+        if (state == State.PAUSED || state == State.READY) {
             mediaPlayer.start();
-        }
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
+            return;
         }
         try {
+            Timber.d("Podcasts -- DtMediaPlayer -- prepare player, state %s", state);
             prepareAndPlay();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Timber.e("Could not initialize player");
+            Timber.e(ex, "Could not initialize player");
             setState(State.ERROR);
         }
     }
@@ -72,6 +72,7 @@ public class DtMediaPlayer implements DtPlayer {
 
     private void setState(State state) {
         this.state = state;
+        Timber.d("Podcasts -- DtMediaPlayer -- post state %s", state);
         stateObservable.onNext(state);
     }
 

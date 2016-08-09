@@ -25,11 +25,11 @@ public class PodcastPlayerDelegate {
 
     public Observable<DtPlayer> getPlayer(Uri uri) {
         return getPodcastService()
-                .flatMap(podcastService -> podcastService.constructNewPlayer(uri));
+                .flatMap(podcastService -> podcastService.getPlayer(uri));
     }
 
     private Observable<PodcastService> getPodcastService() {
-        Timber.d("Podcasts -- service -- getPodcastService");
+        Timber.d("Podcasts -- delegate -- getPodcastService %s", podcastService);
         return Observable.just(podcastService)
                 .filter(service -> service != null)
                 .switchIfEmpty(getBindServiceObservable());
@@ -44,30 +44,37 @@ public class PodcastPlayerDelegate {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            Timber.d("Podcasts -- service -- connected!");
+            Timber.d("Podcasts -- delegate -- connected!");
             if (!subscriber.isUnsubscribed()) {
-                subscriber.onNext(((PodcastService.PodcastServiceBinder) iBinder).getPodcastService());
-                subscriber.onCompleted();
+                try {
+                    podcastService = ((PodcastService.PodcastServiceBinder) iBinder).getPodcastService();
+                    subscriber.onNext(podcastService);
+                    subscriber.onCompleted();
+                } catch (Exception ex) {
+                    Timber.e(ex, "Error getting player");
+                    subscriber.onError(ex);
+                }
             }
             subscriber = null;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            Timber.d("Podcasts -- delegate -- disconnected!");
             podcastService = null;
         }
     };
 
     private Observable getBindServiceObservable() {
-        Timber.d("Podcasts -- service -- bind");
         return Observable.create(new Observable.OnSubscribe<PodcastService>() {
             @Override
             public void call(Subscriber<? super PodcastService> subscriber) {
+                Timber.d("Podcasts -- delegate -- bind");
+                // start service as onTaskRemoved() is not called for bound only services
+                context.startService(new Intent(context, PodcastService.class));
                 context.bindService(new Intent(context, PodcastService.class),
                         new Connection(subscriber),
                         Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
-                // start service to keep it running
-                context.startService(new Intent(context, PodcastService.class));
             }
         });
     }

@@ -13,7 +13,7 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 
 import java.util.List;
 

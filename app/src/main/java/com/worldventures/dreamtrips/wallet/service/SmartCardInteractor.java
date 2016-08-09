@@ -27,7 +27,6 @@ public final class SmartCardInteractor {
     private final ActionPipe<GetSmartCardCommand> getSmartCardPipe;
     private final ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe;
 
-
     @Inject
     public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
         connectionPipe = janet.createPipe(ConnectAction.class, Schedulers.io());

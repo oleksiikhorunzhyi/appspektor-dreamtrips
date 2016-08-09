@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell;
 
 import android.view.View;
 

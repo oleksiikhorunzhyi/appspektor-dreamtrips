@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 
 import flow.Flow;
 import flow.History;

@@ -1,4 +1,4 @@
-<com.worldventures.dreamtrips.wallet.ui.home.cardlist.CardListScreen
+<com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen
     style="@style/WalletTheme.Wizard.RootStyle"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -94,4 +94,4 @@
             android:textColor="@android:color/white"/>
     </LinearLayout>
 
-</com.worldventures.dreamtrips.wallet.ui.home.cardlist.CardListScreen>
+</com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen>

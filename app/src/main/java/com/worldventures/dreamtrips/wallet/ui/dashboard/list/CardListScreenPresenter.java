@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.home.cardlist;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.content.Context;
 import android.os.Parcelable;
@@ -11,8 +11,8 @@ import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.settings.card_details.CardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

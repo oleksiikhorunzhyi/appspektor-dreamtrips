@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.home.cardlist;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;

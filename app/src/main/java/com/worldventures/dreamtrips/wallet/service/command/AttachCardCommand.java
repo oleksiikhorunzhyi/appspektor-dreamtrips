@@ -2,7 +2,7 @@ package com.worldventures.dreamtrips.wallet.service.command;
 
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.BankCardToRecordConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,7 +23,7 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
     @Named(JANET_WALLET)
     Janet janet;
 
-    private final BankCardToRecordConverter converter = new BankCardToRecordConverter();
+    private final BankCardConverter converter = new BankCardConverter();
 
     private final BankCard card;
 
@@ -32,7 +32,7 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
     }
 
     @Override protected void run(CommandCallback<Record> callback) throws Throwable {
-        Record record = converter.convert(card);
+        Record record = converter.to(card);
         janet.createPipe(AddRecordAction.class)
                 .createObservable(new AddRecordAction(record))
                 .compose(new ActionStateToActionTransformer<>())

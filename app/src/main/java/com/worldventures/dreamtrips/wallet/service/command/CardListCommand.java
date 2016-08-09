@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.BankCardToRecordConverter;
+import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +37,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
     @Named(JANET_WALLET)
     Janet janet;
 
-    private final BankCardToRecordConverter converter = new BankCardToRecordConverter();
+    private final BankCardConverter converter = new BankCardConverter();
 
     private volatile List<Card> cachedItems;
 
@@ -53,7 +53,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
                     else return Observable.just(action);
                 })
                 .flatMap(action -> Observable.from(action.records)
-                        .map(record -> (Card) converter.convert(record))
+                        .map(record -> (Card) converter.from(record))
                         .toList()
                 ).subscribe(callback::onSuccess, callback::onFail);
     }

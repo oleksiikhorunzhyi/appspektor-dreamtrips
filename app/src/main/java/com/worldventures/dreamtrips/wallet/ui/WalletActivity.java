@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.wallet.di.WalletActivityModule;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerAdapter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.MediaPickerService;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.CardListPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListPath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 
 import javax.inject.Inject;

@@ -9,7 +9,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.settings.card_details;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.detail;
 
 import android.content.Context;
 import android.os.Parcelable;

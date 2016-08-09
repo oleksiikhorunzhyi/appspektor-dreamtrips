@@ -1,4 +1,4 @@
-package com.worldventures.dreamtrips.wallet.ui.home.cardlist;
+package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
@@ -19,10 +19,10 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardListHeaderAdapter;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.CardStackViewModel;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.HidingScrollListener;
-import com.worldventures.dreamtrips.wallet.ui.home.cardlist.util.cell.CardStackCell;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardListHeaderAdapter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.HidingScrollListener;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 
 import java.util.List;

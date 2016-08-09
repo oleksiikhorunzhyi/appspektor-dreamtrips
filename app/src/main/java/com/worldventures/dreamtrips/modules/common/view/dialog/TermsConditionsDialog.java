@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -66,12 +68,13 @@ public class TermsConditionsDialog extends BaseDialogFragmentWithPresenter<Terms
             }
 
             @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                super.onReceivedError(view, errorCode, description, failingUrl);
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
                 onErrorReceived = true;
                 if (termsContent != null && btnRetry != null) {
                     termsContent.setVisibility(View.GONE);
                     btnRetry.setVisibility(View.VISIBLE);
+                    disableButtons();
                 }
             }
 

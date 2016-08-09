@@ -12,10 +12,14 @@ import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreen;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+
 public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, ViewState.EMPTY>
         implements PodcastPresenter {
 
     @Inject PodcastPlayerDelegate podcastPlayerDelegate;
+
+    private Observable<DtPlayer> playerObservable;
 
     public PodcastPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -25,9 +29,20 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
     @Override
     public void attachView(PodcastPlayerScreen view) {
         super.attachView(view);
-        podcastPlayerDelegate.getPlayer(Uri.parse(""))
-                .subscribe(player -> {
-                    getView().attachMediaPlayerControl(player.getMediaPlayerControl());
-                });
+        playerObservable = podcastPlayerDelegate
+                .getPlayer(Uri.parse("URL-----------HERE"))
+                .compose(bindView())
+                .replay(1)
+                .autoConnect();
+        playerObservable.subscribe(player -> {
+            player.start();
+            getView().attachMediaPlayerControl(player.getMediaPlayerControl());
+        });
+    }
+
+    @Override
+    public void detachView(boolean retainInstance) {
+        super.detachView(retainInstance);
+        playerObservable.take(1).subscribe(DtPlayer::release);
     }
 }

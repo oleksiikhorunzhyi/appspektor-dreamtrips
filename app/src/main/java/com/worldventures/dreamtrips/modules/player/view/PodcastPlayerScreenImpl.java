@@ -55,7 +55,7 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
         androidMediaController = new MediaController(getContext());
         androidMediaController.setAnchorView(playerView);
         androidMediaController.setMediaPlayer(mediaPlayerControl);
-        androidMediaController.show();
+        androidMediaController.show(0);
         androidMediaController.setEnabled(true);
     }
 

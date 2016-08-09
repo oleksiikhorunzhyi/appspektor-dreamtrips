@@ -13,8 +13,8 @@ public class AppConfig {
     public static final String LANGUAGE = "{language}";
     public static final String ENROLL_UID = "{BASE64_ENCODED_USERID}";
     public static final String SPONSOR_ID_BASE_64 = "{BASE64_ENCODED_SPONSORID}";
-    public static final String COUNTRY_BASE_64 = "{BASE64_ENCODED_LANGUAGE}";
-    public static final String LANGUAGE_BASE_64 = "{BASE64_ENCODED_COUNTRY}";
+    public static final String COUNTRY_BASE_64 = "{BASE64_ENCODED_COUNTRY}";
+    public static final String LANGUAGE_BASE_64 = "{BASE64_ENCODED_LANGUAGE}";
 
     @SerializedName("URLS")
     protected URLS urls;
@@ -90,7 +90,7 @@ public class AppConfig {
 
             public String getEnrollUpgradeUrl(String sponsorId, String token, String locale,
                                               String country) {
-                return enrollMemeberURL.replace(SPONSOR_ID_BASE_64, ProjectTextUtils.convertToBase64(sponsorId))
+                return enrollUpgradeUrl.replace(SPONSOR_ID_BASE_64, ProjectTextUtils.convertToBase64(sponsorId))
                         .replace(TOKEN, token)
                         .replace(LANGUAGE_BASE_64, ProjectTextUtils.convertToBase64(locale.toUpperCase()))
                         .replace(COUNTRY_BASE_64, ProjectTextUtils.convertToBase64(country.toUpperCase()));

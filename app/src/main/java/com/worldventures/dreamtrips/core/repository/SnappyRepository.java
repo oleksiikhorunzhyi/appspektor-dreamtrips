@@ -69,6 +69,7 @@ public interface SnappyRepository {
     String WALLET_SMART_CARD = "WALLET_SMART_CARD";
     String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
     String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
+    String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
 
     void clearAll();
 
@@ -210,6 +211,10 @@ public interface SnappyRepository {
     void saveWalletCardsList(List<Card> items);
 
     List<Card> readWalletCardsList();
+
+    void saveWalletDefaultCardId(String id);
+
+    String readWalletDefaultCardId();
 
     void saveSmartCard(SmartCard smartCard);
 

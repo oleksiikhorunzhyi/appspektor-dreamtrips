@@ -11,9 +11,9 @@ import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +44,7 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                 .compose(bindViewIoToMainComposer())
                 .subscribe(new ActionStateSubscriber<CardStacksCommand>()
                         .onProgress((command, integer) -> getView().showRecordsInfo(command.getCachedList()))
-                        .onSuccess(command -> onBankCardsReceived(command))
+                        .onSuccess(command -> getView().showRecordsInfo(command.getResult()))
                         .onFail((command, throwable) -> onError(throwable)));
 
         smartCardInteractor.getActiveSmartCardPipe()
@@ -58,9 +58,6 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
         getView().showSmartCardInfo(smartCard);
     }
 
-    protected void onBankCardsReceived(CardStacksCommand command) {
-        getView().showRecordsInfo(command.getResult());
-    }
 
     public void showBankCardDetails(BankCard bankCard) {
         Flow.get(getContext()).set(new CardDetailsPath(bankCard));

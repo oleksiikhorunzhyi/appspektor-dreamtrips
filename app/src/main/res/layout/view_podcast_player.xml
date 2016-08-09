@@ -13,9 +13,9 @@
 
         <ImageView
             android:id="@+id/player_preview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_player360_play"
+            android:layout_width="@dimen/podcast_preview_size"
+            android:layout_height="@dimen/podcast_preview_size"
+            android:src="@drawable/podcasts_placeholder_big"
             android:layout_gravity="center"/>
 
     </FrameLayout>

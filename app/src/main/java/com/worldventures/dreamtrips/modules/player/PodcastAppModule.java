@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.modules.player;
 
-import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayer;
-import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerImpl;
+import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerDelegate;
 
 import javax.inject.Singleton;
 
@@ -16,7 +15,7 @@ import dagger.Provides;
 public class PodcastAppModule {
     @Provides
     @Singleton
-    PodcastPlayer providePodcastPlayer() {
-        return new PodcastPlayerImpl();
+    PodcastPlayerDelegate providePodcastPlayerDelegate() {
+        return new PodcastPlayerDelegate();
     }
 }

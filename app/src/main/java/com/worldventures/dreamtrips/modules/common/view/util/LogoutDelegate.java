@@ -18,6 +18,8 @@ import com.worldventures.dreamtrips.core.utils.BadgeUpdater;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
 import com.worldventures.dreamtrips.modules.auth.api.command.UnsubribeFromPushCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearMemoryStorageCommand;
+import com.worldventures.dreamtrips.modules.common.service.ClearMemoryStoragesInteractor;
 import com.worldventures.dreamtrips.modules.gcm.delegate.NotificationDelegate;
 
 import javax.inject.Inject;
@@ -40,6 +42,7 @@ public class LogoutDelegate {
     @Inject AuthInteractor authInteractor;
     @Inject FlagsDelegate flagsDelegate;
     @Inject MessengerConnector messengerConnector;
+    @Inject ClearMemoryStoragesInteractor clearMemoryStoragesInteractor;
 
     public LogoutDelegate(Injector injector) {
         injector.inject(this);
@@ -61,6 +64,7 @@ public class LogoutDelegate {
     }
 
     private void clearUserDataAndFinish() {
+        clearMemoryStoragesInteractor.clearMemoryStorageActionPipe().send(new ClearMemoryStorageCommand());
         cookieManager.clearCookies();
         snappyRepository.clearAll();
         appSessionHolder.destroy();

@@ -463,8 +463,9 @@ dependencies {
     compile 'frankiesardo:icepick:3.2.0'
     apt 'frankiesardo:icepick-processor:3.2.0'
 
-    debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
+    devCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    devpremarshmallowCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    externalCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
     compile 'com.github.pwittchen:networkevents:2.1.2'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.1.0'
     apt 'org.immutables:value:2.2.6'

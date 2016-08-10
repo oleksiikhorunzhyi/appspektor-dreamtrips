@@ -10,7 +10,7 @@ import rx.Observable;
 import rx.subjects.ReplaySubject;
 import timber.log.Timber;
 
-public class DtMediaPlayer implements DtPlayer {
+public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateListener {
 
     private Context context;
 
@@ -18,12 +18,14 @@ public class DtMediaPlayer implements DtPlayer {
     private State state;
     private ReplaySubject<State> stateObservable = ReplaySubject.create(1);
     private Uri uri;
+    private int bufferPercentage;
 
     public DtMediaPlayer(Context context, Uri uri) {
         this.context = context;
         this.uri = uri;
         setState(State.UNKNOWN);
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnBufferingUpdateListener(this);
     }
 
     @Override
@@ -88,6 +90,11 @@ public class DtMediaPlayer implements DtPlayer {
         stateObservable.onNext(state);
     }
 
+    @Override
+    public void onBufferingUpdate(MediaPlayer mediaPlayer, int bufferPercentage) {
+        this.bufferPercentage = bufferPercentage;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Getters
     ///////////////////////////////////////////////////////////////////////////
@@ -120,5 +127,10 @@ public class DtMediaPlayer implements DtPlayer {
     @Override
     public boolean isPlaying() {
         return mediaPlayer.isPlaying();
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return bufferPercentage;
     }
 }

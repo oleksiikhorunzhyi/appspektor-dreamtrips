@@ -33,4 +33,6 @@ public interface ReadOnlyPlayer {
     int getCurrentPosition();
 
     boolean isPlaying();
+
+    int getBufferPercentage();
 }

@@ -24,7 +24,6 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
-
     @Inject
     SmartCardInteractor smartCardInteractor;
 

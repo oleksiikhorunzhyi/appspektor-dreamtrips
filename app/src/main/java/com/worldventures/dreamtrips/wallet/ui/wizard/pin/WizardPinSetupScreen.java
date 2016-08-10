@@ -11,10 +11,11 @@ import android.util.AttributeSet;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath>
         implements WizardPinSetupPresenter.Screen {
@@ -24,8 +25,6 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
 
     @InjectView(R.id.profile_proto)
     SimpleDraweeView profilePhotoView;
-
-    private SweetAlertDialog alertDialog;
 
     public WizardPinSetupScreen(Context context) {
         super(context);
@@ -57,30 +56,13 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
     }
 
     @Override
-    public void notifyError(Throwable throwable) {
-        if (alertDialog == null) return;
-        alertDialog.setTitleText(getString(R.string.wallet_wizard_setup_error));
-        alertDialog.changeAlertType(SweetAlertDialog.ERROR_TYPE);
-    }
-
-    @Override
-    public void showProgress() {
-        alertDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
-        alertDialog.setTitleText(getString(R.string.wallet_wizard_setup_progress));
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-    }
-
-    @Override
-    public void hideProgress() {
-        if (alertDialog == null) return;
-        alertDialog.dismiss();
-        alertDialog = null;
-    }
-
-    @Override
     public void setUserAvatar(@Nullable String fileUri) {
         if (TextUtils.isEmpty(fileUri)) return;
         profilePhotoView.setImageURI(Uri.parse(fileUri));
+    }
+
+    @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
     }
 }

@@ -9,6 +9,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfoWithLocale;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.widget.BankCardWidget;
 import com.worldventures.dreamtrips.wallet.util.AddressUtil;
 
@@ -69,4 +71,8 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
         presenter.goToBack();
     }
 
+    @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
 }

@@ -19,6 +19,8 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardListHeaderAdapter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.HidingScrollListener;
@@ -88,9 +90,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
 
             }
         });
-        adapter.registerIdDelegate(CardStackViewModel.class, model -> {
-            return ((CardStackViewModel) model).getHeaderTitle().hashCode();
-        });
+        adapter.registerIdDelegate(CardStackViewModel.class, model -> ((CardStackViewModel) model).getHeaderTitle().hashCode());
 
         bankCardList.setAdapter(adapter);
         bankCardList.setItemAnimator(new DefaultItemAnimator());
@@ -134,4 +134,8 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
                 .build();
     }
 
+    @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
 }

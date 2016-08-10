@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
+
 public interface SnappyRepository {
 
     String CIRCLES = "circles";
@@ -66,6 +68,7 @@ public interface SnappyRepository {
     String WALLET_CARDS_LIST = "WALLET_CARDS_LIST";
     String WALLET_SMART_CARD = "WALLET_SMART_CARD";
     String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
+    String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
 
     void clearAll();
 
@@ -165,7 +168,8 @@ public interface SnappyRepository {
 
     void cleanDtlLocation();
 
-    @Nullable DtlLocation getDtlLocation();
+    @Nullable
+    DtlLocation getDtlLocation();
 
     void saveDtlMerhants(List<DtlMerchant> merchants);
 
@@ -199,6 +203,10 @@ public interface SnappyRepository {
 
     CachedEntity getDownloadMediaEntity(String id);
 
+    SimpleDeviceStorage getWalletDeviceStorage();
+
+    void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage);
+
     void saveWalletCardsList(List<Card> items);
 
     List<Card> readWalletCardsList();
@@ -207,9 +215,9 @@ public interface SnappyRepository {
 
     SmartCard getSmartCard(String smartCardId);
 
+    List<SmartCard> getSmartCards();
+
     String getActiveSmartCardId();
 
     void setActiveSmartCardId(String scid);
-
-    List<SmartCard> getSmartCards();
 }

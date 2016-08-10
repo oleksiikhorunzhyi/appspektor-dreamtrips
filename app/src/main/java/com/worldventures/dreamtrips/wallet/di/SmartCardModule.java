@@ -2,6 +2,9 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import android.content.Context;
 
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.wallet.domain.storage.PersistentDeviceStorage;
+
 import javax.inject.Named;
 import javax.inject.Singleton;
 
@@ -26,8 +29,8 @@ public class SmartCardModule {
     @Singleton
     @Provides
     @Named("MockSmartCardClient")
-    SmartCardClient provideMockSmartCardClient() {
-        return new MockSmartCardClient();
+    SmartCardClient provideMockSmartCardClient(SnappyRepository db) {
+        return new MockSmartCardClient(() -> PersistentDeviceStorage.load(db));
     }
 
     @Singleton

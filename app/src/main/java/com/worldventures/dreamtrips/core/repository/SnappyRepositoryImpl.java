@@ -51,6 +51,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import io.techery.janet.smartcard.mock.device.SimpleDeviceStorage;
 import timber.log.Timber;
 
 public class SnappyRepositoryImpl implements SnappyRepository {
@@ -295,6 +296,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
     @Override public void setActiveSmartCardId(String scid) {
         act(db -> db.put(WALLET_ACTIVE_SMART_CARD_ID, scid));
+    }
+
+    @Override
+    public SimpleDeviceStorage getWalletDeviceStorage() {
+        return actWithResult(db -> db.get(WALLET_DEVICE_STORAGE, SimpleDeviceStorage.class)).orNull();
+    }
+
+    @Override
+    public void saveWalletDeviceStorage(SimpleDeviceStorage deviceStorage) {
+        act(db -> db.put(WALLET_DEVICE_STORAGE, deviceStorage));
     }
 
     ///////////////////////////////////////////////////////////////////////////

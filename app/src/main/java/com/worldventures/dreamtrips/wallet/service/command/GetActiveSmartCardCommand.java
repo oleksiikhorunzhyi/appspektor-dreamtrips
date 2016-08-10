@@ -19,6 +19,7 @@ public class GetActiveSmartCardCommand  extends Command<SmartCard> implements In
 
     @Override
     protected void run(CommandCallback<SmartCard> callback) throws Throwable {
+        // TODO update info from SC device with set of actions
         callback.onSuccess(snappyRepository.getSmartCard(snappyRepository.getActiveSmartCardId()));
     }
 }

@@ -28,8 +28,9 @@
                 android:layout_width="@dimen/dtlMerchantCoverImageWidth"
                 android:layout_height="@dimen/dtlMerchantCoverImageHeight"
                 android:layout_gravity="center_vertical"
-                app:actualImageScaleType="centerInside"
+                app:actualImageScaleType="centerCrop"
                 app:placeholderImage="@drawable/ic_trip_image_placeholder"
+                app:placeholderImageScaleType="centerCrop"
                 tools:src="@drawable/ic_trip_image_placeholder"
                 />
 

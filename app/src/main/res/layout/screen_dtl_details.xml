@@ -30,9 +30,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:background="@color/white"
-                    fresco:actualImageScaleType="fitCenter"
+                    fresco:actualImageScaleType="centerCrop"
                     fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
-                    fresco:placeholderImageScaleType="centerInside"
+                    fresco:placeholderImageScaleType="centerCrop"
                     />
 
                 <include layout="@layout/include_dtl_info"/>

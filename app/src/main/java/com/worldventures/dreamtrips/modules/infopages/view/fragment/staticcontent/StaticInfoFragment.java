@@ -379,8 +379,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     @Override
     public void showError(int errorCode) {
         if (getPresenter() != null) getPresenter().setInErrorState(true);
-        if (isDetached() || isRemoving()) return;
-        //
+        if (isDetached() || isRemoving() || getActivity() == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && getActivity().isDestroyed()) return;
+
         int errorText;
         switch (errorCode) {
             case WebViewClient.ERROR_HOST_LOOKUP:

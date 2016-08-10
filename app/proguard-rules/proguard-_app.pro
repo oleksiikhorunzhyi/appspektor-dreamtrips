@@ -10,3 +10,7 @@
 -dontwarn pl.itako.iconversion.**
 
 -keepattributes InnerClasses
+
+-keepclassmembers class * implements android.os.Parcelable {
+    static ** CREATOR;
+}

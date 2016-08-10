@@ -35,6 +35,20 @@ public class PodcastPlayerDelegate {
                 .switchIfEmpty(getBindServiceObservable());
     }
 
+    private Observable getBindServiceObservable() {
+        return Observable.create(new Observable.OnSubscribe<PodcastService>() {
+            @Override
+            public void call(Subscriber<? super PodcastService> subscriber) {
+                Timber.d("Podcasts -- delegate -- bind");
+                // start service as onTaskRemoved() is not called for bound only services
+                context.startService(new Intent(context, PodcastService.class));
+                context.bindService(new Intent(context, PodcastService.class),
+                        new Connection(subscriber),
+                        Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
+            }
+        });
+    }
+
     private class Connection implements ServiceConnection {
         private Subscriber<? super PodcastService> subscriber;
 
@@ -63,20 +77,5 @@ public class PodcastPlayerDelegate {
             Timber.d("Podcasts -- delegate -- disconnected!");
             podcastService = null;
         }
-    };
-
-    private Observable getBindServiceObservable() {
-        return Observable.create(new Observable.OnSubscribe<PodcastService>() {
-            @Override
-            public void call(Subscriber<? super PodcastService> subscriber) {
-                Timber.d("Podcasts -- delegate -- bind");
-                // start service as onTaskRemoved() is not called for bound only services
-                context.startService(new Intent(context, PodcastService.class));
-                context.bindService(new Intent(context, PodcastService.class),
-                        new Connection(subscriber),
-                        Context.BIND_AUTO_CREATE | Context.BIND_IMPORTANT);
-            }
-        });
     }
-
 }

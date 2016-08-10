@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.player.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
@@ -47,12 +48,13 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
 
     @Override
     public PodcastPresenter createPresenter() {
-        return new PodcastPresenterImpl(getContext(), injector);
+        return new PodcastPresenterImpl(getContext(), injector,
+                ((Activity) getContext()).getIntent().getData());
     }
 
     @Override
     public void attachMediaPlayerControl(MediaController.MediaPlayerControl mediaPlayerControl) {
-        androidMediaController = new MediaController(getContext());
+        androidMediaController = new MediaController(getContext(), false);
         androidMediaController.setAnchorView(playerView);
         androidMediaController.setMediaPlayer(mediaPlayerControl);
         androidMediaController.show(0);

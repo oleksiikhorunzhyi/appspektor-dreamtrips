@@ -21,16 +21,19 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
 
     private Observable<DtPlayer> playerObservable;
 
-    public PodcastPresenterImpl(Context context, Injector injector) {
+    private Uri uri;
+
+    public PodcastPresenterImpl(Context context, Injector injector, Uri uri) {
         super(context);
         injector.inject(this);
+        this.uri = uri;
     }
 
     @Override
     public void attachView(PodcastPlayerScreen view) {
         super.attachView(view);
         playerObservable = podcastPlayerDelegate
-                .getPlayer(Uri.parse("URL-----------HERE"))
+                .getPlayer(uri)
                 .compose(bindView())
                 .replay(1)
                 .autoConnect();

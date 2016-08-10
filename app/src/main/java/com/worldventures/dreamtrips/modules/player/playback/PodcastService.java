@@ -9,11 +9,11 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -74,10 +74,10 @@ public class PodcastService extends Service {
     public Observable<ReadOnlyPlayer> createPlayer(Uri uri) {
         Timber.d("Podcasts -- Service -- getPlayer %s", uri);
         Observable<ReadOnlyPlayer> observable = Observable.just(player)
-            .filter(player -> player != null && player.getSourceUri().equals(uri))
-            .compose(new NonNullFilter<>())
-            .switchIfEmpty(Observable.fromCallable(() -> createPlayerInternal(uri)))
-            .flatMap(this::preparePlayerIfNeeded);
+                .filter(player -> player != null && player.getSourceUri().equals(uri))
+                .compose(new NonNullFilter<>())
+                .switchIfEmpty(Observable.fromCallable(() -> createPlayerInternal(uri)))
+                .flatMap(this::preparePlayerIfNeeded);
         observable = observable.replay(1).autoConnect();
         observable.subscribe();
         return observable;
@@ -117,6 +117,10 @@ public class PodcastService extends Service {
                     .observeOn(AndroidSchedulers.mainThread());
         }
         return playerObservable;
+    }
+
+    public void seekTo(int position) {
+        if (player != null) player.seekTo(position);
     }
 
     public void startPlayer() {

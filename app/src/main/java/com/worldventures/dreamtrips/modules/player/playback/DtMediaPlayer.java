@@ -70,6 +70,12 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
     }
 
     @Override
+    public void seekTo(int position) {
+        if (state == State.PLAYING)
+            mediaPlayer.seekTo(position);
+    }
+
+    @Override
     public void pause() {
         mediaPlayer.pause();
         setState(State.PAUSED);

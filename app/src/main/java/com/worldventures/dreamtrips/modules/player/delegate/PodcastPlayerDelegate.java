@@ -27,6 +27,10 @@ public class PodcastPlayerDelegate {
         return getPodcastService().flatMap(service -> service.createPlayer(uri));
     }
 
+    public void seekTo(int position) {
+        getPodcastService().subscribe(service -> service.seekTo(position));
+    }
+
     public void start() {
         getPodcastService().subscribe(PodcastService::startPlayer);
     }

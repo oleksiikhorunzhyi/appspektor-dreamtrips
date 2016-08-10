@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
-import android.widget.MediaController;
+import android.widget.ProgressBar;
 
 import com.messenger.ui.view.layout.BaseViewStateLinearLayout;
 import com.techery.spares.module.Injector;
@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenter;
 import com.worldventures.dreamtrips.modules.player.presenter.PodcastPresenterImpl;
+import com.worldventures.dreamtrips.modules.player.view.custom.DtMediaController;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,8 +24,12 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
 
     @InjectView(R.id.player_view)
     FrameLayout playerView;
+    @InjectView(R.id.media_control)
+    DtMediaController mediaController;
+    @InjectView(R.id.progress)
+    ProgressBar progressBar;
+
     private Injector injector;
-    private MediaController androidMediaController;
 
     public PodcastPlayerScreenImpl(Context context) {
         super(context);
@@ -44,6 +49,9 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.inject(this);
+
+        mediaController.setOnSeekTo(position -> getPresenter().seekTo(position));
+        mediaController.setOnPlayPause(() -> getPresenter().playPause());
     }
 
     @Override
@@ -53,12 +61,29 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
     }
 
     @Override
-    public void attachMediaPlayerControl(MediaController.MediaPlayerControl mediaPlayerControl) {
-        androidMediaController = new MediaController(getContext(), false);
-        androidMediaController.setAnchorView(playerView);
-        androidMediaController.setMediaPlayer(mediaPlayerControl);
-        androidMediaController.show(0);
-        androidMediaController.setEnabled(true);
+    public void setProgress(int duration, int currentPosition, int bufferPercentage) {
+        mediaController.setEnabled(true);
+        mediaController.setDuration(duration);
+        mediaController.setProgress(currentPosition, bufferPercentage);
+    }
+
+    @Override
+    public void setPausePlay(boolean isPlaying) {
+        mediaController.setEnabled(true);
+        progressBar.setVisibility(GONE);
+        mediaController.setPausePlay(isPlaying);
+    }
+
+    @Override
+    public void setPlaybackFailed() {
+        mediaController.setVisibility(VISIBLE);
+        progressBar.setVisibility(GONE);
+    }
+
+    @Override
+    public void setPreparing() {
+        mediaController.setEnabled(false);
+        progressBar.setVisibility(VISIBLE);
     }
 
     @Override

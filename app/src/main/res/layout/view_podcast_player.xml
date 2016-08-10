@@ -18,6 +18,18 @@
             android:src="@drawable/podcasts_placeholder_big"
             android:layout_gravity="center"/>
 
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <com.worldventures.dreamtrips.modules.player.view.custom.DtMediaController
+            android:id="@+id/media_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"/>
+
     </FrameLayout>
 
 

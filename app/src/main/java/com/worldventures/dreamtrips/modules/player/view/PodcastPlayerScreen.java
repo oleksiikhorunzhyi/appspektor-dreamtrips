@@ -1,10 +1,14 @@
 package com.worldventures.dreamtrips.modules.player.view;
 
-import android.widget.MediaController;
-
 import com.worldventures.dreamtrips.modules.dtl_flow.DtlScreen;
 
 public interface PodcastPlayerScreen extends DtlScreen {
 
-    void attachMediaPlayerControl(MediaController.MediaPlayerControl mediaPlayerControl);
+    void setProgress(int duration, int currentPosition, int bufferPercentage);
+
+    void setPausePlay(boolean isPlaying);
+
+    void setPlaybackFailed();
+
+    void setPreparing();
 }

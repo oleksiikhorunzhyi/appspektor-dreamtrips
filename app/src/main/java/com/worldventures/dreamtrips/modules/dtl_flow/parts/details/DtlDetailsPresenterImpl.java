@@ -231,7 +231,7 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
         getView().setTransaction(dtlTransaction);
         //
         analyticsInteractor.dtlAnalyticsCommandPipe()
-                .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant)));
+                .send(DtlAnalyticsCommand.create(new CheckinEvent(merchant, location)));
     }
 
     @Override

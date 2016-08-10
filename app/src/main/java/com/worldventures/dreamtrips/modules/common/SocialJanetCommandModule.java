@@ -14,6 +14,7 @@ import com.worldventures.dreamtrips.modules.bucketlist.service.command.MergeBuck
 import com.worldventures.dreamtrips.modules.common.api.janet.command.AcceptTermsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.ClearMemoryStorageCommand;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.SubscribeToPushNotificationsCommand;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.TripsFilterDataCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.FeedByHashtagCommand;
 import com.worldventures.dreamtrips.modules.feed.service.command.GetAccountFeedCommand;
@@ -67,6 +68,7 @@ import dagger.Module;
         GetTripsCommand.class,
         HashtagSuggestionCommand.class,
         ClearMemoryStorageCommand.class,
+        SubscribeToPushNotificationsCommand.class,
         SettingsCommand.class},
 
         complete = false, library = true)

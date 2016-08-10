@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
@@ -269,9 +268,6 @@ public interface DreamTripsApi {
 
     @PUT("/api/social/notifications/{id}")
     Void markAsRead(@Path("id") int id);
-
-    @POST("/api/social/push_subscriptions")
-    Void subscribeDevice(@Body PushSubscription pushSubscription);
 
     @FormUrlEncoded
     @POST("/api/{uid}/flags")

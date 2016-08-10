@@ -3,10 +3,11 @@ package com.worldventures.dreamtrips.wallet.di;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.component.ComponentDescription;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletActivityPresenter;
+import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreenPresenter;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.BankCardCell;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPresenter;
+import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.barcode.WizardScanBarcodePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPresenter;
@@ -33,6 +34,7 @@ import dagger.Provides;
                 WalletPinIsSetPresenter.class,
                 CardDetailsPresenter.class,
                 CardListScreenPresenter.class,
+                WalletCardSettingsPresenter.class,
                 WizardPinSetupPresenter.class
         },
         complete = false, library = true

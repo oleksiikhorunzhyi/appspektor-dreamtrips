@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/WalletTheme">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="@string/wallet_card_settings_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/item_stealth_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/wallet_common_item_padding">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/wallet_common_item_icon_size"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/ic_stealth_mode"
+                tools:ignore="ContentDescription"/>
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/stealth_mode_switcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/wallet_settings_item_text_margin_left"
+                android:text="@string/wallet_card_settings_stealth_mode"/>
+
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:id="@+id/item_reset_pin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/wallet_common_item_padding">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/wallet_common_item_icon_size"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_reset_pin"
+                tools:ignore="ContentDescription"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/wallet_settings_item_text_margin_left"
+                android:text="@string/wallet_card_settings_reset_pin"/>
+
+        </FrameLayout>
+
+
+    </LinearLayout>
+</com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsScreen>

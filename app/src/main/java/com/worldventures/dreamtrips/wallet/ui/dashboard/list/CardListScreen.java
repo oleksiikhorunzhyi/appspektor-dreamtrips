@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.dashboard.list;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
@@ -61,6 +63,7 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         super(context, attrs);
     }
 
+    @NonNull
     @Override
     public CardListScreenPresenter createPresenter() {
         return new CardListScreenPresenter(getContext(), getInjector());
@@ -71,6 +74,18 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         super.onFinishInflate();
         toolbar.setTitle(R.string.wallet);
         toolbar.setNavigationOnClickListener(this::onNavigateButtonClick);
+        toolbar.inflateMenu(R.menu.menu_wallet_dashboard);
+        toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
+    }
+
+    private boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_card_settings:
+                presenter.goToSettings();
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override

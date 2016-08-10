@@ -9,14 +9,34 @@
     <color name="wallet_color_round_check_box_text">#666666</color>
 
     <style name="WalletTheme" parent="AppTheme">
+        <item name="android:textAppearanceLarge">@style/WalletTheme.TextAppearanceLarge</item>
+        <item name="android:textColorPrimary">@color/wallet_common_primary_text_color</item>
+
+        <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
+        <item name="android:textViewStyle">@style/WalletTheme.TextStyle</item>
+        <item name="switchStyle">@style/WalletTheme.SwitchStyle</item>
+
+        <!-- Active thumb color & Active track color(30% transparency) -->
+        <item name="colorControlActivated">@color/wallet_color_background_light</item>
+        <item name="colorControlHighlight">@color/wallet_color_background_light</item>
+
+        <!-- Inactive thumb color -->
+        <item name="colorSwitchThumbNormal">#888888</item>
+        <!-- Inactive track color(30% transparency) -->
+        <item name="android:colorForeground">#888888</item>
     </style>
 
+    <!--wizard-->
     <style name="WalletTheme.Wizard">
-        <item name="android:buttonStyle">@style/WalletWizardButton</item>
-        <item name="android:editTextStyle">@style/WalletWizardEditText</item>
+        <item name="android:buttonStyle">@style/WalletTheme.Wizard.ButtonStyle</item>
+        <item name="android:editTextStyle">@style/WalletTheme.Wizard.EditTextStyle</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorHint">@android:color/white</item>
+
+        <item name="android:textAppearanceLarge">@style/WalletTheme.Wizard.TextAppearanceLarge</item>
         <item name="android:textAppearanceMedium">@style/WalletTheme.Wizard.TextAppearanceMedium</item>
+        <item name="android:textAppearanceSmall">@style/WalletTheme.Wizard.TextAppearanceSmall</item>
+
         <item name="android:imeOptions">actionNext</item>
 
         <item name="colorControlNormal">@android:color/white</item>
@@ -24,29 +44,22 @@
         <item name="colorControlHighlight">@color/wallet_color_background_light</item>
     </style>
 
-    <style name="WalletTheme.ToolbarLight" parent="ThemeOverlay.AppCompat.Dark">
+    <style name="WalletTheme.Wizard.ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorControlNormal">@android:color/white</item>
-        <item name="toolbarStyle">@style/WalletTheme.ToolbarStyle</item>
+        <item name="toolbarStyle">@style/WalletTheme.Wizard.ToolbarStyle</item>
     </style>
 
-    <style name="WalletTheme.ToolbarWhite" parent="ThemeOverlay.AppCompat.Dark">
-        <item name="android:textColorPrimary">@color/wallet_color_text_color_toolbar</item>
-        <item name="android:textColorSecondary">@color/wallet_color_text_color_toolbar</item>
-        <item name="toolbarStyle">@style/WalletTheme.WhiteToolbarStyle</item>
-        <item name="android:background">@android:color/white</item>
-    </style>
-
-    <style name="WalletTheme.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
+    <style name="WalletTheme.Wizard.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="WalletTheme.WhiteToolbarStyle" parent="Widget.AppCompat.Toolbar">
-        <item name="android:textColor">@color/wallet_color_text_color_toolbar</item>
-    </style>
-
-    <style name="WalletWizardButton" parent="Widget.AppCompat.Button">
+    <style name="WalletTheme.Wizard.ButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@color/wallet_color_primary</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="WalletTheme.Wizard.TextAppearanceLarge" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="WalletTheme.Wizard.TextAppearanceMedium" parent="TextAppearance.AppCompat.Medium">
@@ -57,7 +70,7 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="WalletWizardEditText" parent="Widget.AppCompat.EditText">
+    <style name="WalletTheme.Wizard.EditTextStyle" parent="Widget.AppCompat.EditText">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColorHint">@android:color/white</item>
         <item name="android:singleLine">true</item>
@@ -82,6 +95,15 @@
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
 
+    <style name="WalletTheme.Wizard.PinImageButton">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:src">@drawable/ic_smart_card_pin_button</item>
+    </style>
+
+    <!--common-->
+
     <style name="WalletTheme.RoundCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
@@ -91,10 +113,21 @@
         <item name="android:textSize">@dimen/wallet_round_check_box_text_size</item>
     </style>
 
-    <style name="WalletTheme.Wizard.PinImageButton">
-        <item name="android:layout_width">36dp</item>
-        <item name="android:layout_height">36dp</item>
-        <item name="android:scaleType">fitCenter</item>
-        <item name="android:src">@drawable/ic_smart_card_pin_button</item>
+    <style name="WalletTheme.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="navigationIcon">@drawable/blue_arrow</item>
+        <item name="titleTextColor">@color/wallet_color_text_color_toolbar</item>
+    </style>
+
+    <style name="WalletTheme.TextStyle">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="WalletTheme.TextAppearanceLarge" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="WalletTheme.SwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 </resources>

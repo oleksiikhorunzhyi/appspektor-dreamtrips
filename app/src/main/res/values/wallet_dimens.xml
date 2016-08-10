@@ -20,4 +20,8 @@
 
     <dimen name="wallet_wizard_avatar_size">192dp</dimen>
     <dimen name="wallet_wizard_bar_code_border_size">48dp</dimen>
+
+    <dimen name="wallet_common_item_padding">16dp</dimen>
+    <dimen name="wallet_common_item_icon_size">24dp</dimen>
+    <dimen name="wallet_settings_item_text_margin_left">65dp</dimen>
 </resources>

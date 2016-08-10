@@ -13,6 +13,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
+import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,8 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
 
     @Inject
     SmartCardInteractor smartCardInteractor;
+
+    private SmartCard activeSmartCard;
 
     public CardListScreenPresenter(Context context, Injector injector) {
         super(context, injector);
@@ -48,9 +51,12 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
         smartCardInteractor.getActiveSmartCardPipe()
                 .createObservableResult(new GetActiveSmartCardCommand())
                 .compose(bindViewIoToMainComposer())
-                .subscribe(it -> {
-                    getView().showSmartCardInfo(it.getResult());
-                });
+                .subscribe(it -> setSmartCard(it.getResult()));
+    }
+
+    protected void setSmartCard(SmartCard smartCard) {
+        activeSmartCard = smartCard;
+        getView().showSmartCardInfo(smartCard);
     }
 
     protected void onBankCardsReceived(CardStacksCommand command) {
@@ -67,6 +73,11 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
 
     private void onError(Throwable throwable) {
         Timber.e(throwable, "");
+    }
+
+    public void goToSettings() {
+        if (activeSmartCard == null) return;
+        Flow.get(getContext()).set(new WalletCardSettingsPath(activeSmartCard));
     }
 
     public interface Screen extends WalletScreen {

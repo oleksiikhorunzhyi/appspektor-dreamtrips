@@ -7,6 +7,7 @@ import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
 import com.worldventures.dreamtrips.modules.common.api.janet.GetRegionsHttpAction;
 import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,14 +25,27 @@ public class GetRegionsCommand extends Command<List<RegionModel>> implements Inj
 
     private List<RegionModel> cachedData;
 
+    private boolean isClearCommand;
+
+    public GetRegionsCommand() {
+    }
+
+    private GetRegionsCommand(boolean isClearCommand) {
+        this.isClearCommand = isClearCommand;
+    }
+
     @Override
     public List<RegionModel> getCacheData() {
-        return getResult();
+        return isClearCommand ? new ArrayList<>() : getResult();
     }
 
     @Override
     public void onRestore(ActionHolder holder, List<RegionModel> cache) {
-        cachedData = cache;
+        if (isClearCommand) {
+            cachedData = new ArrayList<>();
+        } else {
+            cachedData = cache;
+        }
     }
 
     @Override
@@ -41,7 +55,7 @@ public class GetRegionsCommand extends Command<List<RegionModel>> implements Inj
 
     @Override
     protected void run(CommandCallback<List<RegionModel>> callback) throws Throwable {
-        if (cachedData == null || cachedData.size() == 0) {
+        if ((cachedData == null || cachedData.size() == 0) && !isClearCommand) {
             janet.createPipe(GetRegionsHttpAction.class, Schedulers.io())
                     .createObservableResult(new GetRegionsHttpAction())
                     .map(GetRegionsHttpAction::getRegionModels)
@@ -49,5 +63,9 @@ public class GetRegionsCommand extends Command<List<RegionModel>> implements Inj
         } else {
             callback.onSuccess(cachedData);
         }
+    }
+
+    public static GetRegionsCommand clearMemory() {
+        return new GetRegionsCommand(true);
     }
 }

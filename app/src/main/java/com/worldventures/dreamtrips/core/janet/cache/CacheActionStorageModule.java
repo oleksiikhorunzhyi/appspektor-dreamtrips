@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.janet.cache;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
@@ -65,13 +66,13 @@ public class CacheActionStorageModule {
 
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionStorage provideActivitiesStorage(SnappyRepository snappyRepository) {
-        return new ActivitiesStorage(snappyRepository);
+    ActionStorage provideActivitiesStorage() {
+        return new ActivitiesStorage(new MemoryStorage<>());
     }
 
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionStorage provideRegionsStorage(SnappyRepository snappyRepository) {
-        return new RegionsStorage(snappyRepository);
+    ActionStorage provideRegionsStorage() {
+        return new RegionsStorage(new MemoryStorage<>());
     }
 }

@@ -10,8 +10,8 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
-        <com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView
-            android:id="@+id/notifications"
+        <com.worldventures.dreamtrips.modules.feed.view.custom.StateRecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

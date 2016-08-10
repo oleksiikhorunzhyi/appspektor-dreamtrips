@@ -633,6 +633,16 @@
     <string name="error_fail_to_load_podcast">Failed to load podcast</string>
 
     <string name="min">min</string>
+    <string name="post_hint_with_hashtag">Say something, add #hashtags</string>
+    <string name="add_text">Add text</string>
+    <string name="action_search_by_hashtag">Search by hashtag</string>
+    <string name="error_fail_to_load_feeds_by_hashtag">Failed to load feeds by hashtag</string>
+    <string name="no_feed_by_hashtag">No posts found</string>
+
+    <string name="friends_loading_info_text">Loading your Friends</string>
+
+    <string name="hashtag_one_post">%d post</string>
+    <string name="hashtag_multiple_posts">%d posts</string>
 
     <string name="error_webview_secure_connection">We\'re sorry but DreamTrips app can not establish secure connection.\nWe\'ve been notified about this issue and we\'ll take a look at it shortly.\n\nPlease contact customer support for faster resolution.</string>
 

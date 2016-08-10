@@ -1,7 +1,7 @@
 package com.messenger.delegate.chat.flagging;
 
 import org.immutables.value.Value;
-import org.jetbrains.annotations.Nullable;
+import android.support.annotation.Nullable;
 
 @Value.Immutable
 public interface FlagMessageDTO {

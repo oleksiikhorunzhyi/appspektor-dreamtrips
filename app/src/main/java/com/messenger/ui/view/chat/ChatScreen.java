@@ -1,6 +1,7 @@
 package com.messenger.ui.view.chat;
 
 import android.database.Cursor;
+import android.support.annotation.StringRes;
 import android.view.Menu;
 
 import com.messenger.entities.DataConversation;
@@ -25,13 +26,9 @@ public interface ChatScreen extends MessengerScreen {
 
     void setTitle(DataConversation conversation, List<DataUser> users);
 
-    void addTypingUser(DataUser user);
+    void changeTypingUsers(List<DataUser> user);
 
     void setShowMarkUnreadMessage(boolean needShow);
-
-    void removeTypingUser(DataUser uxzser);
-
-    void removeAllTypingUsers();
 
     void showMessages(Cursor cursor);
 
@@ -56,4 +53,14 @@ public interface ChatScreen extends MessengerScreen {
     void refreshChatTimestampView(int position);
 
     void enableInput(boolean enabled);
+
+    void enableReloadChatButton(long clearDate);
+
+    void disableReloadChatButton();
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
+
+    void showErrorMessage(@StringRes int error_no_connection);
 }

@@ -23,6 +23,7 @@ import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.events.ResetFiltersEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -42,7 +43,7 @@ import icepick.State;
 
 @Layout(R.layout.fragment_trip_list)
 @MenuResource(R.menu.menu_dream_trips)
-public class TripListFragment extends BaseFragment<TripListPresenter> implements
+public class TripListFragment extends RxBaseFragment<TripListPresenter> implements
         TripListPresenter.View, SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     @InjectView(R.id.recyclerViewTrips)

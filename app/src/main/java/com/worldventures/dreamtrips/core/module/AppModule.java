@@ -11,6 +11,8 @@ import com.techery.spares.module.InjectingApplicationModule;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
+import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
@@ -21,7 +23,7 @@ import dagger.Provides;
 
 @Module(
         injects = {
-                App.class,
+                App.class
         },
         includes = {
                 // base injection and helpers/drivers
@@ -42,6 +44,8 @@ import dagger.Provides;
                 //
                 RouteCreatorModule.class,
                 //
+                CacheActionStorageModule.class,
+                //
                 GcmModule.class,
                 ActionReceiverModule.class,
                 //
@@ -54,6 +58,7 @@ import dagger.Provides;
                 AppVersionNameModule.class,
                 //
                 MessengerModule.class,
+                FlaggingModule.class,
                 //
                 JanetModule.class,
                 AnalyticsModule.class,
@@ -93,5 +98,4 @@ public class AppModule {
     Context provideContext() {
         return app.getApplicationContext();
     }
-
 }

@@ -144,7 +144,14 @@ public class PhotoPostCreationCell extends AbstractDelegateCell<PhotoCreationIte
     }
 
     private int calculateHeight() {
-        int calculated = (int) (cellWidth / (float) getModelObject().getWidth() * getModelObject().getHeight());
+        int width = getModelObject().getWidth();
+        int height = getModelObject().getHeight();
+        //in case of server response width = 0, height = 0;
+        if (width == 0 || height == 0) {
+            width = cellWidth;
+            height = cellWidth;
+        }
+        int calculated = (int) (cellWidth / (float) width * height);
         return calculated;
     }
 

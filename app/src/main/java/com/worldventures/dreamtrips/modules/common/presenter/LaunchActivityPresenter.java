@@ -25,8 +25,8 @@ import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBI
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 
-
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
+
     @Inject
     SnappyRepository snappyRepository;
     @Inject
@@ -47,16 +47,9 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     private AuthorizedDataManager.AuthDataSubscriber getAuthDataSubscriber() {
         if (authDataSubscriber == null || authDataSubscriber.isUnsubscribed()) {
             authDataSubscriber = new AuthorizedDataManager.AuthDataSubscriber()
-                    .onStart(() -> view.configurationStarted())
-                    .onSuccess(() -> view.openMain())
-                    .onFail(throwable -> {
-                        if (throwable instanceof SessionAbsentException || AuthRetryPolicy.isLoginError(throwable)) {
-                            view.openLogin();
-                        } else {
-                            view.informUser(new HumaneErrorTextFactory().create(throwable));
-                            view.configurationFailed();
-                        }
-                    });
+                    .onStart(this::onAuthStart)
+                    .onSuccess(this::onAuthSuccess)
+                    .onFail(this::onAuthFail);
         }
         return authDataSubscriber;
     }
@@ -69,7 +62,8 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         BusWrapper busWrapper = getGreenRobotBusWrapper(eventBus);
         networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
         networkEvents.register();
-        snappyRepository.removeAllBucketItemPhotoCreations();
+
+        startPreloadChain();
     }
 
     @Override
@@ -82,6 +76,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     public void dropView() {
         super.dropView();
         networkEvents.unregister();
+        if (authorizedDataManager != null) authorizedDataManager.unsubscribe();
     }
 
     public void initDtl() {
@@ -127,7 +122,27 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         authorizedDataManager.updateData(getAuthDataSubscriber());
     }
 
+    private void onAuthStart() {
+        if (view != null) view.configurationStarted();
+    }
+
+    private void onAuthSuccess() {
+        if (view != null) view.openMain();
+    }
+
+    private void onAuthFail(Throwable throwable) {
+        if (view == null) return;
+
+        if (throwable instanceof SessionAbsentException || AuthRetryPolicy.isLoginError(throwable)) {
+            view.openLogin();
+        } else {
+            view.informUser(new HumaneErrorTextFactory().create(throwable));
+            view.configurationFailed();
+        }
+    }
+
     public interface View extends ActivityPresenter.View, ApiErrorView {
+
         void configurationFailed();
 
         void configurationStarted();

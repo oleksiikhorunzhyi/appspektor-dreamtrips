@@ -9,7 +9,7 @@ import com.messenger.ui.adapter.inflater.chat.ChatTimestampInflater;
 
 import javax.inject.Inject;
 
-public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
+public class ChatAdapter extends HeaderableCursorRecyclerViewAdapter<MessageViewHolder> {
 
     private boolean needMarkUnreadMessages;
 
@@ -28,22 +28,22 @@ public class ChatAdapter extends CursorRecyclerViewAdapter<MessageViewHolder> {
     }
 
     @Override
-    public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MessageViewHolder messageViewHolder = viewHolderProvider.provideViewHolder(parent, viewType);
+    public MessageViewHolder onCreateElementViewHolder(ViewGroup parent, int viewType) {
+        MessageViewHolder messageViewHolder = viewHolderProvider.provideViewHolder(getCursor(), parent, viewType);
         messageViewHolder.setCellDelegate(cellDelegate);
         return messageViewHolder;
     }
 
     @Override
-    public void onBindViewHolderCursor(MessageViewHolder holder, Cursor cursor) {
+    protected void onBindElementViewHolderCursor(MessageViewHolder holder, Cursor cursor) {
         int position = cursor.getPosition();
-        holder.setSelected(chatTimestampInflater.bindTimeStampIfNeeded(holder, cursor, position));
+        holder.setSelected(chatTimestampInflater.bindTimeStampIfNeeded(holder, cursor, position, getHeaderViewCount()));
         holder.setNeedMarkUnreadMessage(needMarkUnreadMessages);
         holder.bindCursor(cursor);
     }
 
     @Override
-    public int getItemViewType(int position) {
+    protected int getElementViewType(int position) {
         return viewHolderProvider.provideViewType(getCursor(), position);
     }
 

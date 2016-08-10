@@ -26,7 +26,6 @@ import com.worldventures.dreamtrips.modules.dtl_flow.FlowUtil;
 import com.worldventures.dreamtrips.modules.dtl_flow.ViewState;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.details.DtlMerchantDetailsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.location_change.DtlLocationChangePath;
-import com.worldventures.dreamtrips.modules.dtl_flow.parts.locations.DtlLocationsPath;
 import com.worldventures.dreamtrips.modules.dtl_flow.parts.map.DtlMapPath;
 
 import java.util.Arrays;
@@ -36,6 +35,7 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import flow.History;
+import flow.path.Path;
 import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import io.techery.janet.helper.ActionStateToActionTransformer;
@@ -90,10 +90,9 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
                 .observe()
                 .compose(bindViewIoToMainComposer())
                 .compose(new ActionStateToActionTransformer<>())
-                .filter(action -> !getView().isTabletLandscape())
-                .filter(dtlMerchantsAction -> dtlMerchantsAction.getResult().isEmpty())
-                .subscribe(s -> redirectToLocations(), e -> {
-                });
+                .map(DtlMerchantsAction::getResult)
+                .filter(List::isEmpty)
+                .subscribe(s -> showEmptyView(), e -> {});
         //
         locationInteractor.locationPipe().observeSuccessWithReplay()
                 .first()
@@ -153,22 +152,12 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
 
     @Override
     public void mapClicked() {
-        History history = History.single(new DtlMapPath(FlowUtil.currentMaster(getContext()),
-                getView().isToolbarCollapsed()));
-        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
-    }
-
-    private void redirectToLocations() {
-        Flow.get(getContext()).set(DtlLocationsPath.builder()
-                .allowUserGoBack(true)
-                .showNoMerchantsCaption(true)
-                .build());
+        navigateToPath(new DtlMapPath(FlowUtil.currentMaster(getContext()), getView().isToolbarCollapsed()));
     }
 
     @Override
     public void locationChangeRequested() {
-        History history = History.single(new DtlLocationChangePath());
-        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
+        navigateToPath(new DtlLocationChangePath());
     }
 
     @Override
@@ -215,6 +204,19 @@ public class DtlMerchantsPresenterImpl extends DtlPresenterImpl<DtlMerchantsScre
     @Override
     public void onOfferClick(DtlMerchant dtlMerchant, DtlOffer offer) {
         navigateToDetails(dtlMerchant, offer);
+    }
+
+    private void showEmptyView() {
+        if (!getView().isTabletLandscape() && getView().getPath().isAllowRedirect()) {
+            navigateToPath(new DtlLocationChangePath());
+        } else {
+            getView().showEmptyMerchantView(true);
+        }
+    }
+
+    protected void navigateToPath(Path path) {
+        History history = History.single(path);
+        Flow.get(getContext()).setHistory(history, Flow.Direction.REPLACE);
     }
 
     public void onEventMainThread(ToggleMerchantSelectionEvent event) {

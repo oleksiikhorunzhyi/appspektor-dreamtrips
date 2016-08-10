@@ -84,7 +84,7 @@ public class CachedEntity implements Serializable {
         return "CachedEntity{" +
                 "url='" + url + '\'' +
                 ", failed=" + failed +
-                ", progress=" + progress +
+                ", create=" + progress +
                 ", uuid='" + uuid + '\'' +
                 ", downloadId=" + downloadId +
                 '}';

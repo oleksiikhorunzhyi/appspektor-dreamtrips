@@ -1,5 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.helper.cache;
 
+import android.support.annotation.Nullable;
+
+import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
 import com.worldventures.dreamtrips.core.janet.cache.storage.MemoryStorage;
@@ -17,8 +20,8 @@ public class DtlLocationStorage extends MemoryStorage<DtlLocation> implements Ac
     }
 
     @Override
-    public void save(DtlLocation data) {
-        super.save(data);
+    public void save(@Nullable CacheBundle bundle, DtlLocation data) {
+        super.save(bundle, data);
         if (data == null
                 || data.getLocationSourceType() == LocationSourceType.UNDEFINED) {
             db.cleanDtlLocation();
@@ -29,11 +32,11 @@ public class DtlLocationStorage extends MemoryStorage<DtlLocation> implements Ac
     }
 
     @Override
-    public DtlLocation get() {
-        DtlLocation location = super.get();
+    public DtlLocation get(@Nullable CacheBundle bundle) {
+        DtlLocation location = super.get(bundle);
         if (location == null) {
             location = db.getDtlLocation();
-            super.save(location);
+            super.save(bundle, location);
         }
         return location;
     }

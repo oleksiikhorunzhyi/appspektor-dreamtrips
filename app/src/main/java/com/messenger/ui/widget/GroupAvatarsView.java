@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -58,8 +59,7 @@ public class GroupAvatarsView extends SimpleDraweeView {
                 .build();
 
         String avatarUrl = conversation.getAvatar();
-        getHierarchy().setPlaceholderImage(drawable);
-        getHierarchy().setFailureImage(drawable);
+        setDefaultDrawable(drawable);
         setController(Fresco.newDraweeControllerBuilder()
                 .setOldController(getController())
                 .setUri(TextUtils.isEmpty(avatarUrl) ? Uri.EMPTY : Uri.parse(avatarUrl))
@@ -67,9 +67,19 @@ public class GroupAvatarsView extends SimpleDraweeView {
     }
 
     private void setTripChatAvatar() {
-        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_trip_chat);
-        getHierarchy().setPlaceholderImage(drawable);
-        getHierarchy().setFailureImage(drawable);
+        setDefaultDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_trip_chat));
         setController(null);
     }
+
+    private void setDefaultDrawable(Drawable drawable) {
+        GenericDraweeHierarchy hierarchy = getHierarchy();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            hierarchy.setPlaceholderImage(drawable, ScalingUtils.ScaleType.FIT_CENTER);
+            hierarchy.setFailureImage(drawable, ScalingUtils.ScaleType.FIT_CENTER);
+        } else {
+            hierarchy.setPlaceholderImage(drawable);
+            hierarchy.setFailureImage(drawable);
+        }
+    }
+
 }

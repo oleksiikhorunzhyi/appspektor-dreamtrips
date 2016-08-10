@@ -29,4 +29,6 @@ public interface MessengerServerFacade {
     String getUsername();
 
     Observable<ConnectionStatus> getStatusObservable();
+
+    ChatExtensions getChatExtensions();
 }

@@ -33,4 +33,6 @@ public interface Conversation {
     long getLastActiveDate();
 
     @Nullable String getOwnerId();
+
+    long getClearDate();
 }

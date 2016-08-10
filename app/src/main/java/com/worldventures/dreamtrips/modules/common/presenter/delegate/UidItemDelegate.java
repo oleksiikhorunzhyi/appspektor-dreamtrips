@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
 import java.util.List;
 
 public class UidItemDelegate {
+
     private RequestingPresenter requestingPresenter;
 
     private List<Flag> flagsList;
@@ -38,6 +39,7 @@ public class UidItemDelegate {
     }
 
     public interface View {
+
         void flagSentSuccess();
     }
 }

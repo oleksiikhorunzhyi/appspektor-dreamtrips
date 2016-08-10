@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">A apărut o eroare</string>
+    <string name="error_no_connection">Nu sunteți conectat</string>
     <string name="messenger">Messenger</string>
     <string name="chat">Chat</string>
 
@@ -75,6 +76,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">Retrimiteți mesajul?</string>
     <string name="chat_retry_send_message_dialog_resend">Retrimiteți</string>
     <string name="chat_retry_send_message_dialog_cancel">Anulați</string>
+    <string name="chat_reload_chat_history_reload">Reîncărcați</string>
+    <string name="chat_reload_chat_history_info_text">Istoricul chatului dvs. a fost șters. Îl puteți recupera atingând „Reîncărcare”.</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">Dvs.</string>
+    <string name="system_message_admin" formatted="false">%1$s(Admin)</string>
+    <string name="system_message_added" formatted="false">%1$s adăugat %2$s &lt;b&gt;&lt;/b&gt;</string>
+    <string name="system_message_is_added" formatted="false">%1$s este adăugat &lt;b&gt;&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">Sunteți adăugat &lt;b&gt;&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s îndepărtat %2$s de pe chat &lt;b&gt;&lt;/b&gt;</string>
+    <string name="system_message_is_removed" formatted="false">%1$s este îndepărtat &lt;b&gt;&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">Sunteți îndepărtat &lt;b&gt;&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">Ați ieșit de pe chat &lt;b&gt;&lt;/b&gt;</string>
+    <string name="system_message_left" formatted="false">%1$s ieșit &lt;b&gt;&lt;b&gt;</string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Se încarcă…</string>
@@ -101,14 +116,17 @@
     <string name="chat_settings_row_shared_content">Conținut partajat</string>
     <string name="chat_settings_row_members_format">Membri (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Alocați un nou administrator</string>
-    <string name="chat_settings_row_clear_history">Goliți istoricul</string>
+    <string name="chat_settings_row_clear_chat">Ștergere chat</string>
     <string name="chat_settings_row_leave_chat">Păsăriți chatul</string>
     <string name="chat_settings_row_delete_chat">Ștergeți chat</string>
-    <string name="chat_settings_group_chat_info_text_format">Acest grup a fost creat de %s</string>
+    <string name="chat_settings_group_chat_info_text_format">Acest grup a fost creat de %1$s</string>
     <string name="chat_settings_menu_settings">Setări</string>
     <string name="chat_settings_menu_edit_chat_name">Editați numele conversației</string>
     <string name="chat_settings_menu_edit_change_chat_image">Schimbați imaginea chatului</string>
     <string name="chat_settings_menu_edit_remove_chat_image">Eliminați imaginea chatului</string>
+    <string name="chat_settings_clear_chat_confirmation_text">Chat-ul se va șterge de pe toate dispozitivele dvs. Îl puteți reîncărca mai târziu. Doriți să continuați?</string>
+    <string name="chat_settings_clear_chat_ok">OK</string>
+    <string name="chat_settings_clear_chat_cancel">Anulați</string>
     <string name="chat_settings_leave_group_chat">Sigur doriți să părăsiți acest chat?</string>
     <string name="chat_settings_leave_group_chat_format">Sigur doriți să părăsiți chatul %1$s?</string>
     <string name="chat_settings_error_change_subject">Nu puteți schimba subiectul fără o conexiune la internet </string>

@@ -1,7 +1,6 @@
 package com.worldventures.dreamtrips.core.repository;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -11,7 +10,6 @@ import com.snappydb.SnappydbException;
 import com.techery.spares.storage.complex_objects.Optional;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhotoCreationItem;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
@@ -27,7 +25,6 @@ import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
 import com.worldventures.dreamtrips.modules.settings.model.Setting;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -113,7 +110,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
     @Override
     public void clearAll() {
-        act((db) -> db.destroy());
+        act(DB::destroy);
     }
 
     @Override
@@ -156,44 +153,29 @@ public class SnappyRepositoryImpl implements SnappyRepository {
      */
     @Override
     public void clearAllForKeys(String... keys) {
-        Queryable.from(keys).forEachR(key -> {
-            act(db -> {
-                String[] placesKeys = db.findKeys(key);
-                for (String placeKey : placesKeys) {
-                    db.del(placeKey);
-                }
-            });
-        });
+        Queryable.from(keys).forEachR(key -> act(db -> {
+            String[] placesKeys = db.findKeys(key);
+            for (String placeKey : placesKeys) {
+                db.del(placeKey);
+            }
+        }));
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // BucketItems
     ///////////////////////////////////////////////////////////////////////////
-
     @Override
-    public void saveBucketList(List<BucketItem> items, String type) {
-        saveBucketList(items, type, 0);
+    public void saveBucketList(List<BucketItem> items, int userId) {
+        putList(BUCKET_LIST + "_" + userId, items);
     }
 
     @Override
-    public void saveBucketList(List<BucketItem> items, String type, int userId) {
-        String key = getBucketKey(type, userId);
-        putList(key, items);
+    public List<BucketItem> readBucketList(int userId) {
+        return readBucketList(BUCKET_LIST + "_" + userId);
     }
 
-    @NonNull
-    private String getBucketKey(String type, int userId) {
-        if (userId == 0) {
-            throw new IllegalStateException("userId can't be 0");
-        }
-        String key = (BUCKET_LIST) + ":" + type;
-        key += "_" + userId;
-        return key.toLowerCase();
-    }
-
-    @Override
-    public List<BucketItem> readBucketList(String type, int userId) {
-        List<BucketItem> list = readList(getBucketKey(type, userId), BucketItem.class);
+    private List<BucketItem> readBucketList(String key) {
+        List<BucketItem> list = readList(key, BucketItem.class);
         Collections.sort(list, (lhs, rhs) -> {
             if (lhs.isDone() == rhs.isDone()) return 0;
             else if (lhs.isDone() && !rhs.isDone()) return 1;
@@ -224,57 +206,14 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // Trips
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void saveTrip(TripModel trip) {
-        act(db -> db.put(TRIP_KEY + trip.getTripId(), trip));
-    }
-
-    @Override
-    public void saveTrips(List<TripModel> list) {
-        act(db -> {
-            clearTrips(db);
-            for (TripModel trip : list) {
-                db.put(TRIP_KEY + trip.getTripId(), trip);
-            }
-        });
-    }
-
-    @Override
-    public List<TripModel> getTrips() {
-        return actWithResult(db -> {
-            List<TripModel> trips = new ArrayList<>();
-            String[] keys = db.findKeys(TRIP_KEY);
-            for (String key : keys) {
-                trips.add(db.get(key, TripModel.class));
-            }
-            Collections.sort(trips, (lhs, rhs) -> {
-                if (lhs.getStartDateMillis() < rhs.getStartDateMillis()) return -1;
-                else if (lhs.getStartDateMillis() == rhs.getStartDateMillis()) return 0;
-                else return 1;
-            });
-            return trips;
-        }).or(Collections.emptyList());
-    }
-
-    @Override
-    public void clearTrips(DB snappyDb) throws SnappydbException {
-        String[] tripKeys = snappyDb.findKeys(TRIP_KEY);
-        for (String key : tripKeys) {
-            snappyDb.del(key);
-        }
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
     // Media
     ///////////////////////////////////////////////////////////////////////////
-
+    @Override
     public void saveDownloadMediaEntity(CachedEntity e) {
         act(db -> db.put(MEDIA_UPLOAD_ENTITY + e.getUuid(), e));
     }
 
+    @Override
     public CachedEntity getDownloadMediaEntity(String id) {
         return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class))
                 .orNull();
@@ -364,47 +303,6 @@ public class SnappyRepositoryImpl implements SnappyRepository {
                 Timber.e(e, "Error while deleting");
             }
         }));
-    }
-
-    /**
-     * Use it from Buclet photos
-     */
-    @Override
-    public void saveBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
-        act(db -> db.put(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath(), uploadTask));
-    }
-
-    @Override
-    public BucketPhotoCreationItem getBucketPhotoCreationItem(String filePath) {
-        return actWithResult(db -> db.get(BUCKET_PHOTO_CREATION_ITEM + filePath, BucketPhotoCreationItem.class)).orNull();
-    }
-
-    @Override
-    public void removeBucketPhotoCreationItem(BucketPhotoCreationItem uploadTask) {
-        act(db -> db.del(BUCKET_PHOTO_CREATION_ITEM + uploadTask.getFilePath()));
-    }
-
-    @Override
-    public void removeAllBucketItemPhotoCreations() {
-        act(db -> Queryable.from(db.findKeys(BUCKET_PHOTO_CREATION_ITEM)).forEachR(key -> {
-            try {
-                db.del(key);
-            } catch (SnappydbException e) {
-                Timber.e(e, "Error while deleting");
-            }
-        }));
-    }
-
-    @Override
-    public List<BucketPhotoCreationItem> getAllBucketPhotoCreationItem() {
-        return actWithResult(db -> {
-            List<BucketPhotoCreationItem> tasks = new ArrayList<>();
-            String[] keys = db.findKeys(BUCKET_PHOTO_CREATION_ITEM);
-            for (String key : keys) {
-                tasks.add(db.get(key, BucketPhotoCreationItem.class));
-            }
-            return tasks;
-        }).or(Collections.emptyList());
     }
 
     @Override
@@ -518,6 +416,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
     @Override
     public void saveCircles(List<Circle> circles) {
+        if (circles == null) circles = new ArrayList<>();
         putList(CIRCLES, circles);
     }
 

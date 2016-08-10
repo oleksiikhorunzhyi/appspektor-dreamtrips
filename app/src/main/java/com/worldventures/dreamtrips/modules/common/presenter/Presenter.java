@@ -166,6 +166,7 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
         return i != null && i.isConnected() && i.isAvailable();
     }
 
+    @Deprecated
     @Override
     public void handleError(SpiceException error) {
         if (apiErrorPresenter.hasView()) {
@@ -175,6 +176,15 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
                 view.informUser(error.getMessage());
             }
         } else {
+            view.informUser(R.string.smth_went_wrong);
+        }
+    }
+
+    protected void handleError(Throwable throwable) {
+        if (apiErrorPresenter.hasView()) {
+            apiErrorPresenter.handleError(throwable);
+        } else {
+            Timber.d("ApiErrorPresenter has detached view");
             view.informUser(R.string.smth_went_wrong);
         }
     }

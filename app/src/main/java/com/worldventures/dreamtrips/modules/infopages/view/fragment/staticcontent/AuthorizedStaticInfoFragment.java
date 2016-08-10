@@ -2,12 +2,15 @@ package com.worldventures.dreamtrips.modules.infopages.view.fragment.staticconte
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.webkit.WebSettings;
 
 import com.worldventures.dreamtrips.modules.infopages.presenter.AuthorizedStaticInfoPresenter;
 
-public abstract class AuthorizedStaticInfoFragment extends StaticInfoFragment<AuthorizedStaticInfoPresenter> implements AuthorizedStaticInfoPresenter.View {
+public abstract class AuthorizedStaticInfoFragment<P extends Parcelable>
+        extends StaticInfoFragment<AuthorizedStaticInfoPresenter, P>
+        implements AuthorizedStaticInfoPresenter.View {
 
     @Override
     public void afterCreateView(View rootView) {
@@ -26,5 +29,4 @@ public abstract class AuthorizedStaticInfoFragment extends StaticInfoFragment<Au
     protected AuthorizedStaticInfoPresenter createPresenter(Bundle savedInstanceState) {
         return new AuthorizedStaticInfoPresenter(getURL());
     }
-
 }

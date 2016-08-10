@@ -17,13 +17,17 @@ public interface DtlLocationChangeScreen extends DtlScreen {
 
     void locationResolutionRequired(Status status);
 
-    void setItems(List<DtlExternalLocation> locations);
+    void setItems(List<DtlExternalLocation> locations, boolean showLocationHeader);
 
     void hideNearMeButton();
 
     void showProgress();
 
     void hideProgress();
+
+    void switchVisibilityNoMerchants(boolean visible);
+
+    void switchVisibilityOrCaption(boolean visible);
 
     Observable<Void> provideMapClickObservable();
 

@@ -151,13 +151,6 @@ public final class SuggestedPhotoCellPresenterHelper {
         setSuggestionTitle();
     }
 
-    public void openProfile() {
-        router.moveTo(Route.ACCOUNT_PROFILE, NavigationConfigBuilder.forActivity()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new UserBundle(appSessionHolder.get().get().getUser()))
-                .build());
-    }
-
     @NonNull
     public List<PhotoGalleryModel> selectedPhotos() {
         return new ArrayList<>(selectedPhotos);

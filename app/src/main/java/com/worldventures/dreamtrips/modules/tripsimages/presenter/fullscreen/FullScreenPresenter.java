@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.tripsimages.presenter.fullscreen;
 
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.model.User;
@@ -72,7 +73,7 @@ public abstract class FullScreenPresenter<T extends IFullScreenObject, PRESENTER
         }
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
 
         void openUser(UserBundle bundle);
 

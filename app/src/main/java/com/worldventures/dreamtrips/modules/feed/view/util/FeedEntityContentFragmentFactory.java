@@ -43,7 +43,7 @@ public class FeedEntityContentFragmentFactory {
                 BucketBundle bucketBundle = new BucketBundle();
                 BucketItem item = (BucketItem) holder.getItem();
                 bucketBundle.setType(item.getType());
-                bucketBundle.setBucketItemUid(item.getUid());
+                bucketBundle.setBucketItem(item);
                 bucketBundle.setOwnerId(userId);
                 args = bucketBundle;
                 break;

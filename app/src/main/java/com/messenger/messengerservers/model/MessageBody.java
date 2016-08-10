@@ -1,37 +1,24 @@
 package com.messenger.messengerservers.model;
 
-import com.messenger.entities.DataMessage;
-
 import java.util.List;
 
 public class MessageBody {
     private String text;
     private String locale; // we should send locale to support release/1.6.0
-    private int version;
     private List<AttachmentHolder> attachments;
 
     public MessageBody() {
     }
 
     private MessageBody(Builder builder) {
-        setVersion();
         this.text = builder.text;
         this.locale = builder.locale;
         this.attachments = builder.attachments;
     }
 
     public MessageBody(String text, List<AttachmentHolder> attachments) {
-        setVersion();
         this.text = text;
         this.attachments = attachments;
-    }
-
-    private void setVersion() {
-        version = DataMessage.MESSAGE_FORMAT_VERSION;
-    }
-
-    public int getVersion() {
-        return version;
     }
 
     public void setText(String text) {

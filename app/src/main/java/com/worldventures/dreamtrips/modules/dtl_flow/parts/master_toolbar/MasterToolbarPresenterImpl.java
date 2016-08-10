@@ -3,8 +3,10 @@ package com.worldventures.dreamtrips.modules.dtl_flow.parts.master_toolbar;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
 
 import com.techery.spares.module.Injector;
+import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
@@ -35,6 +37,7 @@ import javax.inject.Inject;
 import icepick.State;
 import io.techery.janet.Command;
 import io.techery.janet.helper.ActionStateSubscriber;
+import io.techery.janet.helper.ActionStateToActionTransformer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -58,7 +61,9 @@ public class MasterToolbarPresenterImpl
     //
     private Subscription locationRequestNoFallback;
     //
-    private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.TRUE); // TODO move to action
+    private AtomicBoolean showAutodetectButton = new AtomicBoolean(Boolean.FALSE);
+    private AtomicBoolean noMerchants = new AtomicBoolean(Boolean.FALSE);
+
 
     public MasterToolbarPresenterImpl(Context context, Injector injector) {
         super(context);
@@ -81,7 +86,7 @@ public class MasterToolbarPresenterImpl
     @Override
     public void onRestoreInstanceState(Bundle instanceState) {
         super.onRestoreInstanceState(instanceState);
-        if (state.isPopupShowing()) getView().showSearchPopup();
+        if (state.isPopupShowing()) getView().toggleSearchPopupVisibility(true);
         this.dtlNearbyLocations = state.getDtlNearbyLocations();
         this.screenMode = state.getScreenMode();
     }
@@ -100,6 +105,7 @@ public class MasterToolbarPresenterImpl
         //
         connectNearbyLocations();
         connectLocationsSearch();
+        connectMerchants();
         connectLocationDelegateNoFallback();
         connectToolbarLocationSearchInput();
         //
@@ -121,6 +127,15 @@ public class MasterToolbarPresenterImpl
                 .subscribe(dtlFilterData -> {
                     getView().setFilterButtonState(!dtlFilterData.isDefault());
                 });
+    }
+
+    private void connectMerchants() {
+        merchantInteractor.merchantsActionPipe()
+                .createObservableResult(DtlMerchantsAction.restore())
+                .compose(bindViewIoToMainComposer())
+                .map(DtlMerchantsAction::getResult)
+                .map(List::isEmpty)
+                .subscribe(noMerchants::set);
     }
 
     @Override
@@ -208,8 +223,10 @@ public class MasterToolbarPresenterImpl
         locationInteractor.locationPipe().observeSuccess()
                 .compose(bindViewIoToMainComposer())
                 .distinctUntilChanged(Command::getResult)
-                .doOnNext(command -> showAutodetectButton.set(command.getResult().getLocationSourceType() != LocationSourceType.NEAR_ME))
-                .subscribe(command -> getView().updateButtonState());
+                .map(Command::getResult)
+                .map(DtlLocation::getLocationSourceType)
+                .map(mode -> mode != LocationSourceType.NEAR_ME)
+                .subscribe(showAutodetectButton::set);
     }
 
     private void connectLocationsSearch() {
@@ -222,7 +239,7 @@ public class MasterToolbarPresenterImpl
     }
 
     private void onSearchFinished(DtlSearchLocationAction action) {
-        getView().setItems(action.getResult());
+        getView().setItems(action.getResult(), false);
     }
 
     private void locationSearch(String query) {
@@ -244,6 +261,17 @@ public class MasterToolbarPresenterImpl
     @Override
     public void onLocationResolutionDenied() {
         getView().hideProgress();
+    }
+
+    @Override
+    public void onShowToolbar() {
+        if (locationRequestNoFallback != null && !locationRequestNoFallback.isUnsubscribed())
+            locationRequestNoFallback.unsubscribe();
+        //
+        gpsLocationDelegate.requestLocationUpdate()
+                .compose(new IoToMainComposer<>())
+                .map(DtlNearbyLocationAction::new)
+                .subscribe(locationInteractor.nearbyLocationPipe()::send, this::onLocationError);
     }
 
     @Override
@@ -275,7 +303,7 @@ public class MasterToolbarPresenterImpl
     private void showLoadedLocations(List<DtlExternalLocation> locations) {
         dtlNearbyLocations.clear();
         dtlNearbyLocations.addAll(locations);
-        getView().setItems(locations);
+        getView().setItems(locations, !locations.isEmpty());
     }
 
     @Override

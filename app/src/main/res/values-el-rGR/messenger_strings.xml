@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <!-- messenger-->
-
+    <string name="error_something_went_wrong">Κάτι δεν πήγε καλά</string>
+    <string name="error_no_connection">Δεν είστε συνδεδεμένοι</string>
     <string name="messenger">Messenger</string>
     <string name="chat">Συνομιλία</string>
 
@@ -75,6 +76,20 @@
     <string name="chat_retry_send_message_dialog_resend_message">Επαναποστολή μηνύματος;</string>
     <string name="chat_retry_send_message_dialog_resend">ΕΠΑΝΑΛΗΨΗ ΑΠΟΣΤΟΛΗΣ</string>
     <string name="chat_retry_send_message_dialog_cancel">Ακύρωση</string>
+    <string name="chat_reload_chat_history_reload">Νέα φόρτωση</string>
+    <string name="chat_reload_chat_history_info_text">Το ιστορικό των συνομιλιών σας έχει εκκαθαριστεί. Μπορείτε να το επανακτήσετε πατώντας \"Επαναφορά\"</string>
+
+    <!-- system messages-->
+    <string name="system_message_you">Εσείς</string>
+    <string name="system_message_admin" formatted="false">%1$s(Admin)</string>
+    <string name="system_message_added" formatted="false">%1$s &lt;b&gt;πρόσθεσε&lt;/b&gt; %2$s</string>
+    <string name="system_message_is_added" formatted="false">%1$s &lt;b&gt;προστέθηκε&lt;/b&gt;</string>
+    <string name="system_message_you_are_added" formatted="false">Εσείς &lt;b&gt;προστεθήκατε&lt;/b&gt;</string>
+    <string name="system_message_removed" formatted="false">%1$s &lt;b&gt;αφαιρέθηκε&lt;/b&gt; %2$s από τη συνομιλία</string>
+    <string name="system_message_is_removed" formatted="false">%1$s &lt;b&gt;αφαιρέθηκε&lt;/b&gt;</string>
+    <string name="system_message_you_are_removed" formatted="false">Εσείς &lt;b&gt;αφαιρεθήκατε&lt;/b&gt;</string>
+    <string name="system_message_you_left_the_chat" formatted="false">Εσείς &lt;b&gt;φύγατε&lt;/b&gt; από τη συνομιλία</string>
+    <string name="system_message_left" formatted="false">%1$s &lt;b&gt;έφυγε&lt;b&gt;</string>
 
     <!-- flagging related -->
     <string name="chat_flag_dialog_progress_loading_flags">Φόρτωση…</string>
@@ -101,14 +116,17 @@
     <string name="chat_settings_row_shared_content">Κοινόχρηστο περιεχόμενο</string>
     <string name="chat_settings_row_members_format">Μέλη (%1$d)</string>
     <string name="chat_settings_row_assign_new_admin">Ορίστε νέο διαχειριστή</string>
-    <string name="chat_settings_row_clear_history">Καθαρισμός ιστορικού</string>
+    <string name="chat_settings_row_clear_chat">Εκκαθάριση συνομιλίας</string>
     <string name="chat_settings_row_leave_chat">Αποχώρηση από τη συνομιλία</string>
     <string name="chat_settings_row_delete_chat">Διαγραφή συνομιλίας</string>
-    <string name="chat_settings_group_chat_info_text_format">Αυτό το γκρουπ δημιουργήθηκε από τον/την %s</string>
+    <string name="chat_settings_group_chat_info_text_format">Αυτό το γκρουπ δημιουργήθηκε από τον/την %1$s</string>
     <string name="chat_settings_menu_settings">Ρυθμίσεις</string>
     <string name="chat_settings_menu_edit_chat_name">Επεξεργασία ονόματος συνομιλίας</string>
     <string name="chat_settings_menu_edit_change_chat_image">Αλλαγή εικόνας συνομιλίας</string>
     <string name="chat_settings_menu_edit_remove_chat_image">Μετακίνηση εικόνας συνομιλίας</string>
+    <string name="chat_settings_clear_chat_confirmation_text">Η συνομιλία θα εκκαθαριστεί από όλες τις συσκευές σας. Μπορείτε να την επαναφορτώσετε αργότερα. Θέλετε να προχωρήσετε;</string>
+    <string name="chat_settings_clear_chat_ok">OK</string>
+    <string name="chat_settings_clear_chat_cancel">Ακύρωση</string>
     <string name="chat_settings_leave_group_chat">Είστε σίγουροι ότι θέλετε να αποσυρθείτε από αυτή τη συνομιλία;</string>
     <string name="chat_settings_leave_group_chat_format">Είστε σίγουροι ότι θέλετε να αποσυρθείτε από%1$s τη συνομιλία;</string>
     <string name="chat_settings_error_change_subject">Δεν μπορείτε να αλλάξετε θέμα χωρίς σύνδεση στο διαδίκτυο</string>

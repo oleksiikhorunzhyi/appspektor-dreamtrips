@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.presenter.ComponentPresenter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.ShareDialog;
 import com.worldventures.dreamtrips.modules.infopages.view.fragment.staticcontent.StaticInfoFragment;
+import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
 import com.worldventures.dreamtrips.modules.reptools.event.StoryLikedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.presenter.SuccessStoryDetailsPresenter;
@@ -24,7 +25,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.fragment_success_stories_details)
-public class SuccessStoryDetailsFragment extends StaticInfoFragment<SuccessStoryDetailsPresenter>
+public class SuccessStoryDetailsFragment
+        extends StaticInfoFragment<SuccessStoryDetailsPresenter, UrlBundle>
         implements SuccessStoryDetailsPresenter.View {
 
     public static final String EXTRA_STORY = "STORY";

@@ -1,13 +1,15 @@
 package com.worldventures.dreamtrips.modules.bucketlist.presenter;
 
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.api.GetCategoryQuery;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
+import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
+import com.worldventures.dreamtrips.modules.bucketlist.service.command.BucketListCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 
@@ -18,34 +20,35 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+
 import static com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem.BucketType;
 
 public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
-
     @Inject
     SnappyRepository db;
 
     @Inject
-    BucketItemManager bucketItemManager;
-
-    BucketType currentType;
-
-    @Override
-    public void onInjected() {
-        super.onInjected();
-    }
+    BucketInteractor bucketInteractor;
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
         setTabs();
         loadCategories();
-        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
-        getBucketItemManager().loadBucketItems(getUser(), this);
+
+        view.bind(bucketInteractor.bucketListActionPipe().createObservableResult(BucketListCommand.fetch(getUser().getId(),false))
+                .concatMap(bucketListAction -> bucketListAction.isFromCache() ?
+                        bucketInteractor.bucketListActionPipe().createObservable(BucketListCommand.fetch(getUser().getId(), true))
+                        : Observable.just(bucketListAction))
+                .observeOn(AndroidSchedulers.mainThread()))
+                .subscribe(bucketListAction -> {
+                }, this::handleError);
     }
 
     @Override
-    public void dropView(){
+    public void dropView() {
         super.dropView();
         db.saveOpenBucketTabType(null);
     }
@@ -56,7 +59,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
 
     @Override
     public void onResume() {
-        getBucketItemManager().setDreamSpiceManager(dreamSpiceManager);
         setRecentBucketItemsCounts();
     }
 
@@ -71,7 +73,6 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
     }
 
     public void onTabChange(BucketType type) {
-        currentType = type;
         db.saveRecentlyAddedBucketItems(type.name(), 0);
         db.saveOpenBucketTabType(type.name());
         view.resetRecentlyAddedBucketItem(type);
@@ -113,7 +114,7 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         return tabAttribute;
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends RxView {
         void setTypes(List<BucketType> type);
 
         void setRecentBucketItemsCount(Map<BucketType, Integer> items);
@@ -123,9 +124,5 @@ public class BucketTabsPresenter extends Presenter<BucketTabsPresenter.View> {
         void updateSelection();
 
         int getCurrentTabPosition();
-    }
-
-    protected <T extends BucketItemManager> T getBucketItemManager() {
-        return (T) bucketItemManager;
     }
 }

@@ -467,13 +467,13 @@
     <string name="no_mutual_friends">Nincsenek közös barátai</string>
 
     <string name="photo_limitation_message">Legfeljebb %1$d fényképet válasszon</string>
-    <string name="pending">Függőben...</string>
+    <string name="pending">Függőben…</string>
 
     <string name="back">Vissza</string>
     <string name="logout_component">Kijelentkezés</string>
     <string name="start_typing_name">Kezdje el beírni a nevet</string>
 
-    <string name="multiple_dates">Több dátumot, %1$s ...</string>
+    <string name="multiple_dates">Több dátumot, %1$s …</string>
 
     <string name="tag_photo">megjelölte Önt itt:</string>
 
@@ -631,5 +631,19 @@
     <string name="audio_app_not_found_exception">Nem talált hangot lejátszó alkalmazást</string>
     <string name="complete_action_with">Akció befejezés</string>
     <string name="error_fail_to_load_podcast">Podcast betöltés sikertelen</string>
+
+    <string name="min">perc</string>
+    <string name="post_hint_with_hashtag">Mondj valamit, add hozzá #hashtags</string>
+    <string name="add_text">Szöveg hozzáadás</string>
+    <string name="action_search_by_hashtag">Keresés hashtag alapján</string>
+    <string name="error_fail_to_load_feeds_by_hashtag">Nem sikerült betölteni hashtag alapján</string>
+    <string name="no_feed_by_hashtag">Nem találhatók posztok</string>
+
+    <string name="friends_loading_info_text">Barátok betöltése</string>
+
+    <string name="hashtag_one_post">%1$d poszt</string>
+    <string name="hashtag_multiple_posts">%1$d posztok</string>
+
+    <string name="error_webview_secure_connection">Sajnáljuk, de a DreamTrips alkalmazás nem tudott biztonságos kapcsolatot létesíteni.\nFeljegyeztük ezt a problémát és hamarosan megnézzük.\n\nKérjük, lépj kapcsolatba az ügyfélszolgálattal gyorsabb megoldásért.</string>
 
 </resources>

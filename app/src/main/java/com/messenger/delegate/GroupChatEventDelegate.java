@@ -2,6 +2,7 @@ package com.messenger.delegate;
 
 import android.text.TextUtils;
 
+import com.messenger.delegate.chat.typing.TypingManager;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
 import com.messenger.delegate.conversation.command.SyncConversationCommand;
 import com.messenger.entities.DataParticipant;
@@ -16,7 +17,6 @@ import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.session.UserSession;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -32,6 +32,7 @@ public class GroupChatEventDelegate {
     @Inject UsersDAO usersDAO;
     @Inject SessionHolder<UserSession> currentUserSession;
     @Inject LoadConversationDelegate loadConversationDelegate;
+    @Inject TypingManager typingManager;
 
     @Inject
     public GroupChatEventDelegate(@ForApplication Injector injector) {
@@ -81,6 +82,7 @@ public class GroupChatEventDelegate {
     }
 
     private DataParticipant removeFromConversation(String conversationId, String userId) {
+        typingManager.userStopTyping(conversationId, userId);
         DataParticipant participant = new DataParticipant(conversationId, userId, Affiliation.NONE);
         participantsDAO.save(Collections.singletonList(participant));
 

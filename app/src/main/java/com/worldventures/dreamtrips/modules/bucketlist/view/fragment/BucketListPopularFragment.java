@@ -18,6 +18,7 @@ import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
 import com.techery.spares.ui.recycler.RecyclerViewStateDelegate;
 import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketPopularPresenter;
@@ -32,7 +33,7 @@ import butterknife.InjectView;
 
 @Layout(R.layout.fragment_bucket_popular)
 @MenuResource(R.menu.menu_bucket_popular)
-public class BucketListPopularFragment extends BaseFragment<BucketPopularPresenter>
+public class BucketListPopularFragment extends RxBaseFragment<BucketPopularPresenter>
         implements BucketPopularPresenter.View, SwipeRefreshLayout.OnRefreshListener, BucketPopularCellDelegate {
 
     @InjectView(R.id.recyclerViewBuckets)

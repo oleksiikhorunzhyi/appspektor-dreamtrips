@@ -5,6 +5,7 @@ import android.os.Build;
 import android.view.ViewTreeObserver;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.image.ImageInfo;
@@ -15,11 +16,11 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;
 import com.worldventures.dreamtrips.modules.common.view.bundle.ShareBundle;
 import com.worldventures.dreamtrips.modules.common.view.dialog.PhotosShareDialog;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.trips.event.TripImageAnalyticEvent;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenPhotoBundle;
@@ -36,7 +37,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 
 public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresenter<T, ? extends FullScreenPresenter.View>, T extends IFullScreenObject>
-        extends BaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements FullScreenPresenter.View {
+        extends RxBaseFragmentWithArgs<PRESENTER, FullScreenPhotoBundle> implements FullScreenPresenter.View {
 
     @InjectView(R.id.iv_image)
     protected ScaleImageView ivImage;
@@ -59,8 +60,7 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
             public void onGlobalLayout() {
                 if (ivImage != null) {
                     int size = Math.max(ivImage.getWidth(), ivImage.getHeight());
-                    DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setLowResImageRequest(ImageRequest.fromUri(lowUrl))
+                    PipelineDraweeControllerBuilder draweeControllerBuilder = Fresco.newDraweeControllerBuilder()
                             .setImageRequest(ImageRequest.fromUri(image.getUrl(size, size)))
                             .setControllerListener(new BaseControllerListener<ImageInfo>() {
                                 @Override
@@ -68,8 +68,9 @@ public abstract class FullScreenPhotoFragment<PRESENTER extends FullScreenPresen
                                     super.onFinalImageSet(id, imageInfo, animatable);
                                     onImageGlobalLayout();
                                 }
-                            })
-                            .build();
+                            });
+                    if (getPresenter().isConnected()) draweeControllerBuilder.setLowResImageRequest(ImageRequest.fromUri(lowUrl));
+                    DraweeController draweeController = draweeControllerBuilder.build();
                     ivImage.setController(draweeController);
 
                     ViewTreeObserver viewTreeObserver = ivImage.getViewTreeObserver();

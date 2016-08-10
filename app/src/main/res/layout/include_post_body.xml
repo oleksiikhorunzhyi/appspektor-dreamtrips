@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:collage="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
+                xmlns:collage="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <TextView
+    <com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView
         android:id="@+id/post"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_small"
         android:paddingLeft="@dimen/spacing_normal"
@@ -29,6 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/post"
         android:layout_marginRight="@dimen/spacing_medium"
         android:layout_marginTop="@dimen/spacing_small"
         android:src="@drawable/ic_tag"

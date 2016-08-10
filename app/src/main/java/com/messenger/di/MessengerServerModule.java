@@ -3,6 +3,7 @@ package com.messenger.di;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.messenger.delegate.conversation.LoadConversationDelegate;
+import com.messenger.messengerservers.ChatExtensions;
 import com.messenger.messengerservers.MessengerServerFacade;
 import com.messenger.messengerservers.model.AttachmentHolder;
 import com.messenger.messengerservers.xmpp.XmppGlobalEventEmitter;
@@ -54,5 +55,10 @@ public class MessengerServerModule {
     @Provides(type = Provides.Type.SET)
     IncomingMessageFilter provideAbandonedConversationMessageFilter(LoadConversationDelegate loadConversationDelegate) {
         return new AbandonedConversationMessageFilter(loadConversationDelegate);
+    }
+
+    @Provides
+    ChatExtensions provideChatExtensions(MessengerServerFacade facade) {
+        return facade.getChatExtensions();
     }
 }

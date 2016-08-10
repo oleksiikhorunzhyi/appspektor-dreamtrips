@@ -215,6 +215,7 @@
     <dimen name="conversation_list_item_vertical_padding">@dimen/list_item_vertical_padding</dimen>
     <dimen name="conversation_list_item_horizontal_padding">@dimen/list_item_horizontal_padding</dimen>
     <item name="conversation_list_item_closed_conversation_alpha" format="float" type="dimen">0.3</item>
+    <dimen name="divider_height" format="float">0.5dp</dimen>
 
     <!-- New chat screen -->
     <dimen name="new_chat_progress_bar_margin_top">50dp</dimen>
@@ -269,6 +270,13 @@
     <dimen name="chat_error_message_top_padding">8dp</dimen>
     <dimen name="chat_error_message_bottom_padding">4dp</dimen>
 
+    <dimen name="chat_reload_history_element_margin_top">15dp</dimen>
+    <dimen name="chat_reload_history_info_text_margin_left_right">20dp</dimen>
+    <dimen name="chat_reload_history_reload_text_margin_bottom">8dp</dimen>
+    <dimen name="chat_reload_history_space_between_text_and_icon">6dp</dimen>
+    <dimen name="chat_reload_history_date_text_size">12sp</dimen>
+    <dimen name="chat_reload_history_text_size">14sp</dimen>
+
     <!-- Chat settings screen -->
     <dimen name="chat_settings_chat_info_vertical_margin">40dp</dimen>
     <dimen name="chat_settings_chat_info_horizontal_margin">40dp</dimen>
@@ -289,6 +297,8 @@
 
     <dimen name="chat_image_height">120dp</dimen>
     <dimen name="chat_image_width">186dp</dimen>
+
+    <dimen name="chat_item_list_system_message_text_size">12sp</dimen>
 
     <!-- Messenger misc -->
     <dimen name="messenger_swappable_action_button_text_size">13sp</dimen>

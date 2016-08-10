@@ -14,6 +14,8 @@ public class LikersPanelHelper {
 
     private final int INVISIBILITY;
 
+    private LikersPanelListener likersPanelListener;
+
     public LikersPanelHelper() {
         this(View.GONE);
     }
@@ -28,7 +30,7 @@ public class LikersPanelHelper {
             panel.setVisibility(INVISIBILITY);
             return;
         }
-        //
+
         String appeal;
         @StringRes int stringRes;
         if (feedEntity.isLiked()) {
@@ -40,14 +42,22 @@ public class LikersPanelHelper {
                     R.string.users_who_liked_with_name_one, R.string.users_who_liked_with_name_other);
             appeal = feedEntity.getFirstLikerName();
         }
-        //
-        if (appeal == null) {
-            return; // not ready to be shown
+
+        if (appeal != null) {
+            Spanned text = Html.fromHtml(String.format(panel.getResources().getString(stringRes), appeal, likesCount - 1));
+            panel.setText(text);
+            panel.setVisibility(View.VISIBLE);
         }
-        //
-        Spanned text = Html.fromHtml(String.format(panel.getResources().getString(stringRes), appeal, likesCount - 1));
-        panel.setText(text);
-        panel.setVisibility(View.VISIBLE);
+
+        if (likersPanelListener != null) likersPanelListener.onLikersPanelSetted();
     }
 
+    public void setLikersPanelListener(LikersPanelListener likersPanelListener) {
+        this.likersPanelListener = likersPanelListener;
+    }
+
+    public interface LikersPanelListener {
+
+        void onLikersPanelSetted();
+    }
 }

@@ -20,18 +20,21 @@ import com.worldventures.dreamtrips.modules.feed.presenter.EditPhotoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.EditPostPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedEntityDetailsPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.FeedHashtagPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedItemDetailsPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedListAdditionalInfoPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.LocationPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.NotificationPresenter;
+import com.worldventures.dreamtrips.modules.feed.presenter.DescriptionCreatorPresenter;
 import com.worldventures.dreamtrips.modules.feed.presenter.SuggestedPhotoCellPresenterHelper;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.BucketFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.CommentCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedEntityDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.FeedItemCell;
+import com.worldventures.dreamtrips.modules.feed.view.cell.HashtagSuggestionCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.LoadMoreCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoFeedItemDetailsCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoGalleryCell;
@@ -52,12 +55,14 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.ActionEntityFragm
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CommentableFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateEntityFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.CreateFeedPostFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.DescriptionCreatorFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditCommentFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPhotoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.EditPostFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedEntityDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedFragment;
+import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedHashtagFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemAdditionalInfoFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedItemDetailsFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.FeedListAdditionalInfoFragment;
@@ -65,6 +70,8 @@ import com.worldventures.dreamtrips.modules.feed.view.fragment.LocationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.fragment.NotificationFragment;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedActionPanelViewActionHandler;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedEntityContentFragmentFactory;
+import com.worldventures.dreamtrips.modules.feed.view.util.FragmentWithFeedDelegate;
+import com.worldventures.dreamtrips.modules.feed.view.util.StatePaginatedRecyclerViewManager;
 import com.worldventures.dreamtrips.modules.tripsimages.view.fragment.CreateTripImageFragment;
 
 import dagger.Module;
@@ -82,6 +89,8 @@ import de.greenrobot.event.EventBus;
                 PhotoFeedItemDetailsCell.class,
                 PostFeedItemCell.class,
                 UndefinedFeedItemDetailsCell.class,
+                FeedHashtagFragment.class,
+                FeedHashtagPresenter.class,
 
                 PickerIrregularPhotoCell.class,
                 PhotoGalleryCell.class,
@@ -145,6 +154,12 @@ import de.greenrobot.event.EventBus;
                 EditPostPresenter.class,
                 EditPhotoFragment.class,
                 EditPhotoPresenter.class,
+                DescriptionCreatorFragment.class,
+                DescriptionCreatorPresenter.class,
+                HashtagSuggestionCell.class,
+
+                StatePaginatedRecyclerViewManager.class,
+
         },
         complete = false,
         library = true
@@ -173,5 +188,10 @@ public class FeedModule {
     @Provides
     FeedActionPanelViewActionHandler provideFeedActionPanelViewActionHandler(Router router, @Global EventBus eventBus, Presenter.TabletAnalytic tabletAnalytic) {
         return new FeedActionPanelViewActionHandler(router, eventBus);
+    }
+
+    @Provides
+    FragmentWithFeedDelegate provideFragmentWithFeedDelegate(Router router) {
+        return new FragmentWithFeedDelegate(router);
     }
 }

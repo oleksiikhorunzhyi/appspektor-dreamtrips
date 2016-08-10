@@ -1,7 +1,10 @@
 package com.messenger.ui.view.add_member;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import com.messenger.entities.DataUser;
 import com.messenger.ui.view.layout.MessengerScreen;
 
 import java.util.List;
@@ -21,7 +24,7 @@ public interface ChatMembersScreen extends MessengerScreen {
 
     void setAdapterItems(List<Object> items);
 
-    void setSelectedUsersHeaderText(CharSequence selectedContactsCount, CharSequence selectedContactsList);
+    void setChosenUsers(List<DataUser> users);
 
     void setConversationNameEditTextVisibility(int visibility);
 
@@ -29,7 +32,11 @@ public interface ChatMembersScreen extends MessengerScreen {
 
     void slideOutConversationNameEditText();
 
-    String getConversationName();
+    @NonNull String getConversationName();
 
     Observable<CharSequence> getSearchQueryObservable();
+
+    Observable<DataUser> getRemovedUserObservable();
+
+    void setSearchQuery(@Nullable CharSequence query);
 }

@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.model;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.modules.feed.model.feed.hashtag.Hashtag;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +19,8 @@ public class TextualPost extends BaseFeedEntity {
 
     private Location location;
 
+    private List<Hashtag> hashtags = new ArrayList<>();
+
     public String getDescription() {
         return description;
     }
@@ -32,6 +35,10 @@ public class TextualPost extends BaseFeedEntity {
 
     public void setAttachments(List<FeedEntityHolder> attachments) {
         this.attachments = attachments;
+    }
+
+    public List<Hashtag> getHashtags() {
+        return hashtags;
     }
 
     @NotNull

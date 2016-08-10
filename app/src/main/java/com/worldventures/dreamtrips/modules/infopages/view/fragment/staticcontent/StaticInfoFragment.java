@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,7 @@ import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.view.dialog.MessageDialogFragment;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.modules.dtl.bundle.MerchantIdBundle;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.infopages.presenter.WebViewFragmentPresenter;
 import com.worldventures.dreamtrips.modules.membership.bundle.UrlBundle;
@@ -53,7 +55,8 @@ import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
 
 @Layout(R.layout.fragment_webview)
-public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> extends BaseFragmentWithArgs<T, UrlBundle>
+public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P extends Parcelable>
+        extends BaseFragmentWithArgs<T, P>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
@@ -109,11 +112,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.activity = new WeakReference<>(activity);
-    }
-
-    @Override
-    public UrlBundle getArgs() {
-        return super.getArgs();
     }
 
     private boolean isWebViewSavedState(Bundle savedInstanceState) {
@@ -193,7 +191,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         });
 
-        VideoEnabledWebChromeClient webChromeClient = new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, null, webView) {
+        VideoEnabledWebChromeClient webChromeClient =
+                new VideoEnabledWebChromeClient(nonVideoLayout, videoLayout, null, webView) {
             // file upload callback (Android 2.2 (API level 8) -- Android 2.3 (API level 10)) (hidden method)
             @SuppressWarnings("unused")
             public void openFileChooser(ValueCallback<Uri> uploadMsg) {
@@ -214,13 +213,15 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             // file upload callback (Android 5.0 (API level 21) -- current) (public method)
             @SuppressWarnings("all")
             @Override
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
+                                             WebChromeClient.FileChooserParams fileChooserParams) {
                 openFileInput(null, filePathCallback);
                 return true;
             }
 
             @SuppressLint("NewApi")
-            protected void openFileInput(final ValueCallback<Uri> fileUploadCallbackFirst, final ValueCallback<Uri[]> fileUploadCallbackSecond) {
+            protected void openFileInput(final ValueCallback<Uri> fileUploadCallbackFirst,
+                                         final ValueCallback<Uri[]> fileUploadCallbackSecond) {
                 if (mFileUploadCallbackFirst != null) {
                     mFileUploadCallbackFirst.onReceiveValue(null);
                 }
@@ -554,7 +555,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment {
+    public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
         @Override
         protected String getURL() {
             return provider.getEnrollMemberUrl();
@@ -575,10 +576,12 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class EnrollMerchantFragment extends AuthorizedStaticInfoFragment {
+    public static class EnrollMerchantFragment
+            extends AuthorizedStaticInfoFragment<MerchantIdBundle> {
+
         @Override
         protected String getURL() {
-            return provider.getEnrollMerchantUrl();
+            return provider.getEnrollMerchantUrl(getArgs());
         }
 
         @Override
@@ -622,7 +625,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
 
         private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
         private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
-                + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "." + BuildConfig.versionPatch;
+                + BuildConfig.versionMajor + "." + BuildConfig.versionMinor + "."
+                + BuildConfig.versionPatch;
 
         @Override
         public void load(String url) {
@@ -641,7 +645,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class BundleUrlFragment extends StaticInfoFragment {
+    public static class BundleUrlFragment<T extends WebViewFragmentPresenter>
+            extends StaticInfoFragment<T, UrlBundle> {
 
         @Override
         protected String getURL() {
@@ -654,5 +659,4 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter> ext
             super.afterCreateView(rootView);
         }
     }
-
 }

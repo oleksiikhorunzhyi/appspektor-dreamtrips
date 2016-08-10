@@ -11,7 +11,8 @@
     <string name="dtl_no_merchants_caption">這裡沒有商家</string>
     <string name="dtl_load_merchants_here_button_caption">重做商戶搜索</string>
     <string name="dtl_place_list_empty_text">沒有所選類型的地方</string>
-    <string name="dtl_location_no_merchants_caption">您附近沒有商家。\n 請輸入新城市或</string>
+    <string name="dtl_location_no_merchants_caption">您附近沒有商家。\n請輸入新城市。</string>
+    <string name="dtl_location_select_from_nearby_caption">從附近的城市選擇：</string>
     <string name="dtl_points_estimation_calculate_button_caption">計算</string>
     <string name="dtl_points_estimation_input_hint">輸入金額</string>
     <string name="dtl_header">點數估計</string>
@@ -87,6 +88,7 @@
     <string name="training_no_video">視頻即將推出</string>
     <string name="help">幫助</string>
     <string name="merchants_list_empty_text">即將推出的地點</string>
+    <string name="merchants_list_empty_text_additional">- 或 -</string>
 
     <!-- DtlToolbar strings -->
     <string name="dtlt_search_hint">食品及飲料</string>

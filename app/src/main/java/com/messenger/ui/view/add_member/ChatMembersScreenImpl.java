@@ -2,6 +2,8 @@ package com.messenger.ui.view.add_member;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
+import com.messenger.entities.DataUser;
 import com.messenger.ui.adapter.cell.CheckableUserCell;
 import com.messenger.ui.adapter.cell.HeaderCell;
 import com.messenger.ui.anim.WeightSlideAnimator;
@@ -22,7 +24,7 @@ import com.messenger.ui.presenter.ToolbarPresenter;
 import com.messenger.ui.util.recyclerview.Header;
 import com.messenger.ui.util.recyclerview.VerticalDivider;
 import com.messenger.ui.view.layout.MessengerPathLayout;
-import com.messenger.ui.widget.SelectionListenerEditText;
+import com.messenger.ui.widget.AddMemberView;
 import com.messenger.util.ScrollStatePersister;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.ui.view.cell.CellDelegate;
@@ -55,10 +57,8 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     View conversationNameEditTextLayout;
     @InjectView(R.id.new_chat_conversation_name)
     EditText conversationNameEditText;
-    @InjectView(R.id.new_chat_chosen_contacts_count_editText)
-    EditText chosenContactsCountEditText;
-    @InjectView(R.id.new_chat_chosen_contacts_edittext)
-    SelectionListenerEditText chosenContactsListEditText;
+    @InjectView(R.id.add_member_search_view)
+    AddMemberView addMemberView;
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -67,7 +67,6 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     private ScrollStatePersister scrollStatePersister = new ScrollStatePersister();
 
     private WeightSlideAnimator conversationNameAnimator;
-    private Observable<CharSequence> searchQueryObservable;
 
     public ChatMembersScreenImpl(Context context) {
         super(context);
@@ -112,10 +111,6 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         recyclerView.setAdapter(adapter = createAdapter());
         recyclerView.addItemDecoration(new VerticalDivider(ContextCompat.getDrawable(getContext(), R.drawable.divider_list)));
         scrollStatePersister.restoreInstanceState(getLastRestoredInstanceState(), linearLayoutManager);
-
-        searchQueryObservable = RxTextView.afterTextChangeEvents(chosenContactsListEditText).map(event -> event.editable());
-        chosenContactsListEditText.setSelectionListener((s, a)
-                -> chosenContactsListEditText.setSelection(chosenContactsListEditText.getText().length()));
         conversationNameAnimator =
                 new WeightSlideAnimator(conversationNameEditTextLayout);
     }
@@ -167,15 +162,23 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
     }
 
     @Override
-    public Observable<CharSequence> getSearchQueryObservable() {
-        return searchQueryObservable;
+    public void setChosenUsers(List<DataUser> users) {
+        addMemberView.setChosenUsers(users);
     }
 
     @Override
-    public void setSelectedUsersHeaderText(CharSequence selectedContactsCount, CharSequence selectedContactsList) {
-        chosenContactsCountEditText.setText(selectedContactsCount);
-        chosenContactsListEditText.setText(selectedContactsList);
-        chosenContactsListEditText.setSelection(selectedContactsList.length());
+    public Observable<CharSequence> getSearchQueryObservable() {
+        return addMemberView.getQueryObservable();
+    }
+
+    @Override
+    public Observable<DataUser> getRemovedUserObservable() {
+        return addMemberView.getRemovedUserObservable();
+    }
+
+    @Override
+    public void setSearchQuery(@Nullable CharSequence query) {
+        addMemberView.setQuery(query);
     }
 
     @Override
@@ -188,6 +191,7 @@ public abstract class ChatMembersScreenImpl<P extends StyledPath>
         toolbarPresenter.setTitle(title);
     }
 
+    @NonNull
     @Override
     public String getConversationName() {
         return conversationNameEditText.getText().toString();

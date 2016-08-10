@@ -73,7 +73,6 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
         inject(photoPickerLayout);
         photoPickerLayoutDelegate.setPhotoPickerLayout(photoPickerLayout);
         photoPickerLayoutDelegate.initPicker(getSupportFragmentManager());
-        photoPickerLayoutDelegate.hidePicker();
     }
 
     @Override

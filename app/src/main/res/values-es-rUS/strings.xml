@@ -112,7 +112,7 @@
         <item>Twitter</item>
         <item>Guardar en galería</item>
     </string-array>
-    <string name="buffering">Almacenando en búfer...</string>
+    <string name="buffering">Almacenando en búfer…</string>
     <string name="profile_select_avatar_header">Seleccionar avatar</string>
     <string name="profile_select_cover_header">Seleccionar portada</string>
     <string name="error_internal_server">Error interno del servidor</string>
@@ -162,7 +162,7 @@
     <string name="completed">Listo</string>
     <string name="action_share">Compartir</string>
     <string name="recent_header">Recientemente agregado a Experiencia 360</string>
-    <string name="recent_videos">Agregado recientemente</string>
+    <string name="recently_added">Agregado recientemente</string>
     <string name="featured_header">Experiencia 360 destacada</string>
     <string name="title_activity_success_story_details">Activ.DetallesHist.Éxito</string>
     <string name="hello_world">¡Hola mundo!</string>
@@ -318,7 +318,7 @@
     <string name="feed_photo">Foto</string>
     <string name="feed_bucket">Elemento de la lista de pendientes</string>
     <string name="coming_soon">Próximamente</string>
-    <string name="loading">Cargando...</string>
+    <string name="loading">Cargando…</string>
     <string name="filter_video_title_language">Elegir idioma</string>
     <string name="filter_video_title_country">Elegir país</string>
     <string name="comments_title">Comentarios</string>
@@ -467,13 +467,13 @@
     <string name="no_mutual_friends">No tenéis ningún amigo mutuo</string>
 
     <string name="photo_limitation_message">Elige hasta %1$d fotos</string>
-    <string name="pending">Pendiente...</string>
+    <string name="pending">Pendiente…</string>
 
     <string name="back">Volver</string>
     <string name="logout_component">Cerrar sesión</string>
     <string name="start_typing_name">Empezar a escribir nombre</string>
 
-    <string name="multiple_dates">Múltiples fechas, %1$s...</string>
+    <string name="multiple_dates">Múltiples fechas, %1$s…</string>
 
     <string name="tag_photo">te etiquetó en</string>
 
@@ -631,5 +631,19 @@
     <string name="audio_app_not_found_exception">No se ha encontrado la aplicación para reproducir el audio</string>
     <string name="complete_action_with">Completar acción con</string>
     <string name="error_fail_to_load_podcast">Error al cargar podcast</string>
+
+    <string name="min">minutos</string>
+    <string name="post_hint_with_hashtag">Di algo, agregar #hashtags</string>
+    <string name="add_text">Agregar texto</string>
+    <string name="action_search_by_hashtag"> Búsqueda usando el hashtag</string>
+    <string name="error_fail_to_load_feeds_by_hashtag">No se pudieron cargar las fuentes solicitadas por hashtag</string>
+    <string name="no_feed_by_hashtag">No se encontró ninguna publicación</string>
+
+    <string name="friends_loading_info_text">Cargando tus amigos</string>
+
+    <string name="hashtag_one_post">%1$d publicar</string>
+    <string name="hashtag_multiple_posts">%1$d Publicaciones</string>
+
+    <string name="error_webview_secure_connection">Lo lamentamos, pero la aplicación DreamTrips no puede establecer una conexión segura.\nHemos recibido notificación de este problema y en breve nos encargaremos del asunto.\n\nPor favor, ponte en contacto con Atención al cliente para solucionarlo rápidamente.</string>
 
 </resources>

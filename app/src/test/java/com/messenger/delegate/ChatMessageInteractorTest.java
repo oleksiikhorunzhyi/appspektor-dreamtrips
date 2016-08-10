@@ -4,6 +4,7 @@ import com.messenger.delegate.chat.message.ChatMessageInteractor;
 import com.messenger.delegate.chat.message.ChatSendMessageCommand;
 import com.messenger.delegate.chat.message.RetrySendMessageCommand;
 import com.messenger.entities.DataMessage;
+import com.messenger.messengerservers.constant.MessageType;
 import com.messenger.messengerservers.model.Message;
 import com.messenger.storage.MessengerDatabase;
 import com.messenger.util.MockDaggerActionService;
@@ -81,6 +82,7 @@ public class ChatMessageInteractorTest extends BaseChatActionDelegateTest {
                 .conversationId(testConversationId)
                 .messageBody(messageBodyCreator.provideForText(testText))
                 .fromId(testDataUserId)
+                .type(MessageType.MESSAGE)
                 .build());
 
         TestSubscriber<RetrySendMessageCommand> subscriber = new TestSubscriber<>();

@@ -14,7 +14,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
-import com.worldventures.dreamtrips.modules.bucketlist.manager.BucketItemManager;
+import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
@@ -23,14 +23,11 @@ import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.cell.base.FeedItemDetailsCell;
 
-import javax.inject.Inject;
-
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_feed_bucket_event)
 public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedItem> {
-
     @InjectView(R.id.imageViewCover)
     SimpleDraweeView imageViewCover;
     @InjectView(R.id.textViewName)
@@ -41,9 +38,6 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
     TextView textViewDate;
     @InjectView(R.id.textViewPlace)
     TextView textViewPlace;
-
-    @Inject
-    BucketItemManager bucketItemManager;
 
     public BucketFeedItemDetailsCell(View view) {
         super(view);
@@ -106,10 +100,11 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
     @Override
     protected void onEdit() {
         super.onEdit();
-        BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
-        bucketItemManager.saveSingleBucketItem(getModelObject().getItem());
+//        BucketItem.BucketType bucketType = getType(getModelObject().getItem().getType());
+//        bucketItemManager.saveSingleBucketItem(getModelObject().getItem());
         //
-        getEventBus().post(new EditBucketEvent(getModelObject().getItem().getUid(), bucketType));
+        BucketItem bucketItem = getModelObject().getItem();
+        getEventBus().post(new EditBucketEvent(bucketItem, BucketUtility.typeFromItem(bucketItem)));
     }
 
     @OnClick(R.id.bucket_main)
@@ -118,9 +113,5 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
                 .data(new FeedDetailsBundle(getModelObject()))
                 .build());
-    }
-
-    private BucketItem.BucketType getType(String name) {
-        return BucketItem.BucketType.valueOf(name.toUpperCase());
     }
 }

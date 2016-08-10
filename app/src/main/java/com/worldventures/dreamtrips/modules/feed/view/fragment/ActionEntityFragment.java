@@ -25,13 +25,13 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
+import com.worldventures.dreamtrips.modules.feed.bundle.DescriptionBundle;
 import com.worldventures.dreamtrips.modules.feed.model.PhotoCreationItem;
 import com.worldventures.dreamtrips.modules.feed.model.PostDescription;
 import com.worldventures.dreamtrips.modules.feed.presenter.ActionEntityPresenter;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PhotoPostCreationCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.PostCreationTextCell;
 import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PhotoPostCreationDelegate;
-import com.worldventures.dreamtrips.modules.feed.view.cell.delegate.PostCreationTextDelegate;
 import com.worldventures.dreamtrips.modules.feed.view.util.PhotoPostCreationItemDecorator;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.EditPhotoTagsBundle;
@@ -71,6 +71,7 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     BaseDelegateAdapter adapter;
     SweetAlertDialog dialog;
+    PostDescription description = new PostDescription();
 
     @Override
     public void afterCreateView(View rootView) {
@@ -80,19 +81,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
         adapter = new BaseDelegateAdapter(getContext(), this);
         adapter.registerCell(PhotoCreationItem.class, PhotoPostCreationCell.class);
         adapter.registerCell(PostDescription.class, PostCreationTextCell.class);
-        adapter.registerDelegate(PostDescription.class, new PostCreationTextDelegate() {
-            @Override
-            public void onTextChanged(String text) {
-                getPresenter().postInputChanged(text);
-            }
-
-            @Override
-            public void onFocusChanged(boolean hasFocus) {
-                onTitleFocusChanged(hasFocus);
-            }
-
+        adapter.registerDelegate(PostDescription.class, new PostCreationTextCell.Delegate() {
             @Override
             public void onCellClicked(PostDescription model) {
+                router.moveTo(Route.PHOTO_CREATION_DESC, NavigationConfigBuilder.forActivity()
+                        .data(new DescriptionBundle(model.getDescription()))
+                        .build());
             }
         });
         adapter.registerDelegate(PhotoCreationItem.class, this);
@@ -165,7 +159,12 @@ public abstract class ActionEntityFragment<PM extends ActionEntityPresenter, P e
 
     @Override
     public void setText(String text) {
-        adapter.addItem(new PostDescription(text));
+        if (!adapter.getItems().contains(description)) {
+            adapter.addItem(description);
+        }
+
+        description.setDescription(text);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

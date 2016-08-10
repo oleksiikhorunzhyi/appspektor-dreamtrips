@@ -86,8 +86,8 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
         nextPage++;
         users.clear();
         users.addAll(freshUsers);
-        view.refreshUsers(users);
         view.finishLoading();
+        view.refreshUsers(users);
     }
 
     protected void onUsersAdded(ArrayList<User> freshUsers) {
@@ -248,7 +248,6 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
                     userStateChanged(user);
                 });
     }
-
 
     protected int getPerPageCount() {
         return 100;

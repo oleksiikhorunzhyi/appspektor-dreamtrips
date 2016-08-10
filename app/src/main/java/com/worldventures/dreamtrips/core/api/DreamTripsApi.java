@@ -1,11 +1,7 @@
 package com.worldventures.dreamtrips.core.api;
 
 import com.google.gson.JsonObject;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketBasePostItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketOrderModel;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketPhoto;
-import com.worldventures.dreamtrips.modules.bucketlist.model.BucketStatusItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
@@ -162,35 +158,8 @@ public interface DreamTripsApi {
     @DELETE("/api/success_stories/{id}/like")
     JsonObject unlikeSS(@Path("id") int photoId);
 
-    @POST("/api/bucket_list_items/{uid}/photos")
-    BucketPhoto uploadBucketPhoto(@Path("uid") String uid, @Body BucketPhoto bucketPhoto);
-
     @GET("/api/trips/{id}")
     TripDetails getDetails(@Path("id") String tripId);
-
-    @POST("/api/bucket_list_items")
-    BucketItem createItem(@Body BucketBasePostItem bucketItem);
-
-    @PATCH("/api/bucket_list_items/{uid}")
-    BucketItem completeItem(@Path("uid") String uid, @Body BucketStatusItem bucketPostItem);
-
-    @PATCH("/api/bucket_list_items/{uid}")
-    BucketItem updateItem(@Path("uid") String uid, @Body BucketBasePostItem bucketPostItem);
-
-    @DELETE("/api/bucket_list_items/{uid}")
-    JsonObject deleteItem(@Path("uid") String uid);
-
-    @GET("/api/bucket_list_items")
-    ArrayList<BucketItem> getBucketListFull();
-
-    @GET("/api/users/{user_id}/bucket_list_items")
-    ArrayList<BucketItem> getBucketListFull(@Path("user_id") int userId);
-
-    @GET("/api/social/users/{user_id}/bucket_list_items")
-    ArrayList<BucketItem> getBucketListFull(@Path("user_id") String userId);
-
-    @DELETE("/api/bucket_list_items/{uid}/photos/{photo_id}")
-    JsonObject deleteBucketPhoto(@Path("uid") String uid, @Path("photo_id") String photoId);
 
     @GET("/api/bucket_list/locations")
     ArrayList<PopularBucketItem> getPopularLocations();
@@ -200,9 +169,6 @@ public interface DreamTripsApi {
 
     @GET("/api/bucket_list/dinings")
     ArrayList<PopularBucketItem> getPopularDining();
-
-    @PUT("/api/bucket_list_items/{uid}/position")
-    JsonObject changeOrder(@Path("uid") String uid, @Body BucketOrderModel item);
 
     @GET("/api/categories")
     ArrayList<CategoryItem> getCategories();

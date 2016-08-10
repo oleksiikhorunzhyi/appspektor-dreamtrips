@@ -15,8 +15,7 @@ public class GetCirclesHttpAction extends AuthorizedHttpAction {
     ArrayList<Circle> circles;
 
     public ArrayList<Circle> getCircles() {
+        if (circles == null) circles = new ArrayList<>();
         return circles;
     }
-
-
 }

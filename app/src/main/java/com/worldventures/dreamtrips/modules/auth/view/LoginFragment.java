@@ -43,11 +43,6 @@ public class LoginFragment extends RxBaseFragment<LoginPresenter> implements Log
     }
 
     @Override
-    public void showLoginSuccess() {
-        dismissProgressDialog();
-    }
-
-    @Override
     public void alert(String s) {
         super.alert(s);
         dismissProgressDialog();

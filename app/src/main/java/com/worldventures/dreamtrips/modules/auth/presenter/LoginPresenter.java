@@ -41,7 +41,6 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
                             TrackingHelper.login(user.getEmail());
                             TrackingHelper.setUserId(Integer.toString(user.getId()));
 
-                            view.showLoginSuccess();
                             activityRouter.openLaunch();
                             activityRouter.finish();
                         }).onFail((loginCommand, throwable) -> {
@@ -54,8 +53,6 @@ public class LoginPresenter extends Presenter<LoginPresenter.View> {
     public interface View extends RxView {
 
         void showProgressDialog();
-
-        void showLoginSuccess();
 
         void showLocalErrors(int userNameError, int passwordError);
 

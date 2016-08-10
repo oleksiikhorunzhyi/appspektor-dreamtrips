@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -49,13 +48,7 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
             builder.title(R.string.alert)
                     .content(s)
                     .positiveText(R.string.OK)
-                    .callback(new MaterialDialog.ButtonCallback() {
-                        @Override
-                        public void onPositive(MaterialDialog dialog) {
-                            super.onPositive(dialog);
-                            finish();
-                        }
-                    })
+                    .onPositive((dialog, which) -> finish())
                     .show();
         });
 

@@ -63,6 +63,7 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
         }
         if (state == State.PAUSED || state == State.READY) {
             mediaPlayer.start();
+            setState(State.PLAYING);
             return;
         }
         setState(State.ERROR);

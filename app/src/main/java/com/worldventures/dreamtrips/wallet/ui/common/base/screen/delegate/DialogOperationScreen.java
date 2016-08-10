@@ -65,14 +65,14 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
     @Override
     public void notifyError(String msg, Action1<SweetAlertDialog> action) {
         errorDialog = buildErrorDialog(checkAndGetView());
-        errorDialog.setTitleText(msg);
+        errorDialog.setContentText(msg);
         errorDialog.show();
     }
 
     @Override
     public void showSuccess(String msg, Action1<SweetAlertDialog> action) {
         successDialog = buildSuccessDialog(checkAndGetView());
-        successDialog.setTitleText(msg);
+        successDialog.setContentText(msg);
         successDialog.setConfirmClickListener(sweetAlertDialog -> {
             timeoutHandler.removeCallbacksAndMessages(null);
             sweetAlertDialog.dismissWithAnimation();
@@ -99,21 +99,24 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
     }
 
     private SweetAlertDialog buildProgressDialog(@NonNull View view) {
-        SweetAlertDialog progressDialog = new SweetAlertDialog(view.getContext(), SweetAlertDialog.PROGRESS_TYPE);
+        SweetAlertDialog progressDialog = new SweetAlertDialog(view.getContext(), SweetAlertDialog.PROGRESS_TYPE)
+                .setTitleText("");
         progressDialog.setCancelable(false);
 
         return progressDialog;
     }
 
     private SweetAlertDialog buildSuccessDialog(@NonNull View view) {
-        SweetAlertDialog successDialog = new SweetAlertDialog(view.getContext(), SUCCESS_TYPE);
+        SweetAlertDialog successDialog = new SweetAlertDialog(view.getContext(), SUCCESS_TYPE)
+                .setTitleText("");
         successDialog.setCancelable(false);
 
         return successDialog;
     }
 
     private SweetAlertDialog buildErrorDialog(@NonNull View view) {
-        return new SweetAlertDialog(view.getContext(), SweetAlertDialog.ERROR_TYPE);
+        return new SweetAlertDialog(view.getContext(), SweetAlertDialog.ERROR_TYPE)
+                .setTitleText("");
     }
 
     private void hideDialogs() {

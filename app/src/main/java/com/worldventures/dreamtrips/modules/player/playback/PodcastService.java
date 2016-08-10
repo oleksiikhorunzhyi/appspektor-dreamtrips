@@ -2,14 +2,14 @@ package com.worldventures.dreamtrips.modules.player.playback;
 
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.text.TextUtils;
 
-import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 
 import rx.Observable;
 import rx.Subscription;
@@ -20,21 +20,24 @@ import timber.log.Timber;
 public class PodcastService extends Service {
 
     private static final int WIDGET_NOTIFICATION_ID = 144;
+    static final String ACTION_NOTIFICATION_CLICK = "ACTION_PODCAST_NOTIFICATION_CLICK";
+    static final String NOTIFICATION_ACTION_PLAY = "ACTION_PODCAST_PLAY";
+    static final String NOTIFICATION_ACTION_PAUSE = "ACTION_PODCAST_PAUSE";
+    static final String NOTIFICATION_ACTION_STOP = "ACTION_PODCAST_STOP";
 
     private final PodcastServiceBinder binder = new PodcastServiceBinder();
-    private Subscription activePlayerSubscription;
+
     private DtPlayer player;
+    private Subscription activePlayerSubscription;
     // player can be tried to initialized from different threads
     private volatile boolean isPreparingPlayer = false;
+
+    private PodcastServiceNotificationFactory notificationFactory;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Timber.d("Podcasts -- Service -- onCreate");
-        startForeground(WIDGET_NOTIFICATION_ID, new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.dt_push_icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.podcast_placeholder))
-                .build());
     }
 
     @Override
@@ -42,28 +45,65 @@ public class PodcastService extends Service {
         return binder;
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = intent.getAction();
+        if (!TextUtils.isEmpty(action)) {
+            processIntentAction(action);
+        }
+        return START_NOT_STICKY;
+    }
+
+    private void processIntentAction(String action) {
+        switch (action) {
+            case NOTIFICATION_ACTION_PLAY:
+                startPlayer();
+                break;
+            case NOTIFICATION_ACTION_PAUSE:
+                pausePlayer();
+                break;
+            case NOTIFICATION_ACTION_STOP:
+                onPlayerCleanup();
+                break;
+            case ACTION_NOTIFICATION_CLICK:
+                // nothing for now
+                break;
+        }
+    }
+
     public Observable<ReadOnlyPlayer> createPlayer(Uri uri) {
         Timber.d("Podcasts -- Service -- getPlayer %s", uri);
         Observable<ReadOnlyPlayer> observable = Observable.just(player)
             .filter(player -> player != null && player.getSourceUri().equals(uri))
             .compose(new NonNullFilter<>())
-            .switchIfEmpty(Observable.fromCallable(() -> constructVideoPlayerInternal(uri)))
-            .flatMap(this::prepareIfNeeded);
+            .switchIfEmpty(Observable.fromCallable(() -> createPlayerInternal(uri)))
+            .flatMap(this::preparePlayerIfNeeded);
         observable = observable.replay(1).autoConnect();
         observable.subscribe();
         return observable;
     }
 
-    private DtPlayer constructVideoPlayerInternal(Uri uri) {
+    private DtPlayer createPlayerInternal(Uri uri) {
         stopPlayerIfNeeded();
         player = new DtMediaPlayer(this, uri);
         activePlayerSubscription = player.getStateObservable()
-                .filter(state -> state == DtPlayer.State.STOPPED)
-                .subscribe(state -> onPlayerCleanup());
+                .subscribe(state -> {
+                    Timber.d("Podcasts -- service -- state %s", state);
+                    if (state == DtPlayer.State.PLAYING) {
+                        startForeground(WIDGET_NOTIFICATION_ID, notificationFactory.getPlayingNotification());
+                    } else if (state == DtPlayer.State.PAUSED) {
+                        NotificationManagerCompat.from(getApplicationContext()).notify(WIDGET_NOTIFICATION_ID,
+                                notificationFactory.getPausedNotification());
+                        stopForeground(false);
+                    } else if (state == DtPlayer.State.STOPPED) {
+                        onPlayerCleanup();
+                    }
+                });
+        notificationFactory = new PodcastServiceNotificationFactory(this, uri);
         return player;
     }
 
-    private Observable<DtPlayer> prepareIfNeeded(DtPlayer dtPlayer) {
+    private Observable<DtPlayer> preparePlayerIfNeeded(DtPlayer dtPlayer) {
         Observable<DtPlayer> playerObservable = Observable.just(player);
         if (player.getState() == DtPlayer.State.UNKNOWN) {
             playerObservable = playerObservable

@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.IBinder;
-import android.widget.MediaController;
 
-import com.worldventures.dreamtrips.modules.player.playback.DtPlayer;
 import com.worldventures.dreamtrips.modules.player.playback.PodcastService;
+import com.worldventures.dreamtrips.modules.player.playback.ReadOnlyPlayer;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -24,13 +23,8 @@ public class PodcastPlayerDelegate {
         this.context = context;
     }
 
-    public Observable<DtPlayer.State> getPlayerStateObservable(Uri uri) {
-        return getPodcastService()
-                .flatMap(podcastService -> podcastService.getPlayerStateObservable(uri));
-    }
-
-    public void preparePlayer(Uri uri) {
-        getPodcastService().subscribe(service -> service.preparePlayer(uri).subscribe());
+    public Observable<ReadOnlyPlayer> createPlayer(Uri uri) {
+        return getPodcastService().flatMap(service -> service.createPlayer(uri));
     }
 
     public void start() {
@@ -43,10 +37,6 @@ public class PodcastPlayerDelegate {
 
     public void stop() {
         getPodcastService().subscribe(PodcastService::stopPlayer);
-    }
-
-    public Observable<MediaController.MediaPlayerControl> getMediaPlayerControl(Uri uri) {
-        return getPodcastService().flatMap(service -> service.getMediaPlayerControl(uri));
     }
 
     private Observable<PodcastService> getPodcastService() {

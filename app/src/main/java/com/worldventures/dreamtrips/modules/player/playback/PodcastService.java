@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.widget.MediaController;
 
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
@@ -43,41 +42,41 @@ public class PodcastService extends Service {
         return binder;
     }
 
-    public Observable<DtPlayer> preparePlayer(Uri uri) {
+    public Observable<ReadOnlyPlayer> createPlayer(Uri uri) {
         Timber.d("Podcasts -- Service -- getPlayer %s", uri);
-        return Observable.just(player)
+        Observable<ReadOnlyPlayer> observable = Observable.just(player)
             .filter(player -> player != null && player.getSourceUri().equals(uri))
             .compose(new NonNullFilter<>())
             .switchIfEmpty(Observable.fromCallable(() -> constructVideoPlayerInternal(uri)))
-            .flatMap(dtPlayer -> {
-                Observable<DtPlayer> playerObservable = Observable.just(player);
-                if (player.getState() == DtPlayer.State.UNKNOWN) {
-                    playerObservable = playerObservable
-                            .subscribeOn(Schedulers.io())
-                            .doOnNext(player -> {
-                                if (isPreparingPlayer) return;
-                                isPreparingPlayer = true;
-                                player.prepare();
-                                isPreparingPlayer = false;
-                            })
-                            .observeOn(AndroidSchedulers.mainThread());
-                }
-                return playerObservable;
-            });
-    }
-
-    public Observable<DtPlayer.State> getPlayerStateObservable(Uri uri) {
-        return preparePlayer(uri).flatMap(dtPlayer -> player.getStateObservable());
+            .flatMap(this::prepareIfNeeded);
+        observable = observable.replay(1).autoConnect();
+        observable.subscribe();
+        return observable;
     }
 
     private DtPlayer constructVideoPlayerInternal(Uri uri) {
-        Timber.d("Podcasts -- Service -- create player %s", uri);
         stopPlayerIfNeeded();
         player = new DtMediaPlayer(this, uri);
         activePlayerSubscription = player.getStateObservable()
                 .filter(state -> state == DtPlayer.State.STOPPED)
                 .subscribe(state -> onPlayerCleanup());
         return player;
+    }
+
+    private Observable<DtPlayer> prepareIfNeeded(DtPlayer dtPlayer) {
+        Observable<DtPlayer> playerObservable = Observable.just(player);
+        if (player.getState() == DtPlayer.State.UNKNOWN) {
+            playerObservable = playerObservable
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext(player -> {
+                        if (isPreparingPlayer) return;
+                        isPreparingPlayer = true;
+                        player.prepare();
+                        isPreparingPlayer = false;
+                    })
+                    .observeOn(AndroidSchedulers.mainThread());
+        }
+        return playerObservable;
     }
 
     public void startPlayer() {
@@ -90,11 +89,6 @@ public class PodcastService extends Service {
 
     public void stopPlayer() {
         if (player != null) onPlayerCleanup();
-    }
-
-    public Observable<MediaController.MediaPlayerControl> getMediaPlayerControl(Uri uri) {
-        return preparePlayer(uri)
-                .map(DtPlayer::getMediaPlayerControl);
     }
 
     private void onPlayerCleanup() {

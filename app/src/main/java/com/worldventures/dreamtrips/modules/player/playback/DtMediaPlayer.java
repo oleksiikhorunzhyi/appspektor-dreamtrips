@@ -5,7 +5,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.webkit.URLUtil;
-import android.widget.MediaController;
 
 import rx.Observable;
 import rx.subjects.ReplaySubject;
@@ -33,7 +32,7 @@ public class DtMediaPlayer implements DtPlayer {
             return;
         }
         try {
-            Timber.d("Podcasts -- DtMediaPlayer -- prepare player, state %s, thread %s", state, Thread.currentThread().getName());
+            Timber.d("Podcasts -- DtMediaPlayer -- prepare player, state %s", state);
             tryPrepare();
         } catch (Exception ex) {
             Timber.e(ex, "Could not prepare player");
@@ -89,10 +88,9 @@ public class DtMediaPlayer implements DtPlayer {
         stateObservable.onNext(state);
     }
 
-    @Override
-    public Uri getSourceUri() {
-        return uri;
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Getters
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public State getState() {
@@ -102,6 +100,11 @@ public class DtMediaPlayer implements DtPlayer {
     @Override
     public Observable<State> getStateObservable() {
         return stateObservable;
+    }
+
+    @Override
+    public Uri getSourceUri() {
+        return uri;
     }
 
     @Override
@@ -117,58 +120,5 @@ public class DtMediaPlayer implements DtPlayer {
     @Override
     public boolean isPlaying() {
         return mediaPlayer.isPlaying();
-    }
-
-    @Override
-    public MediaController.MediaPlayerControl getMediaPlayerControl() {
-        return new MediaPlayerControl();
-    }
-
-    private class MediaPlayerControl implements MediaController.MediaPlayerControl {
-
-        public void start() {
-            DtMediaPlayer.this.start();
-        }
-
-        public void pause() {
-            DtMediaPlayer.this.pause();
-        }
-
-        public int getDuration() {
-            return mediaPlayer.getDuration();
-        }
-
-        public int getCurrentPosition() {
-            return mediaPlayer.getCurrentPosition();
-        }
-
-        public void seekTo(int i) {
-            mediaPlayer.seekTo(i);
-        }
-
-        public boolean isPlaying() {
-            return mediaPlayer.isPlaying();
-        }
-
-        public int getBufferPercentage() {
-            return 0;
-        }
-
-        public boolean canPause() {
-            return true;
-        }
-
-        public boolean canSeekBackward() {
-            return true;
-        }
-
-        public boolean canSeekForward() {
-            return true;
-        }
-
-        @Override
-        public int getAudioSessionId() {
-            return 0;
-        }
     }
 }

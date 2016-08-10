@@ -53,13 +53,13 @@ public class WizardManualInputScreen extends WalletFrameLayout<WizardManualInput
         return false;
     }
 
-    @OnClick(R.id.wallet_wizard_manual_input_next_btn)
-    void onNextClicked() {
-        getPresenter().checkBarcode(scidNumberInput.getText().toString());
-    }
-
     @Override
     public OperationScreen provideOperationDelegate() {
         return new DialogOperationScreen(this);
+    }
+
+    @OnClick(R.id.wallet_wizard_manual_input_next_btn)
+    void onNextClicked() {
+        getPresenter().checkBarcode(scidNumberInput.getText().toString());
     }
 }

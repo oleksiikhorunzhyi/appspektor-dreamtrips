@@ -61,6 +61,11 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
     }
 
     @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
+
+    @Override
     public void startCamera() {
         scanner.startCamera();
     }
@@ -83,10 +88,5 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
     @OnClick(R.id.wallet_wizard_scan_barcode_manual_input)
     void onInputManuallyClicked() {
         getPresenter().startManualInput();
-    }
-
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
     }
 }

@@ -61,14 +61,14 @@ public class WizardCardNameScreen extends WalletFrameLayout<WizardCardNamePresen
         return true;
     }
 
+    @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
+
     @NonNull
     @Override
     public String getCardName() {
         return cardName.getText().toString();
-    }
-
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
     }
 }

@@ -112,6 +112,11 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
     }
 
     @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
+
+    @Override
     public void showRecordsInfo(List<CardStackViewModel> result) {
         adapter.clearAndUpdateItems(result);
         smartCardWidget.bindCount(result);
@@ -132,10 +137,5 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
                 .setRecyclerView(bankCardList)
                 .setStickyHeadersAdapter(new CardListHeaderAdapter(adapter.getItems()), false)
                 .build();
-    }
-
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
     }
 }

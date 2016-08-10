@@ -11,7 +11,7 @@ import com.worldventures.dreamtrips.wallet.service.command.GetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupPinCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ActionStateSubscriberProgressWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.wizard.finish.WalletPinIsSetPath;
 
 import javax.inject.Inject;
@@ -49,7 +49,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
         smartCardInteractor.setupPinPipe()
                 .createObservable(new SetupPinCommand(smartCardId))
                 .compose(bindViewIoToMainComposer())
-                .subscribe(ActionStateSubscriberProgressWrapper.<SetupPinCommand>forView(getView().provideOperationDelegate())
+                .subscribe(OperationSubscriberWrapper.<SetupPinCommand>forView(getView().provideOperationDelegate())
                         .onStart(getContext().getString(R.string.wallet_wizard_setup_progress))
                         .onSuccess(setupPinCommand -> Flow.get(getContext()).set(new WalletPinIsSetPath()))
                         .onFail(getContext().getString(R.string.wallet_wizard_setup_error))

@@ -10,9 +10,9 @@ import rx.functions.Action1;
 import rx.functions.Action2;
 import rx.functions.Func1;
 
-public final class ActionStateSubscriberProgressWrapper<T> {
-    public static <T> ActionStateSubscriberProgressWrapper<T> forView(OperationScreen view) {
-        return new ActionStateSubscriberProgressWrapper<>(view);
+public final class OperationSubscriberWrapper<T> {
+    public static <T> OperationSubscriberWrapper<T> forView(OperationScreen view) {
+        return new OperationSubscriberWrapper<>(view);
     }
 
     private OperationScreen view;
@@ -23,44 +23,44 @@ public final class ActionStateSubscriberProgressWrapper<T> {
     private Func1<Throwable, MessageActionHolder<T>> onFailFactory;
     private Action2<T, Integer> onProgress;
 
-    private ActionStateSubscriberProgressWrapper(OperationScreen view) {
+    private OperationSubscriberWrapper(OperationScreen view) {
         this.view = view;
     }
 
-    public ActionStateSubscriberProgressWrapper<T> onStart(String message, @Nullable Action1<T> onStart) {
+    public OperationSubscriberWrapper<T> onStart(String message, @Nullable Action1<T> onStart) {
         this.onStartHolder = new MessageActionHolder<>(message, onStart);
         return this;
     }
 
-    public ActionStateSubscriberProgressWrapper<T> onStart(String message) {
+    public OperationSubscriberWrapper<T> onStart(String message) {
         return onStart(message, null);
     }
 
-    public ActionStateSubscriberProgressWrapper<T> onSuccess(String message, @Nullable Action1<T> onSuccess) {
+    public OperationSubscriberWrapper<T> onSuccess(String message, @Nullable Action1<T> onSuccess) {
         this.onSuccessHolder = new MessageActionHolder<>(message, onSuccess);
         return this;
     }
 
-    public ActionStateSubscriberProgressWrapper<T> onSuccess(@Nullable Action1<T> onSuccess) {
+    public OperationSubscriberWrapper<T> onSuccess(@Nullable Action1<T> onSuccess) {
         return onSuccess(null, onSuccess);
     }
 
-    public ActionStateSubscriberProgressWrapper<T> onFail(String message, @Nullable Action1<T> onFail) {
+    public OperationSubscriberWrapper<T> onFail(String message, @Nullable Action1<T> onFail) {
         this.onFailFactory = throwable -> new MessageActionHolder<>(message, onFail);
         return this;
     }
 
-    public ActionStateSubscriberProgressWrapper<T> onFail(String message) {
+    public OperationSubscriberWrapper<T> onFail(String message) {
         return onFail(message, null);
     }
 
-    public ActionStateSubscriberProgressWrapper<T> onFail(Func1<Throwable, MessageActionHolder<T>> factoryFailFunc) {
+    public OperationSubscriberWrapper<T> onFail(Func1<Throwable, MessageActionHolder<T>> factoryFailFunc) {
         this.onFailFactory = factoryFailFunc;
         return this;
     }
 
     @SuppressWarnings("unused")
-    public ActionStateSubscriberProgressWrapper<T> onProgress(Action2<T, Integer> onProgress) {
+    public OperationSubscriberWrapper<T> onProgress(Action2<T, Integer> onProgress) {
         this.onProgress = onProgress;
         return this;
     }
@@ -69,27 +69,24 @@ public final class ActionStateSubscriberProgressWrapper<T> {
         return new ActionStateSubscriber<T>()
                 .onStart(t -> {
                     String message = hasActionMessage(onStartHolder) ?
-                            view.context().getString(R.string.loading) : onStartHolder.message;
+                            onStartHolder.message : view.context().getString(R.string.loading);
 
-                    view.showProgress(message);
-                    if (onStartHolder.action != null) {
-                        onStartHolder.action.call(t);
-                    }
+                    view.showProgress(message, o -> onStartHolder.action.call(t));
                 })
                 .onSuccess(t -> {
-                    String message = hasActionMessage(onSuccessHolder) ?
-                            view.context().getString(R.string.ok) : onSuccessHolder.message;
+                    String message = hasActionMessage(onSuccessHolder) ? onSuccessHolder.message
+                            : view.context().getString(R.string.ok);
 
                     view.hideProgress();
                     view.showSuccess(message, o -> onSuccessHolder.action.call(t));
                 })
                 .onFail((t, throwable) -> {
-                    MessageActionHolder<T> failHolder = onFailFactory.call(throwable);
-                    String message = hasActionMessage(failHolder) ?
-                            view.context().getString(R.string.error_something_went_wrong) : failHolder.message;
+                    final MessageActionHolder<T> failHolder = onFailFactory != null ? onFailFactory.call(throwable) : null;
+                    String message = hasActionMessage(failHolder) ? failHolder.message
+                            : view.context().getString(R.string.error_something_went_wrong);
 
                     view.hideProgress();
-                    view.notifyError(message, o -> failHolder.action.call(t));
+                    view.showError(message, o -> failHolder.action.call(t));
                 })
                 .onProgress((t, integer) -> {
                     if (onProgress != null) {
@@ -109,6 +106,6 @@ public final class ActionStateSubscriberProgressWrapper<T> {
     }
 
     private boolean hasActionMessage(MessageActionHolder<T> holder) {
-        return holder == null || holder.message == null;
+        return holder != null && holder.message != null;
     }
 }

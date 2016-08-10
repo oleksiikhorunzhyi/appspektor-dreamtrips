@@ -56,13 +56,13 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
     }
 
     @Override
-    public void setUserAvatar(@Nullable String fileUri) {
-        if (TextUtils.isEmpty(fileUri)) return;
-        profilePhotoView.setImageURI(Uri.parse(fileUri));
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
     }
 
     @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
+    public void setUserAvatar(@Nullable String fileUri) {
+        if (TextUtils.isEmpty(fileUri)) return;
+        profilePhotoView.setImageURI(Uri.parse(fileUri));
     }
 }

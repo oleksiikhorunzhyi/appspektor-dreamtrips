@@ -7,7 +7,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ActionStateSubscriberProgressWrapper.MessageActionHolder;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper.MessageActionHolder;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePath;
 
 import javax.inject.Inject;
@@ -34,7 +34,7 @@ public final class WizardCodeHelper {
         wizardInteractor.createAndConnectActionPipe()
                 .createObservable(new CreateAndConnectToCardCommand(code))
                 .compose(bindComposer)
-                .subscribe(ActionStateSubscriberProgressWrapper.<CreateAndConnectToCardCommand>forView(view)
+                .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(view)
                         .onStart(context.getString(R.string.waller_wizard_scan_barcode_progress_label))
                         .onSuccess(context.getString(R.string.wallet_got_it_label),
                                 command -> Flow.get(context).set(new WizardCardNamePath(command.getCode())))

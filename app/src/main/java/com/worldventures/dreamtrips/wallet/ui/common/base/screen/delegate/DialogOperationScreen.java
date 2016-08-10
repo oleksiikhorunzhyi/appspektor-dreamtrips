@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -27,6 +28,10 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
 
     private boolean isSuccessWithDelay;
 
+    public DialogOperationScreen(@NonNull View view) {
+        this(view, true);
+    }
+
     public DialogOperationScreen(@NonNull View view, boolean isSuccessWithDelay) {
         this.viewRef = new WeakReference<>(view);
         this.isSuccessWithDelay = isSuccessWithDelay;
@@ -44,12 +49,8 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
         });
     }
 
-    public DialogOperationScreen(@NonNull View view) {
-        this(view, true);
-    }
-
     @Override
-    public void showProgress(String msg) {
+    public void showProgress(String msg, Action1<SweetAlertDialog> cancelAction) {
         View view = checkAndGetView();
         progressDialog = buildProgressDialog(view);
         progressDialog.setContentText(msg);
@@ -63,9 +64,19 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
     }
 
     @Override
-    public void notifyError(String msg, Action1<SweetAlertDialog> action) {
+    public void showError(String msg, Action1<SweetAlertDialog> action) {
         errorDialog = buildErrorDialog(checkAndGetView());
         errorDialog.setContentText(msg);
+        errorDialog.setOnCancelListener(dialog -> {
+            if(action != null) {
+                action.call(errorDialog);
+            }
+        });
+        errorDialog.setConfirmClickListener(sweetAlertDialog -> {
+            if(action != null) {
+                action.call(sweetAlertDialog);
+            }
+        });
         errorDialog.show();
     }
 

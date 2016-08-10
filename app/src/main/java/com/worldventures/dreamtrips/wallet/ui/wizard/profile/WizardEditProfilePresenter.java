@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ActionStateSubscriberProgressWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
 
@@ -85,7 +85,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         wizardInteractor.setupUserDataPipe()
                 .observe()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(ActionStateSubscriberProgressWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
+                .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
                         .onStart(getContext().getString(R.string.wallet_edit_profile_progress_dialog))
                         .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog),
                                 setupUserDataCommand -> Flow.get(getContext()).set(new WizardPinSetupPath(smartCardId)))
@@ -93,7 +93,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                             Context context = getContext();
                             String msg = throwable instanceof FormatException ? context.getString(R.string.wallet_edit_profile_name_format_detail)
                                     : context.getString(R.string.error_something_went_wrong);
-                            return new ActionStateSubscriberProgressWrapper.MessageActionHolder<>(msg, null);
+                            return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
                         })
                         .wrap());
     }

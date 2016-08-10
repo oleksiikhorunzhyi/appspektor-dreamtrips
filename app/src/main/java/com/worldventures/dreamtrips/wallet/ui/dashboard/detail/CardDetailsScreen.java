@@ -53,6 +53,11 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
     }
 
     @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
+
+    @Override
     public void setTitle(String title) {
         toolbar.setTitle(title);
     }
@@ -69,10 +74,5 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
 
     protected void navigateButtonClick() {
         presenter.goToBack();
-    }
-
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
     }
 }

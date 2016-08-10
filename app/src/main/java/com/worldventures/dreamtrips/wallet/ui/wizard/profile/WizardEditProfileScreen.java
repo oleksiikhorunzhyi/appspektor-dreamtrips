@@ -79,6 +79,11 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
     }
 
     @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
+
+    @Override
     public void pickPhoto() {
         mediaPickerService.pickPhoto();
     }
@@ -117,10 +122,5 @@ public class WizardEditProfileScreen extends WalletFrameLayout<WizardEditProfile
     @Override
     public String getUserName() {
         return personName.getText().toString();
-    }
-
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
     }
 }

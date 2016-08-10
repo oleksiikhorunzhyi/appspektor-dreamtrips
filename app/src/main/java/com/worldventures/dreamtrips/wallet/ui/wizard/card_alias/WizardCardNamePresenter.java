@@ -10,8 +10,8 @@ import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ActionStateSubscriberProgressWrapper;
-import com.worldventures.dreamtrips.wallet.ui.common.helper.ActionStateSubscriberProgressWrapper.MessageActionHolder;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper.MessageActionHolder;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePath;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashPath;
 import com.worldventures.dreamtrips.wallet.util.FormatException;
@@ -47,7 +47,7 @@ public class WizardCardNamePresenter extends WalletPresenter<WizardCardNamePrese
         wizardInteractor.setupSmartCardNamePipe()
                 .observe()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(ActionStateSubscriberProgressWrapper.<SetupSmartCardNameCommand>forView(getView().provideOperationDelegate())
+                .subscribe(OperationSubscriberWrapper.<SetupSmartCardNameCommand>forView(getView().provideOperationDelegate())
                         .onStart(getContext().getString(R.string.wallet_wizard_card_alias_setup))
                         .onSuccess(getContext().getString(R.string.wallet_wizard_card_alias_was_setup),
                                 command -> Flow.get(getContext()).set(new WizardEditProfilePath(command.getCardId())))

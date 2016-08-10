@@ -4,10 +4,11 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.webkit.URLUtil;
 import android.widget.MediaController;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.subjects.ReplaySubject;
 import timber.log.Timber;
 
 public class DtMediaPlayer implements DtPlayer {
@@ -16,7 +17,7 @@ public class DtMediaPlayer implements DtPlayer {
 
     private MediaPlayer mediaPlayer;
     private State state;
-    private PublishSubject<State> stateObservable = PublishSubject.create();
+    private ReplaySubject<State> stateObservable = ReplaySubject.create(1);
     private Uri uri;
 
     public DtMediaPlayer(Context context, Uri uri) {
@@ -27,32 +28,43 @@ public class DtMediaPlayer implements DtPlayer {
     }
 
     @Override
+    public void prepare() {
+        if (state != State.UNKNOWN) {
+            return;
+        }
+        try {
+            Timber.d("Podcasts -- DtMediaPlayer -- prepare player, state %s, thread %s", state, Thread.currentThread().getName());
+            tryPrepare();
+        } catch (Exception ex) {
+            Timber.e(ex, "Could not prepare player");
+            setState(State.ERROR);
+        }
+    }
+
+    private void tryPrepare() throws Exception {
+        setState(State.PREPARING);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        // check if URL to avoid no content provider error in media player
+        String possibleUrl = uri.toString();
+        if (URLUtil.isValidUrl(possibleUrl)) {
+            mediaPlayer.setDataSource(possibleUrl);
+        } else {
+            mediaPlayer.setDataSource(context, uri);
+        }
+        mediaPlayer.prepare();
+        setState(State.READY);
+    }
+
+    @Override
     public void start() {
-        if (state == State.PREPARING || state == State.PLAYING) {
+        if (state == State.PREPARING || state == State.PLAYING || state == State.ERROR) {
             return;
         }
         if (state == State.PAUSED || state == State.READY) {
             mediaPlayer.start();
             return;
         }
-        try {
-            Timber.d("Podcasts -- DtMediaPlayer -- prepare player, state %s", state);
-            prepareAndPlay();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Timber.e(ex, "Could not initialize player");
-            setState(State.ERROR);
-        }
-    }
-
-    private void prepareAndPlay() throws Exception {
-        setState(State.PREPARING);
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.setDataSource(context, uri);
-        
-        mediaPlayer.prepare();
-        mediaPlayer.start();
-        setState(State.PLAYING);
+        setState(State.ERROR);
     }
 
     @Override
@@ -65,6 +77,7 @@ public class DtMediaPlayer implements DtPlayer {
     public void release() {
         Timber.d("Podcasts -- DtMediaPlayer -- Release player");
         if (mediaPlayer != null) {
+            mediaPlayer.stop();
             mediaPlayer.release();
             setState(State.STOPPED);
         }
@@ -92,6 +105,21 @@ public class DtMediaPlayer implements DtPlayer {
     }
 
     @Override
+    public int getDuration() {
+        return mediaPlayer.getDuration();
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
+    @Override
     public MediaController.MediaPlayerControl getMediaPlayerControl() {
         return new MediaPlayerControl();
     }
@@ -99,11 +127,11 @@ public class DtMediaPlayer implements DtPlayer {
     private class MediaPlayerControl implements MediaController.MediaPlayerControl {
 
         public void start() {
-            mediaPlayer.start();
+            DtMediaPlayer.this.start();
         }
 
         public void pause() {
-            mediaPlayer.pause();
+            DtMediaPlayer.this.pause();
         }
 
         public int getDuration() {

@@ -17,6 +17,8 @@ public interface DtPlayer {
         ERROR
     }
 
+    void prepare();
+
     void start();
 
     void pause();
@@ -28,6 +30,18 @@ public interface DtPlayer {
     Observable<State> getStateObservable();
 
     Uri getSourceUri();
+
+    /**
+     * @return duration in millis
+     */
+    int getDuration();
+
+    /**
+     * @return current possition in millis
+     */
+    int getCurrentPosition();
+
+    boolean isPlaying();
 
     MediaController.MediaPlayerControl getMediaPlayerControl();
 }

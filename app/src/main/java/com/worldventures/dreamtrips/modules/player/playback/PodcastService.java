@@ -67,11 +67,12 @@ public class PodcastService extends Service {
         if (activePlayerSubscription != null) {
             activePlayerSubscription.unsubscribe();
         }
-        if (player != null) {
+        if (player != null && player.getState() != DtPlayer.State.STOPPED) {
             Timber.d("Podcasts -- Service -- stop current player");
             player.pause();
             player.release();
         }
+        player = null;
     }
 
     @Override

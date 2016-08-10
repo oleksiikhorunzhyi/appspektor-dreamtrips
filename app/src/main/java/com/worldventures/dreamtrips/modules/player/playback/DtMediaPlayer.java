@@ -82,6 +82,11 @@ public class DtMediaPlayer implements DtPlayer {
     }
 
     @Override
+    public State getState() {
+        return state;
+    }
+
+    @Override
     public Observable<State> getStateObservable() {
         return stateObservable;
     }

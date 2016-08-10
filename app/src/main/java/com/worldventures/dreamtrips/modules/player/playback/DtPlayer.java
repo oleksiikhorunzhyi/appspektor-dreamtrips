@@ -23,6 +23,8 @@ public interface DtPlayer {
 
     void release();
 
+    State getState();
+
     Observable<State> getStateObservable();
 
     Uri getSourceUri();

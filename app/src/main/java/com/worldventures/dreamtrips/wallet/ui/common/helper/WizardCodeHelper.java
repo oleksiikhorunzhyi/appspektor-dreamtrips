@@ -3,21 +3,21 @@ package com.worldventures.dreamtrips.wallet.ui.common.helper;
 import android.content.Context;
 
 import com.techery.spares.module.qualifier.ForActivity;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.service.WizardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper.MessageActionHolder;
 import com.worldventures.dreamtrips.wallet.ui.wizard.card_alias.WizardCardNamePath;
 
 import javax.inject.Inject;
 
 import flow.Flow;
 import io.techery.janet.ActionState;
-import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
+import timber.log.Timber;
 
 public final class WizardCodeHelper {
-    public static final long DIALOG_DELAY = 1500L;
-
     private Context context;
     private WizardInteractor wizardInteractor;
 
@@ -28,21 +28,18 @@ public final class WizardCodeHelper {
         this.wizardInteractor = wizardInteractor;
     }
 
-    public void createAndConnect(DelayedSuccessScreen view,
+    public void createAndConnect(OperationScreen view,
                                  String code,
                                  Observable.Transformer<ActionState<CreateAndConnectToCardCommand>, ActionState<CreateAndConnectToCardCommand>> bindComposer) {
         wizardInteractor.createAndConnectActionPipe()
                 .createObservable(new CreateAndConnectToCardCommand(code))
                 .compose(bindComposer)
-                .subscribe(new ActionStateSubscriber<CreateAndConnectToCardCommand>()
-                        .onStart(createAndConnectToCardCommand -> view.showProgress())
-                        .onSuccess(command -> {
-                            view.hideProgress();
-                            view.showSuccessWithDelay(() -> Flow.get(context).set(new WizardCardNamePath(command.getCode())), DIALOG_DELAY);
-                        })
-                        .onFail((createAndConnectToCardCommand, throwable) -> {
-                            view.hideProgress();
-                            view.notifyError(throwable);
-                        }));
+                .subscribe(OperationSubscriberWrapper.<CreateAndConnectToCardCommand>forView(view)
+                        .onStart(context.getString(R.string.waller_wizard_scan_barcode_progress_label))
+                        .onSuccess(context.getString(R.string.wallet_got_it_label),
+                                command -> Flow.get(context).set(new WizardCardNamePath(command.getCode())))
+                        .onFail(throwable -> new MessageActionHolder<>(context.getString(R.string.wallet_wizard_scid_validation_error),
+                                command -> Timber.e("Could not connect to device")))
+                        .wrap());
     }
 }

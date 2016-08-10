@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.WizardCodeHelper;
 
@@ -22,13 +21,13 @@ public class WizardManualInputPresenter extends WalletPresenter<WizardManualInpu
     }
 
     public void checkBarcode(String barcode) {
-        wizardCodeHelper.createAndConnect(getView(), barcode, bindViewIoToMainComposer());
+        wizardCodeHelper.createAndConnect(getView().provideOperationDelegate(), barcode, bindViewIoToMainComposer());
     }
 
     public void goBack() {
         Flow.get(getContext()).goBack();
     }
 
-    public interface Screen extends WalletScreen, DelayedSuccessScreen {
+    public interface Screen extends WalletScreen {
     }
 }

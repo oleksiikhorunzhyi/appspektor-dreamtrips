@@ -8,13 +8,13 @@ import android.util.AttributeSet;
 import com.google.zxing.Result;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-
-import static cn.pedant.SweetAlert.SweetAlertDialog.SUCCESS_TYPE;
 
 public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcodePresenter.Screen, WizardScanBarcodePresenter, WizardScanBarcodePath>
         implements WizardScanBarcodePresenter.Screen, ZXingScannerView.ResultHandler {
@@ -61,6 +61,11 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
     }
 
     @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
+
+    @Override
     public void startCamera() {
         scanner.startCamera();
     }
@@ -83,36 +88,5 @@ public class WizardScanBarcodeScreen extends WalletFrameLayout<WizardScanBarcode
     @OnClick(R.id.wallet_wizard_scan_barcode_manual_input)
     void onInputManuallyClicked() {
         getPresenter().startManualInput();
-    }
-
-    @Override
-    public void notifyError(Throwable throwable) {
-        //do specific error handling or move it upper
-    }
-
-    @Override
-    public void showProgress() {
-        progressDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE)
-                .setContentText(getContext().getString(R.string.waller_wizard_scan_barcode_progress_label));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-    }
-
-    @Override
-    public void hideProgress() {
-        progressDialog.dismiss();
-    }
-
-    @Override
-    public void showSuccessWithDelay(Runnable action, long delay) {
-        final SweetAlertDialog successDialog = new SweetAlertDialog(getContext(), SUCCESS_TYPE)
-                .setTitleText(getContext().getString(R.string.wallet_got_it_label));
-        successDialog.setCancelable(false);
-        successDialog.show();
-
-        postDelayed(() -> {
-            successDialog.dismiss();
-            action.run();
-        }, delay);
     }
 }

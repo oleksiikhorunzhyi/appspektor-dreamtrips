@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.techery.spares.module.Injector;
 import com.techery.spares.session.SessionHolder;
+import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.wallet.service.SmartCardAvatarInteractor;
@@ -15,9 +16,10 @@ import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCard
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardAvatarCommand;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.helper.OperationSubscriberWrapper;
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
+import com.worldventures.dreamtrips.wallet.util.FormatException;
 
 import java.io.File;
 
@@ -29,12 +31,12 @@ import rx.Observable;
 import timber.log.Timber;
 
 public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfilePresenter.Screen, Parcelable> {
-
-    private static final int SUCCESS_DELAY_MS = 3000;
-
-    @Inject SmartCardAvatarInteractor smartCardAvatarInteractor;
-    @Inject WizardInteractor wizardInteractor;
-    @Inject SessionHolder<UserSession> appSessionHolder;
+    @Inject
+    SmartCardAvatarInteractor smartCardAvatarInteractor;
+    @Inject
+    WizardInteractor wizardInteractor;
+    @Inject
+    SessionHolder<UserSession> appSessionHolder;
 
     private File preparedPhotoFile;
 
@@ -83,19 +85,17 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
         wizardInteractor.setupUserDataPipe()
                 .observe()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<SetupUserDataCommand>()
-                        .onStart(command -> getView().showProgress())
-                        .onSuccess(command -> handleSuccess())
-                        .onFail((command, throwable) -> handleError(throwable.getCause()))
-                );
-    }
-
-    private void handleSuccess() {
-        getView().showSuccessWithDelay(() -> Flow.get(getContext()).set(new WizardPinSetupPath(smartCardId)), SUCCESS_DELAY_MS);
-    }
-
-    private void handleError(Throwable throwable) {
-        getView().notifyError(throwable);
+                .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
+                        .onStart(getContext().getString(R.string.wallet_edit_profile_progress_dialog))
+                        .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog),
+                                setupUserDataCommand -> Flow.get(getContext()).set(new WizardPinSetupPath(smartCardId)))
+                        .onFail(throwable -> {
+                            Context context = getContext();
+                            String msg = throwable instanceof FormatException ? context.getString(R.string.wallet_edit_profile_name_format_detail)
+                                    : context.getString(R.string.error_something_went_wrong);
+                            return new OperationSubscriberWrapper.MessageActionHolder<>(msg, null);
+                        })
+                        .wrap());
     }
 
     private void photoPrepared(File filePhoto) {
@@ -122,8 +122,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                 .send(new SetupUserDataCommand(getView().getUserName().trim(), preparedPhotoFile, smartCardId));
     }
 
-    public interface Screen extends WalletScreen, DelayedSuccessScreen {
-
+    public interface Screen extends WalletScreen {
         void pickPhoto();
 
         void cropPhoto(String photoPath);
@@ -138,6 +137,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
 
         void setUserFullName(String fullName);
 
-        @NonNull String getUserName();
+        @NonNull
+        String getUserName();
     }
 }

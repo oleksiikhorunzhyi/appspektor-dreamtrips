@@ -8,7 +8,6 @@ import com.worldventures.dreamtrips.core.permission.PermissionConstants;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.permission.PermissionSubscriber;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
-import com.worldventures.dreamtrips.wallet.ui.common.base.screen.DelayedSuccessScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.common.helper.WizardCodeHelper;
 import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPath;
@@ -38,7 +37,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
     }
 
     public void barcodeScanned(String barcode) {
-        wizardCodeHelper.createAndConnect(getView(), barcode, bindViewIoToMainComposer());
+        wizardCodeHelper.createAndConnect(getView().provideOperationDelegate(), barcode, bindViewIoToMainComposer());
     }
 
     public void startManualInput() {
@@ -50,7 +49,7 @@ public class WizardScanBarcodePresenter extends WalletPresenter<WizardScanBarcod
         Flow.get(getContext()).goBack();
     }
 
-    public interface Screen extends WalletScreen, DelayedSuccessScreen {
+    public interface Screen extends WalletScreen {
         void startCamera();
 
         void showRationaleForCamera();

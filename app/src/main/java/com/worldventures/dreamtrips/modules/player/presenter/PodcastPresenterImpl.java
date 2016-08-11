@@ -61,7 +61,7 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
     }
 
     private void listenToProgress() {
-        Observable.interval(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+        Observable.interval(0, 1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .flatMap(counter -> podcastPlayerDelegate.createPlayer(uri))
                 .compose(new NonNullFilter<>())
                 .compose(bindView())

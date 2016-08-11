@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.UserSession;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.AppConfig;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
@@ -42,7 +43,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     @Override
     public void onResume() {
         super.onResume();
-        if (!getAccount().isMember()) {
+        if (!featureManager.available(Feature.TRIPS)) {
             view.hideBookIt();
             view.showSignUp();
         } else if (trip.isSoldOut()

@@ -26,7 +26,7 @@ import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
 import com.worldventures.dreamtrips.modules.common.view.util.TextWatcherAdapter;
-import com.worldventures.dreamtrips.modules.feed.bundle.CommentsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.CommentableBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.SingleCommentBundle;
 import com.worldventures.dreamtrips.modules.feed.event.CommentIconClickedEvent;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
@@ -51,7 +51,7 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_comments)
-public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentsBundle> extends RxBaseFragmentWithArgs<T, P>
+public class CommentableFragment<T extends BaseCommentPresenter, P extends CommentableBundle> extends RxBaseFragmentWithArgs<T, P>
         implements BaseCommentPresenter.View {
 
     @InjectView(R.id.list) protected EmptyRecyclerView recyclerView;
@@ -153,7 +153,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
         recyclerView.setAdapter(adapter);
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
-        if (getArgs().isOpenKeyboard() && getArgs().getFeedEntity().getCommentsCount() == 0) {
+        if (getArgs().shouldOpenKeyboard() && getArgs().getFeedEntity().getCommentsCount() == 0) {
             showKeyboard();
         }
         showHeaderIfNeeded();
@@ -192,7 +192,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
 
     @Override
     public void setLikePanel(FeedEntity entity) {
-        if (likersPanel == null || !getArgs().showLikersPanel()) return;
+        if (likersPanel == null || !getArgs().shouldShowLikersPanel()) return;
         likersPanelHelper.setup(likersPanel, entity);
         likersPanel.setOnClickListener(v -> likersNavigationWrapper.navigate(Route.USERS_LIKED_CONTENT, new UsersLikedEntityBundle(entity.getUid(), entity.getLikesCount())));
     }
@@ -206,7 +206,7 @@ public class CommentableFragment<T extends BaseCommentPresenter, P extends Comme
     public void addComments(List<Comment> commentList) {
         boolean commentsEmpty = layout.getItemCount() <= getAdditionalItemsCount();
         adapter.addItems(getAdditionalItemsCount(), commentList);
-        if (commentsEmpty && getArgs().isOpenKeyboard()) {
+        if (commentsEmpty && getArgs().shouldOpenKeyboard()) {
             showKeyboard();
         }
     }

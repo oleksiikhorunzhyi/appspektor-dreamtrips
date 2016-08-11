@@ -1,23 +1,14 @@
 package com.worldventures.dreamtrips.modules.feed.bundle;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntity;
 
-public class CommentsBundle implements Parcelable {
+public class CommentsBundle implements CommentableBundle {
 
     protected FeedEntity feedEntity;
     protected boolean openKeyboard;
     protected boolean showLikersPanel;
-
-    public CommentsBundle(FeedEntity feedEntity) {
-        this(feedEntity, false);
-    }
-
-    public CommentsBundle(FeedEntity feedEntity, boolean openKeyboard) {
-        this(feedEntity, openKeyboard, false);
-    }
 
     public CommentsBundle(FeedEntity feedEntity, boolean openKeyboard, boolean showLikers) {
         this.feedEntity = feedEntity;
@@ -25,25 +16,25 @@ public class CommentsBundle implements Parcelable {
         this.showLikersPanel = showLikers;
     }
 
+    @Override
     public FeedEntity getFeedEntity() {
         return feedEntity;
     }
 
-    public boolean isOpenKeyboard() {
+    @Override
+    public boolean shouldOpenKeyboard() {
         return openKeyboard;
     }
 
-    public void setOpenKeyboard(boolean openKeyboard) {
-        this.openKeyboard = openKeyboard;
-    }
-
-    public boolean showLikersPanel() {
+    @Override
+    public boolean shouldShowLikersPanel() {
         return showLikersPanel;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable
     ///////////////////////////////////////////////////////////////////////////
+
 
     @Override
     public int describeContents() {
@@ -53,8 +44,8 @@ public class CommentsBundle implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeSerializable(this.feedEntity);
-        dest.writeByte(openKeyboard ? (byte) 1 : (byte) 0);
-        dest.writeByte(showLikersPanel ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.openKeyboard ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showLikersPanel ? (byte) 1 : (byte) 0);
     }
 
     protected CommentsBundle(Parcel in) {
@@ -64,10 +55,12 @@ public class CommentsBundle implements Parcelable {
     }
 
     public static final Creator<CommentsBundle> CREATOR = new Creator<CommentsBundle>() {
+        @Override
         public CommentsBundle createFromParcel(Parcel source) {
             return new CommentsBundle(source);
         }
 
+        @Override
         public CommentsBundle[] newArray(int size) {
             return new CommentsBundle[size];
         }

@@ -19,7 +19,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.HashtagTextView;
 import com.worldventures.dreamtrips.modules.feed.bundle.EditPostBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedHashtagBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeletePostEvent;
 import com.worldventures.dreamtrips.modules.feed.event.TranslatePostEvent;
@@ -197,7 +197,10 @@ public class PostFeedItemCell extends FeedItemDetailsCell<PostFeedItem, PostFeed
 
     private void openFeedItemDetails() {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
-                .data(new FeedDetailsBundle(getModelObject()))
+                .data(new FeedItemDetailsBundle.Builder()
+                        .feedItem(getModelObject())
+                        .showAdditionalInfo(true)
+                        .build())
                 .build());
     }
 

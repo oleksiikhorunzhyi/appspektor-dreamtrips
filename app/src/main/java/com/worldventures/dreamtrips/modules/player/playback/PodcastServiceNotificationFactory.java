@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 
 public class PodcastServiceNotificationFactory {
@@ -34,12 +33,15 @@ public class PodcastServiceNotificationFactory {
                 .setSmallIcon(R.drawable.dt_push_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.podcast_placeholder));
 
-        Intent launchIntent = new Intent(context, PodcastService.class);
-        launchIntent.setAction(PodcastService.ACTION_NOTIFICATION_CLICK);
+        Intent launchIntent = new Intent(context, PodcastPlayerActivity.class);
         launchIntent.setData(uri);
-        notification.setContentIntent(PendingIntent.getService(context,
-                REQUEST_CODE_OPEN_PODCAST_NOTIFICATION, launchIntent, 0));
 
+        launchIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent intent = PendingIntent.getActivity(context, REQUEST_CODE_OPEN_PODCAST_NOTIFICATION,launchIntent, 0);
+        notification.setContentIntent(intent);
+
+        notification.setContentTitle(res.getString(R.string.app_name));
         notification.setPriority(Notification.PRIORITY_MAX);
         notification.setCategory(NotificationCompat.CATEGORY_SERVICE);
         return notification;

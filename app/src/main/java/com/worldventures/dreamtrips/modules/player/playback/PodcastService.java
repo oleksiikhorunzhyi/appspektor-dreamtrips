@@ -1,7 +1,11 @@
 package com.worldventures.dreamtrips.modules.player.playback;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
@@ -35,6 +39,9 @@ public class PodcastService extends Service {
     private AudioFocusDelegate audioFocusDelegate;
     private Subscription audioFocusSubscription;
     private boolean wasPausedByTemporaryAudioFocusLoss;
+
+    private BroadcastReceiver headphonesReceiver;
+    private boolean headhphonesReceiverRegistered;
 
     private PodcastServiceNotificationFactory notificationFactory;
 
@@ -128,6 +135,7 @@ public class PodcastService extends Service {
     public void startPlayer() {
         if (player == null) return;
 
+        registerHeadphonesReceiver();
         wasPausedByTemporaryAudioFocusLoss = false;
         if (audioFocusDelegate == null) {
             audioFocusDelegate = new AudioFocusDelegate(getApplicationContext());
@@ -151,6 +159,7 @@ public class PodcastService extends Service {
     private void pausePlayerInternal(boolean abandonAudiofocusCompletely) {
         player.pause();
         if (abandonAudiofocusCompletely) abandonAudioFocusCompletely();
+        unregisterHeadphonesReceiver();
     }
 
     public void stopPlayer() {
@@ -209,6 +218,32 @@ public class PodcastService extends Service {
         }
         if (audioFocusDelegate != null) audioFocusDelegate.abandonFocus();
         audioFocusDelegate = null;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Headphones
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void registerHeadphonesReceiver() {
+        if (!headhphonesReceiverRegistered) {
+            headphonesReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    pausePlayer();
+                }
+            };
+            getApplicationContext().registerReceiver(headphonesReceiver,
+                    new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        }
+        headhphonesReceiverRegistered = true;
+    }
+
+    private void unregisterHeadphonesReceiver() {
+        if (headhphonesReceiverRegistered && headphonesReceiver != null) {
+            getApplicationContext().unregisterReceiver(headphonesReceiver);
+            headphonesReceiver = null;
+        }
+        headhphonesReceiverRegistered = false;
     }
 
     ///////////////////////////////////////////////////////////////////////////

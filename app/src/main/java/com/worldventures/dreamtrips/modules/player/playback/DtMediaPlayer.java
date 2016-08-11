@@ -71,8 +71,9 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
 
     @Override
     public void seekTo(int position) {
-        if (state == State.PLAYING)
+        if (state == State.PLAYING) {
             mediaPlayer.seekTo(position);
+        }
     }
 
     @Override
@@ -123,12 +124,18 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
 
     @Override
     public int getDuration() {
-        return mediaPlayer.getDuration();
+        if (state == State.READY || state == State.PLAYING || state == State.PAUSED) {
+            return mediaPlayer.getDuration();
+        }
+        return 0;
     }
 
     @Override
     public int getCurrentPosition() {
-        return mediaPlayer.getCurrentPosition();
+        if (state == State.READY || state == State.PLAYING || state == State.PAUSED) {
+            return mediaPlayer.getCurrentPosition();
+        }
+        return 0;
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
 import java.util.List;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath>
         implements CardListScreenPresenter.Screen {
@@ -44,10 +45,6 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
     AppBarLayout appbar;
     @InjectView(R.id.bankCardList)
     RecyclerView bankCardList;
-    @InjectView(R.id.add_credit_list)
-    View addCreditList;
-    @InjectView(R.id.add_debit_list)
-    View addDebitList;
     @InjectView(R.id.main_content)
     CoordinatorLayout mainContent;
     @InjectView(R.id.wallet_list_buttons_wrapper)
@@ -152,5 +149,15 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
                 .setRecyclerView(bankCardList)
                 .setStickyHeadersAdapter(new CardListHeaderAdapter(adapter.getItems()), false)
                 .build();
+    }
+
+    @OnClick(R.id.add_credit_list)
+    protected void addCreditCardClick() {
+        presenter.addCreditCard();
+    }
+
+    @OnClick(R.id.add_debit_list)
+    protected void addDeditCardClick() {
+        presenter.addDebitCard();
     }
 }

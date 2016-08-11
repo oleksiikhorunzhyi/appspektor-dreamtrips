@@ -35,7 +35,6 @@ public class DtlFullscreenImageScreenImpl extends DtlLayout<DtlFullscreenImageSc
                 .setUri(Uri.parse(url))
                 .build();
         imageView.setController(controller);
-//        imageView.setImageUrl(url); // TODO :: 4/27/16 no image resizing here
     }
 
     @OnClick(R.id.back)
@@ -57,6 +56,7 @@ public class DtlFullscreenImageScreenImpl extends DtlLayout<DtlFullscreenImageSc
         @Override
         public void onFailure(String id, Throwable throwable) {
             informUser("Could not load image");
+            progressBar.setVisibility(GONE);
             Timber.e(throwable, "Error loading fullscreen image for offer");
             Crashlytics.logException(throwable);
         }

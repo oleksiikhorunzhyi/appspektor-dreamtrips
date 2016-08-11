@@ -43,7 +43,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     @Override
     public void onResume() {
         super.onResume();
-        if (!featureManager.available(Feature.TRIPS)) {
+        if (!featureManager.available(Feature.BOOK_TRAVEL)) {
             view.hideBookIt();
             view.showSignUp();
         } else if (trip.isSoldOut()

@@ -1,14 +1,130 @@
-<FrameLayout android:id="@+id/rootView"
-             xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:gravity="bottom"
+            tools:context="com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity"
+            tools:ignore="MissingPrefix">
 
-    <ProgressBar
-        android:id="@+id/pb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <FrameLayout
+            android:id="@+id/splash_mode_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:id="@+id/splash_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/login_mode_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/black_gradient"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/dream_trips_logo"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/activity_horizontal_margin">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ready_for_your_experience"/>
+
+                    <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+                        android:id="@+id/et_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                        android:background="@android:color/background_dark"
+                        android:hint="@string/user_id_hint"
+                        android:minEms="10"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@android:color/white"
+                        app:met_baseColor="@android:color/white"
+                        app:met_floatingLabel="highlight"
+                        app:hintColor="@android:color/white"
+                        app:met_primaryColor="@android:color/white"/>
+
+                    <com.worldventures.dreamtrips.modules.common.view.custom.DTEditText
+                        android:id="@+id/et_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/background_dark"
+                        android:hint="@string/user_password_hint"
+                        android:inputType="textPassword"
+                        android:minEms="10"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@android:color/white"
+                        app:met_baseColor="@android:color/white"
+                        app:met_floatingLabel="highlight"
+                        app:hintColor="@android:color/white"
+                        app:met_primaryColor="@android:color/white"/>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
+
+                    <ProgressBar
+                        android:id="@+id/login_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"/>
+
+                    <Button
+                        android:id="@+id/btn_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/login_button_selector"
+                        android:text="@string/log_in"
+                        android:textColor="@android:color/white"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+    </FrameLayout>
+
+
+</ScrollView>

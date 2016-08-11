@@ -11,17 +11,14 @@ import com.messenger.di.MessengerActivityModule;
 import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.activity.InjectingActivity;
 import com.worldventures.dreamtrips.core.module.ActivityModule;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.navigation.BackStackDelegate;
-import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
-import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.permission.PermissionDispatcher;
 import com.worldventures.dreamtrips.core.utils.ActivityResultDelegate;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
 import com.worldventures.dreamtrips.core.utils.tracksystem.LifecycleEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
-import com.worldventures.dreamtrips.modules.auth.AuthModule;
 import com.worldventures.dreamtrips.modules.bucketlist.BucketListModule;
 import com.worldventures.dreamtrips.modules.common.CommonModule;
 import com.worldventures.dreamtrips.modules.dtl_flow.di.DtlActivityModule;
@@ -51,6 +48,7 @@ public abstract class BaseActivity extends InjectingActivity {
     @Inject AnalyticsInteractor analyticsInteractor;
     @Inject protected PermissionDispatcher permissionDispatcher;
     @Inject protected Router router;
+    @Inject ActivityRouter activityRouter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +130,6 @@ public abstract class BaseActivity extends InjectingActivity {
     protected List<Object> getModules() {
         List<Object> modules = super.getModules();
         modules.add(new ActivityModule(this));
-        modules.add(new AuthModule());
         modules.add(new BucketListModule());
         modules.add(new CommonModule());
         modules.add(new FacebookModule());
@@ -153,10 +150,7 @@ public abstract class BaseActivity extends InjectingActivity {
     }
 
     public void onEvent(SessionHolder.Events.SessionDestroyed sessionDestroyed) {
-        router.moveTo(Route.LOGIN, NavigationConfigBuilder.forActivity()
-                .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .flags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .build());
+        activityRouter.openLaunch(ActivityRouter.LAUNCH_LOGIN);
     }
 
     @Override

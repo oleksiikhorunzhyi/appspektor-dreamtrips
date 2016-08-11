@@ -21,7 +21,8 @@ import rx.android.schedulers.AndroidSchedulers;
 public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, ViewState.EMPTY>
         implements PodcastPresenter {
 
-    @Inject PodcastPlayerDelegate podcastPlayerDelegate;
+    @Inject
+    PodcastPlayerDelegate podcastPlayerDelegate;
 
     private Uri uri;
 
@@ -64,6 +65,8 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
                 .flatMap(counter -> podcastPlayerDelegate.createPlayer(uri))
                 .compose(new NonNullFilter<>())
                 .compose(bindView())
+                .filter(player -> player.getState() != ReadOnlyPlayer.State.UNKNOWN
+                        && player.getState() != ReadOnlyPlayer.State.PREPARING)
                 .subscribe(player -> {
                     getView().setProgress(player.getDuration(), player.getCurrentPosition(),
                             player.getBufferPercentage());

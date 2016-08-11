@@ -7,7 +7,7 @@ import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.android.gms.maps.model.LatLng;
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.core.utils.TextUtils;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.LocationSourceType;
 import com.worldventures.dreamtrips.modules.trips.model.Location;
@@ -188,8 +188,8 @@ public class DtlExternalLocation implements DtlLocation, Parcelable {
 
         @Override
         public int compare(DtlExternalLocation lhs, DtlExternalLocation rhs) {
-            int rangeSortResult = TextUtils.substringLocation(lhs.getLongName(), subString) -
-                    TextUtils.substringLocation(rhs.getLongName(), subString);
+            int rangeSortResult = ProjectTextUtils.substringLocation(lhs.getLongName(), subString) -
+                    ProjectTextUtils.substringLocation(rhs.getLongName(), subString);
             if (rangeSortResult != 0) {
                 return rangeSortResult;
             } else {

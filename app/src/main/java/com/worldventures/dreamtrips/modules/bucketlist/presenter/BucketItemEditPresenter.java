@@ -8,7 +8,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
-import com.worldventures.dreamtrips.core.utils.TextUtils;
+import com.worldventures.dreamtrips.core.utils.ProjectTextUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.bucketlist.event.BucketItemPhotoAnalyticEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
@@ -240,8 +240,8 @@ public class BucketItemEditPresenter extends BucketDetailsBasePresenter<BucketIt
                 .name(view.getTitle())
                 .description(view.getDescription())
                 .status(view.getStatus() ? BucketItem.COMPLETED : BucketItem.NEW)
-                .tags(TextUtils.getListFromString(view.getTags()))
-                .friends(TextUtils.getListFromString(view.getPeople()))
+                .tags(ProjectTextUtils.getListFromString(view.getTags()))
+                .friends(ProjectTextUtils.getListFromString(view.getPeople()))
                 .categoryId(getCategoryId())
                 .date(getDateAsString(selectedDate))
                 .build();

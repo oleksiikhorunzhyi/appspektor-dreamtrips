@@ -10,6 +10,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersBuilder;
 import com.eowise.recyclerview.stickyheaders.StickyHeadersItemDecoration;
 import com.techery.spares.adapter.BaseArrayListAdapter;
+import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -36,7 +37,7 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout swipeContainer;
 
-    BaseArrayListAdapter adapter;
+    private BaseDelegateAdapter<InviteTemplate> adapter;
     private WeakHandler weakHandler;
 
     @Override
@@ -54,8 +55,9 @@ public class SelectTemplateFragment extends BaseFragment<SelectTemplatePresenter
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
         lvTemplates.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new FilterableArrayListAdapter<>(getActivity(), this);
+        adapter = new BaseDelegateAdapter<>(getActivity(), this);
         adapter.registerCell(InviteTemplate.class, InviteTemplateCell.class);
+        adapter.registerDelegate(InviteTemplate.class, getPresenter()::onTemplateSelected);
         adapter.setHasStableIds(true);
 
         lvTemplates.setAdapter(adapter);

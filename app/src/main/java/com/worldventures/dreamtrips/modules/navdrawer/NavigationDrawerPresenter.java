@@ -12,15 +12,16 @@ import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
 import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
-import com.worldventures.dreamtrips.modules.common.event.HeaderCountChangedEvent;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.subjects.PublishSubject;
 
 public class NavigationDrawerPresenter {
 
@@ -31,6 +32,8 @@ public class NavigationDrawerPresenter {
 
     private NavigationDrawerView navigationDrawerView;
     private DrawerLayout drawerLayout;
+
+    private PublishSubject<Void> destroyViewStopper = PublishSubject.create();
 
     public NavigationDrawerPresenter() {
     }
@@ -64,9 +67,10 @@ public class NavigationDrawerPresenter {
         onItemReselected = null;
         onItemSelected = null;
         onLogout = null;
+        destroyViewStopper.onNext(null);
     }
 
-    public void onEventMainThread(HeaderCountChangedEvent event) {
+    public void updateNotificationsCount() {
         navigationDrawerView.setNotificationCount(db.getExclusiveNotificationsCount());
     }
 
@@ -104,5 +108,9 @@ public class NavigationDrawerPresenter {
 
     void onLogout() {
         if (onLogout != null) onLogout.call();
+    }
+
+    protected <T> Observable.Transformer<T, T> bindView() {
+        return input -> input.takeUntil(destroyViewStopper);
     }
 }

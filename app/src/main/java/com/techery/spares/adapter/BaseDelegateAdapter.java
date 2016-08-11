@@ -22,7 +22,7 @@ public class BaseDelegateAdapter<BaseItemClass> extends BaseArrayListAdapter<Bas
      * @param itemClass Class of CellDelegate
      * @param cellDelegate CellDelegate implementation
      */
-    public void registerDelegate(Class<?> itemClass, CellDelegate<?> cellDelegate) {
+    public void registerDelegate(Class<?> itemClass, CellDelegate<? extends BaseItemClass> cellDelegate) {
         int index = viewTypes.indexOf(itemClass);
         if (index < 0)
             throw new IllegalStateException(itemClass.getSimpleName() + " is not registered as Cell");

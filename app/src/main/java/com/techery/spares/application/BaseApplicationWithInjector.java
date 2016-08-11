@@ -28,7 +28,7 @@ public abstract class BaseApplicationWithInjector extends MultiDexApplication im
         runInitializers();
     }
 
-    private void runInitializers() {
+    protected void runInitializers() {
         for (AppInitializer initializer : appInitializers) {
             initializer.initialize(this);
         }

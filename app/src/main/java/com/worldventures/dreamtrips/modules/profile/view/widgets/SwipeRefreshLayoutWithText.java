@@ -54,7 +54,7 @@ public class SwipeRefreshLayoutWithText extends SwipeRefreshLayout {
     @Override
     public void setRefreshing(boolean refreshing) {
         super.setRefreshing(refreshing);
-        if (infoTextView != null && infoTextView.isAttachedToWindow() && !refreshing) {
+        if (infoTextView != null && !refreshing) {
             this.showInfoText = false;
             infoTextView.setVisibility(View.GONE);
         }
@@ -63,7 +63,7 @@ public class SwipeRefreshLayoutWithText extends SwipeRefreshLayout {
     public void setRefreshing(boolean refreshing, boolean showInfoText) {
         super.setRefreshing(refreshing);
         this.showInfoText = showInfoText;
-        if (infoTextView != null && infoTextView.isAttachedToWindow() && refreshing && showInfoText) {
+        if (infoTextView != null && refreshing && showInfoText) {
             weakHandler.postDelayed(this::showInfoText, timeout);
         }
     }

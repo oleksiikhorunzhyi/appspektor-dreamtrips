@@ -6,15 +6,15 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.membership.event.VideoLocaleSelectedEvent;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
 
 import butterknife.InjectView;
 
 @Layout(R.layout.adapter_item_video_locale)
-public class VideoLocaleCell extends AbstractCell<VideoLocale> {
+public class VideoLocaleCell extends AbstractDelegateCell<VideoLocale, CellDelegate<VideoLocale>> {
 
     @InjectView(R.id.flag_image) SimpleDraweeView flagImage;
     @InjectView(R.id.country_name) TextView countryName;
@@ -29,6 +29,6 @@ public class VideoLocaleCell extends AbstractCell<VideoLocale> {
             flagImage.setImageURI(Uri.parse(getModelObject().getImage()));
         }
         countryName.setText(getModelObject().getTitle());
-        itemView.setOnClickListener(view -> getEventBus().post(new VideoLocaleSelectedEvent(getModelObject())));
+        itemView.setOnClickListener(view -> cellDelegate.onCellClicked(getModelObject()));
     }
 }

@@ -115,6 +115,12 @@ public class SuccessStoryListFragment extends BaseFragment<SuccessStoryListPrese
 
         this.adapter = new FilterableArrayListAdapter<>(getActivity(), this);
         this.adapter.registerCell(SuccessStory.class, SuccessStoryCell.class);
+        this.adapter.registerDelegate(SuccessStory.class, new SuccessStoryCell.Delegate() {
+            @Override
+            public void onCellClicked(SuccessStory model, int position) {
+                getPresenter().onSuccessStoryCellClick(model, position);
+            }
+        });
         this.adapter.setHasStableIds(true);
         this.recyclerView.setEmptyView(emptyView);
         this.recyclerView.setAdapter(adapter);

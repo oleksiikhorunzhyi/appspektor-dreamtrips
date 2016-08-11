@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.PhotoUploadingManagerS3;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
+import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.FeatureManager;
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor;
@@ -113,6 +114,12 @@ public class Presenter<VT extends Presenter.View> implements RequestingPresenter
 
     protected <T> Observable.Transformer<T, T> bindView() {
         return input -> input.takeUntil(destroyViewStopper);
+    }
+
+    protected <T> Observable.Transformer<T, T> bindViewToMainComposer() {
+        return input -> input
+                .compose(new IoToMainComposer<>())
+                .compose(bindView());
     }
 
     ///////////////////////////////////////////////////////////////////////////

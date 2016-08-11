@@ -48,6 +48,11 @@ public class StaticPageProvider {
                 String.valueOf(appSessionHolder.get().get().getUser().getId()));
     }
 
+    public String getEnrollUpdateUrl() {
+         //TODO
+        return "";
+    }
+
     public String getBookingPageUrl(String tripId) {
         return BOOKING_PAGE_URL.replace(TRIP_ID, tripId);
     }
@@ -77,15 +82,17 @@ public class StaticPageProvider {
     }
 
     public String getEnrollMerchantUrl(MerchantIdBundle args) {
-        StringBuilder builder = new StringBuilder(ENDPOINT);
+        StringBuilder builder = new StringBuilder(BuildConfig.DreamTripsApi);
         builder.append("/gateway/dtl/enroll_merchant")
                 .append("?username=").append(appSessionHolder.get().get().getUsername())
                 .append("&sso=").append(appSessionHolder.get().get().getLegacyApiToken())
-                .append("&locale=").append(appSessionHolder.get().get().getLocale());
+                .append("&locale=").append(appSessionHolder.get().get().getUser().getLocale());
+        //
         if (args != null) {
             builder.append("&intent=suggestProspect").append("&prospectId=")
                     .append(args.getMerchantId());
         }
         return builder.toString();
     }
+
 }

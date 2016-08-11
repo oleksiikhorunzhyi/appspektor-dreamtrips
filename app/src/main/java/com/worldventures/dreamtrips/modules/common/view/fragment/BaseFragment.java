@@ -13,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.ui.fragment.InjectingFragment;
 import com.techery.spares.utils.ui.SoftInputUtil;
+import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.router.Router;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import dagger.ObjectGraph;
 import icepick.Icepick;
+import rx.Observable;
 import timber.log.Timber;
 
 public abstract class BaseFragment<PM extends Presenter> extends InjectingFragment implements Presenter.View {

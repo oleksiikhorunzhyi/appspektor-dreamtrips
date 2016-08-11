@@ -5,16 +5,16 @@ import android.view.View;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.techery.spares.annotations.Layout;
-import com.techery.spares.ui.view.cell.AbstractCell;
+import com.techery.spares.ui.view.cell.AbstractDelegateCell;
+import com.techery.spares.ui.view.cell.CellDelegate;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.membership.event.TemplateSelectedEvent;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.adapter_item_inventation_template)
-public class InviteTemplateCell extends AbstractCell<InviteTemplate> {
+public class InviteTemplateCell extends AbstractDelegateCell<InviteTemplate, CellDelegate<InviteTemplate>> {
 
     @InjectView(R.id.imageViewPhoto) SimpleDraweeView imageViewPhoto;
 
@@ -29,6 +29,6 @@ public class InviteTemplateCell extends AbstractCell<InviteTemplate> {
 
     @OnClick(R.id.btn_select)
     public void onSelectAction() {
-        getEventBus().post(new TemplateSelectedEvent(getModelObject()));
+        cellDelegate.onCellClicked(getModelObject());
     }
 }

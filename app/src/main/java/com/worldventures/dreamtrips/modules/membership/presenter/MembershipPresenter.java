@@ -7,14 +7,18 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.view.viewpager.FragmentItem;
-import com.worldventures.dreamtrips.modules.membership.event.SearchFocusChangedEvent;
+import com.techery.spares.utils.delegate.SearchFocusChangedDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
 
     private List<FragmentItem> items;
+    @Inject
+    SearchFocusChangedDelegate searchFocusChangedDelegate;
 
     @Override
     public void onInjected() {
@@ -26,6 +30,9 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
     public void takeView(View view) {
         super.takeView(view);
         view.setScreens(items);
+        searchFocusChangedDelegate.getObservable()
+                .compose(bindViewToMainComposer())
+                .subscribe(hasFocus -> view.toggleTabStripVisibility(!hasFocus));
     }
 
     @NonNull
@@ -55,10 +62,6 @@ public class MembershipPresenter extends Presenter<MembershipPresenter.View> {
 
     private boolean showPodcasts() {
         return featureManager.available(Feature.MEMBERSHIP);
-    }
-
-    public void onEvent(SearchFocusChangedEvent event) {
-        view.toggleTabStripVisibility(!event.hasFocus());
     }
 
     public interface View extends Presenter.View {

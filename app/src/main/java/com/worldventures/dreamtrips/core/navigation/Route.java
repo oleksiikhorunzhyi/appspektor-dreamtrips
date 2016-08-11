@@ -182,6 +182,7 @@ public enum Route {
     MUTUAL_FRIENDS(MutualFriendsFragment.class, R.string.user_mutual_friends),
 
     ENROLL_REP(StaticInfoFragment.EnrollRepFragment.class),
+    ENROLL_UPGRADE(StaticInfoFragment.EnrollUpgradeFragment.class, R.string.enroll_member),
     SUCCESS_STORY_LIST(SuccessStoryListFragment.class),
 
     INSPIRE_PHOTO_FULLSCREEN(InspirePhotoFullscreenFragment.class),

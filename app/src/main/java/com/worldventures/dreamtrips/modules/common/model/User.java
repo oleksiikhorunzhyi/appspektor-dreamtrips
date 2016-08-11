@@ -36,6 +36,7 @@ public class User extends BaseEntity implements Parcelable {
     private List<String> badges;
     private Date birthDate;
     private Date enrollDate;
+    private String sponsorUsername;
 
     private double dreamTripsPoints;
     private double roviaBucks;
@@ -159,6 +160,10 @@ public class User extends BaseEntity implements Parcelable {
 
     public String getLocation() {
         return location;
+    }
+
+    public String getSponsorUsername() {
+        return sponsorUsername;
     }
 
     public void setLocation(String location) {
@@ -399,6 +404,7 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeStringList(this.subscriptions);
         dest.writeByte(termsAccepted ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.mutualFriends, 0);
+        dest.writeString(sponsorUsername);
         dest.writeList(this.circles);
         dest.writeStringList(this.badges);
     }
@@ -427,6 +433,7 @@ public class User extends BaseEntity implements Parcelable {
         this.subscriptions = in.createStringArrayList();
         this.termsAccepted = in.readByte() != 0;
         this.mutualFriends = in.readParcelable(MutualFriends.class.getClassLoader());
+        this.sponsorUsername = in.readString();
         circles = new ArrayList<>();
         in.readList(circles, Circle.class.getClassLoader());
         badges = new ArrayList<>();

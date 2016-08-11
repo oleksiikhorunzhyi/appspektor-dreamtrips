@@ -29,7 +29,7 @@ import com.badoo.mobile.util.WeakHandler;
 import com.messenger.util.CrashlyticsTracker;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
-import com.techery.spares.utils.event.ScreenChangedEvent;
+import com.techery.spares.utils.delegate.ScreenChangedEventDelegate;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.navigation.Route;
@@ -49,7 +49,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import timber.log.Timber;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.techery.spares.utils.ui.OrientationUtil.lockOrientation;
 import static com.techery.spares.utils.ui.OrientationUtil.unlockOrientation;
@@ -62,6 +62,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
 
     @Inject protected StaticPageProvider provider;
+    @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
     @InjectView(R.id.web_view) protected VideoEnabledWebView webView;
     @InjectView(R.id.swipe_container) protected SwipeRefreshLayout refreshLayout;
@@ -130,7 +131,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);
-                Timber.d("Page started");
                 isLoading = true;
                 weakHandler.post(() -> {
                     if (refreshLayout != null) refreshLayout.setRefreshing(true);
@@ -141,7 +141,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Timber.d("Page finished");
                 isLoading = false;
                 if (!(isDetached() || isRemoving() || refreshLayout == null)) {
                     weakHandler.post(() -> {
@@ -312,6 +311,13 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             return false;
         });
 
+        bindUntilDropView(screenChangedEventDelegate.getObservable())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    lockHandler.removeCallbacksAndMessages(null);
+                    lockOrientationIfNeeded();
+                });
+
         if (savedState != null) webView.restoreState(savedState);
     }
 
@@ -375,8 +381,9 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     @Override
     public void showError(int errorCode) {
         if (getPresenter() != null) getPresenter().setInErrorState(true);
-        if (isDetached() || isRemoving()) return;
-        //
+        if (isDetached() || isRemoving() || getActivity() == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && getActivity().isDestroyed()) return;
+
         int errorText;
         switch (errorCode) {
             case WebViewClient.ERROR_HOST_LOOKUP:
@@ -447,11 +454,6 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     ///////////////////////////////////////////////////////////////////////////
 
     WeakHandler lockHandler = new WeakHandler();
-
-    public void onEventMainThread(ScreenChangedEvent event) {
-        lockHandler.removeCallbacksAndMessages(null);
-        lockOrientationIfNeeded();
-    }
 
     protected void lockOrientationIfNeeded() {
         lockHandler.postDelayed(() -> {
@@ -615,6 +617,27 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
         @Override
         protected void sendAnalyticEvent(String actionAnalyticEvent) {
             TrackingHelper.actionRepToolsEnrollment(actionAnalyticEvent);
+        }
+
+    }
+
+    @Layout(R.layout.fragment_webview)
+    public static class EnrollUpgradeFragment extends AuthorizedStaticInfoFragment {
+
+        @Override
+        protected String getURL() {
+            return provider.getEnrollUpdateUrl();
+        }
+
+        @Override
+        public void afterCreateView(View rootView) {
+            super.afterCreateView(rootView);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setUseWideViewPort(true);
+        }
+
+        @Override
+        protected void sendAnalyticEvent(String actionAnalyticEvent) {
         }
 
     }

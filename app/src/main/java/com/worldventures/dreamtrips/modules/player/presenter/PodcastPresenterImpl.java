@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, ViewState.EMPTY>
         implements PodcastPresenter {
@@ -48,7 +49,7 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
                     if (player.getState() != ReadOnlyPlayer.State.ERROR) {
                         podcastPlayerDelegate.start();
                     }
-                });
+                }, e -> Timber.e(e, "Cannot create player"));
     }
 
     private void listenToStateUpdates() {

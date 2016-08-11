@@ -9,18 +9,18 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import com.worldventures.dreamtrips.core.rx.composer.NonNullFilter;
+import com.worldventures.dreamtrips.modules.player.delegate.audiofocus.AudioFocusDelegate;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class PodcastService extends Service {
 
     private static final int WIDGET_NOTIFICATION_ID = 144;
-    static final String ACTION_NOTIFICATION_CLICK = "ACTION_PODCAST_NOTIFICATION_CLICK";
+
     static final String NOTIFICATION_ACTION_PLAY = "ACTION_PODCAST_PLAY";
     static final String NOTIFICATION_ACTION_PAUSE = "ACTION_PODCAST_PAUSE";
     static final String NOTIFICATION_ACTION_STOP = "ACTION_PODCAST_STOP";
@@ -32,13 +32,11 @@ public class PodcastService extends Service {
     // player can be tried to initialized from different threads
     private volatile boolean isPreparingPlayer = false;
 
-    private PodcastServiceNotificationFactory notificationFactory;
+    private AudioFocusDelegate audioFocusDelegate;
+    private Subscription audioFocusSubscription;
+    private boolean wasPausedByTemporaryAudioFocusLoss;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Timber.d("Podcasts -- Service -- onCreate");
-    }
+    private PodcastServiceNotificationFactory notificationFactory;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -65,14 +63,14 @@ public class PodcastService extends Service {
             case NOTIFICATION_ACTION_STOP:
                 onPlayerCleanup();
                 break;
-            case ACTION_NOTIFICATION_CLICK:
-                // nothing for now
-                break;
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Player creation
+    ///////////////////////////////////////////////////////////////////////////
+
     public Observable<ReadOnlyPlayer> createPlayer(Uri uri) {
-        Timber.d("Podcasts -- Service -- getPlayer %s", uri);
         Observable<ReadOnlyPlayer> observable = Observable.just(player)
                 .filter(player -> player != null && player.getSourceUri().equals(uri))
                 .compose(new NonNullFilter<>())
@@ -99,7 +97,11 @@ public class PodcastService extends Service {
                         onPlayerCleanup();
                     }
                 });
+
         notificationFactory = new PodcastServiceNotificationFactory(this, uri);
+
+        wasPausedByTemporaryAudioFocusLoss = false;
+
         return player;
     }
 
@@ -119,16 +121,36 @@ public class PodcastService extends Service {
         return playerObservable;
     }
 
-    public void seekTo(int position) {
-        if (player != null) player.seekTo(position);
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Player operations
+    ///////////////////////////////////////////////////////////////////////////
 
     public void startPlayer() {
-        if (player != null) player.start();
+        if (player == null) return;
+
+        wasPausedByTemporaryAudioFocusLoss = false;
+        if (audioFocusDelegate == null) {
+            audioFocusDelegate = new AudioFocusDelegate(getApplicationContext());
+        }
+        AudioFocusDelegate.AudioFocusState currentState =
+                audioFocusDelegate.requestFocus().toBlocking().first();
+        if (currentState == AudioFocusDelegate.AudioFocusState.GAINED) {
+            player.start();
+            if (audioFocusSubscription == null) {
+                audioFocusSubscription = audioFocusDelegate.getAudioFocusObservable()
+                        .subscribe(this::processAudioFocusState);
+            }
+        }
     }
 
     public void pausePlayer() {
-        if (player != null) player.pause();
+        if (player == null) return;
+        pausePlayerInternal(true);
+    }
+
+    private void pausePlayerInternal(boolean abandonAudiofocusCompletely) {
+        player.pause();
+        if (abandonAudiofocusCompletely) abandonAudioFocusCompletely();
     }
 
     public void stopPlayer() {
@@ -154,6 +176,45 @@ public class PodcastService extends Service {
         player = null;
     }
 
+    public void seekTo(int position) {
+        if (player != null) player.seekTo(position);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Audio focus
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void processAudioFocusState(AudioFocusDelegate.AudioFocusState audioFocusState) {
+        if (player == null) return;
+        if (audioFocusState == AudioFocusDelegate.AudioFocusState.LOSS ||
+                audioFocusState == AudioFocusDelegate.AudioFocusState.LOSS_TRANSIENT) {
+            if (!player.isPlaying()) return;
+            if (audioFocusState == AudioFocusDelegate.AudioFocusState.LOSS_TRANSIENT) {
+                wasPausedByTemporaryAudioFocusLoss = true;
+            }
+            boolean shouldAbandonAudioFocusCompletely = !wasPausedByTemporaryAudioFocusLoss;
+            pausePlayerInternal(shouldAbandonAudioFocusCompletely);
+        } else if (audioFocusState == AudioFocusDelegate.AudioFocusState.GAINED) {
+            if (wasPausedByTemporaryAudioFocusLoss) {
+                startPlayer();
+            }
+        }
+    }
+
+    private void abandonAudioFocusCompletely() {
+        wasPausedByTemporaryAudioFocusLoss = false;
+        if (audioFocusSubscription != null) {
+            audioFocusSubscription.unsubscribe();
+            audioFocusSubscription = null;
+        }
+        if (audioFocusDelegate != null) audioFocusDelegate.abandonFocus();
+        audioFocusDelegate = null;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Lifecycle and helpers
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -164,7 +225,6 @@ public class PodcastService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        Timber.d("Podcasts -- Service -- onTaskRemoved");
         onPlayerCleanup();
     }
 

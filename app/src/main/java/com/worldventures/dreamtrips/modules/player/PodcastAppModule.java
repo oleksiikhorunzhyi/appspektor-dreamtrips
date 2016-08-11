@@ -22,10 +22,4 @@ public class PodcastAppModule {
     PodcastPlayerDelegate providePodcastPlayerDelegate(@ForApplication Context context) {
         return new PodcastPlayerDelegate(context);
     }
-
-    @Provides
-    @Singleton
-    AudioFocusDelegate provideAudioFocuesDelegate(@ForApplication Context context) {
-        return new AudioFocusDelegate(context);
-    }
 }

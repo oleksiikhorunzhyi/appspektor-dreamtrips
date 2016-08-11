@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.player.delegate.audiofocus;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.support.annotation.Nullable;
 
 import rx.Observable;
 import rx.subjects.ReplaySubject;
@@ -29,6 +30,15 @@ public class AudioFocusDelegate implements AudioManager.OnAudioFocusChangeListen
         }
 
         return replaySubject.asObservable();
+    }
+
+    /**
+     * Pay attention that requestFocus() must be called before calling this method.
+     * @return audio focus observable corresponding to previous requestFocus() call,
+     * null if audio focus was abandoned or requstFocus() was never called.
+     */
+    @Nullable public Observable<AudioFocusState> getAudioFocusObservable() {
+        return replaySubject;
     }
 
     public void abandonFocus() {

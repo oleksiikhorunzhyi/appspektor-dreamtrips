@@ -44,7 +44,6 @@ public class PodcastPlayerDelegate {
     }
 
     private Observable<PodcastService> getPodcastService() {
-        Timber.d("Podcasts -- delegate -- getPodcastService %s", podcastService);
         return Observable.just(podcastService)
                 .filter(service -> service != null)
                 .switchIfEmpty(getBindServiceObservable());
@@ -54,7 +53,6 @@ public class PodcastPlayerDelegate {
         return Observable.create(new Observable.OnSubscribe<PodcastService>() {
             @Override
             public void call(Subscriber<? super PodcastService> subscriber) {
-                Timber.d("Podcasts -- delegate -- bind");
                 // start service as onTaskRemoved() is not called for bound only services
                 context.startService(new Intent(context, PodcastService.class));
                 context.bindService(new Intent(context, PodcastService.class),
@@ -73,7 +71,6 @@ public class PodcastPlayerDelegate {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            Timber.d("Podcasts -- delegate -- connected!");
             if (!subscriber.isUnsubscribed()) {
                 try {
                     podcastService = ((PodcastService.PodcastServiceBinder) iBinder).getPodcastService();
@@ -89,7 +86,6 @@ public class PodcastPlayerDelegate {
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            Timber.d("Podcasts -- delegate -- disconnected!");
             podcastService = null;
         }
     }

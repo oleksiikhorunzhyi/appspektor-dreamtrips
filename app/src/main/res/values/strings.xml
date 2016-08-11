@@ -645,5 +645,6 @@
     <string name="hashtag_multiple_posts">%d posts</string>
 
     <string name="error_webview_secure_connection">We\'re sorry but DreamTrips app can not establish secure connection.\nWe\'ve been notified about this issue and we\'ll take a look at it shortly.\n\nPlease contact customer support for faster resolution.</string>
+    <string name="dashboard_default_card_stack_title">Default</string>
 
 </resources>

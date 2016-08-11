@@ -1,15 +1,13 @@
 package com.worldventures.dreamtrips.wallet.service.command;
 
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundle;
-import com.worldventures.dreamtrips.core.janet.cache.CacheBundleImpl;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
+import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
-import com.worldventures.dreamtrips.wallet.domain.converter.BankCardConverter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +23,7 @@ import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.smartcard.action.records.GetMemberRecordsAction;
+import io.techery.janet.smartcard.action.records.SetRecordAsDefaultAction;
 import io.techery.janet.smartcard.model.Record;
 import rx.Observable;
 
@@ -65,6 +64,7 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
         for (int i = 0; i < 8; i++) {
             BankCard bankCard = ImmutableBankCard.builder()
+                    .id(String.valueOf(i))
                     .number(Math.abs(random.nextLong()) % 1000000000000000L)
                     .title("Jane's card" + (i + 1))
                     .type(Record.FinancialService.MASTERCARD)
@@ -75,11 +75,14 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
             ws.add(pipe.createObservableResult(new AttachCardCommand(bankCard)));
         }
+        ws.add(janet.createPipe(SetRecordAsDefaultAction.class).createObservable(new SetRecordAsDefaultAction(3)));
         return Observable.zip(ws, args -> {
             action.records.clear();
             for (Object arg : args) {
-                Record record = ((AttachCardCommand) arg).getResult();
-                ((List<Record>) action.records).add(record);
+                if (arg instanceof AttachCardCommand) {
+                    Record record = ((AttachCardCommand) arg).getResult();
+                    ((List<Record>) action.records).add(record);
+                }
             }
             return action;
         });
@@ -102,9 +105,6 @@ public class CardListCommand extends Command<List<Card>> implements InjectableAc
 
     @Override
     public CacheOptions getCacheOptions() {
-        CacheBundle bundle = new CacheBundleImpl();
-        return ImmutableCacheOptions.builder()
-                .params(bundle)
-                .build();
+        return ImmutableCacheOptions.builder().build();
     }
 }

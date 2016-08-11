@@ -268,6 +268,15 @@ public class SnappyRepositoryImpl implements SnappyRepository {
         return readList(WALLET_CARDS_LIST, Card.class);
     }
 
+    @Override public void saveWalletDefaultCardId(String defaultCardid) {
+        if (defaultCardid == null) return;
+        act(db -> db.put(WALLET_DEFAULT_BANK_CARD, defaultCardid));
+    }
+
+    @Override public String readWalletDefaultCardId() {
+        return actWithResult(db -> db.get(WALLET_DEFAULT_BANK_CARD)).orNull();
+    }
+
     @Override
     public void saveSmartCard(SmartCard smartCard) {
         act(db -> db.put(WALLET_SMART_CARD + smartCard.getSmartCardId(), smartCard));

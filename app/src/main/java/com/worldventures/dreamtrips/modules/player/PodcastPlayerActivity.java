@@ -20,6 +20,7 @@ public class PodcastPlayerActivity extends BaseActivity {
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(this.toolbar);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
     }
 }

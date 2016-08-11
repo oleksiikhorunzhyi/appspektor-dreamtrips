@@ -8,6 +8,7 @@ import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletPresenter;
 import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
+import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPath;
 
 import javax.inject.Inject;
 
@@ -43,8 +44,7 @@ public class WalletCardSettingsPresenter extends WalletPresenter<WalletCardSetti
     }
 
     public void resetPin() {
-        // TODO: 8/10/16 impl
-        Timber.d("Tro-lo-lo");
+        Flow.get(getContext()).set(new WizardPinSetupPath(smartCard, WizardPinSetupPath.Action.RESET));
     }
 
     private void stealthModeEnabled(boolean isEnabled) {

@@ -4,14 +4,21 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.flow.path.MasterDetailPath;
 import com.worldventures.dreamtrips.core.flow.path.StyledPath;
 import com.worldventures.dreamtrips.core.flow.util.Layout;
+import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 
 @Layout(R.layout.screen_wallet_wizard_pin_setup)
 public class WizardPinSetupPath extends StyledPath {
 
-    private final String smartCardId;
+    public final SmartCard smartCard;
+    public final Action action;
 
-    public WizardPinSetupPath(String smartCardId) {
-        this.smartCardId = smartCardId;
+    public WizardPinSetupPath(SmartCard smartCard) {
+        this(smartCard, Action.SETUP);
+    }
+
+    public WizardPinSetupPath(SmartCard smartCard, Action action) {
+        this.smartCard = smartCard;
+        this.action = action;
     }
 
     @Override
@@ -19,7 +26,7 @@ public class WizardPinSetupPath extends StyledPath {
         return this;
     }
 
-    public String getSmartCardId() {
-        return smartCardId;
+    public enum Action {
+        RESET, SETUP
     }
 }

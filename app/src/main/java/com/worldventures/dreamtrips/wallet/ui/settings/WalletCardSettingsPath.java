@@ -25,4 +25,10 @@ public class WalletCardSettingsPath extends StyledPath {
     public SmartCard getSmartCard() {
         return smartCard;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        // for back navigation
+        return o != null && getClass().equals(o.getClass());
+    }
 }

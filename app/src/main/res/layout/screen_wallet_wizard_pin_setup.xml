@@ -24,7 +24,7 @@
             style="@style/WalletTheme.Wizard.HeaderTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/wallet_wizard_setup_pin_header"/>
+            tools:text="@string/wallet_wizard_setup_pin_header"/>
 
 
         <com.facebook.drawee.view.SimpleDraweeView
@@ -66,6 +66,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="@string/wallet_got_it_label"/>
+            tools:text="@string/wallet_got_it_label"/>
     </RelativeLayout>
 </com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupScreen>

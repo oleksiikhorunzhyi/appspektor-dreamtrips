@@ -15,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.ui.wizard.manual.WizardManualInputPre
 import com.worldventures.dreamtrips.wallet.ui.wizard.pin.WizardPinSetupPresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.profile.WizardEditProfilePresenter;
 import com.worldventures.dreamtrips.wallet.ui.wizard.splash.WizardSplashScreenPresenter;
+import com.worldventures.dreamtrips.wallet.ui.wizard.success.WalletSuccessPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,6 +36,7 @@ import dagger.Provides;
                 CardDetailsPresenter.class,
                 CardListScreenPresenter.class,
                 WalletCardSettingsPresenter.class,
+                WalletSuccessPresenter.class,
                 WizardPinSetupPresenter.class
         },
         complete = false, library = true

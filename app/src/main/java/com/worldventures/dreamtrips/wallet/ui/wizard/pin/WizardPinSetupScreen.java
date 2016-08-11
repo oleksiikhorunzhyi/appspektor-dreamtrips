@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.worldventures.dreamtrips.R;
@@ -20,11 +21,11 @@ import butterknife.OnClick;
 public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresenter.Screen, WizardPinSetupPresenter, WizardPinSetupPath>
         implements WizardPinSetupPresenter.Screen {
 
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @InjectView(R.id.profile_proto)
-    SimpleDraweeView profilePhotoView;
+    @InjectView(R.id.toolbar) Toolbar toolbar;
+    @InjectView(R.id.profile_proto) SimpleDraweeView profilePhotoView;
+    @InjectView(R.id.header_text_view) TextView headerTextView;
+    @InjectView(R.id.button_next) TextView nextButton;
+    private DialogOperationScreen dialogOperationScreen;
 
     public WizardPinSetupScreen(Context context) {
         super(context);
@@ -44,10 +45,22 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
         presenter.goToBack();
     }
 
+    @Override
+    public void setPath(WizardPinSetupPath path) {
+        super.setPath(path);
+        if (path.action == WizardPinSetupPath.Action.RESET) {
+            headerTextView.setText(R.string.wallet_wizard_setup_new_pin_header);
+            nextButton.setText(R.string.wallet_continue_label);
+        } else {
+            headerTextView.setText(R.string.wallet_wizard_setup_pin_header);
+            nextButton.setText(R.string.wallet_got_it_label);
+        }
+    }
+
     @NonNull
     @Override
     public WizardPinSetupPresenter createPresenter() {
-        return new WizardPinSetupPresenter(getContext(), getInjector(), getPath().getSmartCardId());
+        return new WizardPinSetupPresenter(getContext(), getInjector(), getPath().smartCard, getPath().action == WizardPinSetupPath.Action.RESET);
     }
 
     @OnClick(R.id.button_next)
@@ -57,7 +70,8 @@ public class WizardPinSetupScreen extends WalletFrameLayout<WizardPinSetupPresen
 
     @Override
     public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
+        if (dialogOperationScreen == null) dialogOperationScreen = new DialogOperationScreen(this);
+        return dialogOperationScreen;
     }
 
     @Override

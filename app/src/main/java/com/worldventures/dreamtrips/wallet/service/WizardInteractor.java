@@ -9,21 +9,30 @@ import javax.inject.Named;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
+import io.techery.janet.ReadActionPipe;
 import io.techery.janet.WriteActionPipe;
+import io.techery.janet.smartcard.action.settings.PinSetupFinishedAction;
+import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
 import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 public final class WizardInteractor {
-    private WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
-    private ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe;
-    private ActionPipe<SetupUserDataCommand> setupUserDataPipe;
+    private final WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectPipe;
+    private final ActionPipe<SetupSmartCardNameCommand> setupSmartCardNamePipe;
+    private final ActionPipe<SetupUserDataCommand> setupUserDataPipe;
+
+    private final ReadActionPipe<PinSetupFinishedAction> pinSetupFinishedPipe;
+    private final WriteActionPipe<StartPinSetupAction> startPinSetupPipe;
 
     @Inject
     public WizardInteractor(@Named(JANET_WALLET) Janet janet) {
         createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
         setupSmartCardNamePipe = janet.createPipe(SetupSmartCardNameCommand.class, Schedulers.io());
         setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
+
+        pinSetupFinishedPipe = janet.createPipe(PinSetupFinishedAction.class, Schedulers.io());
+        startPinSetupPipe = janet.createPipe(StartPinSetupAction.class, Schedulers.io());
     }
 
     public WriteActionPipe<CreateAndConnectToCardCommand> createAndConnectActionPipe() {
@@ -36,5 +45,13 @@ public final class WizardInteractor {
 
     public ActionPipe<SetupUserDataCommand> setupUserDataPipe() {
         return setupUserDataPipe;
+    }
+
+    public WriteActionPipe<StartPinSetupAction> startPinSetupPipe() {
+        return startPinSetupPipe;
+    }
+
+    public ReadActionPipe<PinSetupFinishedAction> pinSetupFinishedPipe() {
+        return pinSetupFinishedPipe;
     }
 }

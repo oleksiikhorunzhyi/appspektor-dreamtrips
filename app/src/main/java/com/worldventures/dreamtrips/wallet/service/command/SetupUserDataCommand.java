@@ -28,7 +28,7 @@ import rx.Observable;
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @CommandAction
-public class SetupUserDataCommand extends Command<Void> implements InjectableAction {
+public class SetupUserDataCommand extends Command<SmartCard> implements InjectableAction {
 
     @Inject @Named(JANET_WALLET) Janet janet;
     @Inject SessionHolder<UserSession> userSessionHolder;
@@ -46,24 +46,25 @@ public class SetupUserDataCommand extends Command<Void> implements InjectableAct
     }
 
     @Override
-    protected void run(CommandCallback<Void> callback) throws Throwable {
+    protected void run(CommandCallback<SmartCard> callback) throws Throwable {
         User user = validateUserNameAndCreateUser();
         janet.createPipe(AssignUserAction.class)
                 .createObservableResult(new AssignUserAction(user))
                 .flatMap(action -> Observable.fromCallable(this::getAvatarAsByteArray))
                 .flatMap(bytesArray -> janet.createPipe(UpdateUserPhotoAction.class)
                         .createObservableResult(new UpdateUserPhotoAction(bytesArray)))
-                .doOnNext(action -> updateCashedSmartCard())
-                .subscribe(action -> callback.onSuccess(null), callback::onFail);
+                .map(action -> attachAvatarToLocalSmartCard())
+                .subscribe(callback::onSuccess, callback::onFail);
     }
 
-    private void updateCashedSmartCard() {
+    private SmartCard attachAvatarToLocalSmartCard() {
         SmartCard smartCard = snappyRepository.getSmartCard(getSmartCardId);
         smartCard = ImmutableSmartCard.builder()
                 .from(smartCard)
                 .userPhoto("file://" + avatarFile.getAbsolutePath())
                 .build();
         snappyRepository.saveSmartCard(smartCard);
+        return smartCard;
     }
 
     private User validateUserNameAndCreateUser() throws FormatException {

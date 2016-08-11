@@ -9,6 +9,8 @@ import android.util.AttributeSet;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.wallet.ui.common.base.WalletFrameLayout;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.OperationScreen;
+import com.worldventures.dreamtrips.wallet.ui.common.base.screen.delegate.DialogOperationScreen;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -63,4 +65,8 @@ public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettin
     }
 
 
+    @Override
+    public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
 }

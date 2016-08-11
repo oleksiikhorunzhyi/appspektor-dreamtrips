@@ -88,7 +88,7 @@ public class WizardEditProfilePresenter extends WalletPresenter<WizardEditProfil
                 .subscribe(OperationSubscriberWrapper.<SetupUserDataCommand>forView(getView().provideOperationDelegate())
                         .onStart(getContext().getString(R.string.wallet_edit_profile_progress_dialog))
                         .onSuccess(getContext().getString(R.string.wallet_edit_profile_success_dialog),
-                                setupUserDataCommand -> Flow.get(getContext()).set(new WizardPinSetupPath(smartCardId)))
+                                setupUserDataCommand -> Flow.get(getContext()).set(new WizardPinSetupPath(setupUserDataCommand.getResult())))
                         .onFail(throwable -> {
                             Context context = getContext();
                             String msg = throwable instanceof FormatException ? context.getString(R.string.wallet_edit_profile_name_format_detail)

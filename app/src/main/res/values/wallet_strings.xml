@@ -2,6 +2,8 @@
 <resources>
     <!-- Common -->
     <string name="wallet_next_label">Next</string>
+    <string name="wallet_done_label">Done</string>
+    <string name="wallet_continue_label">Continue</string>
     <string name="wallet_got_it_label">Got it!</string>
 
     <string name="wallet">Wallet</string>
@@ -29,8 +31,10 @@
     <!--pin setup-->
     <string name="wallet_wizard_setup_pin_title">Set Touch PIN</string>
     <string name="wallet_wizard_setup_pin_header">Set your PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
+    <string name="wallet_wizard_setup_new_pin_header">Set new PIN on the touch panel of the smart card with 4 swipe and tap motions</string>
     <string name="wallet_wizard_setup_progress">Set your PIN on the touch panel of the smart card…</string>
     <string name="wallet_wizard_setup_error">Something went wrong…\nPls, try again!</string>
+    <string name="wallet_wizard_setup_new_pin_success">New PIN is set!</string>
 
     <!--pin is set-->
     <string name="wallet_wizard_pin_is_set">Your PIN is set!</string>

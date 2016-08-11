@@ -9,7 +9,6 @@ import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardComma
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.SetupPinCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
 
@@ -28,7 +27,6 @@ import dagger.Module;
                 SetupUserDataCommand.class,
                 GetSmartCardCommand.class,
                 FetchDefaultCardCommand.class,
-                SetupPinCommand.class,
                 CreateAndConnectToCardCommand.class,
                 GetActiveSmartCardCommand.class
         },

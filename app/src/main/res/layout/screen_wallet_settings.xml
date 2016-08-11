@@ -46,6 +46,7 @@
 
         <FrameLayout
             android:id="@+id/item_reset_pin"
+            android:background="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/wallet_common_item_padding">

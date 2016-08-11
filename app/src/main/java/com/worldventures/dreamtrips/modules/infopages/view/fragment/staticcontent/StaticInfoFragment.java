@@ -626,7 +626,23 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
         @Override
         protected String getURL() {
-            return provider.getEnrollUpdateUrl();
+            return provider.getEnrollUpgradeUrl();
+        }
+
+        @Override
+        public void load(String url) {
+            if (!isLoading && savedState == null) {
+                Map<String, String> additionalHeaders = new HashMap<>();
+                additionalHeaders.put(AUTHORIZATION_HEADER_KEY,
+                        ((WebViewFragmentPresenter) getPresenter()).getAuthToken());
+                webView.loadUrl(url, additionalHeaders);
+            }
+        }
+
+        @Override
+        public void reload(String url) {
+            webView.loadUrl("about:blank");
+            load(url);
         }
 
         @Override

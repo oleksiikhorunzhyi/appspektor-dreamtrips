@@ -100,7 +100,7 @@ public class PodcastService extends Service {
                         NotificationManagerCompat.from(getApplicationContext()).notify(WIDGET_NOTIFICATION_ID,
                                 notificationFactory.getPausedNotification());
                         stopForeground(false);
-                    } else if (state == DtPlayer.State.STOPPED) {
+                    } else if (state == DtPlayer.State.STOPPED || state == DtPlayer.State.ERROR) {
                         onPlayerCleanup();
                     }
                 });

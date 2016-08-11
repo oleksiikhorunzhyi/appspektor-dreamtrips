@@ -23,6 +23,7 @@ public class StaticPageProvider {
     private static final String TERMS_OF_SERVICE_URL = ENDPOINT + "/gateway/terms_of_use";
     private static final String PRIVACY_POLICY_URL = ENDPOINT + "/gateway/privacy_policy";
     private static final String COOKIES_POLICY_URL = ENDPOINT + "/gateway/cookies_policy";
+    private static final String ENROLL_UPGRADE_URL = ENDPOINT + "/gateway/enroll_upgrade";
 
     ///////////////////////////////////////////
     //// Query params
@@ -48,9 +49,8 @@ public class StaticPageProvider {
                 String.valueOf(appSessionHolder.get().get().getUser().getId()));
     }
 
-    public String getEnrollUpdateUrl() {
-         //TODO
-        return "";
+    public String getEnrollUpgradeUrl() {
+        return ENROLL_UPGRADE_URL;
     }
 
     public String getBookingPageUrl(String tripId) {

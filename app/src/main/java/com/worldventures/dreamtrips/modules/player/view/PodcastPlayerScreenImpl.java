@@ -110,4 +110,8 @@ public class PodcastPlayerScreenImpl extends BaseViewStateLinearLayout<PodcastPl
     public boolean isTabletLandscape() {
         return false;
     }
+
+    public void onBackPressed() {
+        getPresenter().onBackPressed();
+    }
 }

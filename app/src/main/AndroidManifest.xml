@@ -83,6 +83,9 @@
             android:name=".modules.player.PodcastPlayerActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
             android:label="@string/app_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".modules.common.view.activity.MainActivity"/>
         </activity>
 
         <activity

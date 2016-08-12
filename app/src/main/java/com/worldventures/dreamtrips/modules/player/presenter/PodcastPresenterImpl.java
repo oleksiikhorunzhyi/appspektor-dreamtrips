@@ -113,8 +113,7 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
     }
 
     @Override
-    public void detachView(boolean retainInstance) {
-        super.detachView(retainInstance);
+    public void onBackPressed() {
         podcastPlayerDelegate.stop();
     }
 }

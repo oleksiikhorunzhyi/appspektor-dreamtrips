@@ -8,4 +8,6 @@ public interface PodcastPresenter extends DtlPresenter<PodcastPlayerScreen, View
     void seekTo(int position);
 
     void playPause();
+
+    void onBackPressed();
 }

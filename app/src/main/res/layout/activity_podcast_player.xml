@@ -9,6 +9,7 @@
         style="@style/ToolBarStyle"/>
 
     <include
+        android:id="@+id/view_podcast_player"
         layout="@layout/view_podcast_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

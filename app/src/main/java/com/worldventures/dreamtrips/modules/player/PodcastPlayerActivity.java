@@ -6,8 +6,8 @@ import android.support.v7.widget.Toolbar;
 
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
-
 import com.worldventures.dreamtrips.modules.common.view.activity.BaseActivity;
+import com.worldventures.dreamtrips.modules.player.view.PodcastPlayerScreenImpl;
 
 import butterknife.InjectView;
 import timber.log.Timber;
@@ -15,7 +15,10 @@ import timber.log.Timber;
 @Layout(R.layout.activity_podcast_player)
 public class PodcastPlayerActivity extends BaseActivity {
 
-    @InjectView(R.id.toolbar_actionbar) protected Toolbar toolbar;
+    @InjectView(R.id.toolbar_actionbar)
+    protected Toolbar toolbar;
+    @InjectView(R.id.view_podcast_player)
+    protected PodcastPlayerScreenImpl podcastPlayerScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +31,10 @@ public class PodcastPlayerActivity extends BaseActivity {
         super.afterCreateView(savedInstanceState);
         setSupportActionBar(this.toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override
@@ -42,5 +47,11 @@ public class PodcastPlayerActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         Timber.d("Podcasts -- PodcastPlayerActivity -- onDestroy()");
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        podcastPlayerScreen.onBackPressed();
     }
 }

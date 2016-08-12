@@ -86,4 +86,9 @@
     <string name="wallet_card_list_records_connected">%d cards loaded</string>
     <string name="wallet_card_list_record_connected">%d card loaded</string>
 
+    <!--magstripe-->
+    <string name="wallet_wizard_magstripe_title">Add Credit Card</string>
+    <string name="wallet_wizard_magstripe_description">Connect the magnetic reader</string>
+    <string name="wallet_wizard_magstripe_swipe_credit">Swipe a credit card</string>
+    <string name="wallet_wizard_magstripe_swipe_debit">Swipe a debit card</string>
 </resources>

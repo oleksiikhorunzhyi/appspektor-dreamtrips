@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.techery.spares.module.Injector;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
+import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard.CardType;
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
@@ -14,6 +15,7 @@ import com.worldventures.dreamtrips.wallet.ui.common.base.screen.WalletScreen;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.detail.CardDetailsPath;
 import com.worldventures.dreamtrips.wallet.ui.settings.WalletCardSettingsPath;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
+import com.worldventures.dreamtrips.wallet.ui.wizard.magstripe.WizardMagstripePath;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,8 +27,8 @@ import io.techery.janet.helper.ActionStateSubscriber;
 import timber.log.Timber;
 
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
-    @Inject
-    SmartCardInteractor smartCardInteractor;
+
+    @Inject SmartCardInteractor smartCardInteractor;
 
     private SmartCard activeSmartCard;
 
@@ -74,6 +76,14 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
     public void goToSettings() {
         if (activeSmartCard == null) return;
         Flow.get(getContext()).set(new WalletCardSettingsPath(activeSmartCard));
+    }
+
+    public void addCreditCard() {
+        Flow.get(getContext()).set(new WizardMagstripePath(CardType.CREDIT));
+    }
+
+    public void addDebitCard() {
+        Flow.get(getContext()).set(new WizardMagstripePath(CardType.DEBIT));
     }
 
     public interface Screen extends WalletScreen {

@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.wallet.service;
 
+import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
@@ -24,12 +25,14 @@ public final class WizardInteractor {
 
     private final ReadActionPipe<PinSetupFinishedAction> pinSetupFinishedPipe;
     private final WriteActionPipe<StartPinSetupAction> startPinSetupPipe;
+    private final ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe;
 
     @Inject
     public WizardInteractor(@Named(JANET_WALLET) Janet janet) {
         createAndConnectPipe = janet.createPipe(CreateAndConnectToCardCommand.class, Schedulers.io());
         setupSmartCardNamePipe = janet.createPipe(SetupSmartCardNameCommand.class, Schedulers.io());
         setupUserDataPipe = janet.createPipe(SetupUserDataCommand.class, Schedulers.io());
+        activateSmartCardPipe = janet.createPipe(ActivateSmartCardCommand.class, Schedulers.io());
 
         pinSetupFinishedPipe = janet.createPipe(PinSetupFinishedAction.class, Schedulers.io());
         startPinSetupPipe = janet.createPipe(StartPinSetupAction.class, Schedulers.io());
@@ -53,5 +56,9 @@ public final class WizardInteractor {
 
     public ReadActionPipe<PinSetupFinishedAction> pinSetupFinishedPipe() {
         return pinSetupFinishedPipe;
+    }
+
+    public ActionPipe<ActivateSmartCardCommand> activateSmartCardPipe() {
+        return activateSmartCardPipe;
     }
 }

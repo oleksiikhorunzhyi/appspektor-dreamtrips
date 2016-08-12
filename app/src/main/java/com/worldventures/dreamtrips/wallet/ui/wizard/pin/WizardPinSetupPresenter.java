@@ -80,7 +80,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
                 getContext().getString(R.string.wallet_wizard_setup_new_pin_success),
                 new WalletCardSettingsPath(smartCard)
         )
-                : new WalletPinIsSetPath();
+                : new WalletPinIsSetPath(smartCard);
     }
 
     public interface Screen extends WalletScreen {

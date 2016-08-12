@@ -30,18 +30,18 @@ public class WalletPinIsSetScreen extends WalletFrameLayout<WalletPinIsSetPresen
     @NonNull
     @Override
     public WalletPinIsSetPresenter createPresenter() {
-        return new WalletPinIsSetPresenter(getContext(), getInjector());
+        return new WalletPinIsSetPresenter(getContext(), getInjector(), getPath().smartCard);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        toolbar.setNavigationOnClickListener(v -> presenter.goToBack());
+        toolbar.setNavigationOnClickListener(v -> presenter.goBack());
     }
 
     @OnClick(R.id.next_button)
     public void nextClick() {
-        presenter.goToCardList();
+        presenter.activateSmartCard();
     }
 
     @Override

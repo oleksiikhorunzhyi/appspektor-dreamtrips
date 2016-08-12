@@ -177,6 +177,7 @@ public class PodcastService extends Service {
         releasePlayerIfNeeded();
         stopForeground(true);
         stopSelf();
+        abandonAudioFocusCompletely();
     }
 
     private void releasePlayerIfNeeded() {

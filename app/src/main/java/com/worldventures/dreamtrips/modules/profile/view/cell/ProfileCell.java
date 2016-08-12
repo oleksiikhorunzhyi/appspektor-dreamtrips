@@ -83,7 +83,6 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
     @InjectView(R.id.badge) BadgeView badge;
     @InjectView(R.id.fl_friends_container) View friendsContainer;
     @InjectView(R.id.divider1) View divider1;
-    @InjectView(R.id.divider3) View divider3;
 
     @Inject SessionHolder<UserSession> appSessionHolder;
     @Inject SnappyRepository snapper;
@@ -134,10 +133,8 @@ public class ProfileCell extends AbstractDelegateCell<User, ProfileCellDelegate>
         if (isAccount() && featureManager.available(Feature.SOCIAL)) {
             post.setVisibility(View.VISIBLE);
             friendsContainer.setVisibility(View.VISIBLE);
-            divider3.setVisibility(View.VISIBLE);
         } else {
             post.setVisibility(View.GONE);
-            divider3.setVisibility(View.GONE);
         }
         friends.setEnabled(isAccount());
 

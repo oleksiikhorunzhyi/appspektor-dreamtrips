@@ -83,7 +83,6 @@
     <string name="delete_photo_text">Sigur doriți să ștergeți această fotografie?</string>
     <string name="delete_photo_positiove">Ștergeți</string>
     <string name="delete_photo_negative">Anulați</string>
-    <string name="flag_photo_first">Personalul WorldVentures va fi notificat pentru a verifica dacă în această imagine există </string>
     <string name="flag_photo_second">. Doriți să continuați?</string>
     <string name="flag_photo_title">Confirmați</string>
     <string name="flag_photo_positive">Trimiteți</string>

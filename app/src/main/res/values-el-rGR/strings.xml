@@ -83,7 +83,6 @@
     <string name="delete_photo_text">Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη φωτογραφία;</string>
     <string name="delete_photo_positiove">Διαγραφή</string>
     <string name="delete_photo_negative">Ακύρωση</string>
-    <string name="flag_photo_first">Το προσωπικό της WorldVentures θα ειδοποιηθεί να εξετάσει αυτή την εικόνα για </string>
     <string name="flag_photo_second">. Θέλετε να συνεχίσετε;</string>
     <string name="flag_photo_title">Επιβεβαίωση</string>
     <string name="flag_photo_positive">Αποστολή</string>

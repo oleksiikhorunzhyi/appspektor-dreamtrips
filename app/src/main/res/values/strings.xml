@@ -83,7 +83,6 @@
     <string name="delete_photo_text">Are you sure you want to delete this photo?</string>
     <string name="delete_photo_positiove">Delete</string>
     <string name="delete_photo_negative">Cancel</string>
-    <string name="flag_photo_first">WorldVentures personnel will be notified to review this image for </string>
     <string name="flag_photo_second">. Do you want to continue?</string>
     <string name="flag_photo_title">Confirm</string>
     <string name="flag_photo_positive">Send</string>
@@ -652,5 +651,7 @@
     <string name="error_fail_to_translate_text">Failed to translate text</string>
 
     <string name="book_it_disabled">You must be a DreamTrips Member\nto book a trip. Click here to <a href="enroll_member">Sign up</a></string>
+
+    <string name="flag_content_message">WorldVentures personnel will be notified to review this content for </string>
 
 </resources>

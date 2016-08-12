@@ -1,11 +1,15 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
@@ -27,18 +31,23 @@ import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationCha
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
     private int notificationId;
     private boolean acceptFriend;
+    private List<Circle> circles = new ArrayList<>();
 
+    @Inject CirclesInteractor circlesInteractor;
     @Inject NotificationDelegate notificationDelegate;
     @Inject StartChatDelegate startSingleChatDelegate;
 
@@ -63,6 +72,8 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        subscribeCircles();
+        updateCircles();
         subscribeLoadNextFeeds();
         subscribeRefreshFeeds();
     }
@@ -79,6 +90,30 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
             acceptFriend = false;
         }
     }
+
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void subscribeCircles() {
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles) {
+        circles.clear();
+        circles.addAll(resultCircles);
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.informUser(messageId);
+    }
+
 
     private void subscribeRefreshFeeds() {
         view.bindUntilDropView(feedInteractor.getRefreshUserTimelinePipe().observe()
@@ -181,10 +216,13 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
     }
 
     private void accept(int position) {
-        Circle circle = snappyRepository.getCircles().get(position);
+        if (position >= circles.size()) {
+            Timber.e("Circles are empty. Can't execute accept");
+            return;
+        }
+        Circle circle = circles.get(position);
         doRequest(new ActOnRequestCommand(user.getId(),
-                        ActOnRequestCommand.Action.CONFIRM.name(),
-                        circle.getId()),
+                        ActOnRequestCommand.Action.CONFIRM.name(), circle.getId()),
                 object -> {
                     user.setRelationship(User.Relationship.FRIEND);
                     view.notifyUserChanged();

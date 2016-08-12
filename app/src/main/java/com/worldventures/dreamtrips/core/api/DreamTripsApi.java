@@ -14,7 +14,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
@@ -179,9 +178,6 @@ public interface DreamTripsApi {
 
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();
-
-    @GET("/api/social/circles")
-    ArrayList<Circle> getCircles();
 
     @GET("/api/social/friends")
     ArrayList<User> getFriends(@Query("circle_id") String circle_id,

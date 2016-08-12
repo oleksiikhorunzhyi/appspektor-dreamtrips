@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.innahema.collections.query.functions.Action1;
 import com.innahema.collections.query.queriables.Queryable;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
@@ -28,6 +31,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.INCOMING_REQUEST;
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.OUTGOING_REQUEST;
 import static com.worldventures.dreamtrips.modules.common.model.User.Relationship.REJECTED;
@@ -36,20 +42,44 @@ import static com.worldventures.dreamtrips.modules.friends.api.ResponseBatchRequ
 public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
 
     @Inject
-    SnappyRepository snappyRepository;
+    CirclesInteractor circlesInteractor;
 
-    List<Circle> circles;
+    private List<Circle> circles = new ArrayList<>();
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        circles = snappyRepository.getCircles();
+        subscribeCircles();
+        updateCircles();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         reloadRequests();
+    }
+
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void subscribeCircles() {
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles) {
+        circles.clear();
+        circles.addAll(resultCircles);
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.informUser(messageId);
     }
 
     public void reloadRequests() {

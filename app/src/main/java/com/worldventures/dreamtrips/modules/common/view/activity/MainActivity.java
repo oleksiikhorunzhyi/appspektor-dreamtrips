@@ -98,11 +98,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     protected void afterCreateView(Bundle savedInstanceState) {
         super.afterCreateView(savedInstanceState);
         //
-
-    }
-
-    @Override
-    public void canShowView() {
         String keyComponent = null;
         if (getIntent().getExtras() != null)
             keyComponent = getIntent()

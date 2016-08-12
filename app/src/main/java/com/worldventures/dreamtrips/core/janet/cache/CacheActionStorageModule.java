@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlLocationStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlMerchantsStorage;
 import com.worldventures.dreamtrips.modules.dtl.helper.cache.DtlSearchLocationStorage;
 import com.worldventures.dreamtrips.modules.feed.service.storage.TranslationDiscStorage;
+import com.worldventures.dreamtrips.modules.friends.service.CirclesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.ActivitiesStorage;
 import com.worldventures.dreamtrips.modules.trips.service.storage.RegionsStorage;
 
@@ -74,5 +75,11 @@ public class CacheActionStorageModule {
     @Provides(type = Provides.Type.SET)
     ActionStorage provideRegionsStorage() {
         return new RegionsStorage(new MemoryStorage<>());
+    }
+
+    @Singleton
+    @Provides(type = Provides.Type.SET)
+    ActionStorage provideCirclesStorage(SnappyRepository db) {
+        return new CirclesStorage(db);
     }
 }

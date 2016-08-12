@@ -33,12 +33,6 @@ public class FriendSearchPresenter extends BaseUserListPresenter<FriendSearchPre
         view.refreshUsers(users);
     }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        circles = snappyRepository.getCircles();
-    }
-
     public void setQuery(String query) {
         this.query = query;
         if (query.length() < 3) {

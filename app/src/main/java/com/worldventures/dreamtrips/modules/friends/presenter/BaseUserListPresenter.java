@@ -1,11 +1,14 @@
 package com.worldventures.dreamtrips.modules.friends.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.api.request.Query;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
@@ -28,40 +31,66 @@ import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 import com.worldventures.dreamtrips.modules.profile.event.FriendGroupRelationChangedEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View> extends Presenter<T> {
 
     private int previousTotal = 0;
     private boolean loading = true;
     private int nextPage = 1;
+    protected List<Circle> circles = new ArrayList<>();
     protected List<User> users = new ArrayList<>();
-    protected List<Circle> circles;
 
-    @Inject
-    SnappyRepository snappyRepository;
-    @Inject
-    StartChatDelegate startChatDelegate;
+    @Inject StartChatDelegate startChatDelegate;
+    @Inject CirclesInteractor circlesInteractor;
 
     private boolean loadUsersRequestLocked;
 
     @Override
-    public void onInjected() {
-        super.onInjected();
-        circles = snappyRepository.getCircles();
-    }
-
-    @Override
     public void takeView(T view) {
         super.takeView(view);
+        subscribeCircles();
+        updateCircles();
         if (isNeedPreload())
             reload();
     }
 
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void subscribeCircles() {
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles) {
+        circles.clear();
+        circles.addAll(resultCircles);
+        Collections.sort(circles);
+        circlesUpdated();
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.informUser(messageId);
+    }
+
     protected boolean isNeedPreload() {
         return true;
+    }
+
+    protected void circlesUpdated() {
     }
 
     @Override

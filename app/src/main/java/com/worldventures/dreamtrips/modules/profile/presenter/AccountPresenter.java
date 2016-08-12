@@ -6,6 +6,7 @@ import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -51,6 +52,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Inject SocialCropImageManager socialCropImageManager;
     @Inject AuthInteractor authInteractor;
     @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+    @Inject SnappyRepository db;
 
     private Subscription mediaSubscription;
     private Subscription cropSubscription;
@@ -108,7 +110,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     private void subscribeNotificationsBadgeUpdates() {
         notificationCountEventDelegate.getObservable()
                 .compose(bindViewToMainComposer())
-                .subscribe(o -> view.updateBadgeCount(snappyRepository.getFriendsRequestsCount()));
+                .subscribe(o -> view.updateBadgeCount(db.getFriendsRequestsCount()));
     }
 
     private void subscribeRefreshFeeds() {

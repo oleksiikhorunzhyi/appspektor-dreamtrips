@@ -3,7 +3,6 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
@@ -50,37 +49,14 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        detectMode();
         if (savedInstanceState == null) getPresentationModel().initDtl();
     }
 
-    private void detectMode() {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
-        String type;
-        if (bundle != null && !TextUtils.isEmpty(type = bundle.getString(EXTRA_TYPE))) {
-            switch (type) {
-                case ActivityRouter.LAUNCH_LOGIN:
-                    loginMode();
-                    break;
-                case ActivityRouter.LAUNCH_SPLASH:
-                    splashMode();
-                    break;
-            }
-        } else {
-            loginMode();
-        }
-    }
-
-    private void loginMode() {
-        splashModeHolder.setVisibility(View.GONE);
-        loginModeHolder.setVisibility(View.VISIBLE);
-        getPresentationModel().splashModeEnd();
-    }
-
-    private void splashMode() {
-        splashModeHolder.setVisibility(View.VISIBLE);
-        loginModeHolder.setVisibility(View.GONE);
-        getPresentationModel().splashModeStart();
+        if (bundle != null) getPresentationModel().detectMode(bundle.getString(EXTRA_TYPE));
     }
 
     @OnClick(R.id.iv_title)
@@ -139,12 +115,14 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
 
     @Override
     public void openLogin() {
-        loginMode();
+        splashModeHolder.setVisibility(View.GONE);
+        loginModeHolder.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void openSplash() {
-        splashMode();
+        splashModeHolder.setVisibility(View.VISIBLE);
+        loginModeHolder.setVisibility(View.GONE);
         dismissLoginProgress();
     }
 

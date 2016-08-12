@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.github.pwittchen.networkevents.library.BusWrapper;
 import com.github.pwittchen.networkevents.library.ConnectivityStatus;
@@ -8,6 +9,7 @@ import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
@@ -46,6 +48,39 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     private AuthorizedDataManager.AuthDataSubscriber authDataSubscriber;
     private NetworkEvents networkEvents;
+
+    public void detectMode(String type) {
+        if (TextUtils.isEmpty(type)) {
+            loginMode();
+            return;
+        }
+        switch (type) {
+            case ActivityRouter.LAUNCH_SPLASH:
+                splashMode();
+                break;
+            case ActivityRouter.LAUNCH_LOGIN:
+            default:
+                loginMode();
+                break;
+        }
+    }
+
+    private void splashMode() {
+        view.openSplash();
+
+        clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
+        drawableUtil.removeCacheImages();
+        BusWrapper busWrapper = getGreenRobotBusWrapper(eventBus);
+        networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
+        networkEvents.register();
+
+        startPreloadChain();
+    }
+
+    private void loginMode() {
+        view.openLogin();
+        release();
+    }
 
     @Override
     public void dropView() {
@@ -114,27 +149,13 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                             User user = loginCommand.getResult().getUser();
                             TrackingHelper.login(user.getEmail());
                             TrackingHelper.setUserId(Integer.toString(user.getId()));
-                            view.openSplash();
+                            splashMode();
                         })
                         .onFail((loginCommand, throwable) -> {
                             TrackingHelper.loginError();
                             view.alertLogin(loginCommand.getErrorMessage());
                         }));
 
-    }
-
-    public void splashModeStart() {
-        clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
-        drawableUtil.removeCacheImages();
-        BusWrapper busWrapper = getGreenRobotBusWrapper(eventBus);
-        networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
-        networkEvents.register();
-
-        startPreloadChain();
-    }
-
-    public void splashModeEnd() {
-        release();
     }
 
     public void release() {
@@ -168,7 +189,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         if (view == null) return;
 
         if (throwable instanceof SessionAbsentException || AuthRetryPolicy.isLoginError(throwable)) {
-            view.openLogin();
+            loginMode();
         } else {
             view.informUser(new HumaneErrorTextFactory().create(throwable));
             view.configurationFailed();

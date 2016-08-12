@@ -19,8 +19,8 @@ import javax.inject.Inject;
 
 import flow.Flow;
 import io.techery.janet.helper.ActionStateSubscriber;
-import io.techery.janet.smartcard.action.settings.PinSetupFinishedAction;
 import io.techery.janet.smartcard.action.settings.StartPinSetupAction;
+import io.techery.janet.smartcard.event.PinSetupFinishedEvent;
 
 public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPresenter.Screen, Parcelable> {
 
@@ -50,7 +50,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
         wizardInteractor.pinSetupFinishedPipe()
                 .observe()
                 .compose(bindViewIoToMainComposer())
-                .subscribe(new ActionStateSubscriber<PinSetupFinishedAction>()
+                .subscribe(new ActionStateSubscriber<PinSetupFinishedEvent>()
                         .onSuccess(action -> {
                             getView().provideOperationDelegate().hideProgress();
                             navigateToNextScreen();

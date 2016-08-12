@@ -68,8 +68,8 @@ public class PersistentDeviceStorage implements DeviceStorage {
     }
 
     @Override
-    public void lock() {
-        memoryStorage.lock();
+    public void lock(boolean lock) {
+        memoryStorage.lock(lock);
         persistStorage();
     }
 
@@ -87,6 +87,17 @@ public class PersistentDeviceStorage implements DeviceStorage {
     @Override
     public boolean isPowerSavingModeEnabled() {
         return memoryStorage.isPowerSavingModeEnabled();
+    }
+
+    @Override
+    public boolean getStealthModeStatus() {
+        return memoryStorage.getStealthModeStatus();
+    }
+
+    @Override
+    public void setStealthModeStatus(boolean enable) {
+        memoryStorage.setStealthModeStatus(enable);
+        persistStorage();
     }
 
     @Override

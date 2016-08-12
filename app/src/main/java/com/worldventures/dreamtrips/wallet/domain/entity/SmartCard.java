@@ -21,6 +21,11 @@ public abstract class SmartCard {
         return false;
     }
 
+    @Value.Default
+    public boolean lock() {
+        return false;
+    }
+
     @Nullable
     public abstract String userPhoto();
 

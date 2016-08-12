@@ -33,6 +33,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
+import rx.Observable;
 
 public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Screen, CardListScreenPresenter, CardListPath>
         implements CardListScreenPresenter.Screen {
@@ -62,44 +63,49 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         super(context, attrs);
     }
 
-    @NonNull
-    @Override
-    public CardListScreenPresenter createPresenter() {
+    @NonNull @Override public CardListScreenPresenter createPresenter() {
         return new CardListScreenPresenter(getContext(), getInjector());
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    @Override protected void onPostAttachToWindowView() {
+        setupToolbar();
+        setupCardStackList();
+    }
+
+    @Override public OperationScreen provideOperationDelegate() {
+        return new DialogOperationScreen(this);
+    }
+
+    @Override public void showRecordsInfo(List<CardStackViewModel> result) {
+        adapter.clearAndUpdateItems(result);
+        smartCardWidget.bindCount(result);
+    }
+
+    @Override public void showSmartCardInfo(SmartCard smartCard) {
+        smartCardWidget.bindCard(smartCard);
+    }
+
+    @Override public Observable<Boolean> lockStatus() {
+        return smartCardWidget.lockStatus();
+    }
+
+    private void onNavigateButtonClick(View view) {
+        presenter.goBack();
+    }
+
+    private void setupToolbar() {
         toolbar.setTitle(R.string.wallet);
         toolbar.setNavigationOnClickListener(this::onNavigateButtonClick);
         toolbar.inflateMenu(R.menu.menu_wallet_dashboard);
         toolbar.setOnMenuItemClickListener(this::onMenuItemClick);
     }
 
-    private boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_card_settings:
-                presenter.goToSettings();
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    protected void onPostAttachToWindowView() {
+    private void setupCardStackList() {
         adapter = new BaseDelegateAdapter(getContext(), getInjector());
         adapter.registerCell(CardStackViewModel.class, CardStackCell.class);
         adapter.registerDelegate(CardStackViewModel.class, new CardStackCell.Delegate() {
-            @Override
-            public void onCardClicked(BankCard bankCard) {
+            @Override public void onCardClicked(BankCard bankCard) {
                 getPresenter().showBankCardDetails(bankCard);
-            }
-
-            @Override
-            public void onCellClicked(CardStackViewModel model) {
-
             }
         });
         adapter.registerIdDelegate(CardStackViewModel.class, model -> ((CardStackViewModel) model).getHeaderTitle().hashCode());
@@ -112,35 +118,10 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
         bankCardList.setLayoutManager(layout);
         bankCardList.addOnScrollListener(new HidingScrollListener() {
             @Override
-            public void onHide() {
-                buttonsWrapper.setVisibility(GONE);
-            }
-
-            @Override
-            public void onShow() {
-                buttonsWrapper.setVisibility(VISIBLE);
+            public void onVisibilityChangeRequested(boolean show) {
+                buttonsWrapper.setVisibility(show ? VISIBLE : GONE);
             }
         });
-    }
-
-    @Override
-    public OperationScreen provideOperationDelegate() {
-        return new DialogOperationScreen(this);
-    }
-
-    @Override
-    public void showRecordsInfo(List<CardStackViewModel> result) {
-        adapter.clearAndUpdateItems(result);
-        smartCardWidget.bindCount(result);
-    }
-
-    @Override
-    public void showSmartCardInfo(SmartCard smartCard) {
-        smartCardWidget.bindCard(smartCard);
-    }
-
-    private void onNavigateButtonClick(View view) {
-        presenter.goToBack();
     }
 
     private StickyHeadersItemDecoration getStickyHeadersItemDecoration(BaseArrayListAdapter adapter) {
@@ -159,5 +140,15 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
     @OnClick(R.id.add_debit_list)
     protected void addDeditCardClick() {
         presenter.addDebitCard();
+    }
+
+    private boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_card_settings:
+                presenter.onSettingsChosen();
+                return true;
+            default:
+                return false;
+        }
     }
 }

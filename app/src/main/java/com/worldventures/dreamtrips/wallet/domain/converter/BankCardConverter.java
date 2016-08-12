@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.wallet.domain.converter;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.BankCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.ImmutableBankCard;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Random;
 
 import io.techery.janet.smartcard.model.ImmutableRecord;
@@ -37,6 +39,7 @@ public class BankCardConverter implements Converter<Record, BankCard> {
                 .t1("T1??")
                 .t2("T2??")
                 .t3("T3??")
+                .metadata(Collections.emptyMap())
                 .build();
     }
 

@@ -9,26 +9,13 @@
     android:paddingLeft="@dimen/spacing_large"
     android:paddingRight="@dimen/spacing_large">
 
-    <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="12dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/wallet_card_locked_track"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/wallet_card_lock"/>
-    </FrameLayout>
+   <CheckBox
+       android:id="@+id/cbLock"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:button="@drawable/smart_card_lock_checkbox"
+       android:layout_marginLeft="65dp"
+       android:layout_marginTop="15dp"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/cardListSCAvatar"
@@ -47,11 +34,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/connectedCardsCount"
         android:layout_alignParentStart="false"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:textColor="@android:color/white"
         android:textSize="@dimen/font_large"
-        tools:text="Jhon's card"
-        android:singleLine="true"
-        android:ellipsize="end"/>
+        tools:text="Jhon's card"/>
 
     <TextView
         android:id="@+id/connectedCardsCount"

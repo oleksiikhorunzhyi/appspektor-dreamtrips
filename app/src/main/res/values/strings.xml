@@ -83,7 +83,7 @@
     <string name="delete_photo_text">Are you sure you want to delete this photo?</string>
     <string name="delete_photo_positiove">Delete</string>
     <string name="delete_photo_negative">Cancel</string>
-    <string name="flag_photo_first">WorldVentures personnel will be notified to review this content for </string>
+    <string name="flag_photo_first">WorldVentures personnel will be notified to review this image for </string>
     <string name="flag_photo_second">. Do you want to continue?</string>
     <string name="flag_photo_title">Confirm</string>
     <string name="flag_photo_positive">Send</string>

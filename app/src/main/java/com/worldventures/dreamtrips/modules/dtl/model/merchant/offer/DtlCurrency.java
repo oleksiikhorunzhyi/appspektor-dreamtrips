@@ -1,17 +1,33 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
+import com.worldventures.dreamtrips.api.dtl.merchats.model.Currency;
 
-public class DtlCurrency {
+@DefaultSerializer(CompatibleFieldSerializer.class)
+public class DtlCurrency implements Parcelable {
 
     private String code;
     private String prefix;
     private String suffix;
     private String name;
-    @SerializedName("default")
-    private boolean isDefault;
+    @SerializedName("default") private boolean isDefault;
+
+    public DtlCurrency() {
+    }
+
+    public DtlCurrency(Currency currency) {
+        code = currency.code();
+        prefix = currency.prefix();
+        suffix = currency.suffix();
+        name = currency.name();
+        isDefault = currency.isDefault();
+    }
 
     public String getCode() {
         return code;
@@ -25,10 +41,6 @@ public class DtlCurrency {
         return prefix;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
     public String getSuffix() {
         return suffix;
     }
@@ -37,16 +49,8 @@ public class DtlCurrency {
         return !TextUtils.isEmpty(suffix) ? suffix : code;
     }
 
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setDefault(boolean isDefault) {
@@ -56,4 +60,42 @@ public class DtlCurrency {
     public boolean isDefault() {
         return isDefault;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Parcelable
+    ///////////////////////////////////////////////////////////////////////////
+
+    protected DtlCurrency(Parcel in) {
+        code = in.readString();
+        prefix = in.readString();
+        suffix = in.readString();
+        name = in.readString();
+        isDefault = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(code);
+        dest.writeString(prefix);
+        dest.writeString(suffix);
+        dest.writeString(name);
+        dest.writeByte((byte) (isDefault ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DtlCurrency> CREATOR = new Creator<DtlCurrency>() {
+        @Override
+        public DtlCurrency createFromParcel(Parcel in) {
+            return new DtlCurrency(in);
+        }
+
+        @Override
+        public DtlCurrency[] newArray(int size) {
+            return new DtlCurrency[size];
+        }
+    };
 }

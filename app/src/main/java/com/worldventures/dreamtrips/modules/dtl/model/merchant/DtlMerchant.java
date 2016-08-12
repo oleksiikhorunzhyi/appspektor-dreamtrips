@@ -5,8 +5,12 @@ import android.text.TextUtils;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.api.dtl.merchats.model.Merchant;
+import com.worldventures.dreamtrips.api.dtl.merchats.model.MerchantType;
+import com.worldventures.dreamtrips.api.dtl.merchats.model.PartnerStatus;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlLocationHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.OfferMapper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.disclaimer.DtlDisclaimer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
@@ -29,7 +33,6 @@ public class DtlMerchant {
     PartnerStatus partnerStatus;
     String displayName;
     String address1;
-    String address2;
     String city;
     String state;
     String country;
@@ -40,7 +43,7 @@ public class DtlMerchant {
     String description;
     String website;
     int budget;
-    float rating;
+    double rating;
     String timeZone;
     List<DtlOffer> offers;
     List<DtlMerchantAttribute> categories;
@@ -54,16 +57,58 @@ public class DtlMerchant {
     public DtlMerchant() {
     }
 
+    public DtlMerchant(Merchant merchant) {
+        id = merchant.id();
+        type = merchant.type();
+        partnerStatus = merchant.partnerStatus();
+        displayName = merchant.displayName();
+        address1 = merchant.address();
+        city = merchant.city();
+        state = merchant.state();
+        country = merchant.country();
+        zip = merchant.zip();
+        coordinates = new Location(merchant.coordinates().lat(), merchant.coordinates().lng());
+        phone = merchant.phone();
+        email = merchant.email();
+        description = merchant.description();
+        website = merchant.website();
+        budget = merchant.budget();
+        rating = merchant.rating();
+        timeZone = merchant.timeZone();
+        //
+        offers = Queryable.from(merchant.offers())
+                .map(offer -> new OfferMapper().map(offer)).toList();
+        categories = Queryable.from(merchant.categories())
+                .map(category -> new DtlMerchantAttribute(category.name())).toList();
+        amenities = Queryable.from(merchant.amenities())
+                        .map(amenity -> new DtlMerchantAttribute(amenity.name())).toList();
+        images = Queryable.from(merchant.images()).map(DtlMerchantMedia::new).toList();
+        operationDays = Queryable.from(merchant.operationDays()).map(OperationDay::new).toList();
+        disclaimers = Queryable.from(merchant.disclaimers()).map(DtlDisclaimer::new).toList();
+    }
+
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public MerchantType getType() {
         return type;
     }
 
+    public void setType(MerchantType type) {
+        this.type = type;
+    }
+
     public PartnerStatus getPartnerStatus() {
         return partnerStatus;
+    }
+
+    public void setPartnerStatus(PartnerStatus partnerStatus) {
+        this.partnerStatus = partnerStatus;
     }
 
     public String getDisplayName() {
@@ -78,16 +123,24 @@ public class DtlMerchant {
         return address1;
     }
 
-    public String getAddress2() {
-        return address2;
+    public void setAddress1(String address1) {
+        this.address1 = address1;
     }
 
     public String getCity() {
         return city;
     }
 
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     public String getState() {
         return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public String getCountry() {
@@ -146,7 +199,7 @@ public class DtlMerchant {
         this.disclaimers = disclaimers;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 

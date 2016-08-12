@@ -1,12 +1,16 @@
 package com.worldventures.dreamtrips.modules.dtl.model.merchant.offer;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.innahema.collections.query.queriables.Queryable;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public abstract class DtlOffer implements Comparable<DtlOffer> {
 
     private String title;
@@ -17,7 +21,21 @@ public abstract class DtlOffer implements Comparable<DtlOffer> {
     private Date endDate;
 
     private List<OperationDay> operationDays;
-    private List<DtlOfferMedia> images;
+    private List<DtlMerchantMedia> images;
+
+    public DtlOffer() {
+    }
+
+    public DtlOffer(com.worldventures.dreamtrips.api.dtl.merchats.model.Offer offer) {
+        title = offer.offerData().title();
+        description = offer.offerData().description();
+        disclaimer = offer.offerData().disclaimer();
+        startDate = offer.offerData().startDate();
+        endDate = offer.offerData().endDate();
+        operationDays = Queryable.from(offer.offerData().operationDays())
+                .map(OperationDay::new).toList();
+        images = Queryable.from(offer.offerData().images()).map(DtlMerchantMedia::new).toList();
+    }
 
     public String getTitle() {
         return title;
@@ -43,7 +61,7 @@ public abstract class DtlOffer implements Comparable<DtlOffer> {
         this.endDate = endDate;
     }
 
-    public List<DtlOfferMedia> getImages() {
+    public List<DtlMerchantMedia> getImages() {
         return images;
     }
 
@@ -66,7 +84,8 @@ public abstract class DtlOffer implements Comparable<DtlOffer> {
         return getType() == another.getType() ? 0 : isPoint() ? -1 : 1;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -86,7 +105,8 @@ public abstract class DtlOffer implements Comparable<DtlOffer> {
         return images != null ? images.equals(that.images) : that.images == null;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result = title != null ? title.hashCode() : 0;
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (disclaimer != null ? disclaimer.hashCode() : 0);

@@ -2,31 +2,35 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import android.location.Location;
 
+import com.worldventures.dreamtrips.api.dtl.merchats.MerchantsHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchats.model.MerchantType;
+import com.worldventures.dreamtrips.api.dtl.merchats.model.PartnerStatus;
+import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.ImmutableCacheOptions;
 import com.worldventures.dreamtrips.core.janet.dagger.InjectableAction;
-import com.worldventures.dreamtrips.core.rx.composer.ListFilter;
+import com.worldventures.dreamtrips.modules.dtl.model.mapping.MerchantTransformer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.MerchantType;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.PartnerStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import io.techery.janet.ActionHolder;
 import io.techery.janet.Command;
 import io.techery.janet.Janet;
 import io.techery.janet.command.annotations.CommandAction;
+import rx.Observable;
 
 @CommandAction
 public class DtlMerchantsAction extends Command<List<DtlMerchant>>
         implements CachedAction<List<DtlMerchant>>, InjectableAction {
 
-    @Inject
-    Janet janet;
+    @Inject @Named(JanetModule.JANET_API_LIB) Janet janet;
 
     private List<DtlMerchant> cache = new ArrayList<>();
 
@@ -41,12 +45,16 @@ public class DtlMerchantsAction extends Command<List<DtlMerchant>>
     @Override
     protected void run(CommandCallback<List<DtlMerchant>> callback) throws Throwable {
         if (location != null) {
-            janet.createPipe(DtlLoadMerchantsAction.class)
-                    .createObservableResult(new DtlLoadMerchantsAction(location))
-                    .map(DtlLoadMerchantsAction::getResponse)
-                    .compose(new ListFilter<>(
-                            merchant -> merchant.getPartnerStatus() != PartnerStatus.UNKNOWN,
-                            merchant -> merchant.getType() != MerchantType.UNKNOWN))
+            String ll = String.format(Locale.US, "%1$f,%2$f", location.getLatitude(),
+                    location.getLongitude());
+            janet.createPipe(MerchantsHttpAction.class)
+                    .createObservableResult(new MerchantsHttpAction(ll))
+                    .map(MerchantsHttpAction::merchants)
+                    .flatMap(Observable::from)
+                    .compose(new MerchantTransformer())
+                    .filter(merchant -> merchant.getPartnerStatus() != PartnerStatus.UNKNOWN)
+                    .filter(merchant -> merchant.getType() != MerchantType.UNKNOWN)
+                    .toList()
                     .subscribe(callback::onSuccess, callback::onFail);
         } else {
             callback.onSuccess(cache);

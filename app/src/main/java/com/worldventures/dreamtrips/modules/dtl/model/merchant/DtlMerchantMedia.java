@@ -3,18 +3,24 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.worldventures.dreamtrips.api.dtl.merchats.model.MerchantMedia;
 import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 
 public class DtlMerchantMedia implements Parcelable, ImagePathHolder {
 
-    private String imageId;
     private String url;
-    private String logoUrl;
-    private String name;
-    private String description;
-    private String logo;
+    private String category;
+    private int width;
+    private int height;
 
     public DtlMerchantMedia() {
+    }
+
+    public DtlMerchantMedia(MerchantMedia merchantMedia) {
+        url = merchantMedia.url();
+        category = merchantMedia.category();
+        width = merchantMedia.width();
+        height = merchantMedia.height();
     }
 
     @Override
@@ -22,16 +28,35 @@ public class DtlMerchantMedia implements Parcelable, ImagePathHolder {
         return url;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Parcelable part
     ///////////////////////////////////////////////////////////////////////////
+
     protected DtlMerchantMedia(Parcel in) {
-        imageId = in.readString();
         url = in.readString();
-        logoUrl = in.readString();
-        name = in.readString();
-        description = in.readString();
-        logo = in.readString();
+        category = in.readString();
+        width = in.readInt();
+        height = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(url);
+        dest.writeString(category);
+        dest.writeInt(width);
+        dest.writeInt(height);
     }
 
     public static final Creator<DtlMerchantMedia> CREATOR = new Creator<DtlMerchantMedia>() {
@@ -49,15 +74,5 @@ public class DtlMerchantMedia implements Parcelable, ImagePathHolder {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(imageId);
-        dest.writeString(url);
-        dest.writeString(logoUrl);
-        dest.writeString(name);
-        dest.writeString(description);
-        dest.writeString(logo);
     }
 }

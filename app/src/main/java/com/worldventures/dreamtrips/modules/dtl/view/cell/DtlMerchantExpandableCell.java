@@ -15,7 +15,6 @@ import com.techery.spares.session.SessionHolder;
 import com.techery.spares.ui.view.cell.AbstractDelegateCell;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -29,7 +28,6 @@ import com.worldventures.dreamtrips.modules.dtl.model.DistanceType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.List;
@@ -219,7 +217,7 @@ public class DtlMerchantExpandableCell
         AppCompatTextView expirationBar =
                 ButterKnife.<AppCompatTextView>findById(cellView, R.id.expirationBar);
         //
-        DtlOfferMedia media = Queryable.from(offer.getImages()).firstOrDefault(); // image
+        DtlMerchantMedia media = Queryable.from(offer.getImages()).firstOrDefault(); // image
         if (media != null) {
             image.setImageUrl(media.getImagePath());
         }

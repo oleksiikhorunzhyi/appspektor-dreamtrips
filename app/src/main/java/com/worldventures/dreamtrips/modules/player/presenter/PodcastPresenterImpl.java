@@ -1,5 +1,6 @@
 package com.worldventures.dreamtrips.modules.player.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
@@ -24,6 +26,8 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
 
     @Inject
     PodcastPlayerDelegate podcastPlayerDelegate;
+    private Observable<ReadOnlyPlayer> playerObservable;
+    private boolean screenIsScheduledToBeDestroyed;
 
     private Uri uri;
 
@@ -36,50 +40,79 @@ public class PodcastPresenterImpl extends DtlPresenterImpl<PodcastPlayerScreen, 
     @Override
     public void attachView(PodcastPlayerScreen view) {
         super.attachView(view);
+        playerObservable = podcastPlayerDelegate.createPlayer(uri)
+                .replay(1).autoConnect();
         startPlayback();
         listenToStateUpdates();
         listenToProgress();
     }
 
     private void startPlayback() {
-        podcastPlayerDelegate.createPlayer(uri)
+        playerObservable
                 .compose(bindView())
                 .take(1)
                 .subscribe(player -> {
-                    if (player.getState() != ReadOnlyPlayer.State.ERROR) {
+                    if (player.getState() == ReadOnlyPlayer.State.READY) {
                         podcastPlayerDelegate.start();
+                    } else if (player.getState() == ReadOnlyPlayer.State.STOPPED
+                            || player.getState() == ReadOnlyPlayer.State.RELEASED) {
+                        ((Activity) getContext()).finish();
                     }
                 }, e -> Timber.e(e, "Cannot create player"));
     }
 
     private void listenToStateUpdates() {
-        podcastPlayerDelegate.createPlayer(uri)
-                .compose(new NonNullFilter<>())
+        playerObservable
                 .flatMap(ReadOnlyPlayer::getStateObservable)
+                .flatMap(stateObservable -> playerObservable.take(1))
                 .compose(bindView())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::applyState);
     }
 
     private void listenToProgress() {
         Observable.interval(0, 1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                .flatMap(counter -> podcastPlayerDelegate.createPlayer(uri))
+                .flatMap(counter -> playerObservable)
                 .compose(new NonNullFilter<>())
                 .compose(bindView())
                 .filter(player -> player.getState() != ReadOnlyPlayer.State.UNKNOWN
                         && player.getState() != ReadOnlyPlayer.State.PREPARING)
                 .subscribe(player -> {
-                    getView().setProgress(player.getDuration(), player.getCurrentPosition(),
-                            player.getBufferPercentage());
+                    checkIfNeedToDestroyWithDelay(player.getState());
+                    updatePlayerProgress(player);
                 });
     }
 
-    private void applyState(ReadOnlyPlayer.State state) {
+    private void updatePlayerProgress(ReadOnlyPlayer player) {
+        getView().setProgress(player.getDuration(), player.getCurrentPosition(),
+                player.getBufferPercentage());
+    }
+
+    private void checkIfNeedToDestroyWithDelay(ReadOnlyPlayer.State state) {
+        if (state == ReadOnlyPlayer.State.RELEASED || state == ReadOnlyPlayer.State.STOPPED) {
+            if (!screenIsScheduledToBeDestroyed) {
+                Observable.interval(2, TimeUnit.SECONDS,
+                        AndroidSchedulers.mainThread())
+                        .compose(bindView())
+                        .subscribe(timer -> {
+                            ((Activity) context).finish();
+                        });
+            }
+            screenIsScheduledToBeDestroyed = true;
+        }
+    }
+
+    private void applyState(ReadOnlyPlayer player) {
+        Timber.d("Podcasts -- presenter -- state %s dur %d, pos %d", player.getState(), player.getDuration(), player.getCurrentPosition());
+        ReadOnlyPlayer.State state = player.getState();
         switch (state) {
             case ERROR:
-            case STOPPED:
+            case RELEASED:
                 getView().setPlaybackFailed();
                 getView().setPausePlay(false);
+                break;
+            case STOPPED:
+                getView().setPausePlay(true);
+                updatePlayerProgress(player);
                 break;
             case PLAYING:
                 getView().setPausePlay(true);

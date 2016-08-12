@@ -8,6 +8,8 @@ public interface DtPlayer extends ReadOnlyPlayer {
 
     void pause();
 
+    void stop();
+
     void release();
 
     void seekTo(int position);

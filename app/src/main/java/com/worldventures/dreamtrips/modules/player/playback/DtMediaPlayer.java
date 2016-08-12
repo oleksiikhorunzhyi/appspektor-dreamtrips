@@ -10,7 +10,8 @@ import rx.Observable;
 import rx.subjects.ReplaySubject;
 import timber.log.Timber;
 
-public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateListener {
+public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateListener,
+                                        MediaPlayer.OnCompletionListener {
 
     private Context context;
 
@@ -19,6 +20,7 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
     private ReplaySubject<State> stateObservable = ReplaySubject.create(1);
     private Uri uri;
     private int bufferPercentage;
+    private boolean playbackCompleted;
 
     public DtMediaPlayer(Context context, Uri uri) {
         this.context = context;
@@ -26,6 +28,7 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
         setState(State.UNKNOWN);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnBufferingUpdateListener(this);
+        mediaPlayer.setOnCompletionListener(this);
     }
 
     @Override
@@ -62,33 +65,60 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
             return;
         }
         if (state == State.PAUSED || state == State.READY) {
-            mediaPlayer.start();
-            setState(State.PLAYING);
-            return;
+            try {
+                mediaPlayer.start();
+                setState(State.PLAYING);
+            } catch (IllegalStateException e) {
+                Timber.e(e, "Could not start media player");
+                setState(State.ERROR);
+            }
         }
-        setState(State.ERROR);
     }
 
     @Override
     public void seekTo(int position) {
-        if (state == State.PLAYING) {
+        try {
             mediaPlayer.seekTo(position);
+        } catch (IllegalStateException e) {
+            Timber.e(e, "Could not seek media player");
         }
     }
 
     @Override
     public void pause() {
-        mediaPlayer.pause();
-        setState(State.PAUSED);
+        if (state == State.PLAYING) {
+            try {
+                mediaPlayer.pause();
+                setState(State.PAUSED);
+            } catch (IllegalStateException e) {
+                Timber.e(e, "Could not pause media player");
+                setState(State.ERROR);
+            }
+        }
+    }
+
+    @Override
+    public void stop() {
+        if (state == State.PLAYING) {
+            try {
+                mediaPlayer.stop();
+                setState(State.STOPPED);
+            } catch (IllegalStateException e) {
+                Timber.e(e, "Could not stop media player");
+                setState(State.ERROR);
+            }
+        }
     }
 
     @Override
     public void release() {
         Timber.d("Podcasts -- DtMediaPlayer -- Release player");
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
+        try {
             mediaPlayer.release();
-            setState(State.STOPPED);
+            setState(State.RELEASED);
+        } catch (IllegalStateException e) {
+            Timber.e(e, "Could not release media player");
+            setState(State.ERROR);
         }
     }
 
@@ -101,6 +131,12 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
     @Override
     public void onBufferingUpdate(MediaPlayer mediaPlayer, int bufferPercentage) {
         this.bufferPercentage = bufferPercentage;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mediaPlayer) {
+        playbackCompleted = true;
+        setState(State.STOPPED);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -124,7 +160,7 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
 
     @Override
     public int getDuration() {
-        if (state == State.READY || state == State.PLAYING || state == State.PAUSED) {
+        if (state == State.READY || state == State.PLAYING || state == State.PAUSED || state == State.STOPPED) {
             return mediaPlayer.getDuration();
         }
         return 0;
@@ -132,7 +168,11 @@ public class DtMediaPlayer implements DtPlayer, MediaPlayer.OnBufferingUpdateLis
 
     @Override
     public int getCurrentPosition() {
-        if (state == State.READY || state == State.PLAYING || state == State.PAUSED) {
+        // system media player does not return correct current position in this state
+        if (playbackCompleted) {
+            return getDuration();
+        }
+        if (state == State.READY || state == State.PLAYING || state == State.PAUSED || state == State.STOPPED) {
             return mediaPlayer.getCurrentPosition();
         }
         return 0;

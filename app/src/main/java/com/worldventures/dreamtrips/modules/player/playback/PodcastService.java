@@ -89,9 +89,11 @@ public class PodcastService extends Service {
     }
 
     private DtPlayer createPlayerInternal(Uri uri) {
-        stopPlayerIfNeeded();
+        releasePlayerIfNeeded();
         player = new DtMediaPlayer(this, uri);
         activePlayerSubscription = player.getStateObservable()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(state -> {
                     Timber.d("Podcasts -- service -- state %s", state);
                     if (state == DtPlayer.State.PLAYING) {
@@ -100,7 +102,9 @@ public class PodcastService extends Service {
                         NotificationManagerCompat.from(getApplicationContext()).notify(WIDGET_NOTIFICATION_ID,
                                 notificationFactory.getPausedNotification());
                         stopForeground(false);
-                    } else if (state == DtPlayer.State.STOPPED || state == DtPlayer.State.ERROR) {
+                    } else if (state == DtPlayer.State.STOPPED
+                            || state == DtPlayer.State.RELEASED
+                            || state == DtPlayer.State.ERROR) {
                         onPlayerCleanup();
                     }
                 });
@@ -163,26 +167,27 @@ public class PodcastService extends Service {
     }
 
     public void stopPlayer() {
-        if (player != null) onPlayerCleanup();
+        if (player != null) {
+            // according to specs we do full player release currently
+            onPlayerCleanup();
+        }
     }
 
     private void onPlayerCleanup() {
-        Timber.d("Podcasts -- Service -- onPlayerStopped");
-        stopPlayerIfNeeded();
+        releasePlayerIfNeeded();
         stopForeground(true);
         stopSelf();
     }
 
-    private void stopPlayerIfNeeded() {
+    private void releasePlayerIfNeeded() {
         if (activePlayerSubscription != null) {
             activePlayerSubscription.unsubscribe();
         }
-        if (player != null && player.getState() != DtPlayer.State.STOPPED) {
-            Timber.d("Podcasts -- Service -- stop current player");
-            player.pause();
-            player.release();
+        if (player != null) {
+            if (player.getState() != DtPlayer.State.STOPPED) player.stop();
+            if (player.getState() != DtPlayer.State.RELEASED) player.release();
+            player = null;
         }
-        player = null;
     }
 
     public void seekTo(int position) {
@@ -253,8 +258,7 @@ public class PodcastService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopPlayerIfNeeded();
-        Timber.d("Podcasts -- Service -- onDestroy");
+        releasePlayerIfNeeded();
     }
 
     @Override

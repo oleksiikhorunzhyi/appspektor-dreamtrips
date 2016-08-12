@@ -13,6 +13,7 @@ public interface ReadOnlyPlayer {
         PLAYING,
         PAUSED,
         STOPPED,
+        RELEASED,
         ERROR
     }
 

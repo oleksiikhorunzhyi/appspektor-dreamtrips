@@ -6,6 +6,7 @@ import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
@@ -27,6 +28,7 @@ import dagger.Module;
                 SetupUserDataCommand.class,
                 GetSmartCardCommand.class,
                 FetchDefaultCardCommand.class,
+                ActivateSmartCardCommand.class,
                 CreateAndConnectToCardCommand.class,
                 GetActiveSmartCardCommand.class
         },

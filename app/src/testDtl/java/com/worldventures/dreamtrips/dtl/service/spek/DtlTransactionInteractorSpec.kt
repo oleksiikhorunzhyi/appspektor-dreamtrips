@@ -66,7 +66,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
         db = spy()
         whenever(db.getDtlTransaction(any())).thenReturn(transaction)
 
-        transactionInteractor = DtlTransactionInteractor(janet)
+        transactionInteractor = DtlTransactionInteractor(janet, janet)
         commandService.registerProvider(SnappyRepository::class.java) { db }
     }
 

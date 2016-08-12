@@ -80,7 +80,7 @@ public class DtlTransactionInteractorTest extends BaseTest {
                                 .build()))
                 .build();
 
-        transactionInteractor = new DtlTransactionInteractor(janet);
+        transactionInteractor = new DtlTransactionInteractor(janet, janet);
 
         db = spy(SnappyRepository.class);
         when(db.getDtlTransaction(anyString())).thenReturn(testTransaction);

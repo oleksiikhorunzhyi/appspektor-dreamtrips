@@ -3,6 +3,8 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
+import com.worldventures.dreamtrips.api.dtl.merchats.model.MerchantType
+import com.worldventures.dreamtrips.api.dtl.merchats.model.PartnerStatus
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.tracksystem.AnalyticsInteractor
 import com.worldventures.dreamtrips.janet.StubServiceWrapper

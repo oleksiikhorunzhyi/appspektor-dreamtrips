@@ -24,8 +24,7 @@ import butterknife.InjectView;
 public class UsersLikedItemFragment extends BaseUsersFragment<UsersLikedItemPresenter, UsersLikedEntityBundle>
         implements UsersLikedItemPresenter.View, UserCellDelegate {
 
-    @InjectView(R.id.title)
-    TextView header;
+    @InjectView(R.id.title) TextView header;
 
     @Override
     protected UsersLikedItemPresenter createPresenter(Bundle savedInstanceState) {

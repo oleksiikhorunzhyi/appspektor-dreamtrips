@@ -47,27 +47,17 @@ import static com.worldventures.dreamtrips.modules.bucketlist.presenter.BucketIt
 public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEditPresenter, BucketBundle>
         implements BucketItemEditPresenter.View, DatePickerDialog.OnDateSetListener {
 
-    @Optional
-    @InjectView(R.id.done)
-    protected ImageView imageViewDone;
-    @InjectView(R.id.editTextTitle)
-    protected EditText editTextTitle;
-    @InjectView(R.id.editTextDescription)
-    protected MaterialEditText editTextDescription;
-    @InjectView(R.id.editTextPeople)
-    protected EditText editTextPeople;
-    @InjectView(R.id.editTextTags)
-    protected EditText editTextTags;
-    @InjectView(R.id.editTextTime)
-    protected AutoCompleteTextView autoCompleteTextViwDate;
-    @InjectView(R.id.checkBoxDone)
-    protected CheckBox checkBox;
-    @InjectView(R.id.spinnerCategory)
-    protected Spinner spinnerCategory;
-    @InjectView(R.id.lv_items)
-    protected BucketPhotosView bucketPhotosView;
-    @InjectView(R.id.loading_view)
-    protected ViewGroup loadingView;
+    @Optional @InjectView(R.id.done) ImageView imageViewDone;
+    @Optional @InjectView(R.id.bucket_header) ViewGroup bucketHeader;
+    @InjectView(R.id.editTextTitle) EditText editTextTitle;
+    @InjectView(R.id.editTextDescription) MaterialEditText editTextDescription;
+    @InjectView(R.id.editTextPeople) EditText editTextPeople;
+    @InjectView(R.id.editTextTags) EditText editTextTags;
+    @InjectView(R.id.editTextTime) AutoCompleteTextView autoCompleteTextViwDate;
+    @InjectView(R.id.checkBoxDone) CheckBox checkBox;
+    @InjectView(R.id.spinnerCategory) Spinner spinnerCategory;
+    @InjectView(R.id.lv_items) BucketPhotosView bucketPhotosView;
+    @InjectView(R.id.loading_view) ViewGroup loadingView;
 
     private boolean categorySelected = false;
 
@@ -87,6 +77,7 @@ public class BucketItemEditFragment extends RxBaseFragmentWithArgs<BucketItemEdi
         if (getArgs().isLock()) {
             OrientationUtil.lockOrientation(getActivity());
         }
+        if (bucketHeader != null) bucketHeader.getBackground().mutate().setAlpha(255);
         initAutoCompleteDate();
     }
 

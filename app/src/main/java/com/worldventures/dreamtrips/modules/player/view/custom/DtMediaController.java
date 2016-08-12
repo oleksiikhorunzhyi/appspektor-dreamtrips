@@ -33,7 +33,10 @@ public class DtMediaController extends FrameLayout {
         }
 
         public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
-            if (fromuser) onSeekTo.call((duration * progress) / 1000);
+            if (fromuser) {
+                long seekTo = (long) duration * progress / 1000;
+                onSeekTo.call((int) seekTo);
+            }
         }
 
         public void onStopTrackingTouch(SeekBar bar) {

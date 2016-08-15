@@ -59,13 +59,13 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
     private ActionBarDrawerToggle mDrawerToggle;
     private List<DrawerListener> rightDrawerListeners = new ArrayList<>();
 
-    @Inject protected RootComponentsProvider rootComponentsProvider;
+    @Inject RootComponentsProvider rootComponentsProvider;
     @Inject CropImageDelegate cropImageDelegate;
 
-    @State protected ComponentDescription currentComponent;
-    @State protected boolean toolbarGone;
+    @State ComponentDescription currentComponent;
+    @State boolean toolbarGone;
 
-    protected NavigationDrawerPresenter navigationDrawerPresenter;
+    private NavigationDrawerPresenter navigationDrawerPresenter;
 
     @Override
     protected MainActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -130,16 +130,6 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
         }
     }
 
-    private void initNavDrawer() {
-        navigationDrawerPresenter = new NavigationDrawerPresenter();
-        inject(navigationDrawerPresenter);
-        //
-        navigationDrawerPresenter.attachView(navDrawer, rootComponentsProvider.getActiveComponents());
-        navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
-        navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
-        navigationDrawerPresenter.setOnLogout(this::logout);
-    }
-
     @Override
     public void onDestroy() {
         navigationDrawerPresenter.detach();
@@ -201,6 +191,16 @@ public class MainActivity extends ActivityWithPresenter<MainActivityPresenter>
             disableLeftDrawer();
             mDrawerToggle.setDrawerIndicatorEnabled(false);
         }
+    }
+
+    private void initNavDrawer() {
+        navigationDrawerPresenter = new NavigationDrawerPresenter();
+        inject(navigationDrawerPresenter);
+        //
+        navigationDrawerPresenter.attachView(navDrawer, rootComponentsProvider.getActiveComponents());
+        navigationDrawerPresenter.setOnItemReselected(this::itemReseleted);
+        navigationDrawerPresenter.setOnItemSelected(this::itemSelected);
+        navigationDrawerPresenter.setOnLogout(this::logout);
     }
 
     private void itemSelected(ComponentDescription component) {

@@ -7,7 +7,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.core.module.RouteCreatorModule;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.creator.RouteCreator;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
@@ -37,7 +36,6 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.service.FeedInteractor;
 import com.worldventures.dreamtrips.modules.feed.service.command.BaseGetFeedCommand;
 import com.worldventures.dreamtrips.modules.feed.view.util.TextualPostTranslationDelegate;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DeletePhotoCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.api.DownloadImageCommand;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.TripsImagesBundle;
@@ -56,12 +54,10 @@ import rx.android.schedulers.AndroidSchedulers;
 public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extends User> extends Presenter<T> {
 
     protected U user;
-    protected List<Circle> circles;
 
     @State ArrayList<FeedItem> feedItems;
 
     @Inject FeedEntityManager entityManager;
-    @Inject SnappyRepository snappyRepository;
     @Inject LocaleHelper localeHelper;
     @Inject @Named(RouteCreatorModule.PROFILE) RouteCreator<Integer> routeCreator;
     @Inject TextualPostTranslationDelegate textualPostTranslationDelegate;
@@ -85,7 +81,6 @@ public abstract class ProfilePresenter<T extends ProfilePresenter.View, U extend
     public void onInjected() {
         super.onInjected();
         entityManager.setRequestingPresenter(this);
-        circles = snappyRepository.getCircles();
     }
 
     @Override

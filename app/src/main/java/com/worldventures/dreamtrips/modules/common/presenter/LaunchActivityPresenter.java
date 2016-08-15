@@ -1,13 +1,20 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.github.pwittchen.networkevents.library.BusWrapper;
 import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
+import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
+import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
+import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
@@ -20,10 +27,14 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationComman
 import javax.inject.Inject;
 
 import de.greenrobot.event.EventBus;
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
 import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
+import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
+import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
 public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPresenter.View> {
 
@@ -33,24 +44,30 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject SnappyRepository db;
     @Inject DtlLocationInteractor dtlLocationInteractor;
     @Inject AuthorizedDataManager authorizedDataManager;
+    @Inject LoginInteractor loginInteractor;
 
     private AuthorizedDataManager.AuthDataSubscriber authDataSubscriber;
-
     private NetworkEvents networkEvents;
 
-    private AuthorizedDataManager.AuthDataSubscriber getAuthDataSubscriber() {
-        if (authDataSubscriber == null || authDataSubscriber.isUnsubscribed()) {
-            authDataSubscriber = new AuthorizedDataManager.AuthDataSubscriber()
-                    .onStart(this::onAuthStart)
-                    .onSuccess(this::onAuthSuccess)
-                    .onFail(this::onAuthFail);
+    public void detectMode(String type) {
+        if (TextUtils.isEmpty(type)) {
+            loginMode();
+            return;
         }
-        return authDataSubscriber;
+        switch (type) {
+            case ActivityRouter.LAUNCH_SPLASH:
+                splashMode();
+                break;
+            case ActivityRouter.LAUNCH_LOGIN:
+            default:
+                loginMode();
+                break;
+        }
     }
 
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
+    private void splashMode() {
+        view.openSplash();
+
         clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
         drawableUtil.removeCacheImages();
         BusWrapper busWrapper = getGreenRobotBusWrapper(eventBus);
@@ -60,36 +77,26 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         startPreloadChain();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        authorizedDataManager.updateData(getAuthDataSubscriber());
+    private void loginMode() {
+        view.openLogin();
+        release();
     }
 
     @Override
     public void dropView() {
         super.dropView();
-        networkEvents.unregister();
-        if (authorizedDataManager != null) authorizedDataManager.unsubscribe();
+        release();
+    }
+
+    @Override
+    protected boolean canShowTermsDialog() {
+        return false;
     }
 
     public void initDtl() {
         db.cleanLastSelectedOffersOnlyToggle();
         db.cleanLastMapCameraPosition();
         dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
-    }
-
-    public void onEvent(ConnectivityChanged event) {
-        ConnectivityStatus status = event.getConnectivityStatus();
-        boolean internetConnected = status == MOBILE_CONNECTED || status == WIFI_CONNECTED_HAS_INTERNET || status == WIFI_CONNECTED;
-        if (internetConnected) {
-            authorizedDataManager.updateData(getAuthDataSubscriber());
-        }
-    }
-
-    @Override
-    protected boolean canShowTermsDialog() {
-        return false;
     }
 
     @NonNull
@@ -112,8 +119,62 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         };
     }
 
+    public void onEvent(ConnectivityChanged event) {
+        ConnectivityStatus status = event.getConnectivityStatus();
+        boolean internetConnected = status == MOBILE_CONNECTED || status == WIFI_CONNECTED_HAS_INTERNET || status == WIFI_CONNECTED;
+        if (internetConnected) {
+            authorizedDataManager.updateData(getAuthDataSubscriber());
+        }
+    }
+
+    public void loginAction() {
+        String username = view.getUsername();
+        String userPassword = view.getUserPassword();
+
+        ValidationUtils.VResult usernameValid = isUsernameValid(username);
+        ValidationUtils.VResult passwordValid = isPasswordValid(userPassword);
+
+        if (!usernameValid.isValid() || !passwordValid.isValid()) {
+            view.showLocalErrors(usernameValid.getMessage(), passwordValid.getMessage());
+            return;
+        }
+
+        loginInteractor.loginActionPipe()
+                .createObservable(new LoginCommand(username, userPassword))
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<LoginCommand>()
+                        .onStart(loginCommand -> view.showLoginProgress())
+                        .onSuccess(loginCommand -> {
+                            User user = loginCommand.getResult().getUser();
+                            TrackingHelper.login(user.getEmail());
+                            TrackingHelper.setUserId(Integer.toString(user.getId()));
+                            splashMode();
+                        })
+                        .onFail((loginCommand, throwable) -> {
+                            TrackingHelper.loginError();
+                            view.alertLogin(loginCommand.getErrorMessage());
+                        }));
+
+    }
+
+    public void release() {
+        if (networkEvents != null) networkEvents.unregister();
+        if (authorizedDataManager != null) authorizedDataManager.unsubscribe();
+    }
+
     public void startPreloadChain() {
         authorizedDataManager.updateData(getAuthDataSubscriber());
+    }
+
+    private AuthorizedDataManager.AuthDataSubscriber getAuthDataSubscriber() {
+        if (authDataSubscriber == null || authDataSubscriber.isUnsubscribed()) {
+            authDataSubscriber = new AuthorizedDataManager.AuthDataSubscriber()
+                    .onStart(this::onAuthStart)
+                    .onSuccess(this::onAuthSuccess)
+                    .onFail(this::onAuthFail);
+        }
+        return authDataSubscriber;
     }
 
     private void onAuthStart() {
@@ -128,7 +189,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         if (view == null) return;
 
         if (throwable instanceof SessionAbsentException || AuthRetryPolicy.isLoginError(throwable)) {
-            view.openLogin();
+            loginMode();
         } else {
             view.informUser(new HumaneErrorTextFactory().create(throwable));
             view.configurationFailed();
@@ -143,6 +204,18 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
         void openLogin();
 
+        void openSplash();
+
         void openMain();
+
+        void alertLogin(String message);
+
+        void showLoginProgress();
+
+        void showLocalErrors(int userNameError, int passwordError);
+
+        String getUsername();
+
+        String getUserPassword();
     }
 }

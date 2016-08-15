@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -14,11 +15,13 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -89,7 +92,9 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject BucketInteractor bucketInteractor;
     @Inject FeedInteractor feedInteractor;
     @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
+    @Inject CirclesInteractor circlesInteractor;
 
+    private List<Circle> circles = new ArrayList<>();
     private Circle filterCircle;
     private UidItemDelegate uidItemDelegate;
     private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
@@ -105,6 +110,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void onInjected() {
         super.onInjected();
         entityManager.setRequestingPresenter(this);
+        if (circles.isEmpty()) circles = Queryable.from(createDefaultFilterCircle()).toList();
     }
 
     @Override
@@ -126,6 +132,8 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        subscribeCircles();
+        updateCircles();
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribePhotoGalleryCheck();
@@ -142,6 +150,35 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void dropView() {
         textualPostTranslationDelegate.onDropView();
         super.dropView();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Update circles
+    ///////////////////////////////////////////////////////////////////////////
+
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void subscribeCircles() {
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles) {
+        circles.clear();
+        circles.add(createDefaultFilterCircle());
+        circles.addAll(resultCircles);
+        Collections.sort(circles);
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.informUser(messageId);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -215,9 +252,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     }
 
     public List<Circle> getFilterCircles() {
-        List<Circle> circles = db.getCircles();
-        Collections.sort(circles);
-        circles.add(0, createDefaultFilterCircle());
         return circles;
     }
 

@@ -1,10 +1,13 @@
 package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.events.UnfriendEvent;
@@ -12,14 +15,21 @@ import com.worldventures.dreamtrips.modules.friends.events.UserClickedEvent;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+
 public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPresenter<FeedListAdditionalInfoPresenter.View> {
 
     @Inject SnappyRepository db;
+    @Inject CirclesInteractor circlesInteractor;
 
+    private List<Circle> circles = new ArrayList<>();
     private int nextPage = 1;
     private int prevTotalItemCount = 0;
     private boolean loading = true;
@@ -33,6 +43,8 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
     public void takeView(View view) {
         super.takeView(view);
         if (view.isTabletLandscape()) {
+            subscribeCircles();
+            updateCircles();
             loadFriends();
             view.setCurrentCircle(getFilterCircle());
         }
@@ -42,14 +54,37 @@ public class FeedListAdditionalInfoPresenter extends FeedItemAdditionalInfoPrese
     // Circles interaction
     ///////////////////////////////////////////////////////////////////////////
 
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void subscribeCircles() {
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles) {
+        circles.clear();
+        circles.add(getDefaultCircleFilter());
+        circles.addAll(resultCircles);
+        Collections.sort(circles);
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.informUser(messageId);
+    }
+
     public void onCirclePicked(Circle c) {
         db.saveFeedFriendPickedCircle(c);
         reload();
     }
 
     public void onCircleFilterClicked() {
-        List<Circle> circles = db.getCircles();
-        circles.add(0, getDefaultCircleFilter());
         view.showCirclePicker(circles, getFilterCircle());
     }
 

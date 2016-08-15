@@ -7,7 +7,6 @@ import com.innahema.collections.query.queriables.Queryable;
 import com.messenger.ui.fragment.MessageImageFullscreenFragment;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.ui.fragment.BaseImageFragment;
-import com.worldventures.dreamtrips.modules.auth.view.LoginFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketDetailsFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketItemEditFragment;
 import com.worldventures.dreamtrips.modules.bucketlist.view.fragment.BucketListFragment;
@@ -91,7 +90,6 @@ import com.worldventures.dreamtrips.modules.video.view.PresentationVideosFragmen
 import com.worldventures.dreamtrips.modules.video.view.ThreeSixtyVideosFragment;
 
 public enum Route {
-    LOGIN(LoginFragment.class),
     WEB_STATIC(StaticInfoFragment.class),
     DETAILED_TRIP(TripDetailsFragment.class),
     PICK_FB_ALBUM(FacebookAlbumFragment.class),

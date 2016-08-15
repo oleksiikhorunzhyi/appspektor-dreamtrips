@@ -17,6 +17,4 @@ public class GetCirclesHttpAction extends AuthorizedHttpAction {
     public ArrayList<Circle> getCircles() {
         return circles;
     }
-
-
 }

@@ -38,8 +38,6 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
     @Override
     public void onInjected() {
         super.onInjected();
-        Collections.sort(circles);
-        circles.add(0, Circle.all(context.getString(R.string.show_all)));
         query = "";
     }
 
@@ -51,6 +49,12 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
         this.position = position;
         selectedCircle = position != 0 ? circles.get(position) : null;
         reload();
+    }
+
+    @Override
+    protected void circlesUpdated() {
+        Collections.sort(circles);
+        circles.add(0, Circle.all(context.getString(R.string.show_all)));
     }
 
     @Override

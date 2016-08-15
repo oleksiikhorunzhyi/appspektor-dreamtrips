@@ -2,10 +2,12 @@ package com.worldventures.dreamtrips.modules.friends.presenter;
 
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.StringRes;
 
 import com.innahema.collections.query.queriables.Queryable;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
-import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
@@ -20,27 +22,50 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+
 public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPresenter.View> {
 
+    @Inject CirclesInteractor circlesInteractor;
+
     Handler handler = new Handler();
-
-    @Inject
-    SnappyRepository db;
-
     User friend;
 
     public FriendPreferencesPresenter(UserBundle userBundle) {
-        this.friend = userBundle.getUser();
+        friend = userBundle.getUser();
     }
 
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        List<Circle> circles = db.getCircles();
-        List<FriendGroupRelation> friendGroupRelations = Queryable.from(circles).map(element -> {
+        subscribeCircles();
+        updateCircles();
+    }
+
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void subscribeCircles() {
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles) {
+        List<FriendGroupRelation> friendGroupRelations = Queryable.from(resultCircles).map(element -> {
             return new FriendGroupRelation(element, friend);
         }).toList();
         view.addItems(friendGroupRelations);
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.informUser(messageId);
     }
 
     public void onEvent(FriendGroupRelationChangedEvent event) {

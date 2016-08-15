@@ -7,15 +7,17 @@ import com.github.pwittchen.networkevents.library.BusWrapper;
 import com.github.pwittchen.networkevents.library.ConnectivityStatus;
 import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
+import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.auth.api.command.LoginCommand;
+import com.worldventures.dreamtrips.modules.auth.api.command.UpdateAuthInfoCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
@@ -43,10 +45,10 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject DrawableUtil drawableUtil;
     @Inject SnappyRepository db;
     @Inject DtlLocationInteractor dtlLocationInteractor;
-    @Inject AuthorizedDataManager authorizedDataManager;
     @Inject LoginInteractor loginInteractor;
+    @Inject MessengerConnector messengerConnector;
+    @Inject AuthInteractor authInteractor;
 
-    private AuthorizedDataManager.AuthDataSubscriber authDataSubscriber;
     private NetworkEvents networkEvents;
 
     public void detectMode(String type) {
@@ -123,7 +125,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         ConnectivityStatus status = event.getConnectivityStatus();
         boolean internetConnected = status == MOBILE_CONNECTED || status == WIFI_CONNECTED_HAS_INTERNET || status == WIFI_CONNECTED;
         if (internetConnected) {
-            authorizedDataManager.updateData(getAuthDataSubscriber());
+            startPreloadChain();
         }
     }
 
@@ -160,34 +162,29 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     public void release() {
         if (networkEvents != null) networkEvents.unregister();
-        if (authorizedDataManager != null) authorizedDataManager.unsubscribe();
     }
 
     public void startPreloadChain() {
-        authorizedDataManager.updateData(getAuthDataSubscriber());
-    }
-
-    private AuthorizedDataManager.AuthDataSubscriber getAuthDataSubscriber() {
-        if (authDataSubscriber == null || authDataSubscriber.isUnsubscribed()) {
-            authDataSubscriber = new AuthorizedDataManager.AuthDataSubscriber()
-                    .onStart(this::onAuthStart)
-                    .onSuccess(this::onAuthSuccess)
-                    .onFail(this::onAuthFail);
-        }
-        return authDataSubscriber;
+        authInteractor.updateAuthInfoCommandActionPipe().createObservable(new UpdateAuthInfoCommand())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<UpdateAuthInfoCommand>()
+                        .onStart(updateAuthInfoCommand -> onAuthStart())
+                        .onSuccess(updateAuthInfoCommand -> onAuthSuccess())
+                        .onFail((updateAuthInfoCommand, throwable) -> onAuthFail(throwable)));
     }
 
     private void onAuthStart() {
-        if (view != null) view.configurationStarted();
+        view.configurationStarted();
     }
 
     private void onAuthSuccess() {
-        if (view != null) view.openMain();
+        TrackingHelper.setUserId(Integer.toString(appSessionHolder.get().get().getUser().getId()));
+        messengerConnector.connect();
+        view.openMain();
     }
 
     private void onAuthFail(Throwable throwable) {
-        if (view == null) return;
-
         if (throwable instanceof SessionAbsentException || AuthRetryPolicy.isLoginError(throwable)) {
             loginMode();
         } else {

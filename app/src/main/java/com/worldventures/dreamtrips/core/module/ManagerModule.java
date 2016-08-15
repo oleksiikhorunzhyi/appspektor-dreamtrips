@@ -3,11 +3,9 @@ package com.worldventures.dreamtrips.core.module;
 import android.content.Context;
 
 import com.messenger.storage.dao.PhotoDAO;
-import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.module.Injector;
 import com.techery.spares.module.qualifier.ForApplication;
 import com.techery.spares.module.qualifier.Global;
-import com.techery.spares.session.SessionHolder;
 import com.worldventures.dreamtrips.core.api.DreamSpiceManager;
 import com.worldventures.dreamtrips.core.api.DreamSpiceService;
 import com.worldventures.dreamtrips.core.api.FileDownloadSpiceManager;
@@ -16,13 +14,10 @@ import com.worldventures.dreamtrips.core.api.SocialUploaderyManager;
 import com.worldventures.dreamtrips.core.api.VideoDownloadSpiceService;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.session.CirclesInteractor;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DTCookieManager;
-import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.QueryTripsFilterDataInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.AuthorizedDataManager;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.LogoutDelegate;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -68,7 +63,6 @@ import io.techery.janet.Janet;
                 DtlMerchantInteractor.class,
                 DtlTransactionInteractor.class,
 
-                AuthorizedDataManager.class,
                 QueryTripsFilterDataInteractor.class,
         },
         library = true, complete = false
@@ -207,13 +201,5 @@ public class ManagerModule {
     @Singleton
     TripFilterDataProvider provideTripFilterDataProvider(@Global EventBus eventBus, SnappyRepository repository) {
         return new TripFilterDataProvider(eventBus, repository);
-    }
-
-    @Provides
-    @Singleton
-    AuthorizedDataManager provideAuthorizedDataUpdater(SessionHolder<UserSession> userSessionSessionHolder,
-                                                       AuthInteractor authInteractor,
-                                                       MessengerConnector messengerConnector) {
-        return new AuthorizedDataManager(userSessionSessionHolder, authInteractor, messengerConnector);
     }
 }

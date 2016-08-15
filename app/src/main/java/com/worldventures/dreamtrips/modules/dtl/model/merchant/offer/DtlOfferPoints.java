@@ -13,7 +13,7 @@ public class DtlOfferPoints extends DtlOffer {
     public DtlOfferPoints() {
     }
 
-    public DtlOfferPoints(com.worldventures.dreamtrips.api.dtl.merchats.model.Offer offer) {
+    public DtlOfferPoints(com.worldventures.dreamtrips.api.dtl.merchants.model.Offer offer) {
         super(offer);
     }
 

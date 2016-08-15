@@ -26,7 +26,7 @@ public abstract class DtlOffer implements Comparable<DtlOffer> {
     public DtlOffer() {
     }
 
-    public DtlOffer(com.worldventures.dreamtrips.api.dtl.merchats.model.Offer offer) {
+    public DtlOffer(com.worldventures.dreamtrips.api.dtl.merchants.model.Offer offer) {
         title = offer.offerData().title();
         description = offer.offerData().description();
         disclaimer = offer.offerData().disclaimer();

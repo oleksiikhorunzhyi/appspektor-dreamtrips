@@ -3,8 +3,8 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 import android.support.annotation.StringRes;
 
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableEstimationParams;
+import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;

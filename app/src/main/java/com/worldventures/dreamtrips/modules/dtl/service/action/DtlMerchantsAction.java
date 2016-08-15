@@ -2,9 +2,9 @@ package com.worldventures.dreamtrips.modules.dtl.service.action;
 
 import android.location.Location;
 
-import com.worldventures.dreamtrips.api.dtl.merchats.MerchantsHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.MerchantType;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.PartnerStatus;
+import com.worldventures.dreamtrips.api.dtl.merchants.MerchantsHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantType;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.PartnerStatus;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheOptions;
 import com.worldventures.dreamtrips.core.janet.cache.CachedAction;

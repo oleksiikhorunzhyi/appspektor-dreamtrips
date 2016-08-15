@@ -3,7 +3,7 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.worldventures.dreamtrips.api.dtl.merchats.model.MerchantMedia;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantMedia;
 import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 
 public class DtlMerchantMedia implements Parcelable, ImagePathHolder {

@@ -9,7 +9,7 @@ public class DtlOfferPerk extends DtlOffer {
     public DtlOfferPerk() {
     }
 
-    public DtlOfferPerk(com.worldventures.dreamtrips.api.dtl.merchats.model.Offer offer) {
+    public DtlOfferPerk(com.worldventures.dreamtrips.api.dtl.merchants.model.Offer offer) {
         super(offer);
     }
 

@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.Disclaimer;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.DisclaimerType;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Disclaimer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.DisclaimerType;
 
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)

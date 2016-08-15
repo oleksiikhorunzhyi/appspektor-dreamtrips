@@ -1,8 +1,8 @@
 package com.worldventures.dreamtrips.modules.dtl.model.mapping;
 
 import com.innahema.collections.query.queriables.Queryable;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.Offer;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.OfferType;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Offer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.OfferType;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlCurrency;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferPerk;

@@ -18,7 +18,7 @@ public class OperationDay implements Parcelable {
     public OperationDay() {
     }
 
-    public OperationDay(com.worldventures.dreamtrips.api.dtl.merchats.model.OperationDay operationDay) {
+    public OperationDay(com.worldventures.dreamtrips.api.dtl.merchants.model.OperationDay operationDay) {
         dayOfWeek = DayOfWeek.from(operationDay.dayOfWeek());
         operationHours = Queryable.from(operationDay.operationHours())
                 .map(OperationHours::new).toList();

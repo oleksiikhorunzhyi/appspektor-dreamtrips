@@ -15,7 +15,7 @@ public class OperationHours implements Parcelable {
     public OperationHours() {
     }
 
-    public OperationHours(com.worldventures.dreamtrips.api.dtl.merchats.model.OperationHours operationHours) {
+    public OperationHours(com.worldventures.dreamtrips.api.dtl.merchants.model.OperationHours operationHours) {
         from = operationHours.fromTime();
         to = operationHours.toTime();
     }

@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.google.gson.annotations.SerializedName;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.Currency;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Currency;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlCurrency implements Parcelable {

@@ -178,6 +178,7 @@ public class PodcastService extends Service {
         stopForeground(true);
         stopSelf();
         abandonAudioFocusCompletely();
+        unregisterHeadphonesReceiver();
     }
 
     private void releasePlayerIfNeeded() {

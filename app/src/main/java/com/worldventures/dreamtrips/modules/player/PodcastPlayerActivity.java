@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.modules.player;
 
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
@@ -23,6 +24,7 @@ public class PodcastPlayerActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         Timber.d("Podcasts -- PodcastPlayerActivity -- onCreate()");
     }
 

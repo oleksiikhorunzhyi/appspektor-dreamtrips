@@ -41,9 +41,7 @@ public class DtlOfferDeserializer implements JsonDeserializer<DtlOffer> {
                                 JsonDeserializationContext context) throws JsonParseException {
 
         String type = json.getAsJsonObject().get("type").getAsString();
-        JsonElement offerJson = json.getAsJsonObject().get("offer");
 
-        return modelByType.containsKey(type) && !offerJson.isJsonNull() ?
-                gson.fromJson(offerJson, modelByType.get(type)) : null;
+        return modelByType.containsKey(type) ? gson.fromJson(json, modelByType.get(type)) : null;
     }
 }

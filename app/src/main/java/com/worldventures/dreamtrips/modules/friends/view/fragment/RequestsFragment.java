@@ -61,6 +61,8 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
     @Named(RouteCreatorModule.PROFILE)
     RouteCreator<Integer> routeCreator;
 
+    private MaterialDialog blockingProgressDialog;
+
     private WeakHandler weakHandler;
 
     @Override
@@ -162,6 +164,21 @@ public class RequestsFragment extends BaseFragment<RequestsPresenter>
         weakHandler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(true);
         });
+    }
+
+    @Override
+    public void showBlockingProgress() {
+        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
+                .progress(true, 0)
+                .content(R.string.loading)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    @Override
+    public void hideBlockingProgress() {
+        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
     }
 
     @Override

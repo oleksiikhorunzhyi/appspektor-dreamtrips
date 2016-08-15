@@ -10,6 +10,7 @@ import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.profile.model.FriendGroupRelation;
 import com.worldventures.dreamtrips.modules.profile.api.AddFriendToGroupCommand;
@@ -53,8 +54,13 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
                         .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
                         .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesStart() {
+        view.showBlockingProgress();
     }
 
     private void onCirclesSuccess(List<Circle> resultCircles) {
@@ -62,9 +68,11 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
             return new FriendGroupRelation(element, friend);
         }).toList();
         view.addItems(friendGroupRelations);
+        view.hideBlockingProgress();
     }
 
     private void onCirclesError(@StringRes String messageId) {
+        view.hideBlockingProgress();
         view.informUser(messageId);
     }
 
@@ -90,7 +98,7 @@ public class FriendPreferencesPresenter extends Presenter<FriendPreferencesPrese
         }, event.getCircle().getId(), SystemClock.uptimeMillis() + 300);
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends Presenter.View, BlockingProgressView {
         void addItems(List<FriendGroupRelation> circles);
     }
 }

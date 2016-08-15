@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -73,6 +74,7 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class FeedPresenter extends Presenter<FeedPresenter.View> {
@@ -94,7 +96,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
     @Inject CirclesInteractor circlesInteractor;
 
-    private List<Circle> circles = new ArrayList<>();
     private Circle filterCircle;
     private UidItemDelegate uidItemDelegate;
     private SuggestedPhotoCellPresenterHelper suggestedPhotoHelper;
@@ -110,7 +111,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void onInjected() {
         super.onInjected();
         entityManager.setRequestingPresenter(this);
-        if (circles.isEmpty()) circles = Queryable.from(createDefaultFilterCircle()).toList();
     }
 
     @Override
@@ -132,7 +132,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
-        subscribeCircles();
         updateCircles();
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
@@ -156,28 +155,45 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     // Update circles
     ///////////////////////////////////////////////////////////////////////////
 
-    private void updateCircles() {
-        circlesInteractor.pipe().send(new CirclesCommand());
+    private Circle createDefaultFilterCircle() {
+        return Circle.all(context.getString(R.string.all));
     }
 
-    private void subscribeCircles() {
+    public void applyFilter(Circle selectedCircle) {
+        filterCircle = selectedCircle;
+        db.saveFilterCircle(selectedCircle);
+        refreshFeed();
+    }
+
+    public void actionFilter() {
         circlesInteractor.pipe()
-                .observe()
+                .createObservable(new CirclesCommand())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
                         .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
                         .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
     }
 
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void onCirclesStart() {
+        view.showBlockingProgress();
+    }
+
     private void onCirclesSuccess(List<Circle> resultCircles) {
-        circles.clear();
-        circles.add(createDefaultFilterCircle());
-        circles.addAll(resultCircles);
-        Collections.sort(circles);
+        resultCircles.add(createDefaultFilterCircle());
+        Collections.sort(resultCircles);
+        view.hideBlockingProgress();
+        view.showFilter(resultCircles, filterCircle);
     }
 
     private void onCirclesError(@StringRes String messageId) {
+        view.hideBlockingProgress();
         view.informUser(messageId);
     }
 
@@ -249,24 +265,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private Date getLastFeedDate() {
         return feedItems.get(feedItems.size() - 1).getCreatedAt();
-    }
-
-    public List<Circle> getFilterCircles() {
-        return circles;
-    }
-
-    private Circle createDefaultFilterCircle() {
-        return Circle.all(context.getString(R.string.all));
-    }
-
-    public Circle getAppliedFilterCircle() {
-        return filterCircle;
-    }
-
-    public void applyFilter(Circle selectedCircle) {
-        filterCircle = selectedCircle;
-        db.saveFilterCircle(selectedCircle);
-        refreshFeed();
     }
 
     public void onUnreadConversationsClick() {
@@ -501,9 +499,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                 }, throwable -> Timber.w("Can't get friends notifications count"));
     }
 
-    public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
+    public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView, BlockingProgressView {
 
         void setRequestsCount(int count);
+
+        void showFilter(List<Circle> circles, Circle selectedCircle);
 
         void setUnreadConversationCount(int count);
 

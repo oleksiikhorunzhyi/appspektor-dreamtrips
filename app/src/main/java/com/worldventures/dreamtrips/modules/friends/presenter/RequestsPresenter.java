@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.DeleteRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.GetRequestsQuery;
@@ -44,41 +45,18 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     @Inject
     CirclesInteractor circlesInteractor;
 
-    private List<Circle> circles = new ArrayList<>();
-
-    @Override
-    public void takeView(View view) {
-        super.takeView(view);
-        subscribeCircles();
-        updateCircles();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         reloadRequests();
     }
 
-    private void updateCircles() {
-        circlesInteractor.pipe().send(new CirclesCommand());
-    }
-
-    private void subscribeCircles() {
-        circlesInteractor.pipe()
-                .observe()
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
-                .subscribe(new ActionStateSubscriber<CirclesCommand>()
-                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
-    }
-
-    private void onCirclesSuccess(List<Circle> resultCircles) {
-        circles.clear();
-        circles.addAll(resultCircles);
+    private void onCirclesStart() {
+        view.showBlockingProgress();
     }
 
     private void onCirclesError(@StringRes String messageId) {
+        view.hideBlockingProgress();
         view.informUser(messageId);
     }
 
@@ -127,6 +105,18 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void acceptAllRequests() {
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
+                        .onSuccess(circlesCommand -> acceptAllCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void acceptAllCirclesSuccess(List<Circle> circles) {
+        view.hideBlockingProgress();
         view.showAddFriendDialog(circles, position -> {
             if (view.isVisibleOnScreen()) {
                 view.startLoading();
@@ -149,7 +139,18 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
     }
 
     public void acceptRequest(User user) {
-        eventBus.post(new AcceptRequestEvent(user));
+        circlesInteractor.pipe()
+                .observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
+                        .onSuccess(circlesCommand -> acceptCirclesSuccess(user, circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void acceptCirclesSuccess(User user, List<Circle> circles) {
+        view.hideBlockingProgress();
         view.showAddFriendDialog(circles, position -> {
             view.startLoading();
             doRequest(new ActOnRequestCommand(user.getId(),
@@ -160,8 +161,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
                         onSuccess(user);
                         reloadRequests();
                         updateRequestsCount();
-                    },
-                    this::onError);
+                    }, this::onError);
         });
     }
 
@@ -223,7 +223,7 @@ public class RequestsPresenter extends Presenter<RequestsPresenter.View> {
         }
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends Presenter.View, BlockingProgressView {
         void startLoading();
 
         void openUser(UserBundle userBundle);

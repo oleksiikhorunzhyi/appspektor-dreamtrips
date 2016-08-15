@@ -148,10 +148,11 @@ public class PodcastService extends Service {
                 audioFocusDelegate.requestFocus().toBlocking().first();
         if (currentState == AudioFocusDelegate.AudioFocusState.GAINED) {
             player.start();
-            if (audioFocusSubscription == null) {
-                audioFocusSubscription = audioFocusDelegate.getAudioFocusObservable()
-                        .subscribe(this::processAudioFocusState);
+            if (audioFocusSubscription != null) {
+                audioFocusSubscription.unsubscribe();
             }
+            audioFocusSubscription = audioFocusDelegate.getAudioFocusObservable()
+                    .subscribe(this::processAudioFocusState);
         }
     }
 

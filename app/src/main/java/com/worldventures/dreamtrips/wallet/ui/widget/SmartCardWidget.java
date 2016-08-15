@@ -41,8 +41,8 @@ public class SmartCardWidget extends FrameLayout {
     }
 
     public void bindCard(SmartCard smartCard) {
-        String url = smartCard.getUserPhoto();
-        bankLabel.setText(smartCard.getCardName());
+        String url = smartCard.userPhoto();
+        bankLabel.setText(smartCard.cardName());
         if (url != null) scAvatar.setImageURI(Uri.parse(url));
 
     }

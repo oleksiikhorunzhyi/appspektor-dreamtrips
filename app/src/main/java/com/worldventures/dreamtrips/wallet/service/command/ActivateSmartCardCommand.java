@@ -25,10 +25,10 @@ public class ActivateSmartCardCommand extends Command<SmartCard> implements Inje
     protected void run(CommandCallback<SmartCard> callback) throws Throwable {
         SmartCard smartCard = ImmutableSmartCard.builder()
                 .from(this.smartCard)
-                .status(SmartCard.CardStatus.ACTIVE)
+                .cardStatus(SmartCard.CardStatus.ACTIVE)
                 .build();
         snappyRepository.saveSmartCard(smartCard);
-        snappyRepository.setActiveSmartCardId(smartCard.getSmartCardId());
+        snappyRepository.setActiveSmartCardId(smartCard.smartCardId());
         callback.onSuccess(smartCard);
     }
 }

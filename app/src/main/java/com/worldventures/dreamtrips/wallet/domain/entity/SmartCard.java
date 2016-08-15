@@ -7,17 +7,22 @@ import org.immutables.value.Value;
 @Value.Immutable
 public abstract class SmartCard {
 
-    public abstract String getSmartCardId();
+    public abstract String smartCardId();
 
-    public abstract CardStatus getStatus();
+    public abstract CardStatus cardStatus();
 
     @Value.Default
-    public String getCardName() {
+    public String cardName() {
         return "";
     }
 
+    @Value.Default
+    public boolean stealthMode() {
+        return false;
+    }
+
     @Nullable
-    public abstract String getUserPhoto();
+    public abstract String userPhoto();
 
     public enum CardStatus {
         ACTIVE, INACTIVE, DRAFT

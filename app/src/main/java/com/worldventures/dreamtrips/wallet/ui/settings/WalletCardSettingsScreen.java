@@ -19,11 +19,8 @@ import rx.Observable;
 public class WalletCardSettingsScreen extends WalletFrameLayout<WalletCardSettingsPresenter.Screen, WalletCardSettingsPresenter, WalletCardSettingsPath>
         implements WalletCardSettingsPresenter.Screen {
 
-    @InjectView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @InjectView(R.id.stealth_mode_switcher)
-    SwitchCompat stealthModeSwitcher;
+    @InjectView(R.id.toolbar) Toolbar toolbar;
+    @InjectView(R.id.stealth_mode_switcher) SwitchCompat stealthModeSwitcher;
 
     public WalletCardSettingsScreen(Context context) {
         super(context);

@@ -49,7 +49,7 @@ public class CreateAndConnectToCardCommand extends Command<Void> implements Inje
     }
 
     public void createSmartCard() {
-        snappyRepository.saveSmartCard(ImmutableSmartCard.builder().smartCardId(code).status(SmartCard.CardStatus.DRAFT).build());
+        snappyRepository.saveSmartCard(ImmutableSmartCard.builder().smartCardId(code).cardStatus(SmartCard.CardStatus.DRAFT).build());
     }
 
     public String getCode() {

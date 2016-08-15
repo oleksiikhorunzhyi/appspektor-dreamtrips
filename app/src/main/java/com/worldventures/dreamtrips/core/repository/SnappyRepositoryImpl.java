@@ -279,7 +279,7 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
     @Override
     public void saveSmartCard(SmartCard smartCard) {
-        act(db -> db.put(WALLET_SMART_CARD + smartCard.getSmartCardId(), smartCard));
+        act(db -> db.put(WALLET_SMART_CARD + smartCard.smartCardId(), smartCard));
     }
 
     @Override

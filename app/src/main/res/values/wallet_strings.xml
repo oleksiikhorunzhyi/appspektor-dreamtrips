@@ -76,6 +76,8 @@
     <string name="wallet_card_settings_title">Settings</string>
     <string name="wallet_card_settings_stealth_mode">Stealth Mode</string>
     <string name="wallet_card_settings_reset_pin">Reset Pin</string>
+    <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
+    <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
     
     <!--card type-->
     <string name="wallet_card_financial_service_master_card">Master Card</string>

@@ -27,7 +27,7 @@ public class BankCardConverter implements Converter<Record, BankCard> {
     public Record to(BankCard card) {
         // TODO: use normal id
         return ImmutableRecord.builder()
-                .id(Byte.parseByte(card.id()))
+                .id(Integer.parseInt(card.id()))
                 .title(card.title())
                 .cardNumber(String.valueOf(card.number()))
                 .cvv(String.valueOf(card.cvv()))

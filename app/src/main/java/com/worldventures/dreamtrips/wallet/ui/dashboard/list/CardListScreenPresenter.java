@@ -53,8 +53,16 @@ public class CardListScreenPresenter extends WalletPresenter<CardListScreenPrese
                 .createObservableResult(new GetActiveSmartCardCommand())
                 .compose(bindViewIoToMainComposer())
                 .subscribe(it -> setSmartCard(it.getResult()));
+
+        observeSmartCardChanges();
     }
 
+    private void observeSmartCardChanges() {
+        smartCardInteractor.smartCardModifierPipe()
+                .observeSuccess()
+                .compose(bindViewIoToMainComposer())
+                .subscribe(command -> setSmartCard(command.smartCard()));
+    }
     protected void setSmartCard(SmartCard smartCard) {
         activeSmartCard = smartCard;
         getView().showSmartCardInfo(smartCard);

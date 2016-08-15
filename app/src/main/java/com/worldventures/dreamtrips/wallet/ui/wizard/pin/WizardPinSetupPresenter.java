@@ -42,7 +42,7 @@ public class WizardPinSetupPresenter extends WalletPresenter<WizardPinSetupPrese
     @Override
     public void attachView(Screen view) {
         super.attachView(view);
-        view.setUserAvatar(smartCard.getUserPhoto());
+        view.setUserAvatar(smartCard.userPhoto());
         observeSetupFinishedPipe();
     }
 

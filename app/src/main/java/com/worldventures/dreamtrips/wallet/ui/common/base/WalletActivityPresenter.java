@@ -24,7 +24,7 @@ public class WalletActivityPresenter extends ActivityPresenter<ActivityPresenter
     public boolean hasSmartCard() {
         List<SmartCard> smartCards = snappyRepository.getSmartCards();
         for (SmartCard card : smartCards) {
-            if (card.getStatus() == SmartCard.CardStatus.ACTIVE) {
+            if (card.cardStatus() == SmartCard.CardStatus.ACTIVE) {
                 return true;
             }
         }

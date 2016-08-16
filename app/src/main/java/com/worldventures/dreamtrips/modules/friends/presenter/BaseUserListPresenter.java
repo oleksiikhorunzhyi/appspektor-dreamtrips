@@ -11,6 +11,7 @@ import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.friends.api.ActOnRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.AddUserRequestCommand;
 import com.worldventures.dreamtrips.modules.friends.api.DeleteRequestCommand;
@@ -36,61 +37,54 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.techery.janet.ActionState;
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View> extends Presenter<T> {
 
+    protected List<User> users = new ArrayList<>();
+    @Inject
+    StartChatDelegate startChatDelegate;
+    @Inject
+    CirclesInteractor circlesInteractor;
     private int previousTotal = 0;
     private boolean loading = true;
     private int nextPage = 1;
-    protected List<Circle> circles = new ArrayList<>();
-    protected List<User> users = new ArrayList<>();
-
-    @Inject StartChatDelegate startChatDelegate;
-    @Inject CirclesInteractor circlesInteractor;
-
     private boolean loadUsersRequestLocked;
 
     @Override
     public void takeView(T view) {
         super.takeView(view);
-        subscribeCircles();
-        updateCircles();
         if (isNeedPreload())
             reload();
     }
 
-    private void updateCircles() {
-        circlesInteractor.pipe().send(new CirclesCommand());
-    }
-
-    private void subscribeCircles() {
-        circlesInteractor.pipe()
+    protected Observable<ActionState<CirclesCommand>> getCirclesObservable() {
+        return circlesInteractor.pipe()
                 .observe()
                 .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindView())
-                .subscribe(new ActionStateSubscriber<CirclesCommand>()
-                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
-                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+                .compose(bindView());
+
     }
 
-    private void onCirclesSuccess(List<Circle> resultCircles) {
-        circles.clear();
-        circles.addAll(resultCircles);
-        Collections.sort(circles);
-        circlesUpdated();
+    protected void onCirclesStart() {
+        view.showBlockingProgress();
     }
 
-    private void onCirclesError(@StringRes String messageId) {
+    protected void onCirclesSuccess(List<Circle> resultCircles) {
+        Collections.sort(resultCircles);
+        view.hideBlockingProgress();
+    }
+
+    protected void onCirclesError(@StringRes String messageId) {
+        view.hideBlockingProgress();
         view.informUser(messageId);
     }
 
     protected boolean isNeedPreload() {
         return true;
-    }
-
-    protected void circlesUpdated() {
     }
 
     @Override
@@ -160,20 +154,44 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     //////////////////////
 
     public void onEvent(AcceptRequestEvent event) {
-        if (view.isVisibleOnScreen()) {
-            view.showAddFriendDialog(circles, position -> {
-                view.startLoading();
-                doRequest(new ActOnRequestCommand(event.getUser().getId(),
-                                ActOnRequestCommand.Action.CONFIRM.name(),
-                                circles.get(position).getId()),
-                        object -> {
-                            eventBus.post(new ReloadFriendListEvent());
-                            User user = event.getUser();
-                            user.setRelationship(User.Relationship.FRIEND);
-                            userActionSucceed(user);
-                        });
-            });
-        }
+        if (view.isVisibleOnScreen())
+            getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>()
+                    .onStart(circlesCommand -> onCirclesStart())
+                    .onSuccess(circlesCommand -> onCirclesSuccessAcceptRequest(event.getUser(),
+                            circlesCommand.getResult()))
+                    .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+
+    }
+
+    private void onCirclesSuccessAcceptRequest(User user, List<Circle> circles) {
+        onCirclesSuccess(circles);
+        view.showAddFriendDialog(circles, position -> {
+            view.startLoading();
+            doRequest(new ActOnRequestCommand(user.getId(),
+                            ActOnRequestCommand.Action.CONFIRM.name(),
+                            circles.get(position).getId()),
+                    object -> {
+                        eventBus.post(new ReloadFriendListEvent());
+                        user.setRelationship(User.Relationship.FRIEND);
+                        userActionSucceed(user);
+                    });
+        });
+    }
+
+    public void onEvent(AddUserRequestEvent event) {
+        if (view.isVisibleOnScreen())
+            getCirclesObservable().subscribe(new ActionStateSubscriber<CirclesCommand>()
+                    .onStart(circlesCommand -> onCirclesStart())
+                    .onSuccess(circlesCommand -> onCirclesSuccessAddUserRequest(event.getUser(),
+                            circlesCommand.getResult()))
+                    .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesSuccessAddUserRequest(User user, List<Circle> circles) {
+        onCirclesSuccess(circles);
+        view.showAddFriendDialog(circles, arg -> {
+            addFriend(user, circles.get(arg));
+        });
     }
 
     public void onEvent(CancelRequestEvent event) {
@@ -220,12 +238,6 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
     public void onEvent(StartSingleChatEvent event) {
         startChatDelegate.startSingleChat(event.getFriend(), conversation ->
                 MessengerActivity.startMessengerWithConversation(activityRouter.getContext(), conversation.getId()));
-    }
-
-    public void onEvent(AddUserRequestEvent event) {
-        view.showAddFriendDialog(circles, arg -> {
-            addFriend(event.getUser(), circles.get(arg));
-        });
     }
 
     public void onEvent(FriendGroupRelationChangedEvent event) {
@@ -282,7 +294,7 @@ public abstract class BaseUserListPresenter<T extends BaseUserListPresenter.View
         return 100;
     }
 
-    public interface View extends Presenter.View {
+    public interface View extends Presenter.View, BlockingProgressView {
 
         void startLoading();
 

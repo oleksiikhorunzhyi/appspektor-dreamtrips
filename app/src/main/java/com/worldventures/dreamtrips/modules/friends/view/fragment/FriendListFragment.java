@@ -119,7 +119,7 @@ public class FriendListFragment extends BaseUsersFragment<FriendListPresenter, B
         filterPopupWindow.setAnchorView(filter);
         filterPopupWindow.setOnItemClickListener((parent, view, pos, id) -> {
             filterPopupWindow.dismiss();
-            getPresenter().reloadWithFilter(pos);
+            getPresenter().reloadWithFilter(circles.get(pos));
             TrackingHelper.filterMyFriendsFeed(circles.get(pos).getName());
         });
         filterPopupWindow.show();

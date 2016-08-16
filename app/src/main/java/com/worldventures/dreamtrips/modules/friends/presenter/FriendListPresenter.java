@@ -4,6 +4,7 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.request.Query;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.friends.api.GetFriendsQuery;
 import com.worldventures.dreamtrips.modules.friends.events.ReloadFriendListEvent;
@@ -17,6 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import icepick.State;
+import io.techery.janet.helper.ActionStateSubscriber;
 
 public class FriendListPresenter extends BaseUserListPresenter<FriendListPresenter.View> {
 
@@ -42,19 +44,22 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
     }
 
     public void onFilterClicked() {
+        getCirclesObservable()
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
+                        .onSuccess(circlesCommand -> onCirclesFilterSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesFilterSuccess(List<Circle> circles) {
+        onCirclesSuccess(circles);
+        circles.add(0, Circle.all(context.getString(R.string.show_all)));
         view.showFilters(circles, position);
     }
 
-    public void reloadWithFilter(int position) {
-        this.position = position;
-        selectedCircle = position != 0 ? circles.get(position) : null;
+    public void reloadWithFilter(Circle circle) {
+        selectedCircle = circle;
         reload();
-    }
-
-    @Override
-    protected void circlesUpdated() {
-        Collections.sort(circles);
-        circles.add(0, Circle.all(context.getString(R.string.show_all)));
     }
 
     @Override

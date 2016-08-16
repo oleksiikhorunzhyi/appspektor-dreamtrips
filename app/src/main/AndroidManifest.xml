@@ -71,7 +71,6 @@
         <activity
             android:name=".modules.common.view.activity.LaunchActivity"
             android:configChanges="orientation|screenSize|layoutDirection|locale"
-            android:theme="@style/Theme.DreamTripsTheme.Launch"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

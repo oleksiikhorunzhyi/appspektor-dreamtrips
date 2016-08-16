@@ -15,8 +15,4 @@
         <item name="actionModeBackground">@drawable/background_action_mode</item>
     </style>
 
-    <style name="Theme.DreamTripsTheme.Launch">
-        <item name="android:windowBackground">@drawable/background_login</item>
-    </style>
-
 </resources>

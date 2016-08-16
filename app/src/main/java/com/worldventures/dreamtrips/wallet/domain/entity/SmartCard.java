@@ -11,6 +11,10 @@ public abstract class SmartCard {
 
     public abstract CardStatus cardStatus();
 
+    public abstract String deviceName();
+
+    public abstract String deviceAddress();
+
     @Value.Default
     public String cardName() {
         return "";
@@ -28,6 +32,11 @@ public abstract class SmartCard {
 
     @Nullable
     public abstract String userPhoto();
+
+    @Value.Default
+    public int batteryLevel() {
+        return 0;
+    }
 
     public enum CardStatus {
         ACTIVE, INACTIVE, DRAFT

@@ -50,8 +50,7 @@ public class SmartCardWidget extends FrameLayout {
         bankLabel.setText(smartCard.cardName());
         if (url != null) scAvatar.setImageURI(Uri.parse(url));
         cbLock.setChecked(smartCard.lock());
-        // TODO: 8/16/16 mockData
-        batteryView.setLevel(73);
+        batteryView.setLevel(smartCard.batteryLevel());
     }
 
     public void bindCount(List<CardStackViewModel> items) {

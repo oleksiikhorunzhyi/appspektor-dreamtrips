@@ -4,6 +4,7 @@ import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
+import com.worldventures.dreamtrips.wallet.service.command.ConnectSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
@@ -27,7 +28,7 @@ import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
 @Singleton
 public final class SmartCardInteractor {
-    private final ActionPipe<ConnectAction> connectionPipe;
+    private final ActionPipe<ConnectSmartCardCommand> connectionPipe;
     private final WriteActionPipe<CardListCommand> cardsListPipe;
     private final WriteActionPipe<AttachCardCommand> addRecordPipe;
     private final WriteActionPipe<CardStacksCommand> cardStacksPipe;
@@ -42,7 +43,7 @@ public final class SmartCardInteractor {
 
     @Inject
     public SmartCardInteractor(@Named(JANET_WALLET) Janet janet) {
-        connectionPipe = janet.createPipe(ConnectAction.class, Schedulers.io());
+        connectionPipe = janet.createPipe(ConnectSmartCardCommand.class, Schedulers.io());
         cardsListPipe = janet.createPipe(CardListCommand.class, Schedulers.io());
         addRecordPipe = janet.createPipe(AttachCardCommand.class, Schedulers.io());
         cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
@@ -58,7 +59,7 @@ public final class SmartCardInteractor {
         saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
     }
 
-    public ActionPipe<ConnectAction> connectActionPipe() {
+    public ActionPipe<ConnectSmartCardCommand> connectActionPipe() {
         return connectionPipe;
     }
 

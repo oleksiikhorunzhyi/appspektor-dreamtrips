@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.wallet.di;
 
 import com.worldventures.dreamtrips.wallet.service.command.ActivateSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CompressImageForSmartCardCommand;
@@ -9,12 +10,17 @@ import com.worldventures.dreamtrips.wallet.service.command.CreateAndConnectToCar
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.LoadImageForSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetDefaultCardOnDeviceCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupSmartCardNameCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetupUserDataCommand;
+
+import com.worldventures.dreamtrips.wallet.service.command.SetupDefaultAddressCommand;
 
 import dagger.Module;
 
@@ -33,6 +39,13 @@ import dagger.Module;
                 FetchDefaultCardCommand.class,
                 ActivateSmartCardCommand.class,
                 CreateAndConnectToCardCommand.class,
+                GetActiveSmartCardCommand.class,
+
+                CardCountCommand.class,
+                GetDefaultAddressCommand.class,
+                SaveCardDetailsDataCommand.class,
+                SetupDefaultAddressCommand.class,
+                SetDefaultCardOnDeviceCommand.class,
                 FetchSmartCardLockState.class,
                 SetStealthModeCommand.class,
                 GetActiveSmartCardCommand.class,

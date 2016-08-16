@@ -31,7 +31,8 @@ import rx.Observable;
 
 public class CardListScreenPresenter extends WalletPresenter<CardListScreenPresenter.Screen, Parcelable> {
 
-    @Inject SmartCardInteractor smartCardInteractor;
+    @Inject
+    SmartCardInteractor smartCardInteractor;
 
     private SmartCard activeSmartCard;
 

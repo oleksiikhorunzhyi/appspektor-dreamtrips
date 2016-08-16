@@ -21,6 +21,7 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
 
@@ -70,6 +71,7 @@ public interface SnappyRepository {
     String WALLET_ACTIVE_SMART_CARD_ID = "WALLET_ACTIVE_SMART_CARD_ID";
     String WALLET_DEVICE_STORAGE = "WALLET_DEVICE_STORAGE";
     String WALLET_DEFAULT_BANK_CARD = "WALLET_DEFAULT_BANK_CARD";
+    String WALLET_DEFAULT_ADDRESS = "WALLET_DEFAULT_ADDRESS";
 
     void clearAll();
 
@@ -215,6 +217,10 @@ public interface SnappyRepository {
     void saveWalletDefaultCardId(String id);
 
     String readWalletDefaultCardId();
+
+    void saveDefaultAddress(AddressInfo addressInfo);
+
+    AddressInfo readDefaultAddress();
 
     void saveSmartCard(SmartCard smartCard);
 

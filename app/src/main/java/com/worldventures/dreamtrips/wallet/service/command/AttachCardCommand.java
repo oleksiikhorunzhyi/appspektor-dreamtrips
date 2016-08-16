@@ -13,6 +13,8 @@ import io.techery.janet.command.annotations.CommandAction;
 import io.techery.janet.helper.ActionStateToActionTransformer;
 import io.techery.janet.smartcard.action.records.AddRecordAction;
 import io.techery.janet.smartcard.model.Record;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
@@ -26,17 +28,28 @@ public class AttachCardCommand extends Command<Record> implements InjectableActi
     private final BankCardConverter converter = new BankCardConverter();
 
     private final BankCard card;
+    private final boolean setAsDefaultCard;
 
-    public AttachCardCommand(BankCard card) {
+    public AttachCardCommand(BankCard card, boolean setAsDefaultCard) {
         this.card = card;
+        this.setAsDefaultCard = setAsDefaultCard;
     }
 
-    @Override protected void run(CommandCallback<Record> callback) throws Throwable {
+    @Override
+    protected void run(CommandCallback<Record> callback) throws Throwable {
         Record record = converter.to(card);
         janet.createPipe(AddRecordAction.class)
                 .createObservable(new AddRecordAction(record))
                 .compose(new ActionStateToActionTransformer<>())
                 .map(it -> it.record)
+                .flatMap(addedRecord -> saveDefaultCard(addedRecord))
                 .subscribe(callback::onSuccess, callback::onFail);
     }
+
+    private Observable<Record> saveDefaultCard(Record record) {
+        return !setAsDefaultCard ? Observable.just(record) : janet.createPipe(SetDefaultCardOnDeviceCommand.class, Schedulers.io())
+                .createObservableResult(new SetDefaultCardOnDeviceCommand(String.valueOf(record.id())))
+                .map(setDefaultCardOnDeviceAction -> record);
+    }
+
 }

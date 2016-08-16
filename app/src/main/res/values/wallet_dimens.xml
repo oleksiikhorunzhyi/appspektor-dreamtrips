@@ -18,6 +18,14 @@
     <dimen name="wallet_details_screen_edit_address_button_text_size">16sp</dimen>
     <dimen name="wallet_details_screen_delete_card_button_text_size">20sp</dimen>
 
+    <dimen name="wallet_gray_edit_text_text_size">18sp</dimen>
+    <dimen name="wallet_gray_text_view_text_size">14sp</dimen>
+
+    <dimen name="wallet_add_card_details_component_text_margin_left">8dp</dimen>
+    <dimen name="wallet_add_card_details_component_margin_top">10dp</dimen>
+    <dimen name="wallet_add_card_details_edittext_margin_top">3dp</dimen>
+    <dimen name="wallet_add_card_details_default_address_margin_left">34dp</dimen>
+
     <dimen name="wallet_wizard_avatar_size">192dp</dimen>
     <dimen name="wallet_wizard_bar_code_border_size">48dp</dimen>
 

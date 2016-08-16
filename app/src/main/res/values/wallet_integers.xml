@@ -3,4 +3,6 @@
     <integer name="wallet_wizard_card_alias_length">256</integer>
 
     <integer name="wallet_wizard_user_full_name_length">43</integer>
+
+    <integer name="wallet_gray_edit_text_text_length">256</integer>
 </resources>

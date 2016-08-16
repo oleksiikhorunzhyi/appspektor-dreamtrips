@@ -34,6 +34,8 @@ import com.worldventures.dreamtrips.modules.tripsimages.model.IFullScreenObject;
 import com.worldventures.dreamtrips.modules.tripsimages.model.SocialViewPagerState;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
 import com.worldventures.dreamtrips.modules.video.model.CachedEntity;
+import com.worldventures.dreamtrips.wallet.domain.entity.AddressInfo;
+import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableAddressInfo;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableSmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
 import com.worldventures.dreamtrips.wallet.domain.entity.card.Card;
@@ -275,6 +277,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
 
     @Override public String readWalletDefaultCardId() {
         return actWithResult(db -> db.get(WALLET_DEFAULT_BANK_CARD)).orNull();
+    }
+
+    @Override
+    public void saveDefaultAddress(AddressInfo addressInfo) {
+        act(db -> db.put(WALLET_DEFAULT_ADDRESS, addressInfo));
+    }
+
+    @Override
+    public AddressInfo readDefaultAddress() {
+        return actWithResult(db -> db.getObject(WALLET_DEFAULT_ADDRESS, ImmutableAddressInfo.class)).orNull();
     }
 
     @Override

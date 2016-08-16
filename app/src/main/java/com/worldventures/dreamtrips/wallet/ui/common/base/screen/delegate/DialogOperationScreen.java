@@ -76,6 +76,7 @@ public class DialogOperationScreen implements OperationScreen<SweetAlertDialog> 
             if(action != null) {
                 action.call(sweetAlertDialog);
             }
+            sweetAlertDialog.dismiss();
         });
         errorDialog.show();
     }

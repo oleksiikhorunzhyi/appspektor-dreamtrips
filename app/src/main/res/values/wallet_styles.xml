@@ -7,6 +7,8 @@
     <color name="wallet_color_background_dark_with_alpha">#CC006699</color>
     <color name="wallet_color_text_color_toolbar">#005e92</color>
     <color name="wallet_color_round_check_box_text">#666666</color>
+    <color name="wallet_color_gray_hint_text_color">#9a9a9a</color>
+    <color name="wallet_color_gray_textview_text_color">#999999</color>
 
     <style name="WalletTheme" parent="AppTheme">
         <item name="android:textAppearanceLarge">@style/WalletTheme.TextAppearanceLarge</item>
@@ -44,6 +46,15 @@
         <item name="colorControlHighlight">@color/wallet_color_background_light</item>
     </style>
 
+    <style name="WalletTheme.Settings">
+        <item name="colorControlActivated">@android:color/white</item>
+
+        <item name="android:buttonStyle">@style/WalletTheme.Wizard.WhiteTextButton</item>
+        <item name="android:editTextStyle">@style/WalletTheme.GrayEditText</item>
+        <item name="android:textViewStyle">@style/WalletTheme.GrayTextView</item>
+        <item name="android:checkboxStyle">@style/WalletTheme.RoundCheckBox</item>
+    </style>
+
     <style name="WalletTheme.Wizard.ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorControlNormal">@android:color/white</item>
         <item name="toolbarStyle">@style/WalletTheme.Wizard.ToolbarStyle</item>
@@ -56,6 +67,10 @@
     <style name="WalletTheme.Wizard.ButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:background">@color/wallet_color_primary</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="WalletTheme.Wizard.WhiteTextButton" parent="WalletTheme.Wizard.ButtonStyle">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <style name="WalletTheme.Wizard.TextAppearanceLarge" parent="TextAppearance.AppCompat.Large">
@@ -115,6 +130,7 @@
 
     <style name="WalletTheme.ToolbarStyle" parent="Widget.AppCompat.Toolbar">
         <item name="navigationIcon">@drawable/blue_arrow</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="titleTextColor">@color/wallet_color_text_color_toolbar</item>
     </style>
 
@@ -130,4 +146,19 @@
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
+
+    <style name="WalletTheme.GrayEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColorHint">@color/wallet_color_gray_hint_text_color</item>
+        <item name="android:textSize">@dimen/wallet_gray_edit_text_text_size</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:maxLength">@integer/wallet_gray_edit_text_text_length</item>
+        <item name="android:paddingLeft">@dimen/wallet_add_card_details_component_text_margin_left</item>
+    </style>
+
+    <style name="WalletTheme.GrayTextView">
+        <item name="android:textColor">@color/wallet_color_gray_textview_text_color</item>
+        <item name="android:textSize">@dimen/wallet_gray_text_view_text_size</item>
+    </style>
+
 </resources>

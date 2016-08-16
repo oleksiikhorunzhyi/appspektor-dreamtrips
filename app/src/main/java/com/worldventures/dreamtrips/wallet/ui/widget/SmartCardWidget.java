@@ -9,15 +9,10 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.innahema.collections.query.queriables.Queryable;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
-import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.utils.QuantityHelper;
 import com.worldventures.dreamtrips.wallet.domain.entity.SmartCard;
-import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewModel;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -53,8 +48,7 @@ public class SmartCardWidget extends FrameLayout {
         batteryView.setLevel(smartCard.batteryLevel());
     }
 
-    public void bindCount(List<CardStackViewModel> items) {
-        int cardCount = stacksToItemsCount(items);
+    public void bindCount(int cardCount) {
         if (cardCount > 0) {
             int resId = QuantityHelper.chooseResource(cardCount, R.string.wallet_card_list_record_connected, R.string.wallet_card_list_records_connected);
             connectedCardsCount.setText(getResources().getString(resId, cardCount));
@@ -62,13 +56,6 @@ public class SmartCardWidget extends FrameLayout {
         } else {
             connectedCardsCount.setVisibility(INVISIBLE);
         }
-    }
-
-    private int stacksToItemsCount(@NotNull List<CardStackViewModel> items) {
-        if (items == null) return 0;
-        Integer sum = Queryable.from(items)
-                .sum(stack -> stack.getBankCards() != null ? stack.getBankCards().size() : 0);
-        return sum != null ? sum : 0;
     }
 
     public void setLockBtnEnabled(boolean isEnabled) {

@@ -78,6 +78,9 @@
     <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
     <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
 
+    <!--card list-->
+    <string name="wallet_wizard_empty_card_list_label">Add credit or debit cards\nto your flue\u2122 smart card</string>
+
     <!--add card details-->
     <string name="wallet_add_card_details_title">Card Details</string>
     <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>

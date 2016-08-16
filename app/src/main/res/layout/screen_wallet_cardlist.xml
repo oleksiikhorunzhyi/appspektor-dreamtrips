@@ -40,8 +40,8 @@
                         app:titleTextColor="@android:color/white"/>
 
                     <com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget
-                        android:layout_width="wrap_content"
                         android:id="@+id/widget_dashboard_smart_card"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"/>
 
@@ -64,36 +64,56 @@
     </android.support.design.widget.CoordinatorLayout>
 
     <LinearLayout
-        android:id="@+id/wallet_list_buttons_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:background="@color/wallet_color_background_light"
-        android:padding="@dimen/spacing_normal">
+        android:layout_marginTop="290dp"
+        android:gravity="bottom"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/add_credit_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/wallet_add_credit_card"
-            android:textColor="@android:color/white"/>
-
-        <View
-            android:layout_width="1dp"
+            android:id="@+id/empty_view_text"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:padding="@dimen/spacing_normal"/>
-
-        <TextView
-            android:id="@+id/add_debit_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/wallet_add_debit_card"
-            android:textColor="@android:color/white"/>
+            android:text="@string/wallet_wizard_empty_card_list_label"
+            android:textColor="@color/wallet_card_list_empty_list_label_color"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/wallet_list_buttons_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_weight="0"
+            android:background="@color/wallet_color_background_light"
+            android:gravity="center"
+            android:padding="@dimen/spacing_normal">
+
+            <TextView
+                android:id="@+id/add_credit_list"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/wallet_add_credit_card"
+                android:textColor="@android:color/white"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:padding="@dimen/spacing_normal"/>
+
+            <TextView
+                android:id="@+id/add_debit_list"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/wallet_add_debit_card"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </com.worldventures.dreamtrips.wallet.ui.dashboard.list.CardListScreen>

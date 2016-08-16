@@ -28,6 +28,7 @@ import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.CardStackViewM
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.HidingScrollListener;
 import com.worldventures.dreamtrips.wallet.ui.dashboard.list.util.cell.CardStackCell;
 import com.worldventures.dreamtrips.wallet.ui.widget.SmartCardWidget;
+import com.worldventures.dreamtrips.wallet.util.CardListUtils;
 
 import java.util.List;
 
@@ -52,6 +53,8 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
     View buttonsWrapper;
     @InjectView(R.id.widget_dashboard_smart_card)
     SmartCardWidget smartCardWidget;
+    @InjectView(R.id.empty_view_text)
+    View emptyCardListView;
 
     private BaseDelegateAdapter adapter;
 
@@ -77,8 +80,13 @@ public class CardListScreen extends WalletFrameLayout<CardListScreenPresenter.Sc
     }
 
     @Override public void showRecordsInfo(List<CardStackViewModel> result) {
+        int cardCount = CardListUtils.stacksToItemsCount(result);
+
         adapter.clearAndUpdateItems(result);
-        smartCardWidget.bindCount(result);
+        smartCardWidget.bindCount(cardCount);
+
+        bankCardList.setVisibility(cardCount == 0? GONE : VISIBLE);
+        emptyCardListView.setVisibility(cardCount == 0? VISIBLE : GONE);
     }
 
     @Override public void showSmartCardInfo(SmartCard smartCard) {

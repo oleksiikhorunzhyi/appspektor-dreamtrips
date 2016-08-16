@@ -91,24 +91,12 @@ public class DtlMerchant {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public MerchantType getType() {
         return type;
     }
 
-    public void setType(MerchantType type) {
-        this.type = type;
-    }
-
     public PartnerStatus getPartnerStatus() {
         return partnerStatus;
-    }
-
-    public void setPartnerStatus(PartnerStatus partnerStatus) {
-        this.partnerStatus = partnerStatus;
     }
 
     public String getDisplayName() {
@@ -123,24 +111,12 @@ public class DtlMerchant {
         return address1;
     }
 
-    public void setAddress1(String address1) {
-        this.address1 = address1;
-    }
-
     public String getCity() {
         return city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getState() {
         return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     public String getCountry() {
@@ -193,10 +169,6 @@ public class DtlMerchant {
     //from 1 to 5
     public void setBudget(int budget) {
         this.budget = budget;
-    }
-
-    public void setDisclaimers(List<DtlDisclaimer> disclaimers) {
-        this.disclaimers = disclaimers;
     }
 
     public double getRating() {

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
-import com.google.gson.annotations.SerializedName;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.Currency;
 
 @DefaultSerializer(CompatibleFieldSerializer.class)
@@ -16,7 +15,7 @@ public class DtlCurrency implements Parcelable {
     private String prefix;
     private String suffix;
     private String name;
-    @SerializedName("default") private boolean isDefault;
+    private boolean isDefault;
 
     public DtlCurrency() {
     }

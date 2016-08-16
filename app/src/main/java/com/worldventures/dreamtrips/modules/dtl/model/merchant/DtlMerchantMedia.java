@@ -3,9 +3,12 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
 import com.worldventures.dreamtrips.api.dtl.merchants.model.MerchantMedia;
 import com.worldventures.dreamtrips.core.ui.fragment.ImagePathHolder;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlMerchantMedia implements Parcelable, ImagePathHolder {
 
     private String url;

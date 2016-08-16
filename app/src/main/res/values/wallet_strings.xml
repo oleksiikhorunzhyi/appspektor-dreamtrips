@@ -67,7 +67,6 @@
     <string name="wallet_bank_name_text_holder">Bank Name</string>
 
     <!--details-->
-    <string name="wallet_card_details_option_set_as_default_card">Set As Default Payment Card</string>
     <string name="wallet_card_details_label_billing_address">Billing Address</string>
     <string name="wallet_card_details_button_edit_billing_address">Edit Billing Address</string>
     <string name="wallet_card_details_button_delete_card">Delete Card</string>
@@ -78,7 +77,22 @@
     <string name="wallet_card_settings_reset_pin">Reset Pin</string>
     <string name="wallet_card_settings_stealth_mode_off">Stealth mode was turned off</string>
     <string name="wallet_card_settings_stealth_mode_on">Stealth mode was turned on</string>
-    
+
+    <!--add card details-->
+    <string name="wallet_add_card_details_title">Card Details</string>
+    <string name="wallet_add_card_details_hint_enter_cvv">Enter CVV</string>
+    <string name="wallet_add_card_details_hint_nickname_card">Nickname Card (optional)</string>
+    <string name="wallet_add_card_details_hint_address1">Address 1</string>
+    <string name="wallet_add_card_details_hint_address2">Address 2</string>
+    <string name="wallet_add_card_details_hint_city">City</string>
+    <string name="wallet_add_card_details_hint_state">State</string>
+    <string name="wallet_add_card_details_hint_zip">Zip</string>
+    <string name="wallet_add_card_details_button_confirm">Confirm</string>
+    <string name="wallet_add_card_details_option_use_default_address">Use Default Address</string>
+    <string name="wallet_add_card_details_option_set_as_default_card">Set As Default Payment Card</string>
+    <string name="wallet_add_card_details_option_set_as_default_address">Set As Default Address</string>
+    <string name="wallet_add_card_details_error_message">Some of requirement fields are empty or contains incorrect data</string>
+
     <!--card type-->
     <string name="wallet_card_financial_service_master_card">Master Card</string>
     <string name="wallet_card_financial_service_visa">Visa</string>

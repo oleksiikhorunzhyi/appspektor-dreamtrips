@@ -86,7 +86,7 @@ public final class OperationSubscriberWrapper<T> {
                             : view.context().getString(R.string.error_something_went_wrong);
 
                     view.hideProgress();
-                    view.showError(message, o -> failHolder.action.call(t));
+                    view.showError(message, failHolder.action == null? null : o -> failHolder.action.call(t));
                 })
                 .onProgress((t, integer) -> {
                     if (onProgress != null) {

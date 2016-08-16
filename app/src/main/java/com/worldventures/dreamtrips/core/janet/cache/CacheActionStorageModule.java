@@ -1,6 +1,7 @@
 package com.worldventures.dreamtrips.core.janet.cache;
 
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketListDiskStorage;
 import com.worldventures.dreamtrips.modules.bucketlist.service.storage.BucketMemoryStorage;
@@ -63,7 +64,7 @@ public class CacheActionStorageModule {
     }
     @Singleton
     @Provides(type = Provides.Type.SET)
-    ActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
+    MultipleActionStorage provideDefaultBankCardStorage(SnappyRepository snappyRepository) {
         return new DefaultBankCardStorage(snappyRepository);
     }
 }

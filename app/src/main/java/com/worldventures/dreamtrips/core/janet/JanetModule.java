@@ -12,13 +12,16 @@ import com.worldventures.dreamtrips.api.api_common.converter.GsonProvider;
 import com.worldventures.dreamtrips.core.janet.api_lib.NewDreamTripsHttpService;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheResultWrapper;
+import com.worldventures.dreamtrips.core.janet.cache.CachedAction;
 import com.worldventures.dreamtrips.core.janet.cache.storage.ActionStorage;
+import com.worldventures.dreamtrips.core.janet.cache.storage.MultipleActionStorage;
 import com.worldventures.dreamtrips.core.janet.dagger.DaggerActionServiceWrapper;
 import com.worldventures.dreamtrips.core.utils.tracksystem.Tracker;
 import com.worldventures.dreamtrips.wallet.di.SmartCardModule;
 import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision;
 
 import java.net.CookieManager;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -137,7 +140,7 @@ public class JanetModule {
     @Provides
     @Named(JANET_WALLET)
     Janet provideWalletJanet(@Named(JANET_WALLET) Set<ActionService> services, Set<ActionStorage> cacheStorageSet,
-                                                  @ForApplication Context context) {
+                             Set<MultipleActionStorage> multipleActionStorageSet, @ForApplication Context context) {
         Janet.Builder builder = new Janet.Builder();
         for (ActionService service : services) {
             service = new TimberServiceWrapper(service);
@@ -145,6 +148,13 @@ public class JanetModule {
             service = new CacheResultWrapper(service) {{
                 for (ActionStorage storage : cacheStorageSet) {
                     bindStorage(storage.getActionClass(), storage);
+                }
+
+                for (MultipleActionStorage storage : multipleActionStorageSet) {
+                    List<Class<? extends CachedAction>> cachedActions = storage.getActionClasses();
+                    for (Class clazz : cachedActions) {
+                        bindStorage(clazz, storage);
+                    }
                 }
             }};
             builder.addService(service);

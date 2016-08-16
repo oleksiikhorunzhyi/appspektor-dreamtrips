@@ -1,18 +1,20 @@
 package com.worldventures.dreamtrips.wallet.service;
 
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.CardCountCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
-import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
-import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.GetDefaultAddressCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetSmartCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SaveCardDetailsDataCommand;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import io.techery.janet.ActionPipe;
 import io.techery.janet.Janet;
@@ -23,6 +25,7 @@ import rx.schedulers.Schedulers;
 
 import static com.worldventures.dreamtrips.core.janet.JanetModule.JANET_WALLET;
 
+@Singleton
 public final class SmartCardInteractor {
     private final ActionPipe<ConnectAction> connectionPipe;
     private final WriteActionPipe<CardListCommand> cardsListPipe;
@@ -30,7 +33,9 @@ public final class SmartCardInteractor {
     private final WriteActionPipe<CardStacksCommand> cardStacksPipe;
     private final ActionPipe<GetSmartCardCommand> getSmartCardPipe;
     private final ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe;
-    private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe;
+    private final ActionPipe<CardCountCommand> cardCountCommandPipe;
+    private final ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe;
+    private final WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe;
     private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
     private final ActionPipe<SetLockStateCommand> setLockPipe;
     private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
@@ -43,11 +48,14 @@ public final class SmartCardInteractor {
         cardStacksPipe = janet.createPipe(CardStacksCommand.class, Schedulers.io());
         getSmartCardPipe = janet.createPipe(GetSmartCardCommand.class, Schedulers.io());
         getActiveSmartCardPipe = janet.createPipe(GetActiveSmartCardCommand.class, Schedulers.io());
-        fetchDefaultCardCommandActionPipe = janet.createPipe(FetchDefaultCardCommand.class, Schedulers.io());
         setStealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
 
         smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
         setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
+
+        cardCountCommandPipe = janet.createPipe(CardCountCommand.class, Schedulers.io());
+        getDefaultAddressCommandPipe = janet.createPipe(GetDefaultAddressCommand.class, Schedulers.io());
+        saveCardDetailsDataCommandPipe = janet.createPipe(SaveCardDetailsDataCommand.class, Schedulers.io());
     }
 
     public ActionPipe<ConnectAction> connectActionPipe() {
@@ -74,8 +82,16 @@ public final class SmartCardInteractor {
         return getActiveSmartCardPipe;
     }
 
-    public ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe() {
-        return fetchDefaultCardCommandActionPipe;
+    public ActionPipe<CardCountCommand> cardCountCommandPipe() {
+        return cardCountCommandPipe;
+    }
+
+    public ActionPipe<GetDefaultAddressCommand> getDefaultAddressCommandPipe() {
+        return getDefaultAddressCommandPipe;
+    }
+
+    public WriteActionPipe<SaveCardDetailsDataCommand> saveCardDetailsDataCommandPipe() {
+        return saveCardDetailsDataCommandPipe;
     }
 
     public ActionPipe<SetStealthModeCommand> setStealthModePipe() {

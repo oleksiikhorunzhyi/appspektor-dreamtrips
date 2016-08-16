@@ -25,6 +25,7 @@ public class CardDetailsScreen extends WalletFrameLayout<CardDetailsPresenter.Sc
 
     @InjectView(R.id.address_textview)
     TextView addressText;
+
     @InjectView(R.id.card)
     BankCardWidget bankCardWidget;
 

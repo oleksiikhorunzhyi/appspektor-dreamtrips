@@ -83,7 +83,6 @@
     <string name="delete_photo_text">Biztos, hogy törli a fényképet?</string>
     <string name="delete_photo_positiove">Törlés</string>
     <string name="delete_photo_negative">Mégse</string>
-    <string name="flag_photo_first">A WorldVentures munkatársai értesítést kapnak arról, hogy ellenőrizzék ezt a képet </string>
     <string name="flag_photo_second">Folytatja?</string>
     <string name="flag_photo_title">Megerősítés</string>
     <string name="flag_photo_positive">Küldés</string>

@@ -187,10 +187,10 @@ public class PodcastsPresenter<T extends PodcastsPresenter.View> extends JobPres
             CachedEntity entity = podcast.getCacheEntity();
             if (entity.isCached(Environment.DIRECTORY_PODCASTS)) {
                 String path = CachedEntity.getFileForStorage(Environment.DIRECTORY_PODCASTS, podcast.getFileUrl());
-                activityRouter.openDeviceAudioPlayerForFile(path);
+                activityRouter.openPodcastPlayer(path);
             } else {
                 String url = podcast.getFileUrl();
-                activityRouter.openDeviceAudioPlayerForUrl(url);
+                activityRouter.openPodcastPlayer(url);
             }
         } catch (ActivityNotFoundException e) {
             view.informUser(R.string.audio_app_not_found_exception);

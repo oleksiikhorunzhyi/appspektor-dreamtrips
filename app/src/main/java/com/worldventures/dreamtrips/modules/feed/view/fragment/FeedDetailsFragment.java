@@ -2,24 +2,35 @@ package com.worldventures.dreamtrips.modules.feed.view.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.techery.spares.ui.fragment.FragmentHelper;
+import com.worldventures.dreamtrips.R;
+import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
+import com.worldventures.dreamtrips.modules.common.model.User;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.presenter.FeedDetailsPresenter;
 
-public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter> extends CommentableFragment<PRESENTER, FeedDetailsBundle>
+import butterknife.InjectView;
+import butterknife.Optional;
+
+public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter, P extends FeedDetailsBundle> extends CommentableFragment<PRESENTER, P>
         implements FeedDetailsPresenter.View {
 
     private static final int INPUT_PANEL_SHOW_OFFSET = 20;
+
+    @Optional @InjectView(R.id.comments_additional_info_container) ViewGroup additionalContainer;
 
     private int loadMoreOffset;
 
     @Override
     public void afterCreateView(View rootView) {
         super.afterCreateView(rootView);
-        //
+
         registerCells();
 
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -35,6 +46,12 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
                 super.onItemRangeChanged(positionStart, itemCount);
                 updateStickyInputContainerState();
             }
+        });
+        if (!isShowAdditionalInfo() && additionalContainer != null) {
+            additionalContainer.setVisibility(View.GONE);
+        }
+        recyclerView.post(() -> {
+            if (recyclerView != null) recyclerView.scrollBy(0, 1);
         });
     }
 
@@ -70,6 +87,28 @@ public abstract class FeedDetailsFragment<PRESENTER extends FeedDetailsPresenter
         adapter.addItem(0, feedItem);
         adapter.notifyItemInserted(0);
         loadMoreOffset = 1;
+    }
+
+    @Override
+    public void showAdditionalInfo(User user) {
+        if (isAdditionalContainerEmpty() && isShowAdditionalInfo()) {
+            router.moveTo(Route.FEED_ITEM_ADDITIONAL_INFO, NavigationConfigBuilder.forFragment()
+                    .backStackEnabled(false)
+                    .fragmentManager(getChildFragmentManager())
+                    .containerId(R.id.comments_additional_info_container)
+                    .data(new FeedAdditionalInfoBundle(user))
+                    .build());
+        }
+    }
+
+    private boolean isShowAdditionalInfo() {
+       return getArgs().shouldShowAdditionalInfo() && !getPresenter().isTrip()
+                && isTabletLandscape();
+    }
+
+    private boolean isAdditionalContainerEmpty() {
+        return getActivity().getSupportFragmentManager()
+                .findFragmentById(R.id.comments_additional_info_container) == null;
     }
 
     @Override

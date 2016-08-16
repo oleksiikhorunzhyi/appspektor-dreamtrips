@@ -1,12 +1,13 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -42,7 +43,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     @Override
     public void onResume() {
         super.onResume();
-        if (!getAccount().isMember()) {
+        if (!featureManager.available(Feature.BOOK_TRAVEL)) {
             view.hideBookIt();
             view.showSignUp();
         } else if (trip.isSoldOut()

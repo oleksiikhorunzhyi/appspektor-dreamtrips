@@ -16,6 +16,7 @@ import com.worldventures.dreamtrips.modules.common.view.activity.ComponentActivi
 import com.worldventures.dreamtrips.modules.common.view.activity.LaunchActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.MainActivity;
 import com.worldventures.dreamtrips.modules.common.view.activity.Player360Activity;
+import com.worldventures.dreamtrips.modules.player.PodcastPlayerActivity;
 
 import java.io.File;
 import java.lang.annotation.Retention;
@@ -75,6 +76,11 @@ public class ActivityRouter extends ActivityBoundRouter {
         super.startService(clazz);
     }
 
+    public void openPodcastPlayer(String url) {
+        Intent intent = new Intent(getContext(), PodcastPlayerActivity.class);
+        intent.setData(Uri.parse(url));
+        startActivityIntent(intent);
+    }
     /**
      * {@link ActivityNotFoundException} would be thrown
      * if there was no Activity found to run the given Intent

@@ -81,6 +81,15 @@
         </activity>
 
         <activity
+            android:name=".modules.player.PodcastPlayerActivity"
+            android:configChanges="orientation|screenSize|layoutDirection|locale"
+            android:label="@string/app_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".modules.common.view.activity.MainActivity"/>
+        </activity>
+
+        <activity
             android:name=".modules.common.view.activity.MainActivity"
             android:configChanges="layoutDirection|locale"
             android:label="@string/trips"
@@ -168,6 +177,9 @@
             android:exported="false"/>
         <service
             android:name=".core.api.VideoDownloadSpiceService"
+            android:exported="false"/>
+        <service
+            android:name=".modules.player.playback.PodcastService"
             android:exported="false"/>
 
         <!--GCM-->

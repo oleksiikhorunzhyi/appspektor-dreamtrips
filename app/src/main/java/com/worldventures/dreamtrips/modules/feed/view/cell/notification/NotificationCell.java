@@ -21,7 +21,7 @@ import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.SmartAvatarView;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder.Type;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.feed.item.Links;
@@ -126,7 +126,10 @@ public class NotificationCell extends AbstractCell<FeedItem> {
 
     private void openDetails() {
         router.moveTo(Route.FEED_ITEM_DETAILS, NavigationConfigBuilder.forActivity()
-                .data(new FeedDetailsBundle(getModelObject()))
+                .data(new FeedItemDetailsBundle.Builder()
+                        .feedItem(getModelObject())
+                        .showAdditionalInfo(true)
+                        .build())
                 .build());
     }
 

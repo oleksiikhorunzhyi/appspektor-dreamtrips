@@ -18,7 +18,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.modules.bucketlist.service.common.BucketUtility;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.util.BucketItemInfoUtil;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.event.DeleteBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.event.EditBucketEvent;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
@@ -99,7 +99,10 @@ public class BucketFeedItemDetailsCell extends FeedItemDetailsCell<BucketFeedIte
     void openBucketEntityDetails() {
         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new FeedDetailsBundle(getModelObject()))
+                .data(new FeedEntityDetailsBundle.Builder()
+                    .feedItem(getModelObject())
+                    .showAdditionalInfo(true)
+                    .build())
                 .build());
     }
 }

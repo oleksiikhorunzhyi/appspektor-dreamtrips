@@ -13,7 +13,7 @@ import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.navigation.ToolbarConfig;
 import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuilder;
 import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.trips.presenter.TripMapListPresenter;
@@ -59,7 +59,10 @@ public class TripMapListFragment extends BaseFragmentWithArgs<TripMapListPresent
     public void onCellClicked(TripModel model) {
         router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
                 .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                .data(new FeedDetailsBundle(FeedItem.create(model, null)))
+                .data(new FeedEntityDetailsBundle.Builder()
+                        .feedItem(FeedItem.create(model, null))
+                        .showAdditionalInfo(true)
+                        .build())
                 .build());
     }
 }

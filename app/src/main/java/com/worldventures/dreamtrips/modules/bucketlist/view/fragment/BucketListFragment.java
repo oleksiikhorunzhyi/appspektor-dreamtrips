@@ -52,14 +52,13 @@ import com.worldventures.dreamtrips.modules.bucketlist.view.custom.CollapsibleAu
 import com.worldventures.dreamtrips.modules.common.view.adapter.DraggableArrayListAdapter;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.custom.EmptyRecyclerView;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedEntityDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.util.PopupMenuUtils;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import rx.Observable;
 import timber.log.Timber;
 
 @Layout(R.layout.fragment_bucket_list)
@@ -388,21 +387,22 @@ public class BucketListFragment<T extends BucketListPresenter> extends RxBaseFra
                 .containerId(R.id.detail_container)
                 .build());
         //
-        FeedDetailsBundle bundle = new FeedDetailsBundle(FeedItem.create(bucketItem, bucketItem.getOwner()), false, false);
+        FeedEntityDetailsBundle.Builder bundleBuilder = new FeedEntityDetailsBundle.Builder()
+                .feedItem(FeedItem.create(bucketItem, bucketItem.getOwner()));
         if (isTabletLandscape()) {
-            bundle.setSlave(true);
+            bundleBuilder.slave(true);
             router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forFragment()
                     .backStackEnabled(false)
                     .containerId(R.id.detail_container)
                     .fragmentManager(getChildFragmentManager())
-                    .data(bundle)
+                    .data(bundleBuilder.build())
                     .build());
             showDetailsContainer();
         } else {
             hideDetailContainer();
             router.moveTo(Route.FEED_ENTITY_DETAILS, NavigationConfigBuilder.forActivity()
                     .toolbarConfig(ToolbarConfig.Builder.create().visible(false).build())
-                    .data(bundle)
+                    .data(bundleBuilder.build())
                     .build());
         }
     }

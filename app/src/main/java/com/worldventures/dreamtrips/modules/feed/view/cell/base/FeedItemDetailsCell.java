@@ -16,7 +16,7 @@ import com.worldventures.dreamtrips.core.navigation.router.NavigationConfigBuild
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
 import com.worldventures.dreamtrips.modules.common.model.User;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.view.util.FeedItemCommonDataHelper;
 import com.worldventures.dreamtrips.modules.profile.bundle.UserBundle;
@@ -61,12 +61,14 @@ public abstract class FeedItemDetailsCell<I extends FeedItem, D extends CellDele
 
     public void openItemDetails() {
         Route detailsRoute = Route.FEED_ITEM_DETAILS;
-        FeedDetailsBundle bundle = new FeedDetailsBundle(getModelObject());
+        FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder()
+                .feedItem(getModelObject())
+                .showAdditionalInfo(true);
         if (tabletAnalytic.isTabletLandscape()) {
-            bundle.setSlave(true);
+            bundleBuilder.slave(true);
         }
         router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
-                .data(bundle)
+                .data(bundleBuilder.build())
                 .build());
         //
         sendAnalyticEvent(TrackingHelper.ATTRIBUTE_VIEW);

@@ -17,7 +17,7 @@ import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.CreateEntityBundle;
 import com.worldventures.dreamtrips.modules.feed.bundle.FeedAdditionalInfoBundle;
-import com.worldventures.dreamtrips.modules.feed.bundle.FeedDetailsBundle;
+import com.worldventures.dreamtrips.modules.feed.bundle.FeedItemDetailsBundle;
 import com.worldventures.dreamtrips.modules.feed.model.BucketFeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.FeedItem;
 import com.worldventures.dreamtrips.modules.feed.model.LoadMoreModel;
@@ -186,13 +186,15 @@ public class FragmentWithFeedDelegate {
     public void openComments(FeedItem feedItem, boolean isVisible, boolean isTabletLandscape) {
         if (isVisible) {
             Route detailsRoute = Route.FEED_ITEM_DETAILS;
-            FeedDetailsBundle bundle = new FeedDetailsBundle(feedItem);
+            FeedItemDetailsBundle.Builder bundleBuilder = new FeedItemDetailsBundle.Builder()
+                    .feedItem(feedItem)
+                    .showAdditionalInfo(true)
+                    .openKeyboard(true);
             if (isTabletLandscape) {
-                bundle.setSlave(true);
+                bundleBuilder.slave(true);
             }
-            bundle.setOpenKeyboard(true);
             router.moveTo(detailsRoute, NavigationConfigBuilder.forActivity()
-                    .data(bundle)
+                    .data(bundleBuilder.build())
                     .build());
         }
     }

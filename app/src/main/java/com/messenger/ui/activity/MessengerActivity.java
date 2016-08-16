@@ -18,6 +18,7 @@ import com.worldventures.dreamtrips.core.flow.activity.FlowActivity;
 import com.worldventures.dreamtrips.core.utils.tracksystem.MonitoringHelper;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayout;
 import com.worldventures.dreamtrips.modules.common.view.custom.PhotoPickerLayoutDelegate;
+import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerDelegate;
 
 import javax.inject.Inject;
 
@@ -31,7 +32,7 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
     public static final String EXTRA_CHAT_CONVERSATION_ID = "MessengerActivity#EXTRA_CHAT_CONVERSATION_ID";
 
     @InjectView(R.id.chat_photo_picker) PhotoPickerLayout photoPickerLayout;
-
+    @Inject PodcastPlayerDelegate podcastPlayerDelegate;
     @Inject PhotoPickerLayoutDelegate photoPickerLayoutDelegate;
     @Inject PickLocationDelegate pickLocationDelegate;
     @Inject CropImageDelegate cropImageDelegate;
@@ -42,6 +43,7 @@ public class MessengerActivity extends FlowActivity<MessengerActivityPresenter> 
     protected void onCreate(Bundle savedInstanceState) {
         conversationId = getIntent().getStringExtra(EXTRA_CHAT_CONVERSATION_ID);
         super.onCreate(savedInstanceState);
+        podcastPlayerDelegate.stop();
         //
         MonitoringHelper.setInteractionName(this);
         //

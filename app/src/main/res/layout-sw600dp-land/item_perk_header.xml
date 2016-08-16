@@ -13,8 +13,9 @@
         android:layout_width="@dimen/dtlOfferCoverDetailImageWidth"
         android:layout_height="@dimen/dtlOfferCoverDetailImageHeight"
         android:layout_margin="@dimen/spacing_tiny"
-        fresco:actualImageScaleType="centerInside"
+        fresco:actualImageScaleType="centerCrop"
         fresco:placeholderImage="@drawable/ic_trip_image_placeholder"
+        fresco:placeholderImageScaleType="centerCrop"
         tools:src="@drawable/ic_trip_image_placeholder"
         />
 

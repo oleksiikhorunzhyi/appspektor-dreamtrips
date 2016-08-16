@@ -17,7 +17,8 @@ public class LocaleHelper {
     }
 
     public Locale getDefaultLocale() {
-        if (!appSessionHolder.get().isPresent())
+        if (!appSessionHolder.get().isPresent() ||
+                appSessionHolder.get().get().getLocale() == null)
             return Locale.getDefault();
 
         UserSession userSession = appSessionHolder.get().get();

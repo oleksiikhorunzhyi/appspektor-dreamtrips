@@ -31,7 +31,6 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
     @InjectView(R.id.login_progress) View loginProgress;
 
     @InjectView(R.id.login_mode_holder) View loginModeHolder;
-    @InjectView(R.id.splash_progress) View splashProgress;
 
     @Override
     protected LaunchActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null) getPresentationModel().detectMode(bundle.getString(EXTRA_TYPE));
+        getPresentationModel().detectMode(bundle != null ? bundle.getString(EXTRA_TYPE) : null);
     }
 
     @OnClick(R.id.iv_title)
@@ -85,11 +84,6 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
                     .onPositive((dialog, which) -> finish())
                     .show();
         });
-    }
-
-    @Override
-    public void configurationStarted() {
-        splashProgress.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.worldventures.dreamtrips.modules.common.presenter;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.github.pwittchen.networkevents.library.BusWrapper;
-import com.github.pwittchen.networkevents.library.ConnectivityStatus;
-import com.github.pwittchen.networkevents.library.NetworkEvents;
-import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
@@ -26,13 +22,9 @@ import com.worldventures.dreamtrips.modules.dtl.service.action.DtlLocationComman
 
 import javax.inject.Inject;
 
-import de.greenrobot.event.EventBus;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.MOBILE_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED;
-import static com.github.pwittchen.networkevents.library.ConnectivityStatus.WIFI_CONNECTED_HAS_INTERNET;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isPasswordValid;
 import static com.worldventures.dreamtrips.util.ValidationUtils.isUsernameValid;
 
@@ -47,45 +39,31 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     @Inject MessengerConnector messengerConnector;
     @Inject AuthInteractor authInteractor;
 
-    private NetworkEvents networkEvents;
-
-    public void detectMode(String type) {
+    public void detectMode(@Nullable String type) {
         if (TextUtils.isEmpty(type)) {
-            loginAction();
+            splashMode();
             return;
         }
         switch (type) {
-            case ActivityRouter.LAUNCH_SPLASH:
-                splashMode();
-                break;
             case ActivityRouter.LAUNCH_LOGIN:
-            default:
                 loginMode();
+                break;
+            case ActivityRouter.LAUNCH_SPLASH:
+            default:
+                splashMode();
                 break;
         }
     }
 
     private void splashMode() {
         view.openSplash();
-
         clearTemporaryDirectoryDelegate.clearTemporaryDirectory();
         drawableUtil.removeCacheImages();
-        BusWrapper busWrapper = getGreenRobotBusWrapper(eventBus);
-        networkEvents = new NetworkEvents(context, busWrapper).enableWifiScan();
-        networkEvents.register();
-
         startPreloadChain();
     }
 
     private void loginMode() {
         view.openLogin();
-        release();
-    }
-
-    @Override
-    public void dropView() {
-        super.dropView();
-        release();
     }
 
     @Override
@@ -97,34 +75,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         db.cleanLastSelectedOffersOnlyToggle();
         db.cleanLastMapCameraPosition();
         dtlLocationInteractor.locationPipe().send(DtlLocationCommand.change(DtlLocation.UNDEFINED));
-    }
-
-    @NonNull
-    private BusWrapper getGreenRobotBusWrapper(final EventBus bus) {
-        return new BusWrapper() {
-            @Override
-            public void register(Object object) {
-                bus.register(object);
-            }
-
-            @Override
-            public void unregister(Object object) {
-                bus.unregister(object);
-            }
-
-            @Override
-            public void post(Object event) {
-                bus.post(event);
-            }
-        };
-    }
-
-    public void onEvent(ConnectivityChanged event) {
-        ConnectivityStatus status = event.getConnectivityStatus();
-        boolean internetConnected = status == MOBILE_CONNECTED || status == WIFI_CONNECTED_HAS_INTERNET || status == WIFI_CONNECTED;
-        if (internetConnected) {
-            startPreloadChain();
-        }
     }
 
     public void loginAction() {
@@ -158,22 +108,13 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     }
 
-    public void release() {
-        if (networkEvents != null) networkEvents.unregister();
-    }
-
     public void startPreloadChain() {
         authInteractor.updateAuthInfoCommandActionPipe().createObservable(new UpdateAuthInfoCommand())
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindView())
                 .subscribe(new ActionStateSubscriber<UpdateAuthInfoCommand>()
-                        .onStart(updateAuthInfoCommand -> onAuthStart())
                         .onSuccess(updateAuthInfoCommand -> onAuthSuccess())
                         .onFail((updateAuthInfoCommand, throwable) -> loginMode()));
-    }
-
-    private void onAuthStart() {
-        view.configurationStarted();
     }
 
     private void onAuthSuccess() {
@@ -183,8 +124,6 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
     }
 
     public interface View extends ActivityPresenter.View, ApiErrorView {
-
-        void configurationStarted();
 
         void openLogin();
 

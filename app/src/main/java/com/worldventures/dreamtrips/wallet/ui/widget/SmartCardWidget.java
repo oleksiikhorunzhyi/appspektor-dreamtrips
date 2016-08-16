@@ -29,6 +29,7 @@ public class SmartCardWidget extends FrameLayout {
     @InjectView(R.id.bankLabel) TextView bankLabel;
     @InjectView(R.id.connectedCardsCount) TextView connectedCardsCount;
     @InjectView(R.id.cbLock) CheckBox cbLock;
+    @InjectView(R.id.batteryView) BatteryView batteryView;
 
     public SmartCardWidget(Context context) {
         this(context, null);
@@ -49,7 +50,8 @@ public class SmartCardWidget extends FrameLayout {
         bankLabel.setText(smartCard.cardName());
         if (url != null) scAvatar.setImageURI(Uri.parse(url));
         cbLock.setChecked(smartCard.lock());
-
+        // TODO: 8/16/16 mockData
+        batteryView.setLevel(73);
     }
 
     public void bindCount(List<CardStackViewModel> items) {

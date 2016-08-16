@@ -17,6 +17,14 @@
        android:layout_marginLeft="65dp"
        android:layout_marginTop="15dp"/>
 
+    <com.worldventures.dreamtrips.wallet.ui.widget.BatteryView
+        android:id="@+id/batteryView"
+        android:layout_marginTop="12dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/cardListSCAvatar"
         android:layout_width="55dp"

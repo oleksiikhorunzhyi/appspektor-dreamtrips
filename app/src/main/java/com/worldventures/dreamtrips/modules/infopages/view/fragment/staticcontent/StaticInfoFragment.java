@@ -475,7 +475,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class TermsOfServiceFragment extends StaticInfoFragment {
+    public static class TermsOfServiceFragment extends LanguageHeaderStaticInfoFragment {
 
         @Override
         protected String getURL() {
@@ -496,7 +496,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class CookiePolicyFragment extends StaticInfoFragment {
+    public static class CookiePolicyFragment extends LanguageHeaderStaticInfoFragment {
 
         @Override
         protected String getURL() {
@@ -517,7 +517,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     @MenuResource(R.menu.menu_mock)
-    public static class FAQFragment extends StaticInfoFragment {
+    public static class FAQFragment extends LanguageHeaderStaticInfoFragment {
 
         @Override
         protected String getURL() {
@@ -537,7 +537,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class PrivacyPolicyFragment extends StaticInfoFragment {
+    public static class PrivacyPolicyFragment extends LanguageHeaderStaticInfoFragment {
 
         @Override
         protected String getURL() {

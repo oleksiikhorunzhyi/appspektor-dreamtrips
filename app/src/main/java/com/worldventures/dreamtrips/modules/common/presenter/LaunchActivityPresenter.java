@@ -9,7 +9,6 @@ import com.github.pwittchen.networkevents.library.NetworkEvents;
 import com.github.pwittchen.networkevents.library.event.ConnectivityChanged;
 import com.messenger.synchmechanism.MessengerConnector;
 import com.techery.spares.utils.ValidationUtils;
-import com.worldventures.dreamtrips.core.api.AuthRetryPolicy;
 import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
@@ -19,7 +18,6 @@ import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.auth.service.LoginInteractor;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.ClearDirectoryDelegate;
-import com.worldventures.dreamtrips.modules.common.presenter.delegate.SessionAbsentException;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.dtl.model.location.DtlLocation;
@@ -53,7 +51,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
 
     public void detectMode(String type) {
         if (TextUtils.isEmpty(type)) {
-            loginMode();
+            loginAction();
             return;
         }
         switch (type) {
@@ -171,7 +169,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
                 .subscribe(new ActionStateSubscriber<UpdateAuthInfoCommand>()
                         .onStart(updateAuthInfoCommand -> onAuthStart())
                         .onSuccess(updateAuthInfoCommand -> onAuthSuccess())
-                        .onFail((updateAuthInfoCommand, throwable) -> onAuthFail(throwable)));
+                        .onFail((updateAuthInfoCommand, throwable) -> loginMode()));
     }
 
     private void onAuthStart() {
@@ -184,18 +182,7 @@ public class LaunchActivityPresenter extends ActivityPresenter<LaunchActivityPre
         view.openMain();
     }
 
-    private void onAuthFail(Throwable throwable) {
-        if (throwable instanceof SessionAbsentException || AuthRetryPolicy.isLoginError(throwable)) {
-            loginMode();
-        } else {
-            view.informUser(new HumaneErrorTextFactory().create(throwable));
-            view.configurationFailed();
-        }
-    }
-
     public interface View extends ActivityPresenter.View, ApiErrorView {
-
-        void configurationFailed();
 
         void configurationStarted();
 

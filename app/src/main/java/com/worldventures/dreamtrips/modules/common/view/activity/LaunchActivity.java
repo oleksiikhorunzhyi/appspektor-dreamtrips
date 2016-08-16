@@ -2,7 +2,6 @@ package com.worldventures.dreamtrips.modules.common.view.activity;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,11 +11,8 @@ import com.techery.spares.utils.ui.SoftInputUtil;
 import com.worldventures.dreamtrips.BuildConfig;
 import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.api.error.ErrorResponse;
-import com.worldventures.dreamtrips.core.navigation.ActivityRouter;
 import com.worldventures.dreamtrips.modules.common.presenter.LaunchActivityPresenter;
 import com.worldventures.dreamtrips.modules.common.view.custom.DTEditText;
-
-import javax.inject.Inject;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -36,10 +32,6 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
 
     @InjectView(R.id.login_mode_holder) View loginModeHolder;
     @InjectView(R.id.splash_progress) View splashProgress;
-
-    @Inject ActivityRouter activityRouter;
-
-    private Snackbar snackbar;
 
     @Override
     protected LaunchActivityPresenter createPresentationModel(Bundle savedInstanceState) {
@@ -96,21 +88,8 @@ public class LaunchActivity extends ActivityWithPresenter<LaunchActivityPresente
     }
 
     @Override
-    public void configurationFailed() {
-        splashProgress.setVisibility(View.GONE);
-        snackbar = Snackbar.make(findViewById(R.id.rootView),
-                R.string.configuration_failed,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.configuration_acitve_button, v -> getPresentationModel().startPreloadChain());
-        snackbar.show();
-    }
-
-    @Override
     public void configurationStarted() {
         splashProgress.setVisibility(View.VISIBLE);
-        if (snackbar != null) {
-            snackbar.dismiss();
-        }
     }
 
     @Override

@@ -14,11 +14,13 @@ import com.worldventures.dreamtrips.wallet.domain.entity.ImmutableProvision
 import com.worldventures.dreamtrips.wallet.domain.storage.DefaultBankCardStorage
 import com.worldventures.dreamtrips.wallet.service.SmartCardInteractor
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand
+import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand
 import io.techery.janet.ActionState
 import io.techery.janet.CommandActionService
 import io.techery.janet.Janet
 import io.techery.janet.SmartCardActionService
 import io.techery.janet.http.test.MockHttpActionService
+import io.techery.janet.smartcard.action.lock.GetLockDeviceStatusAction
 import io.techery.janet.smartcard.action.records.SetRecordAsDefaultAction
 import io.techery.janet.smartcard.action.support.ConnectAction
 import io.techery.janet.smartcard.mock.client.MockSmartCardClient
@@ -55,6 +57,21 @@ class SmartCardInteractorSpec : BaseSpec({
                 assertActionSuccess(loadDefaultCardId(), { it -> testSmartCardId == it.result })
             }
         }
+
+        context("Lock state is fetching") {
+
+            fun getLockState(): TestSubscriber<ActionState<GetLockDeviceStatusAction>> {
+                val testSubscriber = TestSubscriber<ActionState<GetLockDeviceStatusAction>>()
+                janet.createPipe(GetLockDeviceStatusAction::class.java).createObservable(GetLockDeviceStatusAction())
+                        .subscribe(testSubscriber)
+                return testSubscriber
+            }
+
+            it("should get lock state") {
+                smartCardInteractor.lockPipe().createObservableResult(SetLockStateCommand(true)).subscribe()
+                assertActionSuccess(getLockState(), { it -> true == it.locked })
+            }
+        }
     }
 }) {
     private companion object {
@@ -81,6 +98,7 @@ class SmartCardInteractorSpec : BaseSpec({
             daggerCommandActionService.registerProvider(Janet::class.java) { janet }
             daggerCommandActionService.registerProvider(SnappyRepository::class.java) { mockDb }
             daggerCommandActionService.registerProvider(Context::class.java, { MockContext() })
+            daggerCommandActionService.registerProvider(SmartCardInteractor::class.java, { smartCardInteractor })
 
             return janet
         }

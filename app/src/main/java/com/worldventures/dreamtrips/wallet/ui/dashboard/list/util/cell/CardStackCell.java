@@ -63,8 +63,10 @@ public class CardStackCell extends AbstractDelegateCell<CardStackViewModel, Card
 
     }
 
-    public interface Delegate extends CellDelegate<CardStackViewModel> {
-        void onCardClicked(BankCard bankCard);
+    public static abstract class Delegate implements CellDelegate<CardStackViewModel> {
+        public abstract void onCardClicked(BankCard bankCard);
+
+        @Override public void onCellClicked(CardStackViewModel model) { }
     }
 }
 

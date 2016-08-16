@@ -3,9 +3,11 @@ package com.worldventures.dreamtrips.wallet.service;
 import com.worldventures.dreamtrips.wallet.service.command.AttachCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardListCommand;
 import com.worldventures.dreamtrips.wallet.service.command.CardStacksCommand;
+import com.worldventures.dreamtrips.wallet.service.command.SetLockStateCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SetStealthModeCommand;
 import com.worldventures.dreamtrips.wallet.service.command.SmartCardModifier;
 import com.worldventures.dreamtrips.wallet.service.command.FetchDefaultCardCommand;
+import com.worldventures.dreamtrips.wallet.service.command.FetchSmartCardLockState;
 import com.worldventures.dreamtrips.wallet.service.command.GetActiveSmartCardCommand;
 import com.worldventures.dreamtrips.wallet.service.command.GetSmartCardCommand;
 
@@ -30,6 +32,7 @@ public final class SmartCardInteractor {
     private final ActionPipe<GetActiveSmartCardCommand> getActiveSmartCardPipe;
     private final ActionPipe<FetchDefaultCardCommand> fetchDefaultCardCommandActionPipe;
     private final ActionPipe<SetStealthModeCommand> setStealthModePipe;
+    private final ActionPipe<SetLockStateCommand> setLockPipe;
     private final ReadActionPipe<SmartCardModifier> smartCardModifierPipe;
 
     @Inject
@@ -44,6 +47,7 @@ public final class SmartCardInteractor {
         setStealthModePipe = janet.createPipe(SetStealthModeCommand.class, Schedulers.io());
 
         smartCardModifierPipe = janet.createPipe(SmartCardModifier.class, Schedulers.io());
+        setLockPipe = janet.createPipe(SetLockStateCommand.class, Schedulers.io());
     }
 
     public ActionPipe<ConnectAction> connectActionPipe() {
@@ -80,5 +84,9 @@ public final class SmartCardInteractor {
 
     public ReadActionPipe<SmartCardModifier> smartCardModifierPipe() {
         return smartCardModifierPipe;
+    }
+
+    public ActionPipe<SetLockStateCommand> lockPipe() {
+        return setLockPipe;
     }
 }

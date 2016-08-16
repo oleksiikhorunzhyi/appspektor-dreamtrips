@@ -187,4 +187,7 @@
     <color name="comments_action_color">#2977b2</color>
 
     <!--end messenger-->
+
+    <color name="dim_foreground_dark">#bebebe</color>
+
 </resources>

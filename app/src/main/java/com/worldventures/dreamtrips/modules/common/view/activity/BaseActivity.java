@@ -31,6 +31,7 @@ import com.worldventures.dreamtrips.modules.friends.FriendsModule;
 import com.worldventures.dreamtrips.modules.infopages.InfoModule;
 import com.worldventures.dreamtrips.modules.membership.MembershipModule;
 import com.worldventures.dreamtrips.modules.picklocation.LocationPickerModule;
+import com.worldventures.dreamtrips.modules.player.PodcastModule;
 import com.worldventures.dreamtrips.modules.profile.ProfileModule;
 import com.worldventures.dreamtrips.modules.reptools.ReptoolsModule;
 import com.worldventures.dreamtrips.modules.settings.SettingsModule;
@@ -149,6 +150,7 @@ public abstract class BaseActivity extends InjectingActivity {
         modules.add(new MessengerActivityModule());
         modules.add(new DtlActivityModule());
         modules.add(new LocationPickerModule());
+        modules.add(new PodcastModule());
         return modules;
     }
 

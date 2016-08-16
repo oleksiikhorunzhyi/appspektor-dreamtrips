@@ -12,11 +12,12 @@ import com.techery.spares.module.qualifier.ForApplication;
 import com.worldventures.dreamtrips.App;
 import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.core.janet.cache.CacheActionStorageModule;
-import com.worldventures.dreamtrips.core.janet.JanetModule;
 import com.worldventures.dreamtrips.modules.common.ResponseSnifferModule;
 import com.worldventures.dreamtrips.modules.common.SessionProcessingModule;
 import com.worldventures.dreamtrips.modules.gcm.ActionReceiverModule;
 import com.worldventures.dreamtrips.modules.gcm.GcmModule;
+import com.worldventures.dreamtrips.modules.player.PodcastAppModule;
+import com.worldventures.dreamtrips.modules.player.PodcastModule;
 
 import dagger.Module;
 import dagger.Provides;
@@ -65,6 +66,7 @@ import dagger.Provides;
                 SessionProcessingModule.class,
                 //
                 FlaggingModule.class,
+                PodcastAppModule.class,
         },
         library = true,
         complete = false,

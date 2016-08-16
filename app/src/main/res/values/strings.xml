@@ -630,6 +630,9 @@
     <string name="audio_app_not_found_exception">Application to play audio not found</string>
     <string name="complete_action_with">Complete action with</string>
     <string name="error_fail_to_load_podcast">Failed to load podcast</string>
+    <string name="podcasts_button_resume">Resume</string>
+    <string name="podcasts_button_pause">Pause</string>
+    <string name="podcasts_button_stop">Stop</string>
 
     <string name="min">min</string>
     <string name="post_hint_with_hashtag">Say something, add #hashtags</string>

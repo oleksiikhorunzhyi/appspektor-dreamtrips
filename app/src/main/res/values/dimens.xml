@@ -80,6 +80,7 @@
 
     <!-- dimen for video items -->
     <dimen name="podcast_play_icon_size">24dp</dimen>
+    <dimen name="podcast_preview_size">245dp</dimen>
 
     /////Map info sizes
     <dimen name="map_trip_info_size">275dp</dimen>

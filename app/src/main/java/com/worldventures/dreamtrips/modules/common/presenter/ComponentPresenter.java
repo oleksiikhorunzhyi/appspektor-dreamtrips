@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.modules.player.delegate.PodcastPlayerDelegate;
+
+import javax.inject.Inject;
 
 public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.View> {
 
@@ -20,6 +23,8 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
 
     private boolean needMove;
 
+    @Inject PodcastPlayerDelegate podcastPlayerDelegate;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +36,7 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        podcastPlayerDelegate.stop();
         if (needMove) view.moveTo(route, args.getParcelable(EXTRA_DATA));
     }
 

@@ -30,12 +30,13 @@ import butterknife.ButterKnife;
 
 @Layout(R.layout.fragment_profile)
 @MenuResource(R.menu.menu_empty)
-public class UserFragment extends ProfileFragment<UserPresenter>
-        implements UserPresenter.View {
+public class UserFragment extends ProfileFragment<UserPresenter> implements UserPresenter.View {
 
     private MenuItem chatActionItem;
     @Inject
     protected DrawableUtil drawableUtil;
+
+    private MaterialDialog blockingProgressDialog;
 
     @Override
     protected UserPresenter createPresenter(Bundle savedInstanceState) {
@@ -73,12 +74,12 @@ public class UserFragment extends ProfileFragment<UserPresenter>
         chatActionItem.setVisible(user.getRelationship() == User.Relationship.FRIEND);
     }
 
-    public void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectedAction) {
+    public void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectedAction) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
         builder.title(getString(R.string.friend_add_to))
                 .adapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, circles),
                         (materialDialog, view, i, charSequence) -> {
-                            selectedAction.apply(i);
+                            selectedAction.apply(circles.get(i));
                             materialDialog.dismiss();
                         })
                 .negativeText(R.string.action_cancel)
@@ -132,5 +133,20 @@ public class UserFragment extends ProfileFragment<UserPresenter>
     @Override
     public void onAddFriend() {
         getPresenter().addFriendClicked();
+    }
+
+    @Override
+    public void showBlockingProgress() {
+        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
+                .progress(true, 0)
+                .content(R.string.loading)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    @Override
+    public void hideBlockingProgress() {
+        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
     }
 }

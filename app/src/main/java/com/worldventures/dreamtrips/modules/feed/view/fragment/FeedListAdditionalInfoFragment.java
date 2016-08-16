@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.badoo.mobile.util.WeakHandler;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.techery.spares.adapter.BaseArrayListAdapter;
@@ -59,8 +60,9 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
     @InjectView(R.id.swipe_container)
     SwipeRefreshLayout refreshLayout;
 
-    CirclesFilterPopupWindow filterPopupWindow;
-    BaseArrayListAdapter<User> adapter;
+    private CirclesFilterPopupWindow filterPopupWindow;
+    private BaseArrayListAdapter<User> adapter;
+    private MaterialDialog blockingProgressDialog;
 
     WeakHandler handler = new WeakHandler();
 
@@ -130,6 +132,21 @@ public class FeedListAdditionalInfoFragment extends FeedItemAdditionalInfoFragme
         handler.post(() -> {
             if (refreshLayout != null) refreshLayout.setRefreshing(false);
         });
+    }
+
+    @Override
+    public void showBlockingProgress() {
+        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
+                .progress(true, 0)
+                .content(R.string.loading)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    @Override
+    public void hideBlockingProgress() {
+        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
     }
 
     @Override

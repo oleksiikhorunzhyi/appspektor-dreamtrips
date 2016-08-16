@@ -45,6 +45,5 @@ public class AutoCompleteAdapter<T> extends ArrayAdapter<T> implements Filterabl
         protected abstract List<T> request(String query);
 
         public abstract void handleError(Exception e);
-
     }
 }

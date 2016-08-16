@@ -59,11 +59,6 @@ public class ComponentPresenter extends ActivityPresenter<ComponentPresenter.Vie
         this.args = args;
     }
 
-    @Override
-    protected boolean canShowTermsDialog() {
-        return route != Route.LOGIN && super.canShowTermsDialog();
-    }
-
     public interface View extends ActivityPresenter.View {
 
         void moveTo(Route route, Parcelable args);

@@ -41,6 +41,7 @@ import java.util.concurrent.Future;
 import timber.log.Timber;
 
 public class SnappyRepositoryImpl implements SnappyRepository {
+
     private Context context;
     private ExecutorService executorService;
 
@@ -204,6 +205,16 @@ public class SnappyRepositoryImpl implements SnappyRepository {
     public CachedEntity getDownloadMediaEntity(String id) {
         return actWithResult(db -> db.get(MEDIA_UPLOAD_ENTITY + id, CachedEntity.class))
                 .orNull();
+    }
+
+    @Override
+    public void setLastSyncAppVersion(String appVersion) {
+        act(db -> db.put(LAST_SYNC_APP_VERSION, appVersion));
+    }
+
+    @Override
+    public String getLastSyncAppVersion() {
+        return actWithResult(db -> db.get(LAST_SYNC_APP_VERSION)).orNull();
     }
 
     ///////////////////////////////////////////////////////////////////////////

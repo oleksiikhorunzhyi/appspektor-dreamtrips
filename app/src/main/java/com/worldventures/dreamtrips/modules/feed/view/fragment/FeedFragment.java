@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.techery.spares.annotations.MenuResource;
@@ -71,8 +72,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     @Inject FragmentWithFeedDelegate fragmentWithFeedDelegate;
 
-    BadgeImageView friendsBadge;
-    BadgeImageView unreadConversationBadge;
+    private BadgeImageView friendsBadge;
+    private BadgeImageView unreadConversationBadge;
 
     private CirclesFilterPopupWindow filterPopupWindow;
 
@@ -81,6 +82,8 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
 
     private StatePaginatedRecyclerViewManager statePaginatedRecyclerViewManager;
     private Bundle savedInstanceState;
+
+    private MaterialDialog blockingProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -317,6 +320,21 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     @Override
+    public void showBlockingProgress() {
+        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
+                .progress(true, 0)
+                .content(R.string.loading)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    @Override
+    public void hideBlockingProgress() {
+        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
+    }
+
+    @Override
     public void showEdit(BucketBundle bucketBundle) {
         fragmentWithFeedDelegate.openBucketEdit(getActivity().getSupportFragmentManager(), isTabletLandscape(), bucketBundle);
     }
@@ -347,23 +365,28 @@ public class FeedFragment extends RxBaseFragmentWithArgs<FeedPresenter, FeedBund
     }
 
     private void actionFilter() {
+        if (getActivity().findViewById(R.id.action_filter) == null && getCollapseView() == null)
+            return;
+
+        getPresenter().actionFilter();
+    }
+
+    @Override
+    public void showFilter(List<Circle> circles, Circle selectedCircle) {
         View menuItemView = getActivity().findViewById(R.id.action_filter);
         if (menuItemView == null) {
-            if (getCollapseView() == null) {
-                return;
-            } else {
-                menuItemView = getCollapseView();
-            }
+            menuItemView = getCollapseView();
         }
+
         filterPopupWindow = new CirclesFilterPopupWindow(getContext());
-        filterPopupWindow.setCircles(getPresenter().getFilterCircles());
+        filterPopupWindow.setCircles(circles);
         filterPopupWindow.setAnchorView(menuItemView);
         filterPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             filterPopupWindow.dismiss();
             getPresenter().applyFilter((Circle) parent.getItemAtPosition(position));
         });
         filterPopupWindow.show();
-        filterPopupWindow.setCheckedCircle(getPresenter().getAppliedFilterCircle());
+        filterPopupWindow.setCheckedCircle(selectedCircle);
     }
 
     private View getCollapseView() {

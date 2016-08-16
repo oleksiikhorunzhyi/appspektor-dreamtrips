@@ -1,14 +1,13 @@
 package com.worldventures.dreamtrips.modules.trips.presenter;
 
 import com.worldventures.dreamtrips.core.navigation.Route;
-import com.worldventures.dreamtrips.core.session.UserSession;
 import com.worldventures.dreamtrips.core.session.acl.Feature;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
-import com.worldventures.dreamtrips.modules.common.model.AppConfig;
+import com.worldventures.dreamtrips.modules.infopages.StaticPageProvider;
 import com.worldventures.dreamtrips.modules.trips.command.GetTripDetailsCommand;
-import com.worldventures.dreamtrips.modules.trips.command.TripsInteractor;
 import com.worldventures.dreamtrips.modules.trips.model.ContentItem;
 import com.worldventures.dreamtrips.modules.trips.model.TripModel;
+import com.worldventures.dreamtrips.modules.trips.service.TripsInteractor;
 import com.worldventures.dreamtrips.modules.tripsimages.bundle.FullScreenImagesBundle;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImage;
 import com.worldventures.dreamtrips.modules.tripsimages.model.TripImagesType;
@@ -24,6 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter.View> {
 
     @Inject TripsInteractor tripsInteractor;
+    @Inject StaticPageProvider staticPageProvider;
 
     private List<TripImage> filteredImages;
 
@@ -58,15 +58,8 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
 
     public void actionBookIt() {
         TrackingHelper.actionBookIt(TrackingHelper.ATTRIBUTE_BOOK_IT, trip.getTripId(), getAccountUserId());
-        UserSession userSession = appSessionHolder.get().get();
 
-        AppConfig.URLS urls = userSession.getGlobalConfig().getUrls();
-        AppConfig.URLS.Config config = urls.getProduction();
-
-        String url = config.getBookingPageURL()
-                .replace(AppConfig.TRIP_ID, trip.getTripId())
-                .replace(AppConfig.USER_ID, userSession.getUser().getUsername())
-                .replace(AppConfig.TOKEN, userSession.getLegacyApiToken());
+        String url = staticPageProvider.getBookingPageUrl(trip.getTripId());
         view.openBookIt(url);
     }
 
@@ -104,6 +97,7 @@ public class TripDetailsPresenter extends BaseTripPresenter<TripDetailsPresenter
     }
 
     public interface View extends BaseTripPresenter.View {
+
         void setContent(List<ContentItem> contentItems);
 
         void hideBookIt();

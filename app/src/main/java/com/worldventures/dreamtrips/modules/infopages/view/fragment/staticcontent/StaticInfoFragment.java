@@ -59,6 +59,8 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
         extends RxBaseFragmentWithArgs<T, P>
         implements WebViewFragmentPresenter.View, SwipeRefreshLayout.OnRefreshListener {
 
+    protected static final String AUTHORIZATION_HEADER_KEY = "Authorization";
+
     @Inject protected StaticPageProvider provider;
     @Inject ScreenChangedEventDelegate screenChangedEventDelegate;
 
@@ -474,6 +476,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class TermsOfServiceFragment extends StaticInfoFragment {
+
         @Override
         protected String getURL() {
             return provider.getTermsOfServiceUrl();
@@ -494,9 +497,10 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class CookiePolicyFragment extends StaticInfoFragment {
+
         @Override
         protected String getURL() {
-            return provider.getCookiePolicyUrl();
+            return provider.getCookiesPolicyUrl();
         }
 
         @Override
@@ -534,6 +538,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class PrivacyPolicyFragment extends StaticInfoFragment {
+
         @Override
         protected String getURL() {
             return provider.getPrivacyPolicyUrl();
@@ -553,6 +558,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
     @Layout(R.layout.fragment_webview)
     public static class EnrollMemberFragment extends AuthorizedStaticInfoFragment<UrlBundle> {
+
         @Override
         protected String getURL() {
             return provider.getEnrollMemberUrl();
@@ -620,7 +626,23 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
 
         @Override
         protected String getURL() {
-            return provider.getEnrollUpdateUrl();
+            return provider.getEnrollUpgradeUrl();
+        }
+
+        @Override
+        public void load(String url) {
+            if (!isLoading && savedState == null) {
+                Map<String, String> additionalHeaders = new HashMap<>();
+                additionalHeaders.put(AUTHORIZATION_HEADER_KEY,
+                        ((WebViewFragmentPresenter) getPresenter()).getAuthToken());
+                webView.loadUrl(url, additionalHeaders);
+            }
+        }
+
+        @Override
+        public void reload(String url) {
+            webView.loadUrl("about:blank");
+            load(url);
         }
 
         @Override
@@ -637,7 +659,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
     }
 
     @Layout(R.layout.fragment_webview)
-    public static class BookItFragment extends BundleUrlFragment {
+    public static class BookItFragment extends BundleUrlFragment<WebViewFragmentPresenter> {
 
         private static final String BOOK_IT_HEADER_KEY = "DT-Device-Identifier";
         private static final String BOOK_IT_HEADER = "Android" + "-" + Build.VERSION.RELEASE + "-"
@@ -649,6 +671,7 @@ public abstract class StaticInfoFragment<T extends WebViewFragmentPresenter, P e
             if (!isLoading && savedState == null) {
                 Map<String, String> additionalHeaders = new HashMap<>();
                 additionalHeaders.put(BOOK_IT_HEADER_KEY, BOOK_IT_HEADER);
+                additionalHeaders.put(AUTHORIZATION_HEADER_KEY, getPresenter().getAuthToken());
                 webView.loadUrl(url, additionalHeaders);
             }
         }

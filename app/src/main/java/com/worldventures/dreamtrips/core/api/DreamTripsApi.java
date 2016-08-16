@@ -4,9 +4,7 @@ import com.google.gson.JsonObject;
 import com.worldventures.dreamtrips.modules.bucketlist.model.CategoryItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.PopularBucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.model.Suggestion;
-import com.worldventures.dreamtrips.modules.common.model.AvailableLocale;
 import com.worldventures.dreamtrips.modules.common.model.DELETE_WITH_BODY;
-import com.worldventures.dreamtrips.modules.common.model.Session;
 import com.worldventures.dreamtrips.modules.common.model.UploadTask;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.view.custom.tagview.viewgroup.newio.model.PhotoTag;
@@ -16,18 +14,12 @@ import com.worldventures.dreamtrips.modules.feed.model.FeedEntityHolder;
 import com.worldventures.dreamtrips.modules.feed.model.TextualPost;
 import com.worldventures.dreamtrips.modules.feed.model.comment.Comment;
 import com.worldventures.dreamtrips.modules.feed.model.feed.base.ParentFeedItem;
-import com.worldventures.dreamtrips.modules.feed.model.notification.PushSubscription;
-import com.worldventures.dreamtrips.modules.friends.model.Circle;
 import com.worldventures.dreamtrips.modules.infopages.model.FeedbackType;
 import com.worldventures.dreamtrips.modules.membership.api.InviteBody;
 import com.worldventures.dreamtrips.modules.membership.model.History;
 import com.worldventures.dreamtrips.modules.membership.model.InviteTemplate;
 import com.worldventures.dreamtrips.modules.reptools.model.SuccessStory;
 import com.worldventures.dreamtrips.modules.reptools.model.VideoLocale;
-import com.worldventures.dreamtrips.modules.settings.model.SettingsHolder;
-import com.worldventures.dreamtrips.modules.trips.model.ActivityModel;
-import com.worldventures.dreamtrips.modules.trips.model.RegionModel;
-import com.worldventures.dreamtrips.modules.trips.model.TripModel;
 import com.worldventures.dreamtrips.modules.tripsimages.model.AddPhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.DeletePhotoTag;
 import com.worldventures.dreamtrips.modules.tripsimages.model.Flag;
@@ -65,10 +57,6 @@ public interface DreamTripsApi {
     String TYPE_REP = "dtapprep";
     String TYPE_HELP = "DTAPPHELP";
 
-    @FormUrlEncoded
-    @POST("/api/sessions")
-    Session login(@Field("username") String username, @Field("password") String password);
-
     @POST("/api/profile/avatar")
     @Multipart
     User uploadAvatar(@Part("avatar") TypedFile image);
@@ -82,32 +70,6 @@ public interface DreamTripsApi {
 
     @GET("/api/profiles/{id}")
     User getPublicProfile(@Path("id") int id);
-
-    @GET("/api/trips")
-    ArrayList<TripModel> getTrips();
-
-    @GET("/api/trips")
-    ArrayList<TripModel> getTripsPaginated(
-            @Query("page") int page,
-            @Query("per_page") int perPage,
-            @Query("query") String query,
-            @Query("duration_min") Integer durationMin,
-            @Query("duration_max") Integer durationMax,
-            @Query("price_min") Double priceMin,
-            @Query("price_max") Double priceMax,
-            @Query("start_date") String startDate,
-            @Query("end_date") String endDate,
-            @Query("regions") String regions,
-            @Query("activities") String activities,
-            @Query("sold_out") int soldOut,
-            @Query("recent") int recent,
-            @Query("liked") int liked);
-
-    @GET("/api/regions")
-    List<RegionModel> getRegions();
-
-    @GET("/api/activities")
-    List<ActivityModel> getActivities();
 
     /* *** PHOTOS *****************************/
 
@@ -204,9 +166,6 @@ public interface DreamTripsApi {
     @GET("/api/invitations/filled_templates/{id} ")
     InviteTemplate getFilledInviteTemplate(@Path("id") int id);
 
-    @GET("/api/locales")
-    ArrayList<AvailableLocale> getLocales();
-
     @GET("/api/member_videos/")
     ArrayList<Category> getVideos(@Query("type") String type);
 
@@ -219,9 +178,6 @@ public interface DreamTripsApi {
 
     @GET("/api/flag_reasons")
     ArrayList<Flag> getFlags();
-
-    @GET("/api/social/circles")
-    ArrayList<Circle> getCircles();
 
     @GET("/api/social/friends")
     ArrayList<User> getFriends(@Query("circle_id") String circle_id,
@@ -309,9 +265,6 @@ public interface DreamTripsApi {
     @PUT("/api/social/notifications/{id}")
     Void markAsRead(@Path("id") int id);
 
-    @POST("/api/social/push_subscriptions")
-    Void subscribeDevice(@Body PushSubscription pushSubscription);
-
     @FormUrlEncoded
     @POST("/api/{uid}/flags")
     Void flagItem(@Path("uid") String uid, @Field("flag_reason_id") int flagReasonId, @Field("reason") String nameOfReason);
@@ -328,16 +281,9 @@ public interface DreamTripsApi {
     @GET("/api/photos/{uid}")
     Photo getPhotoInfo(@Path("uid") String uid);
 
-    @GET("/api/user/settings")
-    SettingsHolder getSettings();
-
-    @PATCH("/api/user/settings")
-    Void updateSettings(@Body SettingsHolder settingsHolder);
-
     @GET("/api/feedbacks/reasons")
     ArrayList<FeedbackType> getFeedbackReasons();
 
     @POST("/api/feedbacks")
     Void sendFeedback(@Body FeedbackBody feedbackBody);
-
 }

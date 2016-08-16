@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -27,6 +28,8 @@ public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPrefere
     EmptyRecyclerView recyclerViewGroups;
     BaseArrayListAdapter<FriendGroupRelation> adapter;
 
+    private MaterialDialog blockingProgressDialog;
+
     @Override
     protected FriendPreferencesPresenter createPresenter(Bundle savedInstanceState) {
         return new FriendPreferencesPresenter(getArgs());
@@ -48,6 +51,21 @@ public class FriendPreferenceFragment extends BaseFragmentWithArgs<FriendPrefere
     @OnClick(R.id.createNewListBtn)
     void onCreateClick() {
         informUser("TODO");
+    }
+
+    @Override
+    public void showBlockingProgress() {
+        blockingProgressDialog = new MaterialDialog.Builder(getActivity())
+                .progress(true, 0)
+                .content(R.string.loading)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .show();
+    }
+
+    @Override
+    public void hideBlockingProgress() {
+        if (blockingProgressDialog != null) blockingProgressDialog.dismiss();
     }
 
 }

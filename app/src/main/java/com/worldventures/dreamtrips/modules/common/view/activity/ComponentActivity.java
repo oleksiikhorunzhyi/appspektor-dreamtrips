@@ -18,11 +18,9 @@ import butterknife.Optional;
 @Layout(R.layout.activity_component)
 public class ComponentActivity extends ToolbarActivity<ComponentPresenter> implements ComponentPresenter.View {
 
-    Bundle extras;
+    @Optional @InjectView(R.id.container_details_floating) protected FrameLayout detailsFloatingContainer;
 
-    @Optional
-    @InjectView(R.id.container_details_floating)
-    protected FrameLayout detailsFloatingContainer;
+    Bundle extras;
 
     @Override
     protected int getToolbarTitle() {

@@ -43,6 +43,7 @@ public interface SnappyRepository {
     String EXCLUSIVE_NOTIFICATIONS_COUNT = "Unread-Notifications-Count"; // WARNING must be equal to server header
     String FRIEND_REQUEST_COUNT = "Friend-Requests-Count"; // WARNING must be equal to server header
     String GCM_REG_TOKEN = "GCM_REG_TOKEN ";
+    String LAST_SYNC_APP_VERSION = "LAST_SYNC_APP_VERSION";
     String FILTER_CIRCLE = "FILTER_CIRCLE";
     String FILTER_FEED_FRIEND_FILTER_CIRCLE = "FILTER_FEED_FRIEND_FILTER_CIRCLE";
     String SOCIAL_VIEW_PAGER_STATE = "SOCIAL_VIEW_PAGER_STATE";
@@ -174,4 +175,8 @@ public interface SnappyRepository {
     void saveDownloadMediaEntity(CachedEntity e);
 
     CachedEntity getDownloadMediaEntity(String id);
+
+    void setLastSyncAppVersion(String appVersion);
+
+    String getLastSyncAppVersion();
 }

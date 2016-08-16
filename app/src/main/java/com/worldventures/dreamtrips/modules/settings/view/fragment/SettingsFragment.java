@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.worldventures.dreamtrips.R;
-import com.worldventures.dreamtrips.modules.common.view.fragment.BaseFragmentWithArgs;
+import com.worldventures.dreamtrips.core.rx.RxBaseFragmentWithArgs;
 import com.worldventures.dreamtrips.modules.settings.bundle.SettingsBundle;
 import com.worldventures.dreamtrips.modules.settings.model.FlagSetting;
 import com.worldventures.dreamtrips.modules.settings.model.SelectSetting;
@@ -23,15 +23,12 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-public abstract class SettingsFragment extends BaseFragmentWithArgs<SettingsPresenter, SettingsBundle>
+public abstract class SettingsFragment extends RxBaseFragmentWithArgs<SettingsPresenter, SettingsBundle>
         implements SettingsPresenter.View {
 
-    @InjectView(R.id.settings_list)
-    RecyclerView recyclerView;
-    @InjectView(R.id.settings_toolbar)
-    Toolbar toolbar;
-    @InjectView(R.id.loading_view)
-    ViewGroup loadingView;
+    @InjectView(R.id.settings_list) RecyclerView recyclerView;
+    @InjectView(R.id.settings_toolbar) Toolbar toolbar;
+    @InjectView(R.id.loading_view) ViewGroup loadingView;
 
     protected BaseDelegateAdapter adapter;
 
@@ -61,6 +58,10 @@ public abstract class SettingsFragment extends BaseFragmentWithArgs<SettingsPres
         toolbar.setTitle(getArgs().settingsGroup.getTitle());
     }
 
+    protected void close() {
+        getActivity().onBackPressed();
+    }
+
     @Override
     protected SettingsPresenter createPresenter(Bundle savedInstanceState) {
         return new SettingsPresenter(getArgs().settingsGroup);
@@ -80,10 +81,5 @@ public abstract class SettingsFragment extends BaseFragmentWithArgs<SettingsPres
     @Override
     public void hideLoading() {
         loadingView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void close() {
-        getActivity().onBackPressed();
     }
 }

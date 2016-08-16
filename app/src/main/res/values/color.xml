@@ -20,6 +20,9 @@
     <color name="tripButtonColorPressed">#55841f</color>
     <color name="tripButtonDisabled">#A5A5A5</color>
 
+    <color name="filters_retry_text">#005E92</color>
+    <color name="filters_error_text">#929292</color>
+
     <color name="bucket_button_selected">#005E92</color>
     <color name="bucket_button_default">#404040</color>
     <color name="bucket_detailed_text_color">#54BDFF</color>

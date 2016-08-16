@@ -2,6 +2,7 @@ package com.worldventures.dreamtrips.modules.feed.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.util.Pair;
 
 import com.innahema.collections.query.queriables.Queryable;
@@ -14,17 +15,20 @@ import com.worldventures.dreamtrips.R;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.events.EntityLikedEvent;
 import com.worldventures.dreamtrips.modules.bucketlist.model.BucketItem;
 import com.worldventures.dreamtrips.modules.bucketlist.service.BucketInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.service.action.DeleteItemHttpAction;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
 import com.worldventures.dreamtrips.modules.common.presenter.Presenter;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
 import com.worldventures.dreamtrips.modules.common.view.ApiErrorView;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.common.view.bundle.BucketBundle;
 import com.worldventures.dreamtrips.modules.common.view.util.DrawableUtil;
 import com.worldventures.dreamtrips.modules.common.view.util.MediaPickerManager;
@@ -70,6 +74,7 @@ import icepick.State;
 import io.techery.janet.helper.ActionStateSubscriber;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class FeedPresenter extends Presenter<FeedPresenter.View> {
@@ -89,6 +94,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Inject BucketInteractor bucketInteractor;
     @Inject FeedInteractor feedInteractor;
     @Inject SuggestedPhotoInteractor suggestedPhotoInteractor;
+    @Inject CirclesInteractor circlesInteractor;
 
     private Circle filterCircle;
     private UidItemDelegate uidItemDelegate;
@@ -126,6 +132,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     @Override
     public void takeView(View view) {
         super.takeView(view);
+        updateCircles();
         subscribeRefreshFeeds();
         subscribeLoadNextFeeds();
         subscribePhotoGalleryCheck();
@@ -142,6 +149,52 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
     public void dropView() {
         textualPostTranslationDelegate.onDropView();
         super.dropView();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Update circles
+    ///////////////////////////////////////////////////////////////////////////
+
+    private Circle createDefaultFilterCircle() {
+        return Circle.all(context.getString(R.string.all));
+    }
+
+    public void applyFilter(Circle selectedCircle) {
+        filterCircle = selectedCircle;
+        db.saveFilterCircle(selectedCircle);
+        refreshFeed();
+    }
+
+    public void actionFilter() {
+        circlesInteractor.pipe()
+                .createObservable(new CirclesCommand())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult()))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void updateCircles() {
+        circlesInteractor.pipe().send(new CirclesCommand());
+    }
+
+    private void onCirclesStart() {
+        view.showBlockingProgress();
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles) {
+        resultCircles.add(createDefaultFilterCircle());
+        Collections.sort(resultCircles);
+        view.hideBlockingProgress();
+        view.showFilter(resultCircles, filterCircle);
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.hideBlockingProgress();
+        view.informUser(messageId);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -212,27 +265,6 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     private Date getLastFeedDate() {
         return feedItems.get(feedItems.size() - 1).getCreatedAt();
-    }
-
-    public List<Circle> getFilterCircles() {
-        List<Circle> circles = db.getCircles();
-        Collections.sort(circles);
-        circles.add(0, createDefaultFilterCircle());
-        return circles;
-    }
-
-    private Circle createDefaultFilterCircle() {
-        return Circle.all(context.getString(R.string.all));
-    }
-
-    public Circle getAppliedFilterCircle() {
-        return filterCircle;
-    }
-
-    public void applyFilter(Circle selectedCircle) {
-        filterCircle = selectedCircle;
-        db.saveFilterCircle(selectedCircle);
-        refreshFeed();
     }
 
     public void onUnreadConversationsClick() {
@@ -341,7 +373,7 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
 
     public void onEvent(TranslatePostEvent event) {
         if (view.isVisibleOnScreen()) {
-            textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getOwnAccountLocaleFormatted());
+            textualPostTranslationDelegate.translate(event.getPostFeedItem(), localeHelper.getDefaultLocaleFormatted());
         }
     }
 
@@ -467,9 +499,11 @@ public class FeedPresenter extends Presenter<FeedPresenter.View> {
                 }, throwable -> Timber.w("Can't get friends notifications count"));
     }
 
-    public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView {
+    public interface View extends RxView, UidItemDelegate.View, TextualPostTranslationDelegate.View, ApiErrorView, BlockingProgressView {
 
         void setRequestsCount(int count);
+
+        void showFilter(List<Circle> circles, Circle selectedCircle);
 
         void setUnreadConversationCount(int count);
 

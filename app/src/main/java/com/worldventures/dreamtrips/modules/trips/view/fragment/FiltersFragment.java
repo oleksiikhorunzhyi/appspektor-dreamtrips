@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
-import com.techery.spares.adapter.BaseArrayListAdapter;
 import com.techery.spares.adapter.BaseDelegateAdapter;
 import com.techery.spares.annotations.Layout;
 import com.worldventures.dreamtrips.R;
@@ -32,14 +32,18 @@ import com.worldventures.dreamtrips.modules.trips.view.cell.filter.RegionCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.SoldOutCell;
 import com.worldventures.dreamtrips.modules.trips.view.cell.filter.ThemeCell;
 
+import java.util.List;
+
 import butterknife.InjectView;
 import butterknife.OnClick;
 
 @Layout(R.layout.layout_filters)
 public class FiltersFragment extends BaseFragment<FiltersPresenter> implements FiltersPresenter.View {
 
-    @InjectView(R.id.recyclerViewFilters)
-    protected EmptyRecyclerView recyclerView;
+    @InjectView(R.id.recyclerViewFilters) protected EmptyRecyclerView recyclerView;
+    @InjectView(R.id.progress) ProgressBar progressBar;
+    @InjectView(R.id.error_container) View errorContainer;
+
     protected BaseDelegateAdapter<Object> arrayListAdapter;
 
     @Override
@@ -84,14 +88,42 @@ public class FiltersFragment extends BaseFragment<FiltersPresenter> implements F
         getPresenter().resetFilters();
     }
 
-    @Override
-    public void dataSetChanged() {
-        arrayListAdapter.notifyDataSetChanged();
+    @OnClick(R.id.btn_retry)
+    void retry() {
+        hideErrorContainer();
+        getPresenter().loadFilters();
     }
 
     @Override
-    public BaseArrayListAdapter getAdapter() {
-        return arrayListAdapter;
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showErrorContainer() {
+        errorContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideErrorContainer() {
+        errorContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void fillData(List data) {
+        if (recyclerView != null) recyclerView.setVisibility(View.VISIBLE);
+        arrayListAdapter.clear();
+        arrayListAdapter.addItems(data);
+    }
+
+    @Override
+    public void dataSetChanged() {
+        arrayListAdapter.notifyDataSetChanged();
     }
 
     @Override

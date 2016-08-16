@@ -67,8 +67,8 @@ public class MessengerDelegateModule {
     }
 
     @Provides
-    MessageBodyCreator provideMessageBodyCreator(LocaleHelper localeHelper, SessionHolder<UserSession> userSessionHolder) {
-        return new MessageBodyCreator(localeHelper, userSessionHolder.get().get().getUser());
+    MessageBodyCreator provideMessageBodyCreator(LocaleHelper localeHelper) {
+        return new MessageBodyCreator(localeHelper);
     }
 
     @Provides

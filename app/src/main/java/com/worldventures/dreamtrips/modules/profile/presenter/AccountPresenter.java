@@ -6,10 +6,12 @@ import com.octo.android.robospice.request.simple.BigBinaryRequest;
 import com.techery.spares.utils.delegate.NotificationCountEventDelegate;
 import com.worldventures.dreamtrips.core.component.RootComponentsProvider;
 import com.worldventures.dreamtrips.core.navigation.Route;
+import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
 import com.worldventures.dreamtrips.core.session.UserSession;
-import com.worldventures.dreamtrips.core.utils.events.UpdateUserInfoEvent;
 import com.worldventures.dreamtrips.core.utils.tracksystem.TrackingHelper;
+import com.worldventures.dreamtrips.modules.auth.api.command.UpdateUserCommand;
+import com.worldventures.dreamtrips.modules.auth.service.AuthInteractor;
 import com.worldventures.dreamtrips.modules.common.delegate.SocialCropImageManager;
 import com.worldventures.dreamtrips.modules.common.model.MediaAttachment;
 import com.worldventures.dreamtrips.modules.common.model.PhotoGalleryModel;
@@ -48,7 +50,9 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     @Inject LogoutDelegate logoutDelegate;
     @Inject MediaPickerManager mediaPickerManager;
     @Inject SocialCropImageManager socialCropImageManager;
+    @Inject AuthInteractor authInteractor;
     @Inject NotificationCountEventDelegate notificationCountEventDelegate;
+    @Inject SnappyRepository db;
 
     private Subscription mediaSubscription;
     private Subscription cropSubscription;
@@ -106,7 +110,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
     private void subscribeNotificationsBadgeUpdates() {
         notificationCountEventDelegate.getObservable()
                 .compose(bindViewToMainComposer())
-                .subscribe(o -> view.updateBadgeCount(snappyRepository.getFriendsRequestsCount()));
+                .subscribe(o -> view.updateBadgeCount(db.getFriendsRequestsCount()));
     }
 
     private void subscribeRefreshFeeds() {
@@ -151,7 +155,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         this.user.setAvatar(currentUser.getAvatar());
         this.user.setAvatarUploadInProgress(false);
         view.notifyUserChanged();
-        eventBus.postSticky(new UpdateUserInfoEvent(user));
+        authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
     }
 
     private void onCoverUploadSuccess(User obj) {
@@ -166,7 +170,7 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
         if (coverTempFilePath != null) {
             new File(coverTempFilePath).delete();
         }
-        eventBus.postSticky(new UpdateUserInfoEvent(user));
+        authInteractor.updateUserPipe().send(new UpdateUserCommand(user));
     }
 
     @Override
@@ -317,5 +321,4 @@ public class AccountPresenter extends ProfilePresenter<AccountPresenter.View, Us
 
         void cropImage(SocialCropImageManager socialCropImageManager, String path);
     }
-
 }

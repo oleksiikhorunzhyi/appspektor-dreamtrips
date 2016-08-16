@@ -1,14 +1,19 @@
 package com.worldventures.dreamtrips.modules.profile.presenter;
 
+import android.support.annotation.StringRes;
+
 import com.innahema.collections.query.functions.Action1;
 import com.messenger.delegate.StartChatDelegate;
 import com.messenger.ui.activity.MessengerActivity;
 import com.worldventures.dreamtrips.core.navigation.Route;
 import com.worldventures.dreamtrips.core.rx.composer.IoToMainComposer;
+import com.worldventures.dreamtrips.core.session.CirclesInteractor;
 import com.worldventures.dreamtrips.modules.bucketlist.bundle.ForeignBucketTabsBundle;
+import com.worldventures.dreamtrips.modules.common.api.janet.command.CirclesCommand;
 import com.worldventures.dreamtrips.modules.common.model.FlagData;
 import com.worldventures.dreamtrips.modules.common.model.User;
 import com.worldventures.dreamtrips.modules.common.presenter.delegate.UidItemDelegate;
+import com.worldventures.dreamtrips.modules.common.view.BlockingProgressView;
 import com.worldventures.dreamtrips.modules.feed.api.MarkNotificationAsReadCommand;
 import com.worldventures.dreamtrips.modules.feed.event.ItemFlaggedEvent;
 import com.worldventures.dreamtrips.modules.feed.event.LoadFlagEvent;
@@ -33,15 +38,17 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.techery.janet.helper.ActionStateSubscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
 
-    private int notificationId;
-    private boolean acceptFriend;
-
+    @Inject CirclesInteractor circlesInteractor;
     @Inject NotificationDelegate notificationDelegate;
     @Inject StartChatDelegate startSingleChatDelegate;
 
+    private int notificationId;
+    private boolean acceptFriend;
     private UidItemDelegate uidItemDelegate;
 
     public UserPresenter(UserBundle userBundle) {
@@ -130,7 +137,7 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         switch (userRelationship) {
             case REJECTED:
             case NONE:
-                view.showAddFriendDialog(circles, this::addAsFriend);
+                addFriend();
                 break;
             case FRIEND:
                 view.showFriendDialog(user);
@@ -150,23 +157,35 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
         });
     }
 
-    public void acceptClicked() {
-        view.showAddFriendDialog(circles, this::accept);
+    private void addFriend() {
+        showAddFriendDialog(this::addAsFriend);
     }
 
-    public void rejectClicked() {
-        reject();
-    }
-
-    private void addAsFriend(int position) {
+    private void addAsFriend(Circle circle) {
         view.startLoading();
-        Circle circle = circles.get(position);
         doRequest(new AddUserRequestCommand(user.getId(), circle),
                 jsonObject -> {
                     user.setRelationship(User.Relationship.OUTGOING_REQUEST);
                     view.finishLoading();
                     view.notifyUserChanged();
                 });
+    }
+
+    public void acceptClicked() {
+        showAddFriendDialog(this::accept);
+    }
+
+    private void accept(Circle circle) {
+        doRequest(new ActOnRequestCommand(user.getId(),
+                        ActOnRequestCommand.Action.CONFIRM.name(), circle.getId()),
+                object -> {
+                    user.setRelationship(User.Relationship.FRIEND);
+                    view.notifyUserChanged();
+                });
+    }
+
+    public void rejectClicked() {
+        reject();
     }
 
     private void reject() {
@@ -176,17 +195,6 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                 object -> {
                     view.finishLoading();
                     user.setRelationship(User.Relationship.REJECTED);
-                    view.notifyUserChanged();
-                });
-    }
-
-    private void accept(int position) {
-        Circle circle = snappyRepository.getCircles().get(position);
-        doRequest(new ActOnRequestCommand(user.getId(),
-                        ActOnRequestCommand.Action.CONFIRM.name(),
-                        circle.getId()),
-                object -> {
-                    user.setRelationship(User.Relationship.FRIEND);
                     view.notifyUserChanged();
                 });
     }
@@ -235,9 +243,39 @@ public class UserPresenter extends ProfilePresenter<UserPresenter.View, User> {
                     event.getFlagReasonId(), event.getNameOfReason()), view);
     }
 
-    public interface View extends ProfilePresenter.View, UidItemDelegate.View {
+    ///////////////////////////////////////////////////////////////////////////
+    // Circles
+    ///////////////////////////////////////////////////////////////////////////
 
-        void showAddFriendDialog(List<Circle> circles, Action1<Integer> selectAction);
+    private void showAddFriendDialog(Action1<Circle> actionCircle) {
+        circlesInteractor.pipe()
+                .createObservable(new CirclesCommand())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(bindView())
+                .subscribe(new ActionStateSubscriber<CirclesCommand>()
+                        .onStart(circlesCommand -> onCirclesStart())
+                        .onSuccess(circlesCommand -> onCirclesSuccess(circlesCommand.getResult(), actionCircle))
+                        .onFail((circlesCommand, throwable) -> onCirclesError(circlesCommand.getErrorMessage())));
+    }
+
+    private void onCirclesStart() {
+        view.showBlockingProgress();
+    }
+
+    private void onCirclesSuccess(List<Circle> resultCircles, Action1<Circle> actionCircle) {
+        view.showAddFriendDialog(resultCircles, actionCircle);
+        view.hideBlockingProgress();
+    }
+
+    private void onCirclesError(@StringRes String messageId) {
+        view.hideBlockingProgress();
+        view.informUser(messageId);
+    }
+
+    public interface View extends ProfilePresenter.View, UidItemDelegate.View, BlockingProgressView {
+
+        void showAddFriendDialog(List<Circle> circles, Action1<Circle> selectAction);
 
         void showFriendDialog(User user);
 

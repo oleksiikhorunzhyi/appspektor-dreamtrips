@@ -39,24 +39,16 @@ import flow.path.PathContainerView;
 public abstract class FlowActivity<PM extends ActivityPresenter> extends ActivityWithPresenter<PM>
         implements Flow.Dispatcher {
 
-    @Inject
-    protected BackStackDelegate backStackDelegate;
-    @Inject
-    protected RootComponentsProvider rootComponentsProvider;
-    @Inject
-    protected Gson gson;
-    @Inject
-    protected NavigationDrawerPresenter navigationDrawerPresenter;
-    @Inject
-    protected ActivityRouter activityRouter;
-    //
-    @InjectView(R.id.drawer)
-    protected DrawerLayout drawerLayout;
-    @InjectView(R.id.drawer_layout)
-    protected NavigationDrawerViewImpl navDrawer;
-    @InjectView(R.id.root_container)
-    protected PathContainerView container;
-    //
+    @InjectView(R.id.drawer) protected DrawerLayout drawerLayout;
+    @InjectView(R.id.drawer_layout) protected NavigationDrawerViewImpl navDrawer;
+    @InjectView(R.id.root_container) protected PathContainerView container;
+
+    @Inject protected BackStackDelegate backStackDelegate;
+    @Inject protected RootComponentsProvider rootComponentsProvider;
+    @Inject protected Gson gson;
+    @Inject protected NavigationDrawerPresenter navigationDrawerPresenter;
+    @Inject protected ActivityRouter activityRouter;
+
     private FlowActivityHelper flowActivityHelper;
     private WeakHandler weakHandler = new WeakHandler();
 

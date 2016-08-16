@@ -38,8 +38,6 @@ import dagger.Provides;
                 //
                 ApiModule.class,
                 AmazonModule.class,
-                RetryModule.class,
-                ApiFactoryModule.class,
                 //
                 UiBindingModule.class,
                 //

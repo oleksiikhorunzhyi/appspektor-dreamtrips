@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public class MainActivityPresenter extends ActivityPresenter<MainActivityPresenter.View> {
 
-    @Inject protected RootComponentsProvider rootComponentsProvider;
+    @Inject RootComponentsProvider rootComponentsProvider;
 
     @Override
     public void takeView(View view) {

@@ -16,7 +16,12 @@ public class GeneralSettingsFragment extends SettingsFragment implements Setting
 
     @Override
     public void onValueSelected() {
-        getPresenter().applyChanges(false);
+        getPresenter().applyChanges();
+    }
+
+    @Override
+    public void onAppliedChanges() {
+        //nothing
     }
 
     @Override

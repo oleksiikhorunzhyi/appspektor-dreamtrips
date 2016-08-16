@@ -41,8 +41,6 @@ public class DtlPerkCell
     AppCompatTextView expirationBar;
 
     @Inject
-    protected SessionHolder<UserSession> sessionHolder;
-    @Inject
     LocaleHelper localeHelper;
 
     public DtlPerkCell(View view) {
@@ -77,7 +75,7 @@ public class DtlPerkCell
         if (DtlMerchantHelper.isOfferExpiringSoon(getModelObject())) {
             ViewUtils.setTextOrHideView(expirationBar, DtlMerchantHelper.
                     getOfferExpiringCaption(itemView.getContext(), getModelObject(),
-                            localeHelper.getAccountLocale(sessionHolder.get().get().getUser())));
+                            localeHelper.getDefaultLocale()));
         } else ViewUtils.setViewVisibility(View.GONE, expirationBar);
     }
 

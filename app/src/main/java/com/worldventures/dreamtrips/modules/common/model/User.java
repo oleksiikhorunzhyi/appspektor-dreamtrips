@@ -32,7 +32,6 @@ public class User extends BaseEntity implements Parcelable {
     private String firstName;
     private String lastName;
     private String location;
-    private String locale;
     private List<String> badges;
     private Date birthDate;
     private Date enrollDate;
@@ -168,14 +167,6 @@ public class User extends BaseEntity implements Parcelable {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getLocale() {
-        return locale;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
     }
 
     public Avatar getAvatar() {
@@ -392,7 +383,6 @@ public class User extends BaseEntity implements Parcelable {
         dest.writeString(this.lastName);
         dest.writeString(this.company);
         dest.writeString(this.location);
-        dest.writeString(this.locale);
         dest.writeLong(birthDate != null ? birthDate.getTime() : -1);
         dest.writeLong(enrollDate != null ? enrollDate.getTime() : -1);
         dest.writeDouble(this.dreamTripsPoints);
@@ -418,7 +408,6 @@ public class User extends BaseEntity implements Parcelable {
         this.lastName = in.readString();
         this.company = in.readString();
         this.location = in.readString();
-        this.locale = in.readString();
         long tmpBirthDate = in.readLong();
         this.birthDate = tmpBirthDate == -1 ? null : new Date(tmpBirthDate);
         long tmpEnrollDate = in.readLong();

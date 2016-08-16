@@ -2,8 +2,8 @@ package com.worldventures.dreamtrips.modules.dtl.presenter;
 
 import android.location.Location;
 
-import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams;
+import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.rx.RxView;
 import com.worldventures.dreamtrips.core.rx.composer.ImmediateComposer;
 import com.worldventures.dreamtrips.modules.common.model.ShareType;

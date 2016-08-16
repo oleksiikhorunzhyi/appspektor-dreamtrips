@@ -28,8 +28,8 @@ import com.worldventures.dreamtrips.modules.dtl.bundle.PointsEstimationDialogBun
 import com.worldventures.dreamtrips.modules.dtl.event.DtlTransactionSucceedEvent;
 import com.worldventures.dreamtrips.modules.dtl.location.LocationDelegate;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.DtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.model.transaction.ImmutableDtlTransaction;
 import com.worldventures.dreamtrips.modules.dtl.service.DtlMerchantInteractor;
@@ -248,9 +248,9 @@ public class DtlDetailsPresenterImpl extends DtlPresenterImpl<DtlDetailsScreen, 
 
     @Override
     public void onOfferClick(DtlOffer offer) {
-        DtlOfferMedia imageUrl = Queryable.from(offer.getImages()).firstOrDefault();
+        DtlMerchantMedia imageUrl = Queryable.from(offer.getImages()).firstOrDefault();
         if (imageUrl == null) return;
-        Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getUrl()));
+        Flow.get(getContext()).set(new DtlFullscreenImagePath(imageUrl.getImagePath()));
     }
 
     public void onShareClick() {

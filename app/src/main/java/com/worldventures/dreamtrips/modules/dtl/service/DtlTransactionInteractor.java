@@ -1,7 +1,7 @@
 package com.worldventures.dreamtrips.modules.dtl.service;
 
-import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlEarnPointsAction;
 import com.worldventures.dreamtrips.modules.dtl.service.action.DtlTransactionAction;
 

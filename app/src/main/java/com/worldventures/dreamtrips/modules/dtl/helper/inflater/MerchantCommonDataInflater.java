@@ -22,9 +22,9 @@ public class MerchantCommonDataInflater extends MerchantDataInflater {
     protected void onMerchantApply() {
         ViewUtils.setViewVisibility(coverStub, merchant.getImages().isEmpty() ? View.VISIBLE : View.GONE);
         //
-        if (merchant.getRating() != 0.0f) {
+        if (merchant.getRating() != 0.0d) {
             ViewUtils.setViewVisibility(rating, View.VISIBLE);
-            rating.setRating(Float.valueOf(merchant.getRating()).intValue());
+            rating.setRating(Double.valueOf(merchant.getRating()).intValue());
         } else ViewUtils.setViewVisibility(rating, View.GONE);
         //
         int perkMargin = merchant.hasPoints() ?

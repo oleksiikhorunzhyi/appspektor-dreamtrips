@@ -3,8 +3,12 @@ package com.worldventures.dreamtrips.modules.dtl.model.merchant;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.esotericsoftware.kryo.DefaultSerializer;
+import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+
 import java.util.Comparator;
 
+@DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlMerchantAttribute implements Parcelable, Comparable<DtlMerchantAttribute> {
 
     private String name;

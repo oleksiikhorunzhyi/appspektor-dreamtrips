@@ -5,35 +5,30 @@ import android.os.Parcelable;
 
 import com.esotericsoftware.kryo.DefaultSerializer;
 import com.esotericsoftware.kryo.serializers.CompatibleFieldSerializer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.Disclaimer;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.DisclaimerType;
 
 @SuppressWarnings("unused")
 @DefaultSerializer(CompatibleFieldSerializer.class)
 public class DtlDisclaimer implements Parcelable {
 
-    private Type type;
+    private DisclaimerType type;
     private String text;
 
     public DtlDisclaimer() {
     }
 
-    public Type getType() {
-        return type;
+    public DtlDisclaimer(Disclaimer disclaimer) {
+        type = disclaimer.type();
+        text = disclaimer.text();
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public DisclaimerType getType() {
+        return type;
     }
 
     public String getText() {
         return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public enum Type {
-        POINTS, PERKS, ADDITIONAL
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -41,7 +36,7 @@ public class DtlDisclaimer implements Parcelable {
     ///////////////////////////////////////////////////////////////////////////
 
     protected DtlDisclaimer(Parcel in) {
-        type = (Type) in.readSerializable();
+        type = (DisclaimerType) in.readSerializable();
         text = in.readString();
     }
 

@@ -3,11 +3,11 @@ package com.worldventures.dreamtrips.dtl.service.spek
 import com.nhaarman.mockito_kotlin.*
 import com.worldventures.dreamtrips.AssertUtil.assertActionSuccess
 import com.worldventures.dreamtrips.BaseSpec
-import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction
-import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction
-import com.worldventures.dreamtrips.api.dtl.merchats.model.EstimationResult
-import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableEstimationParams
-import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams
+import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction
+import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction
+import com.worldventures.dreamtrips.api.dtl.merchants.model.EstimationResult
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams
 import com.worldventures.dreamtrips.core.repository.SnappyRepository
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchant
@@ -66,7 +66,7 @@ class DtlTransactionInteractorSpec : BaseSpec({
         db = spy()
         whenever(db.getDtlTransaction(any())).thenReturn(transaction)
 
-        transactionInteractor = DtlTransactionInteractor(janet)
+        transactionInteractor = DtlTransactionInteractor(janet, janet)
         commandService.registerProvider(SnappyRepository::class.java) { db }
     }
 

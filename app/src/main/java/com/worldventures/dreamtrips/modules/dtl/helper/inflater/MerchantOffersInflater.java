@@ -30,7 +30,6 @@ import com.worldventures.dreamtrips.modules.common.view.custom.ShowMoreTextView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 import com.worldventures.dreamtrips.modules.dtl.view.custom.ExpandableOfferView;
 
@@ -212,7 +211,7 @@ public class MerchantOffersInflater extends MerchantDataInflater {
     }
 
     private void bindImage(SimpleDraweeView image, DtlOffer perk) {
-        DtlOfferMedia media = Queryable.from(perk.getImages()).firstOrDefault();
+        DtlMerchantMedia media = Queryable.from(perk.getImages()).firstOrDefault();
         if (media == null) return;
         //
         image.setImageURI(Uri.parse(media.getImagePath()));

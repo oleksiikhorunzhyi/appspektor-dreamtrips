@@ -1,11 +1,11 @@
 package com.worldventures.dreamtrips.dtl.service.junit;
 
 import com.worldventures.dreamtrips.BaseTest;
-import com.worldventures.dreamtrips.api.dtl.merchats.EstimationHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchats.RatingHttpAction;
-import com.worldventures.dreamtrips.api.dtl.merchats.model.EstimationResult;
-import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableEstimationParams;
-import com.worldventures.dreamtrips.api.dtl.merchats.requrest.ImmutableRatingParams;
+import com.worldventures.dreamtrips.api.dtl.merchants.EstimationHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.RatingHttpAction;
+import com.worldventures.dreamtrips.api.dtl.merchants.model.EstimationResult;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableEstimationParams;
+import com.worldventures.dreamtrips.api.dtl.merchants.requrest.ImmutableRatingParams;
 import com.worldventures.dreamtrips.core.repository.SnappyRepository;
 import com.worldventures.dreamtrips.core.utils.DateTimeUtils;
 import com.worldventures.dreamtrips.janet.MockDaggerActionService;
@@ -80,7 +80,7 @@ public class DtlTransactionInteractorTest extends BaseTest {
                                 .build()))
                 .build();
 
-        transactionInteractor = new DtlTransactionInteractor(janet);
+        transactionInteractor = new DtlTransactionInteractor(janet, janet);
 
         db = spy(SnappyRepository.class);
         when(db.getDtlTransaction(anyString())).thenReturn(testTransaction);

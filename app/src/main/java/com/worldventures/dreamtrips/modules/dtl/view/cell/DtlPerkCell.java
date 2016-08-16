@@ -16,8 +16,8 @@ import com.worldventures.dreamtrips.core.utils.LocaleHelper;
 import com.worldventures.dreamtrips.core.utils.ViewUtils;
 import com.worldventures.dreamtrips.modules.common.view.custom.ImageryDraweeView;
 import com.worldventures.dreamtrips.modules.dtl.helper.DtlMerchantHelper;
+import com.worldventures.dreamtrips.modules.dtl.model.merchant.DtlMerchantMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOffer;
-import com.worldventures.dreamtrips.modules.dtl.model.merchant.offer.DtlOfferMedia;
 import com.worldventures.dreamtrips.modules.dtl.model.merchant.operational_hour.OperationDay;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class DtlPerkCell
     }
 
     private void bindImage() {
-        DtlOfferMedia media = Queryable.from(getModelObject().getImages()).firstOrDefault();
+        DtlMerchantMedia media = Queryable.from(getModelObject().getImages()).firstOrDefault();
         if (media == null) return;
         //
         image.setImageUrl(media.getImagePath());

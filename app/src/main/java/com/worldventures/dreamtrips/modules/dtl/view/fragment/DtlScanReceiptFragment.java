@@ -81,7 +81,8 @@ public class DtlScanReceiptFragment extends RxBaseFragmentWithArgs<DtlScanReceip
    @Override
    public void onResume() {
       super.onResume();
-      ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar).setTitle(R.string.dtl_enter_amount);
+      ButterKnife.<Toolbar>findById(getActivity(), R.id.toolbar_actionbar)
+            .setTitle(R.string.dtl_scan_receipt_screen_title);
       amountInput.addTextChangedListener(textWatcherAdapter);
    }
 

@@ -23,7 +23,7 @@
    <string name="dtl_distance">Distance, %s</string>
    <string name="dtl_receipt_scan">Capture Receipt</string>
    <string name="dtl_receipt_rescan">Recapture</string>
-   <string name="dtl_receipt_verify">Verify Amount</string>
+   <string name="dtl_receipt_verify_button_caption">Verify</string>
    <string name="dtl_receipt_verify_hint">This amount will be verified by the merchant. Any discrepancy in the amount entered will result in delay in earning DreamTrips points.</string>
    <string name="dtl_action_next">Next</string>
    <string name="dtl_amenities">Amenities</string>
@@ -37,7 +37,9 @@
    <string name="dtl_checkin_location_error">Location services should be enabled to check in</string>
    <string name="dtl_barcode_title">Scan QR Code</string>
    <string name="dtl_barcode_merchant">Scan Merchant Code</string>
-   <string name="dtl_enter_amount">Enter Amount</string>
+   <string name="dtl_scan_receipt_screen_title">Enter Subtotal</string>
+   <string name="dtl_scan_receipt_input_caption">Enter Subtotal</string>
+   <string name="dtl_scan_receipt_input_subcaption"> (Amount exluding tax &amp; tip)</string>
    <string name="dtl_congrats">Congratulations!</string>
    <string name="dtl_you_earned">You have earned</string>
    <string name="dtl_total">Total DreamTrips Points:</string>
@@ -46,7 +48,6 @@
    <string name="dtl_amount_invalid">Amount is invalid</string>
    <string name="dtl_invalid">Invalid input</string>
    <string name="dtl_verify_amount">Verify Amount</string>
-   <string name="dtl_verify_amount_note">Note: The amount should be the total on the bill excluding itemized tax and tip.</string>
    <string name="dtl_total_amount">Total amount:</string>
    <string name="dtl_verify_earn_hint">You could earn </string>
    <string name="dtl_check_in">Check in &amp; earn</string>

@@ -50,8 +50,9 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
       view.showFilters(circles, position);
    }
 
-   public void reloadWithFilter(Circle circle) {
+   public void reloadWithFilter(Circle circle, int position) {
       selectedCircle = circle;
+      this.position = position;
       reload();
    }
 
@@ -62,20 +63,20 @@ public class FriendListPresenter extends BaseUserListPresenter<FriendListPresent
       view.refreshUsers(users);
    }
 
-   public void setQuery(String query) {
-      int previousLength = this.query.length();
-      this.query = query;
-      if (query.length() < 3 && (previousLength < query.length() || previousLength < 3)) return;
-      //
-      reload();
-   }
-
    public void onEvent(ReloadFriendListEvent event) {
       reload();
    }
 
    public String getQuery() {
       return query;
+   }
+
+   public void setQuery(String query) {
+      int previousLength = this.query.length();
+      this.query = query;
+      if (query.length() < 3 && (previousLength < query.length() || previousLength < 3)) return;
+      //
+      reload();
    }
 
    @Override
